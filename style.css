@@ -283,3 +283,11 @@
  .modern-chat.mobile-chat-open .chat-window{height:calc(100dvh - 222px)}
  .modern-chat .chat-form .primary-btn{padding:10px}
 }
+
+/* Counts, follow lists, account settings */
+.pati-count-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#db5160;color:white;font-size:10px;font-weight:800;line-height:1;margin-left:auto;vertical-align:middle;box-sizing:border-box}
+.mobile-nav-btn .pati-count-badge{position:absolute;top:0;right:calc(50% - 23px);margin:0;box-shadow:0 0 0 2px #fff}.mobile-nav-btn{position:relative}
+.pati-stat-link{border:0;background:transparent;color:inherit;font:inherit;cursor:pointer;padding:3px 5px;border-radius:8px}.pati-stat-link:hover{background:#eef6ed}
+.pati-follow-person{display:flex;align-items:center;justify-content:space-between;gap:14px}.pati-follow-person .pati-profile-row{flex:1;min-width:0}
+.pati-settings-list{display:grid;gap:14px}.pati-settings-list .pati-card{min-width:0}.pati-settings-list .pati-actionbar{display:flex;flex-wrap:wrap;gap:8px}
+@media(max-width:740px){#mobile-nav .pati-count-badge{top:0;right:calc(50% - 24px)}.pati-follow-person{flex-wrap:wrap}.pati-stat-link{font-size:11px}}
