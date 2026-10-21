@@ -1,0 +1,19 @@
+{
+  "name": "Patiyiz",
+  "short_name": "Patiyiz",
+  "description": "Hayvanseverlerin buluşma noktası",
+  "id": "/Patiyiz/",
+  "start_url": "/Patiyiz/",
+  "scope": "/Patiyiz/",
+  "display": "standalone",
+  "background_color": "#f7f8f5",
+  "theme_color": "#24634e",
+  "icons": [
+    {
+      "src": "patiyiz-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
