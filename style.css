@@ -311,3 +311,21 @@
 .auth-pane .auth-brand .auth-matching-logo svg{display:block;width:32px;height:32px;transform:none}
 
 .pati-load-more{text-align:center;padding:13px 10px}.pati-load-more .soft-btn{max-width:100%;white-space:normal}
+
+/* Mobile experience phase 3: keyboard-safe chat, dialogs and accessible actions */
+:root{--pati-keyboard-inset:0px}
+@media(max-width:740px){
+ .modern-chat.mobile-chat-open .chat-window{height:min(650px,calc(100dvh - 196px - var(--pati-keyboard-inset)));min-height:220px!important;display:flex;flex-direction:column}
+ .pati-keyboard-open .modern-chat.mobile-chat-open .chat-window{height:calc(100dvh - 123px - var(--pati-keyboard-inset));min-height:165px!important}
+ .pati-keyboard-open #app-root>.mobile-bottom,.pati-keyboard-open #app-root>.mobile-fab{display:none!important}
+ .modern-chat .chat-history{flex:1 1 auto;min-height:0;overflow-y:auto}
+ .modern-chat .chat-form{position:relative;z-index:2;background:#fff;padding-bottom:max(10px,env(safe-area-inset-bottom,0px))}
+ .modern-chat .chat-form input{flex:1 1 auto;min-width:0!important;font-size:16px}
+ .modern-chat .chat-form button{min-height:44px;white-space:nowrap}
+ #modal-root .modal-backdrop{align-items:center;padding:12px}
+ #modal-root .modal{width:min(100%,520px);max-height:calc(100dvh - var(--pati-keyboard-inset) - 24px);overflow:auto;overscroll-behavior:contain}
+ #modal-root .modal-content{max-height:none;overflow:visible}
+ #modal-root input,#modal-root textarea,#modal-root select{font-size:16px}
+ .pati-follow-back{touch-action:manipulation}
+ .pati-follow-back:focus-visible,.mobile-chat-back:focus-visible,.close-modal:focus-visible{outline:3px solid #83bc9e;outline-offset:2px}
+}
