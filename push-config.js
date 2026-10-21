@@ -1,1 +1,2 @@
-// PUBLIC VAPID key only. Private key must NEVER appear in this file.\nwindow.PATIYIZ_PUSH_PUBLIC_KEY = '';\n
+// Public VAPID key only. Never commit the private VAPID key.
+window.PATIYIZ_PUSH_PUBLIC_KEY = '';
