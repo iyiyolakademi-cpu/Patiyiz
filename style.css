@@ -297,3 +297,5 @@
 .pati-follow-back{display:inline-flex;align-items:center;justify-content:center;width:39px;height:39px;border:1px solid #dae8dd;border-radius:12px;background:#fff;color:#286444;font-size:24px;cursor:pointer;line-height:1}
 .pati-follow-back:hover{background:#eaf5eb}
 @media(max-width:740px){.pati-follow-backbar{margin-top:0;margin-bottom:12px}.pati-follow-back{width:42px;height:42px}}
+
+.pati-filter-tabs{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 16px}.pati-filter-tabs button{border:1px solid #dbe8dc;background:#fff;color:#53715f;border-radius:999px;font:inherit;font-size:11px;font-weight:700;padding:8px 12px;cursor:pointer}.pati-filter-tabs button.active{background:#286449;color:#fff;border-color:#286449}@media(max-width:740px){.pati-filter-tabs{flex-wrap:nowrap;overflow:auto;scrollbar-width:none}.pati-filter-tabs button{flex:0 0 auto}}
