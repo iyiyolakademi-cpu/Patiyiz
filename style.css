@@ -305,3 +305,7 @@
 .auth-story-top .auth-story-icon{width:53px;height:53px;flex:0 0 53px;background:#f0fbef;border:1px solid rgba(255,255,255,.92);border-radius:16px;color:#24634e;box-shadow:0 4px 18px rgba(0,0,0,.25);backdrop-filter:none;-webkit-backdrop-filter:none}
 .auth-story-top .auth-story-icon svg{width:32px;height:32px;display:block}
 .auth-story-top>strong{color:#fff;text-shadow:0 2px 9px rgba(0,0,0,.55);font-weight:800}
+
+/* Same crisp vector logo on both sides of the sign-in screen */
+.auth-pane .auth-brand .auth-matching-logo{background:#f0fbef;color:#24634e;border:1px solid #d3e8d5;transform:none;box-shadow:0 4px 16px rgba(26,81,53,.08)}
+.auth-pane .auth-brand .auth-matching-logo svg{display:block;width:32px;height:32px;transform:none}
