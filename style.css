@@ -223,3 +223,18 @@
     z-index:72!important;
   }
 }
+
+/* Patiyiz: single comfortable mobile navigation; icons never scroll away */
+.pati-mobile-menu-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.pati-mobile-menu-item{min-width:0;display:flex;align-items:center;gap:10px;min-height:55px;text-align:left;border:1px solid #e5ede5;background:#f8faf7;border-radius:13px;padding:12px;font-size:12px;font-weight:750;color:#375744;cursor:pointer}
+.pati-mobile-menu-item .icon{width:20px;height:20px;flex-shrink:0}.pati-mobile-menu-item.active{background:#e6f3e6;color:#24634e;border-color:#c1dfc9}
+@media(max-width:740px){
+ #app-root>.mobile-header .top-actions{display:none!important}
+ #app-root>.mobile-header{justify-content:center!important;box-shadow:0 1px 10px rgba(30,65,44,.04)}
+ #app-root>.mobile-bottom{display:flex!important;position:fixed!important;bottom:0!important;left:0!important;right:0!important;justify-content:space-around!important;align-items:center!important;z-index:90!important;padding:8px 4px max(10px,env(safe-area-inset-bottom,0px))!important;box-sizing:border-box}
+ #app-root>.mobile-bottom .mobile-nav-btn{flex:1 1 0;min-width:0!important;max-width:none;min-height:44px;padding:5px 2px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:3px;white-space:nowrap}
+ #app-root>.mobile-bottom .mobile-nav-btn small{font-size:10px}
+ #app-root>.app-shell{padding-bottom:calc(119px + env(safe-area-inset-bottom,0px))!important}
+ #app-root>.mobile-fab{bottom:calc(82px + env(safe-area-inset-bottom,0px))!important;right:16px!important}
+ .pati-mobile-menu-list{gap:8px}
+}
