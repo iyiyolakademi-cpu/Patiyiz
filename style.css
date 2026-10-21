@@ -238,3 +238,19 @@
  #app-root>.mobile-fab{bottom:calc(82px + env(safe-area-inset-bottom,0px))!important;right:16px!important}
  .pati-mobile-menu-list{gap:8px}
 }
+
+/* Patiyiz conversation and comments improvements */
+.modern-chat{grid-template-columns:minmax(205px,36%) minmax(0,1fr);min-height:480px}
+.chat-list-heading{padding:18px;font-size:14px;font-weight:800;color:#274b37;border-bottom:1px solid #eef2eb;display:flex;justify-content:space-between}
+.chat-list-heading span{color:#91a098}
+.modern-chat .chat-person{cursor:pointer;gap:11px;min-height:66px}
+.chat-person-info{flex:1;min-width:0}
+.chat-person-info strong,.chat-person-info small{display:block;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+.chat-person-info strong{font-size:12px;color:#2b4d39}.chat-person-info small{font-size:10px;color:#82998a;margin-top:5px}
+.chat-person-meta{display:flex;flex-direction:column;align-items:flex-end;gap:5px;font-size:10px;color:#91a098}
+.chat-unread{display:grid;place-items:center;background:#267657;border-radius:20px;color:white;padding:3px 6px;font-size:10px;min-width:19px}
+.modern-chat .chat-window>header{display:flex;align-items:center;gap:10px;min-height:64px}
+.modern-chat .chat-window>header strong,.modern-chat .chat-window>header small{display:block}.modern-chat .chat-window>header small{font-size:10px;color:#809a8a;font-weight:400;margin-top:3px}
+.chat-view-profile{margin-left:auto}.modern-chat .chat-history{background:#fbfdfa;max-height:420px}
+.comment-list{max-height:46vh;overflow:auto;padding-right:5px}.comment-item{padding:12px 0;border-bottom:1px solid #eaf0e9}.comment-item p{margin:9px 0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px}.comment-actions{display:flex;gap:13px;align-items:center}.comment-actions button{border:0;background:none;color:#688473;cursor:pointer;font-size:11px;padding:4px}.comment-actions button.active{color:#c93865;font-weight:800}
+@media(max-width:720px){.modern-chat{grid-template-columns:1fr}.modern-chat .chat-people{display:flex;max-height:105px}.modern-chat .chat-list-heading{display:none}.modern-chat .chat-person{flex:0 0 165px}.modern-chat .chat-window{max-height:66vh}.comment-list{max-height:42vh}}
