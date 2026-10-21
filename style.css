@@ -329,3 +329,15 @@
  .pati-follow-back{touch-action:manipulation}
  .pati-follow-back:focus-visible,.mobile-chat-back:focus-visible,.close-modal:focus-visible{outline:3px solid #83bc9e;outline-offset:2px}
 }
+
+/* Patiyiz clean profile and trusted verification mark */
+.pati-verified{display:inline-grid;place-items:center;margin-left:5px;width:18px;height:18px;border-radius:50%;background:#1689e8;color:white;font-size:12px;font-weight:900;line-height:1;vertical-align:middle;box-shadow:0 0 0 2px white,0 2px 5px #147ed033}
+.patiyiz-profile-card{padding:25px!important;border-radius:22px!important}
+.patiyiz-profile-card .profile-summary{margin:0 0 17px!important;display:flex;align-items:center;gap:17px;min-width:0}
+.patiyiz-profile-card .profile-summary .avatar{flex:0 0 auto;width:88px;height:88px;border-radius:25px;overflow:hidden;display:grid;place-items:center}
+.patiyiz-profile-card .profile-summary .avatar img{width:100%;height:100%;object-fit:cover}
+.patiyiz-profile-card .profile-summary h2{font-size:24px;margin:0 0 4px;line-height:1.3}
+.patiyiz-profile-card>.stat-row{padding:19px 0;margin:14px 0 0;border-top:1px solid #edf2ed;border-bottom:1px solid #edf2ed;gap:16px 26px}
+.patiyiz-profile-card>.pati-actionbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:19px}
+.patiyiz-profile-card>p{margin:12px 0 15px;white-space:pre-wrap;overflow-wrap:anywhere}
+@media(max-width:740px){.patiyiz-profile-card{padding:18px!important}.patiyiz-profile-card .profile-summary .avatar{width:72px;height:72px;border-radius:21px}.patiyiz-profile-card .profile-summary h2{font-size:20px}.patiyiz-profile-card>.stat-row{justify-content:space-between;gap:12px}}
