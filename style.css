@@ -192,3 +192,34 @@
   #app-root>.app-shell{padding-top:0!important;padding-bottom:calc(112px + env(safe-area-inset-bottom,0px))}
   #app-root>.mobile-fab{bottom:calc(86px + env(safe-area-inset-bottom,0px));right:17px}
 }
+
+/* iPhone / Android: fixed top actions and fixed five-item navigation. */
+@media (max-width:740px){
+  #app-root:not(.hidden)>.mobile-header{
+    position:fixed!important;
+    top:0!important;left:0;right:0;
+    z-index:80!important;
+    width:100%!important;
+    min-height:64px;
+    box-sizing:border-box;
+    padding-top:calc(11px + env(safe-area-inset-top,0px))!important;
+    padding-bottom:11px!important;
+    background:rgba(248,250,247,.97)!important;
+    box-shadow:0 2px 12px rgba(22,57,35,.05);
+  }
+  #app-root>.app-shell{
+    padding-top:calc(78px + env(safe-area-inset-top,0px))!important;
+    padding-bottom:calc(113px + env(safe-area-inset-bottom,0px))!important;
+    min-height:100dvh;
+  }
+  #app-root>.mobile-bottom{
+    position:fixed!important;
+    bottom:0!important;left:0!important;right:0!important;
+    z-index:70!important;
+  }
+  #app-root>.mobile-fab{
+    position:fixed!important;
+    bottom:calc(85px + env(safe-area-inset-bottom,0px))!important;
+    z-index:72!important;
+  }
+}
