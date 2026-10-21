@@ -299,3 +299,9 @@
 @media(max-width:740px){.pati-follow-backbar{margin-top:0;margin-bottom:12px}.pati-follow-back{width:42px;height:42px}}
 
 .pati-filter-tabs{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 16px}.pati-filter-tabs button{border:1px solid #dbe8dc;background:#fff;color:#53715f;border-radius:999px;font:inherit;font-size:11px;font-weight:700;padding:8px 12px;cursor:pointer}.pati-filter-tabs button.active{background:#286449;color:#fff;border-color:#286449}@media(max-width:740px){.pati-filter-tabs{flex-wrap:nowrap;overflow:auto;scrollbar-width:none}.pati-filter-tabs button{flex:0 0 auto}}
+
+/* Crisp, readable logo on the auth photograph */
+.auth-story-top{isolation:isolate}
+.auth-story-top .auth-story-icon{width:53px;height:53px;flex:0 0 53px;background:#f0fbef;border:1px solid rgba(255,255,255,.92);border-radius:16px;color:#24634e;box-shadow:0 4px 18px rgba(0,0,0,.25);backdrop-filter:none;-webkit-backdrop-filter:none}
+.auth-story-top .auth-story-icon svg{width:32px;height:32px;display:block}
+.auth-story-top>strong{color:#fff;text-shadow:0 2px 9px rgba(0,0,0,.55);font-weight:800}
