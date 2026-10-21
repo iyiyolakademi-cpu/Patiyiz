@@ -341,3 +341,7 @@
 .patiyiz-profile-card>.pati-actionbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:19px}
 .patiyiz-profile-card>p{margin:12px 0 15px;white-space:pre-wrap;overflow-wrap:anywhere}
 @media(max-width:740px){.patiyiz-profile-card{padding:18px!important}.patiyiz-profile-card .profile-summary .avatar{width:72px;height:72px;border-radius:21px}.patiyiz-profile-card .profile-summary h2{font-size:20px}.patiyiz-profile-card>.stat-row{justify-content:space-between;gap:12px}}
+
+/* Long-press delete for individual conversation bubbles */
+.bubble-chat[data-message-id]{touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:context-menu}
+.pati-msg-delete{color:#bd4141!important;border-color:#e9c7c7!important;font-weight:750}
