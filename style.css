@@ -291,3 +291,9 @@
 .pati-follow-person{display:flex;align-items:center;justify-content:space-between;gap:14px}.pati-follow-person .pati-profile-row{flex:1;min-width:0}
 .pati-settings-list{display:grid;gap:14px}.pati-settings-list .pati-card{min-width:0}.pati-settings-list .pati-actionbar{display:flex;flex-wrap:wrap;gap:8px}
 @media(max-width:740px){#mobile-nav .pati-count-badge{top:0;right:calc(50% - 24px)}.pati-follow-person{flex-wrap:wrap}.pati-stat-link{font-size:11px}}
+
+/* Profile follower lists: consistent top-left back button */
+.pati-follow-backbar{display:flex;align-items:center;gap:10px;margin:0 0 14px;color:#55735e;font-size:12px;font-weight:700}
+.pati-follow-back{display:inline-flex;align-items:center;justify-content:center;width:39px;height:39px;border:1px solid #dae8dd;border-radius:12px;background:#fff;color:#286444;font-size:24px;cursor:pointer;line-height:1}
+.pati-follow-back:hover{background:#eaf5eb}
+@media(max-width:740px){.pati-follow-backbar{margin-top:0;margin-bottom:12px}.pati-follow-back{width:42px;height:42px}}
