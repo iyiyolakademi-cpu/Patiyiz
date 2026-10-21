@@ -309,3 +309,5 @@
 /* Same crisp vector logo on both sides of the sign-in screen */
 .auth-pane .auth-brand .auth-matching-logo{background:#f0fbef;color:#24634e;border:1px solid #d3e8d5;transform:none;box-shadow:0 4px 16px rgba(26,81,53,.08)}
 .auth-pane .auth-brand .auth-matching-logo svg{display:block;width:32px;height:32px;transform:none}
+
+.pati-load-more{text-align:center;padding:13px 10px}.pati-load-more .soft-btn{max-width:100%;white-space:normal}
