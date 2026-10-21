@@ -254,3 +254,32 @@
 .chat-view-profile{margin-left:auto}.modern-chat .chat-history{background:#fbfdfa;max-height:420px}
 .comment-list{max-height:46vh;overflow:auto;padding-right:5px}.comment-item{padding:12px 0;border-bottom:1px solid #eaf0e9}.comment-item p{margin:9px 0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px}.comment-actions{display:flex;gap:13px;align-items:center}.comment-actions button{border:0;background:none;color:#688473;cursor:pointer;font-size:11px;padding:4px}.comment-actions button.active{color:#c93865;font-weight:800}
 @media(max-width:720px){.modern-chat{grid-template-columns:1fr}.modern-chat .chat-people{display:flex;max-height:105px}.modern-chat .chat-list-heading{display:none}.modern-chat .chat-person{flex:0 0 165px}.modern-chat .chat-window{max-height:66vh}.comment-list{max-height:42vh}}
+
+/* Patiyiz mobile messaging: inbox-first, full-width conversations */
+.mobile-chat-back{display:none}
+@media(max-width:740px){
+ #main-content:has(.modern-chat){max-width:none;width:100%;min-width:0}
+ #main-content:has(.modern-chat) .page-intro{margin-bottom:12px}
+ #app-root:has(.modern-chat)>.mobile-fab{display:none!important}
+ .modern-chat{display:block!important;min-height:0!important;width:100%;max-width:100%;overflow:hidden}
+ .modern-chat .chat-people{display:flex!important;flex-direction:column!important;max-height:none!important;width:100%;overflow:visible!important;border-radius:16px!important}
+ .modern-chat .chat-list-heading{display:flex!important;padding:15px 17px}
+ .modern-chat .chat-person{flex:none!important;width:100%!important;min-width:0;min-height:73px;border-right:0!important;border-bottom:1px solid #edf2ed!important;padding:12px 14px}
+ .modern-chat .chat-person .avatar{flex-shrink:0}
+ .modern-chat .chat-window{min-width:0;width:100%;max-height:none!important;min-height:0!important;border-radius:16px;overflow:hidden}
+ .modern-chat.mobile-chat-list .chat-window{display:none!important}
+ .modern-chat.mobile-chat-open .chat-people{display:none!important}
+ .modern-chat.mobile-chat-open .chat-window{display:flex!important;height:calc(100dvh - 230px);min-height:340px}
+ .modern-chat .chat-window>header{padding:11px 12px;min-height:58px;gap:9px}
+ .modern-chat .chat-window>header .chat-view-profile{padding:8px 10px;font-size:11px}
+ .modern-chat .chat-history{min-height:0!important;max-height:none!important;flex:1;overflow-y:auto;overscroll-behavior:contain;padding:13px 12px}
+ .modern-chat .bubble-chat{max-width:88%;font-size:13px}
+ .modern-chat .chat-form{padding:10px;gap:7px;align-items:center;flex-shrink:0}
+ .modern-chat .chat-form input{width:0;min-width:0;font-size:16px;min-height:44px;padding:10px}
+ .modern-chat .chat-form .primary-btn{flex-shrink:0;padding:12px;font-size:12px;border-radius:11px}
+ .mobile-chat-back{display:grid;place-items:center;flex-shrink:0;width:34px;height:36px;border:0;background:#eff6ee;color:#285c43;border-radius:10px;font-size:23px;cursor:pointer}
+}
+@media(max-width:380px){
+ .modern-chat.mobile-chat-open .chat-window{height:calc(100dvh - 222px)}
+ .modern-chat .chat-form .primary-btn{padding:10px}
+}
