@@ -887,3 +887,29 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .pati-edu-feedback{font-weight:750;color:#28292d}
 .pati-edu-notice{font-size:11px;color:#777980;line-height:1.65;margin-top:16px}
 @media(max-width:690px){.pati-edu{padding:12px 12px 110px}.pati-edu-grid{grid-template-columns:1fr}.pati-edu-card{min-height:100px;padding:14px}.pati-edu-hero{padding:23px 20px}.pati-edu-lesson-body{padding:15px}}
+
+/* FounderHub entrepreneurial social network */
+.founder-symbol{display:grid;place-items:center;width:100%;height:100%;background:#151619;color:#fff;border-radius:12px;font-size:25px;font-weight:900;font-family:system-ui,sans-serif;letter-spacing:-2px}
+.brand-icon:has(.founder-symbol){transform:none;background:#151619;box-shadow:none;padding:0;border-radius:12px}
+.auth-story{background:#151619!important}
+.auth-story-icon{background:#fff!important;color:#151619!important}
+.founder-feature-hero{background:#151619;color:white;border-radius:19px;padding:26px 23px;margin:12px 0 19px}
+.founder-feature-hero small{font-size:10px;color:#bfc0c6;letter-spacing:1.3px;font-weight:800}
+.founder-feature-hero h2{font-size:clamp(20px,4vw,30px);margin:10px 0;letter-spacing:-.7px;line-height:1.2;color:#fff}
+.founder-feature-hero p{font-size:12px;color:#dddde1;line-height:1.6}
+.founder-venture-grid,.founder-network-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.founder-venture-card,.founder-network-card{min-width:0;background:#fff;border:1px solid #e9e9eb;border-radius:16px;padding:17px;display:flex;flex-direction:column;gap:11px}
+.founder-venture-card h3{font-size:17px;margin:0;color:#151619}
+.founder-venture-card p{font-size:12px;line-height:1.65;overflow-wrap:anywhere;margin:0;color:#4e5158}
+.founder-venture-card small{color:#6a6c73;font-size:11px}
+.founder-venture-meta{display:flex;gap:6px;flex-wrap:wrap}
+.founder-venture-meta span{font-size:10px;font-weight:750;background:#f0f0f2;padding:5px 8px;border-radius:7px;color:#3a3c40}
+.founder-network-card>.avatar{width:54px;height:54px}
+.founder-network-card>div{min-width:0}
+.founder-network-card strong{display:block;font-size:14px}
+.founder-network-card small{color:#85858d}
+.founder-network-card p{font-size:11px;color:#686a72;line-height:1.5}
+.founder-profile-details{display:grid;gap:6px;padding:0 16px 14px}
+.founder-profile-details strong{font-size:13px}
+.founder-profile-details small{font-size:11px;color:#6b6d75}
+@media(max-width:690px){.founder-venture-grid,.founder-network-grid{grid-template-columns:1fr}.founder-feature-hero{margin:12px 10px 19px}.founder-venture-grid,.founder-network-grid{padding:0 10px}}
