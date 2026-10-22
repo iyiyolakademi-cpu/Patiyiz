@@ -1,7 +1,7 @@
 {
-  "name": "Patiyiz",
-  "short_name": "Patiyiz",
-  "description": "Hayvanseverlerin buluşma noktası",
+  "name": "FounderHub",
+  "short_name": "FounderHub",
+  "description": "Girişimcilerin sosyal dünyası",
   "id": "/Patiyiz/",
   "start_url": "/Patiyiz/",
   "scope": "/Patiyiz/",
@@ -10,7 +10,7 @@
   "theme_color": "#141518",
   "icons": [
     {
-      "src": "patiyiz-selected-logo.svg",
+      "src": "founder-logo.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
