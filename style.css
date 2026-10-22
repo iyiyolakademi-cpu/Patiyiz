@@ -430,3 +430,49 @@
 .pati-explore-person-follow{border:0;border-radius:9px;background:#e2f1e5;color:#27654b;padding:9px;font-size:11px;font-weight:800;cursor:pointer}.pati-explore-person-profile{border:0;background:none;font-size:23px;color:#658973;cursor:pointer}
 .pati-explore-pet{width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer}.pati-explore-pet>span:nth-child(2){flex:1;min-width:0}.pati-explore-pet-picture{width:48px;height:48px;flex:0 0 48px;border-radius:12px;background:#eaf4e8;display:grid;place-items:center;font-size:24px;overflow:hidden}.pati-explore-pet-picture img{width:100%;height:100%;object-fit:cover}
 @media(max-width:740px){.mobile-header .pati-header-notifications{display:flex}.pati-explore-gallery{gap:3px}.pati-explore-media{aspect-ratio:1}.pati-explore-tile-stats{font-size:9px}.pati-explore-head h1{font-size:25px}.pati-explore-section-title h2{font-size:15px}}
+
+/* Patiyiz: full-width Instagram-style mobile header and full-screen menu */
+@media(max-width:690px){
+  #app-root>.mobile-header{
+    display:flex!important;box-sizing:border-box;width:100%;max-width:none;
+    margin:0;left:0;right:0;padding:12px 12px 10px 16px;
+    align-items:center;justify-content:space-between;
+  }
+  #app-root>.mobile-header>.brand{width:auto;max-width:calc(100% - 65px);flex:0 1 auto;margin:0!important;min-width:0}
+  #app-root>.mobile-header .pati-header-notifications{
+    display:flex!important;flex:0 0 42px;margin-left:auto!important;margin-right:0!important;
+    position:relative;right:0;justify-content:center;
+  }
+  #modal-root .modal-backdrop:has(#tools-form){
+    position:fixed!important;inset:0!important;width:100vw!important;
+    height:100dvh!important;max-height:100dvh!important;display:block!important;
+    margin:0!important;padding:0!important;background:#fff!important;
+    backdrop-filter:none!important;overflow:hidden!important;z-index:500!important;
+  }
+  #modal-root .modal-backdrop:has(#tools-form)>.modal{
+    position:fixed!important;inset:0!important;box-sizing:border-box!important;
+    display:flex!important;flex-direction:column!important;width:100vw!important;
+    min-width:100vw!important;max-width:none!important;height:100dvh!important;
+    max-height:100dvh!important;min-height:100dvh!important;margin:0!important;
+    padding:0!important;border:0!important;border-radius:0!important;
+    box-shadow:none!important;overflow:hidden!important;
+  }
+  #modal-root .modal-backdrop:has(#tools-form) .modal-header{
+    flex:0 0 auto;position:sticky;top:0;z-index:2;background:#fff;
+    min-height:64px;box-sizing:border-box;padding:14px 20px;
+  }
+  #modal-root .modal-backdrop:has(#tools-form) #tools-form{
+    display:flex;flex:1;min-height:0;flex-direction:column;overflow:hidden;
+  }
+  #modal-root .modal-backdrop:has(#tools-form) .modal-content{
+    flex:1;min-height:0;box-sizing:border-box;max-height:none!important;
+    overflow-y:auto!important;overscroll-behavior:contain;
+    padding:18px 16px max(36px,env(safe-area-inset-bottom));
+  }
+  #modal-root .modal-backdrop:has(#tools-form) .pati-mobile-menu-list{
+    grid-template-columns:1fr 1fr;align-content:start;
+  }
+  #modal-root .modal-backdrop:has(#tools-form) .pati-mobile-menu-item{
+    min-height:66px;
+  }
+}
