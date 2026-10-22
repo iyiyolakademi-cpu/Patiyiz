@@ -829,3 +829,22 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 #comment-form .modal-footer{position:sticky;bottom:0;background:#fff;padding-bottom:max(12px,env(safe-area-inset-bottom));border-top:1px solid #f1f1f3}
 #comment-form .modal-footer .primary-btn{background:#17181b!important;color:#fff!important}
 @media(max-width:690px){#modal-root .modal-backdrop:has(#post-form) .modal{max-height:94dvh!important}#modal-root .modal-backdrop:has(#post-form) .modal-content{overflow:auto!important}#post-form .modal-footer{padding-bottom:max(12px,env(safe-area-inset-bottom))}#comment-form .voice-comments{padding-top:9px}}
+
+/* Mobile swipable multi-image posts */
+.pati-carousel{position:relative;width:100%;overflow:hidden;background:#101012}
+.pati-carousel-track{display:flex;width:100%;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;overscroll-behavior-x:contain}
+.pati-carousel-track::-webkit-scrollbar{display:none}
+.pati-carousel-slide{flex:0 0 100%;width:100%;scroll-snap-align:start;position:relative}
+.pati-carousel-slide .pati-photo{width:100%!important;aspect-ratio:4/5!important;margin:0!important;border-radius:0!important}
+.pati-carousel-slide .pati-photo img{width:100%!important;height:100%!important;object-fit:cover!important}
+.pati-carousel-count{position:absolute;top:12px;right:12px;color:white;background:#0009;border-radius:18px;padding:5px 9px;font-size:11px;font-weight:700;pointer-events:none}
+.pati-carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);border:0;background:#fffd;color:#121316;border-radius:50%;width:31px;height:31px;font-size:26px;display:grid;place-items:center;line-height:1}
+.pati-carousel-arrow.prev{left:9px}.pati-carousel-arrow.next{right:9px}
+@media(max-width:690px){.pati-carousel-arrow{width:28px;height:28px;font-size:22px}.pati-carousel-count{top:8px;right:8px}}
+#post-form .pati-media-controls[hidden]{display:none!important}
+.pati-crop-pages{display:flex;align-items:center;justify-content:space-between;gap:15px;width:100%}
+.pati-crop-pages button{background:#17181b;color:white;border:0;border-radius:9px;width:36px;height:34px;font-size:24px}
+.pati-crop-pages strong{font-size:12px}
+.pati-social-actions [data-action="comment"] .icon{display:inline-block!important;stroke:#18191c!important;stroke-width:2.3!important;fill:none!important}
+.pati-video-sound .icon,.pati-dm-mic .icon{display:block!important;visibility:visible!important;opacity:1!important;stroke-width:2.4!important}
+.modern-chat .chat-history{overflow-y:auto!important;overscroll-behavior-y:contain;scroll-behavior:auto!important}
