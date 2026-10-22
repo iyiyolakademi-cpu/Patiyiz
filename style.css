@@ -629,3 +629,19 @@
 .pati-media-controls select{width:100%;padding:11px;border:1px solid #d7e1d9;border-radius:10px;background:#fff;font-size:14px}
 .pati-media-controls small{font-size:11px;color:#657a69;line-height:1.4}
 @media(max-width:690px){.pati-ig-summary{padding-top:17px!important}.pati-ig-handle{font-size:11px;margin-bottom:11px}.pati-video-frame{width:100%;max-height:80dvh}}
+
+/* Profile top must start below the sticky mobile brand bar. */
+@media(max-width:740px){
+ #app-root>.mobile-header{position:sticky!important;top:0!important;z-index:76!important;flex-shrink:0}
+ #app-root>.app-shell:has(.pati-ig-profile){padding-top:0!important;margin-top:0!important;transform:none!important}
+ #app-root>.app-shell:has(.pati-ig-profile)>#main-content{padding:0!important;margin-top:0!important;position:relative!important;top:auto!important;transform:none!important;min-height:0!important}
+ #main-content>.pati-ig-profile{padding-top:18px!important;margin-top:0!important;position:relative!important;top:0!important;min-height:0!important}
+ .pati-ig-summary{padding-top:12px!important}
+ .stories-section .story-own{position:relative;overflow:visible}
+ .stories-section .story-own-plus{position:absolute!important;top:49px!important;right:16px!important;width:25px!important;height:25px!important;line-height:20px!important;display:grid!important;place-items:center!important;padding:0!important;transform:none!important;z-index:4!important}
+ #main-content:has(.stories-section) .story-own-plus{top:53px!important;right:17px!important}
+}
+.pati-story-like{position:absolute;bottom:calc(14px + env(safe-area-inset-bottom));right:18px;z-index:12;width:48px;height:48px;display:grid;place-items:center;background:#0008;border:1px solid #ffffff80;color:#fff;border-radius:50%;font-size:32px;line-height:1;cursor:pointer}
+.pati-story-like.active{color:#ff335d;background:#fff}
+.pati-story-like:disabled{opacity:.5}
+.story-view-user .pati-story-view-like{margin-left:auto;color:#fff;background:#ff315f;border-radius:50%;width:26px;height:26px;display:grid;place-items:center;font-size:16px;flex:0 0 26px}
