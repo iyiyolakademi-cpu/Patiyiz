@@ -593,3 +593,25 @@
  .pati-ig-actions{padding:10px 13px 18px;gap:6px}
  .pati-ig-actions button{font-size:clamp(10px,2.8vw,12px)!important}
 }
+
+/* Patiyiz final phone layout and feed playback */
+.pati-video-frame{position:relative;width:100%;overflow:hidden;background:#111}
+.pati-video-frame .pati-post-video{display:block;width:100%;height:auto;max-height:72dvh;object-fit:contain;cursor:pointer;background:#111}
+.pati-video-sound{position:absolute;right:10px;bottom:13px;z-index:3;border:0;border-radius:50%;background:#0009;color:#fff;width:34px;height:34px;display:grid;place-items:center;font-size:15px;cursor:pointer}
+@media(max-width:740px){
+ #app-root>.mobile-header{position:sticky!important;top:0!important;z-index:75!important;padding-top:max(22px,env(safe-area-inset-top,0px))!important;padding-bottom:14px!important;min-height:73px!important;align-items:center!important}
+ #app-root>.mobile-header .pati-header-notifications{margin-right:0!important;flex-shrink:0!important;transform:translateY(3px)}
+ #app-root>.app-shell:has(.pati-ig-profile){padding-top:0!important}
+ .pati-ig-profile{overflow:visible!important}
+ .pati-ig-profile-top{padding-top:18px!important;padding-bottom:16px!important;min-height:70px!important;scroll-margin-top:90px}
+ .pati-ig-profile-top>button{min-width:45px;min-height:45px;border-radius:12px;background:#f3f5f3}
+ .pati-ig-profile-top strong{font-size:clamp(16px,4.5vw,21px)}
+ #app-root>.app-shell:has(.pati-dm-layout)>.main{min-height:0}
+ #main-content:has(.pati-dm-layout.mobile-chat-open){height:calc(100dvh - 145px - env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;overflow:hidden}
+ #main-content:has(.pati-dm-layout.mobile-chat-open)>.pati-dm-top,
+ #main-content:has(.pati-dm-layout.mobile-chat-open)>.pati-dm-filters{display:none}
+ .pati-dm-layout.mobile-chat-open{flex:1!important;min-height:0!important;display:flex!important;flex-direction:column!important}
+ .pati-dm-layout.mobile-chat-open .chat-window{flex:1!important;display:flex!important;flex-direction:column!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:hidden!important}
+ .pati-dm-layout.mobile-chat-open .chat-history{flex:1!important;min-height:0!important;max-height:none!important;overflow-y:auto!important}
+ .pati-dm-layout.mobile-chat-open .chat-form{flex:0 0 auto;position:sticky;bottom:0;padding-bottom:max(10px,env(safe-area-inset-bottom,0px))!important;background:#fff}
+}
