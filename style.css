@@ -564,3 +564,32 @@
  .pati-ig-grid{gap:2px!important}
 }
 @media(max-width:360px){.pati-ig-avatar{flex-basis:75px}.pati-ig-avatar .avatar,.pati-ig-avatar .avatar.l{width:75px!important;height:75px!important}.pati-ig-summary{gap:10px}.pati-ig-stats b{font-size:15px}.pati-ig-stats small{font-size:9px}}
+
+/* Mobile profile: bottom avatar tab, clean full-bleed layout, safe sizing */
+#app-root>.mobile-bottom .pati-profile-nav .avatar{display:grid;place-items:center;width:27px;height:27px;min-width:27px;border-radius:50%;overflow:hidden;border:2px solid transparent;box-sizing:border-box}
+#app-root>.mobile-bottom .pati-profile-nav .avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+#app-root>.mobile-bottom .pati-profile-nav.active .avatar{border-color:#27654b}
+.pati-ig-profile,.pati-ig-profile *{box-sizing:border-box}
+.pati-ig-profile{width:100%;max-width:100%;overflow-x:hidden}
+.pati-ig-profile-top{min-width:0;width:100%;padding-top:max(13px,env(safe-area-inset-top,0px));position:relative;z-index:1}
+.pati-ig-profile-top strong{min-width:0;max-width:calc(100% - 58px);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pati-ig-summary,.pati-ig-info,.pati-ig-stats{min-width:0}
+.pati-ig-stats{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.pati-ig-stats span,.pati-ig-stats button{min-width:0;overflow-wrap:anywhere}
+.pati-ig-actions{min-width:0}
+.pati-ig-highlights{width:100%;max-width:100%}
+.pati-ig-grid{width:100%;max-width:100%;grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:690px){
+ #app-root>.app-shell:has(.pati-ig-profile)>.main{overflow:visible!important}
+ .pati-ig-profile{margin:0!important;padding:0 0 calc(100px + env(safe-area-inset-bottom,0px))!important}
+ .pati-ig-profile-top{padding:15px 15px 12px;min-height:61px;align-items:center}
+ .pati-ig-summary{display:grid;grid-template-columns:minmax(75px,89px) minmax(0,1fr);gap:12px;padding:11px 15px 7px;width:100%}
+ .pati-ig-avatar{width:100%;min-width:0;flex:auto}
+ .pati-ig-avatar .avatar,.pati-ig-avatar .avatar.l{width:min(100%,89px)!important;height:auto!important;aspect-ratio:1/1;max-width:89px!important}
+ .pati-ig-info{width:100%;min-width:0}
+ .pati-ig-stats{gap:3px}
+ .pati-ig-stats b{font-size:clamp(14px,4vw,18px)}
+ .pati-ig-stats small{font-size:clamp(9px,2.8vw,11px)}
+ .pati-ig-actions{padding:10px 13px 18px;gap:6px}
+ .pati-ig-actions button{font-size:clamp(10px,2.8vw,12px)!important}
+}
