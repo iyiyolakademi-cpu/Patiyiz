@@ -405,3 +405,28 @@
 .pati-feed-follow button.active{background:#e7f2e8;color:#24634e;border-color:#b8d7bd}
 .pati-feed-posts>.pati-card{margin-bottom:12px}
 @media(max-width:600px){.pati-feed-switch-btn{padding:15px 4px 12px;font-size:12px}.pati-feed-follow{padding:0 2px}}
+
+/* Explore content discovery and compact header notifications */
+.pati-header-notifications{display:none;position:relative;align-items:center;justify-content:center;width:42px;height:42px;flex:0 0 42px;border:1px solid #dfe9e1;border-radius:13px;background:#fff;color:#24634e;cursor:pointer}
+.pati-header-notifications .icon{width:21px;height:21px}.pati-header-notifications .count-badge,.pati-header-notifications .nav-badge,.pati-header-notifications .badge{position:absolute;top:-5px;right:-5px}
+.pati-header-notifications.active{background:#e9f4eb;border-color:#b5d5bf}
+.pati-explore-head{margin:4px 0 18px}.pati-explore-head h1{font-size:29px;font-weight:850;letter-spacing:-1px;margin:0 0 4px}.pati-explore-head p{font-size:12px;color:#7d9383;margin:0}
+.pati-explore-search{display:flex;align-items:center;background:#fff;border:1px solid #e0eae1;border-radius:15px;margin:0 0 16px;overflow:hidden;box-shadow:0 5px 20px #203d2810}
+.pati-explore-search:focus-within{border-color:#80bb93}.pati-explore-search input{min-width:0;flex:1;border:0;outline:0;background:transparent;padding:15px 14px;font:inherit;font-size:13px}
+.pati-explore-search button{border:0;background:#e7f3e9;color:#286449;font-size:23px;padding:9px 19px;cursor:pointer}
+.pati-explore-tabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:1px 0 12px;margin-bottom:8px}.pati-explore-tabs button{border:1px solid #e0e9e0;background:#fff;border-radius:999px;padding:9px 13px;font-size:12px;font-weight:750;color:#65806c;white-space:nowrap;cursor:pointer}
+.pati-explore-tabs button.active{background:#27654b;color:#fff;border-color:#27654b}
+.pati-explore-filter{display:flex;align-items:center;gap:10px;margin-bottom:18px}.pati-explore-animals{display:flex;gap:6px;min-width:0;flex:1;overflow-x:auto;scrollbar-width:none}.pati-explore-animals button{border:0;border-radius:10px;background:#f0f5ed;color:#6d8673;font-size:11px;font-weight:700;padding:8px 12px;white-space:nowrap;cursor:pointer}.pati-explore-animals button.active{background:#deede0;color:#24634e}
+.pati-explore-sort{flex:0 0 auto;border:1px solid #dbe8dc;border-radius:9px;padding:8px 9px;background:#fff;font-size:11px;color:#376b49;font-weight:750;cursor:pointer}
+.pati-explore-section{margin:0 0 25px}.pati-explore-section-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 11px}.pati-explore-section-title h2{font-size:17px;margin:0;font-weight:850}.pati-explore-section-title span{font-size:11px;color:#88a08d}
+.pati-explore-gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;border-radius:11px;overflow:hidden}
+.pati-explore-media{position:relative;display:block;aspect-ratio:1/1;min-width:0;border:0;padding:0;overflow:hidden;background:linear-gradient(135deg,#d9eade,#edf3e8);cursor:pointer}
+.pati-explore-media img,.pati-explore-media video{width:100%;height:100%;object-fit:cover;display:block}
+.pati-explore-media img{transition:transform .23s}.pati-explore-media:hover img{transform:scale(1.04)}
+.pati-explore-video-icon{position:absolute;right:10px;top:9px;border-radius:7px;padding:4px 7px;background:#17261eb3;color:#fff;font-size:12px}
+.pati-explore-tile-stats{position:absolute;left:0;right:0;bottom:0;padding:23px 5px 7px;background:linear-gradient(transparent,#112018a8);color:#fff;font-size:10px;font-weight:700;text-align:center}
+.pati-explore-people,.pati-explore-pets{display:grid;gap:9px}.pati-explore-person,.pati-explore-pet{display:flex;align-items:center;gap:10px;padding:13px;background:#fff;border:1px solid #e5eee4;border-radius:15px}
+.pati-explore-person-name{min-width:0;flex:1}.pati-explore-person-name strong,.pati-explore-pet strong{display:block;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pati-explore-person-name small,.pati-explore-pet small{display:block;color:#839b87;font-size:10px;margin-top:3px}
+.pati-explore-person-follow{border:0;border-radius:9px;background:#e2f1e5;color:#27654b;padding:9px;font-size:11px;font-weight:800;cursor:pointer}.pati-explore-person-profile{border:0;background:none;font-size:23px;color:#658973;cursor:pointer}
+.pati-explore-pet{width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer}.pati-explore-pet>span:nth-child(2){flex:1;min-width:0}.pati-explore-pet-picture{width:48px;height:48px;flex:0 0 48px;border-radius:12px;background:#eaf4e8;display:grid;place-items:center;font-size:24px;overflow:hidden}.pati-explore-pet-picture img{width:100%;height:100%;object-fit:cover}
+@media(max-width:740px){.mobile-header .pati-header-notifications{display:flex}.pati-explore-gallery{gap:3px}.pati-explore-media{aspect-ratio:1}.pati-explore-tile-stats{font-size:9px}.pati-explore-head h1{font-size:25px}.pati-explore-section-title h2{font-size:15px}}
