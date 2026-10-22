@@ -394,3 +394,14 @@
 
 /* Video post responsive sizing */
 .pati-post-video{display:block;width:100%;max-height:76vh;object-fit:contain;border-radius:16px;background:#101918;margin:12px 0}.pati-video-input{display:block;width:100%;max-width:100%}
+
+/* Patiyiz: Instagram-style split home feed, directly below stories */
+.pati-feed-switch{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:0 0 10px;border-bottom:1px solid #e3eae2;background:var(--paper,#fff);border-radius:12px 12px 0 0;overflow:hidden}
+.pati-feed-switch-btn{border:0;border-bottom:3px solid transparent;background:transparent;padding:16px 8px 13px;color:#87988b;font:inherit;font-weight:750;font-size:13px;cursor:pointer}
+.pati-feed-switch-btn.active{border-bottom-color:#24634e;color:#24634e}
+.pati-feed-switch-btn:focus-visible{outline:2px solid #24634e;outline-offset:-3px}
+.pati-feed-follow{display:flex;gap:8px;margin:0 0 14px;align-items:center}
+.pati-feed-follow button{background:transparent;border:1px solid #dfe9df;border-radius:24px;color:#6a806e;padding:7px 12px;font:inherit;font-size:11px;font-weight:700;cursor:pointer}
+.pati-feed-follow button.active{background:#e7f2e8;color:#24634e;border-color:#b8d7bd}
+.pati-feed-posts>.pati-card{margin-bottom:12px}
+@media(max-width:600px){.pati-feed-switch-btn{padding:15px 4px 12px;font-size:12px}.pati-feed-follow{padding:0 2px}}
