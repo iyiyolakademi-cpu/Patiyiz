@@ -913,3 +913,15 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .founder-profile-details strong{font-size:13px}
 .founder-profile-details small{font-size:11px;color:#6b6d75}
 @media(max-width:690px){.founder-venture-grid,.founder-network-grid{grid-template-columns:1fr}.founder-feature-hero{margin:12px 10px 19px}.founder-venture-grid,.founder-network-grid{padding:0 10px}}
+
+/* FounderHub venture cards, milestones and talent search */
+.founder-venture-logo{width:55px;height:55px;object-fit:cover;border-radius:13px;border:1px solid #e6e6e9}
+.founder-milestones{display:grid;gap:6px;margin:5px 0;padding:10px 12px;background:#f7f7f8;border-radius:11px}
+.founder-milestones>div{font-size:11px;line-height:1.5;color:#282a2f}
+.founder-milestones small{display:inline-block;color:#888b92}
+.founder-network-filters{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:5px 0 17px}
+.founder-network-filters>input{flex:1;min-width:150px;padding:11px 13px;border:1px solid #dddddf;background:#fff;color:#17181b;border-radius:11px;font-size:16px}
+.founder-network-filters>button{background:#17181b;color:#fff;padding:11px 17px;border:0;border-radius:11px;font-weight:750}
+.founder-network-filters>div{display:flex;gap:6px;width:100%;overflow-x:auto;padding:3px 0 7px}
+.founder-network-filters>div>button{background:#fff;border:1px solid #e3e3e6;border-radius:22px;padding:9px 12px;white-space:nowrap;font-size:12px}
+.founder-network-filters>div>button.active{background:#17181b;color:white;border-color:#17181b}
