@@ -615,3 +615,17 @@
  .pati-dm-layout.mobile-chat-open .chat-history{flex:1!important;min-height:0!important;max-height:none!important;overflow-y:auto!important}
  .pati-dm-layout.mobile-chat-open .chat-form{flex:0 0 auto;position:sticky;bottom:0;padding-bottom:max(10px,env(safe-area-inset-bottom,0px))!important;background:#fff}
 }
+
+/* Profile username below verification/name, compact video sound button and publishing presets */
+.pati-ig-handle{display:block;margin:2px 0 12px;color:#7b897f;font-size:12px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pati-ig-summary{padding-top:16px}
+.pati-ig-actions{grid-template-columns:repeat(3,minmax(0,1fr))}
+.pati-video-frame{aspect-ratio:4/5;max-height:78dvh;background:#111}
+.pati-video-frame .pati-post-video{width:100%!important;height:100%!important;max-height:none!important;object-fit:cover!important;display:block}
+.pati-video-sound{right:13px!important;bottom:13px!important;width:39px!important;height:39px!important;border:1px solid #ffffff4a!important;border-radius:50%!important;background:rgba(14,18,17,.72)!important;backdrop-filter:blur(9px);color:#fff;box-shadow:0 3px 12px #0004;display:grid;place-items:center}
+.pati-video-sound .icon{width:20px;height:20px;stroke-width:2.2}
+.pati-media-controls{display:grid;gap:7px;margin-top:14px;padding:13px;border:1px solid #dce7de;border-radius:12px;background:#f8fbf8}
+.pati-media-controls label{font-size:13px;font-weight:800}
+.pati-media-controls select{width:100%;padding:11px;border:1px solid #d7e1d9;border-radius:10px;background:#fff;font-size:14px}
+.pati-media-controls small{font-size:11px;color:#657a69;line-height:1.4}
+@media(max-width:690px){.pati-ig-summary{padding-top:17px!important}.pati-ig-handle{font-size:11px;margin-bottom:11px}.pati-video-frame{width:100%;max-height:80dvh}}
