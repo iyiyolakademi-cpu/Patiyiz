@@ -476,3 +476,44 @@
     min-height:66px;
   }
 }
+
+/* Instagram-inspired full width discovery and messages on phones. Patiyiz original behaviors retained. */
+.pati-dm-top{display:flex;align-items:center;justify-content:space-between;padding:15px 18px 12px;background:#fff;color:#1a211b}
+.pati-dm-top strong{font-size:20px;font-weight:850;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pati-dm-top span{font-size:11px;color:#7a897e;flex:0 0 auto}
+.pati-dm-filters{display:flex;gap:9px;padding:10px 16px 14px;overflow-x:auto;scrollbar-width:none;background:#fff}
+.pati-dm-filters button{border-radius:30px;border:1px solid #e7eae7;background:#fff;color:#263529;padding:10px 18px;font:inherit;font-size:13px;font-weight:750;white-space:nowrap;cursor:pointer}
+.pati-dm-filters button.active{background:#eff1f3;border-color:#eff1f3;color:#101510}
+.pati-dm-layout{background:#fff}
+.pati-dm-layout .chat-people{background:#fff}
+.pati-dm-layout .chat-person{background:#fff}
+.pati-dm-layout .chat-person-info strong{font-weight:650}
+.pati-dm-layout .chat-person-info small{font-weight:450}
+@media(max-width:690px){
+ body:has(.pati-explore-gallery),body:has(.pati-dm-layout){background:#fff}
+ #app-root>.app-shell:has(.pati-explore-gallery),#app-root>.app-shell:has(.pati-dm-layout){max-width:none!important;width:100%!important;padding-left:0!important;padding-right:0!important;box-sizing:border-box}
+ #app-root>.app-shell:has(.pati-explore-gallery)>.main,#app-root>.app-shell:has(.pati-dm-layout)>.main{padding:0!important;width:100%!important;max-width:none!important;margin:0!important}
+ .pati-explore-head{display:none}
+ .pati-explore-search{margin:8px 12px 10px!important;border:0!important;border-radius:28px!important;background:#edf0f3!important;box-shadow:none!important}
+ .pati-explore-search input{font-size:16px!important}
+ .pati-explore-tabs,.pati-explore-filter{margin-left:12px;margin-right:12px}
+ .pati-explore-section{margin:0 0 14px!important}
+ .pati-explore-section-title{padding:0 12px}
+ .pati-explore-gallery{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:2px!important;border-radius:0!important;width:100%!important}
+ .pati-explore-media{aspect-ratio:1/1.35!important;border-radius:0!important;min-width:0}
+ .pati-explore-media img,.pati-explore-media video{width:100%!important;height:100%!important;object-fit:cover!important}
+ .pati-explore-tile-stats{padding:22px 4px 6px;font-size:10px}
+ .pati-explore-people,.pati-explore-pets{margin:0 12px}
+ .pati-dm-top{padding:15px 18px 12px}
+ .pati-dm-layout{width:100%!important;border:0!important;border-radius:0!important;margin:0!important;max-width:none!important;box-shadow:none!important}
+ .pati-dm-layout.mobile-chat-list .chat-people{padding:0!important;border:0!important;border-radius:0!important;width:100%!important;max-width:none!important}
+ .pati-dm-layout .chat-list-heading{padding:12px 18px!important;border-bottom:0!important;background:#fff;font-size:13px}
+ .pati-dm-layout .chat-person{min-height:88px!important;padding:10px 16px!important;border:0!important;gap:13px!important;align-items:center!important}
+ .pati-dm-layout .chat-person .avatar,.pati-dm-layout .chat-person .avatar.s{width:65px!important;height:65px!important;min-width:65px!important;flex:0 0 65px!important;border-radius:50%!important;overflow:hidden}
+ .pati-dm-layout .chat-person-info strong{font-size:15px!important;color:#141914}
+ .pati-dm-layout .chat-person-info small{font-size:13px!important;color:#858b87!important;max-width:calc(100vw - 140px)}
+ .pati-dm-layout .chat-person-meta small{font-size:11px}
+ .pati-dm-layout.mobile-chat-open .chat-window{height:calc(100dvh - 170px)!important;border:0!important;border-radius:0!important}
+ .pati-dm-layout.mobile-chat-open .chat-people{display:none!important}
+ .pati-dm-layout.mobile-chat-list .chat-window{display:none!important}
+}
