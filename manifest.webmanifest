@@ -6,8 +6,8 @@
   "start_url": "/Patiyiz/",
   "scope": "/Patiyiz/",
   "display": "standalone",
-  "background_color": "#f7f8f5",
-  "theme_color": "#24634e",
+  "background_color": "#f7f7f8",
+  "theme_color": "#141518",
   "icons": [
     {
       "src": "patiyiz-selected-logo.svg",
