@@ -237,3 +237,11 @@ body.pati-create-open{overflow:hidden}
 .pati-album-manage{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #ededf0}.pati-album-manage b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}.pati-album-manage button{border:1px solid #dedee2;border-radius:9px;padding:8px;background:#f6f6f7;font-weight:700}
 .pati-compose-media .pati-media-picker-actions{grid-template-columns:repeat(auto-fit,minmax(105px,1fr))}
 @media(max-width:740px){.pati-reels-head{padding:8px 12px}.pati-reels-viewport,.pati-reel-item{height:calc(100dvh - 205px);min-height:480px;border-radius:0}.pati-reels-viewport{margin:0 -10px}.pati-reel-author{bottom:95px}.pati-reel-caption{bottom:23px}}
+
+/* Story visual composer and Reels cover/subtitle controls */
+#story-form .pati-story-editor,#post-form .pati-reels-editor{margin:12px 0;padding:12px;border-radius:14px;border:1px solid #e8e8eb;background:#f8f8f9;display:grid;gap:10px}
+#story-form .pati-story-editor label,#post-form .pati-reels-editor label{display:flex;flex-direction:column;gap:5px;color:#2d2e32;font-weight:750;font-size:12px}
+#story-form .pati-story-editor input,#story-form .pati-story-editor select,#post-form .pati-reels-editor input{width:100%;font-size:16px;padding:10px 11px;border:1px solid #dcdde0;border-radius:10px;background:#fff;color:#202125;min-height:42px}
+#post-form .pati-reels-editor input[type=file]{padding:8px;background:#fff}
+.pati-reel-rail .pati-reel-mute{font-size:11px;min-height:28px;touch-action:manipulation}
+@media(max-width:740px){#story-form .pati-story-editor{grid-template-columns:1fr 1fr}#story-form .pati-story-editor label:first-child{grid-column:1/-1}.pati-reel-rail .pati-reel-mute{padding:8px 6px}}
