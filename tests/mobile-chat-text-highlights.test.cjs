@@ -44,7 +44,7 @@ test('Mesaj kutusundan yeni sohbet açılabilir ve diğer kullanıcıya geçileb
  const msg=extract('function messagesPage(){','function notificationsPage(){');
  assert.match(msg,/data-action="dm-new"/);
  assert.match(app,/case 'dm-new':/);
- assert.match(app,/data-action=\\"chat\\"/);
+ assert.ok(app.includes('data-action="chat"'));
  assert.match(app,/case 'chat':if\(!id\|\|id===me.id\)/);
  assert.match(app,/closeModal\(true\);personId=id;mobileChatOpen=true;navigate\('messages'\)/);
 });
