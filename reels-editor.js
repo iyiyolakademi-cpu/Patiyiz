@@ -191,7 +191,7 @@ async function exportVideo(progress){
  if(!needsRender()&&s.clips.length===1)return s.clips[0].file;
  if(!supportsExport()||!bestMime())throw Error('Tarayıcın düzenlenmiş video oluşturmayı desteklemiyor. Güncel Chrome veya Android tarayıcısını dene.');
  if(s.exporting)throw Error('Video hazırlanıyor.');
- const snapshot={clips:s.clips.slice(),filter:s.filter,transition:s.transition,overlay:s.overlay,position:s.position,mute:s.mute};
+ const snapshot={clips:s.clips.map(c=>({...c,video:null})),filter:s.filter,transition:s.transition,overlay:s.overlay,position:s.position,mute:s.mute};
  s.exporting=true;
  const canvas=document.createElement('canvas');canvas.width=WIDTH;canvas.height=HEIGHT;
  const ctx=canvas.getContext('2d',{alpha:false});
@@ -200,6 +200,7 @@ async function exportVideo(progress){
  let recorder,audioContext,audioDest,stream,composite,stopResult,fail,recs=[];
  const total=duration(snapshot.clips);let elapsed=0,transitionFrame=null;
  try{
+  for(const clip of snapshot.clips){const video=document.createElement('video');video.playsInline=true;video.preload='auto';video.src=clip.url;clip.video=video;await readMetadata(video,clip.file)}
   stream=canvas.captureStream(24);
   if(!snapshot.mute){
    const AudioContext=window.AudioContext||window.webkitAudioContext;
@@ -248,7 +249,7 @@ async function exportVideo(progress){
   return new File([blob],'patiyiz-reels-'+Date.now()+(type==='video/mp4'?'.mp4':'.webm'),{type});
  }catch(e){if(recorder?.state==='recording'){recorder.stop();try{await stopResult}catch(_){}}throw e}
  finally{
-  snapshot.clips.forEach(c=>{c.video.pause();c.video.muted=true;c.video.playbackRate=1});
+  snapshot.clips.forEach(c=>{if(c.video){c.video.pause();c.video.removeAttribute('src');c.video.load()}});
   composite?.getTracks().forEach(t=>t.stop());stream?.getTracks().forEach(t=>t.stop());
   if(audioContext)try{await audioContext.close()}catch(_){}
   s.exporting=false;
