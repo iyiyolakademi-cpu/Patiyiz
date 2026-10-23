@@ -18,4 +18,4 @@ jobs:
       - name: Syntax checks
         run: node --check app.js && node --check config.js && node --check knowledge.js
       - name: Regression tests
-        run: node --test tests/regression.test.cjs
+        run: node --test tests/*.test.cjs
