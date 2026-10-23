@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#141518"><link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="FounderHub: girişimcilere özel sosyal ağ, proje günlükleri, ortak bulma ve girişimcilik eğitimi.">
-<title>FounderHub — Girişimcilerin sosyal dünyası</title>
+<meta name="theme-color" content="#141518"><link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="Patiyiz: hayvan sahiplerinin buluştuğu topluluk ve hayvan bilgi merkezi.">
+<title>Patiyiz — Patili dostlar bir arada</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261023-refresh-1"><link rel="stylesheet" href="founder-responsive.css?v=20261023-refresh-1"><link rel="icon" type="image/svg+xml" href="founder-logo.svg">
+<link rel="stylesheet" href="style.css?v=20261023-patiyiz-restored"><link rel="icon" type="image/svg+xml" href="patiyiz-selected-logo.svg">
 <!-- Patiyiz release refresh: 2026-10-22 / explore and notification navigation -->
 </head><body>
 <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden" xmlns="http://www.w3.org/2000/svg">
@@ -49,32 +49,24 @@
 <symbol id="i-volume-x" viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="m17 9 5 6m0-6-5 6"/></symbol>
 <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8"/></symbol>
 <symbol id="i-message-circle" viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.5 0-3-.4-4.2-1.1L3 21l1.5-5.2a8.5 8.5 0 1 1 16.5-4.3Z"/></symbol></svg>
-<div id="startup" class="startup"><span class="spinner"></span> FounderHub yükleniyor…</div>
+<div id="startup" class="startup"><span class="spinner"></span> Patiyiz yükleniyor…</div>
 <section id="auth-root" class="auth-root hidden" aria-label="Hesap girişi"></section>
 <div id="app-root" class="hidden">
-  <header class="mobile-header"><div class="brand"><div class="brand-icon"><span class="founder-symbol">F</span></div><div><div class="brand-word">founderhub</div><div class="brand-caption">fikirden gerçeğe</div></div></div><div class="founder-header-actions"><button type="button" class="founder-header-messages" data-view="messages" aria-label="Mesajlara git"><svg class="icon"><use href="#i-message"></use></svg></button><button type="button" id="pati-header-notifications" class="pati-header-notifications" data-view="notifications" aria-label="Bildirimler"><svg class="icon"><use href="#i-bell"></use></svg></button></div></header>
+  <header class="mobile-header"><div class="brand"><div class="brand-icon"><img class="patiyiz-chosen-logo" src="patiyiz-selected-logo.svg" alt="Patiyiz"></div><div><div class="brand-word">patiyiz</div><div class="brand-caption">birlikte daha güzel</div></div></div><button type="button" id="pati-header-notifications" class="pati-header-notifications" data-view="notifications" aria-label="Bildirimler"><svg class="icon"><use href="#i-bell"></use></svg></button></header>
   <div class="app-shell">
     <aside class="sidebar" aria-label="Ana menü">
-      <div class="brand"><div class="brand-icon"><span class="founder-symbol">F</span></div><div><div class="brand-word">founderhub</div><div class="brand-caption">fikirden gerçeğe</div></div></div>
-      <div class="nav-caption">GİRİŞİMCİ TOPLULUĞU</div><nav class="side-nav" id="desktop-nav"></nav>
+      <div class="brand"><div class="brand-icon"><img class="patiyiz-chosen-logo" src="patiyiz-selected-logo.svg" alt="Patiyiz"></div><div><div class="brand-word">patiyiz</div><div class="brand-caption">birlikte daha güzel</div></div></div>
+      <div class="nav-caption">TOPLULUĞUMUZ</div><nav class="side-nav" id="desktop-nav"></nav>
       <button type="button" class="nav-create" data-action="compose"><svg class="icon"><use href="#i-plus"></use></svg> Yeni paylaşım</button>
-      <div class="sidebar-bottom"><div class="sidebar-foot">© 2026 FounderHub · Girişimci ağı</div></div>
+      <div class="sidebar-bottom"><div class="sidebar-foot">© 2026 Patiyiz · Sosyal topluluk</div></div>
     </aside>
     <main class="main" id="main-content" aria-live="polite"></main>
     <aside class="right-rail" id="right-rail" aria-label="Topluluk önerileri"></aside>
   </div>
   <nav class="mobile-bottom" id="mobile-nav" aria-label="Mobil ana menü"></nav>
-  <div id="founder-mobile-menu" class="founder-mobile-menu" hidden>
-    <button type="button" class="founder-more-backdrop" tabindex="-1" data-action="mobile-more-close" aria-label="Menüyü kapat"></button>
-    <section class="founder-more-sheet" role="dialog" aria-modal="true" aria-labelledby="founder-more-heading">
-      <div class="founder-more-grip" aria-hidden="true"></div>
-      <div class="founder-more-head"><div><small>FOUNDERHUB</small><h2 id="founder-more-heading">Tüm bölümler</h2><p>Topluluk, projeler ve hesabın tek yerde.</p></div><button class="founder-more-close" type="button" data-action="mobile-more-close" aria-label="Menüyü kapat"><svg class="icon"><use href="#i-close"></use></svg></button></div>
-      <div class="founder-more-links"></div>
-    </section>
-  </div>
   <button class="mobile-fab" type="button" data-action="compose" aria-label="Paylaşım oluştur"><svg class="icon"><use href="#i-plus"></use></svg></button>
 </div>
 <div id="modal-root"></div><div id="toasts" class="toast-stack" role="status" aria-live="polite"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js?v=20261021-2"></script><script src="push-config.js?v=20261021-vapid-2"></script><script src="knowledge.js"></script><script src="app.js?v=20261023-responsive-ui-1" defer></script>
+<script src="config.js?v=20261021-2"></script><script src="push-config.js?v=20261021-vapid-2"></script><script src="knowledge.js"></script><script src="app.js?v=20261023-patiyiz-restored" defer></script>
 </body></html>
