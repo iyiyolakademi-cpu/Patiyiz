@@ -291,3 +291,19 @@ body.pati-create-open{overflow:hidden}
 #post-form .prs-feedback{border-top:1px solid #e0e2e5;padding-top:10px;font-size:12px;color:#535965;line-height:1.4}
 #post-form .prs-feedback.error{color:#bc2935}
 @media(max-width:650px){#post-form .prs-studio{margin:12px -4px;padding:12px;border-radius:14px}#post-form .prs-screen{width:min(190px,63vw)}#post-form .prs-clip{min-width:147px}#post-form .prs-head strong{font-size:15px}}
+
+/* Performance and accessibility stabilization */
+@media(max-width:740px){
+ .pati-reels-viewport,.pati-reel-item{height:clamp(300px,calc(100dvh - 205px),780px);min-height:0}
+ .pati-reels-viewport{overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch}
+ #modal-root .modal:has(#post-form) .modal-content,
+ #modal-root .modal:has(#story-form) .modal-content{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+ #modal-root .modal:has(#post-form) .modal-footer,
+ #modal-root .modal:has(#story-form) .modal-footer{flex-shrink:0;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}
+ .story-player .pati-story-interactive{bottom:calc(74px + env(safe-area-inset-bottom,0px));max-height:42dvh;overflow-y:auto}
+ .pati-dm-layout .bubble-chat{overflow-wrap:anywhere;min-width:0}
+}
+@media(prefers-reduced-motion:reduce){
+ .pati-reels-viewport{scroll-behavior:auto}
+ .pati-card,.pati-profile-tile,.pati-reel-item{animation:none!important;transition:none!important}
+}
