@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#141518"><link rel="manifest" href="manifest.webmanifest?v=20261024-patiyiz-domain-1"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><link rel="apple-touch-icon" sizes="180x180" href="patiyiz-apple-touch-icon.png?v=20261023-icon-refresh-1"><meta name="description" content="Patiyiz: hayvan sahiplerinin buluştuğu topluluk ve hayvan bilgi merkezi.">
 <title>Patiyiz — Patili dostlar bir arada</title>
 <link rel="canonical" href="https://patiyiz.com/">
@@ -10,7 +10,7 @@
 <meta name="twitter:card" content="summary">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261023-paw-design-1"><link rel="stylesheet" href="patiyiz-inspired.css?v=20261024-icons-1"><link rel="icon" type="image/svg+xml" href="patiyiz-selected-logo.svg?v=20261023-icon-refresh-1">
+<link rel="stylesheet" href="style.css?v=20261023-paw-design-1"><link rel="stylesheet" href="patiyiz-inspired.css?v=20261024-mobile-dm-text-1"><link rel="icon" type="image/svg+xml" href="patiyiz-selected-logo.svg?v=20261023-icon-refresh-1">
 <!-- Patiyiz release refresh: 2026-10-22 / explore and notification navigation -->
 </head><body>
 <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden" xmlns="http://www.w3.org/2000/svg">
@@ -58,11 +58,12 @@
 <symbol id="i-post-create" viewBox="0 0 24 24"><rect x="3.1" y="3.1" width="17.8" height="17.8" rx="4"/><circle cx="8.4" cy="8.1" r="1.65"/><path d="m4 17 4.6-4.5 3 2.9 3.7-4 5.2 5.8"/><path d="M17.1 5.7h3.2M18.7 4.1v3.2"/></symbol>
 <symbol id="i-story-create" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.2" stroke-dasharray="2.6 2.4"/><path d="M12 7.6v8.8M7.6 12h8.8" stroke-linecap="round"/></symbol>
 <symbol id="i-reels-create" viewBox="0 0 24 24"><rect x="3" y="8.4" width="18" height="12.1" rx="2.1"/><path d="M3.2 8.2 5.6 3h14.8l-2.5 5.2M8.5 3l-2.4 5.2m8-5.2-2.4 5.2m7.9 0H3"/><path d="m10.2 11.8 5.2 2.6-5.2 2.6z" stroke-linejoin="round"/></symbol>
+<symbol id="i-text-create" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="m8 10 2-3 2 3m-3.4-1h2.8M14 7h3M14 11h3M7 15h10M7 18h7"/></symbol>
 <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M5 18a8.4 8.4 0 1 1 14 0"/><path d="m12 14 3.9-4M7.2 15.7l-.8-.8M12 6.8v1.4M17 9.6l1-1"/><circle cx="12" cy="14.1" r="1"/></symbol></svg>
 <div id="startup" class="startup"><span class="spinner"></span> Patiyiz yükleniyor…</div>
 <section id="auth-root" class="auth-root hidden" aria-label="Hesap girişi"></section>
 <div id="app-root" class="hidden">
-  <header class="mobile-header"><div class="brand"><div class="brand-icon"><img class="patiyiz-chosen-logo" src="patiyiz-selected-logo.svg" alt="Patiyiz"></div><div><div class="brand-word">patiyiz</div><div class="brand-caption">birlikte daha güzel</div></div></div><button type="button" id="pati-header-notifications" class="pati-header-notifications" data-view="notifications" aria-label="Bildirimler"><svg class="icon"><use href="#i-bell"></use></svg></button></header>
+  <header class="mobile-header"><div class="brand"><div class="brand-icon"><img class="patiyiz-chosen-logo" src="patiyiz-selected-logo.svg" alt="Patiyiz"></div><div><div class="brand-word">patiyiz</div><div class="brand-caption">birlikte daha güzel</div></div></div><div class="pati-header-actions"><button type="button" id="pati-header-messages" class="pati-header-messages" data-view="messages" aria-label="Mesajlar"><svg class="icon" aria-hidden="true"><use href="#i-message"></use></svg></button><button type="button" id="pati-header-notifications" class="pati-header-notifications" data-view="notifications" aria-label="Bildirimler"><svg class="icon" aria-hidden="true"><use href="#i-bell"></use></svg></button></div></header>
   <div class="app-shell">
     <aside class="sidebar" aria-label="Ana menü">
       <div class="brand"><div class="brand-icon"><img class="patiyiz-chosen-logo" src="patiyiz-selected-logo.svg" alt="Patiyiz"></div><div><div class="brand-word">patiyiz</div><div class="brand-caption">birlikte daha güzel</div></div></div>
@@ -82,6 +83,7 @@
     <div class="pati-create-heading"><strong>Yeni <em>paylaşım</em></strong><button type="button" class="pati-create-dismiss" data-action="pati-create-close" aria-label="Kapat"><svg class="icon" aria-hidden="true"><use href="#i-close"></use></svg></button></div>
     <div class="pati-create-choices">
       <button type="button" class="pati-create-choice" data-action="pati-create-post"><span class="pati-choice-icon" aria-hidden="true"><svg class="icon"><use href="#i-post-create"></use></svg></span><span class="pati-choice-copy"><b>Gönderi</b><small>Fotoğraf, video veya yazı paylaş</small></span><svg class="pati-choice-chevron" aria-hidden="true"><use href="#i-arrow"></use></svg></button>
+      <button type="button" class="pati-create-choice" data-action="pati-create-text"><span class="pati-choice-icon" aria-hidden="true"><svg class="icon"><use href="#i-text-create"></use></svg></span><span class="pati-choice-copy"><b>Yazı</b><small>Fotoğraf olmadan düşünceni paylaş</small></span><svg class="pati-choice-chevron" aria-hidden="true"><use href="#i-arrow"></use></svg></button>
       <button type="button" class="pati-create-choice" data-action="pati-create-story"><span class="pati-choice-icon" aria-hidden="true"><svg class="icon"><use href="#i-story-create"></use></svg></span><span class="pati-choice-copy"><b>Hikâye</b><small>24 saatlik patili anı paylaş</small></span><svg class="pati-choice-chevron" aria-hidden="true"><use href="#i-arrow"></use></svg></button>
       <button type="button" class="pati-create-choice" data-action="pati-create-reels"><span class="pati-choice-icon" aria-hidden="true"><svg class="icon"><use href="#i-reels-create"></use></svg></span><span class="pati-choice-copy"><b>Reels</b><small>Patinin videosunu yükle</small></span><svg class="pati-choice-chevron" aria-hidden="true"><use href="#i-arrow"></use></svg></button>
     </div>
@@ -89,5 +91,5 @@
 </div>
 <div id="modal-root"></div><div id="toasts" class="toast-stack" role="status" aria-live="polite"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js?v=20261021-2"></script><script src="push-config.js?v=20261021-vapid-2"></script><script src="knowledge.js"></script><script src="reels-editor.js?v=20261024-studio-1" defer></script><script src="app.js?v=20261024-icons-1" defer></script>
+<script src="config.js?v=20261021-2"></script><script src="push-config.js?v=20261021-vapid-2"></script><script src="knowledge.js"></script><script src="reels-editor.js?v=20261024-studio-1" defer></script><script src="app.js?v=20261024-mobile-dm-text-1" defer></script>
 </body></html>
