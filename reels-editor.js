@@ -92,7 +92,7 @@ async function setFiles(files){
    }
    if(context!==state||token!==context.token){ready.forEach(c=>URL.revokeObjectURL(c.url));return}
    context.clips=ready;
-   if(duration(ready)>MAX_SECONDS){let remaining=MAX_SECONDS;for(const c of ready){c.end=Math.min(c.duration,remaining);remaining-=c.end;if(remaining<=0)break}context.clips=ready.filter(c=>c.end>.01);context.clips.forEach(c=>{if(c.end<=.01)URL.revokeObjectURL(c.url)})}
+   if(duration(ready)>MAX_SECONDS){let remaining=MAX_SECONDS,keep=[];for(const c of ready){if(remaining<.2){URL.revokeObjectURL(c.url);continue}c.end=Math.min(c.duration,remaining);remaining-=c.end;if(c.end>=.2)keep.push(c);else URL.revokeObjectURL(c.url)}context.clips=keep}
    setStatus(ready.length+' klip hazır. Başlangıç ve bitişi seçerek düzenleyebilirsin.');
    render();
   }catch(e){ready.forEach(c=>URL.revokeObjectURL(c.url));if(context===state&&token===context.token){context.clips=[];render();setStatus(e.message,true)}throw e}
@@ -196,6 +196,7 @@ async function exportVideo(progress){
  const canvas=document.createElement('canvas');canvas.width=WIDTH;canvas.height=HEIGHT;
  const ctx=canvas.getContext('2d',{alpha:false});
  if(!ctx){s.exporting=false;throw Error('Video düzenleme için grafik desteği yok.')}
+ if(snapshot.filter!=='original'&&!('filter' in ctx)){s.exporting=false;throw Error('Bu tarayıcı filtre uygulanmış video kaydetmeyi desteklemiyor. Orijinal filtre seç.')}
  let recorder,audioContext,audioDest,stream,composite,stopResult,fail,recs=[];
  const total=duration(snapshot.clips);let elapsed=0,transitionFrame=null;
  try{
