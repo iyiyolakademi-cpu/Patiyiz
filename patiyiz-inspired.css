@@ -245,3 +245,17 @@ body.pati-create-open{overflow:hidden}
 #post-form .pati-reels-editor input[type=file]{padding:8px;background:#fff}
 .pati-reel-rail .pati-reel-mute{font-size:11px;min-height:28px;touch-action:manipulation}
 @media(max-width:740px){#story-form .pati-story-editor{grid-template-columns:1fr 1fr}#story-form .pati-story-editor label:first-child{grid-column:1/-1}.pati-reel-rail .pati-reel-mute{padding:8px 6px}}
+
+/* Interactive stories and direct-message actions */
+#story-form .pati-story-interactions{margin:10px 0;padding:11px;border:1px solid #e7e7eb;border-radius:13px;background:#f7f7f8;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#story-form .pati-story-interactions label{font-size:12px;font-weight:700;color:#26272b;display:flex;flex-direction:column;gap:5px}
+#story-form .pati-story-interactions label:nth-child(-n+2){grid-column:1/-1}
+#story-form .pati-story-interactions input,#story-form .pati-story-interactions select{min-height:43px;width:100%;padding:9px;border-radius:10px;border:1px solid #dadbe0;background:#fff;color:#242529;font-size:16px}
+.story-player .pati-story-interactive{position:absolute;left:11px;right:11px;bottom:70px;z-index:12;display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;padding:10px;background:#111b;border:1px solid #ffffff50;border-radius:14px;backdrop-filter:blur(8px)}
+.story-player .pati-story-interactive b{flex-basis:100%;font-size:13px;text-align:center;color:#fff}
+.story-player .pati-story-interactive div{display:flex;gap:7px;flex:1}
+.story-player .pati-story-interactive button{background:#fff;color:#222327;border:0;border-radius:10px;padding:9px 12px;font-weight:800;font-size:12px;min-height:41px;cursor:pointer}
+.pati-dm-reply-preview{padding:6px 9px;background:#ffffff26;border-left:3px solid #82838a;border-radius:5px;font-size:11px;margin-bottom:5px}
+.pati-dm-msg-tools{display:flex;gap:6px;justify-content:flex-end;padding:5px 0 0}
+.pati-dm-msg-tools button{background:#fff1;color:#45464b;border:1px solid #a6a6a648;border-radius:8px;padding:4px 6px;font-size:10px;cursor:pointer}
+@media(max-width:690px){.story-player .pati-story-interactive{bottom:88px}.pati-dm-msg-tools button{min-height:32px;padding:7px}}
