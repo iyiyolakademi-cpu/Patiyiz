@@ -1,7 +1,7 @@
 {
   "name": "Patiyiz",
   "short_name": "Patiyiz",
-  "description": "Hayvanseverlerin buluşma noktası",
+  "description": "Patiyiz: Evcil hayvan topluluğu, Reels, hikâyeler ve güvenli mesajlaşma",
   "id": "/Patiyiz/",
   "start_url": "/Patiyiz/",
   "scope": "/Patiyiz/",
@@ -15,5 +15,11 @@
       "type": "image/svg+xml",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "lang": "tr",
+  "categories": [
+    "social",
+    "lifestyle"
+  ],
+  "orientation": "any"
 }
