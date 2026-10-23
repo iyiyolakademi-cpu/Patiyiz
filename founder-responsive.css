@@ -1,0 +1,249 @@
+/* FounderHub 2026 responsive design layer.
+   Added after the legacy stylesheet so existing post, chat and admin functionality stays intact. */
+:root {
+  --fh-bg: #f5f6f8;
+  --fh-surface: #fff;
+  --fh-ink: #191b22;
+  --fh-muted: #6b7080;
+  --fh-line: #e7e9f0;
+  --fh-accent: #4253ef;
+  --fh-accent-soft: #edf0ff;
+  --fh-pets: #14806b;
+  --fh-pets-soft: #e8f6f1;
+  --fh-academy: #6744bb;
+  --fh-academy-soft: #f1edfc;
+  --fh-shadow: 0 12px 36px rgba(24, 29, 51, .055);
+}
+html { scroll-padding-top: 90px; }
+body { background: var(--fh-bg); color: var(--fh-ink); }
+button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+button, a { touch-action: manipulation; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible,
+textarea:focus-visible { outline: 3px solid var(--fh-accent)!important; outline-offset: 3px; }
+button:disabled { opacity: .68; cursor: not-allowed; }
+#app-root > .app-shell { max-width: 1450px; }
+#app-root .sidebar { min-height: 0; padding-right: 12px; scrollbar-width: thin; overflow-y: auto; }
+#app-root .sidebar .brand { margin-bottom: 18px; padding-left: 9px; }
+#app-root .sidebar .brand-word { font-size: 25px; letter-spacing: -1.35px; }
+#app-root .sidebar .nav-caption { margin-top: 12px; color: #888d9b; letter-spacing: .12em; }
+#app-root .sidebar .side-nav { gap: 3px; }
+#app-root .sidebar .nav-link { border-radius: 12px; font-size: 12px; padding: 10px 13px; min-height: 43px; color: #5e6370; }
+#app-root .sidebar .nav-link:hover { background: #f0f1f6; color: #242936; }
+#app-root .sidebar .nav-link.active { background: var(--fh-accent-soft)!important; color: #2435b3!important; }
+#app-root .sidebar .nav-link.active::before { background: var(--fh-accent)!important; height: 18px; left: -6px; }
+#app-root .sidebar .nav-link .icon { width: 19px; height: 19px; }
+#app-root .sidebar .nav-create { margin-top: 17px; border-radius: 13px; box-shadow: 0 10px 22px rgba(23,27,42,.11); }
+#app-root .right-rail .pati-card { border: 1px solid var(--fh-line); box-shadow: var(--fh-shadow); border-radius: 18px; }
+#app-root .main { min-width: 0; }
+#main-content > .page-intro { gap: 13px; margin: 9px 0 20px; }
+#main-content .hello { color: #7b8090; letter-spacing: .1em; text-transform: uppercase; }
+#main-content .page-title { color: var(--fh-ink); font-weight: 850; font-size: clamp(24px, 3vw, 32px); letter-spacing: -.95px; }
+#main-content .page-intro p { color: var(--fh-muted)!important; font-size: 12px!important; line-height: 1.6; max-width: 480px; }
+#main-content .page-intro .top-actions button, #main-content .page-intro .top-actions a {
+  min-height: 42px; border-radius: 12px; padding: 10px 14px; white-space: nowrap;
+}
+#main-content .founder-feature-hero, #main-content .founder-pets-hero {
+  border-radius: 23px; padding: 29px; box-shadow: 0 16px 32px rgba(10,11,21,.12);
+  background: linear-gradient(125deg,#1c1f2c 0%,#292d42 77%,#333d64 100%);
+}
+#main-content .founder-feature-hero h2 { max-width: 450px; letter-spacing: -.9px; }
+#main-content .founder-pets-hero {
+  background: linear-gradient(125deg,#0e594f,#147b6b 70%,#249982);
+  box-shadow: 0 14px 28px rgba(17,104,90,.14);
+}
+#main-content .founder-venture-grid, #main-content .founder-network-grid { gap: 15px; }
+#main-content .founder-venture-card, #main-content .founder-network-card,
+#main-content .founder-event-card, #main-content .founder-course-card {
+  border: 1px solid var(--fh-line); box-shadow: var(--fh-shadow); border-radius: 19px;
+  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+#main-content .founder-venture-card, #main-content .founder-network-card { padding: 21px; gap: 12px; }
+#main-content .founder-venture-card h3 { font-size: 19px; letter-spacing: -.35px; }
+#main-content .founder-venture-card p { color: #5a606d; font-size: 12.5px; line-height: 1.75; }
+#main-content .founder-venture-meta span { color: #3d4770; background: var(--fh-accent-soft); border-radius: 8px; }
+#main-content .founder-venture-card .pati-actionbar, #main-content .founder-network-card .pati-actionbar { margin-top: auto; flex-wrap: wrap; }
+#main-content .founder-venture-card .pati-actionbar button,
+#main-content .founder-network-card .pati-actionbar button { min-height: 38px; border-radius: 10px; }
+#main-content .founder-milestones { background: #f8f9fb; border: 1px solid #edefef; }
+#main-content .founder-detail-section, #main-content .founder-detail-info > div { border: 1px solid var(--fh-line); border-radius: 17px; box-shadow: var(--fh-shadow); }
+#main-content .founder-detail-head { background: linear-gradient(122deg,#1c2031,#343954); border-radius: 22px; }
+#main-content .founder-event-card, #main-content .founder-course-card { padding: 22px; }
+#main-content .founder-event-card h3 { font-size: 18px; line-height: 1.35; }
+#main-content .founder-course-card { min-height: 175px; }
+#main-content .founder-course-card:hover, #main-content .founder-venture-card:hover, #main-content .founder-event-card:hover {
+  border-color: #d6daf4; box-shadow: 0 16px 42px rgba(24,29,51,.085); transform: translateY(-2px);
+}
+#main-content .founder-network-filters { margin: 0 0 18px; padding: 14px; border: 1px solid var(--fh-line); border-radius: 17px; background: #fff; }
+#main-content .founder-network-filters > div > button.active { background: var(--fh-ink); border-color: var(--fh-ink); }
+#main-content .founder-network-selects select, #main-content .founder-network-selects input { max-width: none; }
+#main-content .pati-edu-card, #main-content .pati-card, #main-content .founder-course-lessons .pati-card {
+  border-color: var(--fh-line); box-shadow: 0 5px 18px rgba(23,27,41,.025);
+}
+#main-content .pati-edu-hero { border-radius: 19px; }
+#main-content .pati-edu-grid { gap: 13px; }
+#main-content .pati-filter-tabs { scrollbar-width: none; scroll-snap-type: x proximity; }
+#main-content .pati-filter-tabs > button { scroll-snap-align: start; min-height: 38px; }
+#main-content .pati-feed-switch-btn, #main-content .pati-feed-follow button { min-height: 43px; }
+#main-content .stories-strip { scrollbar-width: none; overscroll-behavior-x: contain; }
+#main-content .stories-strip::-webkit-scrollbar, #main-content .pati-filter-tabs::-webkit-scrollbar { display: none; }
+#main-content .pati-video-frame, #main-content .pati-carousel, #main-content .pati-photo { overflow: hidden; }
+#main-content img, #main-content video { max-width: 100%; }
+#main-content .pati-social-actions button { min-width: 36px; min-height: 40px; }
+
+/* Three useful destinations stay in sight, even when the social feed is empty. */
+#main-content .founder-space-switcher { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; margin: 2px 0 17px; }
+#main-content .founder-space-card {
+  display: flex; align-items: center; gap: 10px; text-align: left; min-width: 0; padding: 15px 12px;
+  background: #fff; border: 1px solid var(--fh-line); border-radius: 16px; box-shadow: 0 6px 18px rgba(16,18,32,.035);
+}
+#main-content .founder-space-card .founder-space-card-icon {
+  flex: 0 0 32px; width: 32px; height: 32px; display: grid; place-items: center; font-size: 17px; border-radius: 10px;
+  color: #3648e9; background: var(--fh-accent-soft);
+}
+#main-content .founder-space-card span:nth-child(2) { flex: 1; min-width: 0; }
+#main-content .founder-space-card strong, #main-content .founder-space-card small { display: block; }
+#main-content .founder-space-card strong { font-size: 12px; color: var(--fh-ink); }
+#main-content .founder-space-card small { font-size: 10px; line-height: 1.35; color: var(--fh-muted); padding-top: 4px; }
+#main-content .founder-space-card > b { margin-left: auto; font-size: 13px; color: #9a9dab; }
+#main-content .founder-space-academy .founder-space-card-icon { background: var(--fh-academy-soft); color: var(--fh-academy); }
+#main-content .founder-space-pets .founder-space-card-icon { background: var(--fh-pets-soft); color: var(--fh-pets); }
+#main-content .founder-space-card:hover { border-color: #cbd2fd; background: #fcfcff; }
+
+/* Mobile actions and tab bar. Legacy desktop layout is intentionally left untouched. */
+.founder-header-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.founder-header-messages, #app-root>.mobile-header .pati-header-notifications {
+  position: relative; display: grid; place-items: center; flex: 0 0 42px; width: 42px; height: 42px;
+  border: 1px solid #e9ebf1; border-radius: 14px; color: #252935; background: #fff;
+}
+.founder-header-messages .icon, #app-root>.mobile-header .pati-header-notifications .icon { width: 21px; height: 21px; }
+#app-root>.mobile-header .brand-word { color: #171922; }
+#app-root>.mobile-header .brand-icon { flex-shrink: 0; }
+#founder-mobile-menu[hidden] { display: none!important; }
+#founder-mobile-menu { display: none; }
+@media (min-width: 741px) {
+  #app-root>.mobile-header, #app-root>.mobile-bottom { display: none!important; }
+  #app-root .sidebar .side-nav { padding-bottom: 8px; }
+}
+@media (min-width: 741px) and (max-width: 1080px) {
+  #app-root > .app-shell { max-width: 960px; grid-template-columns: 205px minmax(0,1fr); gap: 20px; padding-inline: 18px; }
+  #app-root .sidebar { overflow-y: auto; }
+  #main-content .founder-space-switcher { gap: 8px; }
+  #main-content .founder-space-card { padding: 13px 9px; gap: 7px; }
+  #main-content .founder-space-card small { font-size: 9px; }
+}
+@media (max-width: 740px) {
+  html { scroll-padding-top: 84px; }
+  body { background: var(--fh-bg)!important; }
+  #app-root>.mobile-header {
+    position: fixed!important; left: 0!important; right: 0!important; top: 0!important;
+    display: flex!important; align-items: center!important; justify-content: space-between!important;
+    gap: 10px; min-height: 65px!important; height: auto!important;
+    padding: calc(8px + env(safe-area-inset-top,0px)) 15px 8px!important;
+    background: rgba(255,255,255,.965)!important; border-bottom: 1px solid var(--fh-line)!important;
+    box-shadow: 0 4px 16px rgba(20,24,39,.035)!important; z-index: 90!important;
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  }
+  #app-root>.mobile-header .brand { padding: 0; margin: 0; min-width: 0; gap: 8px; }
+  #app-root>.mobile-header .brand-word { font-size: 23px!important; letter-spacing: -.9px; }
+  #app-root>.mobile-header .brand-icon { height: 35px; width: 35px; border-radius: 10px; }
+  #app-root>.mobile-header .pati-header-notifications { margin: 0!important; transform: none!important; }
+  #app-root>.mobile-header .founder-header-actions { display: flex!important; margin-left: auto; flex-shrink: 0; }
+  #app-root>.app-shell { display: block!important; max-width: 740px; padding-top: calc(80px + env(safe-area-inset-top,0px))!important; padding-bottom: calc(105px + env(safe-area-inset-bottom,0px))!important; min-height: 100dvh; }
+  #app-root>.app-shell>.sidebar, #app-root>.app-shell>.right-rail { display: none!important; }
+  #app-root>.app-shell>#main-content { min-width: 0; max-width: 660px; margin-inline: auto; }
+  #app-root>.mobile-bottom {
+    position: fixed!important; left: 0!important; right: 0!important; bottom: 0!important;
+    display: flex!important; justify-content: space-between!important; align-items: stretch!important;
+    gap: 3px!important; min-height: 66px!important; height: auto!important;
+    padding: 7px 9px calc(8px + env(safe-area-inset-bottom,0px))!important;
+    background: rgba(255,255,255,.98)!important; border-top: 1px solid var(--fh-line)!important;
+    box-shadow: 0 -6px 20px rgba(25,27,43,.045)!important; z-index: 110!important;
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  }
+  #app-root>.mobile-bottom .mobile-nav-btn {
+    position: relative; display: flex!important; flex: 1 1 0!important; min-width: 0!important; max-width: unset!important;
+    min-height: 51px!important; padding: 6px 2px 3px!important; border: 0!important; border-radius: 12px!important;
+    background: transparent!important; color: #777b8b!important;
+    align-items: center!important; justify-content: center!important; flex-direction: column!important;
+    gap: 4px!important; font-weight: 700!important;
+  }
+  #app-root>.mobile-bottom .mobile-nav-btn .icon { width: 22px!important; height: 22px!important; }
+  #app-root>.mobile-bottom .mobile-nav-btn small {
+    display: block!important; white-space: nowrap; font-size: 10px!important; font-weight: 700!important;
+    line-height: 1.25!important; color: inherit!important;
+  }
+  #app-root>.mobile-bottom .mobile-nav-btn.active { background: var(--fh-accent-soft)!important; color: var(--fh-accent)!important; }
+  #app-root>.mobile-bottom .mobile-nav-btn[data-view="pets-feed"].active { background: var(--fh-pets-soft)!important; color: var(--fh-pets)!important; }
+  #app-root>.mobile-bottom .mobile-nav-btn[data-view="education"].active { background: var(--fh-academy-soft)!important; color: var(--fh-academy)!important; }
+  #app-root>.mobile-fab { bottom: calc(90px + env(safe-area-inset-bottom,0px))!important; right: 17px!important; border-radius: 17px!important; box-shadow: 0 12px 24px rgba(24,27,39,.2); z-index: 105!important; }
+  #main-content > .page-intro { flex-wrap: wrap!important; align-items: start; gap: 11px; margin: 14px 13px 17px; }
+  #main-content > .page-intro > div:first-child { min-width: 0; flex: 1 1 170px; }
+  #main-content > .page-intro > .top-actions { display: flex!important; align-self: start; flex-wrap: wrap; flex: 0 1 auto; max-width: 100%; }
+  #main-content > .page-intro > .top-actions button { min-height: 43px; white-space: normal; font-size: 12px; }
+  #main-content .page-title { font-size: clamp(23px,6vw,28px); }
+  #main-content .founder-space-switcher { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 7px; margin: 12px 11px 16px; }
+  #main-content .founder-space-card { flex-direction: column; align-items: flex-start; padding: 12px 10px; gap: 7px; min-height: 106px; border-radius: 14px; }
+  #main-content .founder-space-card .founder-space-card-icon { width: 30px; height: 30px; font-size: 16px; }
+  #main-content .founder-space-card strong { font-size: 11px; }
+  #main-content .founder-space-card small { font-size: 9.5px; }
+  #main-content .founder-space-card>b { display: none; }
+  #main-content .founder-feature-hero, #main-content .founder-pets-hero { margin: 12px 11px 19px; padding: 22px 19px; border-radius: 19px; }
+  #main-content .founder-venture-grid, #main-content .founder-network-grid, #main-content .founder-event-list,
+  #main-content .founder-course-grid { grid-template-columns: 1fr; padding: 0 11px; gap: 12px; }
+  #main-content .founder-venture-card, #main-content .founder-network-card,
+  #main-content .founder-course-card, #main-content .founder-event-card { padding: 18px; border-radius: 17px; transform: none!important; }
+  #main-content .founder-network-filters { margin: 0 11px 17px; padding: 12px; }
+  #main-content .founder-network-selects select,#main-content .founder-network-selects input { min-height: 44px; min-width: 0; flex: 1 1 42%; }
+  #main-content .founder-network-selects button { min-height: 44px; }
+  #main-content .pati-edu { padding-bottom: calc(104px + env(safe-area-inset-bottom,0px)); }
+  #main-content .pati-edu-card { min-height: 105px; }
+  #main-content .pati-filter-tabs { padding-inline: 10px; display: flex; flex-wrap: nowrap; overflow-x: auto; }
+  #main-content .founder-detail-info { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  #main-content .founder-detail-head { flex-wrap: wrap; gap: 10px; }
+  #main-content .founder-detail-head > div { min-width: 0; }
+  #main-content .founder-event-card .pati-actionbar > button,
+  #main-content .founder-network-card .pati-actionbar > button { min-height: 44px; }
+  .toast-stack { bottom: calc(87px + env(safe-area-inset-bottom,0px)); right: 12px; left: 12px; }
+  .toast-stack .pati-toast { max-width: none; font-size: 12px; }
+  #modal-root input:not([type="checkbox"]):not([type="radio"]), #modal-root textarea,
+  #modal-root select, .modern-chat .chat-form input { font-size: 16px!important; }
+  #modal-root .modal-footer button { min-height: 44px; }
+  #modal-root .modal-content { overscroll-behavior: contain; }
+  #founder-mobile-menu:not([hidden]) { position: fixed; inset: 0; z-index: 180; display: flex; align-items: flex-end; }
+  #founder-mobile-menu .founder-more-backdrop { position: absolute; inset: 0; background: rgba(13,16,27,.53); border: 0; padding: 0; width: 100%; height: 100%; }
+  #founder-mobile-menu .founder-more-sheet {
+    position: relative; width: 100%; max-height: min(78dvh,680px); display: flex; flex-direction: column;
+    border-radius: 26px 26px 0 0; background: #fff; padding: 11px 17px calc(26px + env(safe-area-inset-bottom,0px));
+    box-shadow: 0 -20px 60px rgba(0,0,0,.12); overflow: hidden;
+  }
+  #founder-mobile-menu .founder-more-grip { height: 5px; width: 42px; background: #d8dce6; border-radius: 4px; margin: 0 auto 16px; flex: 0 0 auto; }
+  #founder-mobile-menu .founder-more-head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 15px; gap: 10px; }
+  #founder-mobile-menu .founder-more-head small { color: var(--fh-accent); font-size: 10px; letter-spacing: .12em; font-weight: 800; }
+  #founder-mobile-menu .founder-more-head h2 { font-size: 23px; margin: 3px 0 4px; color: #171a24; letter-spacing: -.6px; }
+  #founder-mobile-menu .founder-more-head p { color: var(--fh-muted); font-size: 12px; margin: 0; }
+  #founder-mobile-menu .founder-more-close { display: grid; place-items: center; flex: 0 0 42px; width: 42px; height: 42px; border-radius: 14px; border: 1px solid #eceef3; background: #f5f6fa; }
+  #founder-mobile-menu .founder-more-links { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; padding-bottom: 4px; }
+  #founder-mobile-menu .founder-more-link {
+    display: flex; align-items: center; gap: 10px; text-align: left; min-width: 0; min-height: 59px; padding: 12px;
+    border: 1px solid var(--fh-line); border-radius: 15px; background: #f9fafd; color: #303443; font-size: 12px; font-weight: 730;
+  }
+  #founder-mobile-menu .founder-more-link .icon { width: 20px; height: 20px; color: #5c6394; }
+  #founder-mobile-menu .founder-more-link span:not(.nav-count) { min-width: 0; overflow-wrap: anywhere; }
+  #founder-mobile-menu .founder-more-link.active { background: var(--fh-accent-soft); border-color: #d4dafc; color: #2637b3; }
+  #founder-mobile-menu .founder-more-link.active .icon { color: var(--fh-accent); }
+}
+@media (max-width: 375px) {
+  #app-root>.mobile-header { padding-left: 10px!important; padding-right: 10px!important; }
+  #app-root>.mobile-header .brand-word { font-size: 21px!important; }
+  #app-root>.mobile-header .founder-header-actions { gap: 4px!important; }
+  .founder-header-messages, #app-root>.mobile-header .pati-header-notifications { width: 38px; height: 38px; flex-basis: 38px; }
+  #app-root>.mobile-bottom { padding-left: 4px!important; padding-right: 4px!important; gap: 0!important; }
+  #app-root>.mobile-bottom .mobile-nav-btn small { font-size: 9px!important; }
+  #main-content .founder-space-card { padding: 10px 8px; }
+  #main-content .founder-space-card small { font-size: 9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  #main-content .founder-course-card, #main-content .founder-venture-card,
+  #main-content .founder-event-card { transition: none; }
+}
