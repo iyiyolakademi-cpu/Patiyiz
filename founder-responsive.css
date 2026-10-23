@@ -247,3 +247,7 @@ button:disabled { opacity: .68; cursor: not-allowed; }
   #main-content .founder-course-card, #main-content .founder-venture-card,
   #main-content .founder-event-card { transition: none; }
 }
+
+/* Avoid the keyboard covering message composition on mobile. */
+body.founder-more-open{overflow:hidden!important}
+@media(max-width:740px){html.pati-keyboard-open #app-root>.mobile-bottom,html.pati-keyboard-open #app-root>.mobile-fab{display:none!important}}
