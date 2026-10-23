@@ -1,0 +1,21 @@
+name: FounderHub quality checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax checks
+        run: node --check app.js && node --check config.js && node --check knowledge.js
+      - name: Regression tests
+        run: node --test tests/regression.test.cjs
