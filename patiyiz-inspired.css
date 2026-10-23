@@ -552,3 +552,38 @@ body.pati-create-open{overflow:hidden}
 @media(prefers-reduced-motion:reduce){
  #pati-create-sheet .pati-create-choice{transition:none}
 }
+
+/* Inbox-first direct messages and visible new-chat action. */
+.pati-dm-top{display:flex;align-items:center;justify-content:space-between;gap:9px}
+.pati-dm-top>strong{font-size:20px;font-weight:850;color:#232428}
+.pati-dm-top-actions{display:flex;align-items:center;gap:11px}
+.pati-dm-top-actions>span{font-size:11px;color:#797b81;white-space:nowrap}
+.pati-dm-new{
+ min-height:41px;display:inline-flex;align-items:center;justify-content:center;
+ gap:6px;background:#1e1f23;color:#fff;border:0;border-radius:12px;
+ font-size:12px;font-weight:800;padding:8px 12px;white-space:nowrap;cursor:pointer
+}
+.pati-dm-new .icon{width:17px!important;height:17px!important;stroke:#fff!important;fill:none!important}
+.pati-dm-new-list{display:grid;gap:3px;max-height:min(60vh,480px);overflow:auto;overscroll-behavior:contain}
+.pati-dm-new-hint{color:#76777c;font-size:12px;margin:0 0 12px}
+.pati-dm-new-person{
+ display:flex;align-items:center;gap:12px;width:100%;min-height:63px;
+ border:0;border-bottom:1px solid #ededf0;background:#fff;
+ padding:10px 4px;text-align:left;cursor:pointer;color:#292a30;
+}
+.pati-dm-new-person>span:not(.avatar){display:grid;gap:4px;flex:1;min-width:0}
+.pati-dm-new-person strong{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pati-dm-new-person small{font-size:11px;color:#91939a}
+.pati-dm-new-person>.icon{width:20px;height:20px;stroke:#35363c;flex-shrink:0}
+.pati-dm-new-person:hover{background:#f5f5f7}
+#dm-new-form .modal-footer{display:none}
+@media(max-width:740px){
+ #main-content .pati-dm-top{margin:0;gap:5px}
+ #main-content .pati-dm-top>strong{font-size:18px}
+ #main-content .pati-dm-top-actions{gap:7px}
+ #main-content .pati-dm-new{min-height:43px;font-size:11px;padding:9px 11px}
+}
+@media(max-width:355px){
+ #main-content .pati-dm-top-actions>span{font-size:9px}
+ #main-content .pati-dm-new{padding:8px}
+}
