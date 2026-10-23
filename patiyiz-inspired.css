@@ -307,3 +307,106 @@ body.pati-create-open{overflow:hidden}
  .pati-reels-viewport{scroll-behavior:auto}
  .pati-card,.pati-profile-tile,.pati-reel-item{animation:none!important;transition:none!important}
 }
+
+/* Patiyiz polished sharing icons — refined monochrome UI */
+#pati-create-sheet .pati-create-choice{
+ gap:14px;min-height:82px;padding:13px 15px;
+ background:linear-gradient(120deg,#242528,#1c1d21);
+ border:1px solid #45464b;border-radius:17px;
+ transition:background .18s,border-color .18s,transform .18s;
+}
+#pati-create-sheet .pati-create-choice:hover{background:#2c2d32;border-color:#878991;transform:translateY(-1px)}
+#pati-create-sheet .pati-create-choice:active{transform:scale(.992)}
+#pati-create-sheet .pati-create-choice .pati-choice-icon{
+ display:grid;place-items:center;flex:0 0 50px;
+ width:50px;height:50px;border-radius:15px;
+ background:linear-gradient(135deg,#43444a,#34353a);color:#fff;
+ box-shadow:inset 0 1px #ffffff19;
+}
+#pati-create-sheet .pati-choice-icon svg.icon{
+ display:block!important;width:26px!important;height:26px!important;
+ stroke:#fff!important;stroke-width:1.85!important;fill:none!important;
+}
+#pati-create-sheet .pati-choice-copy{display:flex;flex:1;min-width:0;flex-direction:column;gap:5px}
+#pati-create-sheet .pati-choice-copy b{font-size:15px;font-weight:850;letter-spacing:-.18px}
+#pati-create-sheet .pati-choice-copy small{font-size:11px;color:#bdbfc5;line-height:1.45}
+#pati-create-sheet .pati-choice-chevron{
+ display:block;width:19px;height:19px;stroke:#bfc0c6;stroke-width:2;fill:none;
+ transform:rotate(-90deg);flex:0 0 19px;opacity:.8
+}
+#pati-create-sheet .pati-create-dismiss svg.icon{display:block!important;width:20px!important;height:20px!important;stroke:#fff!important;fill:none!important}
+#pati-create-sheet .pati-create-choice:focus-visible{outline:2px solid #fff;outline-offset:3px}
+/* Transient, per-account onboarding completion message */
+#main-content .pati-onboarding-thanks{
+ display:flex;align-items:center;gap:13px;padding:19px 20px;
+ margin:7px 0 19px;background:#fff;color:#232428;
+ border:1px solid #dfdfe3;border-radius:19px;
+ box-shadow:0 8px 26px #0000000c;
+ animation:pati-welcome-in .32s ease both;
+}
+#main-content .pati-onboarding-thanks-icon{
+ width:48px;height:48px;flex:0 0 48px;border-radius:15px;
+ background:#17181b;color:#fff;display:grid;place-items:center;
+}
+#main-content .pati-onboarding-thanks-icon .icon{
+ display:block!important;width:25px!important;height:25px!important;stroke:#fff!important;fill:none!important;
+}
+#main-content .pati-onboarding-thanks strong{font-size:15px;font-weight:850}
+#main-content .pati-onboarding-thanks p{margin:5px 0 0;color:#676970;font-size:12px;line-height:1.5}
+@keyframes pati-welcome-in{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+/* Premium Reels icon rail */
+.pati-reels-head button{display:inline-flex;align-items:center;gap:7px}
+.pati-reels-head button svg.icon{display:block!important;width:17px!important;height:17px!important;stroke:#fff!important;fill:none!important}
+.pati-reel-rail{right:9px;bottom:31px;gap:11px;max-width:75px}
+.pati-reel-rail .pati-reel-action,
+.pati-reel-rail .pati-reel-tool{
+ display:flex;align-items:center;justify-content:center;flex-direction:column;
+ border:1px solid #ffffff24;border-radius:15px;
+ background:#0b0c0fb0;color:#fff;
+ min-width:59px;width:59px;min-height:59px;
+ gap:4px;padding:9px 6px;
+ font-size:12px;font-weight:750;line-height:1.1;
+ box-shadow:0 2px 15px #00000025;
+ text-shadow:none;backdrop-filter:blur(8px);
+ transition:background .15s,transform .15s,border-color .15s;
+ touch-action:manipulation;
+}
+.pati-reel-rail .pati-reel-action:hover,
+.pati-reel-rail .pati-reel-tool:hover{background:#26272be8;border-color:#ffffff55}
+.pati-reel-rail .pati-reel-action:active,
+.pati-reel-rail .pati-reel-tool:active{transform:scale(.95)}
+.pati-reel-rail .pati-reel-action svg.icon{
+ display:block!important;width:26px!important;height:26px!important;
+ stroke:#fff!important;stroke-width:1.9!important;fill:none!important;
+}
+.pati-reel-rail .pati-reel-tool svg.icon{
+ display:block!important;width:21px!important;height:21px!important;
+ stroke:#fff!important;stroke-width:1.9!important;fill:none!important;
+}
+.pati-reel-rail .pati-reel-action.active[data-action="like"] svg.icon{
+ stroke:#ff7990!important;fill:#ff7990!important;
+}
+.pati-reel-rail .pati-reel-action.active[data-action="save"] svg.icon{
+ stroke:#fff!important;fill:#fff!important;
+}
+.pati-reel-rail .pati-reel-action.active[data-action="like"]{border-color:#ff799047}
+.pati-reel-rail .pati-reel-count{font-size:12px;font-weight:820;color:#fff}
+.pati-reel-rail .pati-reel-action-label,
+.pati-reel-rail .pati-reel-tool-label{
+ font-size:9px;font-weight:750;color:#f0f0f1;white-space:nowrap;
+}
+.pati-reel-rail .pati-reel-tool{min-height:51px;background:#1e1f22ba;border-color:#ffffff1b}
+.pati-reel-rail button:focus-visible{outline:2px solid #fff;outline-offset:3px}
+@media(max-width:740px){
+ #pati-create-sheet .pati-create-choice{min-height:80px}
+ .pati-reel-rail{gap:8px;right:7px;bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+ .pati-reel-rail .pati-reel-action{min-height:56px}
+ .pati-reel-rail .pati-reel-tool{min-height:45px}
+ .pati-reel-author{right:82px}
+}
+@media(prefers-reduced-motion:reduce){
+ #main-content .pati-onboarding-thanks{animation:none}
+ #pati-create-sheet .pati-create-choice,
+ .pati-reel-rail .pati-reel-action,
+ .pati-reel-rail .pati-reel-tool{transition:none}
+}

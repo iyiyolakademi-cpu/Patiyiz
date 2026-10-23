@@ -10,7 +10,7 @@
 <meta name="twitter:card" content="summary">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261023-paw-design-1"><link rel="stylesheet" href="patiyiz-inspired.css?v=20261024-stability-1"><link rel="icon" type="image/svg+xml" href="patiyiz-selected-logo.svg?v=20261023-icon-refresh-1">
+<link rel="stylesheet" href="style.css?v=20261023-paw-design-1"><link rel="stylesheet" href="patiyiz-inspired.css?v=20261024-icons-1"><link rel="icon" type="image/svg+xml" href="patiyiz-selected-logo.svg?v=20261023-icon-refresh-1">
 <!-- Patiyiz release refresh: 2026-10-22 / explore and notification navigation -->
 </head><body>
 <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden" xmlns="http://www.w3.org/2000/svg">
@@ -54,7 +54,11 @@
 <symbol id="i-volume" viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 9a5 5 0 0 1 0 6M18 6a9 9 0 0 1 0 12"/></symbol>
 <symbol id="i-volume-x" viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="m17 9 5 6m0-6-5 6"/></symbol>
 <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8"/></symbol>
-<symbol id="i-message-circle" viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.5 0-3-.4-4.2-1.1L3 21l1.5-5.2a8.5 8.5 0 1 1 16.5-4.3Z"/></symbol></svg>
+<symbol id="i-message-circle" viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.5 0-3-.4-4.2-1.1L3 21l1.5-5.2a8.5 8.5 0 1 1 16.5-4.3Z"/></symbol>
+<symbol id="i-post-create" viewBox="0 0 24 24"><rect x="3.1" y="3.1" width="17.8" height="17.8" rx="4"/><circle cx="8.4" cy="8.1" r="1.65"/><path d="m4 17 4.6-4.5 3 2.9 3.7-4 5.2 5.8"/><path d="M17.1 5.7h3.2M18.7 4.1v3.2"/></symbol>
+<symbol id="i-story-create" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.2" stroke-dasharray="2.6 2.4"/><path d="M12 7.6v8.8M7.6 12h8.8" stroke-linecap="round"/></symbol>
+<symbol id="i-reels-create" viewBox="0 0 24 24"><rect x="3" y="8.4" width="18" height="12.1" rx="2.1"/><path d="M3.2 8.2 5.6 3h14.8l-2.5 5.2M8.5 3l-2.4 5.2m8-5.2-2.4 5.2m7.9 0H3"/><path d="m10.2 11.8 5.2 2.6-5.2 2.6z" stroke-linejoin="round"/></symbol>
+<symbol id="i-gauge" viewBox="0 0 24 24"><path d="M5 18a8.4 8.4 0 1 1 14 0"/><path d="m12 14 3.9-4M7.2 15.7l-.8-.8M12 6.8v1.4M17 9.6l1-1"/><circle cx="12" cy="14.1" r="1"/></symbol></svg>
 <div id="startup" class="startup"><span class="spinner"></span> Patiyiz yükleniyor…</div>
 <section id="auth-root" class="auth-root hidden" aria-label="Hesap girişi"></section>
 <div id="app-root" class="hidden">
@@ -75,15 +79,15 @@
 <div id="pati-create-sheet" hidden>
   <button type="button" class="pati-create-mask" data-action="pati-create-close" aria-label="Paylaşım menüsünü kapat"></button>
   <section class="pati-create-modal" role="dialog" aria-modal="true" aria-label="Yeni paylaşım">
-    <div class="pati-create-heading"><strong>Yeni <em>paylaşım</em></strong><button type="button" class="pati-create-dismiss" data-action="pati-create-close" aria-label="Kapat">×</button></div>
+    <div class="pati-create-heading"><strong>Yeni <em>paylaşım</em></strong><button type="button" class="pati-create-dismiss" data-action="pati-create-close" aria-label="Kapat"><svg class="icon" aria-hidden="true"><use href="#i-close"></use></svg></button></div>
     <div class="pati-create-choices">
-      <button type="button" class="pati-create-choice" data-action="pati-create-post"><span class="pati-choice-icon">▧</span><span><b>Gönderi</b><small>Fotoğraf, video veya yazı paylaş</small></span></button>
-      <button type="button" class="pati-create-choice" data-action="pati-create-story"><span class="pati-choice-icon">✧</span><span><b>Hikâye</b><small>24 saatlik patili anı paylaş</small></span></button>
-      <button type="button" class="pati-create-choice" data-action="pati-create-reels"><span class="pati-choice-icon">▷</span><span><b>Reels</b><small>Patinin videosunu yükle</small></span></button>
+      <button type="button" class="pati-create-choice" data-action="pati-create-post"><span class="pati-choice-icon" aria-hidden="true"><svg class="icon"><use href="#i-post-create"></use></svg></span><span class="pati-choice-copy"><b>Gönderi</b><small>Fotoğraf, video veya yazı paylaş</small></span><svg class="pati-choice-chevron" aria-hidden="true"><use href="#i-arrow"></use></svg></button>
+      <button type="button" class="pati-create-choice" data-action="pati-create-story"><span class="pati-choice-icon" aria-hidden="true"><svg class="icon"><use href="#i-story-create"></use></svg></span><span class="pati-choice-copy"><b>Hikâye</b><small>24 saatlik patili anı paylaş</small></span><svg class="pati-choice-chevron" aria-hidden="true"><use href="#i-arrow"></use></svg></button>
+      <button type="button" class="pati-create-choice" data-action="pati-create-reels"><span class="pati-choice-icon" aria-hidden="true"><svg class="icon"><use href="#i-reels-create"></use></svg></span><span class="pati-choice-copy"><b>Reels</b><small>Patinin videosunu yükle</small></span><svg class="pati-choice-chevron" aria-hidden="true"><use href="#i-arrow"></use></svg></button>
     </div>
   </section>
 </div>
 <div id="modal-root"></div><div id="toasts" class="toast-stack" role="status" aria-live="polite"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js?v=20261021-2"></script><script src="push-config.js?v=20261021-vapid-2"></script><script src="knowledge.js"></script><script src="reels-editor.js?v=20261024-studio-1" defer></script><script src="app.js?v=20261024-stability-1" defer></script>
+<script src="config.js?v=20261021-2"></script><script src="push-config.js?v=20261021-vapid-2"></script><script src="knowledge.js"></script><script src="reels-editor.js?v=20261024-studio-1" defer></script><script src="app.js?v=20261024-icons-1" defer></script>
 </body></html>
