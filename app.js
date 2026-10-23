@@ -182,16 +182,19 @@ let patiyizReelsObserver=null;
 function setupReelsViewer(){
  if(patiyizReelsObserver){patiyizReelsObserver.disconnect();patiyizReelsObserver=null}
  const videos=[...document.querySelectorAll('#main-content .pati-reel-video')];
- if(!videos.length||!('IntersectionObserver'in window)||window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return;
+ if(!videos.length)return;
+ if(!('IntersectionObserver'in window)){if(!document.hidden)videos[0].play().catch(()=>{});return}
+ if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return;
  patiyizReelsObserver=new IntersectionObserver(entries=>{
   for(const entry of entries){
    const v=entry.target;
+   if(entry.isIntersecting&&v.preload==='none'){v.preload='metadata';if(v.readyState===0)v.load()}
    if(entry.isIntersecting&&entry.intersectionRatio>=.65&&!document.hidden&&!v.dataset.manualPause){
     videos.forEach(other=>{if(other!==v)other.pause()});
     v.play().catch(()=>{});
    }else v.pause();
   }
- },{root:document.querySelector('.pati-reels-viewport'),threshold:[0,.25,.65,.9]});
+ },{root:document.querySelector('.pati-reels-viewport'),rootMargin:'70% 0px 70% 0px',threshold:[0,.25,.65,.9]});
  videos.forEach(v=>patiyizReelsObserver.observe(v));
 }
 function reelTogglePlay(button){
@@ -205,9 +208,9 @@ function reelToggleSound(button){
 }
 function reelsPage(){
  const items=[...data.posts].filter(x=>x.video_url&&!blocked.has(x.author_id)).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
- main.innerHTML='<section class="pati-reels-head"><h1>Reels</h1><button type="button" data-action="pati-create-reels">'+ico('plus')+'<span>Video paylaş</span></button></section><div class="pati-reels-viewport">'+(items.length?items.map(p=>{
+ main.innerHTML='<section class="pati-reels-head"><h1>Reels</h1><button type="button" data-action="pati-create-reels">'+ico('plus')+'<span>Video paylaş</span></button></section><div class="pati-reels-viewport">'+(items.length?items.map((p,index)=>{
   const author=profile(p.author_id),count=data.likes.filter(x=>x.post_id===p.id).length,likedPost=liked.has(p.id),savedPost=saved.has(p.id);
-  return '<article class="pati-reel-item" data-post="'+esc(p.id)+'"><video class="pati-reel-video" src="'+esc(p.video_url)+'"'+(p.video_cover_url?' poster="'+esc(p.video_cover_url)+'"':'')+' playsinline muted loop preload="metadata" aria-label="'+esc(author.display_name)+' videosu"></video>'+
+  return '<article class="pati-reel-item" data-post="'+esc(p.id)+'"><video class="pati-reel-video" src="'+esc(p.video_url)+'"'+(p.video_cover_url?' poster="'+esc(p.video_cover_url)+'"':'')+' playsinline muted loop preload="'+(index===0?'auto':index===1?'metadata':'none')+'" aria-label="'+esc(author.display_name)+' videosu"></video>'+
   '<button type="button" class="pati-reel-tap" data-action="reel-play" aria-label="Videoyu oynat veya durdur"></button>'+
   '<div class="pati-reel-author">'+avatar(author,'s')+'<span><strong>'+displayName(author)+'</strong><small>@'+esc(author.handle||'patiyiz')+'</small></span><button type="button" data-action="view-user" data-id="'+esc(author.id)+'">Profil</button></div>'+
   '<div class="pati-reel-caption">'+esc(cut(p.video_subtitle||p.body||'',220))+'</div>'+
