@@ -65,7 +65,7 @@ test('Reels simgeleri SVG olarak render edilir; beğeni ve kayıt durumu doğru 
   blocked:new Set(),liked:new Set(['post1']),saved:new Set(['post1']),
   profile:()=>({id:'member',display_name:'Patiyiz Üyesi',handle:'pati'}),
   esc:String,cut:(s,len)=>String(s).slice(0,len),avatar:()=>'<span class="avatar"></span>',
-  displayName:()=>'<b>Patili</b>',ico:n=>'<svg><use href="#i-'+n+'"></use></svg>'};
+  displayName:()=>'<b>Patili</b>',ico:n=>'<svg><use href="#i-'+(n==='message-circle'?'comment':n)+'"></use></svg>'};
  const render=vm.runInNewContext(code+'\nreelsPage',ctx);
  render();
  for(const icon of ['heart','comment','send','bookmark','gauge','volume-x'])assert.ok(main.innerHTML.includes('#i-'+icon),icon);
