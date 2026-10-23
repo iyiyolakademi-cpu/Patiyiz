@@ -168,3 +168,47 @@ body.pati-create-open{overflow:hidden}
 @media(max-width:365px){.pati-media-gallery{min-height:205px}.pati-media-picker-actions button{font-size:11px}}
 
 @media(max-width:690px){#modal-root .modal-backdrop:has(#post-form) .modal,#modal-root .modal-backdrop:has(#story-form) .modal{max-height:100dvh!important}}
+
+
+/* Instagram-style profile readability and circular permanent highlights */
+#main-content .pati-ig-profile{background:#fff!important;color:#17181b!important}
+#main-content .pati-ig-summary{isolation:auto!important;position:relative;background:linear-gradient(180deg,#f7f7f9 0%,#fff 90%)!important;border-radius:20px 20px 0 0;overflow:visible}
+#main-content .pati-ig-summary::before{display:none!important;content:none!important}
+#main-content .pati-ig-summary .pati-ig-info,#main-content .pati-ig-summary .pati-ig-name,
+#main-content .pati-ig-profile .pati-ig-stats,#main-content .pati-ig-profile .pati-ig-stats b,
+#main-content .pati-ig-profile .pati-ig-stats button,#main-content .pati-ig-profile .pati-ig-stats span{color:#18191c!important;opacity:1!important;visibility:visible!important}
+#main-content .pati-ig-summary .pati-ig-handle{color:#686a72!important}
+#main-content .pati-ig-profile .pati-ig-stats small{display:block!important;color:#686a72!important;opacity:1!important;font-size:11px!important;font-weight:650}
+#main-content .pati-ig-profile .pati-ig-stats b{font-size:clamp(16px,4.5vw,21px)!important;line-height:1.35!important}
+#main-content .pati-ig-profile .pati-ig-stats{padding:3px 1px 5px;align-items:center}
+#main-content .pati-ig-avatar{background:none;border-color:transparent}
+#main-content .pati-ig-highlight-section{padding:2px 0 4px}
+#main-content .pati-ig-highlights{padding:10px 15px 19px;gap:14px;align-items:flex-start}
+#main-content .pati-ig-highlight{flex:0 0 77px;width:77px;min-height:103px;gap:7px}
+#main-content .pati-ig-highlight-ring{width:76px;height:76px;border:2px solid #dedfe3!important;border-radius:50%;padding:4px;box-shadow:0 0 0 1px #f4f4f6;background:#f8f8fa;display:grid;place-items:center;color:#1b1c20;font-size:28px;overflow:hidden}
+#main-content .pati-ig-highlight-ring.is-saved{border-color:#303136!important}
+#main-content .pati-ig-highlight-ring.is-pet{border-color:#e0e1e4!important}
+#main-content .pati-ig-highlight-ring img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+#main-content .pati-ig-highlight small{font-size:11px;font-weight:650;color:#2b2c30;max-width:77px;text-align:center}
+#main-content .pati-new-highlight .pati-ig-highlight-ring{font-weight:400;background:#f1f1f3}
+#main-content .pati-highlight-empty{font-size:12px;color:#7b7d82}
+.story-player .pati-saved-story-label{position:absolute;bottom:68px;left:15px;padding:9px 13px;border-radius:100px;background:#ffffff2c;color:white;font-size:12px;font-weight:700;z-index:10}
+.story-player .pati-story-no-photo{width:100%;height:100%;display:grid;place-items:center;font-size:85px;background:#151619}
+#story-form .pati-story-highlight-option{display:flex;align-items:center;gap:10px;min-height:53px;margin:8px 1px 15px;background:#f5f5f7;border:1px solid #e9e9ec;padding:11px;border-radius:13px;cursor:pointer}
+#story-form .pati-story-highlight-option input{width:19px;height:19px;accent-color:#191a1d;flex:0 0 19px}
+#story-form .pati-story-highlight-option span{display:flex;flex-direction:column;gap:2px}
+#story-form .pati-story-highlight-option strong{font-size:12px;color:#222327}
+#story-form .pati-story-highlight-option small{font-size:10px;color:#74757b}
+/* Completion card: all 5 tasks, with completed and incomplete states */
+#main-content .pati-progress-actions{gap:4px}
+#main-content .pati-progress-action{min-height:50px;border-radius:12px}
+#main-content .pati-progress-action.is-done{background:#f9f9fa}
+#main-content .pati-progress-action.is-pending{background:#fff}
+#main-content .pati-progress-action .pati-task-check{width:28px;height:28px;flex:0 0 28px;border-radius:50%;display:grid;place-items:center;font-size:17px;font-weight:800;background:#f0f0f2;color:#83848b}
+#main-content .pati-progress-action.is-done .pati-task-check{background:#1e1f23;color:#fff}
+#main-content .pati-progress-action.is-pending>i{color:#34353a}
+#main-content .pati-progress-action.is-done>i{color:#44464b;font-size:15px}
+#main-content .pati-progress-count{color:#222327!important;background:#ececef!important}
+#comment-form .comment-list{min-height:100px;max-height:57dvh;overflow:auto}
+#comment-form .modal-footer .primary-btn{background:#191a1e!important}
+@media(max-width:690px){#main-content .pati-ig-summary{border-radius:0!important}#main-content .pati-ig-profile .pati-ig-stats small{font-size:10px!important}#main-content .pati-progress-action{min-height:46px}}

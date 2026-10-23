@@ -10,7 +10,7 @@
   "theme_color": "#141518",
   "icons": [
     {
-      "src": "patiyiz-selected-logo.svg",
+      "src": "patiyiz-selected-logo.svg?v=20261023-icon-refresh-1",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
