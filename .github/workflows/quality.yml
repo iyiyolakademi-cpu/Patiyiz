@@ -1,4 +1,4 @@
-name: FounderHub quality checks
+name: Patiyiz quality checks
 on:
   push:
     branches: [main]
