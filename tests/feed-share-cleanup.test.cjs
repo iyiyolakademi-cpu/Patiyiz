@@ -41,7 +41,9 @@ test('Gönderilerde yeniden paylaş ve başa sabitle düğmeleri kaldırıldı',
  assert.match(src,/data-action="save"/);
  assert.match(src,/data-action="comment"/);
  assert.match(src,/data-action="like"/);
- assert.match(src,/data-action="edit-post"/);
+ assert.match(src,/data-action="post-menu"/);
+ assert.match(app,/case 'post-menu'/);
+ assert.match(app,/data-action="edit-post"/);
 });
 
 test('Paylaşım penceresinde takip edilenler önce ve yuvarlak avatarlar görünür',()=>{
@@ -94,8 +96,8 @@ test('Paylaşım ızgarası küçük ekranlarda yuvarlak profil resmi ve erişil
  assert.match(css,/#share-post-form \.pati-share-person\[hidden\]/);
  assert.match(css,/#share-post-form \.pati-share-quick/);
  assert.match(css,/@media\(max-width:355px\)/);
- assert.match(html,/patiyiz-inspired\.css\?v=20261024-feed-share-1/);
- assert.match(html,/app\.js\?v=20261024-feed-share-1/);
+ assert.match(html,/patiyiz-inspired\.css\?v=20261024-full-reels-fast-feed-1/);
+ assert.match(html,/app\.js\?v=20261024-full-reels-fast-feed-1/);
 });
 
 test('Mevcut DM ile paylaşım düğmesi profil kişisine gönderimi sürdürür',()=>{
