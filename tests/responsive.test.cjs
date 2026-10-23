@@ -5,7 +5,7 @@ const html=fs.readFileSync('index.html','utf8');
 const css=fs.readFileSync('style.css','utf8');
 const app=fs.readFileSync('app.js','utf8');
 const nav=app.slice(app.indexOf('function navRender()'),app.indexOf('function side()'));
-test('Mobil genişlik ayarı ve Patiyiz başlık bölümü var',()=>{assert.match(html,/name="viewport" content="width=device-width,initial-scale=1"/);assert.match(html,/class="mobile-header"/);assert.match(html,/class="mobile-bottom"/)});
+test('Mobil genişlik ayarı ve Patiyiz başlık bölümü var',()=>{assert.match(html,/name="viewport" content="width=device-width,initial-scale=1(?:,viewport-fit=cover)?"/);assert.match(html,/class="mobile-header"/);assert.match(html,/class="mobile-bottom"/)});
 test('Mobil alt menü Akış, Keşfet, Paylaş, Reels ve Profil içerir',()=>{for(const name of ["'Akış'","'Keşfet'","'Reels'","'Profil'","pati-create-open"])assert.ok(nav.includes(name),name)});
 test('Patiyiz menüsü diğer uygulamanın sekmelerini içermez',()=>{assert.doesNotMatch(nav,/founderhub|pets-feed|mobile-more/);assert.match(nav,/pati-create-nav/);assert.match(nav,/small>\$\{label\}<\/small>/)});
 test('Ekran boyutlarına göre uyumlu stiller bulunuyor',()=>{assert.match(css,/@media\(max-width:690px\)/);assert.match(css,/@media\(max-width:740px\)/);assert.match(css,/\.mobile-bottom/);assert.match(css,/\.mobile-header/)});
