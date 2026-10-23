@@ -309,7 +309,7 @@ function openStoryComposer(autoPick=true){
  clearPatiMediaUrls();
  modal('Yeni hikâye',storyPhotoField()+textField('caption','Hikâye açıklaması (isteğe bağlı)','',false,300),'story-form');
  const footer=document.querySelector('#story-form .modal-footer button[type="submit"]');if(footer)footer.textContent='Hikâyeyi paylaş';
- if(autoPick&&window.matchMedia('(max-width:740px)').matches)document.querySelector('#story-form input[name="story_gallery"]')?.click();
+ if(autoPick)document.querySelector('#story-form input[name="story_gallery"]')?.click();
 }
 function updateStoryMediaPreview(file){
  const box=document.getElementById('story-photo-preview');if(!box)return;
@@ -337,7 +337,7 @@ function compose(post,mode='post',autoPick=true){
  modal(post?'Paylaşımı düzenle':reel?'Yeni Reels':'Yeni gönderi',(!post?postMediaField(mode):'')+textField('body','Bir açıklama ekle...',post?.body||'',false)+selectField('species','Hayvan türü',species,post?.species||'Kedi')+(!post?petOptions()+'<div class="pati-media-controls" hidden><label>Fotoğrafı düzenle · Dikey / Yatay / Kare</label><div class="pati-ratio-options"><button type="button" class="active" data-action="post-ratio" data-id="4:5">▯ Dikey</button><button type="button" data-action="post-ratio" data-id="1.91:1">▭ Yatay</button><button type="button" data-action="post-ratio" data-id="1:1">□ Kare</button></div><input type="hidden" name="aspect" value="4:5"><div class="pati-crop-preview" hidden><div class="pati-crop-pages"><button type="button" data-action="post-crop-prev" aria-label="Önceki fotoğraf">‹</button><strong id="pati-crop-index">1 / 1</strong><button type="button" data-action="post-crop-next" aria-label="Sonraki fotoğraf">›</button></div><canvas id="pati-crop-canvas" width="320" height="400" aria-label="Fotoğraf kırpma önizlemesi"></canvas><p>Fotoğrafı sürükleyerek istediğin kadrajı seç.</p><label>Yakınlaştır <input type="range" name="crop_zoom" min="1" max="2.5" value="1" step="0.05"></label></div></div>':'<p class="small-note">Düzenleme sırasında mevcut medya korunur.</p>'),'post-form');
  const f=document.getElementById('post-form');f.dataset.edit=post?.id||'';f.dataset.mode=reel?'reels':'post';
  const submit=f.querySelector('.modal-footer button[type="submit"]');if(submit)submit.textContent=post?'Değişiklikleri kaydet':reel?'Reels paylaş':'Paylaş';
- if(!post&&autoPick&&window.matchMedia('(max-width:740px)').matches)openComposerMediaPicker('gallery');
+ if(!post&&autoPick)openComposerMediaPicker('gallery');
 }
 
 function uploadStatus(message){const form=document.querySelector('#modal-root form');const status=form?.querySelector('.pati-upload-status');if(status){status.hidden=false;status.querySelector('span').textContent=message}const label=form?.querySelector('.modal-footer .primary-btn');if(label){label.dataset.originalText||=label.textContent;label.textContent='⏳ '+message}}
