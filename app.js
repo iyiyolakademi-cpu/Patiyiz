@@ -135,6 +135,7 @@ function manageHighlightAlbums(){
 function openHighlights(id){const items=data.stories.filter(x=>x.author_id===id&&x.is_highlight).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));if(!items.length)return notify('Öne çıkan hikâye bulunamadı.');closeStory();storyItems=items;storyIndex=0;const layer=document.createElement('div');layer.id='story-overlay';layer.className='story-fullscreen';document.body.appendChild(layer);document.body.classList.add('story-fullscreen-open');showStoryFrame()}
 function stepStory(n){if(!storyItems.length)return;clearTimeout(storyTimer);if(document.getElementById('story-viewers-sheet')?.hidden===false&&n===1)return;const next=storyIndex+n;if(next<0){showStoryFrame();return}if(next>=storyItems.length){closeStory();return}storyIndex=next;showStoryFrame()}
 
+const patiyizOnboardingThankYouUntil=new Map(),patiyizOnboardingDismissed=new Set();
 function patiyizProgressCard(){
  const p=current()||{},followingCount=data.follows.filter(x=>x.follower_id===me.id).length;
  const tasks=[
@@ -145,6 +146,24 @@ function patiyizProgressCard(){
   {label:'İlk hikâyeni paylaş',info:'İstersen profilinde kalıcı olarak da göster',done:data.stories.some(x=>x.author_id===me.id),action:'story-create'}
  ];
  const count=tasks.filter(x=>x.done).length,complete=count===tasks.length;
+ if(complete){
+  const id=me.id,key='patiyiz-onboarding-finished-v1:'+id;
+  const thanksUntil=patiyizOnboardingThankYouUntil.get(id);
+  if(thanksUntil&&Date.now()>=thanksUntil){patiyizOnboardingThankYouUntil.delete(id);patiyizOnboardingDismissed.add(id);return ''}
+  if(!thanksUntil){
+   if(patiyizOnboardingDismissed.has(id))return '';
+   try{if(localStorage.getItem(key)==='1'){patiyizOnboardingDismissed.add(id);return ''}}catch(e){console.warn('Görev durumu cihazda saklanamadı:',e.message)}
+   const ms=4600;
+   patiyizOnboardingThankYouUntil.set(id,Date.now()+ms);
+   try{localStorage.setItem(key,'1')}catch(e){console.warn('Görev durumu cihazda saklanamadı:',e.message)}
+   setTimeout(()=>{
+    patiyizOnboardingThankYouUntil.delete(id);
+    patiyizOnboardingDismissed.add(id);
+    if(me?.id===id)document.querySelectorAll('.pati-onboarding-thanks').forEach(node=>node.remove());
+   },ms);
+  }
+  return '<section class="pati-onboarding-thanks" role="status" aria-live="polite" aria-label="Profil görevleri tamamlandı"><span class="pati-onboarding-thanks-icon" aria-hidden="true">'+ico('check')+'</span><div><strong>Harika, profilini tamamladın!</strong><p>Teşekkür ederiz! Artık Patiyiz topluluğunun bir parçasısın. 🐾</p></div></section>';
+ }
  return '<section class="pati-progress-card" aria-label="Profil tamamlama görevleri"><div class="pati-progress-top"><span class="pati-progress-flag">🐾</span><div><strong>'+(complete?'Profilin tamamlandı!':'Profilini tamamla')+'</strong><p>'+count+' / '+tasks.length+' görev tamamlandı</p></div><span class="pati-progress-count">'+count+'/'+tasks.length+'</span></div><div class="pati-progress-track" role="progressbar" aria-label="Profil tamamlama ilerlemesi" aria-valuemin="0" aria-valuemax="'+tasks.length+'" aria-valuenow="'+count+'"><div style="width:'+(count/tasks.length*100)+'%"></div></div><div class="pati-progress-actions">'+tasks.map(x=>'<button type="button" class="pati-progress-action '+(x.done?'is-done':'is-pending')+'" data-action="'+x.action+'" aria-label="'+esc(x.label)+(x.done?' tamamlandı':' tamamlanmadı')+'"><span class="pati-task-check" aria-hidden="true">'+(x.done?'✓':'+')+'</span><span><b>'+esc(x.label)+'</b><small>'+esc(x.done?'Tamamlandı · '+x.info:x.info)+'</small></span><i aria-hidden="true">'+(x.done?'✓':'›')+'</i></button>').join('')+'</div></section>';
 }
 
