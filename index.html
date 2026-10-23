@@ -4,7 +4,7 @@
 <title>Patiyiz — Patili dostlar bir arada</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261023-patiyiz-restored-v2"><link rel="icon" type="image/svg+xml" href="patiyiz-selected-logo.svg?v=20261023-patiyiz-restored">
+<link rel="stylesheet" href="style.css?v=20261023-paw-design-1"><link rel="stylesheet" href="patiyiz-inspired.css?v=20261023-paw-design-1"><link rel="icon" type="image/svg+xml" href="patiyiz-selected-logo.svg?v=20261023-patiyiz-restored">
 <!-- Patiyiz release refresh: 2026-10-22 / explore and notification navigation -->
 </head><body>
 <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden" xmlns="http://www.w3.org/2000/svg">
@@ -66,7 +66,18 @@
   <nav class="mobile-bottom" id="mobile-nav" aria-label="Mobil ana menü"></nav>
   <button class="mobile-fab" type="button" data-action="compose" aria-label="Paylaşım oluştur"><svg class="icon"><use href="#i-plus"></use></svg></button>
 </div>
+<div id="pati-create-sheet" hidden>
+  <button type="button" class="pati-create-mask" data-action="pati-create-close" aria-label="Paylaşım menüsünü kapat"></button>
+  <section class="pati-create-modal" role="dialog" aria-modal="true" aria-label="Yeni paylaşım">
+    <div class="pati-create-heading"><strong>Yeni <em>paylaşım</em></strong><button type="button" class="pati-create-dismiss" data-action="pati-create-close" aria-label="Kapat">×</button></div>
+    <div class="pati-create-choices">
+      <button type="button" class="pati-create-choice" data-action="pati-create-post"><span class="pati-choice-icon">▧</span><span><b>Gönderi</b><small>Fotoğraf, video veya yazı paylaş</small></span></button>
+      <button type="button" class="pati-create-choice" data-action="pati-create-story"><span class="pati-choice-icon">✧</span><span><b>Hikâye</b><small>24 saatlik patili anı paylaş</small></span></button>
+      <button type="button" class="pati-create-choice" data-action="pati-create-reels"><span class="pati-choice-icon">▷</span><span><b>Reels</b><small>Patinin videosunu yükle</small></span></button>
+    </div>
+  </section>
+</div>
 <div id="modal-root"></div><div id="toasts" class="toast-stack" role="status" aria-live="polite"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js?v=20261021-2"></script><script src="push-config.js?v=20261021-vapid-2"></script><script src="knowledge.js"></script><script src="app.js?v=20261023-patiyiz-restored-v2" defer></script>
+<script src="config.js?v=20261021-2"></script><script src="push-config.js?v=20261021-vapid-2"></script><script src="knowledge.js"></script><script src="app.js?v=20261023-paw-design-1" defer></script>
 </body></html>
