@@ -1,0 +1,16 @@
+const test=require('node:test');const assert=require('node:assert/strict');const fs=require('node:fs');const vm=require('node:vm');const app=fs.readFileSync('app.js','utf8'),html=fs.readFileSync('index.html','utf8');
+const tableSpecs=[...app.matchAll(/\['([a-z_]+)','[a-zA-Z]+',\d+\]/g)].map(m=>m[1]);
+const expected=['patiyiz_stories','patiyiz_voice_comments','patiyiz_story_views','patiyiz_story_likes','posts','venture_profiles','founder_courses','founder_course_lessons','messages'];
+test('JavaScript parses',()=>{new vm.Script(app)});
+test('No obsolete, nonexistent story/audio table references',()=>{for(const x of ['founderhub_stories','founderhub_voice_comments','founderhub_story_views','founderhub_story_likes'])assert.ok(!app.includes(x),x)});
+test('Stories read/write same existing table',()=>{assert.ok(tableSpecs.includes('patiyiz_stories'));assert.match(app,/sb\.from\('patiyiz_stories'\)\.insert/);assert.match(app,/sb\.from\('patiyiz_stories'\)\.delete/);assert.match(app,/data\.stories=\[r\.data/);});
+test('Voice comments use existing table',()=>{assert.ok(tableSpecs.includes('patiyiz_voice_comments'));assert.match(app,/sb\.from\('patiyiz_voice_comments'\)\.insert/)});
+test('All publishing forms registered',()=>{const p=app.match(/if\(!\[(.*?)\]\.includes\(id\)\)return;/s);assert.ok(p);for(const id of ['post-form','story-form','venture-form','milestone-form','event-form','venture-images-form','academy-course-form','academy-lesson-form','question-form','message-form'])assert.ok(p[1].includes("'"+id+"'"),id)});
+test('Each publishing form has handler',()=>{for(const id of ['post-form','story-form','venture-form','milestone-form','event-form','venture-images-form','academy-course-form','academy-lesson-form','question-form','message-form'])assert.ok(app.includes("case '"+id+"':"),id)});
+test('Publishing requires database confirmation',()=>{assert.match(app,/\.insert\(record\)\.select\('\*'\)/);assert.match(app,/if\(!r\.data\?\.length\)throw Error/)});
+test('Story creation verifies inserted row',()=>{assert.match(app,/\.insert\(\{author_id:me\.id,image_url,caption:str\('caption'\)\}\)\.select\('\*'\)\.single\(\)/)});
+test('Pet posts separated without hiding profile posts',()=>{assert.match(app,/content_space==='patiler'/);assert.match(app,/content_space!=='patiler'/);assert.match(app,/const posts=\[\.\.\.data\.posts\.filter\(x=>x\.author_id===p\.id\)\]/)});
+test('Published text posts not excluded from main feed',()=>{assert.match(app,/feedMediaMode==='text'\)list=list\.filter/);assert.doesNotMatch(app,/feedMediaMode==='media'\?Boolean\(p\.image_url\|\|p\.video_url\)/)});
+test('Academy authoring gated by admin and RLS',()=>{assert.match(app,/case 'academy-course-form':\{if\(!isAdmin\)/);assert.match(app,/case 'academy-lesson-form':\{if\(!isAdmin\)/)});
+test('Asset cache bust present',()=>{assert.match(html,/app\.js\?v=/);assert.match(html,/style\.css\?v=/)});
+test('Core navigation exists',()=>{for(const nav of ['home','explore','education','pets-feed','ventures','network','events','messages'])assert.ok(app.includes("'"+nav+"'"),nav)});
