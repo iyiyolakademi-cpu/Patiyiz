@@ -939,3 +939,11 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .founder-network-selects{display:flex;gap:8px;flex-wrap:wrap;width:100%}.founder-network-selects select,.founder-network-selects input{flex:1;min-width:105px;max-width:180px;border:1px solid #dedee2;border-radius:10px;background:#fff;padding:10px;color:#18191d;font-size:12px}.founder-network-selects button{background:#17181b;color:#fff;border:0;border-radius:10px;padding:10px 13px}
 .founder-event-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.founder-event-card{background:white;border:1px solid #e7e7ea;border-radius:17px;padding:19px;display:flex;flex-direction:column;justify-content:space-between;gap:18px}.founder-event-card small{font-size:11px;color:#777982}.founder-event-card h3{font-size:17px;margin:9px 0}.founder-event-card p{font-size:12px;color:#575962;line-height:1.6}.founder-event-card b{font-size:12px}
 @media(max-width:680px){.founder-detail{padding:10px 12px 100px}.founder-detail-head{padding:18px;gap:11px}.founder-detail-head img,.founder-detail-initial{width:58px;height:58px;flex-basis:58px}.founder-detail-info{grid-template-columns:1fr 1fr}.founder-detail-section{padding:15px}.founder-event-list{grid-template-columns:1fr;padding:0 10px}}
+
+.founder-pets-hero{background:#151619;color:#fff;padding:23px;border-radius:16px;margin:10px 0 17px}
+.founder-pets-hero strong{font-size:20px}.founder-pets-hero p{color:#d7d7da;font-size:12px;margin:10px 0 0}
+.founder-course-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin:15px 0}
+.founder-course-card{text-align:left;padding:21px;background:#fff;border:1px solid #e4e4e8;border-radius:17px;cursor:pointer;color:#17181b;display:grid;gap:8px}
+.founder-course-card small{font-size:10px;color:#888}.founder-course-card h3{font-size:18px;margin:0}.founder-course-card p{font-size:12px;line-height:1.6;color:#60636b}.founder-course-card span{font-size:12px;font-weight:750}
+.founder-course-lessons{display:grid;gap:13px;margin:15px 0}.founder-course-lessons .pati-card{padding:20px}.founder-course-lessons p{font-size:13px;line-height:1.7}
+@media(max-width:690px){.founder-course-grid{grid-template-columns:1fr}}
