@@ -46,5 +46,5 @@ test('Coin kazanma animasyonu ve profil/menü bağlantıları korunur',()=>{
  assert.match(app,/Pati Mağaza/);
  assert.match(app,/paticoin-profile-link/);
  assert.match(css,/@keyframes patiCoinBounce/);
- assert.match(html,/app\.js\?v=20261024-invite-rewards-1/);
+ assert.match(html,/app\.js\?v=20261024-store-fulfillment-1/);
 });
