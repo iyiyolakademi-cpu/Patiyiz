@@ -6,14 +6,26 @@
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#f7f7f8",
-  "theme_color": "#141518",
+  "background_color": "#000000",
+  "theme_color": "#000000",
   "icons": [
     {
-      "src": "patiyiz-selected-logo.svg?v=20261023-icon-refresh-1",
+      "src": "patiyiz-app-icon-192.png?v=20261024-new-p-logo-1",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "patiyiz-app-icon-512.png?v=20261024-new-p-logo-1",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "patiyiz-selected-logo.svg?v=20261024-new-p-logo-1",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ],
   "lang": "tr",

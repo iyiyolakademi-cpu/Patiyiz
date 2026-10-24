@@ -993,3 +993,7 @@ body.pati-create-open{overflow:hidden}
  #main-content .pati-reel-rail .pati-reel-tool{min-height:40px!important;width:47px!important;min-width:47px!important}
  #main-content .pati-reel-author{bottom:103px}
 }
+
+/* Icon-only Patiyiz logo: upright black, no legacy rotation. */
+.brand-icon:has(.patiyiz-chosen-logo){transform:none!important;background:#000!important;box-shadow:none!important;border-radius:11px!important;overflow:hidden!important;padding:0!important}
+.brand-icon .patiyiz-chosen-logo{transform:none!important;object-fit:cover!important;width:100%!important;height:100%!important;border-radius:inherit!important}
