@@ -121,7 +121,7 @@ async function open(files,options={}){
   }
   refresh();
  };
- const leave=()=>{if(active!==session)return;active=null;session.urls.forEach(u=>URL.revokeObjectURL(u));root.remove();document.body.classList.remove('pati-studio-open')};
+ const leave=()=>{if(active!==session)return;active=null;document.removeEventListener('keydown',escapeKey,true);session.urls.forEach(u=>URL.revokeObjectURL(u));root.remove();document.body.classList.remove('pati-studio-open')};
  const apply=async()=>{
   if(session.busy)return;
   session.busy=true;const next=$(root,'[data-studio="next"]');next.disabled=true;
@@ -200,7 +200,6 @@ async function open(files,options={}){
  canvas.addEventListener('pointerup',finish);canvas.addEventListener('pointercancel',finish);
  const escapeKey=e=>{if(e.key==='Escape'&&active===session){e.preventDefault();e.stopImmediatePropagation();leave();options.onCancel?.();document.removeEventListener('keydown',escapeKey,true)}};
  document.addEventListener('keydown',escapeKey,true);
- const originalLeave=leave;
  // One active studio at a time; ensure callbacks cannot act on abandoned inputs.
  try{
   for(const file of items){
@@ -213,5 +212,5 @@ async function open(files,options={}){
  }catch(e){message('Bu fotoğraf açılamadı. JPG veya PNG olarak tekrar seçebilirsin.',true);$(root,'[data-studio="next"]').disabled=true}
  return true;
 }
-window.PatiyizPhotoStudio={open,get active(){return !!active},PRESETS,CROPS,plan,filterFor,draw};
+window.PatiyizPhotoStudio={open,close(){const button=active?.root?.querySelector('[data-studio="cancel"]');if(button)button.click()},get active(){return !!active},PRESETS,CROPS,plan,filterFor,draw};
 })();
