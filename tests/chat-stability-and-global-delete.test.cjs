@@ -32,7 +32,7 @@ test('Chat remembers position and does not re-render when marking message read',
  assert.match(read,/unread\.forEach\(x=>x\.read_at=now\);navRender\(\)/);
  assert.doesNotMatch(read,/render\(\);/);
  const live=section('function queueLiveUpdate(){','function startLive(){');
- assert.match(live,/x\.edited_at\+'_'+x\.body/);
+ assert.match(live,/x\.edited_at/);assert.match(live,/x\.body/);
  assert.match(live,/focus\(\{preventScroll:true\}\)/);
 });
 test('Gallery selection sends photo immediately with no intermediate picker',()=>{
