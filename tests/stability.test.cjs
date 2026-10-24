@@ -25,7 +25,7 @@ function makeLoadContext(){
  const ctx={
   me:{id:'current'},data:Object.fromEntries(keys.map(k=>[k,[]])),
   pageLimits:{posts:100,messages:150,notifications:150},pageMore:{},
-  patiyizLoadedTables:new Set(),Set,console,
+  patiyizLoadedTables:new Set(),patiyizLoadToken:0,Set,console,
   liked:new Set(),saved:new Set(),followed:new Set(),voted:new Set(),favorites:new Set(),blocked:new Set()
  };
  const calls=[],faults=new Set();
