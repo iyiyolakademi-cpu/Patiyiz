@@ -1733,11 +1733,11 @@ function resetSessionState(){
  data=Object.fromEntries(Object.keys(data).map(key=>[key,[]]));
  for(const group of [favorites,followed,liked,saved,voted,blocked])group.clear();
  blockedProfiles=[];patiDmSignedCache.clear();profileCountCache.clear();profileCountInFlight.clear();
- patiPostSeen.clear();patiPostViewCounts.clear();if(patiPostViewObserver){patiPostViewObserver.disconnect();patiPostViewObserver=null}pageLimits={posts:100,messages:150,notifications:150};pageMore={posts:true,messages:true,notifications:true};
+ if(typeof patiPostSeen!=='undefined')patiPostSeen.clear();if(typeof patiPostViewCounts!=='undefined')patiPostViewCounts.clear();if(typeof patiPostViewObserver!=='undefined'&&patiPostViewObserver){patiPostViewObserver.disconnect();patiPostViewObserver=null}pageLimits={posts:100,messages:150,notifications:150};pageMore={posts:true,messages:true,notifications:true};
  if(typeof healthFilePortal!=='undefined')healthFilePortal=null;if(typeof healthFileOwner!=='undefined')healthFileOwner='';if(typeof achievementPortal!=='undefined')achievementPortal=null;if(typeof premiumPortal!=='undefined')premiumPortal=null;if(typeof premiumPortalOwner!=='undefined')premiumPortalOwner='';if(typeof educationCloudDone!=='undefined')educationCloudDone.clear();if(typeof educationCloudUser!=='undefined')educationCloudUser='';if(typeof pendingPostLikes!=='undefined')pendingPostLikes.clear();if(typeof likesChangeEpoch==='number')likesChangeEpoch++;if(typeof savesChangeEpoch==='number')savesChangeEpoch++;if(typeof pendingPostSaves!=='undefined')pendingPostSaves.clear();if(typeof savedMissingAttempted!=='undefined')savedMissingAttempted.clear();personId='';profileId='';selectedPostId='';followListId='';search='';view='home';chatFilter='primary';mobileChatOpen=false;isAdmin=false;
  storyItems=[];storyLikes=[];storyIndex=0;clearTimeout(storyTimer);storyTimer=null;lastPhotoTap={id:'',time:0};
  document.getElementById('story-overlay')?.remove();document.body.classList.remove('story-fullscreen-open');
- window.PatiyizGalleryPicker?.close();window.PatiyizPhotoStudio?.close?.();window.PatiyizReelsEditor?.dispose();clearPatiMediaUrls();
+ window.PatiyizGalleryPicker?.close();window.PatiyizCameraFlow?.close?.();window.PatiyizPhotoStudio?.close?.();window.PatiyizReelsEditor?.dispose();clearPatiMediaUrls();
  document.getElementById('modal-root')?.replaceChildren();
  dmCancel=true;if(dmRecorder?.state==='recording')try{dmRecorder.stop()}catch(e){console.warn('Ses kaydı durdurulamadı',e)}
  dmStream?.getTracks().forEach(track=>track.stop());dmStream=null;dmRecipient=null;dmParts=[];dmMediaSending=false;
