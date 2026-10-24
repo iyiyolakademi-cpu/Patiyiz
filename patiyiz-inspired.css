@@ -1337,3 +1337,102 @@ body.pati-create-open{overflow:hidden}
  .pati-pets-heading{align-items:flex-start}
  .pati-pets-add{padding:10px;font-size:11px}
 }
+
+/* Reference design: five fixed tabs, black centered create button, no floating duplicate. */
+#app-root>.mobile-bottom>.mobile-nav-btn.pati-create-nav,
+#app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn.pati-create-nav{
+ display:flex!important;
+}
+#app-root:not(.hidden)>.mobile-fab,
+#app-root:not(.hidden)>.mobile-fab[hidden],
+#app-root>.mobile-fab{
+ display:none!important;
+}
+#app-root>.mobile-bottom>.pati-create-nav .pati-mobile-nav-glyph{
+ display:grid!important;place-items:center!important;
+ color:#fff!important;background:#1b1c20!important;
+ width:41px!important;height:37px!important;border-radius:13px!important;
+ margin-top:-4px!important;
+}
+#app-root>.mobile-bottom>.pati-create-nav .pati-mobile-nav-glyph>.icon{
+ width:23px!important;height:23px!important;
+ color:#fff!important;stroke:#fff!important;fill:none!important;
+ stroke-width:2.3!important;
+}
+#app-root>.mobile-bottom .mobile-nav-btn.active{color:#15161a!important}
+#app-root>.mobile-bottom>.pati-create-nav:active .pati-mobile-nav-glyph{transform:scale(.95)}
+#app-root>.mobile-bottom>.mobile-nav-btn[aria-current="page"]>small{
+ font-weight:850!important;
+}
+/* Always-available feature directory in mobile header and profile Menu. */
+#app-root>.mobile-header .pati-header-menu{display:none}
+@media(max-width:740px){
+ #app-root>.mobile-header .pati-header-actions{
+  display:flex!important;align-items:center!important;gap:5px!important;
+  flex:0 0 auto!important;min-width:0!important;
+ }
+ #app-root>.mobile-header>.brand{
+  flex:1 1 auto!important;min-width:0!important;
+  max-width:calc(100% - 116px)!important;
+ }
+ #app-root>.mobile-header .pati-header-menu,
+ #app-root>.mobile-header .pati-header-messages,
+ #app-root>.mobile-header .pati-header-notifications{
+  display:grid!important;place-items:center!important;
+  width:36px!important;height:38px!important;min-width:36px!important;
+  flex:0 0 36px!important;
+  padding:0!important;position:relative!important;
+  border-radius:12px!important;background:#f4f4f6!important;
+  border:1px solid #e6e6e9!important;color:#202126!important;
+  margin:0!important;transform:none!important;
+ }
+ #app-root>.mobile-header .pati-header-menu .icon{
+  width:21px!important;height:21px!important;fill:none!important;
+  stroke:#212228!important;stroke-width:1.9!important;
+ }
+ #app-root>.mobile-header .pati-header-menu:focus-visible{
+  outline:2px solid #16171a!important;outline-offset:2px!important;
+ }
+ #app-root>.mobile-header .pati-header-actions .pati-count-badge{
+  position:absolute;right:-3px;top:-5px;z-index:2;
+ }
+ #app-root>.mobile-bottom{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+}
+@media(max-width:355px){
+ #app-root>.mobile-header .pati-header-actions{gap:3px!important}
+ #app-root>.mobile-header .pati-header-menu,
+ #app-root>.mobile-header .pati-header-messages,
+ #app-root>.mobile-header .pati-header-notifications{
+  width:33px!important;height:35px!important;min-width:33px!important;flex-basis:33px!important;
+ }
+ #app-root>.mobile-header>.brand{max-width:calc(100% - 107px)!important}
+}
+/* Feature menu uses the existing tools dialog; all links open real existing routes. */
+#tools-form .pati-features-list{padding:2px 0 18px;max-height:calc(78dvh - 105px);overflow-y:auto;overscroll-behavior:contain}
+#tools-form .pati-feature-intro{font-size:13px;line-height:1.5;color:#71727a;margin:2px 0 16px}
+#tools-form .pati-feature-group{margin:0 0 18px}
+#tools-form .pati-feature-group h3{
+ font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+ color:#818189;margin:0 0 9px;
+}
+#tools-form .pati-mobile-menu-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#tools-form .pati-mobile-menu-item{
+ display:flex;align-items:center;gap:9px;
+ min-width:0;min-height:58px;padding:10px;
+ border:1px solid #ececf0;border-radius:13px;
+ background:#f9f9fa;text-align:left;color:#1b1c20;
+ font:inherit;font-size:12px;font-weight:720;cursor:pointer;
+}
+#tools-form .pati-mobile-menu-item>.icon{width:20px;height:20px;flex:0 0 20px}
+#tools-form .pati-mobile-menu-item>span{flex:1;min-width:0}
+#tools-form .pati-mobile-menu-item>.icon:last-child{width:14px;height:14px;flex:0 0 14px;color:#9c9ca3}
+#tools-form .pati-mobile-menu-item:focus-visible{outline:2px solid #17181b;outline-offset:1px}
+@media(max-width:740px){
+ #tools-form .pati-features-list{
+  max-height:calc(100dvh - 135px - env(safe-area-inset-bottom,0px));
+  padding-bottom:calc(28px + env(safe-area-inset-bottom,0px));
+ }
+}
+@media(max-width:355px){
+ #tools-form .pati-mobile-menu-item{font-size:11px;padding:9px 7px;gap:6px}
+}

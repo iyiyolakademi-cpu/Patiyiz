@@ -24,12 +24,12 @@ test('Alt menü eski isimlerin yerine gerçekten beş hedefi gösterir',()=>{
    unreadCounts:()=>({messages:0,notifications:0}),countBadge:()=>'',ico:i=>'<svg>'+i+'</svg>'});
  navRender();
  const labels=[...markup.matchAll(/<small>([^<]+)<\/small>/g)].map(x=>x[1]);
- assert.deepEqual(labels,['Ana Sayfa','Keşfet','Akademi','Patiler','Profil']);
- assert.match(markup,/data-view="education"/);
- assert.match(markup,/data-view="pets"/);
- assert.doesNotMatch(markup,/data-action="pati-create-open"/);
+ assert.deepEqual(labels,['Akış','Keşfet','Paylaş','Reels','Profil']);
+ assert.match(markup,/data-view="reels"/);
+ assert.doesNotMatch(markup,/data-view="pets"/);
+ assert.match(markup,/data-action="pati-create-open"/);
  assert.match(desktop,/Patiler/);
- assert.equal(dom['#app-root>.mobile-fab'].dataset.action,'pati-create-open');
+ assert.equal(dom['#app-root>.mobile-fab'].hidden,true);
  assert.match(css,/#app-root:not\(\.hidden\)>\.mobile-fab\{/);
 });
 
@@ -80,8 +80,8 @@ test('Geç açılan Supabase gönderileri ana sayfada görünür hale gelir; med
 });
 
 test('Güncellenmiş css ve script eski alt menüyü önbellekten çağırmaz',()=>{
- assert.match(html,/patiyiz-inspired\.css\?v=20261024-nav-media-2/);
- assert.match(html,/app\.js\?v=20261024-nav-media-2/);
+ assert.match(html,/patiyiz-inspired\.css\?v=20261024-five-tabs-reference-1/);
+ assert.match(html,/app\.js\?v=20261024-five-tabs-reference-1/);
  assert.match(css,/\.pati-pets-grid/);
  assert.match(css,/#app-root:not\(\.hidden\)>\.mobile-fab\{/);
 });
