@@ -1284,3 +1284,56 @@ body.pati-create-open{overflow:hidden}
   padding-bottom:120px!important;
  }
 }
+
+/* Five real destinations: Home, Explore, Academy, Pets and Profile.
+   The existing + creator remains reachable in one floating action button. */
+#app-root>.mobile-bottom>.mobile-nav-btn.pati-create-nav{display:none!important}
+#app-root:not(.hidden)>.mobile-fab{
+ display:grid!important;place-items:center!important;position:fixed!important;
+ z-index:129!important;width:54px!important;height:54px!important;
+ border:3px solid #fff!important;border-radius:18px!important;
+ background:#17181b!important;color:white!important;
+ box-shadow:0 8px 26px rgba(0,0,0,.19)!important;cursor:pointer;
+ bottom:calc(83px + env(safe-area-inset-bottom,0px))!important;right:16px!important;
+}
+#app-root:not(.hidden)>.mobile-fab .icon{width:26px!important;height:26px!important}
+#app-root:not(.hidden)>.mobile-fab:focus-visible{outline:2px solid #17181b;outline-offset:3px}
+#app-root:not(.hidden)>.mobile-fab[hidden]{display:none!important}
+@media(min-width:741px){
+ #app-root:not(.hidden)>.mobile-fab{
+  bottom:97px!important;right:max(16px,calc((100vw - 700px)/2))!important;
+ }
+ #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn.active{
+  background:#ececf0!important;color:#121316!important;
+ }
+}
+@media(max-width:740px){
+ #app-root:not(.hidden)>.mobile-fab{
+  bottom:calc(84px + env(safe-area-inset-bottom,0px))!important;
+ }
+}
+@media(max-width:740px){
+ .pati-keyboard-open #app-root:not(.hidden)>.mobile-fab{display:none!important}
+}
+.pati-pets-page{max-width:980px;margin:0 auto;padding:20px 16px 110px;color:#17181b}
+.pati-pets-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:26px}
+.pati-pets-heading h1{font-size:clamp(24px,4vw,32px);margin:0 0 5px;font-weight:850}
+.pati-pets-heading p{margin:0;color:#6b6c72;font-size:13px}
+.pati-pets-add{display:inline-flex;align-items:center;justify-content:center;gap:7px;background:#17181b;color:white;border:0;border-radius:13px;padding:12px 15px;font:inherit;font-size:12px;font-weight:800;cursor:pointer}
+.pati-pets-add .icon{width:17px;height:17px}
+.pati-pets-page h2{font-size:17px;font-weight:800;margin:20px 0 13px}
+.pati-pets-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.pati-pets-tile{display:block;overflow:hidden;padding:0;border:1px solid #e6e6ea;border-radius:17px;text-align:left;background:#fff;cursor:pointer;color:inherit;min-width:0}
+.pati-pets-photo{aspect-ratio:1.18;display:grid;place-items:center;background:#f1f1f3;overflow:hidden}
+.pati-pets-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.pati-pets-photo span{font-size:44px}
+.pati-pets-info{padding:10px 12px 12px;display:grid;gap:5px;overflow:hidden}
+.pati-pets-info strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px}
+.pati-pets-info small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;color:#71717a}
+.pati-pets-empty{grid-column:1/-1;padding:28px 18px;background:#f7f7f8;border:1px solid #eeeef0;border-radius:16px;text-align:center;color:#76767c}
+@media(max-width:500px){
+ .pati-pets-page{padding:18px 12px 106px}
+ .pati-pets-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .pati-pets-heading{align-items:flex-start}
+ .pati-pets-add{padding:10px;font-size:11px}
+}
