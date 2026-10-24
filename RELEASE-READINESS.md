@@ -1,3 +1,13 @@
+## 24 Ekim 2026 — özel Sağlık Dosyası, Premium kontrol paneli, rozetler ve yönetici bildirimleri
+
+- **Dijital Pati Sağlık Dosyası:** Her kullanıcı yalnız kendi hayvanının aşı, muayene, tahlil, ilaç ve diğer kayıtlarını görebilir. İsteğe bağlı PDF/görseller yalnız *özel* Supabase Storage alanına yüklenir (10 MB sınırı). Görüntüleme bağlantıları en fazla 90 saniyelik imzalı bağlantılardır. Sağlık özeti yazdırılarak PDF kaydedilebilir. **Veteriner teşhisi veya resmî sağlık belgesi değildir.**
+- **Premium Kontrol Paneli:** Doğrulanmış Premium hakkı olan üyeler tamamlanan görevleri, üç programdaki toplam ilerlemeyi ve önerilen sıradaki günlük görevi tek ekranda görür. Ödeme bağlantısı hâlâ hazır değildir; erişim yetkileri yalnız server tarafında tutulur.
+- **Başarı Rozetleri:** 1, 10, 25, 50 ve 101 ücretsiz ders eşiği; 101 dersin tümü ve her Premium programın tüm görevleri tamamlanırsa kişisel katılım belgesi için yazdırma/PDF imkânı. **Akredite veya mesleki sertifika değildir.**
+- **Admin → Bildirim Gönder:** Yönetici hesabı ile giriş yaptıktan sonra başlık ve metin girilip kullanıcı sayısı görülerek gönderim onaylanır. Sunucu 10 dakika bekleme, günde beş duyuru, 1000 alıcı üst sınırı ve kampanya kimliği tekrar koruması uygular. Gönderilen bildirimler uygulama içi **notifications** tablosuna yazılır; mevcut Web Push tetikleyicisi yalnız izin veren cihazlara gönderim dener. Gerçek telefonlara teslim garantisi yoktur. **Bu güncellemede test amaçlı dahi gerçek toplu bildirim gönderilmedi.**
+- **Gizlilik:** Sağlık tabloları ve dosyaları kullanıcı bazlı RLS ile sınırlıdır. Canlı hesap silme Edge Function v5, özel sağlık dosyalarını silme sırasını içerir. Gerçek hesap silme testi mevcut kullanıcı kaybına yol açacağı için yapılmadı.
+- **Güvenlik sınırları:** Kullanıcılar bildirim geçmişini okuyamaz, admin duyuru yetkisi alamaz. RLS ve özel depolama kontrolleri SQL üzerinden denetlenmiştir.
+- **Kontrol listesi:** İki hesapla çapraz belge erişimi, PDF/PNG yükleme, iPhone/Android yazdırma, push izni açık/kapalı testleri ve gerçek cihaz UX kontrolleri üretim öncesinde ayrıca yapılmalıdır.
+
 ## 24 Ekim 2026 — 101 derslik Patiyiz Akademi
 
 - Mevcut 6 çekirdek ders ve 26 ek derse **69 yeni eğitim** eklenerek toplam **101 özgün ders ve 101 mini sınav** sunuldu.
