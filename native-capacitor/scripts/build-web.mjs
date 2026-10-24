@@ -91,12 +91,14 @@ await build({entryPoints:[path.join(native,'src','native-shell.js')],bundle:true
  outfile:path.join(out,'native-shell.js')});
 if(html.includes('https://cdn.jsdelivr.net/npm/@supabase/')||html.includes('https://cdn.jsdelivr.net/npm/tus-js-client'))throw Error('Unexpected remote SDK');
 // Prevent a seemingly successful APK with missing local JS, CSS, icons or manifest.
-for(const match of html.matchAll(/<(?:script|link|img)\\b[^>]*\\b(?:src|href)="([^"]+)"/gi)){
+for(const tag of html.match(/<(?:script|link|img)[^>]*>/gi)||[]){
+ const match=tag.match(/(?:src|href)="([^"]+)"/i);
+ if(!match)continue;
  const resource=match[1];
- if(/^(?:https?:|data:|\\/\\/|#)/i.test(resource))continue;
+ if(['https:','http:','data:','//','#'].some(prefix=>resource.startsWith(prefix)))continue;
  const relative=resource.split(/[?#]/)[0];
  if(!relative)continue;
- const local=path.resolve(out,relative.replace(/^\\/+/, ''));
+ const local=path.resolve(out,relative.startsWith('/')?relative.slice(1):relative);
  if(!local.startsWith(out+path.sep))throw Error('Invalid bundled asset path: '+resource);
  try{await access(local)}catch{throw Error('Missing bundled Android asset: '+resource)}
 }
