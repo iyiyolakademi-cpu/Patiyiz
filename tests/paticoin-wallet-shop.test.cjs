@@ -32,7 +32,7 @@ test('Mağazada iki hedef ve pet seçimi sunulur, teslimat gerçekleşti denmez'
  assert.match(x,/value="street_animals"/);
  assert.match(x,/data-action="paticoin-confirm"/);
  assert.match(x,/patiyiz_redeem_reward/);
- assert.match(x,/onay bekleniyor/);
+ assert.match(x,/beklemeye alınır/);assert.match(x,/Talebin alındı/);
  assert.match(x,/btn.disabled=true/);
  assert.match(x,/data\.pets\.filter\(p=>p\.owner_id===me\.id\)/);
 });
