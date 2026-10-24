@@ -11,7 +11,7 @@ const filter=`        <intent-filter android:autoVerify="true">
           <data android:scheme="https" android:host="patiyiz.com" android:pathPrefix="/open" />
         </intent-filter>`;
 if(!xml.includes('android:pathPrefix="/open"')){
- const match=/<activity\\b[^>]*android:name="\\.MainActivity"[^>]*>/s.exec(xml);
+ const match=/<activity\b[^>]*android:name="\.MainActivity"[^>]*>/s.exec(xml);
  if(!match)throw Error('MainActivity launch tag not detected.');
  const start=match.index+match[0].length,end=xml.indexOf('</activity>',start);
  if(end<0)throw Error('MainActivity end tag not found.');
