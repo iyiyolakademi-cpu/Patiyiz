@@ -1866,3 +1866,14 @@ body.story-fullscreen-open:has(#highlight-album-form) #modal-root .modal-backdro
 #main-content .pati-edu-lesson-body .pati-edu-quiz button{min-height:42px}
 @media(max-width:600px){#main-content .pati-edu-grid{grid-template-columns:1fr}#main-content .pati-edu-card{min-height:120px}#main-content .pati-edu-next button{width:100%}}
 @media(prefers-reduced-motion:reduce){#main-content .pati-edu-card,#main-content .pati-edu-progressbar span{transition:none}}
+
+
+/* Akademi 101 · searchable, touch-friendly course discovery */
+#main-content .pati-edu-learning-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:16px 0 8px}
+#main-content .pati-edu-search-label{position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+#main-content #pati-academy-search{flex:1 1 245px;min-width:0;min-height:46px;border:1px solid #d9dae0;border-radius:14px;padding:11px 14px;background:#fff;color:#212127;font-size:16px;outline-offset:2px}
+#main-content #pati-academy-search:focus{border-color:#55566b;box-shadow:0 0 0 3px rgba(50,50,80,.08)}
+#main-content .pati-edu-learning-toolbar button{flex:0 1 auto;min-height:46px;border:0;border-radius:14px;background:#23242a;color:#fff;padding:12px 18px;font-weight:700;cursor:pointer}
+#main-content .pati-edu-all-done{color:#22734c;font-weight:700;padding:11px}
+#main-content .pati-edu-empty{padding:20px 16px;border:1px dashed #ccd0d7;border-radius:14px;text-align:center;color:#555b66}
+@media(max-width:520px){#main-content .pati-edu-learning-toolbar{display:grid;grid-template-columns:1fr}#main-content .pati-edu-learning-toolbar button{width:100%}}
