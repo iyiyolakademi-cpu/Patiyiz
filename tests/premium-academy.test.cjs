@@ -85,10 +85,10 @@ test('Premium lesson bodies are absent from publicly served files and GitHub sch
  assert.doesNotMatch(sql,/jsonb_to_recordset|insert into public\.patiyiz_premium_lessons/);
  assert.match(sql,/create policy "premium_lessons_members_only"/);
  assert.match(sql,/patiyiz_premium_entitlements/);
- assert.match(sql,/expires_at > now\(\)/);
+ assert.match(sql,/expires_at\s*>\s*now\(\)/);
  assert.match(sql,/create policy "premium_progress_member_insert"/);
  assert.match(sql,/create policy "premium_waitlist_self_delete"/);
- assert.match(sql,/revoke insert,update,delete on public\.patiyiz_premium_entitlements/);
+ assert.match(sql,/revoke all on public\.patiyiz_premium_entitlements/);
 });
 test('Premium is in navigation, feature drawer, renderer and before app boot scripts',()=>{
  assert.match(app,/\['premium','Premium Akademi','library'\]/);
