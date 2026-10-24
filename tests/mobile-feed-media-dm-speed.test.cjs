@@ -27,7 +27,7 @@ test('Medya gönderisinin üst bilgisi, görseli, etkileşimleri ve açıklamas�
 });
 
 test('İlk fotoğraf hemen, sonraki fotoğraflar ihtiyaç oldukça yüklenir',()=>{
- const photo=vm.runInNewContext(part('const photo=','const starter=')+'\nphoto',{esc:String});
+ const photo=vm.runInNewContext(part('const photo=','const starter=')+'\nphoto',{esc:String,performance:{now:()=>0}});
  assert.match(photo('a.jpg','',true),/loading="eager" decoding="async" fetchpriority="high"/);
  assert.match(photo('b.jpg'),/loading="lazy" decoding="async" fetchpriority="low"/);
  const home=part('function homePage(){','function explorePage()');

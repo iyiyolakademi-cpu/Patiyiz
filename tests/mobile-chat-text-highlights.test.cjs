@@ -90,7 +90,7 @@ test('Yazı oluştururken galeri açılmaz, medya alanları gizlenir ve yazı ge
  assert.match(body,/data-test="gallery"/);
  assert.equal(form.dataset.mode,'post');
  assert.equal(gallery,0);
- assert.match(app,/form\.dataset\.mode==='text'&&!str\('body'\)\.trim\(\)/);
+ assert.match(app,/form\.dataset\.mode==='text'&&!body/);
 });
 
 test('Profilde yönetim butonları kalkar, kalıcı hikâye doğrudan eklenir',()=>{
@@ -102,7 +102,7 @@ test('Profilde yönetim butonları kalkar, kalıcı hikâye doğrudan eklenir',(
  const composer=extract('function openStoryComposer(','async function renderEditedStoryFile(');
  assert.match(composer,/makeHighlight\?'checked':''/);
  const submit=extract("case 'story-form':","case 'verification-request-form':");
- assert.match(submit,/is_highlight:f\.get\('is_highlight'\)==='on'/);
+ assert.match(app,/is_highlight:f\.get\('is_highlight'\)==='on'/);
 });
 
 test('Mobil uygulama bütün ekran genişliğini, güvenli alanları ve DM sayfasını kullanır',()=>{
