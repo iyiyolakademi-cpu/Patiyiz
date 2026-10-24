@@ -32,9 +32,29 @@ await writeFile(path.join(out,'admin.html'),admin);
 // then the person returns to the native app and signs in with email/password.
 app=app.replaceAll('redirectTo:location.origin+location.pathname',"redirectTo:'https://patiyiz.com/'");
 app=app.replaceAll('emailRedirectTo:location.origin+location.pathname',"emailRedirectTo:'https://patiyiz.com/'");
+app=replace(app,"function showApp(){starter();","function showApp(){starter();if(window.PatiyizNative?.isNative)window.PatiyizNative.setSession(me?.id,sb);",'native auth session');
+app=replace(app,"authRoot.classList.add('hidden');appRoot.classList.remove('hidden');navigate(view);","authRoot.classList.add('hidden');appRoot.classList.remove('hidden');navigate(window.PatiyizNative?.consumeScreen()||view);",'native initial route');
+app=replace(app,"case 'logout':run(async()=>{const r=await sb.auth.signOut();",
+ "case 'logout':run(async()=>{if(window.PatiyizNative?.isNative)await window.PatiyizNative.nativeLogout();const r=await sb.auth.signOut();",'native safe signout');
+app=replace(app,"async function disablePhonePush(){if(!me)throw Error('Önce giriş yapmalısın.');",
+ "async function disablePhonePush(){if(!me)throw Error('Önce giriş yapmalısın.');if(window.PatiyizNative?.isNative){await window.PatiyizNative.disablePush();return}",'native opt-out');
+app=replace(app,"function openComposerMediaPicker(kind){\n const f=document.getElementById('post-form');if(!f)return;",
+ "function openComposerMediaPicker(kind){\n const f=document.getElementById('post-form');if(!f)return;",'composer picker');
+app=replace(app,"if(!input)return;\n if(kind==='gallery'&&!video&&window.PatiyizGalleryPicker){",
+ "if(!input)return;\n if(!video&&window.PatiyizNative?.isNative){void window.PatiyizNative.pickPhotoForInput(input,kind==='camera'?'camera':'photos',kind!=='camera');return}\n if(kind==='gallery'&&!video&&window.PatiyizGalleryPicker){",'native composer picker');
+app=replace(app,"if(autoPick)document.querySelector('#story-form input[name=\"story_gallery\"]')?.click();",
+ "if(autoPick){const input=document.querySelector('#story-form input[name=\"story_gallery\"]');if(window.PatiyizNative?.isNative)void window.PatiyizNative.pickPhotoForInput(input,'photos');else input?.click()}",'native story auto picker');
+app=replace(app,"case 'pati-story-gallery':document.querySelector('#story-form input[name=\"story_gallery\"]')?.click();break;",
+ "case 'pati-story-gallery':{const input=document.querySelector('#story-form input[name=\"story_gallery\"]');if(window.PatiyizNative?.isNative)void window.PatiyizNative.pickPhotoForInput(input,'photos');else input?.click();break}",'native story gallery');
+app=replace(app,"case 'pati-story-camera':document.querySelector('#story-form input[name=\"story_camera\"]')?.click();break;",
+ "case 'pati-story-camera':{const input=document.querySelector('#story-form input[name=\"story_camera\"]');if(window.PatiyizNative?.isNative)void window.PatiyizNative.pickPhotoForInput(input,'camera');else input?.click();break}",'native story camera');
+app=replace(app,"case 'pati-dm-gallery-open':document.querySelector('#message-form input[name=\"dm_gallery\"]')?.click();break;",
+ "case 'pati-dm-gallery-open':{const input=document.querySelector('#message-form input[name=\"dm_gallery\"]');if(window.PatiyizNative?.isNative)void window.PatiyizNative.pickPhotoForInput(input,'photos');else input?.click();break}",'native private message gallery');
+app=replace(app,"if(input?.name==='dm_camera'||input?.name==='dm_gallery'){",
+ "if(input?.name==='dm_camera'||input?.name==='dm_gallery'){",'DM fallback intact');
 const pushAnchor="async function enablePhonePush(){\n if(!me)return;";
 app=replace(app,pushAnchor,pushAnchor+
- "\n if(window.Capacitor?.isNativePlatform?.()){notify('Bu Android test sürümünde bildirimler henüz etkin değil; Firebase/FCM bağlantısı gerekiyor.',true);return;}",
+ "\n if(window.PatiyizNative?.isNative){await window.PatiyizNative.enablePush(me.id,sb);return;}",
  'native push guard');
 const nativeBack=[
 "document.addEventListener('patiyiz:native-back',event=>{",
@@ -48,7 +68,11 @@ const nativeBack=[
 " if(me&&view!=='home'){navigate('home');event.preventDefault();}",
 "});"
 ].join('\n');
-app=replace(app,'async function boot(){',nativeBack+'\nasync function boot(){','native-back integration');
+const nativeEvents=[
+"document.addEventListener('patiyiz:native-info',event=>{if(event.detail?.message)notify(event.detail.message)})",
+"document.addEventListener('patiyiz:native-route',event=>{const screen=event.detail?.screen;if(me&&allowed.includes(screen)){window.PatiyizNative?.consumeScreen();navigate(screen)}})",
+].join('\n');
+app=replace(app,'async function boot(){',nativeBack+'\n'+nativeEvents+'\nasync function boot(){','native-back integration');
 await writeFile(path.join(out,'app.js'),app);
 for(const {name,code} of [
 {name:'supabase-compat.js',code:"import * as supabase from '@supabase/supabase-js';window.supabase=supabase;"},
@@ -56,6 +80,8 @@ for(const {name,code} of [
 ]){
  await build({stdin:{contents:code,resolveDir:native,sourcefile:name+'.source.js'},bundle:true,platform:'browser',format:'iife',target:'es2020',minify:true,logLevel:'warning',outfile:path.join(out,'vendor',name)});
 }
-await build({entryPoints:[path.join(native,'src','native-shell.js')],bundle:true,platform:'browser',format:'iife',target:'es2020',minify:true,logLevel:'warning',outfile:path.join(out,'native-shell.js')});
+await build({entryPoints:[path.join(native,'src','native-shell.js')],bundle:true,platform:'browser',format:'iife',target:'es2020',minify:true,logLevel:'warning',
+ define:{__PATIYIZ_FCM_ENABLED__:process.env.PATIYIZ_FCM_ENABLED==='true'?'true':'false'},
+ outfile:path.join(out,'native-shell.js')});
 if(html.includes('https://cdn.jsdelivr.net/npm/@supabase/')||html.includes('https://cdn.jsdelivr.net/npm/tus-js-client'))throw Error('Unexpected remote SDK');
 console.log('Native Android web assets bundled: '+files.length+' files, local Supabase/TUS and native shell.');
