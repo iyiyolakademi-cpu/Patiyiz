@@ -97,7 +97,7 @@ test('Paylaşım ızgarası küçük ekranlarda yuvarlak profil resmi ve erişil
  assert.match(css,/#share-post-form \.pati-share-quick/);
  assert.match(css,/@media\(max-width:355px\)/);
  assert.match(html,/patiyiz-inspired\.css\?v=20261024-mobile-ux-1/);
- assert.match(html,/app\.js\?v=20261024-mobile-ux-1/);
+ assert.match(html,/app\.js\?v=20261024-account-qa-1/);
 });
 
 test('Mevcut DM ile paylaşım düğmesi profil kişisine gönderimi sürdürür',()=>{
