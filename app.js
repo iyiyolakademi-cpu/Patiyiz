@@ -656,7 +656,7 @@ function healthFilePage(){
   });
  }
  main.innerHTML=healthFilePortal.render();
- if(!healthFilePortal.state.loaded&&!healthFilePortal.state.loading)void healthFilePortal.load();
+ if(!healthFilePortal.state.attempted&&!healthFilePortal.state.loading)void healthFilePortal.load();
  if(!patiWellness.loaded&&!patiWellness.loading)void patiWellnessFetch();
 }
 function achievementsPage(){
@@ -1483,9 +1483,10 @@ function resetSessionState(){
 }
 
 document.addEventListener('click',e=>{
- const h=e.target.closest('[data-health-pet],[data-health-open],[data-health-delete],[data-health-print]');
+ const h=e.target.closest('[data-health-pet],[data-health-open],[data-health-delete],[data-health-print],[data-health-retry]');
  if(h&&view==='healthfile'&&healthFilePortal){
-  if(h.dataset.healthPet)healthFilePortal.selectPet(h.dataset.healthPet);
+  if(h.hasAttribute('data-health-retry'))void healthFilePortal.load(true);
+  else if(h.dataset.healthPet)healthFilePortal.selectPet(h.dataset.healthPet);
   else if(h.dataset.healthOpen)void healthFilePortal.openFile(h.dataset.healthOpen);
   else if(h.dataset.healthDelete)void healthFilePortal.remove(h.dataset.healthDelete);
   else if(h.hasAttribute('data-health-print')){try{healthFilePortal.report()}catch(err){notify(err.message,true)}}
