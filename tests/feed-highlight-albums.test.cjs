@@ -39,6 +39,8 @@ test('Hikâyede sabitle yerine sol tarafta Öne çıkar düğmesi',()=>{
  assert.match(css,/\.story-fullscreen \.story-highlight-toggle/);
  assert.match(css,/left:14px!important/);
  assert.match(css,/\.story-fullscreen \.story-delete/);
+ assert.match(css,/z-index:100100!important/);
+ assert.match(css,/body\.story-fullscreen-open:has\(#highlight-picker-form\)/);
  assert.match(css,/right:14px!important/);
 });
 
