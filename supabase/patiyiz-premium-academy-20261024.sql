@@ -38,6 +38,7 @@ create table if not exists public.patiyiz_premium_progress (
  foreign key(course_id,day_no)
  references public.patiyiz_premium_lessons(course_id,day_no) on delete cascade
 );
+create index if not exists patiyiz_premium_progress_course_day_idx on public.patiyiz_premium_progress(course_id,day_no);
 alter table public.patiyiz_premium_progress enable row level security;
 revoke all on public.patiyiz_premium_progress from anon,authenticated;
 grant select,insert on public.patiyiz_premium_progress to authenticated;
