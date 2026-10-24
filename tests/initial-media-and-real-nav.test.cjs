@@ -67,7 +67,7 @@ test('Geç açılan Supabase gönderileri ana sayfada görünür hale gelir; med
  const dom={classList:{add(){},remove(){}}};
  const ctx={starter(){},authRoot:dom,appRoot:dom,view:'home',me:{id:'same'},data,patiyizDeferredLoading:null,
   navigate(){},startLive(){},routePendingNotification(){},checkAdmin(){},navRender(){},render(){rendered++},
-  patiyizLoadedTables:loaded,document:{activeElement:{matches:()=>false}},window:{scrollY:55,scrollTo(opts){scrollRestored=opts.top}},
+  patiyizLoadedTables:loaded,document:{activeElement:{matches:()=>false}},window:{scrollY:55,setTimeout:()=>{},scrollTo(opts){scrollRestored=opts.top}},
   requestAnimationFrame:cb=>cb(),console,setTimeout:cb=>{resolveDelay=cb},
   load:async()=>{loads++;data.posts=[{id:'new-post'}];loaded.add('posts')}
  };
