@@ -97,7 +97,16 @@ async function disablePush(){
 }
 async function nativeLogout(){await disablePush();activeUser='';activeClient=null}
 window.PatiyizNative={isNative:native,firebaseConfigured,pickPhotoForInput,enablePush,disablePush,nativeLogout,
- setSession(userId,client){activeUser=userId||'';activeClient=client||null},
+ setSession(userId,client){
+  activeUser=userId||'';activeClient=client||null;
+  if(native&&firebaseConfigured&&activeUser&&activeClient){
+   void (async()=>{
+    await attachPushListeners();
+    const permission=await PushNotifications.checkPermissions();
+    if(permission.receive==='granted')await PushNotifications.register();
+   })().catch(e=>console.warn('FCM resume registration failed:',e?.message||e));
+  }
+ },
  consumeScreen(){const screen=queuedScreen;queuedScreen='';return screen},
  routeWebUrl};
 if(native){
@@ -112,6 +121,7 @@ if(native){
   const back=new CustomEvent('patiyiz:native-back',{cancelable:true});document.dispatchEvent(back);
   if(!back.defaultPrevented)await App.minimizeApp().catch(console.warn);
  }).catch(console.warn);
+ if(firebaseConfigured)void attachPushListeners().catch(e=>console.warn('FCM listeners unavailable:',e?.message||e));
  void App.addListener('appUrlOpen',e=>routeWebUrl(e.url)).catch(console.warn);
  void App.getLaunchUrl().then(e=>{if(e?.url)routeWebUrl(e.url)}).catch(console.warn);
 }
