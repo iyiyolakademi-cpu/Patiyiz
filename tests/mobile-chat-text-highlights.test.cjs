@@ -93,15 +93,18 @@ test('Yazı oluştururken galeri açılmaz, medya alanları gizlenir ve yazı ge
  assert.match(app,/form\.dataset\.mode==='text'&&!body/);
 });
 
-test('Profilde yönetim butonları kalkar, kalıcı hikâye doğrudan eklenir',()=>{
+test('Profilde Instagram gibi ayrı öne çıkan albümler oluşturulur',()=>{
  const profile=extract('function profilePage(){','function formField(');
- assert.match(profile,/data-action="story-create-highlight"/);
- assert.match(profile,/Kalıcı ekle/);
- assert.doesNotMatch(profile,/data-action="highlight-album-new"|data-action="highlight-album-manage"/);
- assert.match(app,/case 'story-create-highlight':openStoryComposer\(true,true\)/);
+ assert.match(profile,/data-action="highlight-album-new"/);
+ assert.match(profile,/Yeni<\/small>/);
+ assert.match(profile,/albums\.map\(/);
+ assert.doesNotMatch(profile,/data-action="story-create-highlight"/);
+ assert.match(app,/function chooseStoryHighlight\(storyId\)/);
+ assert.match(app,/function addStoryToHighlightAlbum\(storyId,albumId\)/);
+ assert.match(app,/case 'story-highlight-choose':chooseStoryHighlight\(id\)/);
+ assert.match(app,/case 'story-highlight-album'/);
  const composer=extract('function openStoryComposer(','async function renderEditedStoryFile(');
  assert.match(composer,/makeHighlight\?'checked':''/);
- const submit=extract("case 'story-form':","case 'verification-request-form':");
  assert.match(app,/is_highlight:f\.get\('is_highlight'\)==='on'/);
 });
 
