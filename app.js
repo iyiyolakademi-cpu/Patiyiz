@@ -929,7 +929,7 @@ function adoptionPage(){const q=search.toLocaleLowerCase('tr'),list=[...data.ado
 function carePage(){let today=new Date().toLocaleDateString('sv-SE');let all=data.care.filter(x=>x.owner_id===me.id);let c=all.filter(x=>careFilter==='all'||(careFilter==='done'?x.done:careFilter==='late'?!x.done&&x.due_date<today:!x.done&&x.due_date>=today)).sort((a,b)=>a.due_date.localeCompare(b.due_date));main.innerHTML=header('Bakım Takvimi','Hayvanlarının önemli bakım günlerini takip et.',button('+ Görev ekle','care-add')+button('Aşı, kilo ve hatırlatmalar','wellness-open')) +`<div class="pati-filter-tabs">${[['all','Tümü'],['upcoming','Yaklaşan'],['late','Geciken'],['done','Tamamlanan']].map(([key,label])=>`<button type="button" data-action="care-filter" data-id="${key}" class="${careFilter===key?'active':''}">${label} (${all.filter(x=>key==='all'||(key==='done'?x.done:key==='late'?!x.done&&x.due_date<today:!x.done&&x.due_date>=today)).length})</button>`).join('')}</div><div class="pati-note">Bakım takvimi bu hesapta saklanır. Şu sürümde otomatik e-posta / telefon hatırlatması gönderilmez.</div><div class="pati-list">${c.map(x=>`<div class="pati-card"><div class="pati-row between"><div><span class="pati-pill">${esc(x.category)}</span><h3 style="margin-top:10px;${x.done?'text-decoration:line-through;opacity:.6':''}">${esc(x.title)}</h3><p>${day(x.due_date)} ${x.pet_id?'· '+esc(data.pets.find(p=>p.id===x.pet_id)?.name||''):''}</p></div><div class="pati-row">${button(x.done?'Yeniden aç':'✓ Tamamla','care-done',`data-id="${x.id}"`)}<button data-action="care-del" data-id="${x.id}" class="small-btn danger-btn">Sil</button></div></div></div>`).join('')}</div>${c.length?'':empty('Bakım görevi eklenmedi')}`}
 
 let dmRecorder=null,dmParts=[],dmStream=null,dmCancel=false,dmRecipient=null;
-async function uploadDmFile(file,type,receiver){if(!file?.size||file.size>8388608)throw Error('Dosya en fazla 8 MB olabilir.');const mime=file.type.split(';')[0];if(type==='image'&&!['image/jpeg','image/png','image/webp'].includes(mime))throw Error('JPG, PNG veya WebP seç.');if(type==='audio'&&!['audio/webm','audio/mp4','audio/ogg','audio/mpeg'].includes(mime))throw Error('Ses biçimi desteklenmiyor.');const ext=type==='image'?(mime==='image/png'?'png':mime==='image/webp'?'webp':'jpg'):(mime==='audio/mp4'?'m4a':mime==='audio/ogg'?'ogg':mime==='audio/mpeg'?'mp3':'webm');const author=me?.id;if(!author)throw Error('Mesaj göndermek için giriş yap.');const path=author+'/'+crypto.randomUUID()+'.'+ext;const up=await sb.storage.from('patiyiz-private-messages').upload(path,file,{contentType:mime});if(up.error)throw up.error;try{if(me?.id!==author)throw Error('Oturum değişti. Mesaj gönderilmedi.');const m=await sb.from('messages').insert({sender_id:author,receiver_id:receiver,body:type==='audio'?'🎤 Sesli mesaj':'📷 Fotoğraf',attachment_type:type,attachment_path:path});if(m.error)throw m.error}catch(error){try{await sb.storage.from('patiyiz-private-messages').remove([path])}catch(cleanup){console.warn('Gönderilemeyen medya temizlenemedi',cleanup)}throw error}}
+async function uploadDmFile(file,type,receiver){if(!file?.size||file.size>8388608)throw Error('Dosya en fazla 8 MB olabilir.');const mime=file.type.split(';')[0];if(type==='image'&&!['image/jpeg','image/png','image/webp'].includes(mime))throw Error('JPG, PNG veya WebP seç.');if(type==='audio'&&!['audio/webm','audio/mp4','audio/ogg','audio/mpeg'].includes(mime))throw Error('Ses biçimi desteklenmiyor.');const ext=type==='image'?(mime==='image/png'?'png':mime==='image/webp'?'webp':'jpg'):(mime==='audio/mp4'?'m4a':mime==='audio/ogg'?'ogg':mime==='audio/mpeg'?'mp3':'webm');const author=me?.id;if(!author)throw Error('Mesaj göndermek için giriş yap.');const path=author+'/'+crypto.randomUUID()+'.'+ext;const up=await sb.storage.from('patiyiz-private-messages').upload(path,file,{contentType:mime});if(up.error)throw up.error;try{if(me?.id!==author)throw Error('Oturum değişti. Mesaj gönderilmedi.');const m=await sb.from('messages').insert({sender_id:author,receiver_id:receiver,body:type==='audio'?'🎤 Sesli mesaj':'📷 Fotoğraf',attachment_type:type,attachment_path:path}).select('*').single();if(m.error)throw m.error;return m.data}catch(error){try{await sb.storage.from('patiyiz-private-messages').remove([path])}catch(cleanup){console.warn('Gönderilemeyen medya temizlenemedi',cleanup)}throw error}}
 const patiDmSignedCache=new Map();
 async function loadDmMedia(){
  const items=[...document.querySelectorAll('[data-private-path]')],userId=me?.id;
@@ -950,7 +950,27 @@ async function loadDmMedia(){
   if(el.tagName==='IMG')el.decoding='async';
  }));
 }
-async function sendDmImage(file){if(!personId||dmMediaSending)return;dmMediaSending=true;const recipient=personId,history=document.querySelector('.chat-history'),temp=document.createElement('div'),local=URL.createObjectURL(file);temp.className='bubble-chat mine pati-dm-pending';temp.innerHTML='<img class="pati-dm-image" alt="Gönderiliyor"><small>Gönderiliyor…</small>';temp.querySelector('img').src=local;history?.appendChild(temp);if(history)history.scrollTop=history.scrollHeight;try{await uploadDmFile(file,'image',recipient);temp.remove();await refreshKeys([['messages','messages']])}catch(e){temp.querySelector('small').textContent='Gönderilemedi';throw e}finally{URL.revokeObjectURL(local);dmMediaSending=false}}
+async function sendDmImage(file){
+ if(!personId||dmMediaSending)return;
+ const recipient=personId,uid=me.id;dmMediaSending=true;
+ const history=document.querySelector('.chat-history');
+ const pending=document.createElement('div'),local=URL.createObjectURL(file);
+ pending.className='bubble-chat mine pati-dm-pending';
+ pending.innerHTML='<img class="pati-dm-image" alt="Gönderilen fotoğraf"><small>Fotoğraf gönderiliyor…</small>';
+ pending.querySelector('img').src=local;
+ history?.appendChild(pending);
+ if(history)history.scrollTop=history.scrollHeight;
+ try{
+  const record=await uploadDmFile(file,'image',recipient);
+  if(!record)throw new Error('Fotoğraf sunucuda doğrulanamadı.');
+  if(me?.id===uid&&personId===recipient){
+   data.messages=data.messages.filter(x=>x.id!==record.id);
+   data.messages.push(record);
+   pending.remove();navRender();if(view==='messages')render();
+  }else pending.remove();
+ }catch(e){pending.remove();throw e}
+ finally{URL.revokeObjectURL(local);dmMediaSending=false}
+}
 async function startDmRecord(){if(!personId||!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder)throw Error('Tarayıcı ses kaydını desteklemiyor.');if(dmRecorder)return;dmStream=await navigator.mediaDevices.getUserMedia({audio:true});const type=['audio/webm;codecs=opus','audio/mp4','audio/webm','audio/ogg'].find(t=>MediaRecorder.isTypeSupported(t));if(!type){dmStream.getTracks().forEach(t=>t.stop());throw Error('Ses biçimi desteklenmiyor.')}dmParts=[];dmCancel=false;dmRecipient=personId;dmRecorder=new MediaRecorder(dmStream,{mimeType:type});dmRecorder.ondataavailable=e=>{if(e.data.size)dmParts.push(e.data)};dmRecorder.onstop=async()=>{const blob=new Blob(dmParts,{type:type.split(';')[0]});dmStream?.getTracks().forEach(t=>t.stop());dmRecorder=null;dmStream=null;document.querySelector('.pati-dm-rec-state')?.setAttribute('hidden','');if(dmCancel||!blob.size||!me||!dmRecipient)return;try{await uploadDmFile(blob,'audio',dmRecipient);await refreshKeys([['messages','messages']])}catch(e){notify('Ses gönderilemedi: '+friendly(e),true)}};dmRecorder.start();document.querySelector('.pati-dm-rec-state')?.removeAttribute('hidden')}
 function messagesPage(){
  const oldHistory=main.querySelector('.pati-dm-layout .chat-history');
@@ -1602,8 +1622,23 @@ case 'pet-form':{let o={name:str('name'),species:str('species'),gender:str('gend
 case 'reply-form':await save('replies',{author_id:me.id,question_id:form.dataset.question,body:str('body')});break;
 case 'comment-form':{let record={author_id:me.id,post_id:form.dataset.post,body:str('body')};if(form.dataset.parent)record.parent_id=form.dataset.parent;await save('comments',record);break}
 case 'report-form':{if(str('reason').length<5)throw Error('Neden en az 5 karakter olmalı.');await save('content_reports',{reporter_id:me.id,content_type:form.dataset.kind,content_id:form.dataset.record,reason:str('reason')});break}
-case 'dm-edit-form':{const body=str('body');if(!body)throw Error('Mesaj boş olamaz');const out=await sb.from('messages').update({body,edited_at:new Date().toISOString()}).eq('id',form.dataset.message).eq('sender_id',me.id);if(out.error)throw out.error;closeModal(true);await refreshKeys([['messages','messages']]);break}case 'message-form':{if(!personId||personId===me.id)return;if(!str('body').trim())return;if(blocked.has(personId))throw Error('Engellenmiş kullanıcıya mesaj gönderilemez.');let r=await sb.from('messages').insert({sender_id:me.id,receiver_id:personId,body:str('body'),reply_to:form.dataset.reply||null});if(r.error)throw r.error;form.reset();delete form.dataset.reply;await refreshKeys([['messages','messages']]);break}
+case 'dm-edit-form':{const body=str('body');if(!body)throw Error('Mesaj boş olamaz');const out=await sb.from('messages').update({body,edited_at:new Date().toISOString()}).eq('id',form.dataset.message).eq('sender_id',me.id);if(out.error)throw out.error;closeModal(true);await refreshKeys([['messages','messages']]);break}case 'message-form':{if(!personId||personId===me.id)return;if(!str('body').trim())return;if(blocked.has(personId))throw Error('Engellenmiş kullanıcıya mesaj gönderilemez.');const sender=me.id,recipient=personId;
+ let r=await sb.from('messages').insert({sender_id:sender,receiver_id:recipient,body:str('body'),reply_to:form.dataset.reply||null}).select('*').single();
+ if(r.error)throw r.error;
+ form.reset();delete form.dataset.reply;
+ if(me?.id===sender&&personId===recipient){
+  data.messages=data.messages.filter(x=>x.id!==r.data.id);data.messages.push(r.data);
+  navRender();render();
+ }
+ break}
 }});if(form.isConnected){if(primary){primary.disabled=false;primary.textContent=primary.dataset.originalText||'Kaydet'}if(status)status.hidden=true}});
+function patiResizeChatViewport(){
+ const h=window.visualViewport?.height||window.innerHeight;
+ if(Number.isFinite(h)&&h>0)document.documentElement.style.setProperty('--pati-dm-visual-height',Math.round(h)+'px');
+}
+patiResizeChatViewport();
+window.visualViewport?.addEventListener('resize',patiResizeChatViewport);
+window.addEventListener('resize',patiResizeChatViewport);
 window.addEventListener('offline',()=>{notify('İnternet bağlantısı kesildi. Paylaşım ve mesaj işlemleri bağlantı gelince tekrar denenebilir.',true)});
 window.addEventListener('online',()=>{notify('İnternet bağlantısı yeniden kuruldu.');if(me&&sb){refresh().catch(e=>console.warn('Yenileme başarısız',e));refreshOnReturn()}});document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshOnReturn()});window.addEventListener('focus',refreshOnReturn);
 function resetSessionState(){
