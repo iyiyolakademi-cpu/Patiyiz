@@ -763,7 +763,7 @@ function patiWellnessPage(){
   return '<article class="pati-wellness-event"><span class="pati-wellness-event-icon">'+({vaccine:'💉',vet:'🩺',food:'🥣',medicine:'💊'}[x.kind]||'🐾')+'</span><div><strong>'+esc(x.title)+'</strong><small>'+esc(patiReminderNames[x.kind]||'Bakım')+' · '+esc(when)+'</small><small>'+esc(x.note||'')+'</small><span class="pati-wellness-urgency">'+urgency+(x.repeat_days?' · Her '+x.repeat_days+' günde bir':'')+'</span></div><div class="pati-wellness-event-actions"><button data-action="wellness-reminder-done" data-id="'+esc(x.id)+'">✓ Tamamla</button><button data-action="wellness-reminder-delete" data-id="'+esc(x.id)+'" aria-label="Hatırlatmayı sil">×</button></div></article>';
  }).join('');
  const weightRows=weights.map(w=>'<div class="pati-wellness-weight-row"><span>'+esc(day(w.measured_on))+'</span><strong>'+Number(w.weight_kg).toLocaleString('tr-TR')+' kg</strong><button data-action="wellness-weight-delete" data-id="'+esc(w.id)+'" aria-label="Ölçümü sil">×</button></div>').join('');
- main.innerHTML='<section class="pati-wellness-page"><div class="pati-wellness-heading"><div><span>🐾 PATİYİZ BAKIM MERKEZİ</span><h1>Hayvan Sağlığı & Takvimi</h1><p>Aşı, veteriner, ilaç, beslenme ve kilo geçmişi. Sağlık raporlarını özel dosyanda saklayabilirsin.</p></div></div>'+
+ main.innerHTML='<section class="pati-wellness-page"><div class="pati-wellness-shortcuts"><button type="button" data-action="healthfile-open">🔒 Dijital Sağlık Dosyamı Aç →</button></div><div class="pati-wellness-heading"><div><span>🐾 PATİYİZ BAKIM MERKEZİ</span><h1>Hayvan Sağlığı & Takvimi</h1><p>Aşı, veteriner, ilaç, beslenme ve kilo geçmişi. Sağlık raporlarını özel dosyanda saklayabilirsin.</p></div></div>'+
  (pets.length?'<div class="pati-wellness-pet-tabs">'+pets.map(p=>'<button type="button" data-action="wellness-pet" data-id="'+esc(p.id)+'" class="'+(p.id===selectedId?'active':'')+'">'+esc(p.name)+'</button>').join('')+'</div>'+
  '<div class="pati-wellness-actions"><button data-action="wellness-reminder-add">＋ Hatırlatma ekle</button><button data-action="wellness-weight-add">＋ Kilo kaydet</button></div>'+
  '<div class="pati-wellness-summary"><div><small>Yaklaşan görev</small><strong>'+next.length+'</strong></div><div><small>Son ölçüm</small><strong>'+(latest?Number(latest.weight_kg).toLocaleString('tr-TR')+' kg':'—')+'</strong></div><div><small>Kilo değişimi</small><strong>'+(latest&&previous?((Number(latest.weight_kg)-Number(previous.weight_kg))>0?'+':'')+(Number(latest.weight_kg)-Number(previous.weight_kg)).toFixed(2)+' kg':'—')+'</strong></div></div>'+
@@ -1342,6 +1342,8 @@ case 'premium-complete':if(premiumPortal)void premiumPortal.complete();break;
 case 'achievement-open':navigate('achievements');break;
 case 'healthfile-open':navigate('healthfile');break;
 case 'health-add-pet':navigate('pets');break;
+case 'premium-achievements':navigate('achievements');break;
+case 'premium-resume':if(premiumPortal){void premiumPortal.open(id).then(()=>premiumPortal.openDay(Number(target.dataset.day)))}break;
 case 'premium-join':if(premiumPortal)void premiumPortal.join();break;
 case 'premium-leave':if(premiumPortal)void premiumPortal.leave();break;
 case 'premium-free':navigate('education');break;
