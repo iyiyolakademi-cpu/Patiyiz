@@ -40,7 +40,7 @@ test('Fotoğraf ve DM için native dosya izni sonrası uygulama içi galeri mod�
  assert.match(changes,/onConfirm:files=>/);
  assert.match(changes,/new DataTransfer\(\)/);
  assert.match(app,/name="dm_gallery" accept="image\/\*" multiple hidden/);
- const gal=html.indexOf('gallery-picker.js?v=20261024-gallery-safety-1'),appjs=html.indexOf('app.js?v=20261024-account-qa-1');
+ const gal=html.indexOf('gallery-picker.js?v=20261024-gallery-safety-1'),appjs=html.indexOf('app.js?v=20261024-publish-integrity-1');
  assert.ok(gal>=0&&appjs>gal);
  assert.match(html,/patiyiz-inspired\.css\?v=20261024-mobile-ux-1/);
  assert.doesNotMatch(gallery,/navigator\.mediaDevices\.getUserMedia|webkitGetAsEntry|showDirectoryPicker/);
