@@ -7,7 +7,7 @@
  const types={vaccine:['💉','Aşı kaydı'],vet:['🩺','Veteriner muayenesi'],test:['🧪','Tahlil / sonuç'],medicine:['💊','İlaç / reçete'],other:['📄','Diğer sağlık kaydı']};
  const allowed=['application/pdf','image/jpeg','image/png','image/webp'];
  function create({sb,getUser,getPets,getReminders,getWeights,esc,notify,onChange}){
-  const state={petId:'',docs:[],loading:false,loaded:false,saving:false,error:'',printView:false};
+  const state={petId:'',docs:[],loading:false,loaded:false,attempted:false,saving:false,error:'',printView:false};
   const changed=()=>onChange?.();
   const pets=()=>getPets().filter(p=>p.owner_id===getUser()?.id);
   const current=()=>pets().find(p=>p.id===state.petId);
@@ -16,7 +16,7 @@
   async function load(force=false){
    if(state.loading||state.loaded&&!force)return;
    const uid=getUser()?.id;if(!uid)return;
-   state.loading=true;state.error='';changed();
+   state.loading=true;state.attempted=true;state.error='';changed();
    try{
     const r=await sb.from('patiyiz_health_documents').select('id,owner_id,pet_id,doc_type,title,notes,document_date,object_path,mime_type,byte_size,created_at').eq('owner_id',uid).order('document_date',{ascending:false}).limit(200);
     if(r.error)throw r.error;
@@ -124,7 +124,7 @@
     '<label>Belge / fotoğraf (isteğe bağlı, en fazla 10 MB)<input name="health-file" type="file" accept=".pdf,image/jpeg,image/png,image/webp,application/pdf"></label>'+
     '<button class="hf-primary" type="submit" '+(state.saving?'disabled':'')+'>'+(state.saving?'Kaydediliyor…':'Kaydı güvenle sakla')+'</button></form></div>'+
     '<div class="hf-card"><h2>🗂️ Sağlık geçmişi</h2>'+ (state.loading?'<p>Sağlık geçmişi yükleniyor…</p>':'')+
-    (state.error?'<p role="alert">'+safe(state.error)+'</p>':'')+
+    (state.error?'<p role="alert">'+safe(state.error)+'</p><button data-health-retry type="button">Tekrar dene</button>':'')+
     (docs.map(d=>'<article class="hf-record"><div><strong>'+safe(types[d.doc_type]?.[0]||'📄')+' '+safe(d.title)+'</strong><small>'+safe(day(d.document_date))+' · '+safe(types[d.doc_type]?.[1]||'Kayıt')+'</small><p>'+safe(d.notes||'')+'</p></div><div class="hf-record-actions">'+(d.object_path?'<button type="button" data-health-open="'+safe(d.id)+'">Belgeyi aç</button>':'')+'<button type="button" data-health-delete="'+safe(d.id)+'">Sil</button></div></article>').join('')||'<p class="hf-empty">Henüz sağlık kaydın yok. İlk belgeyi soldan ekleyebilirsin.</p>')+
     '</div></div><p class="hf-disclaimer">Özel dosyalara erişim Supabase yetki kontrolüyle sınırlandırılır. Paylaşılabilir açık bağlantı üretilmez. Bu kayıtlar veteriner teşhisi veya resmî aşı kartı yerine geçmez.</p></section>';
   }
