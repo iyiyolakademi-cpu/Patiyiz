@@ -101,5 +101,5 @@ test('Galeri ilk dokunmada ekrana açılır ve fotoğraf iznini açıkça ister'
  assert.equal(ctx.window.PatiyizGalleryPicker.active,false);
  assert.match(gal,/Web uygulaması telefonundaki bütün fotoğrafları otomatik okuyamaz/);
  assert.match(css,/\.pati-gallery-grid \.pati-gallery-empty/);
- assert.match(html,/gallery-picker\.js\?v=20261024-explore-media-sheet-1/);
+ assert.match(html,/gallery-picker\.js\?v=20261024-gallery-safety-1/);
 });
