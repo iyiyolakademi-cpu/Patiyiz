@@ -5,7 +5,7 @@ self.addEventListener('push', event=>{
  const title=String(payload.title||'Patiyiz 🐾').slice(0,120);
  const body=String(payload.body||'Yeni bir bildirimin var.').slice(0,220);
  event.waitUntil(self.registration.showNotification(title,{
-  body,icon:'./patiyiz-icon.svg',badge:'./patiyiz-icon.svg',tag:'patiyiz-'+String(payload.id||'notice'),
+  body,icon:'./patiyiz-icon.svg?v=20261024-new-p-logo-1',badge:'./patiyiz-icon.svg?v=20261024-new-p-logo-1',tag:'patiyiz-'+String(payload.id||'notice'),
   data:{url:payload.id?'./?notification='+encodeURIComponent(String(payload.id)):'./'},renotify:false
  }));
 });
