@@ -29,7 +29,7 @@ test('Wellness has real forms, measurement history and user-visible reminder lim
  assert.match(app,/type="datetime-local"/);
  assert.match(app,/name="weight_kg"/);
  assert.match(app,/Hayvan Sağlığı & Takvimi/);
- assert.match(app,/Uygulama kapalıyken telefon bildirimi garantisi yoktur/);
+ assert.match(app,/telefon bildirimlerine izin verirsen zamanı geldiğinde uygulama kapalıyken de bildirim gönderilebilir/);
  assert.match(app,/case 'wellness-pet':patiWellnessPetId=id/);
  assert.match(app,/case 'wellness-weight-form':await patiWellnessSaveWeight/);
  assert.match(css,/\.pati-wellness-page/);

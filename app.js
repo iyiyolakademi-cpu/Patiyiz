@@ -659,7 +659,7 @@ function patiWellnessPage(){
  '<h2>Yaklaşan hatırlatmalar</h2><div class="pati-wellness-events">'+(cards||'<p class="pati-wellness-empty">Bu hayvan için hatırlatma ekleyebilirsin.</p>')+'</div>'+
  '<h2>Kilo takibi</h2><div class="pati-wellness-weights">'+(weightRows||'<p class="pati-wellness-empty">Henüz kilo ölçümü eklenmedi.</p>')+'</div>'+
  (done.length?'<details class="pati-wellness-completed"><summary>Tamamlananlar ('+done.length+')</summary>'+done.map(x=>'<p>✓ '+esc(x.title)+' · '+esc(new Date(x.due_at).toLocaleDateString('tr-TR'))+'</p>').join('')+'</details>':'')+
- '<p class="pati-wellness-disclaimer">Hatırlatmalar, Patiyiz açıkken veya tekrar açtığında gösterilir. Uygulama kapalıyken telefon bildirimi garantisi yoktur. Aşı ve ilaç planını veterinerinle birlikte belirle.</p></section>':
+ '<p class="pati-wellness-disclaimer">Hatırlatmalar, Patiyiz açıkken de gösterilir. Bildirimler bölümünden telefon bildirimlerine izin verirsen zamanı geldiğinde uygulama kapalıyken de bildirim gönderilebilir; teslimat cihaz ve bağlantı koşullarına bağlıdır. Aşı ve ilaç planını veterinerinle birlikte belirle.</p></section>':
  '<div class="pati-wellness-empty-card"><h2>Önce patili dostunu ekle 🐾</h2><p>Aşı, randevu, mama ve kilo takibi için hayvan profili gerekli.</p><button data-action="pet-add">＋ Hayvan ekle</button></div>')+'</section>';
 }
 function patiWellnessReminderDialog(){
@@ -818,7 +818,7 @@ async function enablePhonePush(){
 function notificationsPage(){
  const list=[...data.notifications].filter(n=>n.owner_id===me.id).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
  const unread=list.filter(n=>!n.read).length;
- const kindInfo=n=>{const k=n.kind||'';if(k==='messages')return ['message-circle','Mesaj'];if(k==='comments')return ['message-square','Yorum'];if(k==='post_likes')return ['heart','Beğeni'];if(k==='follows')return ['user-plus','Takip'];return ['bell','Etkinlik']};
+ const kindInfo=n=>{const k=n.kind||'';if(k==='messages')return ['message-circle','Mesaj'];if(k==='comments')return ['message-square','Yorum'];if(k==='post_likes')return ['heart','Beğeni'];if(k==='follows')return ['user-plus','Takip'];if(k==='pet_reminder')return ['calendar','Pati bakımı'];return ['bell','Etkinlik']};
  const rows=items=>items.map(n=>{const [symbol,label]=kindInfo(n),actor=n.actor_id?data.profiles.find(p=>p.id===n.actor_id):null;return '<div class="pati-alert-row '+(n.read?'is-read':'is-new')+'"><button type="button" class="pati-alert-entry" data-action="open-notification" data-id="'+esc(n.id)+'"><span class="pati-alert-avatar">'+(actor?avatar(actor,'s'):ico(symbol))+'</span><span class="pati-alert-content"><span class="pati-alert-title">'+esc(n.text)+'</span><span class="pati-alert-meta">'+label+' · '+day(n.created_at)+(n.read?'':' · Yeni')+'</span></span>'+(n.read?'':'<span class="pati-alert-unread" aria-label="Okunmadı"></span>')+'</button><button type="button" class="pati-alert-remove" data-action="notification-delete" data-id="'+esc(n.id)+'" aria-label="Bildirimi sil">'+ico('trash')+'</button></div>'}).join('');
  const recent=list.filter(n=>!n.read),past=list.filter(n=>n.read);
  main.innerHTML='<section class="pati-alerts"><div class="pati-alert-head"><div><span class="pati-alert-eyebrow">HESABINDAKİ HAREKETLER</span><h1>Bildirimler'+(unread?'<span class="pati-alert-count">'+unread+'</span>':'')+'</h1><p>Topluluğunda olup bitenleri buradan takip et.</p></div><span class="pati-alert-head-icon">'+ico('bell')+'</span></div>'+
@@ -833,6 +833,7 @@ async function openNotification(id){const n=data.notifications.find(x=>x.id===id
  if(!n.read){const result=await sb.from('notifications').update({read:true}).eq('id',n.id).eq('owner_id',me.id);if(!result.error){n.read=true;navRender()}}
  if(['comments','post_likes'].includes(n.kind)&&n.post_id){openPost(n.post_id);return}
  if(n.kind==='messages'&&n.actor_id&&n.actor_id!==me.id&&!blocked.has(n.actor_id)){personId=n.actor_id;mobileChatOpen=true;navigate('messages');return}
+ if(n.kind==='pet_reminder'){navigate('wellness');return}
  if(n.actor_id&&!blocked.has(n.actor_id)){profileId=n.actor_id;navigate('profile');return}
  navigate('notifications')}
 async function routePendingNotification(){const id=new URL(location.href).searchParams.get('notification');if(!id)return;history.replaceState(null,'',location.pathname+location.hash);await openNotification(id)}
