@@ -63,8 +63,8 @@ test('DM galerisi formda sistem label yerine normal butondan açılır',()=>{
  assert.match(dm,/data-action="pati-dm-gallery-open"/);
  assert.match(dm,/name="dm_gallery" accept="image\/\*" multiple hidden/);
  assert.doesNotMatch(dm,/<label class="pati-dm-gallery"/);
- assert.match(app,/case 'pati-dm-gallery-open':\{/);
- assert.match(app,/window\.PatiyizGalleryPicker\.open\(\[\],\{multiple:false,max:1/);
+ assert.match(app,/case 'pati-dm-gallery-open':document\.querySelector/);
+ assert.match(app,/case 'pati-dm-gallery-open':document\.querySelector\('#message-form input\[name=\"dm_gallery\"\]'\)\?\.click\(\)/);
 });
 test('Galeri ilk dokunmada ekrana açılır ve fotoğraf iznini açıkça ister',async()=>{
  class El{

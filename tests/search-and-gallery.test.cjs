@@ -30,12 +30,12 @@ test('Kullanıcı listesi mobil genişlikte profil fotoğrafı ve arama düğmes
  assert.match(css,/#main-content #explore-search/);
 });
 
-test('Fotoğraf ve DM için native dosya izni sonrası uygulama içi galeri modülü çağrılır',()=>{
+test('Fotoğraf paylaşımı için galeri kalır, DM fotoğraf seçilince otomatik gönderilir',()=>{
  const changes=app.slice(app.indexOf("document.addEventListener('change'"),app.indexOf('let lastPhotoTap=',app.indexOf("document.addEventListener('change'")));
  assert.match(changes,/input\?\.name==='dm_camera'\|\|input\?\.name==='dm_gallery'/);
- assert.match(changes,/if\(isGallery&&files\.length&&window\.PatiyizGalleryPicker\)/);
- assert.match(changes,/onConfirm:async selected=>/);
- assert.match(changes,/await sendDmImage\(selected\[0\]\)/);
+ assert.match(changes,/if\(files\[0\]\)run\(\(\)=>sendDmImage\(files\[0\]\)\)/);
+ assert.doesNotMatch(changes,/onConfirm:async selected=>/);
+ assert.match(app,/case 'pati-dm-gallery-open':document\.querySelector/);
  assert.match(changes,/input\.name==='photo'&&!cameraCapture/);
  assert.match(changes,/onConfirm:files=>/);
  assert.match(changes,/new DataTransfer\(\)/);
