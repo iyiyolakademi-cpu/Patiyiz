@@ -40,7 +40,7 @@
     '<p>adına <strong>'+safe(target.label)+'</strong> programının eğitim görevlerini tamamladığı için düzenlenmiştir.</p>'+
     '<small>Düzenlenme tarihi: '+safe(new Date().toLocaleDateString('tr-TR'))+'</small>'+
     '<footer>Yalnızca uygulama içi eğitim katılım belgesidir. Resmî mesleki yeterlilik, veteriner sağlık belgesi veya akredite sertifika değildir.</footer></div>';
-   document.body.append(report);window.print();
+   document.getElementById('pati-health-print-report')?.remove();document.body.append(report);window.print();
   }
   return {render,print};
  }
