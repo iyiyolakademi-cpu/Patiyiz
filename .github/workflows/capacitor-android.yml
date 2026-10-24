@@ -33,10 +33,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          yes | sdkmanager --licenses >/dev/null || true
           echo "Android SDK: $ANDROID_HOME"
-          sdkmanager --version
-          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+          SDK_MANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          test -x "$SDK_MANAGER" || SDK_MANAGER="$ANDROID_HOME/cmdline-tools/16.0/bin/sdkmanager"
+          test -x "$SDK_MANAGER"
+          "$SDK_MANAGER" --version
+          yes | "$SDK_MANAGER" --licenses >/dev/null || true
+          "$SDK_MANAGER" "platform-tools" "platforms;android-36" "build-tools;36.0.0"
       - name: Validate native source without changing production PWA
         run: node native-capacitor/scripts/check-native.mjs
       - name: Install dependencies and stage web app
