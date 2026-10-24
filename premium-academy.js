@@ -155,7 +155,14 @@
      '<button data-action="premium-open" data-id="'+safe(c.id)+'">'+(state.member?'Programa gir':'Programı incele')+' →</button></article>';
    }).join('');
    const offers=plans.map(p=>'<article class="premium-plan"><small>'+safe(p.name)+'</small><h3>'+safe(p.price)+'</h3><span>'+safe(p.period)+'</span><p>'+safe(p.desc)+'</p></article>').join('');
-   return head+error+
+   const totalDays=state.catalog.reduce((total,c)=>total+c.days,0);
+   const completed=state.completed.size;
+   const next=state.catalog.map(c=>({course:c,day:Array.from({length:c.days},(_,i)=>i+1).find(day=>!state.completed.has(c.id+':'+day))})).find(x=>x.day);
+   const dashboard=state.member?'<section class="premium-dashboard"><div class="premium-dashboard-heading"><div><span>✦ PREMIUM KONTROL PANELİ</span><h2>Bugün hangi hedefe ilerliyoruz?</h2><p>Günlük eğitimlerini, tamamladığın görevleri ve başarılarını tek yerden takip et.</p></div><button data-action="premium-achievements">🏅 Başarı Belgelerim</button></div>'+
+    '<div class="premium-dash-grid"><article><small>Aktif eğitimler</small><strong>'+state.catalog.length+'</strong></article><article><small>Tamamlanan görev</small><strong>'+completed+'</strong></article><article><small>Genel ilerleme</small><strong>%'+(totalDays?Math.round(completed/totalDays*100):0)+'</strong></article></div>'+
+    (next?'<div class="premium-next-step"><div><b>🎯 Bugünün önerilen görevi</b><h3>'+safe(next.course.title)+'</h3><p>Gün '+next.day+' / '+next.course.days+' · Eğitim planına devam et</p></div><button data-action="premium-resume" data-id="'+safe(next.course.id)+'" data-day="'+next.day+'">Derse devam et →</button></div>':
+    '<p class="premium-completed">🎉 Tüm Premium programları tamamladın! Başarı belgelerine göz at.</p>')+'</section>':'';
+   return head+error+dashboard+
     '<div class="premium-hero"><div class="premium-eyebrow">DİJİTAL EĞİTİM SERİSİ</div><h1>Patili dostun için daha iyi bir yol.</h1>'+
     '<p>101 ücretsiz Akademi dersinin ardından, günlük görevlerle ilerleyen üç kapsamlı özel program.</p>'+
     '<div class="premium-numbers"><div><strong>3</strong><small>Eğitim kampı</small></div><div><strong>81</strong><small>Uygulamalı gün</small></div><div><strong>101</strong><small>Ücretsiz ders de açık</small></div></div>'+
