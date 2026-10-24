@@ -1395,7 +1395,7 @@ function resetSessionState(){
  for(const group of [favorites,followed,liked,saved,voted,blocked])group.clear();
  blockedProfiles=[];patiDmSignedCache.clear();profileCountCache.clear();profileCountInFlight.clear();
  pageLimits={posts:100,messages:150,notifications:150};pageMore={posts:true,messages:true,notifications:true};
- educationCloudDone.clear();educationCloudUser='';pendingPostLikes.clear();likesChangeEpoch++;personId='';profileId='';selectedPostId='';followListId='';search='';view='home';chatFilter='primary';mobileChatOpen=false;isAdmin=false;
+ if(typeof educationCloudDone!=='undefined')educationCloudDone.clear();if(typeof educationCloudUser!=='undefined')educationCloudUser='';if(typeof pendingPostLikes!=='undefined')pendingPostLikes.clear();if(typeof likesChangeEpoch==='number')likesChangeEpoch++;personId='';profileId='';selectedPostId='';followListId='';search='';view='home';chatFilter='primary';mobileChatOpen=false;isAdmin=false;
  storyItems=[];storyLikes=[];storyIndex=0;clearTimeout(storyTimer);storyTimer=null;lastPhotoTap={id:'',time:0};
  document.getElementById('story-overlay')?.remove();document.body.classList.remove('story-fullscreen-open');
  window.PatiyizGalleryPicker?.close();window.PatiyizPhotoStudio?.close?.();window.PatiyizReelsEditor?.dispose();clearPatiMediaUrls();
