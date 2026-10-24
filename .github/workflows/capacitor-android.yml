@@ -40,6 +40,18 @@ jobs:
           "$SDK_MANAGER" --version
           yes | "$SDK_MANAGER" --licenses >/dev/null || true
           "$SDK_MANAGER" "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+      - name: Detect Firebase configuration (optional, private)
+        shell: bash
+        env:
+          FIREBASE_ANDROID_CONFIG: ${{ secrets.FIREBASE_ANDROID_GOOGLE_SERVICES_JSON_BASE64 }}
+        run: |
+          if [[ -n "$FIREBASE_ANDROID_CONFIG" ]]; then
+            echo "PATIYIZ_FCM_ENABLED=true" >> "$GITHUB_ENV"
+            echo "Patiyiz Firebase Android configuration provided."
+          else
+            echo "PATIYIZ_FCM_ENABLED=false" >> "$GITHUB_ENV"
+            echo "::notice::Native push not enabled: Firebase Android config secret missing."
+          fi
       - name: Validate native source without changing production PWA
         run: node native-capacitor/scripts/check-native.mjs
       - name: Install dependencies and stage web app
@@ -52,6 +64,20 @@ jobs:
         run: |
           npx cap add android
           npx cap sync android
+      - name: Bind verified Android App Links
+        working-directory: native-capacitor
+        run: npm run android:links
+      - name: Configure Firebase Android (when connected)
+        shell: bash
+        env:
+          FIREBASE_ANDROID_CONFIG: ${{ secrets.FIREBASE_ANDROID_GOOGLE_SERVICES_JSON_BASE64 }}
+        run: |
+          set -euo pipefail
+          if [[ "$PATIYIZ_FCM_ENABLED" == "true" ]]; then
+            umask 077
+            printf '%s' "$FIREBASE_ANDROID_CONFIG" | base64 --decode > native-capacitor/android/app/google-services.json
+            node -e "const fs=require('fs');const j=JSON.parse(fs.readFileSync('native-capacitor/android/app/google-services.json'));if(!j.client?.some(c=>c.client_info?.android_client_info?.package_name==='com.patiyiz.app'))process.exit(1)"
+          fi
       - name: Generate real Patiyiz Android icon and splash
         working-directory: native-capacitor
         run: |
