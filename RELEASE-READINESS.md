@@ -1,3 +1,12 @@
+## 24 Ekim 2026 — PatiCoin, akış ve kaydetme düzenlemesi
+
+- **Sağlık Dosyası** arayüzden ve menüden kaldırıldı. Eski özel sağlık belgeleri, varsa, veri kaybı yaşanmaması için silinmedi; mevcut temel Aşı, Veteriner ve Sağlık takvimi korunur.
+- **En Aktif 5 Pati** artık akışın başında görünmez: İkinci gönderiden hemen sonra gösterilir. Akışta yalnızca bir gönderi varsa o gönderinin arkasında gösterilir; hiç gönderi yoksa gösterilmez.
+- **Kaydet** düğmesi kullanıcıya ait `post_saves` kaydını Supabase üzerinde doğrular, başarılı olmadan kaydedildi göstermez; kullanıcılar `Kaydettiklerim` arşivine erişebilir. Paralel kaydetme istekleri engellenir.
+- **24 görev:** 15 tek seferlik, 5 günlük, 4 haftalık. Günlük görevler İstanbul yerel tarihine, haftalık görevler pazartesi başlangıcına göre `task_code` ile kayıt altına alınır. Aynı görev aynı gün/hafta ikinci kez PatiCoin kazandırmaz. Her görev gerçekten gerçekleşmiş olmalıdır; sunucu `patiyiz_claim_completed_tasks` içinde doğrular. Önceki bakiye ve talepler korunur.
+- **Menü:** PatiCoin miktarı telefon üst menüsünün solunda ve masaüstü sol menüde görünür. PatiCoin Görevler ile Pati Mağaza profilden ve kalabalık ana menüden kaldırıldı, yan özellik menüsünün `PatiCoin Merkezi` bölümünde birlikte yer alır.
+- Gerçek hesapta kaydet/kaldır, farklı tarayıcıda kaydetme kalıcılığı, görev yenilenmesi ve sipariş bakiye senaryoları ayrıca cihaz üzerinde doğrulanmalıdır.
+
 ## 24 Ekim 2026 — özel Sağlık Dosyası, Premium kontrol paneli, rozetler ve yönetici bildirimleri
 
 - **Dijital Pati Sağlık Dosyası:** Her kullanıcı yalnız kendi hayvanının aşı, muayene, tahlil, ilaç ve diğer kayıtlarını görebilir. İsteğe bağlı PDF/görseller yalnız *özel* Supabase Storage alanına yüklenir (10 MB sınırı). Görüntüleme bağlantıları en fazla 90 saniyelik imzalı bağlantılardır. Sağlık özeti yazdırılarak PDF kaydedilebilir. **Veteriner teşhisi veya resmî sağlık belgesi değildir.**

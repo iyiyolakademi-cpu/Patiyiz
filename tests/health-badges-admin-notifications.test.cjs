@@ -73,9 +73,9 @@ test('Premium dashboard is connected to daily training and achievement pages',()
  assert.match(script,/data-action="premium-resume"/);
  assert.match(app,/case 'premium-resume'/);
  assert.match(app,/case 'premium-achievements'/);
- assert.match(app,/healthfile:healthFilePage/);
+ assert.doesNotMatch(app,/healthfile:healthFilePage/);
  assert.match(app,/achievements:achievementsPage/);
- assert.match(app,/case 'healthfile-open'/);
+ assert.doesNotMatch(app,/case 'healthfile-open'/);
 });
 test('Storage and health tables restrict access to the owner and always private bucket',()=>{
  assert.match(sql,/patiyiz-health-private','patiyiz-health-private',false/);
@@ -110,6 +110,6 @@ test('All three scripts and administrator inline JavaScript are syntactically va
  const matches=[...admin.matchAll(/<script>([\s\S]*?)<\/script>/g)];
  assert.ok(matches.length>=1);
  assert.doesNotThrow(()=>new vm.Script(matches.at(-1)[1],{filename:'admin.html:inline'}));
- assert.match(html,/health-file\.js/);assert.match(html,/achievements\.js/);
- assert.ok(html.indexOf('health-file.js')<html.indexOf('src="app.js'));
+ assert.doesNotMatch(html,/src="health-file\.js/);assert.match(html,/achievements\.js/);
+ assert.ok(html.indexOf('achievements.js')<html.indexOf('src="app.js'));
 });

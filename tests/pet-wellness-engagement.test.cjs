@@ -45,7 +45,7 @@ test('Top five publicly scored accounts based on server verified activities only
  assert.match(app,/function patiLeaderBoard\(\)/);
  assert.match(app,/En Aktif 5 Pati/);
  assert.match(app,/data-action="view-user"/);
- assert.match(app,/storiesStrip\(\)\+patiLeaderBoard\(\)/);
+ assert.match(app,/i===1\?patiLeaderBoard\(\)/);
  assert.doesNotMatch(analytics,/from public.messages/);
 });
 test('DAU is one authenticated account per day; share telemetry is only approximate',()=>{

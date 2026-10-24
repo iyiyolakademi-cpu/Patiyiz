@@ -31,7 +31,7 @@ test('İlk fotoğraf hemen, sonraki fotoğraflar ihtiyaç oldukça yüklenir',()
  assert.match(photo('a.jpg','',true),/loading="eager" decoding="async" fetchpriority="high"/);
  assert.match(photo('b.jpg'),/loading="lazy" decoding="async" fetchpriority="low"/);
  const home=part('function homePage(){','function explorePage()');
- assert.match(home,/list\.map\(\(p,i\)=>postCard\(p,i<5\)\)/);
+ assert.match(home,/list\.map\(\(p,i\)=>postCard\(p,i<5\)\+/);
 });
 
 test('Reels ekranında ilk video öncelikli hazırlanır; videonun tamamı kırpılmaz',()=>{
