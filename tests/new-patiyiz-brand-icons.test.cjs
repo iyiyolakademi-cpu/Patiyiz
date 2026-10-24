@@ -16,8 +16,8 @@ test('Sol üst köşe ve giriş ekranları yazısız yeni logo dosyasını kulla
  assert.equal(logo,fs.readFileSync('patiyiz-icon.svg','utf8'));
 });
 test('Google arama sonucu için 48px PNG favicon kullanılıyor',()=>{
- assert.match(html,/rel="icon" type="image\/png" sizes="48x48" href="\/patiyiz-favicon-48\.png\?v=20261024-new-p-logo-1"/);
- assert.match(html,/rel="shortcut icon" href="\/patiyiz-favicon-48\.png\?v=20261024-new-p-logo-1"/);
+ assert.match(html,/rel="icon" type="image\/png" sizes="48x48" href="patiyiz-favicon-48\.png\?v=20261024-new-p-logo-1"/);
+ assert.match(html,/rel="shortcut icon" href="patiyiz-favicon-48\.png\?v=20261024-new-p-logo-1"/);
 });
 test('iPhone, Android ve PWA kurulum ikonları yeni yazısız logoya bağlı',()=>{
  assert.match(html,/rel="apple-touch-icon" sizes="180x180" href="patiyiz-apple-touch-icon\.png\?v=20261024-new-p-logo-1"/);
