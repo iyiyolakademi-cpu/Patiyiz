@@ -69,7 +69,7 @@ test('PatiCoin menu and header are reorganized without profile clutter or health
  assert.match(html,/id="pati-desktop-coins"/);
  assert.doesNotMatch(html,/src="health-file\.js/);
  assert.match(app,/case 'saved-posts':navigate\('saved-posts'\)/);
- const profile=piece('function profilePage(){','function followListPage(');
+ const profile=piece('function profilePage(){','function formField(');
  assert.match(profile,/Kaydettiklerim/);
  assert.doesNotMatch(profile,/data-action="paticoin-shop"/);
 });
