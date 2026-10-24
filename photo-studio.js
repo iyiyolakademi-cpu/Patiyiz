@@ -71,6 +71,19 @@ function draw(canvas,img,state,long=720){
   }
   ctx.putImageData(pixels,0,0);
  }
+ if(state.sharpness>0){
+  const pixels=ctx.getImageData(0,0,canvas.width,canvas.height);
+  const src=new Uint8ClampedArray(pixels.data),dst=pixels.data,w=canvas.width,h=canvas.height;
+  const amount=state.sharpness/220;
+  for(let y=1;y<h-1;y++)for(let x=1;x<w-1;x++){
+   const i=(y*w+x)*4;
+   for(let channel=0;channel<3;channel++){
+    const pos=i+channel;
+    dst[pos]=clamp(src[pos]+amount*(4*src[pos]-src[pos-4]-src[pos+4]-src[pos-w*4]-src[pos+w*4]),0,255);
+   }
+  }
+  ctx.putImageData(pixels,0,0);
+ }
  // Export and preview use the same effect pipeline.
  return layout;
 }
