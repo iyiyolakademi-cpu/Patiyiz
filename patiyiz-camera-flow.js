@@ -180,6 +180,6 @@
   }
   void startCamera();
  };
- window.PatiyizCameraFlow={open,close:cleanup,get active(){return !!state;}};
+ window.PatiyizCameraFlow={open,close:cleanup,cancel(){if(!state)return;const cb=state.onCancel;cleanup();cb?.()},get active(){return !!state;}};
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&state){const cb=state.onCancel;cleanup();cb?.();}});
 })();
