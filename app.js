@@ -9,7 +9,7 @@ const ico=(name)=>{const aliases={'message-circle':'comment','volume-x':'volume-
 const button=(label,action,extra='',cls='soft-btn')=>`<button type="button" class="${cls}" data-action="${action}" ${extra}>${label}</button>`;
 const empty=(title,desc='Henüz bir şey bulunamadı.')=>`<div class="empty"><strong>${esc(title)}</strong>${esc(desc)}</div>`;
 const allowed=['home','explore','pets','reels','rewards','shop','community','knowledge','education','premium','lost','adoption','care','wellness','messages','notifications','profile','blocked','settings','follows-list'];
-const nav=[['home','Ana sayfa','home'],['explore','Keşfet','compass'],['pets','Patiler','heart'],['rewards','PatiCoin','paw'],['shop','Pati Mağaza','grid'],['reels','Reels','up'],['community','Topluluk','users'],['knowledge','Bilgi Merkezi','library'],['education','Eğitim','library'],['premium','Premium Akademi','star'],['lost','Kayıp İlanları','location'],['adoption','Sahiplendirme','heart'],['care','Bakım Takvimi','calendar'],['wellness','Hayvan Sağlığı','heart'],['messages','Mesajlar','message'],['notifications','Bildirimler','bell'],['profile','Profilim','user'],['settings','Ayarlar ve Gizlilik','settings']];
+const nav=[['home','Ana sayfa','home'],['explore','Keşfet','compass'],['pets','Patiler','heart'],['rewards','PatiCoin','paw'],['shop','Pati Mağaza','grid'],['reels','Reels','up'],['community','Topluluk','users'],['knowledge','Bilgi Merkezi','library'],['education','Eğitim','library'],['premium','Premium Akademi','library'],['lost','Kayıp İlanları','location'],['adoption','Sahiplendirme','heart'],['care','Bakım Takvimi','calendar'],['wellness','Hayvan Sağlığı','heart'],['messages','Mesajlar','message'],['notifications','Bildirimler','bell'],['profile','Profilim','user'],['settings','Ayarlar ve Gizlilik','settings']];
 const cfg=window.PATIYIZ_CONFIG||{};
 const ready=String(cfg.supabaseUrl||'').startsWith('https://')&&!String(cfg.supabaseUrl).includes('BURAYA_')&&!!cfg.supabasePublishableKey&&!String(cfg.supabasePublishableKey).includes('BURAYA_')&&!!window.supabase?.createClient;
 let liveChannel=null,liveReloadTimer=null,liveReconnectTimer=null,liveUserId=null,liveInitialized=false,pushPublicKey='',lastForegroundSync=0;
@@ -118,7 +118,7 @@ function navRender(){const fab=$('#app-root>.mobile-fab');if(fab){fab.hidden=tru
 function openMobileFeaturesMenu(){
  const groups=[
   {title:'Sosyal',items:[['community','Topluluk','users'],['pets','Patiler','paw'],['rewards','PatiCoin & Görevler','paw'],['shop','Pati Mağaza','grid'],['messages','Mesajlar','message'],['notifications','Bildirimler','bell']]},
-  {title:'Keşfet ve öğren',items:[['education','Eğitim / Akademi','library'],['premium','✦ Premium Akademi','star'],['knowledge','Bilgi Merkezi','info'],['lost','Kayıp İlanları','location'],['adoption','Sahiplendirme','heart']]},
+  {title:'Keşfet ve öğren',items:[['education','Eğitim / Akademi','library'],['premium','✦ Premium Akademi','library'],['knowledge','Bilgi Merkezi','info'],['lost','Kayıp İlanları','location'],['adoption','Sahiplendirme','heart']]},
   {title:'Hayvanlarım ve hesabım',items:[['care','Bakım Takvimi','calendar'],['wellness','Aşı, Veteriner & Sağlık','heart'],['settings','Ayarlar ve Gizlilik','settings'],['blocked','Engellenenler','shield']]}
  ];
  const sections=groups.map(group=>'<section class="pati-feature-group"><h3>'+esc(group.title)+'</h3><div class="pati-mobile-menu-list">'+
