@@ -1950,3 +1950,95 @@ body.story-fullscreen-open:has(#highlight-album-form) #modal-root .modal-backdro
 @media(max-width:850px){#main-content .premium-course-grid,#main-content .premium-plan-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:590px){#main-content .pati-premium{padding:6px 0 20px}#main-content .premium-hero{padding:23px;border-radius:17px}#main-content .premium-course-grid,#main-content .premium-plan-grid,#main-content .premium-preview,#main-content .premium-days{grid-template-columns:1fr}#main-content .premium-course-card{min-height:240px}#main-content .premium-signup{padding:19px}#main-content .premium-numbers{gap:16px}}
 @media(prefers-reduced-motion:reduce){#main-content .premium-progress span{transition:none}}
+
+
+/* Patiyiz 2026-10-24 · private health files + medals + premium day dashboard */
+#main-content .health-file,#main-content .pati-achievements{max-width:1120px;margin:0 auto;padding:8px 0 25px;color:#1f2326}
+#main-content .hf-header,#main-content .pati-achievements-hero{background:linear-gradient(135deg,#14161b,#363343);border-radius:23px;color:#fff;padding:clamp(23px,4vw,39px)}
+#main-content .hf-header>span,#main-content .pati-achievements-hero>span{letter-spacing:.13em;font-size:11px;font-weight:800;color:#ddd3f2}
+#main-content .hf-header h1,#main-content .pati-achievements-hero h1{margin:11px 0;font-size:clamp(25px,4.5vw,36px);line-height:1.22;letter-spacing:-.04em}
+#main-content .hf-header p,#main-content .pati-achievements-hero p{color:#e3dfea;line-height:1.65;font-size:14px}
+#main-content .hf-controls{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:18px 0}
+#main-content .hf-pets{display:flex;gap:8px;flex-wrap:wrap}
+#main-content .hf-pets button{background:#f4f3f7;color:#3d3b44;border:1px solid #e6e3eb;border-radius:12px;padding:11px 16px;min-height:43px;cursor:pointer;font-weight:700}
+#main-content .hf-pets button.active{background:#20212a;color:white}
+#main-content .hf-report{cursor:pointer;min-height:43px;background:#fff;color:#363343;border:1px solid #d5cfdb;border-radius:12px;padding:11px 16px;font-weight:700}
+#main-content .hf-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin-bottom:18px}
+#main-content .hf-metrics>div{display:flex;flex-direction:column;gap:3px;border:1px solid #e7e4eb;border-radius:15px;background:#fff;padding:17px}
+#main-content .hf-metrics strong{font-size:28px;letter-spacing:-.03em}
+#main-content .hf-metrics small{font-size:12px;color:#797784}
+#main-content .hf-columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+#main-content .hf-card{background:#fff;border:1px solid #e9e6ef;border-radius:17px;padding:clamp(17px,2.5vw,25px);min-width:0}
+#main-content .hf-card h2{font-size:20px;margin:0 0 8px;letter-spacing:-.025em}
+#main-content .hf-card>p{font-size:13px;color:#72717c;line-height:1.7}
+#main-content .hf-card form{display:grid;gap:10px;margin-top:16px}
+#main-content .hf-card form label{display:grid;gap:7px;font-size:13px;font-weight:700;color:#45434b}
+#main-content .hf-card :is(input,select,textarea){font:inherit;width:100%;max-width:100%;border:1px solid #d8d6df;border-radius:11px;padding:11px 12px;color:#292832;background:#fff}
+#main-content .hf-card input[type=file]{font-size:12px;padding:10px}
+#main-content .hf-primary{cursor:pointer;min-height:45px;border:0;background:#1f2026;color:#fff;border-radius:12px;font-weight:800;padding:12px 16px}
+#main-content .hf-primary:disabled{opacity:.58;cursor:wait}
+#main-content .hf-record{border-top:1px solid #ebe8f0;padding:16px 0;display:flex;gap:12px;align-items:start;justify-content:space-between}
+#main-content .hf-record strong{font-size:13px;line-height:1.5}
+#main-content .hf-record small{display:block;margin-top:4px;color:#88848f;font-size:11px}
+#main-content .hf-record p{font-size:12px;color:#656371;line-height:1.6;margin:9px 0;overflow-wrap:anywhere}
+#main-content .hf-record-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+#main-content .hf-record-actions button{background:#f6f5f8;border:1px solid #e6e3eb;border-radius:10px;padding:9px 11px;font-size:12px;cursor:pointer}
+#main-content .hf-empty{padding:18px;border:1px dashed #d7d5dd;border-radius:12px}
+#main-content .hf-disclaimer,#main-content .pati-cert-notice{font-size:11px;color:#75717f;line-height:1.7;margin:17px 0}
+#main-content .pati-wellness-shortcuts{margin:10px 0}
+#main-content .pati-wellness-shortcuts button{border:1px solid #c9ceda;background:#fff;border-radius:13px;min-height:46px;padding:12px 17px;cursor:pointer;font-weight:750;color:#272736}
+#main-content .pati-edu-links{margin:13px 0;display:flex;justify-content:flex-end}
+#main-content .pati-edu-links button{border:1px solid #d0ccd9;background:#f9f7fd;color:#373041;border-radius:12px;padding:12px 16px;cursor:pointer;font-weight:750}
+#main-content .pati-achievements-hero>div{display:grid;gap:3px;margin-top:17px}
+#main-content .pati-achievements-hero strong{font-size:27px}
+#main-content .pati-achievements-hero small{color:#e3e0e9;font-size:12px}
+#main-content .pati-achievements h2{font-size:20px;margin:26px 0 14px;letter-spacing:-.025em}
+#main-content .pati-badge-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:11px}
+#main-content .pati-badge{text-align:center;border:1px solid #e5dfe9;background:#fff;border-radius:16px;padding:19px 10px}
+#main-content .pati-badge.locked,#main-content .pati-cert-card.locked{opacity:.64;background:#f7f6f9}
+#main-content .pati-badge.earned{border-color:#d9c69f;background:#fff9ec}
+#main-content .pati-badge-icon{font-size:29px}
+#main-content .pati-badge h3{font-size:14px;margin:9px 0}
+#main-content .pati-badge p{font-size:11px;line-height:1.5;color:#747180;margin:0 0 12px}
+#main-content .pati-badge small{color:#836e52;font-size:11px;font-weight:700}
+#main-content .pati-cert-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+#main-content .pati-cert-card{border:1px solid #dedbe6;background:#fff;border-radius:16px;padding:18px;margin:8px 0}
+#main-content .pati-cert-card strong{display:block;font-size:15px}
+#main-content .pati-cert-card small{display:block;margin:6px 0 15px;color:#706d7c}
+#main-content .pati-cert-card p{color:#686776;font-size:12px;line-height:1.65}
+#main-content .pati-cert-card button{margin-top:8px;min-height:43px;border:0;border-radius:11px;background:#272730;color:#fff;font-weight:700;padding:10px 14px;cursor:pointer}
+#main-content .pati-cert-card button:disabled{background:#dcd9e1;color:#6c6974;cursor:not-allowed}
+#main-content .premium-dashboard{border:1px solid #ded8e9;border-radius:19px;background:#faf9fd;padding:clamp(18px,3vw,27px);margin:0 0 20px}
+#main-content .premium-dashboard-heading{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+#main-content .premium-dashboard-heading span{font-size:10px;font-weight:800;letter-spacing:.15em;color:#79648e}
+#main-content .premium-dashboard-heading h2{font-size:22px;letter-spacing:-.03em;margin:9px 0}
+#main-content .premium-dashboard-heading p{font-size:12px;color:#77727e}
+#main-content .premium-dashboard-heading button,#main-content .premium-next-step button{border:0;background:#25202d;color:white;border-radius:12px;padding:13px 15px;min-height:43px;font-weight:700;cursor:pointer}
+#main-content .premium-dash-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:18px}
+#main-content .premium-dash-grid article{background:#fff;padding:15px;border-radius:12px;border:1px solid #e5dfeb;display:grid;gap:6px}
+#main-content .premium-dash-grid small{color:#777080;font-size:11px}
+#main-content .premium-dash-grid strong{font-size:25px}
+#main-content .premium-next-step{margin-top:16px;padding:17px;border:1px solid #e1dae9;border-radius:13px;background:#fff;display:flex;gap:12px;align-items:center;justify-content:space-between}
+#main-content .premium-next-step h3{font-size:15px;margin:7px 0}
+#main-content .premium-next-step p{font-size:12px;color:#726b7b}
+#main-content .premium-next-step b{font-size:12px}
+#pati-health-print-report,#pati-achievement-print{display:none}
+@media(max-width:900px){#main-content .pati-badge-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:650px){#main-content .hf-columns{grid-template-columns:1fr}#main-content .hf-metrics{gap:7px}#main-content .hf-metrics>div{padding:12px}#main-content .hf-metrics strong{font-size:22px}#main-content .hf-record{flex-wrap:wrap}#main-content .hf-record-actions{justify-content:flex-start}#main-content .pati-badge-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#main-content .pati-cert-grid{grid-template-columns:1fr}#main-content .premium-next-step{flex-wrap:wrap}#main-content .premium-next-step button{width:100%}}
+@media print{
+ body>*:not(#pati-health-print-report):not(#pati-achievement-print){display:none!important}
+ body>#pati-health-print-report,body>#pati-achievement-print{display:block!important;position:static!important;width:100%!important;max-width:none!important;margin:0!important;padding:12mm!important;color:#111!important;background:#fff!important;font-family:system-ui,sans-serif!important}
+ #pati-health-print-report header{display:flex;justify-content:space-between;border-bottom:2px solid #333;padding-bottom:14px;margin-bottom:25px}
+ #pati-health-print-report h1{font-size:28px}
+ #pati-health-print-report h2{font-size:17px;border-bottom:1px solid #ddd;margin-top:25px}
+ #pati-health-print-report article{padding:12px 0;break-inside:avoid}
+ #pati-health-print-report p{font-size:12px}
+ #pati-health-print-report footer,#pati-achievement-print footer{font-size:10px;color:#777;margin-top:28px}
+ #pati-achievement-print .pati-cert-document{text-align:center;border:7px double #4a4053;padding:16mm 12mm;min-height:195mm;display:flex;flex-direction:column;align-items:center;justify-content:center}
+ #pati-achievement-print .pati-cert-mark{font-size:14px;letter-spacing:.15em;font-weight:900}
+ #pati-achievement-print .pati-cert-flourish{font-size:45px;color:#8a7097;padding:15px}
+ #pati-achievement-print h1{font-size:33px;letter-spacing:.12em}
+ #pati-achievement-print h2{font-size:26px;text-decoration:underline}
+ #pati-achievement-print p{font-size:17px;max-width:560px;line-height:1.7}
+ #pati-achievement-print small{margin-top:20px}
+}
