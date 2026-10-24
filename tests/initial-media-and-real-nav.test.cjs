@@ -26,7 +26,7 @@ test('Alt menü eski isimlerin yerine gerçekten beş hedefi gösterir',()=>{
  const labels=[...markup.matchAll(/<small>([^<]+)<\/small>/g)].map(x=>x[1]);
  assert.deepEqual(labels,['Akış','Keşfet','Paylaş','Reels','Profil']);
  assert.match(markup,/data-view="reels"/);
- assert.match(markup,/data-view="pets"/);
+ assert.doesNotMatch(markup,/data-view="pets"/);
  assert.match(markup,/data-action="pati-create-open"/);
  assert.match(desktop,/Patiler/);
  assert.equal(dom['#app-root>.mobile-fab'].hidden,true);
