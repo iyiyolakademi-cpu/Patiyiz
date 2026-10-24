@@ -1759,3 +1759,12 @@ body.pati-studio-open{overflow:hidden!important}
 }
 #highlight-picker-form .pati-highlight-destination small{font-size:10px;color:#85889b}
 @media(max-width:370px){#highlight-picker-form .pati-highlight-destinations{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* The story viewer sits at z-index 99999; the album chooser must be above it. */
+body.story-fullscreen-open:has(#highlight-picker-form) #modal-root .modal-backdrop,
+body.story-fullscreen-open:has(#highlight-album-form) #modal-root .modal-backdrop{
+ z-index:100100!important;
+}
+.story-fullscreen .story-viewers-button{
+ left:14px!important;bottom:calc(65px + env(safe-area-inset-bottom,0px))!important;
+}
