@@ -7,7 +7,8 @@
       "namespace": "android_app",
       "package_name": "com.patiyiz.app",
       "sha256_cert_fingerprints": [
-        "E2:A4:D9:25:71:9D:75:B9:7B:33:71:F2:A1:CD:99:AD:77:28:30:5A:73:4D:EE:C7:5D:75:D2:76:B1:12:A4:D6"
+        "E2:A4:D9:25:71:9D:75:B9:7B:33:71:F2:A1:CD:99:AD:77:28:30:5A:73:4D:EE:C7:5D:75:D2:76:B1:12:A4:D6",
+        "CA:1E:65:46:4B:BF:33:65:C4:34:FF:04:EB:5A:6F:84:A2:24:E9:74:F9:44:30:FC:E3:78:3F:7E:8D:15:CD:DF"
       ]
     }
   }
