@@ -52,7 +52,7 @@ test('Patiler bölümü profil kayıtlarını gerçekten listeler ve sahibinin p
 
 test('Girişte ilk gönderi fotoğrafları lazy beklemeden hazırlanır',()=>{
  const feed=slice('function homePage(){','function explorePage(){');
- const explore=slice('function explorePage(){','function reelsPage(){');
+ const explore=slice('function explorePage(){','function petsPage(){');
  assert.match(feed,/list\.map\(\(p,i\)=>postCard\(p,i<5\)\)/);
  assert.match(explore,/i<9\?'eager':'lazy'/);
  assert.match(explore,/i<3\?'fetchpriority="high"'/);
