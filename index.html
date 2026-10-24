@@ -13,6 +13,16 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css?v=20261023-paw-design-1"><link rel="stylesheet" href="patiyiz-inspired.css?v=20261024-mobile-ux-1"><link rel="icon" type="image/svg+xml" sizes="any" href="patiyiz-selected-logo.svg?v=20261024-new-p-logo-1"><link rel="icon" type="image/png" sizes="48x48" href="/patiyiz-favicon-48.png?v=20261024-new-p-logo-1"><link rel="shortcut icon" href="/patiyiz-favicon-48.png?v=20261024-new-p-logo-1">
 <!-- Patiyiz release refresh: 2026-10-22 / explore and notification navigation -->
+<style id="patiyiz-splash-style">
+  /* Açılış ekranı: ortada mevcut Patiyiz logosu, aşağıda geliştirici markası */
+  #startup{position:fixed;inset:0;z-index:10000;display:block;width:100%;height:100vh;height:100dvh;min-height:0;margin:0;background:#fff;color:#17191d;overflow:hidden;font-family:'Plus Jakarta Sans','DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  #startup .pati-splash-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:grid;place-items:center}
+  #startup .pati-splash-icon{display:block;width:clamp(122px,36vw,154px);height:auto;aspect-ratio:1/1;object-fit:contain;border-radius:26%;background:#000}
+  #startup .pati-splash-footer{position:absolute;left:16px;right:16px;bottom:calc(clamp(48px,8vh,92px) + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+  #startup .pati-splash-from{font-weight:500;font-size:15px;line-height:1.2;letter-spacing:.015em;color:#87909a}
+  #startup .pati-splash-publisher{font-weight:800;font-size:19px;line-height:1.3;letter-spacing:-.5px;color:#111}
+  @media (prefers-reduced-motion:no-preference){#startup .pati-splash-icon{animation:patiSplashIn .45s ease-out both}@keyframes patiSplashIn{from{opacity:.65;transform:scale(.96)}to{opacity:1;transform:scale(1)}}}
+</style>
 </head><body>
 <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden" xmlns="http://www.w3.org/2000/svg">
 <symbol id="i-settings" viewBox="0 0 24 24"><path d="M12 2.7v2M12 19.3v2M4.7 4.7l1.4 1.4m11.8 11.8 1.4 1.4M2.7 12h2m14.6 0h2M4.7 19.3l1.4-1.4M17.9 6.1l1.4-1.4"></path><path d="M9 4.5 10 3h4l1 1.5 2 1 1.8-.3 2 3.4-1.2 1.4v4l1.2 1.4-2 3.4-1.8-.3-2 1L14 21h-4l-1-1.5-2-1-1.8.3-2-3.4 1.2-1.4v-4L3.2 8.6l2-3.4L7 5.5z"></path><circle cx="12" cy="12" r="3"></circle></symbol>
@@ -61,7 +71,15 @@
 <symbol id="i-reels-create" viewBox="0 0 24 24"><rect x="3" y="8.4" width="18" height="12.1" rx="2.1"/><path d="M3.2 8.2 5.6 3h14.8l-2.5 5.2M8.5 3l-2.4 5.2m8-5.2-2.4 5.2m7.9 0H3"/><path d="m10.2 11.8 5.2 2.6-5.2 2.6z" stroke-linejoin="round"/></symbol>
 <symbol id="i-text-create" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="m8 10 2-3 2 3m-3.4-1h2.8M14 7h3M14 11h3M7 15h10M7 18h7"/></symbol>
 <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M5 18a8.4 8.4 0 1 1 14 0"/><path d="m12 14 3.9-4M7.2 15.7l-.8-.8M12 6.8v1.4M17 9.6l1-1"/><circle cx="12" cy="14.1" r="1"/></symbol></svg>
-<div id="startup" class="startup"><span class="spinner"></span> Patiyiz yükleniyor…</div>
+<div id="startup" class="startup" role="status" aria-label="Patiyiz açılıyor">
+  <div class="pati-splash-center">
+    <img class="pati-splash-icon" src="patiyiz-selected-logo.svg?v=20261024-new-p-logo-1" alt="Patiyiz logosu" width="148" height="148" decoding="async" fetchpriority="high">
+  </div>
+  <div class="pati-splash-footer" aria-label="İyi Yol Akademi tarafından">
+    <span class="pati-splash-from">from</span>
+    <strong class="pati-splash-publisher">İyi Yol Akademi</strong>
+  </div>
+</div>
 <section id="auth-root" class="auth-root hidden" aria-label="Hesap girişi"></section>
 <div id="app-root" class="hidden">
   <header class="mobile-header"><div class="brand"><div class="brand-icon"><img class="patiyiz-chosen-logo" src="patiyiz-selected-logo.svg?v=20261024-new-p-logo-1" alt="Patiyiz"></div><div><div class="brand-word">patiyiz</div><div class="brand-caption">birlikte daha güzel</div></div></div><div class="pati-header-actions"><button type="button" id="pati-header-messages" class="pati-header-messages" data-view="messages" aria-label="Mesajlar"><svg class="icon" aria-hidden="true"><use href="#i-message"></use></svg></button><button type="button" id="pati-header-notifications" class="pati-header-notifications" data-view="notifications" aria-label="Bildirimler"><svg class="icon" aria-hidden="true"><use href="#i-bell"></use></svg></button></div></header>
