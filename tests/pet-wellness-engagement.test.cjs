@@ -71,7 +71,7 @@ test('Initial app shell no longer waits for the entire database, and admin dashb
  assert.match(show,/await load\('feed'\)/);
  assert.match(show,/await load\('deferred'\)/);
  assert.match(admin,/Promise.all\(\[sb\.rpc\('patiyiz_admin_dashboard'\)/);
- assert.match(html,/app\.js\?v=20261024-wellness-insights-1/);
+ assert.match(html,/app\.js\?v=20261024-release-reliability-1/);
  const inline=admin.match(/<script>\s*([\s\S]*?)<\/script>/);
  assert.ok(inline);assert.doesNotThrow(()=>new vm.Script(inline[1]));
 });

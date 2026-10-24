@@ -77,5 +77,5 @@ test('Kullanıcı mağazada kanıt, doğru durumlar ve geçmişini görür',()=>
  assert.match(markup,/data-action="paticoin-refresh"/);
  assert.match(app,/case 'paticoin-refresh':void patiCoinSync\(false\)/);
  assert.match(css,/\.paticoin-order-status/);
- assert.match(html,/app\.js\?v=20261024-wellness-insights-1/);
+ assert.match(html,/app\.js\?v=20261024-release-reliability-1/);
 });
