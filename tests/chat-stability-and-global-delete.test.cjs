@@ -1,0 +1,90 @@
+const test=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const vm=require('node:vm');
+const app=fs.readFileSync('app.js','utf8');
+const css=fs.readFileSync('patiyiz-inspired.css','utf8');
+const html=fs.readFileSync('index.html','utf8');
+const sql=fs.readFileSync('supabase/patiyiz-stable-chat-delete-20261024.sql','utf8');
+const edge=fs.readFileSync('supabase/functions/patiyiz-delete-message/index.ts','utf8');
+const section=(start,end)=>{
+ const i=app.indexOf(start),j=app.indexOf(end,i+start.length);
+ assert.ok(i>=0&&j>i,'Code section must exist: '+start);
+ return app.slice(i,j);
+};
+test('Chat is a full-height mobile layout with a stable composer and independently scrollable history',()=>{
+ assert.match(css,/\.app-shell:has\(\.pati-dm-layout\.mobile-chat-open\)/);
+ assert.match(css,/position:fixed!important;inset:0 auto auto 0!important/);
+ assert.match(css,/\.pati-dm-layout\.mobile-chat-open \.chat-history/);
+ assert.match(css,/overflow-y:auto!important/);
+ assert.match(css,/\.pati-dm-layout\.mobile-chat-open \.chat-form/);
+ assert.match(css,/--pati-dm-visual-height/);
+ assert.match(app,/visualViewport\?\.addEventListener\('resize',patiResizeChatViewport\)/);
+ assert.doesNotMatch(app,/\?\.scrollIntoView\(\{block:'nearest'\}\)/);
+});
+test('Chat remembers position and does not re-render when marking message read',()=>{
+ const page=section('function messagesPage(){','function pushKeyBytes(');
+ assert.match(page,/oldHistory=main\.querySelector/);
+ assert.match(page,/oldWasAtBottom/);
+ assert.match(page,/oldChatId!==personId/);
+ assert.match(page,/requestAnimationFrame\(restore\)/);
+ const read=section('async function markConversationRead(){','function unreadCounts(){');
+ assert.match(read,/unread\.forEach\(x=>x\.read_at=now\);navRender\(\)/);
+ assert.doesNotMatch(read,/render\(\);/);
+ const live=section('function queueLiveUpdate(){','function startLive(){');
+ assert.match(live,/x\.edited_at\+'_'+x\.body/);
+ assert.match(live,/focus\(\{preventScroll:true\}\)/);
+});
+test('Gallery selection sends photo immediately with no intermediate picker',()=>{
+ const gallery=section("if(input?.name==='dm_camera'||input?.name==='dm_gallery'){","const post=input?.closest?.('#post-form')");
+ assert.match(gallery,/if\(files\[0\]\)run\(\(\)=>sendDmImage\(files\[0\]\)\)/);
+ assert.doesNotMatch(gallery,/PatiyizGalleryPicker\.open/);
+ assert.match(app,/case 'pati-dm-gallery-open':document\.querySelector/);
+ const send=section('async function sendDmImage(file){','async function startDmRecord()');
+ assert.match(send,/Fotoğraf gönderiliyor…/);
+ assert.match(send,/await uploadDmFile\(file,'image',recipient\)/);
+ assert.match(send,/data\.messages\.push\(record\)/);
+ assert.match(send,/if\(view==='messages'\)render\(\)/);
+});
+test('Text message appears after confirmed insert and photo receives persisted row',()=>{
+ const sendText=section("case 'dm-edit-form':","case 'message-form':");
+ assert.match(sendText,/sb\.from\('messages'\)\.update\(\{body,edited_at/);
+ const submitted=section("case 'message-form':","}});if(form.isConnected)");
+ assert.match(submitted,/insert\(\{sender_id:sender,receiver_id:recipient/);
+ assert.match(submitted,/\.select\('\*'\)\.single\(\)/);
+ assert.match(submitted,/data\.messages\.push\(r\.data\)/);
+ const file=section('async function uploadDmFile(file,type,receiver){','const patiDmSignedCache=new Map();');
+ assert.match(file,/\.select\('\*'\)\.single\(\)/);
+ assert.match(file,/return m\.data/);
+});
+test('Message delete is global, single Sil button, no local hiding',()=>{
+ const deletion=section("case 'message-delete':{","case 'comment':");
+ assert.match(deletion,/her iki kullanıcıdan kalıcı olarak silinecek/);
+ assert.match(deletion,/functions\.invoke\('patiyiz-delete-message'/);
+ assert.match(deletion,/data\.messages=data\.messages\.filter\(x=>x\.id!==m\.id\)/);
+ assert.doesNotMatch(deletion,/message_hidden'\)\.insert/);
+ assert.match(app,/data-action="message-delete"/);
+ assert.match(app,/🗑️ Sil/);
+ assert.doesNotMatch(app,/🗑️ Benden sil/);
+ assert.doesNotMatch(app,/yalnızca kendi sohbetinden kaldırabilirsin/);
+});
+test('Server verifies JWT and participant authorization before deleting both users message and private attachment',()=>{
+ assert.match(edge,/userClient|client\.auth\.getUser\(\)/);
+ assert.match(edge,/client\.auth\.getUser\(\)/);
+ assert.match(edge,/sender_id!==uid&&message\.receiver_id!==uid/);
+ assert.match(edge,/\.from\("messages"\)\.delete\(\)/);
+ assert.match(edge,/\.storage\.from\("patiyiz-private-messages"\)\.remove/);
+ assert.match(edge,/SUPABASE_SERVICE_ROLE_KEY/);
+ assert.match(edge,/return reply\(200,"Mesaj iki tarafın sohbetinden silindi\."/);
+ assert.match(sql,/revoke delete on public\.messages from public,anon,authenticated/);
+ assert.match(sql,/grant update\(body,edited_at\) on public\.messages to authenticated/);
+ assert.match(sql,/create policy "dm_deletion_events_self_select"/);
+ assert.match(sql,/owner_id=\(select auth\.uid\(\)\)/);
+ assert.match(sql,/create trigger patiyiz_dm_deleted_signal after delete on public\.messages/);
+ assert.match(sql,/values\(old\.sender_id,old\.id\),\(old\.receiver_id,old\.id\)/);
+});
+test('Both participants receive owner-scoped Realtime deletion events for immediate refresh',()=>{
+ assert.match(app,/event:'INSERT',schema:'public',table:'patiyiz_dm_deletion_events',filter:'owner_id=eq\.'\+me\.id/);
+ assert.match(sql,/alter publication supabase_realtime add table public\.patiyiz_dm_deletion_events/);
+ assert.match(html,/chat_stable=1/);
+});
