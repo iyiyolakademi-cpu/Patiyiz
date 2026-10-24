@@ -19,6 +19,8 @@ test('Likes are present in initial and feed data, and are confirmed by the datab
  assert.match(action,/const verified=await sb\.from\('post_likes'\)\.select\('post_id,user_id'\)\.eq\('post_id',id\)/);
  assert.match(action,/savedLike===wasLiked/);
  assert.match(app,/case 'like':void togglePostLike\(id\);break/);
+ assert.match(app,/if\(!liked\.has\(id\)\)void togglePostLike\(id\)/);
+ assert.doesNotMatch(app,/run\(\(\)=>doToggle\('post_likes'/);
 });
 test('A like and unlike persist across reads, including someone else\'s likes',async()=>{
  const code=piece('async function togglePostLike(id){','async function doToggle(');
