@@ -26,8 +26,8 @@ test('iPhone, Android ve PWA kurulum ikonları yeni yazısız logoya bağlı',()
  assert.equal(manifest.icons[0].type,'image/png');
  assert.equal(manifest.icons[1].type,'image/png');
  assert.ok(manifest.icons[1].purpose.includes('maskable'));
- assert.equal(manifest.start_url,'/');
- assert.equal(manifest.id,'/');
+ assert.equal(manifest.start_url,'./');
+ assert.equal(manifest.id,'./');
  assert.equal(manifest.background_color,'#000000');
 });
 test('Gerçek PNG dosyaları ve doğru boyutları mevcut',()=>{
