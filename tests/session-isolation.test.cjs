@@ -105,7 +105,7 @@ test('Özel mesaj kaydı reddedilirse yüklenen dosya sunucudan temizlenir', asy
     console
   };
   const fn = vm.runInNewContext(segment('async function uploadDmFile(', 'const patiDmSignedCache=new Map();') + '\nuploadDmFile', ctx);
-  await assert.rejects(() => fn({ size: 350, type: 'image/jpeg', name: 'photo.jpg' }, 'image', 'friend'), /write failed/);
+  await assert.rejects(() => fn({ size: 350, type: 'image/jpeg', name: 'photo.jpg' }, 'image', 'friend'), err => err?.message === 'write failed');
   assert.deepEqual(removed, ['author/random-key.jpg']);
 });
 
