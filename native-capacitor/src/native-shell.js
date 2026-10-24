@@ -1,5 +1,5 @@
 /* Patiyiz Android native bridge. No private Firebase keys belong in this bundle. */
-import {Capacitor} from '@capacitor/core';
+import {Capacitor,registerPlugin} from '@capacitor/core';
 import {App} from '@capacitor/app';
 import {StatusBar,Style} from '@capacitor/status-bar';
 import {Keyboard} from '@capacitor/keyboard';
@@ -111,6 +111,13 @@ window.PatiyizNative={isNative:native,firebaseConfigured,pickPhotoForInput,enabl
  routeWebUrl};
 if(native){
  window.PATIYIZ_ANDROID_NATIVE=true;
+ const NativeGallery=registerPlugin('PatiyizGallery');
+ window.PatiyizNativeGallery={
+  getPhotos:options=>NativeGallery.getPhotos(options),
+  readPhoto:options=>NativeGallery.readPhoto({id:typeof options==='string'?options:options.id}),
+  ensureCamera:()=>NativeGallery.ensureCamera()
+ };
+
  document.documentElement.classList.add('patiyiz-native-android');
  void StatusBar.setOverlaysWebView({overlay:false}).catch(console.warn);
  void StatusBar.setBackgroundColor({color:'#000000'}).catch(console.warn);
