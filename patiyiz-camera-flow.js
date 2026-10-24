@@ -74,7 +74,7 @@
  const accept=async file=>{
   if(!state||state.selected.length>=10)return;
   if(!file||!file.type.startsWith('image/')){showMessage('Yalnızca fotoğraf seçebilirsin.');return;}
-  state.selected.push(file);const u=urlFor(file);state.urls.push(u);
+  stopCamera();state.selected.push(file);const u=urlFor(file);state.urls.push(u);
   state.root.querySelector('#pati-camera-gallery-panel').hidden=true;
   renderSelected();
   try{state.onPhotos([...state.selected]);}catch(e){showMessage('Fotoğraf eklenemedi.');}
@@ -174,7 +174,7 @@
    if(node.scrollTop+node.clientHeight>=node.scrollHeight-350)void loadGallery();
   });
   if(native()){
-   window.PatiyizNativeGallery.getPhotos({offset:0,limit:1}).then(r=>{
+   window.PatiyizNativeGallery.getPhotos({offset:0,limit:1,previewOnly:true}).then(r=>{
     if(state&&r.photos?.length)state.root.querySelector('#pati-camera-gallery-thumb').src=r.photos[0].thumbnail;
    }).catch(()=>{});
   }
