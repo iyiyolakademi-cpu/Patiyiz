@@ -23,7 +23,7 @@ test('Arama sekmesine basınca doğrudan kullanıcı profilleri görünür',()=>
 
 test('Kullanıcı listesi mobil genişlikte profil fotoğrafı ve arama düğmesi ile düzenlenir',()=>{
  assert.match(css,/#main-content \.pati-search-top/);
- assert.match(css,/#main-content \.pati-search-user>\\.avatar/);
+ assert.ok(css.includes('#main-content .pati-search-user>.avatar'));
  assert.match(css,/#main-content \.pati-search-user-info strong/);
  assert.match(css,/#app-root:has\(\.pati-search-screen\)>\.mobile-header\{display:none!important/);
  assert.match(css,/#main-content #explore-search/);
@@ -89,7 +89,7 @@ test('Fotoğraflar galeri izni olmadan okunmaz, dialog mobil ekranla sınırlıd
  assert.match(gallery,/URL\.createObjectURL\(f\)/);
  assert.match(gallery,/URL\.revokeObjectURL\(url\)/);
  assert.match(gallery,/class="pati-gallery-grid"/);
- assert.match(gallery,/class="pati-gallery-check"/);
+ assert.match(gallery,/check\.className='pati-gallery-check'/);
  assert.match(gallery,/role="dialog" aria-modal="true"/);
  assert.match(css,/\.pati-gallery-overlay\{position:fixed/);
  assert.match(css,/\.pati-gallery-grid\{display:grid;grid-template-columns:repeat\(4/);
