@@ -4,12 +4,12 @@ import webpush from 'npm:web-push@3.6.7';
 const textEncoder=new TextEncoder();
 function toBase64Url(bytes:Uint8Array){
  let result='';for(const b of bytes)result+=String.fromCharCode(b);
- return btoa(result).replace(/\\+/g,'-').replace(/\\//g,'_').replace(/=+$/g,'');
+ return btoa(result).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/g,'');
 }
 async function getFirebaseOAuth(secretJson:string){
  const credentials=JSON.parse(secretJson);
- if(!credentials.private_key||!credentials.client_email||!/^[\\w-]{4,100}$/.test(credentials.project_id))throw Error('Firebase service account incomplete');
- const raw=credentials.private_key.replace(/-----BEGIN PRIVATE KEY-----|-----END PRIVATE KEY-----|\\s/g,'');
+ if(!credentials.private_key||!credentials.client_email||!/^[\w-]{4,100}$/.test(credentials.project_id))throw Error('Firebase service account incomplete');
+ const raw=credentials.private_key.replace(/-----BEGIN PRIVATE KEY-----|-----END PRIVATE KEY-----|\s/g,'');
  const binary=Uint8Array.from(atob(raw),c=>c.charCodeAt(0));
  const key=await crypto.subtle.importKey('pkcs8',binary,{name:'RSASSA-PKCS1-v1_5',hash:'SHA-256'},false,['sign']);
  const now=Math.floor(Date.now()/1000);
