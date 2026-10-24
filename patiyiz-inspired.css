@@ -2042,3 +2042,34 @@ body.story-fullscreen-open:has(#highlight-album-form) #modal-root .modal-backdro
  #pati-achievement-print p{font-size:17px;max-width:560px;line-height:1.7}
  #pati-achievement-print small{margin-top:20px}
 }
+
+
+/* 2026-10-24 · Rebalanced PatiCoin missions, saved archive, clean feed navigation */
+.pati-header-coins{display:inline-flex;align-items:center;gap:4px;justify-content:center;white-space:nowrap;min-height:34px;max-height:38px;padding:7px 11px;background:linear-gradient(145deg,#24212b,#44384e)!important;color:#fff!important;border:1px solid rgba(255,255,255,.18)!important;border-radius:999px!important;cursor:pointer;font:inherit;box-shadow:0 3px 10px rgba(32,26,40,.13)}
+.pati-header-coins strong{font-size:12px;font-weight:850;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.pati-header-coins span{font-size:15px;line-height:1}
+.pati-header-coins:focus-visible{outline:3px solid #ab9bd2;outline-offset:3px}
+#main-content .pati-saved-posts{max-width:780px;margin:0 auto}
+#main-content .pati-saved-heading{background:linear-gradient(135deg,#22212a,#484354);color:#fff;border-radius:21px;padding:clamp(20px,4vw,33px);margin-bottom:18px}
+#main-content .pati-saved-heading>span{font-size:10px;letter-spacing:.13em;color:#d8cfea;font-weight:800}
+#main-content .pati-saved-heading h1{font-size:clamp(24px,4vw,34px);line-height:1.2;letter-spacing:-.04em;margin:8px 0}
+#main-content .pati-saved-heading p{font-size:13px;color:#e1dce9;line-height:1.65}
+#main-content .pati-saved-heading small{font-size:11px;display:inline-flex;border:1px solid rgba(255,255,255,.25);border-radius:100px;padding:8px 13px}
+#main-content .pati-saved-empty{padding:24px;border:1px dashed #d7d4dc;border-radius:17px;text-align:center;color:#666472;line-height:1.7}
+#main-content .pati-save-action:disabled{opacity:.6;cursor:wait}
+#main-content .pati-save-action.active{color:#8e6aa8!important}
+#main-content .paticoin-page .paticoin-mission-heading{margin:28px 0 12px;display:flex;align-items:flex-end;justify-content:space-between;gap:13px}
+#main-content .paticoin-mission-heading h2{font-size:19px;line-height:1.3;letter-spacing:-.02em;margin:0 0 4px}
+#main-content .paticoin-mission-heading p{font-size:12px;line-height:1.5;color:#797681;margin:0}
+#main-content .paticoin-mission-heading>span{font-size:11px;font-weight:800;white-space:nowrap;padding:8px 11px;border-radius:100px;background:#f3f0f8;color:#685678}
+#main-content .paticoin-task.pati-mission-claimed{background:#f7fbf6;border-color:#e0eddc}
+#main-content .paticoin-task.pati-mission-claimed b{color:#498257!important}
+#main-content .paticoin-profile-link{display:flex;gap:8px;justify-content:flex-start}
+#main-content .paticoin-profile-link button{border:1px solid #d4cfde;background:#f7f5f9;color:#34303c;border-radius:13px;padding:10px 15px;min-height:44px;font-weight:750;cursor:pointer}
+@media(max-width:520px){
+ .pati-header-coins{padding:6px 9px;min-height:32px;max-height:34px;gap:3px}
+ .pati-header-coins strong{font-size:11px}
+ .pati-header-coins span{font-size:13px}
+ #main-content .paticoin-mission-heading{align-items:start}
+ #main-content .paticoin-mission-heading h2{font-size:17px}
+}
