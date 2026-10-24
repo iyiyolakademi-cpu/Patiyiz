@@ -1,0 +1,24 @@
+# Android signing secrets & built packages: never commit these to a public repository.
+/*.keystore
+/*.jks
+/android/*.keystore
+/android/*.jks
+/android/*.apk
+/android/*.aab
+/android/app/
+/android/gradle/
+/android/.gradle/
+/android/build/
+/android/.idea/
+/android/gradlew
+/android/gradlew.bat
+/android/build.gradle
+/android/settings.gradle
+/android/gradle.properties
+/android/local.properties
+/android/manifest-checksum.txt
+/android/app-release-*
+/android/bubblewrap-* 
+*.key
+*.p12
+*.pfx

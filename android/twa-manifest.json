@@ -1,0 +1,41 @@
+{
+  "packageId": "com.patiyiz.app",
+  "host": "patiyiz.com",
+  "name": "Patiyiz",
+  "launcherName": "Patiyiz",
+  "display": "standalone",
+  "themeColor": "#000000",
+  "themeColorDark": "#000000",
+  "navigationColor": "#000000",
+  "navigationColorDark": "#000000",
+  "navigationDividerColor": "#000000",
+  "navigationDividerColorDark": "#000000",
+  "backgroundColor": "#000000",
+  "enableNotifications": true,
+  "startUrl": "/",
+  "iconUrl": "https://patiyiz.com/patiyiz-app-icon-512.png",
+  "maskableIconUrl": "https://patiyiz.com/patiyiz-app-icon-512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "./patiyiz-upload.keystore",
+    "alias": "patiyiz-upload"
+  },
+  "appVersion": "1.0.0",
+  "appVersionCode": 1,
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://patiyiz.com/manifest.webmanifest",
+  "fullScopeUrl": "https://patiyiz.com/",
+  "fallbackType": "customtabs",
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "minSdkVersion": 23,
+  "orientation": "portrait",
+  "fingerprints": [],
+  "additionalTrustedOrigins": [],
+  "retainedBundles": []
+}
