@@ -27,7 +27,7 @@ test('PatiCoin görev ekranında kod, paylaşma ve kullanma sunulur',()=>{
  assert.match(app,/patiyiz_redeem_invite/);
  assert.match(app,/data-action="paticoin-invite-redeem"/);
  assert.match(app,/data-action="paticoin-invite-share"/);
- assert.match(html,/app\.js\?v=20261024-store-fulfillment-1/);
+ assert.match(html,/app\.js\?v=20261024-wellness-insights-1/);
 });
 test('Kazanma ekranı Harika tuşu tıklanmadan kapanmaz',()=>{
  const a=app.indexOf('function patiCoinAnimation(amount,titles){');

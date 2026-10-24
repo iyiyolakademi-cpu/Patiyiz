@@ -20,12 +20,12 @@ test('Ana sayfada hikâyelerden hemen sonra bütün gönderi türleri gelir, sek
   {id:'video1',video_url:'movie.mp4',created_at:'2026-10-22T00:00:00Z'}
  ];
  const ctx={data:{posts},blocked:new Set(),selectedPostId:'',
-  main,patiyizProgressCard:()=>'',storiesStrip:()=>'<div id="stories"></div>',
+  main,patiyizProgressCard:()=>'',storiesStrip:()=>'<div id="stories"></div>',patiLeaderBoard:()=>'<section id="pati-active5"></section>',patiyizLoadedTables:new Set(['posts']),
   postCard:p=>'<article data-post="'+p.id+'"></article>',
   pageMore:{posts:false},empty:(title)=>title,header:()=>'',button:()=>''};
  const home=vm.runInNewContext(block('function homePage(){','function explorePage()')+'\nhomePage',ctx);
  home();
- assert.match(main.innerHTML,/<div id="stories"><\/div><div class="pati-feed-posts">/);
+ assert.match(main.innerHTML,/<div id="stories"><\/div><section id="pati-active5"><\/section><div class="pati-feed-posts">/);
  assert.doesNotMatch(main.innerHTML,/pati-feed-switch|pati-feed-follow|Fotoğraf &amp; Video|Yazılar|Takip ettiklerim|Tüm gönderiler/);
  assert.deepEqual([...main.innerHTML.matchAll(/data-post="([^"]+)"/g)].map(x=>x[1]),['image1','video1','text1']);
  assert.doesNotMatch(block('function homePage(){','function explorePage()'),/data\.reposts|feedMediaMode|feedFilter/);
@@ -96,8 +96,8 @@ test('Paylaşım ızgarası küçük ekranlarda yuvarlak profil resmi ve erişil
  assert.match(css,/#share-post-form \.pati-share-person\[hidden\]/);
  assert.match(css,/#share-post-form \.pati-share-quick/);
  assert.match(css,/@media\(max-width:355px\)/);
- assert.match(html,/patiyiz-inspired\.css\?v=20261024-store-fulfillment-1/);
- assert.match(html,/app\.js\?v=20261024-store-fulfillment-1/);
+ assert.match(html,/patiyiz-inspired\.css\?v=20261024-wellness-insights-1/);
+ assert.match(html,/app\.js\?v=20261024-wellness-insights-1/);
 });
 
 test('Mevcut DM ile paylaşım düğmesi profil kişisine gönderimi sürdürür',()=>{

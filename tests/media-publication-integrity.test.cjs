@@ -28,6 +28,7 @@ function env(extra={}){
   upload:async file=>'https://example.supabase.co/storage/v1/object/public/patiyiz-media/owner/'+file.name,
   uploadVideo:async file=>file?.size?'https://example.supabase.co/storage/v1/object/public/patiyiz-videos/owner/'+file.name:null,
   uploadStatus(){},
+  patiShareMetric:async()=>{},
   cropPostPhoto:async file=>file,
   renderEditedStoryFile:async file=>file,
   window:{PatiyizReelsEditor:{exportVideo:async()=>({size:800,name:'movie.mp4'})}},

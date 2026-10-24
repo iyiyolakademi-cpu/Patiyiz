@@ -1,0 +1,77 @@
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const app=fs.readFileSync('app.js','utf8'),admin=fs.readFileSync('admin.html','utf8');
+const css=fs.readFileSync('patiyiz-inspired.css','utf8'),html=fs.readFileSync('index.html','utf8');
+const wellness=fs.readFileSync('supabase/patiyiz-pet-wellness-20261024.sql','utf8');
+const repeat=fs.readFileSync('supabase/patiyiz-pet-reminder-repeat-20261024.sql','utf8');
+const analytics=fs.readFileSync('supabase/patiyiz-activity-analytics-20261024.sql','utf8');
+const extract=(a,b)=>{const i=app.indexOf(a),j=app.indexOf(b,i+a.length);assert.ok(i>=0&&j>i,'Missing '+a);return app.slice(i,j)};
+test('Private pet schedules cover vaccination vet food and medicine with owner-only RLS',()=>{
+ for(const category of ['vaccine','vet','food','medicine'])assert.match(wellness,new RegExp("'"+category+"'"));
+ for(const table of ['patiyiz_pet_reminders','patiyiz_pet_weights'])assert.match(wellness,new RegExp('alter table public\\.'+table+' enable row level security'));
+ assert.match(wellness,/owner_id=\(select auth.uid\(\)\)/);
+ assert.match(wellness,/exists\(select 1 from public.pets p where p.id=pet_id and p.owner_id=\(select auth.uid\(\)\)/);
+ assert.match(wellness,/numeric\(6,2\)/);
+ assert.match(wellness,/due_at timestamptz not null/);
+ assert.match(wellness,/remind_minutes_before/);
+});
+test('Recurring reminder completion is locked and inserts one new due date',()=>{
+ assert.match(repeat,/where id=p_id and owner_id=uid for update/);
+ assert.match(repeat,/if reminder.completed_at is not null then/);
+ assert.match(repeat,/completed_at=now\(\)/);
+ assert.match(repeat,/reminder.due_at\+\(reminder.repeat_days \* interval '1 day'\)/);
+ assert.match(repeat,/revoke execute on function public.patiyiz_complete_pet_reminder\(uuid\) from public,anon/);
+ assert.match(app,/patiyiz_complete_pet_reminder/);
+});
+test('Wellness has real forms, measurement history and user-visible reminder limitations',()=>{
+ for(const key of ['patiWellnessPage','patiWellnessReminderDialog','patiWellnessWeightDialog','patiWellnessSaveReminder','patiWellnessSaveWeight','patiWellnessAlerts'])assert.ok(app.includes('function '+key+'(')||app.includes('async function '+key+'('),key);
+ assert.match(app,/patiyiz_pet_reminders/);
+ assert.match(app,/patiyiz_pet_weights/);
+ assert.match(app,/type="datetime-local"/);
+ assert.match(app,/name="weight_kg"/);
+ assert.match(app,/Hayvan Sağlığı & Takvimi/);
+ assert.match(app,/Uygulama kapalıyken telefon bildirimi garantisi yoktur/);
+ assert.match(app,/case 'wellness-pet':patiWellnessPetId=id/);
+ assert.match(app,/case 'wellness-weight-form':await patiWellnessSaveWeight/);
+ assert.match(css,/\.pati-wellness-page/);
+});
+test('Top five publicly scored accounts based on server verified activities only',()=>{
+ assert.match(analytics,/from public.posts/);
+ assert.match(analytics,/from public.comments/);
+ assert.match(analytics,/from public.post_likes/);
+ assert.match(analytics,/least\(count\(\*\),15\)/);
+ assert.match(analytics,/least\(count\(\*\),30\)/);
+ assert.match(analytics,/least\(count\(\*\),45\)/);
+ assert.match(analytics,/order by points desc,c.user_id limit 5/);
+ assert.match(app,/function patiLeaderBoard\(\)/);
+ assert.match(app,/En Aktif 5 Pati/);
+ assert.match(app,/data-action="view-user"/);
+ assert.match(app,/storiesStrip\(\)\+patiLeaderBoard\(\)/);
+ assert.doesNotMatch(analytics,/from public.messages/);
+});
+test('DAU is one authenticated account per day; share telemetry is only approximate',()=>{
+ assert.match(analytics,/primary key\(user_id,active_day\)/);
+ assert.match(analytics,/on conflict do nothing/);
+ assert.match(analytics,/Europe\/Istanbul/);
+ assert.match(analytics,/admin_engagement_stats/);
+ assert.match(analytics,/Admin access required/);
+ assert.match(analytics,/revoke all on public.patiyiz_daily_active from anon,authenticated/);
+ assert.match(analytics,/revoke all on public.patiyiz_share_attempts from anon,authenticated/);
+ assert.match(analytics,/share_attempts_7days/);
+ assert.match(app,/patiyiz_track_daily_active/);
+ assert.match(app,/patiyiz_track_share/);
+ assert.match(admin,/data-tab="engagement"/);
+ assert.match(admin,/patiyiz_admin_engagement_stats/);
+ assert.match(admin,/tarayıcının bildirebildiği denemelere dayalı yaklaşık oran/);
+});
+test('Initial app shell no longer waits for the entire database, and admin dashboard runs in parallel',()=>{
+ const boot=extract('async function boot(){',"document.addEventListener('submit',async e=>{if(e.target.id!=='reset-password-form')");
+ assert.doesNotMatch(boot,/await load\('initial'\)/);
+ assert.match(boot,/if\(me\)\{showApp\(\)\}/);
+ const show=extract('function showApp(){','const authBusy=');
+ assert.match(show,/await load\('feed'\)/);
+ assert.match(show,/await load\('deferred'\)/);
+ assert.match(admin,/Promise.all\(\[sb\.rpc\('patiyiz_admin_dashboard'\)/);
+ assert.match(html,/app\.js\?v=20261024-wellness-insights-1/);
+ const inline=admin.match(/<script>\s*([\s\S]*?)<\/script>/);
+ assert.ok(inline);assert.doesNotThrow(()=>new vm.Script(inline[1]));
+});
