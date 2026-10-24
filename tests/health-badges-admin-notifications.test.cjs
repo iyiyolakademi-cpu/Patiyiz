@@ -36,7 +36,7 @@ test('Private health file defaults to owned pets and has a file form',async()=>{
  assert.match(p.render(),/Dijital Pati Sağlık Dosyası/);
  assert.match(p.render(),/pati-health-record-form/);
  assert.match(p.render(),/health-file/);
- assert.match(p.render(),/Yalnızca sana özel/i);
+ assert.match(p.render(),/YALNIZCA SANA ÖZEL/i);
  await p.load();
  assert.equal(p.state.loaded,true);
 });
