@@ -42,11 +42,11 @@ test('Native shell uses Capacitor Android activity title and handles back instea
  assert.match(web,/closeModal/);
 });
 test('Native build communicates limitations accurately instead of faking push and billing',()=>{
- assert.match(web,/Firebase\/FCM/);
+ assert.match(web,/enablePush\(me\.id,sb\)/);
  assert.match(web,/https:\/\/patiyiz\.com\//);
  assert.match(web,/password/);
- assert.ok(!pkg.dependencies['@capacitor/push-notifications'],
-  'Native push must not be enabled without Firebase/FCM server integration.');
+ assert.ok(pkg.dependencies['@capacitor/push-notifications']);
+ assert.match(shell,/firebaseConfigured=__PATIYIZ_FCM_ENABLED__/);
  assert.equal(pkg.private,true);
 });
 test('QA APK workflow uses Java 21, API 36 and no release credentials',()=>{
