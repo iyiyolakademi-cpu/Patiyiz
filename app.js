@@ -136,7 +136,25 @@ const patiCoinTasks=[
  ['first_post','İlk paylaşım',30,'Bir gönderi yayınla'],
  ['first_story','İlk hikâye',25,'Hikâye paylaş'],
  ['first_follow','İlk takip',15,'Bir kullanıcıyı takip et'],
- ['three_posts','3 gönderi',45,'Üç gönderi yayınla']
+ ['three_posts','3 gönderi',45,'Üç gönderi yayınla'],
+ ['first_comment','İlk yorumunu yap',10,'Gönderiye ilk yorumunu yaz'],
+ ['five_posts','5 paylaşım yap',12,'Beş gönderi yayınla'],
+ ['ten_posts','10 paylaşım yap',20,'On gönderi yayınla'],
+ ['five_follows','5 kişiyi takip et',10,'Beş kullanıcıyla bağlantı kur'],
+ ['five_lessons','5 Akademi dersi bitir',12,'Beş ücretsiz dersin mini sınavını tamamla'],
+ ['twenty_lessons','20 Akademi dersi bitir',25,'Yirmi ücretsiz dersin mini sınavını tamamla'],
+ ['first_weight','İlk kilo kaydını ekle',10,'Hayvanının kilo takibini başlat'],
+ ['first_reminder','Bakım hatırlatıcısı oluştur',10,'İlk veteriner, aşı veya mama hatırlatıcını ekle'],
+ ['first_saved','İlk paylaşımını kaydet',5,'Akışta bir gönderiyi Kaydettiklerim bölümüne ekle'],
+ ['daily_visit','Günlük aktif ol',3,'Bugün Patiyiz uygulamasını kullan','daily'],
+ ['daily_post','Günün paylaşımını yap',5,'Bugün en az bir gönderi paylaş','daily'],
+ ['daily_story','Günün hikâyesini paylaş',3,'Bugün en az bir hikâye yayınla','daily'],
+ ['daily_comment','Bugün yorum yap',3,'Bugün bir gönderiye yorum yaz','daily'],
+ ['daily_lesson','Günün dersini bitir',4,'Bugün ücretsiz Akademi derslerinden birini tamamla','daily'],
+ ['weekly_active3','3 farklı gün aktif ol',10,'Bu hafta üç farklı gün Patiyiz kullan','weekly'],
+ ['weekly_posts3','Haftada 3 paylaşım yap',9,'Bu hafta üç ayrı gönderi yayınla','weekly'],
+ ['weekly_lessons3','Haftada 3 ders bitir',9,'Bu hafta üç Akademi dersi tamamla','weekly'],
+ ['weekly_comments5','Haftada 5 yorum yap',8,'Bu hafta beş yorum yaz','weekly']
 ];
 let patiCoinState={balance:0,earned:0,claims:[],items:[],orders:[],history:[],loading:false};
 let patiCoinCheckoutItem=null;
@@ -197,11 +215,30 @@ function patiCoinAnimation(amount,titles){
  el.querySelector('button').addEventListener('click',close);
  // Coin overlay remains until the user taps Harika.
 }
+function patiCoinMissionKey(code,group){
+ if(group!=='daily'&&group!=='weekly')return code;
+ const dateString=new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Istanbul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+ const dateParts=dateString.split('-').map(Number);
+ const time=Date.UTC(dateParts[0],dateParts[1]-1,dateParts[2]);
+ const chosen=new Date(group==='weekly'?time-((new Date(time).getUTCDay()+6)%7)*86400000:time);
+ return code+':'+chosen.toISOString().slice(0,10).replaceAll('-','');
+}
 function patiRewardsPage(){
  const done=new Set(patiCoinState.claims);
- const tasks=patiCoinTasks.map(([code,title,coins,info])=>'<article class="paticoin-task"><div class="paticoin-task-icon">'+(done.has(code)?'✓':'🐾')+'</div><div><strong>'+esc(title)+'</strong><small>'+esc(info)+'</small></div><b class="'+(done.has(code)?'earned':'')+'">'+(done.has(code)?'Kazanıldı':'+'+coins+' 🪙')+'</b></article>').join('');
+ const missionList=(group)=>{
+  const tasks=patiCoinTasks.filter(x=>(x[4]||'once')===group);
+  return '<div class="paticoin-tasks">'+tasks.map(([code,title,coins,info,period])=>{
+   const key=patiCoinMissionKey(code,period||'once');
+   const claimed=done.has(key);
+   return '<article class="paticoin-task '+(claimed?'pati-mission-claimed':'')+'"><div class="paticoin-task-icon">'+(claimed?'✓':'🐾')+'</div><div><strong>'+esc(title)+'</strong><small>'+esc(info)+'</small></div><b class="'+(claimed?'earned':'')+'">'+(claimed?'✓ Tamamlandı':'+'+coins+' 🪙')+'</b></article>';
+  }).join('')+'</div>';
+ };
  const invite='<section class="paticoin-invite"><h2>🎁 Arkadaşını davet et</h2><p>Sen ve davet ettiğin kişi <b>50’şer PatiCoin</b> kazanırsınız. Her hesap yalnızca bir davet kodu kullanabilir.</p><div class="paticoin-invite-code"><strong>'+esc(patiInviteState.code||'Kod hazırlanıyor…')+'</strong><button data-action="paticoin-invite-share">Paylaş</button></div><small>Davet ettiğin kişi: '+(patiInviteState.invited_count||0)+'</small>'+(patiInviteState.already_used?'<p>✓ Davet kodu kullanma hakkını tamamladın.</p>':'<label class="paticoin-invite-entry">Arkadaşının kodu<input id="pati-invite-code" maxlength="9" autocomplete="off" placeholder="P1234ABCD"></label><button class="paticoin-invite-redeem" data-action="paticoin-invite-redeem">Kodu kullan · +50 🪙</button>')+'</section>';
- main.innerHTML='<section class="paticoin-page"><div class="paticoin-hero"><span>🐾 PATİYİZ ÖDÜLLERİ</span><h1>PatiCoin</h1><strong>🪙 '+patiCoinState.balance+' <small>PatiCoin</small></strong><p>Toplam kazanılan: '+patiCoinState.earned+' coin</p><div class="paticoin-actions"><button data-action="paticoin-claim">Görevleri kontrol et</button><button data-action="paticoin-shop">Pati Mağaza →</button></div></div><h2>Görevlerin</h2><div class="paticoin-tasks">'+tasks+'</div>'+invite+'<p class="paticoin-disclaimer"><b>Yeni ödül kuralları:</b> Hesabın en az 7 günlük olmalı, son 30 günde 3 farklı gün aktif olmalısın. 14 günde en fazla 1 ödül talebi oluşturabilirsin. Önceden kazandığın coinler korunur.</p></section>';
+ main.innerHTML='<section class="paticoin-page"><div class="paticoin-hero"><span>🐾 PATİYİZ GÖREV MERKEZİ</span><h1>PatiCoin</h1><strong>🪙 '+Number(patiCoinState.balance).toLocaleString('tr-TR')+' <small>PatiCoin</small></strong><p>Toplam kazanılan: '+Number(patiCoinState.earned).toLocaleString('tr-TR')+' coin</p><div class="paticoin-actions"><button data-action="paticoin-claim">Görevlerimi kontrol et</button><button data-action="paticoin-shop">Pati Mağaza →</button></div></div>'+
+ '<div class="paticoin-mission-heading"><div><h2>🎯 Tek Seferlik Görevler</h2><p>Her hesapta yalnız bir kez puan kazandırır.</p></div><span>'+patiCoinTasks.filter(x=>!x[4]).length+' görev</span></div>'+missionList('once')+
+ '<div class="paticoin-mission-heading"><div><h2>☀️ Günlük Görevler</h2><p>Her yeni gün yeniden yapılabilir. Aynı görevden günde bir kez puan kazanılır.</p></div><span>5 görev</span></div>'+missionList('daily')+
+ '<div class="paticoin-mission-heading"><div><h2>🗓️ Haftalık Görevler</h2><p>Her pazartesi yeniden başlar. Aynı görevden haftada en fazla bir kez puan kazanılır.</p></div><span>4 görev</span></div>'+missionList('weekly')+
+ invite+'<p class="paticoin-disclaimer"><b>Ödül kuralları:</b> Hesabın en az 7 günlük olmalı, son 30 günde 3 farklı gün aktif olmalısın. 14 günde en fazla 1 ödül talebi oluşturabilirsin. Puanlar yalnızca sunucunun doğruladığı işlemler için verilir; eski kazançlar korunur.</p></section>';
 }
 function patiShopPage(){
  const label={pending:'Talep alındı · Beklemede',approved:'Onaylandı · Stok ayrıldı',preparing:'Hazırlanıyor',fulfilled:'Teslim/bağış tamamlandı',cancelled:'İptal edildi · PatiCoin iade edildi'};
