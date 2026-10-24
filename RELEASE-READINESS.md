@@ -7,10 +7,14 @@
 - PatiCoin denetim olaylarına ilişkin iki eksik yabancı anahtar indeksi canlı Supabase veritabanında oluşturuldu ve SQL dosyası depoya eklendi.
 - CI yeni yükleme yardımcı dosyasının sözdizimini ve yeni regresyon testlerini çalıştırır.
 
+- Canlı veritabanında **patiyiz-pet-reminders** adlı pg_cron işi aktiftir. Dakikada bir en fazla 100 yaklaşan, tamamlanmamış hatırlatmayı işler. 24 saatten eski gecikmiş hatırlatmalar için geçmişe dönük bildirim göndermez. Kullanıcı zamanı değiştirdiğinde yeniden bildirim hakkı doğar.
+- İşlem özel `patiyiz_private` şemasında çalışır; oturum açmış normal kullanıcılar fonksiyonu doğrudan çağıramaz. Dosya: `supabase/patiyiz-scheduled-pet-notifications-20261024.sql`.
+- **Telefonlar için ek koşullar:** Android Chrome ile bildirim izni ve uygun service worker; iOS'ta Safari ana ekrana eklenen PWA ve kullanıcı izni. Bu koşullar olmadan bildirim yalnızca uygulama içinde görünür. Gerçek cihaz uçtan uca testleri tamamlanmadı.
+
 ### Kalan doğrulamalar ve manuel bağımlılıklar
 - Kayıt, mesaj bildirimi, kamera, galeri, video, hikâye, push, hesap silme ve PatiCoin ödül alımı iki gerçek cihaz ve iki gerçek test hesabıyla uçtan uca sınanmalıdır. Veritabanındaki mesaj sayısı, bildirimin telefona teslim edildiğinin kanıtı değildir.
 - Supabase Dashboard Auth güvenliğinde sızdırılmış parola korumasını etkinleştirin; yönetici işlemlerini normal kullanıcı oturumu ile negatif test edin. Otomatik güvenlik denetleyicisinin SECURITY DEFINER uyarılarının her biri fonksiyon bazında incelenmelidir.
-- Uygulama kapalıyken zamanlanmış aşı / mama / ilaç bildirimleri henüz yoktur; mevcut bakım hatırlatıcıları uygulama açıkken gösterilir.
+- Aşı, veteriner, mama ve ilaç hatırlatmaları Supabase Cron ile dakikada bir kontrol edilip, en fazla bir kez bildirim kaydı oluşturacak şekilde etkinleştirildi. Telefon bildirimi ancak kullanıcının Web Push izni ve geçerli aboneliği varsa gönderilir; gerçek cihazda teslimat ayrıca doğrulanmalıdır.
 - Web sitesi cihazın bütün fotoğraf arşivini izinsiz okuyamaz. Tam yerel galeri erişimi ve Play Store/AAB hazırlığı için Android/iOS uygulama paketi gerekir.
 - Premium ücretli abonelik ve gerçek bağış/ödül teslimatı, ödeme sağlayıcısı ve sunucu doğrulaması olmadan açılmamalıdır.
 - Kayıp pati konum bildirimleri, konum izni, gizlilik ve abuse/spam politikaları hazır olmadan otomatik etkinleştirilmemelidir.
