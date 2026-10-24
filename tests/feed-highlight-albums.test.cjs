@@ -61,7 +61,7 @@ test('Öne çıkar penceresinde mevcut 3-4 ayrı albüm ve yeni albüm seçeneğ
 });
 
 test('Sahip olduğu hikâye albüme kaydedilir, isteğin RLS koşuluyla uyumlu olması için önce kalıcı yapılır',async()=>{
- const code=section('function addStoryToHighlightAlbum(storyId,albumId){','function manageHighlightAlbums(){');
+ const code=section('async function addStoryToHighlightAlbum(storyId,albumId){','function manageHighlightAlbums(){');
  const story={id:'s1',author_id:'owner',is_highlight:false};
  const params=[],state={refreshes:0,notified:''};
  const sb={from(table){
