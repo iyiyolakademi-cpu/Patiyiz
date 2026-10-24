@@ -16,6 +16,6 @@ jobs:
         with:
           node-version: '22'
       - name: Syntax checks
-        run: node --check app.js && node --check config.js && node --check knowledge.js && node --check gallery-picker.js && node --check reels-editor.js && node --check patiyiz-sw.js
+        run: node --check app.js && node --check config.js && node --check knowledge.js && node --check gallery-picker.js && node --check photo-studio.js && node --check reels-editor.js && node --check patiyiz-sw.js
       - name: Regression tests
         run: node --test tests/*.test.cjs

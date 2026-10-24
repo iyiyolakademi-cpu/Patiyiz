@@ -40,9 +40,9 @@ test('Fotoğraf ve DM için native dosya izni sonrası uygulama içi galeri mod�
  assert.match(changes,/onConfirm:files=>/);
  assert.match(changes,/new DataTransfer\(\)/);
  assert.match(app,/name="dm_gallery" accept="image\/\*" multiple hidden/);
- const gal=html.indexOf('gallery-picker.js?v=20261024-gallery-safety-1'),appjs=html.indexOf('app.js?v=20261024-paticoin-1');
+ const gal=html.indexOf('gallery-picker.js?v=20261024-gallery-safety-1'),appjs=html.indexOf('app.js?v=20261024-photo-studio-1');
  assert.ok(gal>=0&&appjs>gal);
- assert.match(html,/patiyiz-inspired\.css\?v=20261024-paticoin-1/);
+ assert.match(html,/patiyiz-inspired\.css\?v=20261024-photo-studio-1/);
  assert.doesNotMatch(gallery,/navigator\.mediaDevices\.getUserMedia|webkitGetAsEntry|showDirectoryPicker/);
 });
 
