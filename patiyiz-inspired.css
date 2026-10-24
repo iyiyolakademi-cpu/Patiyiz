@@ -1768,3 +1768,14 @@ body.story-fullscreen-open:has(#highlight-album-form) #modal-root .modal-backdro
 .story-fullscreen .story-viewers-button{
  left:14px!important;bottom:calc(65px + env(safe-area-inset-bottom,0px))!important;
 }
+
+.paticoin-invite{margin-top:24px;padding:20px 16px;border:1px solid #d9def0;background:linear-gradient(140deg,#eef1fc,#f3eefb);border-radius:20px;color:#24283c}
+.paticoin-invite h2{margin:0 0 8px;font-size:19px}.paticoin-invite p{font-size:13px;line-height:1.6;color:#555b76}
+.paticoin-invite-code{display:flex;align-items:center;gap:12px;justify-content:space-between;background:#fff;border:1px solid #d9dcec;padding:12px;border-radius:14px;margin:14px 0}
+.paticoin-invite-code strong{font-size:22px;font-weight:900;letter-spacing:1.5px;color:#343855}
+.paticoin-invite-code button,.paticoin-invite-redeem{border:0;border-radius:12px;background:#343854;color:#fff;padding:12px 15px;font-weight:800;cursor:pointer}
+.paticoin-invite-entry{display:grid;gap:6px;margin:17px 0 10px;font-size:13px;font-weight:800}
+.paticoin-invite-entry input{width:100%;box-sizing:border-box;border:1px solid #cbd0e2;border-radius:13px;padding:13px;font-size:16px;text-transform:uppercase;letter-spacing:1px;background:#fff;color:#1c223a}
+.paticoin-invite-redeem{width:100%;min-height:47px}.paticoin-invite-redeem:disabled{opacity:.5}
+.paticoin-celebration{z-index:100300!important}
+.paticoin-celebration button{min-width:155px}
