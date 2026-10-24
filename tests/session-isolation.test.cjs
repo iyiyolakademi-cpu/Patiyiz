@@ -100,7 +100,7 @@ test('Özel mesaj kaydı reddedilirse yüklenen dosya sunucudan temizlenir', asy
         async upload() { return { error: null }; },
         async remove(paths) { removed.push(...paths); return { error: null }; }
       }; } },
-      from() { return { async insert() { return { error: { message: 'write failed' } }; } }; }
+      from() { return { insert() { return { select() { return { async single() { return { error: { message: 'write failed' } }; } }; } }; } }; }
     },
     console
   };
