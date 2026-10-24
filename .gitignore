@@ -22,3 +22,13 @@
 *.key
 *.p12
 *.pfx
+
+# Separate Capacitor Android QA build (never publish generated artifacts or signing keys).
+/native-capacitor/node_modules/
+/native-capacitor/www/
+/native-capacitor/assets/
+/native-capacitor/android/
+/native-capacitor/*.apk
+/native-capacitor/*.aab
+/native-capacitor/*.jks
+/native-capacitor/*.keystore
