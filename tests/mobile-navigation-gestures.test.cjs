@@ -23,13 +23,13 @@ test('Mobil alt menüde beş erişilebilir sekme ve belirgin seçili sayfa bulun
  const fn=vm.runInNewContext(markup+'\nnavRender',ctx);
  fn();
  assert.equal((nav.match(/class="mobile-nav-btn/g)||[]).length,5);
- for(const label of ['Ana Sayfa','Keşfet','Akademi','Patiler','Profil'])assert.ok(nav.includes(label),label);
+ for(const label of ['Akış','Keşfet','Paylaş','Reels','Profil'])assert.ok(nav.includes(label),label);
  assert.match(nav,/data-view="home"[^>]*aria-current="page"/);
- assert.match(nav,/data-view="education"[^>]*aria-current="false"/);
+ assert.match(nav,/data-view="reels"[^>]*aria-current="false"/);
  assert.match(nav,/pati-mobile-nav-glyph/);
- assert.equal(dom['#app-root>.mobile-fab'].dataset.action,'pati-create-open');
- ctx.view='education';fn();
- assert.match(nav,/data-view="education"[^>]*aria-current="page"/);
+ assert.match(nav,/data-action="pati-create-open"/);assert.equal(dom['#app-root>.mobile-fab'].hidden,true);
+ ctx.view='reels';fn();
+ assert.match(nav,/data-view="reels"[^>]*aria-current="page"/);
  assert.match(nav,/data-view="home"[^>]*aria-current="false"/);
  assert.ok(sidebar.includes('messages'));
 });
@@ -130,8 +130,8 @@ test('Alt beş sekme 740 pikselden büyük ekranlarda da sürekli görünür',()
  assert.match(css,/grid-template-columns:repeat\(5,minmax\(0,1fr\)\)!important/);
  assert.match(css,/#app-root:not\(\.hidden\)>\.mobile-bottom>\.mobile-nav-btn\{/);
  assert.match(css,/#app-root:not\(\.hidden\)>\.app-shell\{/);
- assert.match(html,/patiyiz-inspired\.css\?v=20261024-nav-media-2/);
- assert.match(html,/app\.js\?v=20261024-nav-media-2/);
+ assert.match(html,/patiyiz-inspired\.css\?v=20261024-five-tabs-reference-1/);
+ assert.match(html,/app\.js\?v=20261024-five-tabs-reference-1/);
 });
 
 test('Klavye yokken menü gizlenmez, yalnız gerçek odak ve klavye açıklığında gizlenir',()=>{
