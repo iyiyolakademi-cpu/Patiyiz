@@ -58,6 +58,7 @@ app=replace(app,pushAnchor,pushAnchor+
  'native push guard');
 const nativeBack=[
 "document.addEventListener('patiyiz:native-back',event=>{",
+" if(window.PatiyizCameraFlow?.active){window.PatiyizCameraFlow.cancel();event.preventDefault();return}",
 " if(window.PatiyizGalleryPicker?.active){window.PatiyizGalleryPicker.close();event.preventDefault();return}",
 " const sheet=document.getElementById('pati-create-sheet');",
 " if(sheet&&!sheet.hidden){closePatiCreate();event.preventDefault();return}",
