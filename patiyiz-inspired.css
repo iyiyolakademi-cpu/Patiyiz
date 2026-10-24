@@ -1216,3 +1216,71 @@ body.pati-create-open{overflow:hidden}
  #app-root>.mobile-bottom .pati-mobile-nav-glyph>.icon,
  #main-content .pati-feed-card .pati-social-actions button{transition:none!important;animation:none!important}
 }
+
+/* Always-visible five-tab app navigation, also on laptop/tablet browser widths.
+   Mobile layout and keyboard-safety rules above remain unchanged. */
+@media(min-width:741px){
+ #app-root:not(.hidden)>.mobile-bottom{
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  position:fixed!important;
+  bottom:14px!important;left:50%!important;right:auto!important;
+  transform:translateX(-50%)!important;
+  width:min(560px,calc(100vw - 32px))!important;
+  max-width:560px!important;min-height:68px!important;
+  box-sizing:border-box!important;
+  z-index:120!important;
+  gap:3px!important;padding:8px 10px!important;
+  border:1px solid #e7e7ec!important;border-radius:20px!important;
+  background:rgba(255,255,255,.97)!important;
+  box-shadow:0 12px 42px rgba(0,0,0,.15)!important;
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+ }
+ #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  flex-direction:column!important;gap:4px!important;position:relative;
+  width:100%;min-width:0!important;min-height:52px!important;
+  padding:5px 2px!important;
+  border:0!important;border-radius:13px!important;
+  background:transparent!important;color:#777983!important;
+  cursor:pointer;touch-action:manipulation;
+ }
+ #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn.active{
+  color:#16171a!important;background:#f0f0f3!important;
+ }
+ #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn:focus-visible{
+  outline:2px solid #25252a!important;outline-offset:-2px;
+ }
+ #app-root:not(.hidden)>.mobile-bottom .pati-mobile-nav-glyph{
+  display:grid!important;place-items:center!important;width:34px;height:29px;
+ }
+ #app-root:not(.hidden)>.mobile-bottom .pati-mobile-nav-glyph>.icon{
+  width:24px!important;height:24px!important;stroke:currentColor!important;
+  fill:none!important;stroke-width:2!important;
+ }
+ #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn>small{
+  display:block!important;color:inherit!important;
+  font-size:11px!important;font-weight:750!important;line-height:1.1!important;
+ }
+ #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn.pati-create-nav{
+  color:#191a1d!important;
+ }
+ #app-root:not(.hidden)>.mobile-bottom>.pati-create-nav .pati-mobile-nav-glyph{
+  width:40px!important;height:33px!important;border-radius:11px!important;
+  background:#1b1c20!important;color:white!important;
+ }
+ #app-root:not(.hidden)>.mobile-bottom>.pati-create-nav .pati-mobile-nav-glyph .icon{
+  color:white!important;stroke:white!important;width:22px!important;height:22px!important;
+ }
+ #app-root:not(.hidden)>.mobile-bottom .pati-mobile-nav-glyph .avatar,
+ #app-root:not(.hidden)>.mobile-bottom .pati-mobile-nav-glyph .avatar.s{
+  width:27px!important;height:27px!important;border:2px solid transparent!important;
+  border-radius:50%!important;overflow:hidden!important;
+ }
+ #app-root:not(.hidden)>.mobile-bottom .mobile-nav-btn.active .pati-mobile-nav-glyph .avatar{
+  border-color:#18191b!important;
+ }
+ #app-root:not(.hidden)>.app-shell{
+  padding-bottom:120px!important;
+ }
+}

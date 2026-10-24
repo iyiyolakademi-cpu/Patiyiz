@@ -121,3 +121,46 @@ test('Çift dokunarak beğenme ve iyimser sayaç güncellemesi korunur',()=>{
  assert.match(app,/pati-post-like-summary'\)\.forEach\(summary=>summary\.textContent=count\+' beğeni'/);
  assert.match(app,/aria-pressed="'\+liked\.has\(p\.id\)/);
 });
+
+
+test('Alt beş sekme 740 pikselden büyük ekranlarda da sürekli görünür',()=>{
+ assert.match(css,/@media\(min-width:741px\)/);
+ assert.match(css,/#app-root:not\(\.hidden\)>\.mobile-bottom\{/);
+ assert.match(css,/width:min\(560px,calc\(100vw - 32px\)\)!important/);
+ assert.match(css,/grid-template-columns:repeat\(5,minmax\(0,1fr\)\)!important/);
+ assert.match(css,/#app-root:not\(\.hidden\)>\.mobile-bottom>\.mobile-nav-btn\{/);
+ assert.match(css,/#app-root:not\(\.hidden\)>\.app-shell\{/);
+ assert.match(html,/patiyiz-inspired\.css\?v=20261024-five-tabs-visible-1/);
+ assert.match(html,/app\.js\?v=20261024-five-tabs-visible-1/);
+});
+
+test('Klavye yokken menü gizlenmez, yalnız gerçek odak ve klavye açıklığında gizlenir',()=>{
+ const start=app.indexOf('if(window.visualViewport){');
+ const end=app.indexOf("document.addEventListener('focusin',e=>",start);
+ assert.ok(start>=0&&end>start);
+ let focused=false,keyboard=false,inset=null;
+ const listeners={};
+ const viewport={height:760,offsetTop:0,addEventListener(type,fn){listeners['viewport:'+type]=fn}};
+ const windowObj={innerWidth:390,innerHeight:760,visualViewport:viewport};
+ const documentObj={
+  activeElement:{matches:()=>focused},
+  documentElement:{style:{setProperty(name,value){if(name==='--pati-keyboard-inset')inset=value}},classList:{toggle(name,value){if(name==='pati-keyboard-open')keyboard=value}}},
+  addEventListener(type,fn){listeners['document:'+type]=fn}
+ };
+ vm.runInNewContext(app.slice(start,end),{window:windowObj,document:documentObj,setTimeout:fn=>fn()});
+ assert.equal(keyboard,false);
+ viewport.height=460;
+ listeners['viewport:resize']();
+ assert.equal(keyboard,false,'Klavye açık sanılsa da odak yoksa menü görünür');
+ focused=true;
+ listeners['document:focusin']();
+ assert.equal(keyboard,true,'Yazarken menü klavyenin altında kalmasın');
+ assert.equal(inset,'300px');
+ focused=false;
+ listeners['document:focusout']();
+ assert.equal(keyboard,false,'Klavye kapandığında menü geri gelir');
+ assert.equal(inset,'0px');
+ windowObj.innerWidth=1024;focused=true;
+ listeners['document:focusin']();
+ assert.equal(keyboard,false,'Masaüstünde menü saklanmaz');
+});
