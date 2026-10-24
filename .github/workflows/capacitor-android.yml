@@ -1,0 +1,79 @@
+name: Patiyiz Native Android (Capacitor QA APK)
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - "native-capacitor/**"
+      - ".github/workflows/capacitor-android.yml"
+      - "index.html"
+      - "app.js"
+      - "style.css"
+      - "patiyiz-inspired.css"
+      - "patiyiz-app-icon-512.png"
+
+permissions:
+  contents: read
+
+jobs:
+  debug-apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Install Android SDK 36
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Android SDK: $ANDROID_HOME"
+          SDK_MANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          test -x "$SDK_MANAGER" || SDK_MANAGER="$ANDROID_HOME/cmdline-tools/16.0/bin/sdkmanager"
+          test -x "$SDK_MANAGER"
+          "$SDK_MANAGER" --version
+          yes | "$SDK_MANAGER" --licenses >/dev/null || true
+          "$SDK_MANAGER" "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+      - name: Validate native source without changing production PWA
+        run: node native-capacitor/scripts/check-native.mjs
+      - name: Install dependencies and stage web app
+        working-directory: native-capacitor
+        run: |
+          npm install --no-audit --no-fund
+          npm run build:web
+      - name: Create native Android platform
+        working-directory: native-capacitor
+        run: |
+          npx cap add android
+          npx cap sync android
+      - name: Generate real Patiyiz Android icon and splash
+        working-directory: native-capacitor
+        run: |
+          npm run prepare:icons
+          npx capacitor-assets generate --android --iconBackgroundColor "#FFFFFF" --iconBackgroundColorDark "#000000" --splashBackgroundColor "#FFFFFF" --splashBackgroundColorDark "#FFFFFF"
+      - name: Confirm Android app identity and API target
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f native-capacitor/android/app/build.gradle
+          grep -R -q 'com.patiyiz.app' native-capacitor/android/app/build.gradle
+          grep -Eq 'targetSdkVersion[[:space:]]*=?[[:space:]]*36|targetSdk[[:space:]]*=?[[:space:]]*36' native-capacitor/android/variables.gradle
+      - name: Build installable debug APK
+        working-directory: native-capacitor/android
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon assembleDebug
+          test -s app/build/outputs/apk/debug/app-debug.apk
+      - name: Upload test APK (not for Play Store)
+        uses: actions/upload-artifact@v4
+        with:
+          name: Patiyiz-Capacitor-Android-Debug-APK
+          path: native-capacitor/android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 7
+          if-no-files-found: error
