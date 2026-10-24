@@ -1,3 +1,11 @@
+## 24 Ekim 2026 — mesajlaşma kalite düzeltmesi
+- Mesajlaşma mobilde bağımsız, tam ekran sohbet olarak tasarlandı: sabit sohbet başlığı ve altta sabit yazma kutusu; yalnız mesaj geçmişi kayar. Klavye yüksekliği `visualViewport` üzerinden hesaplanır. Sohbete girildiğinde en son mesaj görüntülenir; okundu/Realtime güncellemeleri ekranı gereksiz yere başa kaydırmaz.
+- Fotoğraf seçimi ikinci onay ekranı gerektirmez; seçimden itibaren “gönderiliyor” önizlemesi gösterilir, yükleme ve mesaj kaydı sunucudan onaylanır. Onaylanmazsa gönderildi sayılmaz. Sesli mesaj ve özel Supabase Storage korunur.
+- Mesaj seçeneklerinde yalnız **Sil** bulunur. Her iki katılımcı da mesajı kalıcı kaldırabilir; yetkiyi sunucudaki `patiyiz-delete-message` Edge Function kontrol eder. Mesaja ait özel depolama dosyası da silinir; depolama temizleme hatası sunucuda ayrıca raporlanır.
+- Her iki katılımcının ekranını otomatik yenilemek için sahibine özel RLS'li `patiyiz_dm_deletion_events` Realtime olayı eklendi. Bildirim mesaj gövdesi taşımaz.
+- Mesaj düzenleme `body, edited_at` sütunlarına sınırlandırıldı. 15 dakikalık gönderici doğrulaması ve veritabanı düzenleme tetikleyicisi korunur.
+- Otomatik testler ve Supabase rol kontrolleri yapıldıktan sonra sürüm sunulur. Gerçek iki telefonda klavye, yükleme, silme, düzenleme, ses kaydı ve Realtime teslim testi ayrıca gerekir.
+
 ## 24 Ekim 2026 — PatiCoin, akış ve kaydetme düzenlemesi
 
 - **Sağlık Dosyası** arayüzden ve menüden kaldırıldı. Eski özel sağlık belgeleri, varsa, veri kaybı yaşanmaması için silinmedi; mevcut temel Aşı, Veteriner ve Sağlık takvimi korunur.
