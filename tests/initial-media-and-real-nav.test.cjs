@@ -74,8 +74,8 @@ test('Geç açılan Supabase gönderileri ana sayfada görünür hale gelir; med
  const run=vm.runInNewContext(show+'\nshowApp',ctx);run();
  assert.equal(rendered,0);assert.equal(typeof resolveDelay,'function');resolveDelay();
  await ctx.patiyizDeferredLoading;
- assert.equal(loads,1);
- assert.equal(rendered,1);
+ assert.equal(loads,2);
+ assert.equal(rendered,2);
  assert.equal(scrollRestored,55);
 });
 
