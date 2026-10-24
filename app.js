@@ -264,6 +264,19 @@ function explorePage(){
    '<button type="button" class="pati-search-discover" data-action="pati-search-discover">Fotoğraf, video ve patili dostları keşfet '+ico('arrow')+'</button></section>';
   return;
  }
+ if(exploreTab==='media'){
+  const media=data.posts.filter(p=>!blocked.has(p.author_id)&&(p.image_url||p.images?.length||p.video_url)).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  const tiles=media.map(p=>{
+   const photo=p.image_url||(p.images||[])[0],video=!!p.video_url;
+   const preview=photo?'<img src="'+esc(photo)+'" loading="lazy" decoding="async" alt="Patili paylaşım">':
+    p.video_cover_url?'<img src="'+esc(p.video_cover_url)+'" loading="lazy" decoding="async" alt="Reels kapağı">':
+    '<video src="'+esc(p.video_url)+'#t=0.1" muted playsinline preload="metadata" aria-label="Video önizlemesi"></video>';
+   return '<button type="button" class="pati-explore-media" data-action="explore-open-post" data-id="'+esc(p.id)+'" aria-label="Paylaşımı aç">'+preview+(video?'<span class="pati-explore-video-icon">'+ico('up')+'</span>':'')+'</button>';
+  }).join('');
+  main.innerHTML='<section class="pati-explore-media-screen" aria-label="Keşfet gönderileri"><button type="button" class="pati-explore-search-launch" data-action="pati-search-open" aria-label="Kullanıcı ara">'+ico('search')+'<span>Kullanıcı ara</span></button>'+
+   (media.length?'<div class="pati-explore-gallery">'+tiles+'</div>':empty('Henüz fotoğraf veya video yok','İlk paylaşımı sen yap!'))+'</section>';
+  return;
+ }
 const lower=v=>String(v||'').toLocaleLowerCase('tr'),q=lower(search.trim());
 const matches=(...v)=>!q||v.some(x=>lower(x).includes(q));
 const animalOf=p=>data.pets.find(x=>x.id===p.pet_id)?.species||p.species||'';
