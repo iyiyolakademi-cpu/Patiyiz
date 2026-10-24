@@ -114,10 +114,10 @@ test('Mobil ekran geçişleri erişilebilir, kaydırma snap güvenli ve animasyo
  assert.match(css,/scroll-snap-stop:always/);
  assert.match(html,/id="mobile-nav"/);
 });
-test('Çift dokunarak beğenme ve iyimser sayaç güncellemesi korunur',()=>{
+test('Çift dokunarak beğenme ve sunucudan onaylı sayaç güncellemesi korunur',()=>{
  assert.match(app,/function heartOnPhoto\(el\)/);
  assert.match(app,/lastPhotoTap\.id===el\.dataset\.postId/);
- assert.match(app,/run\(\(\)=>doToggle\('post_likes'/);
+ assert.match(app,/if\(!liked\.has\(id\)\)void togglePostLike\(id\)/);
  assert.match(app,/pati-post-like-summary'\)\.forEach\(summary=>summary\.textContent=count\+' beğeni'/);
  assert.match(app,/aria-pressed="'\+liked\.has\(p\.id\)/);
 });

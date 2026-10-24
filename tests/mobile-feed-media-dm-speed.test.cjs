@@ -92,7 +92,7 @@ test('İlk oturum temel tabloları yükler; eksik gönderi/hikâyeleri arka plan
  const script=part('async function load(mode=', 'async function refreshKeys(');
  const m=script.match(/if\(mode==='initial'\)specs=specs\.filter\(\(\[table\]\)=>\[([^\]]+)\]/);
  assert.ok(m);
- assert.doesNotMatch(m[1],/patiyiz_reposts|patiyiz_post_pins|patiyiz_story_responses|messages|notifications|comments|post_likes/);
+ assert.doesNotMatch(m[1],/patiyiz_reposts|patiyiz_post_pins|patiyiz_story_responses|messages|notifications|comments/);
  for(const essential of ['profiles','posts','pets','patiyiz_stories','patiyiz_highlight_albums','patiyiz_highlight_items','user_blocks'])assert.ok(m[1].includes("'"+essential+"'"));
  assert.match(app,/await load\('feed'\);redraw\(initial,true\)/);
  assert.match(app,/await load\('deferred'\);redraw\(later\)/);

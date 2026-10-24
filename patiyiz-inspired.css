@@ -1847,3 +1847,22 @@ body.story-fullscreen-open:has(#highlight-album-form) #modal-root .modal-backdro
 .pati-active-person small{font-size:10px;color:#667180}
 .pati-active-rank{position:absolute;left:5px;top:5px;border-radius:7px;padding:3px 6px;background:#313d4b;color:#fff;font-size:10px;font-weight:800}
 @media(max-width:460px){.pati-active-leaderboard{padding:12px 9px}.pati-active-users{gap:4px}.pati-active-person{padding:14px 2px 8px}.pati-active-person>img,.pati-active-placeholder{width:39px;height:39px}.pati-active-person strong{font-size:9px}.pati-active-rank{left:3px;top:3px;font-size:9px}}
+
+
+/* 24 Oct 2026 · Patiyiz Akademi learning dashboard */
+#main-content .pati-edu-hero{border:1px solid rgba(255,255,255,.08);border-radius:22px;padding:clamp(20px,4vw,38px);box-shadow:0 18px 38px rgba(15,15,20,.12)}
+#main-content .pati-edu-summary{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+#main-content .pati-edu-progressbar{height:10px;width:100%;margin:17px 0 8px;border-radius:99px;background:rgba(255,255,255,.22);overflow:hidden}
+#main-content .pati-edu-progressbar span{display:block;height:100%;background:linear-gradient(90deg,#b2a9ff,#d7f3d1);border-radius:99px;transition:width .25s ease}
+#main-content .pati-edu-progress-text{font-size:12px;color:rgba(255,255,255,.85);margin:0}
+#main-content .pati-edu-categories{display:flex;gap:8px;overflow-x:auto;padding:8px 2px 14px;scrollbar-width:thin;scroll-snap-type:x proximity}
+#main-content .pati-edu-categories button{flex:none;min-height:40px;padding:9px 15px;border-radius:18px;scroll-snap-align:start}
+#main-content .pati-edu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:13px}
+#main-content .pati-edu-card{height:100%;text-align:left;min-height:138px;transition:transform .16s ease,box-shadow .16s ease}
+#main-content .pati-edu-card:hover{transform:translateY(-2px);box-shadow:0 9px 24px rgba(18,18,23,.10)}
+#main-content .pati-edu-next{margin:18px 0 8px;display:flex;justify-content:flex-end}
+#main-content .pati-edu-next button{background:#202127;border:0;border-radius:14px;color:#fff;font-weight:700;padding:13px 17px;min-height:45px;max-width:100%;cursor:pointer}
+#main-content .pati-edu-lesson-body .pati-edu-step p{line-height:1.75}
+#main-content .pati-edu-lesson-body .pati-edu-quiz button{min-height:42px}
+@media(max-width:600px){#main-content .pati-edu-grid{grid-template-columns:1fr}#main-content .pati-edu-card{min-height:120px}#main-content .pati-edu-next button{width:100%}}
+@media(prefers-reduced-motion:reduce){#main-content .pati-edu-card,#main-content .pati-edu-progressbar span{transition:none}}

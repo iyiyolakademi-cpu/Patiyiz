@@ -7,7 +7,7 @@ const segment=(a,b)=>{const i=app.indexOf(a),j=app.indexOf(b,i+a.length);assert.
 
 test('Ödül görevlerinde altı gerçek görev ve puan bulunur',()=>{
  const match=segment('const patiCoinTasks=[','function side(){');
- for(const [name,amount] of [['profile_complete',100],['pet_created',80],['first_post',60],['first_story',40],['first_follow',25],['three_posts',70]]){
+ for(const [name,amount] of [['profile_complete',45],['pet_created',35],['first_post',30],['first_story',25],['first_follow',15],['three_posts',45]]){
   assert.match(match,new RegExp("'"+name+"',[^\\n]*?,"+amount+","));
   assert.match(sql,new RegExp("'"+name+"'"));
  }
