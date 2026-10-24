@@ -1,11 +1,12 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
-const headers={"content-type":"application/json","access-control-allow-origin":"https://iyiyolakademi-cpu.github.io","access-control-allow-headers":"authorization,apikey,content-type","access-control-allow-methods":"POST,OPTIONS"};
-const answer=(status:number,message:string)=>new Response(JSON.stringify({message}),{status,headers});
+const allowedOrigins=new Set(["https://patiyiz.com","https://www.patiyiz.com","https://iyiyolakademi-cpu.github.io"]);
 Deno.serve(async req=>{
+ const origin=req.headers.get("origin");
+ if(origin&&!allowedOrigins.has(origin))return new Response(JSON.stringify({message:"Origin not allowed"}),{status:403,headers:{"content-type":"application/json","vary":"Origin"}});
+ const headers={"content-type":"application/json","access-control-allow-origin":origin||"https://patiyiz.com","access-control-allow-headers":"authorization,apikey,content-type,x-client-info,x-supabase-client-platform,x-supabase-client-platform-version,x-supabase-client-runtime,x-supabase-client-runtime-version","access-control-allow-methods":"POST,OPTIONS","vary":"Origin"};
+ const answer=(status:number,message:string)=>new Response(JSON.stringify({message}),{status,headers});
  if(req.method==="OPTIONS")return new Response(null,{status:204,headers});
  if(req.method!=="POST")return answer(405,"Method not allowed");
- const origin=req.headers.get("origin");
- if(origin&&origin!=="https://iyiyolakademi-cpu.github.io")return answer(403,"Origin not allowed");
  const token=(req.headers.get("authorization")||"").replace(/^Bearer\s+/i,"");
  if(!token)return answer(401,"Oturum gerekli.");
  const url=Deno.env.get("SUPABASE_URL")!,anon=Deno.env.get("SUPABASE_ANON_KEY")!,service=Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -37,6 +38,34 @@ Deno.serve(async req=>{
    if(objects.length<100)break;
    if(page===299)return answer(503,"Dosya temizleme sınırına ulaşıldı; hesap silinmedi.");
   }
+ }
+ // Health records are nested in owner/pet/document; delete PRIVATE objects before auth user cascade.
+ const healthBucket="patiyiz-health-private";
+ for(let batch=0;batch<300;batch++){
+  const {data:folders,error:folderError}=await admin.storage.from(healthBucket).list(uid,{limit:100,offset:0});
+  if(folderError)return answer(503,"Özel sağlık belgeleri listelenemedi; hesap silinmedi.");
+  if(!folders?.length)break;
+  for(const folder of folders){
+   const prefix=uid+"/"+folder.name;
+   if(folder.id){
+    const {error:removeError}=await admin.storage.from(healthBucket).remove([prefix]);
+    if(removeError)return answer(503,"Özel sağlık belgesi silinemedi; hesap silinmedi.");
+    continue;
+   }
+   for(let page=0;page<300;page++){
+    const {data:entries,error:listError}=await admin.storage.from(healthBucket).list(prefix,{limit:100,offset:0});
+    if(listError)return answer(503,"Özel sağlık belgeleri listelenemedi; hesap silinmedi.");
+    if(!entries?.length)break;
+    const paths=entries.filter(o=>o.id&&o.name).map(o=>prefix+"/"+o.name);
+    if(!paths.length)return answer(503,"Özel sağlık belgelerinin temizlenmesi doğrulanamadı; hesap silinmedi.");
+    const {error:removeError}=await admin.storage.from(healthBucket).remove(paths);
+    if(removeError)return answer(503,"Özel sağlık belgeleri silinemedi; hesap silinmedi.");
+    if(entries.length<100)break;
+    if(page===299)return answer(503,"Özel sağlık belgesi sayfa sınırına ulaşıldı; hesap silinmedi.");
+   }
+  }
+  if(folders.length<100)break;
+  if(batch===299)return answer(503,"Özel sağlık dosyası temizleme sınırına ulaşıldı; hesap silinmedi.");
  }
  const {error:deleteError}=await admin.auth.admin.deleteUser(uid);
  if(deleteError){console.error("Delete user failed",deleteError.message);return answer(503,"Hesap silinemedi, lütfen yeniden dene.");}

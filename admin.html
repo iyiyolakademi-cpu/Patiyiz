@@ -30,21 +30,21 @@
 .pati-engagement-day strong{font-size:12px}
 @media(max-width:780px){.pati-engagement-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.pati-engagement-days{grid-template-columns:repeat(4,minmax(0,1fr))}}
 
-</style></head><body><header><div class="brand">🐾 patiyiz <small>Yönetim Paneli</small></div><div><a href="./">Uygulamaya dön ↗</a> <button id="logout" class="btn hidden">Çıkış</button></div></header>
+.pati-admin-broadcast{display:grid;gap:17px}.pati-admin-broadcast-info{padding:20px;background:linear-gradient(135deg,#17372d,#2b6750);border-radius:15px;color:white}.pati-admin-broadcast-info h3{margin:0 0 10px}.pati-admin-broadcast-info p{color:#e4f1e9;line-height:1.6;font-size:13px}.pati-admin-broadcast-stats{display:flex;flex-wrap:wrap;gap:15px;align-items:center}.pati-admin-broadcast-stats b{font-size:22px}.pati-admin-broadcast-stats span{font-size:11px;color:#d2e3d6}#pati-admin-announcement-form{display:grid;gap:11px;background:#f9faf9;border:1px solid #e0ebe0;padding:20px;border-radius:14px}#pati-admin-announcement-form label{font-size:13px;font-weight:700}#pati-admin-announcement-form textarea{width:100%;padding:13px;border-radius:11px;border:1px solid #d8e5d9;margin-top:9px;resize:vertical;min-height:108px;font:inherit}#pati-admin-announcement-form button{justify-self:start}.pati-admin-announcement-item{padding:13px 14px;border-bottom:1px solid #e3eae4}.pati-admin-announcement-item p{margin:7px 0;color:#485d50;font-size:13px}.pati-admin-announcement-item small{font-size:11px;color:#728878}</style></head><body><header><div class="brand">🐾 patiyiz <small>Yönetim Paneli</small></div><div><a href="./">Uygulamaya dön ↗</a> <button id="logout" class="btn hidden">Çıkış</button></div></header>
 <main><section class="panel auth" id="login"><h1>Yönetici girişi</h1><p class="muted">Patiyiz hesabınla giriş yap. Yalnızca yetkilendirilmiş yönetici hesabı bu ekranı açabilir.</p><form id="login-form"><label>E-posta<input name="email" type="email" autocomplete="username" required></label><label>Şifre<input name="password" type="password" autocomplete="current-password" required></label><button class="btn primary" type="submit">Giriş yap</button></form><p id="login-error" class="muted error"></p></section>
-<section id="dashboard" class="hidden"><h1>Genel Bakış</h1><p class="muted">Patiyiz topluluğunun yönetim ve moderasyon ekranı · <span id="stamp"></span></p><div class="grid" id="stats"></div><div class="tabs" id="tabs"><button data-tab="reports" class="active">Şikâyetler</button><button data-tab="users">Kullanıcılar</button><button data-tab="verification_requests">Mavi Tik Talepleri</button><button data-tab="posts">Paylaşımlar</button><button data-tab="questions">Sorular</button><button data-tab="comments">Yorumlar</button><button data-tab="lost">Kayıp İlanları</button><button data-tab="adoptions">Sahiplendirme</button><button data-tab="stories">Hikâyeler</button><button data-tab="voice_comments">Sesli Yorumlar</button><button data-tab="activity">İstatistikler</button><button data-tab="engagement">📈 Kullanıcı & Paylaşım Analizi</button><button data-tab="reward_orders">🛍️ Mağaza Talepleri</button><button data-tab="reward_stock">📦 Stok Yönetimi</button></div><div class="panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h2 id="heading">Şikâyetler</h2><button class="btn" id="refresh">↻ Yenile</button></div><div class="list" id="results"></div></div><p class="muted">İçerik silme işlemleri geri alınamaz. Kullanıcı listesi yalnızca görüntüleme amaçlıdır. Şikâyet kararları kayıt altına alınır.</p></section></main><div id="toast" role="status"></div>
+<section id="dashboard" class="hidden"><h1>Genel Bakış</h1><p class="muted">Patiyiz topluluğunun yönetim ve moderasyon ekranı · <span id="stamp"></span></p><div class="grid" id="stats"></div><div class="tabs" id="tabs"><button data-tab="reports" class="active">Şikâyetler</button><button data-tab="users">Kullanıcılar</button><button data-tab="verification_requests">Mavi Tik Talepleri</button><button data-tab="posts">Paylaşımlar</button><button data-tab="questions">Sorular</button><button data-tab="comments">Yorumlar</button><button data-tab="lost">Kayıp İlanları</button><button data-tab="adoptions">Sahiplendirme</button><button data-tab="stories">Hikâyeler</button><button data-tab="voice_comments">Sesli Yorumlar</button><button data-tab="activity">İstatistikler</button><button data-tab="engagement">📈 Kullanıcı & Paylaşım Analizi</button><button data-tab="reward_orders">🛍️ Mağaza Talepleri</button><button data-tab="reward_stock">📦 Stok Yönetimi</button><button data-tab="announcements">🔔 Bildirim Gönder</button></div><div class="panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h2 id="heading">Şikâyetler</h2><button class="btn" id="refresh">↻ Yenile</button></div><div class="list" id="results"></div></div><p class="muted">İçerik silme işlemleri geri alınamaz. Kullanıcı listesi yalnızca görüntüleme amaçlıdır. Şikâyet kararları kayıt altına alınır.</p></section></main><div id="toast" role="status"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js?v=20261021-2"></script><script>
 (()=>{'use strict';
-const $=s=>document.querySelector(s),config=window.PATIYIZ_CONFIG||{};let sb=null,db=null,rewardDb={orders:[],stock:[],events:[],counts:{}},engagementDb={},tab='reports',working=false;
+const $=s=>document.querySelector(s),config=window.PATIYIZ_CONFIG||{};let sb=null,db=null,rewardDb={orders:[],stock:[],events:[],counts:{}},engagementDb={},tab='reports',working=false,announcementHistory=[],announcementLoading=false,announcementId=null,announcementFingerprint='';
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const niceDate=v=>v?new Date(v).toLocaleDateString('tr-TR',{dateStyle:'medium'}):'';
 const toast=m=>{const t=$('#toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',3500)};
 async function verify(){const {data:{session}}=await sb.auth.getSession();if(!session){$('#dashboard').classList.add('hidden');$('#login').classList.remove('hidden');$('#logout').classList.add('hidden');return}
 try{await load();$('#login').classList.add('hidden');$('#dashboard').classList.remove('hidden');$('#logout').classList.remove('hidden')}catch(e){const denied=e?.code==='42501'||/Admin access required|permission denied/i.test(e?.message||'');$('#login-error').textContent=denied?'Bu hesap yönetici yetkisine sahip değil.':'Panel verileri yüklenemedi. Lütfen sayfayı yenileyip tekrar dene.';console.error('Patiyiz yönetim paneli yükleme hatası:',e);$('#dashboard').classList.add('hidden');$('#login').classList.remove('hidden');$('#logout').classList.remove('hidden')}}
 async function load(){const [dashboard,rewards,engagement]=await Promise.all([sb.rpc('patiyiz_admin_dashboard'),sb.rpc('patiyiz_admin_reward_dashboard'),sb.rpc('patiyiz_admin_engagement_stats')]);if(dashboard.error)throw dashboard.error;if(rewards.error)throw rewards.error;if(engagement.error)throw engagement.error;db=dashboard.data;rewardDb=rewards.data||{orders:[],stock:[],events:[],counts:{}};engagementDb=engagement.data||{};$('#stamp').textContent=new Date().toLocaleString('tr-TR');const cs=[['Kullanıcı','users'],['Paylaşım','posts'],['Soru','questions'],['Mesaj','messages'],['Bekleyen şikâyet','reports']];$('#stats').innerHTML=cs.map(([title,key])=>`<div class="stat"><strong>${Number(db.counts?.[key]||0)}</strong><small>${title}</small></div>`).join('');render()}
-function render(){const names={reports:'Şikâyet Yönetimi',users:'Kullanıcılar',verification_requests:'Mavi Tik Talepleri',posts:'Paylaşımlar',questions:'Topluluk Soruları',comments:'Yorumlar',lost:'Kayıp İlanları',adoptions:'Sahiplendirme',stories:'Hikâyeler',voice_comments:'Sesli Yorumlar',activity:'Son 30 Günlük Kayıtlar',reward_orders:'Pati Mağaza Talepleri',reward_stock:'Mağaza Stok Yönetimi',engagement:'Günlük Aktif Kullanıcı ve Paylaşım Performansı'};$('#heading').textContent=names[tab];document.querySelectorAll('[data-tab]').forEach(e=>e.classList.toggle('active',e.dataset.tab===tab));let records=db[tab]||[];const item=(title,desc,sub,actions='')=>`<div class="item"><div class="item-main"><strong>${esc(title)}</strong><p>${esc(desc)}</p><small>${esc(sub)}</small></div>${actions?`<div class="actions">${actions}</div>`:''}</div>`;
+function render(){const names={reports:'Şikâyet Yönetimi',users:'Kullanıcılar',verification_requests:'Mavi Tik Talepleri',posts:'Paylaşımlar',questions:'Topluluk Soruları',comments:'Yorumlar',lost:'Kayıp İlanları',adoptions:'Sahiplendirme',stories:'Hikâyeler',voice_comments:'Sesli Yorumlar',activity:'Son 30 Günlük Kayıtlar',reward_orders:'Pati Mağaza Talepleri',reward_stock:'Mağaza Stok Yönetimi',engagement:'Günlük Aktif Kullanıcı ve Paylaşım Performansı',announcements:'Toplu Bildirim Yönetimi'};$('#heading').textContent=names[tab];document.querySelectorAll('[data-tab]').forEach(e=>e.classList.toggle('active',e.dataset.tab===tab));let records=db[tab]||[];const item=(title,desc,sub,actions='')=>`<div class="item"><div class="item-main"><strong>${esc(title)}</strong><p>${esc(desc)}</p><small>${esc(sub)}</small></div>${actions?`<div class="actions">${actions}</div>`:''}</div>`;
 const button=(action,kind,id,label,danger=false)=>`<button class="btn ${danger?'danger':''}" data-action="${action}" data-kind="${kind}" data-id="${esc(id)}">${label}</button>`;
-if(tab==='reward_orders'||tab==='reward_stock'){renderRewards();return}if(tab==='engagement'){renderEngagement();return}
+if(tab==='announcements'){renderAnnouncements();return}if(tab==='reward_orders'||tab==='reward_stock'){renderRewards();return}if(tab==='engagement'){renderEngagement();return}
 let html='';
 if(tab==='reports')html=records.map(x=>item(x.content_type+' · '+x.status,x.reason,niceDate(x.created_at),x.status==='pending'?button('resolved','report',x.id,'Çözüldü')+button('dismissed','report',x.id,'Reddet'):'' )).join('');
 if(tab==='users')html=records.map(x=>item(x.display_name+(x.is_verified?' 🔵✓':''),'@'+x.handle+(x.city?' · '+x.city:''),niceDate(x.created_at),button(x.is_verified?'unverify':'verify','user',x.id,x.is_verified?'Mavi tiki kaldır':'Mavi tik ver'))).join('');
@@ -82,6 +82,52 @@ function renderEngagement(){
   '<h3>Günlük aktif kullanıcılar</h3><div class="pati-engagement-days">'+daily+'</div>'+
   '<p class="muted">Aktif kullanıcı ölçümü bu sürümün yayınlanmasından itibaren başlar. Bildirilmeyen çevrimdışı denemeler başarı oranına dahil değildir. Günlük kullanıcılar bir hesap/gün olarak sayılır. En aktif 5 üye ana Akış ekranında, yalnızca herkese açık son 7 günlük paylaşımlar, yorumlar ve beğenilere göre sıralanır.</p>';
 }
+
+function renderAnnouncements(){
+ const n=Number(db?.counts?.users||0);
+ const latest=announcementHistory.map(item=>
+ '<article class="pati-admin-announcement-item"><b>📢 '+esc(item.title)+'</b><p>'+esc(item.body)+'</p><small>'+esc(new Date(item.created_at).toLocaleString('tr-TR'))+' · '+Number(item.recipients||0)+' kullanıcı</small></article>').join('');
+ $('#results').innerHTML='<div class="pati-admin-broadcast">'+
+ '<div class="pati-admin-broadcast-info"><h3>🔔 Kullanıcılara Bildirim Gönder</h3><p>Buradan Patiyiz kullanıcılarına uygulama içi bildirim gönderebilirsin. Telefon bildirimi yalnız kullanıcının Web Push izni ve aktif cihaz kaydı varsa ulaşabilir. Gönderimleri geri alamazsın.</p>'+
+ '<div class="pati-admin-broadcast-stats"><b>'+n+' kullanıcı</b><span>10 dakikada en fazla 1 gönderim · 24 saatte 5 bildirim</span></div></div>'+
+ '<form id="pati-admin-announcement-form"><label>Bildirim başlığı (5–75 karakter)<input name="title" maxlength="75" minlength="5" placeholder="Örneğin: Patiyiz Akademi yenilendi" required></label>'+
+ '<label>Bildirim mesajı (10–150 karakter)<textarea name="body" minlength="10" maxlength="150" rows="4" placeholder="Kullanıcıları bilgilendirecek açık ve kısa bir mesaj yaz." required></textarea></label>'+
+ '<p class="muted">Hedef: tüm Patiyiz kullanıcıları. Son gönderim aralığı ve sınırlar sunucuda doğrulanır. Önce metni ve alıcı sayısını kontrol et.</p>'+
+ '<button class="btn primary" type="submit" '+(working?'disabled':'')+'>📨 Bildirim gönder</button></form>'+
+ '<h3>Son toplu bildirimler</h3><div class="pati-admin-announcement-history">'+(latest||'<p class="muted">'+(announcementLoading?'Geçmiş yükleniyor…':'Henüz toplu bildirim gönderilmedi.')+'</p>')+'</div></div>';
+}
+async function loadAnnouncementHistory(){
+ if(announcementLoading)return;
+ announcementLoading=true;if(tab==='announcements')render();
+ try{const r=await sb.rpc('patiyiz_admin_announcement_history');if(r.error)throw r.error;announcementHistory=r.data||[]}
+ catch(e){console.warn('Toplu bildirim geçmişi:',e);toast('Bildirim geçmişi yüklenemedi.')}
+ finally{announcementLoading=false;if(tab==='announcements')render()}
+}
+document.addEventListener('submit',async e=>{
+ if(e.target?.id!=='pati-admin-announcement-form')return;
+ e.preventDefault();
+ if(working)return;
+ const data=new FormData(e.target),title=String(data.get('title')||'').trim(),body=String(data.get('body')||'').trim();
+ if(title.length<5||title.length>75||body.length<10||body.length>150){toast('Başlık 5–75, mesaj 10–150 karakter olmalı.');return}
+ const recipients=Number(db?.counts?.users||0);
+ if(!recipients){toast('Gönderilecek kullanıcı bulunamadı.');return}
+ if(recipients>1000){toast('1000 üzeri alıcı için parçalara bölünmüş gönderim gerekir.');return}
+ if(!confirm('DİKKAT! '+recipients+' kullanıcıya bildirim göndermek üzeresin.\n\nBaşlık: '+title+'\nMesaj: '+body+'\n\nGönderim geri alınamaz. Devam edilsin mi?'))return;
+ const fingerprint=title+'\n'+body;
+ if(announcementFingerprint!==fingerprint||!announcementId){
+  announcementId=crypto.randomUUID();announcementFingerprint=fingerprint;
+ }
+ const btn=e.target.querySelector('[type="submit"]');working=true;btn.disabled=true;
+ try{
+  const r=await sb.rpc('patiyiz_admin_announce',{p_campaign:announcementId,p_title:title,p_body:body});
+  if(r.error)throw r.error;
+  toast((r.data?.duplicate?'Daha önce gönderilmiş bildirim doğrulandı: ':'Bildirim gönderildi: ')+Number(r.data?.recipients||0)+' kullanıcı.');
+  announcementId=null;announcementFingerprint='';
+  await loadAnnouncementHistory();if(tab==='announcements')render();
+ }catch(err){toast('Bildirim gönderilemedi: '+(err.message||'Yetki veya bağlantı hatası'))}
+ finally{working=false;btn.disabled=false}
+});
+
 function renderRewards(){
  const root=$('#results');let out='';
  if(tab==='reward_stock'){
@@ -149,7 +195,7 @@ $('#results').addEventListener('click',async e=>{
  finally{working=false;b.disabled=false}
 });
 
-$('#tabs').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(b){tab=b.dataset.tab;render()}});
+$('#tabs').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(b){tab=b.dataset.tab;render();if(tab==='announcements')void loadAnnouncementHistory()}});
 $('#results').addEventListener('click',async e=>{const b=e.target.closest('[data-action]');if(!b||working)return;const action=b.dataset.action,kind=b.dataset.kind,id=b.dataset.id;if(!confirm(action==='delete'?'İçerik kalıcı olarak silinsin mi?':'Şikâyet durumu değiştirilsin mi?'))return;working=true;b.disabled=true;try{if(['verify','unverify','reject'].includes(action)){const {error}=await sb.rpc('patiyiz_admin_verification',{p_user:id,p_approve:action==='verify',p_request:kind==='verification'?b.dataset.request:null});if(error)throw error;await load();toast('Doğrulama işlemi tamamlandı.');return}const session=await sb.auth.getSession();if(!session.data.session)throw Error('Oturum sona erdi.');const response=await fetch(config.supabaseUrl+'/functions/v1/patiyiz-admin-moderate',{method:'POST',headers:{'content-type':'application/json','authorization':'Bearer '+session.data.session.access_token,'apikey':config.supabasePublishableKey},body:JSON.stringify({action,kind,id})});const result=await response.json();if(!response.ok)throw Error(result.message||'İşlem başarısız.');await load();toast('İşlem kaydedildi.')}catch(err){toast('İşlem başarısız: '+err.message)}finally{working=false;b.disabled=false}});
 $('#refresh').onclick=async()=>{try{await load();toast('Güncellendi')}catch(e){toast('Yenileme başarısız')}};
 $('#logout').onclick=async()=>{await sb.auth.signOut();db=null;await verify()};
