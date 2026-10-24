@@ -1779,3 +1779,21 @@ body.story-fullscreen-open:has(#highlight-album-form) #modal-root .modal-backdro
 .paticoin-invite-redeem{width:100%;min-height:47px}.paticoin-invite-redeem:disabled{opacity:.5}
 .paticoin-celebration{z-index:100300!important}
 .paticoin-celebration button{min-width:155px}
+
+/* Order fulfillment progress, customer audit trail and delivery evidence */
+.paticoin-shop-orders-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:24px 0 10px}
+.paticoin-shop-orders-heading h2{margin:0;font-size:18px}
+.paticoin-refresh{padding:9px 13px;border:1px solid #d6dbea;background:#f3f4fb;border-radius:12px;color:#343a55;font:inherit;font-size:12px;font-weight:800;cursor:pointer}
+.paticoin-orders{display:grid;gap:10px}
+.paticoin-order{display:grid;gap:9px;background:#fff;border:1px solid #e6e9f0;border-radius:16px;padding:15px;color:#262937}
+.paticoin-order>b{font-size:14px}
+.paticoin-order span{font-size:12px;color:#707486}
+.paticoin-order-status{width:max-content;max-width:100%;font-size:11px;font-weight:850;padding:7px 10px;border-radius:22px;background:#eaf0fa;color:#3b5575}
+.paticoin-order-fulfilled{background:#e5f4e9;color:#236346}
+.paticoin-order-cancelled{background:#fdeced;color:#9a434a}
+.paticoin-order-preparing{background:#fff5df;color:#946318}
+.paticoin-order-note{font-size:12px;color:#60677c;line-height:1.5;margin:0}
+.paticoin-order>a{font-size:12px;color:#44588e;font-weight:750;text-decoration:underline;text-underline-offset:3px}
+.paticoin-order-timeline{border-top:1px solid #ebedf2;padding-top:11px}
+.paticoin-order-timeline summary{font-size:12px;cursor:pointer;font-weight:800;color:#434b65}
+.paticoin-order-timeline p{font-size:11px;line-height:1.5;color:#777e90;padding:7px 0;border-bottom:1px solid #f0f1f4}
