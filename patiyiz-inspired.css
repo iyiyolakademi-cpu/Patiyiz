@@ -2073,3 +2073,9 @@ body.story-fullscreen-open:has(#highlight-album-form) #modal-root .modal-backdro
  #main-content .paticoin-mission-heading{align-items:start}
  #main-content .paticoin-mission-heading h2{font-size:17px}
 }
+
+
+.pati-desktop-coins{width:calc(100% - 20px);margin:8px 10px 17px;min-height:47px;border-radius:15px;border:1px solid #dad1e1;background:linear-gradient(120deg,#282430,#51445d);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:12px 15px;font-weight:800;box-shadow:0 6px 20px rgba(36,30,43,.10)}
+.pati-desktop-coins strong{font-size:19px;font-variant-numeric:tabular-nums}
+.pati-desktop-coins small{font-size:12px;font-weight:600;color:#e7deee;margin-left:auto}
+.pati-desktop-coins:focus-visible{outline:3px solid #ab9bd2;outline-offset:2px}
