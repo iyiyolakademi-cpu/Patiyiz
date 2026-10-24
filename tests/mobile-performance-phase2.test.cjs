@@ -24,6 +24,7 @@ function observerHarness(start,end,selector){
   IntersectionObserver:class{constructor(cb,opts){callback=cb;options=opts}observe(v){tracked.push(v)}disconnect(){}},
   patiyizVideoObserver:null,patiyizReelsObserver:null
  };
+ ctx.window.IntersectionObserver=ctx.IntersectionObserver;
  vm.runInNewContext(source+'\n'+start.match(/function (\w+)/)[1]+'()',ctx);
  assert.equal(tracked.length,70);
  return {videos,callback,options,ctx};
