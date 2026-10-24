@@ -31,7 +31,7 @@ test('İlk fotoğraf hemen, sonraki fotoğraflar ihtiyaç oldukça yüklenir',()
  assert.match(photo('a.jpg','',true),/loading="eager" decoding="async" fetchpriority="high"/);
  assert.match(photo('b.jpg'),/loading="lazy" decoding="async" fetchpriority="low"/);
  const home=part('function homePage(){','function explorePage()');
- assert.match(home,/list\.map\(\(p,i\)=>postCard\(p,i===0\)\)/);
+ assert.match(home,/list\.map\(\(p,i\)=>postCard\(p,i<5\)\)/);
 });
 
 test('Reels ekranında ilk video öncelikli hazırlanır; videonun tamamı kırpılmaz',()=>{
@@ -88,12 +88,12 @@ test('Sohbetlerde arama kutusu var ve medya erişim bağlantıları yeniden kull
  assert.match(app,/resetSessionState\(\);me=null/);
 });
 
-test('İlk oturum yalnız gerekli tabloları yükler ve medya ağırlıklı ekranları arka planda yeniden çizmez',()=>{
+test('İlk oturum temel tabloları yükler; eksik gönderi/hikâyeleri arka planda ekrana getirir',()=>{
  const script=part('async function load(mode=', 'async function refreshKeys(');
  const m=script.match(/if\(mode==='initial'\)specs=specs\.filter\(\(\[table\]\)=>\[([^\]]+)\]/);
  assert.ok(m);
  assert.doesNotMatch(m[1],/patiyiz_reposts|patiyiz_post_pins|patiyiz_highlight_items|patiyiz_story_responses/);
  for(const essential of ['profiles','posts','post_likes','post_saves','comments','patiyiz_stories','messages','notifications'])assert.ok(m[1].includes("'"+essential+"'"));
- assert.match(app,/view!=='home'&&view!=='reels'&&!document\.activeElement/);
+ assert.match(app,/postsWereMissing\|\|data\.posts\.length!==previousPosts\|\|data\.stories\.length!==previousStories/);
  assert.match(html,/rel="preconnect" href="https:\/\/tqnvvrgrsxrvzxbjbsgl\.supabase\.co"/);
 });
