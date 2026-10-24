@@ -101,7 +101,7 @@
     '<h2>Kilo geçmişi</h2>'+(weights.map(w=>'<p>'+safe(w.measured_on)+' · '+safe(w.weight_kg)+' kg</p>').join('')||'<p>Ölçüm bulunmuyor.</p>')+
     '<h2>Bakım takvimi</h2>'+(reminders.map(r=>'<p>'+safe(new Date(r.due_at).toLocaleDateString('tr-TR'))+' · '+safe(r.title)+' · '+(r.completed_at?'Tamamlandı':'Planlandı')+'</p>').join('')||'<p>Hatırlatma bulunmuyor.</p>')+
     '<footer>Bu rapor kişisel takip amaçlıdır, resmî veteriner sağlık belgesi değildir. Ek dosyalar ve PDF tahliller gizlilik nedeniyle rapora eklenmez.</footer>';
-   document.getElementById(print.id)?.remove();document.body.append(print);
+   document.getElementById('pati-achievement-print')?.remove();document.getElementById(print.id)?.remove();document.body.append(print);
    window.print();
   }
   function render(){
