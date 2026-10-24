@@ -11,14 +11,13 @@
  function open(files,options={}){
   close();
   const items=Array.from(files||[]).filter(f=>f&&f.size>0&&(String(f.type||'').startsWith('image/')||/\.(heic|heif|jpe?g|png|webp)$/i.test(f.name||'')));
-  if(!items.length)return false;
   const multiple=options.multiple===true,max=Math.max(1,Number(options.max||1)),chosen=new Set(multiple?items.slice(0,max).map((_,i)=>i):[0]);
   const root=document.createElement('div');
   root.id='pati-gallery-overlay';root.className='pati-gallery-overlay';
   root.innerHTML='<div class="pati-gallery-shade" data-gallery="close"></div><section class="pati-gallery-sheet" role="dialog" aria-modal="true" aria-label="Fotoğraf seçimi">'+
    '<div class="pati-gallery-grabber"></div><div class="pati-gallery-header"><button type="button" class="pati-gallery-back" data-gallery="close" aria-label="Kapat">×</button>'+
-   '<strong>Son Seçilenler</strong><span class="pati-gallery-hd">HD</span></div>'+
-   '<p class="pati-gallery-hint">Telefonundan izin verdiğin fotoğraflar. Görsel seçmek için üzerine dokun.</p>'+
+   '<strong>Galeri</strong><span class="pati-gallery-hd">HD</span></div>'+
+   '<p class="pati-gallery-hint">Fotoğraflarına yalnızca senin seçtiğin ölçüde erişilir.</p>'+
    '<div class="pati-gallery-grid" role="group" aria-label="Fotoğraf önizlemeleri"></div>'+
    '<div class="pati-gallery-bottom"><button type="button" class="pati-gallery-reselect" data-gallery="reopen">Galeriden başka seç</button>'+
    '<button type="button" class="pati-gallery-continue" data-gallery="confirm"></button></div></section>';
@@ -27,6 +26,11 @@
   const grid=root.querySelector('.pati-gallery-grid'),confirm=root.querySelector('.pati-gallery-continue');
   function draw(){
    grid.replaceChildren();
+   if(!items.length){
+    const empty=document.createElement('div');empty.className='pati-gallery-empty';
+    empty.innerHTML='<span class="pati-gallery-empty-icon" aria-hidden="true">▦</span><strong>Fotoğrafların burada görünecek</strong><p>Web uygulaması telefonundaki bütün fotoğrafları otomatik okuyamaz. Galerinden erişim vereceğin fotoğrafları seçerek devam edebilirsin.</p>';
+    grid.appendChild(empty);
+   }
    items.forEach((file,i)=>{
     const tile=document.createElement('button');tile.type='button';tile.className='pati-gallery-tile'+(chosen.has(i)?' selected':'');
     tile.dataset.index=String(i);tile.setAttribute('aria-label','Fotoğraf '+(i+1)+(chosen.has(i)?' seçili':''));tile.setAttribute('aria-pressed',String(chosen.has(i)));
@@ -35,7 +39,8 @@
     tile.append(img,check);grid.append(tile);
    });
    confirm.textContent=(multiple?'Devam et':'Fotoğrafı gönder')+' ('+chosen.size+')';
-   confirm.disabled=chosen.size===0;
+   confirm.hidden=items.length===0;confirm.disabled=chosen.size===0;
+   const pick=root.querySelector('.pati-gallery-reselect');if(pick)pick.textContent=items.length?'Başka fotoğraf seç':'Fotoğrafları seç';
   }
   draw();
   root.addEventListener('click',async e=>{

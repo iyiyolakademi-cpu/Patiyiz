@@ -5,7 +5,7 @@ const vm=require('node:vm');
 const app=fs.readFileSync('app.js','utf8'),html=fs.readFileSync('index.html','utf8'),gallery=fs.readFileSync('gallery-picker.js','utf8'),css=fs.readFileSync('patiyiz-inspired.css','utf8');
 function sourceBetween(start,end){const i=app.indexOf(start),j=app.indexOf(end,i+start.length);assert.ok(i>=0&&j>i,start);return app.slice(i,j)}
 
-test('Arama sekmesine basınca doğrudan kullanıcı profilleri görünür',()=>{
+test('Arama alanına basınca canlı kullanıcı profili sonuçları görünür',()=>{
  const ctx={data:{profiles:[{id:'me',display_name:'Kendim',handle:'ben'},{id:'a',display_name:'Damla',handle:'damla'},{id:'b',display_name:'Doğa',handle:'dogapolari'},{id:'c',display_name:'Ahmet',handle:'ahmet'}]},
   me:{id:'me'},blocked:new Set(),followed:new Set(['b']),search:'',exploreTab:'users',
   main:{innerHTML:''},esc:String,ico:n=>'<svg>'+n+'</svg>',avatar:p=>'<img data-avatar="'+p.id+'">'};
@@ -16,7 +16,8 @@ test('Arama sekmesine basınca doğrudan kullanıcı profilleri görünür',()=>
  assert.doesNotMatch(ctx.main.innerHTML,/data-id="me"/);
  ctx.search='d';fn();assert.match(ctx.main.innerHTML,/data-id="b"/);assert.match(ctx.main.innerHTML,/data-id="a"/);assert.doesNotMatch(ctx.main.innerHTML,/data-id="c"/);
  ctx.search='xyz';fn();assert.match(ctx.main.innerHTML,/eşleşen profil yok/);
- assert.match(app,/if\(view==='explore'\)\{exploreTab='users';search=''\}/);
+ assert.match(app,/if\(view==='explore'\)\{exploreTab='media';search=''\}/);
+ assert.match(app,/case 'pati-search-open':search='';exploreTab='users'/);
  assert.match(app,/case 'pati-search-cancel'/);
  assert.match(app,/case 'pati-search-discover'/);
 });
@@ -39,9 +40,9 @@ test('Fotoğraf ve DM için native dosya izni sonrası uygulama içi galeri mod�
  assert.match(changes,/onConfirm:files=>/);
  assert.match(changes,/new DataTransfer\(\)/);
  assert.match(app,/name="dm_gallery" accept="image\/\*" multiple hidden/);
- const gal=html.indexOf('gallery-picker.js?v=20261024-search-gallery-1'),appjs=html.indexOf('app.js?v=20261024-search-gallery-1');
+ const gal=html.indexOf('gallery-picker.js?v=20261024-explore-media-sheet-1'),appjs=html.indexOf('app.js?v=20261024-explore-media-sheet-1');
  assert.ok(gal>=0&&appjs>gal);
- assert.match(html,/patiyiz-inspired\.css\?v=20261024-search-gallery-1/);
+ assert.match(html,/patiyiz-inspired\.css\?v=20261024-explore-media-sheet-1/);
  assert.doesNotMatch(gallery,/navigator\.mediaDevices\.getUserMedia|webkitGetAsEntry|showDirectoryPicker/);
 });
 
