@@ -65,8 +65,16 @@ test('Sahip olduğu hikâye albüme kaydedilir, isteğin RLS koşuluyla uyumlu o
  const story={id:'s1',author_id:'owner',is_highlight:false};
  const params=[],state={refreshes:0,notified:''};
  const sb={from(table){
-  if(table==='patiyiz_stories')return{update(row){params.push({table,row});return{eq(){return this},then(done){done({error:null})}}}};
-  if(table==='patiyiz_highlight_items')return{async upsert(row,opts){params.push({table,row,opts});return{error:null}}};
+  if(table==='patiyiz_stories'){
+   return {update(row){
+    params.push({table,row});
+    const query={eq(){return query},then(onFulfilled){return Promise.resolve({error:null}).then(onFulfilled)}};
+    return query;
+   }};
+  }
+  if(table==='patiyiz_highlight_items'){
+   return {async upsert(row,opts){params.push({table,row,opts});return {error:null}}};
+  }
   throw Error('Wrong table '+table);
  }};
  const ctx={me:{id:'owner'},data:{stories:[story],highlightAlbums:[{id:'a1',owner_id:'owner',title:'Geziler'}]},storyItems:[],
