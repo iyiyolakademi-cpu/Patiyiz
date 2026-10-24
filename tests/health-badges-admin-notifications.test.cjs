@@ -110,6 +110,6 @@ test('All three scripts and administrator inline JavaScript are syntactically va
  const matches=[...admin.matchAll(/<script>([\s\S]*?)<\/script>/g)];
  assert.ok(matches.length>=1);
  assert.doesNotThrow(()=>new vm.Script(matches.at(-1)[1],{filename:'admin.html:inline'}));
- assert.match(html,/health-file\.js/);assert.match(html,/achievements\.js/);
- assert.ok(html.indexOf('health-file.js')<html.indexOf('src="app.js'));
+ assert.doesNotMatch(html,/src="health-file\.js/);assert.match(html,/achievements\.js/);
+ assert.ok(html.indexOf('achievements.js')<html.indexOf('src="app.js'));
 });
