@@ -64,6 +64,7 @@ create table if not exists public.patiyiz_admin_announcements(
  created_at timestamptz not null default now()
 );
 create index if not exists patiyiz_admin_announcements_day_idx on public.patiyiz_admin_announcements(created_at desc);
+create index if not exists patiyiz_admin_announcements_admin_idx on public.patiyiz_admin_announcements(admin_id);
 alter table public.patiyiz_admin_announcements enable row level security;
 revoke all on public.patiyiz_admin_announcements from anon,authenticated;
 
