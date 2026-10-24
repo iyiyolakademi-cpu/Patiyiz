@@ -11,7 +11,7 @@
  function open(files,options={}){
   close();
   const items=Array.from(files||[]).filter(f=>f&&f.size>0&&(String(f.type||'').startsWith('image/')||/\.(heic|heif|jpe?g|png|webp)$/i.test(f.name||'')));
-  const multiple=options.multiple===true,max=Math.max(1,Number(options.max||1)),chosen=new Set(multiple?items.slice(0,max).map((_,i)=>i):[0]);
+  const multiple=options.multiple===true,max=Math.max(1,Number(options.max||1)),chosen=new Set(multiple?items.slice(0,max).map((_,i)=>i):(items.length?[0]:[]));
   const root=document.createElement('div');
   root.id='pati-gallery-overlay';root.className='pati-gallery-overlay';
   root.innerHTML='<div class="pati-gallery-shade" data-gallery="close"></div><section class="pati-gallery-sheet" role="dialog" aria-modal="true" aria-label="Fotoğraf seçimi">'+
@@ -22,7 +22,7 @@
    '<div class="pati-gallery-bottom"><button type="button" class="pati-gallery-reselect" data-gallery="reopen">Galeriden başka seç</button>'+
    '<button type="button" class="pati-gallery-continue" data-gallery="confirm"></button></div></section>';
   document.body.appendChild(root);
-  const urls=items.map(f=>URL.createObjectURL(f));session={root,urls,chosen,items,options};
+  const urls=items.map(f=>URL.createObjectURL(f));session={root,urls,chosen,items,options};const openedSession=session;
   const grid=root.querySelector('.pati-gallery-grid'),confirm=root.querySelector('.pati-gallery-continue');
   function draw(){
    grid.replaceChildren();
@@ -58,9 +58,9 @@
     const original=choice.textContent;choice.textContent='Hazırlanıyor…';
     try{
      const result=await options.onConfirm?.(selected);
-     if(result!==false)close();else{choice.disabled=false;choice.textContent=original}
+     if(session!==openedSession)return;if(result!==false)close();else{choice.disabled=false;choice.textContent=original}
     }catch(err){
-     const status=root.querySelector('.pati-gallery-hint');status.textContent=err.message||'Fotoğraf işlenemedi.';
+     if(session!==openedSession)return;const status=root.querySelector('.pati-gallery-hint');status.textContent=err.message||'Fotoğraf işlenemedi.';
      status.setAttribute('role','alert');choice.disabled=false;choice.textContent=original;
     }
    }
