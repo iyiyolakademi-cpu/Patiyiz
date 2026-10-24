@@ -78,6 +78,9 @@ jobs:
             printf '%s' "$FIREBASE_ANDROID_CONFIG" | base64 --decode > native-capacitor/android/app/google-services.json
             node -e "const fs=require('fs');const j=JSON.parse(fs.readFileSync('native-capacitor/android/app/google-services.json'));if(!j.client?.some(c=>c.client_info?.android_client_info?.package_name==='com.patiyiz.app'))process.exit(1)"
           fi
+      - name: Configure Android in-app camera and full gallery permissions
+        working-directory: native-capacitor
+        run: node scripts/setup-camera-gallery.mjs
       - name: Generate real Patiyiz Android icon and splash
         working-directory: native-capacitor
         run: |
