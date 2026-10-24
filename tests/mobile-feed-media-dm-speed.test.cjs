@@ -83,7 +83,9 @@ test('Sohbetlerde arama kutusu var ve medya erişim bağlantıları yeniden kull
  assert.match(dm,/chatSearch\?\.addEventListener\('input'/);
  assert.match(css,/#main-content \.pati-dm-searchbar/);
  assert.match(css,/#main-content \.pati-dm-layout \.bubble-chat/);
- assert.match(app,/patiDmSignedCache\.clear\(\);me=null/);
+ assert.match(app,/function resetSessionState\(\)/);
+ assert.match(app,/blockedProfiles=\[\];patiDmSignedCache\.clear\(\)/);
+ assert.match(app,/resetSessionState\(\);me=null/);
 });
 
 test('İlk oturum yalnız gerekli tabloları yükler ve medya ağırlıklı ekranları arka planda yeniden çizmez',()=>{
