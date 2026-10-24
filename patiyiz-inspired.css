@@ -1483,3 +1483,6 @@ body.pati-create-open{overflow:hidden}
 @media(min-width:800px){.paticoin-items{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:420px){.paticoin-shop-head{align-items:flex-start}.paticoin-shop-head button{font-size:11px;padding:10px}.paticoin-page h1{font-size:23px}}
 @media(prefers-reduced-motion:reduce){.paticoin-celebration,.paticoin-burst{animation:none!important}}
+
+.paticoin-profile-link{display:flex;gap:10px;flex-wrap:wrap;padding:12px 15px}
+.paticoin-profile-link button{flex:1 1 150px;padding:13px 10px;border-radius:13px;border:1px solid #e4d9b6;background:#fff7e2;color:#594618;font:inherit;font-size:12px;font-weight:850;cursor:pointer}
