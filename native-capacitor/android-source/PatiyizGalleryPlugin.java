@@ -37,6 +37,7 @@ public class PatiyizGalleryPlugin extends Plugin {
  @PluginMethod
  public void getPhotos(PluginCall call){
   if(!galleryAllowed()){
+   if(call.getBoolean("previewOnly",false)){JSObject preview=new JSObject();preview.put("photos",new JSArray());preview.put("hasMore",false);call.resolve(preview);return;}
    if(Build.VERSION.SDK_INT>=34) requestPermissionForAliases(new String[]{"galleryImages","galleryPartial"},call,"galleryReady");
    else requestPermissionForAlias(Build.VERSION.SDK_INT>=33?"galleryImages":"galleryLegacy",call,"galleryReady");
    return;
