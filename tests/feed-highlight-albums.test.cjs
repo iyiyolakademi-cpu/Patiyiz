@@ -27,7 +27,7 @@ test('İlk açılışta gönderiler ve hikâyeler önce gelir; ekrandan çıkmad
  assert.ok(display.indexOf("await load('feed')")<display.indexOf("await load('deferred')"));
  assert.match(home,/Gönderiler yükleniyor/);
  assert.match(home,/postCard\(p,i<5\)/);
- assert.match(html,/app\.js\?v=20261024-wellness-insights-1/);
+ assert.match(html,/app\.js\?v=20261024-release-reliability-1/);
 });
 
 test('Hikâyede sabitle yerine sol tarafta Öne çıkar düğmesi',()=>{
