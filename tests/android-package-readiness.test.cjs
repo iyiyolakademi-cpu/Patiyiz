@@ -71,6 +71,17 @@ test('Release guide explains Play signing SHA, fingerprint verification and manu
  for(const item of ['App signing key','SHA-256','API 36','Google Play','APK','AAB','patiyiz.com/.well-known/assetlinks.json','mesaj']){
   assert.ok(guide.includes(item),'Missing Android guide topic: '+item);
  }
- assert.equal(fs.existsSync(path.join(root,'.well-known/assetlinks.json')),false,
-   'Do not ship Digital Asset Links without a real signing certificate.');
+ const dalPath=path.join(root,'.well-known/assetlinks.json');
+ if(fs.existsSync(dalPath)){
+  const links=JSON.parse(fs.readFileSync(dalPath,'utf8'));
+  assert.ok(Array.isArray(links));
+  for(const association of links){
+   assert.equal(association.target.package_name,config.packageId);
+   assert.ok(association.target.sha256_cert_fingerprints.length);
+   for(const sha of association.target.sha256_cert_fingerprints)
+    assert.match(sha,/^([0-9A-F]{2}:){31}[0-9A-F]{2}$/);
+  }
+ }
+ assert.ok(fs.existsSync(path.join(root,'.nojekyll')),'GitHub Pages must serve /.well-known/ files.');
+
 });
