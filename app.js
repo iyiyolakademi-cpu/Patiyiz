@@ -1351,7 +1351,7 @@ document.addEventListener('change',e=>{
 });
 
 let lastPhotoTap={id:'',time:0},tapTimer=0;
-function heartOnPhoto(el){const id=el.dataset.postId;if(!id)return;const heart=el.querySelector('.pati-heart-burst');if(heart){heart.classList.remove('pop');void heart.offsetWidth;heart.classList.add('pop')}if(!liked.has(id))run(()=>doToggle('post_likes',{post_id:id,user_id:me.id},false))}
+function heartOnPhoto(el){const id=el.dataset.postId;if(!id)return;const heart=el.querySelector('.pati-heart-burst');if(heart){heart.classList.remove('pop');void heart.offsetWidth;heart.classList.add('pop')}if(!liked.has(id))void togglePostLike(id)}
 document.addEventListener('click',e=>{const el=e.target.closest('.pati-doubletap-photo');if(!el)return;const now=Date.now();if(lastPhotoTap.id===el.dataset.postId&&now-lastPhotoTap.time<380){e.preventDefault();lastPhotoTap.time=0;heartOnPhoto(el)}else lastPhotoTap={id:el.dataset.postId,time:now}},true);
 let storyTouchY=null,storyTouchX=null;
 document.addEventListener('touchstart',e=>{if(!e.target.closest('#story-overlay'))return;storyTouchY=e.touches[0]?.clientY;storyTouchX=e.touches[0]?.clientX},{passive:true});
