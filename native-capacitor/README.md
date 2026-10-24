@@ -52,6 +52,25 @@ Android Studio'da **Run** veya \`Build > Build APK(s)\` ile \`app-debug.apk\` ol
 - [ ] Android geri tuşu ve uygulamayı arka plana gönderme.
 - [ ] Mobil ağdan Wi-Fi'ye geçiş, bağlantı kesilmesi ve yeniden açılış.
 
+## Aşama 4 — Android yerel cihaz entegrasyonları (24 Ekim 2026)
+
+- **Kamera ve galeri:** Android'de Capacitor Camera / Android Photo Picker ile fotoğraf seçilir. Seçilen görsel mevcut gönderi, hikâye veya mesaj yükleme alanına aktarılır. Video için mevcut Android dosya seçicisi kullanılmaya devam eder; ses kaydı ve Android izinleri gerçek cihazda test edilmelidir.
+- **Uygulama bağlantıları:** `https://patiyiz.com/open?screen=messages` gibi yalnızca izinli Patiyiz ekranları Android App Links ile açılır. AndroidManifest intent-filter build sırasında eklenir. Alan adı doğrulaması üretim imzası ile çalışır; **GitHub debug APK imzası farklı olduğu için otomatik doğrulama garanti değildir.**
+- **Bildirimler:** Capacitor Push Notifications eklentisi ve kullanıcının izniyle FCM token kaydı hazırlandı. Supabase'de `patiyiz_native_push_tokens` tablosu RLS ile hesap sahibine özeldir. Mevcut Web Push çalışmaya devam eder. Push gerçek telefona ulaşması için *iki bağımsız yapılandırma* gerektirir: GitHub Actions secret `FIREBASE_ANDROID_GOOGLE_SERVICES_JSON_BASE64` (Firebase Console Android `com.patiyiz.app` kayıt dosyası) ve Supabase Edge Function secret `FIREBASE_SERVICE_ACCOUNT_JSON` (FCM HTTP v1 sunucu kimlik bilgisi). Bu bilgiler sağlanmadan native bildirim sistemi **aktif değildir**. Herhangi bir Firebase özel anahtarını GitHub koduna ya da sohbete ekleme.
+- **Bildirim açma:** Ayarlar > telefon bildirimlerini aç, izin isteği çıkar; token yalnızca giriş yapmış kullanıcının kaydına yazılır. Çıkışta cihaz aboneliği silinir. FCM sunucusu ile gerçek gönderim ancak geçerli Firebase konfigürasyonunda yapılır.
+- **Güvenlik:** Uygulama içi URL yönlendirmeleri sadece `https://patiyiz.com/open` altında izinli sayfalara kabul edilir. Şifre sıfırlama/hesap doğrulama bağlantıları mevcut web sitede tamamlanır, Android'e auth token aktarımı yapılmaz.
+- **Performans:** Supabase/TUS paket içerisinde; mevcut akışta görünmeyen videoların duraklatılması ve arka plandan dönüşte yenileme mantığı korunur. Paket kaynağı olarak uzaktaki site kullanılmaz.
+
+### Firebase kurulumu
+
+1. Firebase Console → bir proje oluştur → Android uygulaması: **`com.patiyiz.app`**.
+2. Firebase Cloud Messaging'i etkinleştir, `google-services.json` indir. **Bu dosyayı** GitHub Actions için base64 biçimine çevirip repository secret `FIREBASE_ANDROID_GOOGLE_SERVICES_JSON_BASE64` olarak ekle. GitHub'a commit etme.
+3. Google Cloud/Firebase sunucu hizmet hesabı için yalnız gerekli FCM yetkilerini oluştur; JSON gizli bilgiyi Supabase Secrets → `FIREBASE_SERVICE_ACCOUNT_JSON` olarak kaydet. Bunu kullanıcıya veya GitHub deposuna göndermemelisin.
+4. Yeni APK'yı GitHub Actions'tan üret, test hesabıyla izin ver ve token kaydını doğrula. Bir test bildirimiyle ekran açık/kapalı ve tıklama senaryosunu deneyip sonra Play Store'a geç.
+5. Önceden paylaşılmış PWABuilder imza dosyasını kullanmadan yeni güvenli release upload key oluştur; mevcut `assetlinks.json` dosyasındaki Play sertifikası ile yeni sürüm uyumluluğunu doğrula.
+
+**Henüz doğrulanmayanlar:** Firebase secret'ları, gerçek FCM gönderimi, gerçek cihaz kamera/dosya dönüşü, imzalı Play Store AAB ve parola sıfırlamadan Android içine otomatik dönüş.
+
 ## Bilerek henüz hazır olmayanlar
 
 1. **Yerel Android push:** Eski Web Push/Service Worker aboneliği WebView içinde otomatik native push'a dönüşmez. Bunun için Firebase projesi + FCM, \`google-services.json\`, Android push eklentisi ve Supabase'den FCM gönderim entegrasyonu gerekir. Bu sürümde bildirimleri açma butonu doğru biçimde *hazır değil* mesajı verir.
