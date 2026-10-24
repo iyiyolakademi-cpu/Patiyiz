@@ -80,8 +80,8 @@ test('Geç açılan Supabase gönderileri ana sayfada görünür hale gelir; med
 });
 
 test('Güncellenmiş css ve script eski alt menüyü önbellekten çağırmaz',()=>{
- assert.match(html,/patiyiz-inspired\.css\?v=20261024-feed-highlights-1/);
- assert.match(html,/app\.js\?v=20261024-feed-highlights-1/);
+ assert.match(html,/patiyiz-inspired\.css\?v=20261024-invite-rewards-1/);
+ assert.match(html,/app\.js\?v=20261024-invite-rewards-1/);
  assert.match(css,/\.pati-pets-grid/);
  assert.match(css,/#app-root:not\(\.hidden\)>\.mobile-fab\{/);
 });

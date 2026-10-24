@@ -130,8 +130,8 @@ test('Alt beş sekme 740 pikselden büyük ekranlarda da sürekli görünür',()
  assert.match(css,/grid-template-columns:repeat\(5,minmax\(0,1fr\)\)!important/);
  assert.match(css,/#app-root:not\(\.hidden\)>\.mobile-bottom>\.mobile-nav-btn\{/);
  assert.match(css,/#app-root:not\(\.hidden\)>\.app-shell\{/);
- assert.match(html,/patiyiz-inspired\.css\?v=20261024-feed-highlights-1/);
- assert.match(html,/app\.js\?v=20261024-feed-highlights-1/);
+ assert.match(html,/patiyiz-inspired\.css\?v=20261024-invite-rewards-1/);
+ assert.match(html,/app\.js\?v=20261024-invite-rewards-1/);
 });
 
 test('Klavye yokken menü gizlenmez, yalnız gerçek odak ve klavye açıklığında gizlenir',()=>{

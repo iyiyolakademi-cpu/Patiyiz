@@ -96,9 +96,9 @@ test('Fotoğraf seçimi önce editöre gider; değiştirilmiş dosya tekrar kır
  assert.match(app,/form\._patiEditedStory\|\|f\.get\(choice\)/);
  assert.match(app,/updateStoryMediaPreview\(edited\[0\]\)/);
  assert.match(app,/onCancel:\(\)=>\{/);
- assert.match(html,/photo-studio\.js\?v=20261024-feed-highlights-1/);
- assert.ok(html.indexOf('photo-studio.js')<html.indexOf('app.js?v=20261024-feed-highlights-1'));
- assert.match(html,/patiyiz-inspired\.css\?v=20261024-feed-highlights-1/);
+ assert.match(html,/photo-studio\.js\?v=20261024-invite-rewards-1/);
+ assert.ok(html.indexOf('photo-studio.js')<html.indexOf('app.js?v=20261024-invite-rewards-1'));
+ assert.match(html,/patiyiz-inspired\.css\?v=20261024-invite-rewards-1/);
 });
 
 test('Fotoğraf Stüdyosu Patiyiz oturumu kapanınca kapatılır',()=>{
