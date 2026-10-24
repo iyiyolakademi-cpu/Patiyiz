@@ -73,9 +73,9 @@ test('Premium dashboard is connected to daily training and achievement pages',()
  assert.match(script,/data-action="premium-resume"/);
  assert.match(app,/case 'premium-resume'/);
  assert.match(app,/case 'premium-achievements'/);
- assert.match(app,/healthfile:healthFilePage/);
+ assert.doesNotMatch(app,/healthfile:healthFilePage/);
  assert.match(app,/achievements:achievementsPage/);
- assert.match(app,/case 'healthfile-open'/);
+ assert.doesNotMatch(app,/case 'healthfile-open'/);
 });
 test('Storage and health tables restrict access to the owner and always private bucket',()=>{
  assert.match(sql,/patiyiz-health-private','patiyiz-health-private',false/);
