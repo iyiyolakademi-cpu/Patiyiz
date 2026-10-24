@@ -69,7 +69,8 @@ create policy "premium_waitlist_self_insert" on public.patiyiz_premium_waitlist
  for insert to authenticated with check(user_id=(select auth.uid()));
 create policy "premium_waitlist_self_delete" on public.patiyiz_premium_waitlist
  for delete to authenticated using(user_id=(select auth.uid()));
-revoke insert,update,delete on public.patiyiz_premium_entitlements from anon,authenticated;
+revoke all on public.patiyiz_premium_entitlements from anon,authenticated;
+grant select on public.patiyiz_premium_entitlements to authenticated;
 
 -- IMPORTANT: no payment provider and no automatic entitlements.
 -- A verified server-side purchase receipt or a controlled administrative grant is required.
