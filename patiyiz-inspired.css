@@ -1436,3 +1436,50 @@ body.pati-create-open{overflow:hidden}
 @media(max-width:355px){
  #tools-form .pati-mobile-menu-item{font-size:11px;padding:9px 7px;gap:6px}
 }
+
+/* PatiCoin rewards and mobile-friendly redemption store */
+.paticoin-page{max-width:1030px;margin:0 auto;padding:20px 14px 125px;color:#17181b}
+.paticoin-page h1{font-size:28px;margin:0 0 8px}.paticoin-page h2{font-size:19px;margin:26px 0 14px}
+.paticoin-hero{border-radius:25px;padding:28px;background:linear-gradient(135deg,#18191d,#36383e);color:#fff;overflow:hidden}
+.paticoin-hero>span{font-size:12px;letter-spacing:.14em;font-weight:800;color:#e6d3a2}
+.paticoin-hero h1{color:#fff;font-size:36px;margin:12px 0}
+.paticoin-hero>strong{display:block;font-size:42px;color:#ffdb7b}
+.paticoin-hero>strong small{font-size:18px;color:white}
+.paticoin-hero>p{font-size:13px;color:#e0e0e6}
+.paticoin-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.paticoin-actions button,.paticoin-shop-head button,.paticoin-item button,.paticoin-confirm{border:0;background:#ffe19a;color:#252019;font-weight:850;padding:12px 15px;border-radius:13px;cursor:pointer}
+.paticoin-actions button:nth-child(2){background:#fff}
+.paticoin-tasks{display:grid;gap:9px}
+.paticoin-task{display:flex;align-items:center;gap:13px;border:1px solid #ececf1;background:#fff;padding:16px 13px;border-radius:17px}
+.paticoin-task-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:#fff5d7;flex:0 0 38px}
+.paticoin-task>div:nth-child(2){flex:1;min-width:0}
+.paticoin-task strong,.paticoin-task small{display:block}.paticoin-task strong{font-size:14px}.paticoin-task small{font-size:11px;color:#81818a;margin-top:4px}
+.paticoin-task b{font-size:13px;white-space:nowrap;color:#ae7e0d}.paticoin-task b.earned{color:#29804b}
+.paticoin-shop-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.paticoin-shop-head p{color:#858590;font-size:12px}
+.paticoin-items{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.paticoin-item{padding:20px 15px;border:1px solid #ececf0;border-radius:19px;background:#fff;min-width:0}
+.paticoin-item-icon{display:block;font-size:36px;margin-bottom:12px}
+.paticoin-item h3{font-size:16px;margin:0 0 8px}.paticoin-item p{font-size:12px;color:#7b7d83;line-height:1.6;min-height:50px}
+.paticoin-item>div{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.paticoin-item strong{color:#966a06}.paticoin-order{padding:13px;display:flex;flex-direction:column;gap:4px;border-bottom:1px solid #eeeef1;background:#fff}
+.paticoin-order span{font-size:12px;color:#747780}
+.paticoin-disclaimer{font-size:12px;line-height:1.65;color:#777983;padding:12px 0}
+.paticoin-checkout{display:flex;flex-direction:column;gap:13px}.paticoin-checkout h3{font-size:18px;margin:5px 0}
+.paticoin-checkout-item{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:18px;padding:16px;border-radius:15px;background:#fff8e6}
+.paticoin-checkout>label{display:flex;align-items:center;gap:10px;padding:13px;background:#f7f7f8;border:1px solid #e7e7ed;border-radius:14px;font-size:13px;font-weight:800}
+.paticoin-checkout>label input{accent-color:#202025}.paticoin-pet-selector{display:grid;gap:7px}
+.paticoin-pet-selector[hidden]{display:none!important}
+.paticoin-pet-selector select{width:100%;padding:12px;border-radius:12px;border:1px solid #e5e5ea}
+.paticoin-confirm{background:#1b1c20;color:white;min-height:52px}
+.paticoin-confirm:disabled{opacity:.6}
+.paticoin-celebration{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:25px;background:rgba(13,14,18,.9);color:white;animation:patiCoinFade .22s ease}
+.paticoin-burst{font-size:72px;animation:patiCoinBounce .75s ease infinite alternate}
+.paticoin-won{font-size:clamp(28px,7vw,52px);font-weight:950;color:#ffda70;margin:16px 0}
+.paticoin-celebration p{font-size:15px;line-height:1.6;color:white}
+.paticoin-celebration button{padding:13px 27px;border:0;background:#ffdc7e;color:#151515;border-radius:14px;font-size:15px;font-weight:850;margin-top:14px;cursor:pointer}
+@keyframes patiCoinFade{from{opacity:0}to{opacity:1}}
+@keyframes patiCoinBounce{to{transform:translateY(-18px) rotate(12deg)}}
+@media(min-width:800px){.paticoin-items{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:420px){.paticoin-shop-head{align-items:flex-start}.paticoin-shop-head button{font-size:11px;padding:10px}.paticoin-page h1{font-size:23px}}
+@media(prefers-reduced-motion:reduce){.paticoin-celebration,.paticoin-burst{animation:none!important}}
