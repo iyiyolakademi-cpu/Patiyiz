@@ -1,5 +1,20 @@
 # Patiyiz — Mağaza Yayın Hazırlığı (24 Ekim 2026)
 
+## 24 Ekim 2026 — güvenilirlik güncellemesi
+- Mesaj / bildirim Realtime bağlantısı hata veya zaman aşımında yeniden bağlanıyor; uygulama yeniden görünür olunca bildirimler tekrar okunuyor.
+- Büyük halka açık medya dosyaları (6 MB üzeri) için Supabase'in 6 MB parçalı TUS aktarımı ve gerçek ilerleme yüzdesi eklendi; küçük dosyalarda eski SDK akışı korunuyor. Gerçek iPhone/Android ağ kesintisi ve format testleri hâlâ gerekli.
+- PWA manifesti hem kök alan adında hem GitHub Pages alt yolunda göreli kapsam kullanıyor; favicon yolu düzeltildi.
+- PatiCoin denetim olaylarına ilişkin iki eksik yabancı anahtar indeksi canlı Supabase veritabanında oluşturuldu ve SQL dosyası depoya eklendi.
+- CI yeni yükleme yardımcı dosyasının sözdizimini ve yeni regresyon testlerini çalıştırır.
+
+### Kalan doğrulamalar ve manuel bağımlılıklar
+- Kayıt, mesaj bildirimi, kamera, galeri, video, hikâye, push, hesap silme ve PatiCoin ödül alımı iki gerçek cihaz ve iki gerçek test hesabıyla uçtan uca sınanmalıdır. Veritabanındaki mesaj sayısı, bildirimin telefona teslim edildiğinin kanıtı değildir.
+- Supabase Dashboard Auth güvenliğinde sızdırılmış parola korumasını etkinleştirin; yönetici işlemlerini normal kullanıcı oturumu ile negatif test edin. Otomatik güvenlik denetleyicisinin SECURITY DEFINER uyarılarının her biri fonksiyon bazında incelenmelidir.
+- Uygulama kapalıyken zamanlanmış aşı / mama / ilaç bildirimleri henüz yoktur; mevcut bakım hatırlatıcıları uygulama açıkken gösterilir.
+- Web sitesi cihazın bütün fotoğraf arşivini izinsiz okuyamaz. Tam yerel galeri erişimi ve Play Store/AAB hazırlığı için Android/iOS uygulama paketi gerekir.
+- Premium ücretli abonelik ve gerçek bağış/ödül teslimatı, ödeme sağlayıcısı ve sunucu doğrulaması olmadan açılmamalıdır.
+- Kayıp pati konum bildirimleri, konum izni, gizlilik ve abuse/spam politikaları hazır olmadan otomatik etkinleştirilmemelidir.
+
 ## Mevcut durum
 - Web/PWA uygulaması: GitHub Pages + Supabase.
 - Android Gradle / AAB ve iOS Xcode / IPA kaynakları bu depoda henüz bulunmuyor.
