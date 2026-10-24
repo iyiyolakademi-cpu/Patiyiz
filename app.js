@@ -625,7 +625,7 @@ async function educationCloudLoad(){
    if(me?.id!==uid)return;
    missing.forEach(id=>educationCloudDone.add(id));
   }
-  if(view==='education')render();
+  if(['education','achievements'].includes(view))render();
  }catch(e){console.warn('Akademi ilerlemesi yüklenemedi:',e);if(view==='education')notify('Akademi ilerlemesi eşitlenemedi. Bağlantını kontrol et.',true)}
 }
 function educationMark(id){
@@ -663,7 +663,7 @@ function achievementsPage(){
  if(!window.PatiyizAchievements){main.innerHTML=empty('Belgeler açılamadı','Sayfayı yenile.');return}
  if(!achievementPortal)achievementPortal=window.PatiyizAchievements.create({esc,notify});
  main.innerHTML=achievementPortal.render({
-  freeCompleted:educationCloudDone,premiumCompleted:premiumPortal?.state?.completed||new Set(),
+  freeCompleted:new Set([...educationCloudDone].filter(id=>patiyizLessons.some(l=>l.id===id))),premiumCompleted:premiumPortal?.state?.completed||new Set(),
   premiumMember:!!premiumPortal?.state?.member,
   cloudReady:educationCloudUser===me?.id,memberName:displayName(current())
  });
@@ -1495,7 +1495,7 @@ document.addEventListener('click',e=>{
  if(b&&view==='achievements'&&achievementPortal){
   achievementPortal.print({
    kind:b.dataset.achievementPrint,user:displayName(current()),
-   freeCompleted:educationCloudDone,cloudReady:educationCloudUser===me?.id,
+   freeCompleted:new Set([...educationCloudDone].filter(id=>patiyizLessons.some(l=>l.id===id))),cloudReady:educationCloudUser===me?.id,
    premiumCompleted:premiumPortal?.state?.completed||new Set(),member:!!premiumPortal?.state?.member
   });
  }
