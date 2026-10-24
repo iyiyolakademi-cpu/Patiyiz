@@ -17,7 +17,9 @@ check(pkg.dependencies['@capacitor/android'].startsWith('^8.'),'Capacitor Androi
 check(build.includes("'index.html'")&&build.includes("'app.js'"),'Current Patiyiz application packaged');
 check(build.includes('vendor/supabase-compat.js')&&build.includes('vendor/tus-compat.js'),'Supabase and resumable uploads are local assets');
 check(build.includes("redirectTo:'https://patiyiz.com/'"),'Password-reset email uses public HTTPS domain');
-check(build.includes('Firebase/FCM'), 'Unsupported native push feature is not misrepresented as working');
+check(build.includes('enablePush')&&shell.includes('firebaseConfigured'), 'Native push must only activate with Firebase configuration');
 check(shell.includes("App.addListener('backButton'"),'Android back button wired to native UI');
+check(shell.includes("App.addListener('appUrlOpen'"),'Android App Links listener configured');
+check(shell.includes('pickPhotoForInput'),'Native camera/photo integration available');
 check(fs.existsSync(path.join(repo,'patiyiz-app-icon-512.png')),'Real Patiyiz logo available');
 console.log('Patiyiz Capacitor native Android source checks passed.');
