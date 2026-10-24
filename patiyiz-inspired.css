@@ -1877,3 +1877,76 @@ body.story-fullscreen-open:has(#highlight-album-form) #modal-root .modal-backdro
 #main-content .pati-edu-all-done{color:#22734c;font-weight:700;padding:11px}
 #main-content .pati-edu-empty{padding:20px 16px;border:1px dashed #ccd0d7;border-radius:14px;text-align:center;color:#555b66}
 @media(max-width:520px){#main-content .pati-edu-learning-toolbar{display:grid;grid-template-columns:1fr}#main-content .pati-edu-learning-toolbar button{width:100%}}
+
+
+/* Premium Akademi — spacious black-first learning experience (2026-10-24) */
+#main-content .pati-premium{width:100%;max-width:1120px;margin:0 auto;padding:4px 0 30px;color:#202126}
+#main-content .premium-topbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin:7px 0 17px;font-size:11px;font-weight:800;letter-spacing:.11em}
+#main-content .premium-status{display:inline-flex;align-items:center;min-height:27px;background:#efeff1;color:#51535e;border-radius:999px;padding:6px 11px;font-size:11px;font-weight:600;letter-spacing:0}
+#main-content .premium-status.is-active{background:#e7f7ea;color:#17673b}
+#main-content .premium-hero{border-radius:24px;padding:clamp(22px,5vw,48px);background:linear-gradient(140deg,#0f1014,#2a2833 58%,#484050);color:#fff;position:relative;overflow:hidden}
+#main-content .premium-hero:after{content:"✦";position:absolute;right:-.06em;bottom:-.55em;color:rgba(255,255,255,.07);font-size:230px;font-weight:900;pointer-events:none}
+#main-content .premium-eyebrow{color:#d1c9ed;letter-spacing:.18em;font-size:11px;font-weight:800}
+#main-content .premium-hero h1{font-size:clamp(27px,4vw,45px);line-height:1.15;letter-spacing:-.05em;max-width:620px;margin:13px 0}
+#main-content .premium-hero p{font-size:15px;max-width:560px;color:#e6e1eb;line-height:1.7}
+#main-content .premium-numbers{display:flex;gap:25px;flex-wrap:wrap;margin:25px 0}
+#main-content .premium-numbers>div{display:flex;flex-direction:column;gap:2px}
+#main-content .premium-numbers strong{font-size:28px;line-height:1.1}
+#main-content .premium-numbers small{font-size:11px;color:#cec6d8}
+#main-content .premium-outline-btn{position:relative;z-index:1;cursor:pointer;border:1px solid rgba(255,255,255,.45)!important;background:rgba(255,255,255,.09)!important;color:#fff!important;border-radius:13px!important;min-height:44px;padding:12px 17px;font-weight:750}
+#main-content .premium-heading{display:flex;align-items:end;justify-content:space-between;margin:32px 0 16px}
+#main-content .premium-heading span{font-size:10px;letter-spacing:.15em;font-weight:800;color:#7a688f}
+#main-content .premium-heading h2{font-size:clamp(19px,2.6vw,25px);line-height:1.25;margin:7px 0 0;letter-spacing:-.035em}
+#main-content .premium-course-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+#main-content .premium-course-card{border:1px solid #e2e2e8;background:#fff;border-radius:19px;padding:23px 18px;display:flex;flex-direction:column;gap:7px;min-height:290px;box-shadow:0 8px 20px rgba(20,20,25,.04)}
+#main-content .premium-course-icon{height:53px;width:53px;border-radius:16px;display:grid;place-items:center;font-size:26px;background:#f6f2fb;margin-bottom:7px}
+#main-content .premium-course-card small{font-size:11px;color:#71657d;font-weight:750}
+#main-content .premium-course-card h3{font-size:20px;line-height:1.3;letter-spacing:-.035em;margin:4px 0}
+#main-content .premium-course-card p{font-size:13px;line-height:1.7;color:#646673;margin:1px 0}
+#main-content .premium-mini-progress{font-size:12px;color:#77678a;font-weight:700;margin-top:auto}
+#main-content .premium-course-card button{cursor:pointer;margin-top:12px;border:0;background:#1e1e24;color:#fff;font-weight:750;min-height:44px;border-radius:12px;padding:12px}
+#main-content .premium-plan-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+#main-content .premium-plan{border:1px solid #e6e5ed;border-radius:17px;background:#fbfafc;padding:21px}
+#main-content .premium-plan small{font-size:12px;font-weight:800;color:#68547b}
+#main-content .premium-plan h3{font-size:28px;letter-spacing:-.045em;margin:8px 0 0;color:#242129}
+#main-content .premium-plan span{display:block;margin:0 0 10px;font-size:11px;color:#7b7985}
+#main-content .premium-plan p{font-size:12px;line-height:1.7;color:#686771}
+#main-content .premium-signup{background:#f3f0f6;border:1px solid #e4dce9;padding:25px;border-radius:18px;margin-top:28px}
+#main-content .premium-signup h2{font-size:21px;letter-spacing:-.025em;margin:0}
+#main-content .premium-signup p{font-size:13px;line-height:1.7;color:#5f5b69;max-width:680px}
+#main-content .premium-primary-btn{cursor:pointer;display:inline-flex;align-items:center;justify-content:center;min-height:45px;background:#242128;color:#fff;border:0;border-radius:12px;padding:12px 18px;font-size:13px;font-weight:750}
+#main-content .premium-soft-btn{cursor:pointer;display:inline-flex;align-items:center;justify-content:center;min-height:42px;background:#fff;color:#27222c;border:1px solid #cfcbd6;border-radius:11px;padding:10px 14px;font-weight:650;margin:8px}
+#main-content .premium-disclaimer{color:#777783;font-size:11px;line-height:1.65;margin-top:25px}
+#main-content .premium-error{padding:12px 14px;margin:14px 0;border-radius:12px;background:#fff1f1;color:#a32b37;border:1px solid #f2d3d3}
+#main-content .premium-back{display:inline-flex;align-items:center;border:0;background:transparent;cursor:pointer;color:#55505a;font-weight:700;padding:12px 0;margin-bottom:8px}
+#main-content .premium-course-hero{background:linear-gradient(130deg,#16151a,#3c3548);border-radius:20px;padding:28px;color:#fff}
+#main-content .premium-course-hero span{font-size:13px;font-weight:650;color:#ded2ea}
+#main-content .premium-course-hero h1{font-size:clamp(26px,4vw,35px);margin:9px 0;letter-spacing:-.04em;line-height:1.24}
+#main-content .premium-course-hero p{font-size:14px;line-height:1.6;color:#e1dce8}
+#main-content .premium-course-hero small{font-size:12px;color:#c5bfd0}
+#main-content .premium-preview{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0}
+#main-content .premium-preview-row{border:1px solid #e3e0e8;border-radius:14px;padding:15px;background:#fff;display:flex;gap:10px}
+#main-content .premium-preview-row span{font-size:12px;font-weight:800;color:#795c9e}
+#main-content .premium-preview-row p{font-size:13px;color:#53505a;margin:0;line-height:1.5}
+#main-content .premium-lock{border:1px dashed #cabcd2;background:#faf7fc;border-radius:16px;padding:22px}
+#main-content .premium-lock p{font-size:13px;line-height:1.7;color:#65606b}
+#main-content .premium-course-progress{padding:18px 0}
+#main-content .premium-course-progress strong{font-size:15px}
+#main-content .premium-progress{height:9px;border-radius:99px;background:#e2dce8;overflow:hidden;margin-top:12px}
+#main-content .premium-progress span{height:100%;display:block;background:linear-gradient(90deg,#8472a3,#aa94c3);border-radius:99px}
+#main-content .premium-days{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+#main-content .premium-day-btn{border:1px solid #e4e1e8;background:#fff;min-height:94px;padding:14px;border-radius:13px;text-align:left;display:grid;gap:4px;cursor:pointer}
+#main-content .premium-day-btn small{font-size:10px;color:#8b7b9d}
+#main-content .premium-day-btn strong{font-size:13px;line-height:1.3}
+#main-content .premium-day-btn span{font-size:11px;color:#746884}
+#main-content .premium-day-btn.is-finished{background:#edf8ef;border-color:#bbe6c3}
+#main-content .premium-day-view{background:#fff;border:1px solid #e1dce8;border-radius:17px;padding:clamp(18px,3vw,31px);margin-top:18px}
+#main-content .premium-day-view small{font-size:12px;color:#8a6d9f}
+#main-content .premium-day-view h2{font-size:25px;line-height:1.3}
+#main-content .premium-day-view h3{font-size:15px;margin-top:22px}
+#main-content .premium-day-view p{font-size:14px;line-height:1.8;max-width:780px;color:#52525a}
+#main-content .premium-completed{color:#1b6a42!important;font-weight:750}
+#main-content .premium-empty{padding:20px;background:#f5f5f7;border-radius:12px}
+@media(max-width:850px){#main-content .premium-course-grid,#main-content .premium-plan-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:590px){#main-content .pati-premium{padding:6px 0 20px}#main-content .premium-hero{padding:23px;border-radius:17px}#main-content .premium-course-grid,#main-content .premium-plan-grid,#main-content .premium-preview,#main-content .premium-days{grid-template-columns:1fr}#main-content .premium-course-card{min-height:240px}#main-content .premium-signup{padding:19px}#main-content .premium-numbers{gap:16px}}
+@media(prefers-reduced-motion:reduce){#main-content .premium-progress span{transition:none}}
