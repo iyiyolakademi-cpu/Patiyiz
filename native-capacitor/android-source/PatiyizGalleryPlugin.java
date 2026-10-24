@@ -55,7 +55,7 @@ public class PatiyizGalleryPlugin extends Plugin {
   ContentResolver resolver=getContext().getContentResolver();
   String[] fields={MediaStore.Images.Media._ID,MediaStore.Images.Media.DATE_ADDED};
   try(Cursor cursor=resolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,fields,null,null,MediaStore.Images.Media.DATE_ADDED+" DESC")){
-   if(cursor!=null&&cursor.moveToPosition(offset-1)){
+   if(cursor!=null&&(offset==0||cursor.moveToPosition(offset-1))){
     int count=0;
     while(cursor.moveToNext()&&count<limit){
      long id=cursor.getLong(0);
