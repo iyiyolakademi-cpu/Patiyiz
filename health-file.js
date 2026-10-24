@@ -28,6 +28,7 @@
   function selectPet(id){if(!pets().some(p=>p.id===id))return;state.petId=id;state.printView=false;changed()}
   async function save(form){
    if(state.saving)return;
+   if(!state.petId)state.petId=pets()[0]?.id||'';
    checked();
    const uid=getUser().id,petId=state.petId;
    const file=form.querySelector('[name="health-file"]')?.files?.[0]||null;
