@@ -88,3 +88,16 @@ test('Both participants receive owner-scoped Realtime deletion events for immedi
  assert.match(sql,/alter publication supabase_realtime add table public\.patiyiz_dm_deletion_events/);
  assert.match(html,/chat_stable=1/);
 });
+
+test('Reply foreign key can clear dangling reply on global deletion while unrelated fields remain immutable',()=>{
+ const replySql=fs.readFileSync('supabase/patiyiz-chat-delete-replies-20261024.sql','utf8');
+ assert.match(replySql,/new\.reply_to is distinct from old\.reply_to/);
+ assert.match(replySql,/new\.reply_to is not null/);
+ assert.match(replySql,/parent\.id=old\.reply_to/);
+ for(const field of ['id','sender_id','receiver_id','created_at','attachment_path','attachment_type'])
+  assert.match(replySql,new RegExp('new\\.'+field+' is distinct from old\\.'+field));
+ assert.match(replySql,/old\.sender_id is distinct from \(select auth\.uid\(\)\)/);
+ assert.match(replySql,/old\.created_at < now\(\)-interval '15 minutes'/);
+ assert.match(replySql,/Read marker update not permitted/);
+ assert.doesNotMatch(replySql,/grant update\(reply_to\)/);
+});
