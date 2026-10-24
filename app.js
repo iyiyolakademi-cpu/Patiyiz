@@ -1112,7 +1112,7 @@ case 'dm-edit-form':{const body=str('body');if(!body)throw Error('Mesaj boş ola
 window.addEventListener('offline',()=>{notify('İnternet bağlantısı kesildi. Paylaşım ve mesaj işlemleri bağlantı gelince tekrar denenebilir.',true)});
 window.addEventListener('online',()=>{notify('İnternet bağlantısı yeniden kuruldu.');if(me&&sb)refresh().catch(e=>console.warn('Yenileme başarısız',e))});
 function resetSessionState(){
- patiyizLoadToken++;patiyizLoadedTables.clear();patiyizDeferredLoading=null;
+ patiyizLoadToken++;patiyizLoadedTables.clear();patiyizDeferredLoading=null;patiInviteState={code:'',invited_count:0,already_used:false,coins_each:50,loading:false};patiCoinState={balance:0,earned:0,claims:[],items:[],orders:[],loading:false};document.getElementById('paticoin-celebration')?.remove();
  data=Object.fromEntries(Object.keys(data).map(key=>[key,[]]));
  for(const group of [favorites,followed,liked,saved,voted,blocked])group.clear();
  blockedProfiles=[];patiDmSignedCache.clear();profileCountCache.clear();profileCountInFlight.clear();
