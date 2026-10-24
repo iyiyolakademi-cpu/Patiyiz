@@ -49,12 +49,12 @@ function showApp(){starter();if(me)window.setTimeout(()=>patiCoinSync(true),1600
  if(!patiyizDeferredLoading){
   const userId=me.id;
   const signature=()=>data.posts.map(x=>x.id).join(',')+'|'+data.stories.map(x=>x.id).join(',');
-  const redraw=(before)=>{
+  const redraw=(before,force=false)=>{
    if(me?.id!==userId)return;
    navRender();
    if(document.activeElement?.matches?.('input,textarea,[contenteditable]'))return;
    if(view==='home'){
-    if(signature()!==before||!patiyizLoadedTables.has('posts')||!patiyizLoadedTables.has('patiyiz_stories')){
+    if(force||signature()!==before||!patiyizLoadedTables.has('posts')||!patiyizLoadedTables.has('patiyiz_stories')){
      const y=window.scrollY;render();requestAnimationFrame(()=>window.scrollTo({top:y,behavior:'instant'}));
     }
    }else if(view!=='reels')render();
@@ -62,7 +62,7 @@ function showApp(){starter();if(me)window.setTimeout(()=>patiCoinSync(true),1600
   patiyizDeferredLoading=new Promise(resolve=>setTimeout(resolve,250)).then(async()=>{
    if(me?.id!==userId)return;
    const initial=signature();
-   await load('feed');redraw(initial);
+   await load('feed');redraw(initial,true);
    if(me?.id!==userId)return;
    const later=signature();
    await load('deferred');redraw(later);
