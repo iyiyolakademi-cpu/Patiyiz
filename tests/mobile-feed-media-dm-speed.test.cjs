@@ -92,8 +92,9 @@ test('İlk oturum temel tabloları yükler; eksik gönderi/hikâyeleri arka plan
  const script=part('async function load(mode=', 'async function refreshKeys(');
  const m=script.match(/if\(mode==='initial'\)specs=specs\.filter\(\(\[table\]\)=>\[([^\]]+)\]/);
  assert.ok(m);
- assert.doesNotMatch(m[1],/patiyiz_reposts|patiyiz_post_pins|patiyiz_highlight_items|patiyiz_story_responses/);
- for(const essential of ['profiles','posts','post_likes','post_saves','comments','patiyiz_stories','messages','notifications'])assert.ok(m[1].includes("'"+essential+"'"));
- assert.match(app,/postsWereMissing\|\|data\.posts\.length!==previousPosts\|\|data\.stories\.length!==previousStories/);
+ assert.doesNotMatch(m[1],/patiyiz_reposts|patiyiz_post_pins|patiyiz_story_responses|messages|notifications|comments|post_likes/);
+ for(const essential of ['profiles','posts','pets','patiyiz_stories','patiyiz_highlight_albums','patiyiz_highlight_items','user_blocks'])assert.ok(m[1].includes("'"+essential+"'"));
+ assert.match(app,/await load\('feed'\);redraw\(initial\)/);
+ assert.match(app,/await load\('deferred'\);redraw\(later\)/);
  assert.match(html,/rel="preconnect" href="https:\/\/tqnvvrgrsxrvzxbjbsgl\.supabase\.co"/);
 });
