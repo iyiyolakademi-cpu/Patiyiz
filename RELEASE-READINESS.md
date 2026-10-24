@@ -1,3 +1,12 @@
+## 24 Ekim 2026 — 101 derslik Patiyiz Akademi
+
+- Mevcut 6 çekirdek ders ve 26 ek derse **69 yeni eğitim** eklenerek toplam **101 özgün ders ve 101 mini sınav** sunuldu.
+- Konular: genel bakım, kedi, köpek, sağlık, beslenme, kuş, balık, diğer hayvanlar, sahiplendirme ve ilk yardım (10 kategori).
+- İçerikler temel bakım ve risk önleme odaklıdır. Tıbbi teşhis, tedavi, ilaç dozu veya acil veteriner desteği yerine geçmez.
+- Akademi ekranına 101 ders içerisinde arama ve kaldığı yerden devam etme işlevi eklendi; kategori filtreleri, ilerleme çubuğu ve hesap bazlı mevcut `patiyiz_education_progress` kaydı korundu.
+- Geçmişte tamamlanan derslerin sabit kimlikleri değişmediği için kullanıcı ilerlemesi silinmez.
+- Yeni içerikler `academy-101-part1.js` (36 ders) ve `academy-101-part2.js` (33 ders) dosyalarındadır. Regresyon testi `tests/academy-101.test.cjs` tam 101 dersi, benzersiz kimlikleri ve geçerli sınavları doğrular.
+
 # Patiyiz — Mağaza Yayın Hazırlığı (24 Ekim 2026)
 
 ## 24 Ekim 2026 — güvenilirlik güncellemesi
