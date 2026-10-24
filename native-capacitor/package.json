@@ -1,0 +1,29 @@
+{
+  "name": "patiyiz-capacitor-android",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Independent native Android QA build of Patiyiz, without replacing the live PWA",
+  "scripts": {
+    "build:web": "node scripts/build-web.mjs",
+    "prepare:icons": "node scripts/prepare-icons.mjs",
+    "android:init": "npm run build:web && npx cap add android",
+    "android:sync": "npm run build:web && npx cap sync android",
+    "check": "node scripts/check-native.mjs"
+  },
+  "dependencies": {
+    "@capacitor/core": "^8.0.0",
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/app": "^8.0.0",
+    "@capacitor/keyboard": "^8.0.0",
+    "@capacitor/status-bar": "^8.0.0",
+    "@capacitor/splash-screen": "^8.0.0",
+    "@supabase/supabase-js": "^2.58.0",
+    "tus-js-client": "4.3.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.0.0",
+    "@capacitor/assets": "^3.0.5",
+    "esbuild": "^0.25.0",
+    "sharp": "^0.34.0"
+  }
+}
