@@ -157,7 +157,7 @@ async function patiCoinSync(withAnimation=false){
    sb.from('patiyiz_reward_redemptions').select('id,item_id,coins_spent,destination,status,created_at,admin_note,proof_url,reviewed_at,fulfilled_at').eq('user_id',uid).order('created_at',{ascending:false}).limit(30),
    sb.from('patiyiz_reward_fulfillment_events').select('redemption_id,previous_status,next_status,note,created_at').order('created_at',{ascending:false}).limit(100)
   ]);
-  for(const r of [wallet,ledger,items,orders,history]if(r.error)throw r.error;
+  for(const r of [wallet,ledger,items,orders,history])if(r.error)throw r.error;
   if(me?.id!==uid)return;
   patiCoinState={balance:wallet.data?.balance||0,earned:wallet.data?.lifetime_earned||0,
    claims:(ledger.data||[]).map(x=>x.task_code),items:items.data||[],orders:orders.data||[],history:history.data||[],loading:false};
