@@ -618,6 +618,7 @@ async function patiWellnessFetch(silent=false){
  finally{patiWellness.loading=false}
 }
 function patiWellnessPage(){
+ if(!patiWellness.loaded&&!patiWellness.loading)void patiWellnessFetch();
  const pets=patiWellnessOwnedPets();
  const selectedId=patiWellnessPetId&&pets.some(p=>p.id===patiWellnessPetId)?patiWellnessPetId:(pets[0]?.id||'');
  patiWellnessPetId=selectedId;
@@ -1040,12 +1041,15 @@ async function checkPublishedRecord(table,id,author){
 async function publishMediaRecord(table,form,createRecord){
  const owner=me?.id;if(!owner)throw Error('Paylaşmak için giriş yap.');
  const id=form.dataset.patiPublishId||crypto.randomUUID();form.dataset.patiPublishId=id;
+ const publishKind=table==='patiyiz_stories'?'story':form.dataset.mode==='reels'?'reels':'post';
+ const metricId=crypto.randomUUID(),metricAttempt=patiShareMetric(publishKind,metricId,'attempt');
+ const recordMetric=status=>{void metricAttempt.then(()=>patiShareMetric(publishKind,metricId,status))};
  const uploaded=[];
  // A retry after an ambiguous network error must not create another copy.
  if(form.dataset.patiPublishAttempted==='yes'){
   const previous=await checkPublishedRecord(table,id,owner);
   if(!previous.known)throw Error('Önceki paylaşımın durumu kontrol edilemiyor. Bağlantını kontrol edip tekrar dene.');
-  if(previous.row)return previous.row;
+  if(previous.row){recordMetric('success');return previous.row;}
  }
  try{
   const record=await createRecord(async(file,kind)=>{
@@ -1059,17 +1063,17 @@ async function publishMediaRecord(table,form,createRecord){
   const response=await sb.from(table).insert({...record,id,author_id:owner}).select('*').single();
   if(response.error)throw response.error;
   if(!response.data)throw Error('Paylaşım kaydı doğrulanamadı.');
-  return response.data;
+  recordMetric('success');return response.data;
  }catch(error){
   const checked=await checkPublishedRecord(table,id,owner);
   if(checked.known){
    const references=new Set(checked.row?[checked.row.image_url,checked.row.video_url,checked.row.video_cover_url,...(checked.row.images||[])].filter(Boolean):[]);
    await cleanPublicationMedia(uploaded.filter(url=>!references.has(url)),owner);
-   if(checked.row)return checked.row;
+   if(checked.row){recordMetric('success');return checked.row;}
   }else if(uploaded.length){
    console.warn('Paylaşım durumu kesinleşmedi; medya olası veri kaybını önlemek için korunuyor.');
   }
-  throw error;
+  recordMetric('failed');throw error;
  }
 }
 async function createPostPublication(form,f,str){
