@@ -15,7 +15,7 @@
     "SplashScreen": {
       "launchShowDuration": 800,
       "launchAutoHide": true,
-      "backgroundColor": "#000000",
+      "backgroundColor": "#FFFFFF",
       "showSpinner": false,
       "launchFadeOutDuration": 200
     },
