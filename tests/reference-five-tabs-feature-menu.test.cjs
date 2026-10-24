@@ -83,7 +83,7 @@ test('Menüdeki yönetim bağlantısı yalnız doğrulanmış adminler için gö
 });
 
 test('Güncel beşli menü ve CSS önbelleği aynı sürümü kullanır',()=>{
- assert.match(html,/patiyiz-inspired\.css\?v=20261024-photo-studio-1/);
- assert.match(html,/app\.js\?v=20261024-photo-studio-1/);
+ assert.match(html,/patiyiz-inspired\.css\?v=20261024-feed-highlights-1/);
+ assert.match(html,/app\.js\?v=20261024-feed-highlights-1/);
  assert.match(css,/#app-root>\.mobile-header \.pati-header-menu/);
 });
