@@ -1280,7 +1280,8 @@ async function patiExploreLoadMetrics(posts,uid,token){
 async function patiExploreLoadMedia(reset=false){
  if(!me||!sb)return;
  const uid=me.id,token=patiyizLoadToken;
- if(reset||patiExploreMedia.owner!==uid||patiExploreMedia.sort!==patiExploreSort)patiExploreMedia={owner:uid,sort:patiExploreSort,rows:[],offset:0,hasMore:true,ready:false,loading:false,error:''};
+ const selectedSort=typeof patiExploreSort==='string'?patiExploreSort:'popular';
+ if(reset||patiExploreMedia.owner!==uid||patiExploreMedia.sort!==selectedSort)patiExploreMedia={owner:uid,sort:selectedSort,rows:[],offset:0,hasMore:true,ready:false,loading:false,error:''};
  const state=patiExploreMedia;
  if(state.loading||!state.hasMore)return;
  state.loading=true;state.error='';
