@@ -63,7 +63,7 @@ test('Hayvan silme yalnızca sahip için ve adıyla ikinci doğrulama üzerinden
  const form=segment("case 'pet-form':","case 'reply-form':");
  assert.match(form,/if\(editId&&\(!existing\|\|existing\.owner_id!==owner\)\)/);
  assert.match(form,/if\(name\.length<2\|\|name\.length>70\)/);
- assert.match(form,/await save\('pets',payload,editId\)/);
+ assert.match(form,/await save\('pets',o,editId\)/);
 });
 
 test('Mevcut topluluk sayfalaması ve Capacitor paketindeki CSS korunur',()=>{
