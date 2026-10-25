@@ -43,12 +43,15 @@ test('File selection uses chosen-gallery grid, not another full-screen studio',(
  assert.match(src,/onReopen:.*openComposerMediaPicker\('gallery'\)/);
  assert.doesNotMatch(src,/openPostPhotoStudio|openStoryPhotoStudio|PatiyizPhotoStudio/);
 });
-test('Story images enter preview without photo studio and keep overlay text edits',()=>{
- const change=between("if(input?.form?.id==='story-form'","if(input?.type==='file'&&input.files?.[0])");
- assert.match(change,/updateStoryMediaPreview\(file\);return;/);
- assert.doesNotMatch(change,/openStoryPhotoStudio/);
- assert.match(app,/async function renderEditedStoryFile\(/);
- assert.match(app,/let file=f\.get\(choice\)/);
+test('Story media now uses the same native chooser, preview and crop as posts',()=>{
+ const composer=between("function openStoryComposer(","async function renderEditedStoryFile(");
+ assert.match(composer,/compose\(null,'story',autoPick\)/);
+ const shared=between("function compose(post,mode='post',autoPick=true){","function uploadStatus(");
+ assert.match(shared,/postMediaField\(mode\)/);
+ assert.match(shared,/story\?'story'/);
+ assert.match(shared,/pati-crop-preview/);
+ assert.match(app,/cropPostPhoto\(photo,str\('aspect'\)\|\|'9:16'\)/);
+ assert.doesNotMatch(shared,/PatiyizPhotoStudio/);
 });
 test('No obsolete photo studio module, script or full-screen CSS remain',()=>{
  assert.equal(fs.existsSync('photo-studio.js'),false);
