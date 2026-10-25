@@ -1,0 +1,103 @@
+/* Patiyiz · user-requested mobile, reward and shop polish · 2026-10-25 */
+/* Keep saved highlight data untouched; remove the profile-only shelf from view. */
+#main-content .pati-ig-highlight-section{display:none!important}
+
+/* New story: open the device gallery first; never show a giant empty black preview. */
+#modal-root .modal:has(#story-form) .modal-content{display:block!important;padding:16px!important}
+#story-form .pati-story-quick-media{display:grid;gap:12px;background:#fff;border:1px solid #e9e9eb;border-radius:18px;padding:16px}
+#story-form .pati-story-quick-intro{display:flex;align-items:center;gap:12px}
+#story-form .pati-story-quick-intro>div{display:grid;gap:3px;min-width:0}
+#story-form .pati-story-quick-intro strong{color:#202125;font-size:16px;font-weight:850}
+#story-form .pati-story-quick-intro small{font-size:12px;color:#777981;line-height:1.4}
+#story-form .pati-story-quick-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;background:#15161a;color:white;font-size:23px;flex:none}
+#story-form .pati-story-quick-buttons{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+#story-form .pati-story-quick-buttons button{min-height:47px;border-radius:13px;padding:10px;border:1px solid #e4e5e8;font-weight:800;font-size:13px;cursor:pointer}
+#story-form .pati-story-quick-primary{background:#17181c;color:white;border-color:#17181c!important}
+#story-form .pati-story-quick-secondary{background:#f7f7f8;color:#23242a}
+#story-form #story-photo-preview[hidden]{display:none!important}
+#story-form #story-photo-preview:not([hidden]){display:flex;align-items:center;justify-content:center;min-height:0!important;max-height:48dvh;aspect-ratio:9/16;margin:0 auto;background:#0b0c10;border-radius:17px;overflow:hidden;width:min(100%,270px);box-shadow:0 12px 30px rgba(0,0,0,.12)}
+#story-form #story-photo-preview img{width:100%!important;height:100%!important;max-height:48dvh;object-fit:contain!important}
+#story-form .pati-story-quick-caption{display:grid;gap:8px;margin:14px 0 9px;font-size:13px;font-weight:800;color:#33353b}
+#story-form .pati-story-quick-caption span{font-size:11px;color:#9a9ba2;font-weight:550}
+#story-form .pati-story-quick-caption input{min-height:48px;padding:12px 14px;border:1px solid #e3e4e8;background:#f8f8fa;color:#22242a;border-radius:13px;outline:none;font-size:15px}
+#story-form .pati-story-quick-caption input:focus{border-color:#8f929b}
+#story-form .pati-story-quick-extras{background:#f7f7f8;border:1px solid #eeeef1;border-radius:13px;padding:12px;margin:10px 0}
+#story-form .pati-story-quick-extras summary{cursor:pointer;font-size:13px;font-weight:780;color:#35353a;list-style-position:inside}
+#story-form .pati-story-quick-extras .pati-story-editor{margin-top:12px;display:grid;gap:10px}
+#story-form .pati-story-quick-extras input,#story-form .pati-story-quick-extras select{max-width:100%;width:100%;min-height:42px}
+#story-form .pati-story-highlight-option{background:#f8f8fa!important;border-radius:13px!important}
+#modal-root .modal:has(#story-form) .modal-footer{background:#fff;border-top:1px solid #e9e9ed}
+@media(max-width:500px){
+ #modal-root .modal:has(#story-form) .modal-content{padding:12px!important}
+ #story-form .pati-story-quick-media{padding:12px;border-radius:15px}
+ #story-form #story-photo-preview:not([hidden]){max-height:43dvh}
+}
+
+/* PatiCoin: completed tasks appear separately at the very end. */
+#main-content .paticoin-done-zone{margin-top:28px;padding-top:20px;border-top:1px solid #e9eaf0}
+#main-content .paticoin-done-zone .paticoin-task{opacity:.68;background:#f8f8fa;border-color:#ececf0}
+#main-content .paticoin-done-zone .paticoin-task-icon{background:#e5ece8!important;color:#317254!important}
+#main-content .paticoin-done-zone .paticoin-tasks:empty{display:none}
+
+/* Explore: sort controls, scrollable horizontally without layout shift. */
+#main-content .pati-explore-media-screen .pati-explore-sort{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding:2px 12px 13px;white-space:nowrap}
+#main-content .pati-explore-sort::-webkit-scrollbar{display:none}
+#main-content .pati-explore-sort button{flex:0 0 auto;min-height:35px;padding:8px 13px;border:1px solid #e4e5e9;background:#f7f7f8;border-radius:100px;color:#4b4d54;font-size:11px;font-weight:800;cursor:pointer}
+#main-content .pati-explore-sort button.active{background:#1b1b1f;color:#fff;border-color:#1b1b1f}
+#main-content .pati-explore-sort button:focus-visible{outline:2px solid #767a84;outline-offset:2px}
+
+/* Premium magazine-style Pati Mağaza. Existing PatiCoin accounting is unchanged. */
+#main-content .pati-shop-v2{max-width:1110px;margin:0 auto;padding:10px 12px 42px;min-width:0}
+#main-content .pati-shop-v2 .pati-shop-hero{background:radial-gradient(circle at 85% 10%,#48413c 0%,transparent 43%),linear-gradient(140deg,#141519,#29292f)!important;color:#fff;border:1px solid #282a30;border-radius:25px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:center;padding:clamp(20px,4vw,38px);box-shadow:0 14px 32px rgba(13,14,17,.12)}
+#main-content .pati-shop-hero>div{min-width:0}
+#main-content .pati-shop-eyebrow{font-size:10px;letter-spacing:.13em;color:#e9cca0;font-weight:880}
+#main-content .pati-shop-hero h1{color:#fff!important;font-size:clamp(29px,5vw,43px);line-height:1.12;letter-spacing:-.045em;margin:8px 0 12px}
+#main-content .pati-shop-hero p{color:#c5c5ca;font-size:13px;line-height:1.6;max-width:480px;margin:0}
+#main-content .pati-shop-wallet{border:1px solid #ffffff36;background:#ffffff12;color:#fff;border-radius:18px;padding:16px 18px;display:grid;gap:5px;text-align:left;cursor:pointer;min-width:152px}
+#main-content .pati-shop-wallet>span{font-size:9px;letter-spacing:.1em;color:#c7c7cb;font-weight:800}
+#main-content .pati-shop-wallet strong{display:flex;align-items:center;gap:8px;font-size:26px;font-weight:850;font-variant-numeric:tabular-nums}
+#main-content .pati-shop-wallet strong .pati-coin-icon{width:29px;height:29px}
+#main-content .pati-shop-wallet small{font-size:10px;color:#d7bd89;font-weight:750}
+#main-content .pati-shop-section-title{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:30px 3px 16px}
+#main-content .pati-shop-section-title span{color:#97918a;letter-spacing:.14em;font-size:9px;font-weight:800}
+#main-content .pati-shop-section-title h2{font-size:24px;letter-spacing:-.035em;color:#1d1d20;margin:5px 0 0}
+#main-content .pati-shop-section-title>small{font-size:11px;color:#93949a}
+#main-content .pati-shop-filter{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:0 0 17px}
+#main-content .pati-shop-filter button{padding:9px 15px;white-space:nowrap;background:#f8f8f9;color:#484950;border:1px solid #e8e8ec;border-radius:100px;font-size:12px;font-weight:750;cursor:pointer}
+#main-content .pati-shop-filter button.active{background:#191a1e;color:#fff;border-color:#191a1e}
+#main-content .pati-shop-v2 .paticoin-items{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:15px!important;margin:0!important}
+#main-content .pati-shop-v2 .pati-shop-card{display:flex!important;flex-direction:column;gap:14px;min-width:0;min-height:242px;padding:21px!important;border:1px solid #e7e7ea!important;border-radius:21px!important;background:#fff!important;color:#212126!important;box-shadow:0 5px 17px rgba(18,20,28,.035)!important}
+#main-content .pati-shop-card.pati-shop-tree{background:linear-gradient(130deg,#f8fcfa,#eff8f2)!important;border-color:#d9ece0!important}
+#main-content .pati-shop-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+#main-content .pati-shop-card .paticoin-item-icon{display:grid;place-items:center;width:60px;height:60px;border-radius:20px;background:#f0f1f3;font-size:32px;line-height:1}
+#main-content .pati-shop-tree .paticoin-item-icon{background:#dfeee4}
+#main-content .pati-shop-type{font-size:10px;font-weight:820;color:#74757d;background:#f3f3f5;padding:7px 9px;border-radius:100px}
+#main-content .pati-shop-tree .pati-shop-type{background:#dbeee2;color:#31734b}
+#main-content .pati-shop-card-copy{flex:1;min-width:0}
+#main-content .pati-shop-card h3{font-size:18px!important;font-weight:850;line-height:1.25;letter-spacing:-.025em;color:#222328!important;margin:0 0 8px!important}
+#main-content .pati-shop-card p{font-size:12px!important;line-height:1.55;color:#73747d!important;margin:0!important}
+#main-content .pati-shop-card-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px}
+#main-content .pati-shop-card-bottom strong{display:flex;align-items:center;gap:6px;font-size:18px!important;font-variant-numeric:tabular-nums;color:#27282d!important;white-space:nowrap}
+#main-content .pati-shop-card-bottom small{color:#8f9198!important;font-weight:550;font-size:10px}
+#main-content .pati-shop-card-bottom button{border:0!important;border-radius:12px!important;background:#16171c!important;color:#fff!important;font-size:12px!important;font-weight:800!important;min-height:40px;white-space:nowrap;padding:10px 15px!important;cursor:pointer}
+#main-content .pati-shop-card-bottom button:focus-visible,#main-content .pati-shop-filter button:focus-visible{outline:2px solid #777;outline-offset:3px}
+#main-content .pati-shop-v2 .pati-shop-note{margin:22px 0 25px;background:#f7f7f8!important;border:1px solid #ededf0;border-radius:16px;padding:14px 16px;color:#62636a!important;font-size:11px;line-height:1.65}
+#main-content .pati-shop-v2 .paticoin-shop-orders-heading{border-top:1px solid #e6e6e9;padding-top:23px;margin-top:22px}
+#main-content .pati-shop-v2 .pati-shop-no-orders{padding:18px;background:#f7f7f9;border-radius:15px;color:#73747a;font-size:12px}
+#paticoin-checkout-form .pati-shop-tree-destination{padding:14px;border-radius:15px;background:#ecf7ee}
+#paticoin-checkout-form .pati-shop-tree-destination label{display:flex;align-items:center;font-weight:800;gap:8px;color:#244d34}
+#paticoin-checkout-form .pati-shop-tree-destination p{margin:10px 0 0;line-height:1.5;font-size:12px;color:#4b755a}
+@media(max-width:620px){
+ #main-content .pati-shop-v2{padding:5px 10px 30px}
+ #main-content .pati-shop-v2 .pati-shop-hero{grid-template-columns:1fr;gap:16px;border-radius:20px;padding:21px}
+ #main-content .pati-shop-hero h1{font-size:32px}
+ #main-content .pati-shop-wallet{min-width:0;grid-template-columns:1fr auto;align-items:center}
+ #main-content .pati-shop-wallet small{grid-column:1/-1}
+ #main-content .pati-shop-v2 .paticoin-items{grid-template-columns:1fr!important;gap:12px!important}
+ #main-content .pati-shop-v2 .pati-shop-card{min-height:0;padding:17px!important}
+ #main-content .pati-shop-card .paticoin-item-icon{width:51px;height:51px}
+ #main-content .pati-shop-card-bottom{flex-wrap:wrap}
+ #main-content .pati-shop-section-title{margin-top:22px}
+}
+html[data-pati-theme="dark"] #main-content .pati-shop-v2 .pati-shop-card:not(.pati-shop-tree){background:#25262b!important;border-color:#3c3d44!important;color:#f6f6f7!important}
+html[data-pati-theme="dark"] #main-content .pati-shop-v2 .pati-shop-card:not(.pati-shop-tree) h3,html[data-pati-theme="dark"] #main-content .pati-shop-v2 .pati-shop-card:not(.pati-shop-tree) strong{color:#fff!important}
