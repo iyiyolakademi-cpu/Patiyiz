@@ -2890,7 +2890,7 @@ case 'achievement-open':navigate('achievements');break;
 
 case 'health-add-pet':navigate('pets');break;
 case 'premium-achievements':navigate('achievements');break;
-case 'premium-resume':if(premiumPortal){void premiumPortal.open(id).then(()=>premiumPortal.openDay(Number(target.dataset.day)))}break;
+case 'premium-resume':if(premiumPortal){void premiumPortal.resume(id,Number(target.dataset.day));window.scrollTo(0,0)}break;
 case 'premium-join':if(premiumPortal)void premiumPortal.join();break;
 case 'premium-leave':if(premiumPortal)void premiumPortal.leave();break;
 case 'premium-free':navigate('education');break;
