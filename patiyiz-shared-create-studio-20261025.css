@@ -1,0 +1,18 @@
+/* Patiyiz shared create studio — posts, stories and Reels use the same gallery/crop layout. */
+#post-form .pati-composer-flow{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:10px 12px;background:#f6f6f8;border:1px solid #e9e9ed;border-radius:13px;margin:0 0 12px;overflow-x:auto;scrollbar-width:none}
+#post-form .pati-composer-flow span{font-size:11px;font-weight:800;color:#666971;white-space:nowrap;display:flex;align-items:center;gap:5px}
+#post-form .pati-composer-flow span b{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:#1d1f25;color:#fff;font-size:10px}
+#post-form .pati-composer-flow>i{font-size:10px;color:#bbbcc3;font-style:normal}
+#post-form[data-mode="story"] .pati-media-gallery{aspect-ratio:9/16;max-height:46dvh;min-height:200px;max-width:300px;margin:0 auto;border-radius:15px;overflow:hidden}
+#post-form[data-mode="story"] .pati-media-gallery img,#post-form[data-mode="story"] .pati-media-gallery video{width:100%;height:100%;object-fit:contain}
+#post-form[data-mode="story"] .pati-media-controls{margin-top:12px}
+#post-form[data-mode="story"] .pati-crop-preview{max-width:100%;overflow:hidden}
+#post-form[data-mode="story"] #pati-crop-canvas{max-width:100%;max-height:40dvh;object-fit:contain}
+#story-overlay .story-big-video,.story-fullscreen .story-big-video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#09090d;z-index:1}
+#story-overlay .pati-story-sound{position:absolute;right:60px;top:42px;z-index:10015;background:#0009;color:#fff;padding:7px 12px;border:1px solid #ffffff45;border-radius:22px;font-size:12px;font-weight:780;cursor:pointer}
+#story-overlay .story-player-head{z-index:10010}
+#story-overlay .story-progress{z-index:10012}
+#story-overlay .story-caption{z-index:10012;pointer-events:none}
+#story-overlay .story-hit{z-index:5}
+@media(max-width:640px){#post-form .pati-composer-flow{padding:9px;gap:3px}#post-form .pati-composer-flow span{font-size:10px}#post-form .pati-composer-flow span b{width:18px;height:18px}#post-form[data-mode="story"] .pati-media-gallery{max-height:43dvh}}
+@media(prefers-reduced-motion:reduce){#post-form .pati-composer-flow *,#story-overlay .pati-story-sound{transition:none!important}}
