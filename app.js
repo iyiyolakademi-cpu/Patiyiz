@@ -570,6 +570,15 @@ function patiyizProgressCard(){
 let patiyizReelsObserver=null;
 // Native Android begins Reels with sound; the browser keeps muted autoplay.
 let patiyizReelsSoundEnabled=typeof window!=='undefined'&&window.PatiyizNative?.isNative===true;
+function patiIsIOSStandaloneReels(){return document.documentElement?.classList?.contains('patiyiz-ios-reels')===true&&!window.PatiyizNative?.isNative}
+function patiUpdateReelsSoundButton(button,video){
+ if(!button||!video)return;
+ const label=video.muted?'Sesi aç':'Sesi kapat';
+ button.innerHTML=ico(video.muted?'volume-x':'volume')+'<span class="pati-reel-tool-label">'+label+'</span>';
+ button.setAttribute('aria-label',label);
+ button.setAttribute('aria-pressed',String(!video.muted));
+}
+
 function setupReelsViewer(){
  if(patiyizReelsObserver){patiyizReelsObserver.disconnect();patiyizReelsObserver=null}
  const videos=[...document.querySelectorAll('#main-content .pati-reel-video')];
@@ -583,7 +592,18 @@ function setupReelsViewer(){
   video.muted=!soundOn();
   if(video.paused!==false){
    const playing=video.play();
-   playing?.catch?.(err=>console.warn('Reels otomatik oynatma engellendi:',err?.message||err));
+   playing?.catch?.(err=>{
+    if(video!==activeVideo||document.hidden)return;
+    // iOS Home Screen WebKit can reject audible autoplay. Keep scrolling usable:
+    // fall back to silent autoplay and let the person enable sound with a tap.
+    if(patiIsIOSStandaloneReels()&&!video.muted){
+     video.muted=true;
+     patiUpdateReelsSoundButton(video.closest?.('.pati-reel-item')?.querySelector('[data-action="reel-sound"]'),video);
+     video.play().catch(e=>console.warn('iPhone Reels oynatılamadı:',e?.message||e));
+     return;
+    }
+    console.warn('Reels otomatik oynatma engellendi:',err?.message||err);
+   });
   }
  };
  if(!('IntersectionObserver' in window)){
@@ -634,9 +654,15 @@ function reelToggleSound(button){
  const video=button.closest('.pati-reel-item')?.querySelector('video');if(!video)return;
  patiyizReelsSoundEnabled=video.muted;
  video.muted=!patiyizReelsSoundEnabled;
- const label=video.muted?'Sesi aç':'Sesi kapat';
- button.innerHTML=ico(video.muted?'volume-x':'volume')+'<span class="pati-reel-tool-label">'+label+'</span>';
- button.setAttribute('aria-label',label);button.setAttribute('aria-pressed',String(!video.muted));
+ patiUpdateReelsSoundButton(button,video);
+ if(patiIsIOSStandaloneReels()&&!video.muted){
+  // The user's sound-button tap is the media gesture required by Safari.
+  video.play().catch(err=>{
+   console.warn('iOS sesli oynatma engellendi:',err?.message||err);
+   video.muted=true;
+   patiUpdateReelsSoundButton(button,video);
+  });
+ }
 }
 function reelsPage(){
  const nativeReels=typeof window!=='undefined'&&window.PatiyizNative?.isNative===true;
