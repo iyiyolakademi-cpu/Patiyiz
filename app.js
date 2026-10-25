@@ -370,6 +370,7 @@ function setupFeedVideos(){
  videos.forEach(v=>patiyizVideoObserver.observe(v));
 }
 document.addEventListener('visibilitychange',()=>{if(document.hidden)document.querySelectorAll('.pati-post-video,.pati-reel-video').forEach(v=>v.pause());else{setupFeedVideos();setupReelsViewer();if(me&&sb)queueLiveUpdate()}});
+document.addEventListener('patiyiz:native-resume-media',()=>{if(view==='reels'&&!document.hidden)setupReelsViewer()});
 function ensureViewData(to){const byView={community:[['questions','questions'],['replies','replies'],['question_votes','votes']],knowledge:[['kb_bookmarks','bookmarks']],lost:[['lost_reports','lost']],adoption:[['adoption_listings','adoption']],care:[['care_tasks','care']],messages:[['message_hidden','messageHidden']],profile:[],blocked:[['user_blocks','blocks']]};const missing=(byView[to]||[]).filter(([table])=>!patiyizLoadedTables.has(table));if(!missing.length)return;const requestedView=to;Promise.all(missing.map(async([table,key])=>{const req=sb.from(table).select('*');const r=await req.limit(350);if(r.error)throw r.error;return[table,key,r.data||[]]})).then(results=>{if(!me)return;for(const[table,key,rows]of results){if(!patiyizLoadedTables.has(table)){data[key]=rows;patiyizLoadedTables.add(table)}}if(view===requestedView)render()}).catch(e=>console.warn('Bölüm verileri yüklenemedi:',e))}
 const patiMobileTabScroll=new Map();
 let patiNavAnimationId=0;
@@ -567,46 +568,83 @@ function patiyizProgressCard(){
 }
 
 let patiyizReelsObserver=null;
+// Native Android begins Reels with sound; the browser keeps muted autoplay.
+let patiyizReelsSoundEnabled=typeof window!=='undefined'&&window.PatiyizNative?.isNative===true;
 function setupReelsViewer(){
  if(patiyizReelsObserver){patiyizReelsObserver.disconnect();patiyizReelsObserver=null}
  const videos=[...document.querySelectorAll('#main-content .pati-reel-video')];
  if(!videos.length)return;
- if(!('IntersectionObserver'in window)){if(!document.hidden)videos[0].play().catch(()=>{});return}
- if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return;
+ const native=typeof window!=='undefined'&&window.PatiyizNative?.isNative===true;
+ const soundOn=()=>typeof patiyizReelsSoundEnabled==='boolean'?patiyizReelsSoundEnabled:native;
  let activeVideo=null;
+ const ratios=new Map();
+ const playVideo=video=>{
+  if(activeVideo!==video){activeVideo?.pause();activeVideo=video}
+  video.muted=!soundOn();
+  if(video.paused!==false){
+   const playing=video.play();
+   playing?.catch?.(err=>console.warn('Reels otomatik oynatma engellendi:',err?.message||err));
+  }
+ };
+ if(!('IntersectionObserver' in window)){
+  videos.forEach((video,i)=>{video.muted=!soundOn();if(i>0)video.pause()});
+  if(!document.hidden)playVideo(videos[0]);
+  return;
+ }
+ if(!native&&window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return;
  patiyizReelsObserver=new IntersectionObserver(entries=>{
-  let nextVideo=null,largestRatio=0;
   for(const entry of entries){
    const video=entry.target;
    if(entry.isIntersecting&&video.preload==='none'){video.preload='metadata';if(video.readyState===0)video.load()}
-   if(entry.isIntersecting&&entry.intersectionRatio>=.65&&!document.hidden&&!video.dataset.manualPause){
-    if(entry.intersectionRatio>largestRatio){nextVideo=video;largestRatio=entry.intersectionRatio}
-   }else{
+   if(!entry.isIntersecting||entry.intersectionRatio<.01){
+    ratios.delete(video);
     video.pause();
-    if(video===activeVideo)activeVideo=null;
+    delete video.dataset.manualPause;
+    if(activeVideo===video)activeVideo=null;
+   }else{
+    ratios.set(video,entry.intersectionRatio);
+    if(entry.intersectionRatio<.65&&video!==activeVideo)video.pause();
    }
   }
-  if(nextVideo){
-   if(activeVideo!==nextVideo){activeVideo?.pause();activeVideo=nextVideo}
-   if(nextVideo.paused)nextVideo.play().catch(()=>{});
+  if(document.hidden){activeVideo?.pause();return}
+  let nextVideo=null,maxRatio=.64;
+  for(const [video,ratio] of ratios){
+   if(ratio>maxRatio){maxRatio=ratio;nextVideo=video}
   }
+  if(nextVideo){
+   if(nextVideo.dataset.manualPause){
+    if(activeVideo&&activeVideo!==nextVideo)activeVideo.pause();
+    activeVideo=nextVideo;
+    nextVideo.pause();
+   }else playVideo(nextVideo);
+  }else if(activeVideo){activeVideo.pause();activeVideo=null}
  },{root:document.querySelector('.pati-reels-viewport'),rootMargin:'70% 0px 70% 0px',threshold:[0,.25,.65,.9]});
  videos.forEach(v=>patiyizReelsObserver.observe(v));
 }
 function reelTogglePlay(button){
  const video=button.closest('.pati-reel-item')?.querySelector('video');if(!video)return;
- if(video.paused){delete video.dataset.manualPause;video.play().catch(()=>notify('Video oynatılamadı.',true))}
- else{video.dataset.manualPause='1';video.pause()}
+ if(video.paused){
+  delete video.dataset.manualPause;
+  document.querySelectorAll('#main-content .pati-reel-video').forEach(other=>{if(other!==video)other.pause()});
+  video.muted=!patiyizReelsSoundEnabled;
+  video.play().catch(()=>notify('Video oynatılamadı.',true));
+ }else{video.dataset.manualPause='1';video.pause()}
 }
 function reelToggleSound(button){
  const video=button.closest('.pati-reel-item')?.querySelector('video');if(!video)return;
- video.muted=!video.muted;button.innerHTML=ico(video.muted?'volume-x':'volume')+'<span class="pati-reel-tool-label">'+(video.muted?'Sesi aç':'Sesi kapat')+'</span>';button.setAttribute('aria-label',video.muted?'Sesi aç':'Sesi kapat');button.setAttribute('aria-pressed',String(!video.muted));
+ patiyizReelsSoundEnabled=video.muted;
+ video.muted=!patiyizReelsSoundEnabled;
+ const label=video.muted?'Sesi aç':'Sesi kapat';
+ button.innerHTML=ico(video.muted?'volume-x':'volume')+'<span class="pati-reel-tool-label">'+label+'</span>';
+ button.setAttribute('aria-label',label);button.setAttribute('aria-pressed',String(!video.muted));
 }
 function reelsPage(){
+ const nativeReels=typeof window!=='undefined'&&window.PatiyizNative?.isNative===true;
+ const soundOn=nativeReels&&patiyizReelsSoundEnabled;
  const items=[...data.posts].filter(x=>x.video_url&&!blocked.has(x.author_id)).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
  main.innerHTML='<section class="pati-reels-head"><h1>Reels</h1><button type="button" data-action="pati-create-reels">'+ico('plus')+'<span>Video paylaş</span></button></section><div class="pati-reels-viewport">'+(items.length?items.map((p,index)=>{
   const author=profile(p.author_id),count=data.likes.filter(x=>x.post_id===p.id).length,likedPost=liked.has(p.id),savedPost=saved.has(p.id);
-  return '<article class="pati-reel-item" data-post="'+esc(p.id)+'"><video class="pati-reel-video" src="'+esc(p.video_url)+'"'+(p.video_cover_url?' poster="'+esc(p.video_cover_url)+'"':'')+' playsinline muted loop preload="'+(index===0?'auto':index===1?'metadata':'none')+'" aria-label="'+esc(author.display_name)+' videosu"></video>'+
+  return '<article class="pati-reel-item" data-post="'+esc(p.id)+'"><video class="pati-reel-video" src="'+esc(p.video_url)+'"'+(p.video_cover_url?' poster="'+esc(p.video_cover_url)+'"':'')+' playsinline'+(nativeReels?'':' muted')+' loop preload="'+(index===0?'auto':index===1?'metadata':'none')+'" aria-label="'+esc(author.display_name)+' videosu"></video>'+
   '<button type="button" class="pati-reel-tap" data-action="reel-play" aria-label="Videoyu oynat veya durdur"></button>'+
   '<div class="pati-reel-author">'+avatar(author,'s')+'<span><strong>'+displayName(author)+'</strong><small>@'+esc(author.handle||'patiyiz')+'</small></span><button type="button" data-action="view-user" data-id="'+esc(author.id)+'">Profil</button></div>'+
   '<div class="pati-reel-caption">'+esc(cut(p.video_subtitle||p.body||'',220))+'</div>'+
@@ -615,7 +653,7 @@ function reelsPage(){
   '<button type="button" class="pati-reel-action" data-action="share-post" data-id="'+esc(p.id)+'" aria-label="Paylaş">'+ico('send')+'<span class="pati-reel-action-label">Paylaş</span></button>'+
   '<button type="button" class="pati-reel-action '+(savedPost?'active':'')+'" data-action="save" data-id="'+esc(p.id)+'" aria-label="Kaydet" aria-pressed="'+savedPost+'">'+ico('bookmark')+'<span class="pati-reel-action-label">Kaydet</span></button>'+
   '<button type="button" data-action="reel-speed" class="pati-reel-tool" aria-label="Oynatma hızı 1×">'+ico('gauge')+'<span class="pati-reel-tool-label">1×</span></button>'+
-  '<button type="button" data-action="reel-sound" class="pati-reel-tool" aria-label="Sesi aç" aria-pressed="false">'+ico('volume-x')+'<span class="pati-reel-tool-label">Sesi aç</span></button></div></article>'
+  '<button type="button" data-action="reel-sound" class="pati-reel-tool" aria-label="'+(soundOn?'Sesi kapat':'Sesi aç')+'" aria-pressed="'+soundOn+'">'+ico(soundOn?'volume':'volume-x')+'<span class="pati-reel-tool-label">'+(soundOn?'Sesi kapat':'Sesi aç')+'</span></button></div></article>'
  }).join(''):'<div class="pati-reels-empty">Henüz Reels yok. İlk videoyu sen paylaş!</div>')+'</div>';
 }
 
