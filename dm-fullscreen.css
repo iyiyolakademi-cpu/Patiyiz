@@ -1,0 +1,230 @@
+/* Patiyiz — immersive direct messages, 25 October 2026
+ * Isolated from feed, reels, profile, and existing chat data operations.
+ * Inbox and open conversation fill the usable phone viewport. */
+@media (max-width:740px) {
+ html:has(#app-root:not(.hidden) #main-content .pati-dm-layout),
+ body:has(#app-root:not(.hidden) #main-content .pati-dm-layout){
+  overflow:hidden!important;overscroll-behavior:none!important;
+ }
+ #app-root:not(.hidden):has(#main-content .pati-dm-layout)>.mobile-header,
+ #app-root:not(.hidden):has(#main-content .pati-dm-layout)>.mobile-bottom,
+ #app-root:not(.hidden):has(#main-content .pati-dm-layout)>.mobile-fab{
+  display:none!important;
+ }
+ #app-root:not(.hidden):has(#main-content .pati-dm-layout)>.app-shell{
+  position:fixed!important;inset:0 auto auto 0!important;
+  top:var(--pati-dm-visual-top,0px)!important;
+  width:100vw!important;max-width:none!important;
+  height:var(--pati-dm-visual-height,100dvh)!important;
+  max-height:none!important;min-height:0!important;
+  margin:0!important;padding:0!important;transform:none!important;
+  display:block!important;overflow:hidden!important;
+  z-index:160!important;background:#fff!important;
+ }
+ #app-root:not(.hidden):has(#main-content .pati-dm-layout)>.app-shell>#main-content{
+  box-sizing:border-box!important;display:flex!important;flex-direction:column!important;
+  width:100%!important;max-width:none!important;min-width:0!important;
+  height:100%!important;max-height:100%!important;min-height:0!important;
+  margin:0!important;padding:0!important;overflow:hidden!important;
+  background:#fff!important;transform:none!important;
+ }
+ #main-content>.pati-dm-top{
+  box-sizing:border-box!important;display:flex!important;flex:0 0 auto!important;
+  gap:12px!important;align-items:center!important;
+  min-height:calc(66px + env(safe-area-inset-top,0px))!important;
+  padding:calc(11px + env(safe-area-inset-top,0px)) 16px 10px!important;
+  border-bottom:1px solid #f0f0f2!important;
+ }
+ #main-content>.pati-dm-top .pati-dm-title{
+  display:flex;flex:1;flex-direction:column;min-width:0;gap:2px;
+ }
+ #main-content>.pati-dm-top .pati-dm-title strong{font-size:20px;line-height:1.25}
+ #main-content>.pati-dm-top .pati-dm-title small{
+  color:#858893;font-weight:550;font-size:11px;
+ }
+ #main-content .pati-dm-inbox-back{
+  border:0;background:transparent;color:#202126;display:grid;place-items:center;
+  width:41px;height:41px;min-width:41px;border-radius:13px;font:inherit;
+  font-size:27px;font-weight:400;cursor:pointer;
+ }
+ #main-content .pati-dm-top-actions{
+  flex:0 0 auto;display:flex!important;align-items:center!important;gap:7px!important;
+ }
+ #main-content .pati-dm-top-actions>span{display:none!important}
+ #main-content .pati-dm-top-actions .pati-dm-new{
+  min-height:39px!important;white-space:nowrap;border-radius:12px!important;
+  padding:9px 12px!important;font-size:12px!important;
+ }
+ #main-content>.pati-dm-filters{
+  flex:0 0 auto!important;padding:12px 16px!important;overflow-x:auto!important;
+  scrollbar-width:none;white-space:nowrap;
+ }
+ #main-content>.pati-dm-searchbar{
+  flex:0 0 auto!important;padding:0 16px 12px!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-list{
+  display:flex!important;flex:1 1 auto!important;min-height:0!important;
+  height:auto!important;max-height:none!important;width:100%!important;
+  margin:0!important;padding:0!important;border:0!important;
+  border-radius:0!important;overflow:hidden!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-list>.chat-people{
+  display:flex!important;flex-direction:column!important;
+  flex:1 1 auto!important;height:100%!important;min-height:0!important;
+  max-width:100%!important;width:100%!important;
+  padding:0 10px calc(14px + env(safe-area-inset-bottom,0px))!important;
+  margin:0!important;border:0!important;border-radius:0!important;
+  overflow-y:auto!important;overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch;background:#fff!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-list>.chat-window{display:none!important}
+ #main-content .pati-dm-layout.mobile-chat-list .chat-list-heading{
+  padding:13px 8px 7px!important;color:#757782;
+ }
+ #main-content .pati-dm-layout.mobile-chat-open{
+  flex:1 1 auto!important;min-height:0!important;height:100%!important;
+  width:100%!important;max-height:none!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-open .chat-window,
+ html.pati-keyboard-open #main-content .pati-dm-layout.mobile-chat-open .chat-window{
+  flex:1 1 auto!important;display:flex!important;min-height:0!important;
+  height:100%!important;max-height:100%!important;
+  border:0!important;border-radius:0!important;overflow:hidden!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-open .chat-window>header{
+  box-sizing:border-box!important;height:auto!important;
+  min-height:calc(66px + env(safe-area-inset-top,0px))!important;
+  padding:calc(9px + env(safe-area-inset-top,0px)) 14px 9px!important;
+  flex:0 0 auto!important;border-bottom:1px solid #efeff2!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-open .chat-history{
+  flex:1 1 auto!important;min-height:0!important;
+  overflow-y:auto!important;overscroll-behavior:contain!important;
+  padding:18px 14px!important;scrollbar-width:thin;
+ }
+ #main-content .pati-dm-layout.mobile-chat-open .chat-form,
+ html.pati-keyboard-open #main-content .pati-dm-layout.mobile-chat-open .chat-form{
+  box-sizing:border-box!important;display:flex!important;align-items:center!important;
+  position:relative!important;bottom:auto!important;flex:0 0 auto!important;
+  width:100%!important;min-height:60px!important;
+  padding:8px 11px max(9px,env(safe-area-inset-bottom,0px))!important;
+  border-top:1px solid #eceef1!important;gap:7px!important;
+  box-shadow:0 -4px 16px rgba(18,25,38,.035)!important;
+ }
+ html.pati-keyboard-open #main-content .pati-dm-layout.mobile-chat-open .chat-form{
+  padding-bottom:8px!important;
+ }
+ #main-content .pati-dm-layout .chat-form input[name="body"]{
+  min-width:0!important;flex:1 1 auto!important;
+  font-size:16px!important;height:41px!important;min-height:41px!important;
+  border-radius:999px!important;background:#f3f4f6!important;
+  border:1px solid #ebedf0!important;padding:9px 14px!important;
+ }
+ #main-content .pati-dm-layout .chat-form :is(.pati-dm-mic,.pati-dm-gallery,.pati-dm-camera,.primary-btn){
+  flex:0 0 37px!important;width:37px!important;min-width:37px!important;
+  height:39px!important;min-height:39px!important;
+  display:grid;place-items:center;border-radius:999px!important;
+ }
+ #main-content .pati-dm-layout .chat-form .primary-btn{
+  background:#252a38!important;color:#fff!important;border:0!important;
+ }
+}
+@media (max-width:360px) {
+ #main-content>.pati-dm-top{padding-left:9px!important;padding-right:9px!important;gap:7px!important}
+ #main-content .pati-dm-layout .chat-form :is(.pati-dm-mic,.pati-dm-gallery,.pati-dm-camera,.primary-btn){
+  flex-basis:32px!important;width:32px!important;min-width:32px!important;height:36px!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-open .chat-form{gap:5px!important;padding-left:7px!important;padding-right:7px!important}
+}
+/* Compact inbox header controls across desktop and phone. */
+#main-content .pati-dm-title{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+#main-content .pati-dm-title strong{font-size:20px;line-height:1.2;font-weight:850}
+#main-content .pati-dm-title small{font-size:11px;color:#8a8f9a}
+#main-content .pati-dm-inbox-back{
+ appearance:none;border:0;background:transparent;color:inherit;
+ width:42px;height:42px;min-width:42px;border-radius:13px;
+ display:grid;place-items:center;cursor:pointer;
+ font:inherit;font-size:27px;line-height:1;
+}
+#main-content .pati-dm-inbox-back:focus-visible{outline:2px solid #6e8ac8;outline-offset:2px}
+/* Shared polished conversation design, including desktop. */
+#main-content .pati-dm-layout .chat-people .chat-person{
+ border-radius:16px!important;min-height:70px;gap:11px;
+ padding:10px 12px!important;transition:background .16s ease;
+}
+#main-content .pati-dm-layout .chat-people .chat-person:active{background:#eef1f6!important}
+#main-content .pati-dm-layout .chat-person-info{min-width:0;flex:1}
+#main-content .pati-dm-layout .chat-person-info strong{font-size:13px!important}
+#main-content .pati-dm-layout .chat-person-info small{
+ font-size:12px!important;color:#8b8f99!important;
+}
+#main-content .pati-dm-layout .chat-window>header{
+ gap:10px!important;align-items:center!important;background:#fff!important;
+}
+#main-content .pati-dm-layout .chat-window>header>span:not(.chat-head-avatar){
+ min-width:0;flex:1;
+}
+#main-content .pati-dm-layout .chat-window>header>span>strong{font-size:14px}
+#main-content .pati-dm-layout .chat-window>header>span>small{
+ font-size:11px;color:#9296a0;
+}
+#main-content .pati-dm-layout .chat-window .chat-view-profile{
+ flex:0 0 auto;border-radius:999px!important;min-height:36px;
+}
+#main-content .pati-dm-layout .chat-history{
+ background:#fafbfc!important;gap:12px!important;
+}
+#main-content .pati-dm-layout .chat-history .bubble-chat{
+ max-width:min(83%,440px);border:1px solid #e7eaf0!important;
+ background:#fff!important;color:#2b3140!important;
+ border-radius:18px 18px 18px 6px!important;
+ font-size:13px!important;line-height:1.55!important;
+ padding:10px 13px!important;box-shadow:0 1px 3px rgba(20,33,49,.035);
+}
+#main-content .pati-dm-layout .chat-history .bubble-chat.mine{
+ background:#e9f1ff!important;color:#253d65!important;
+ border-color:#dce8fb!important;
+ border-radius:18px 18px 6px 18px!important;
+}
+#main-content .pati-dm-layout .chat-history .bubble-chat>small{
+ font-size:10px!important;opacity:.72;
+}
+#main-content .pati-dm-layout .chat-history .bubble-chat :is(audio,img){
+ border-radius:10px;max-width:100%;
+}
+#main-content .pati-dm-layout .mobile-chat-back{
+ display:grid;place-items:center;flex:0 0 37px;height:40px;
+ min-height:40px;border-radius:11px;font-size:26px!important;
+}
+@media (min-width:741px){
+ #app-root #main-content:has(.pati-dm-layout){max-width:none!important;width:100%!important;padding:0!important}
+ #main-content .pati-dm-layout{
+  min-height:0!important;height:calc(100dvh - 185px)!important;max-height:none!important;
+ }
+ #main-content .pati-dm-layout .chat-history{min-height:0;overflow-y:auto}
+}
+/* Follow the existing user-selected dark appearance without repainting other views. */
+html[data-pati-theme="dark"] #app-root:not(.hidden):has(#main-content .pati-dm-layout)>.app-shell,
+html[data-pati-theme="dark"] #app-root:not(.hidden):has(#main-content .pati-dm-layout)>.app-shell>#main-content,
+html[data-pati-theme="dark"] #main-content .pati-dm-layout .chat-history,
+html[data-pati-theme="dark"] #main-content .pati-dm-layout .chat-people,
+html[data-pati-theme="dark"] #main-content .pati-dm-top,
+html[data-pati-theme="dark"] #main-content .pati-dm-filters,
+html[data-pati-theme="dark"] #main-content .pati-dm-searchbar,
+html[data-pati-theme="dark"] #main-content .pati-dm-layout .chat-window>header,
+html[data-pati-theme="dark"] #main-content .pati-dm-layout .chat-form{
+ background:#141519!important;color:#f2f2f5!important;border-color:#292d35!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-dm-layout .chat-history .bubble-chat{
+ background:#24262d!important;color:#f5f5f6!important;border-color:#323640!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-dm-layout .chat-history .bubble-chat.mine{
+ background:#293b59!important;color:#eff5ff!important;border-color:#354b6c!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-dm-layout .chat-form input[name="body"]{
+ color:#f1f2f6!important;background:#22242a!important;border-color:#383b43!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-dm-inbox-back{color:#f5f5f7!important}
+@media (prefers-reduced-motion:reduce){
+ #main-content .pati-dm-layout .chat-people .chat-person{transition:none!important}
+}
