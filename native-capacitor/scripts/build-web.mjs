@@ -7,7 +7,7 @@ const native=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const root=path.resolve(native,'..'),out=path.join(native,'www');
 const files=[
 'index.html','admin.html','privacy.html','terms.html','delete-account.html',
-'style.css','patiyiz-inspired.css','ios-reels.css','follower-milestones.css','dm-fullscreen.css','manifest.webmanifest','config.js','push-config.js',
+'style.css','patiyiz-inspired.css','ios-reels.css','follower-milestones.css','dm-fullscreen.css','pets-completion.css','manifest.webmanifest','config.js','push-config.js',
 'knowledge.js','reels-editor.js','gallery-picker.js','academy-curriculum.js',
 'academy-101-part1.js','academy-101-part2.js','premium-academy.js','achievements.js','follower-milestones.js',
 'photo-studio.js','patiyiz-upload.js','app.js','patiyiz-sw.js','patiyiz-camera-flow.js',
