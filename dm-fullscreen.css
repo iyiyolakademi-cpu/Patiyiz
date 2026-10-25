@@ -136,6 +136,17 @@
  }
  #main-content .pati-dm-layout.mobile-chat-open .chat-form{gap:5px!important;padding-left:7px!important;padding-right:7px!important}
 }
+/* Compact inbox header controls across desktop and phone. */
+#main-content .pati-dm-title{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+#main-content .pati-dm-title strong{font-size:20px;line-height:1.2;font-weight:850}
+#main-content .pati-dm-title small{font-size:11px;color:#8a8f9a}
+#main-content .pati-dm-inbox-back{
+ appearance:none;border:0;background:transparent;color:inherit;
+ width:42px;height:42px;min-width:42px;border-radius:13px;
+ display:grid;place-items:center;cursor:pointer;
+ font:inherit;font-size:27px;line-height:1;
+}
+#main-content .pati-dm-inbox-back:focus-visible{outline:2px solid #6e8ac8;outline-offset:2px}
 /* Shared polished conversation design, including desktop. */
 #main-content .pati-dm-layout .chat-people .chat-person{
  border-radius:16px!important;min-height:70px;gap:11px;
