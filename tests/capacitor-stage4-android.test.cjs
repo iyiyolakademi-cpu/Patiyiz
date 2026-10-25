@@ -16,7 +16,8 @@ test('Official Android camera and push plugins are in the native dependency list
  assert.match(bridge,/input\.dispatchEvent\(new Event\('change'/);
  assert.match(bridge,/new File\(/);
  assert.match(build,/PatiyizNative\.pickPhotoForInput/);
- assert.match(build,/openComposerMediaPicker/);
+ assert.match(build,/const input=form\.querySelector/);
+ assert.doesNotMatch(build,/'photo-studio\.js'/);
  assert.match(build,/pati-story-camera/);
 });
 test('Native push is opt-in and only enabled when Firebase config exists',()=>{
