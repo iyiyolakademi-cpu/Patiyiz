@@ -137,7 +137,74 @@ authRoot.addEventListener('submit',async(e)=>{if(e.target.id!=='auth-form')retur
 function header(title,subtitle='',cta=''){return `<div class="page-intro"><div><div class="hello">PATİYİZ TOPLULUĞU</div><h1 class="page-title">${esc(title)}</h1>${subtitle?`<p style="font-size:12px;color:#7e9384;margin:5px 0 0">${esc(subtitle)}</p>`:''}</div><div class="top-actions">${cta}</div></div>`}
 
 // Realtime: subscribe to authorized changes only. A debounce prevents duplicate refreshes.
-function stopLive(){if(liveReloadTimer)clearTimeout(liveReloadTimer);liveReloadTimer=null;if(liveReconnectTimer)clearTimeout(liveReconnectTimer);liveReconnectTimer=null;if(liveChannel&&sb)sb.removeChannel(liveChannel);liveChannel=null;liveInitialized=false;liveUserId=null}
+
+let patiDmTypingChannel=null,patiDmTypingTopic='',patiDmTypingJoined=false,patiDmTypingLast=0,patiDmTypingIdleTimer=null,patiDmRemoteTimer=null,patiDmRemoteUntil=0;
+let patiDmLocalSeenOwner='',patiDmLocalSeenCache=new Set();
+function patiDmReadReceiptsEnabled(){return !me?.id||profile(me.id).read_receipts_enabled!==false}
+function patiDmSeenIds(){
+ if(!me?.id)return new Set();
+ if(patiDmLocalSeenOwner!==me.id){
+  patiDmLocalSeenOwner=me.id;
+  try{const values=JSON.parse(localStorage.getItem('patiyiz_dm_seen_private_'+me.id)||'[]');patiDmLocalSeenCache=new Set(Array.isArray(values)?values.slice(-800):[])}
+  catch(_){patiDmLocalSeenCache=new Set()}
+ }
+ return patiDmLocalSeenCache;
+}
+function patiDmStoreLocalSeen(ids){
+ const seen=patiDmSeenIds();ids.forEach(id=>seen.add(id));
+ while(seen.size>800)seen.delete(seen.values().next().value);
+ try{localStorage.setItem('patiyiz_dm_seen_private_'+me.id,JSON.stringify([...seen]))}catch(_){}
+}
+function patiDmTypingIndicator(){
+ const el=document.querySelector('.pati-dm-typing-indicator');if(!el)return;
+ const active=view==='messages'&&patiDmTypingJoined&&patiDmRemoteUntil>Date.now();
+ el.hidden=!active;el.style.display=active?'inline-flex':'none';
+}
+function patiDmSendTyping(typing){
+ if(!patiDmTypingJoined||!patiDmTypingChannel||!me?.id||view!=='messages')return;
+ const now=Date.now();if(typing&&now-patiDmTypingLast<1250)return;
+ patiDmTypingLast=typing?now:0;
+ patiDmTypingChannel.send({type:'broadcast',event:'typing',payload:{actor:me.id,typing:!!typing}}).catch(()=>{});
+}
+function patiDmTypingInput(value){
+ if(patiDmTypingIdleTimer)clearTimeout(patiDmTypingIdleTimer);
+ patiDmTypingIdleTimer=null;
+ const active=!!String(value||'').trim();patiDmSendTyping(active);
+ if(active)patiDmTypingIdleTimer=setTimeout(()=>{patiDmTypingIdleTimer=null;patiDmSendTyping(false)},3500);
+}
+function patiDmDisconnectTyping(){
+ if(patiDmTypingIdleTimer)clearTimeout(patiDmTypingIdleTimer);
+ if(patiDmRemoteTimer)clearTimeout(patiDmRemoteTimer);
+ patiDmTypingIdleTimer=null;patiDmRemoteTimer=null;
+ if(patiDmTypingJoined)patiDmSendTyping(false);
+ if(patiDmTypingChannel&&sb)sb.removeChannel(patiDmTypingChannel).catch(()=>{});
+ patiDmTypingChannel=null;patiDmTypingTopic='';patiDmTypingJoined=false;patiDmTypingLast=0;patiDmRemoteUntil=0;
+ patiDmTypingIndicator();
+}
+function patiDmSetupTyping(){
+ if(!me?.id||!sb||!personId||view!=='messages'||blocked.has(personId))return;
+ if(!/^[0-9a-f-]{36}$/.test(me.id)||!/^[0-9a-f-]{36}$/.test(personId))return;
+ const topic='patiyiz-typing:'+ [me.id,personId].sort().join(':');
+ if(topic===patiDmTypingTopic)return;
+ patiDmDisconnectTyping();patiDmTypingTopic=topic;
+ try{
+  const channel=sb.channel(topic,{config:{private:true}});
+  patiDmTypingChannel=channel;
+  channel.on('broadcast',{event:'typing'},({payload})=>{
+   if(patiDmTypingChannel!==channel||view!=='messages'||personId!==payload?.actor||blocked.has(personId))return;
+   patiDmRemoteUntil=payload.typing?Date.now()+4700:0;
+   if(patiDmRemoteTimer)clearTimeout(patiDmRemoteTimer);
+   if(payload.typing)patiDmRemoteTimer=setTimeout(()=>{patiDmRemoteUntil=0;patiDmTypingIndicator()},4800);
+   patiDmTypingIndicator();
+  }).subscribe(status=>{
+   if(channel!==patiDmTypingChannel)return;
+   patiDmTypingJoined=status==='SUBSCRIBED';
+   if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')console.warn('Özel yazıyor kanalı kullanılamıyor');
+   patiDmTypingIndicator();
+  });
+ }catch(error){console.warn('Yazıyor kanalı başlatılamadı:',error);patiDmDisconnectTyping()}
+}
+function stopLive(){patiDmDisconnectTyping();if(liveReloadTimer)clearTimeout(liveReloadTimer);liveReloadTimer=null;if(liveReconnectTimer)clearTimeout(liveReconnectTimer);liveReconnectTimer=null;if(liveChannel&&sb)sb.removeChannel(liveChannel);liveChannel=null;liveInitialized=false;liveUserId=null}
 async function refreshLiveTables(){const userId=me?.id,loadToken=patiyizLoadToken;if(!userId)return false;const result=await Promise.all([sb.from('messages').select('*').order('created_at',{ascending:false}).limit(pageLimits.messages||150),sb.from('notifications').select('*').order('created_at',{ascending:false}).limit(pageLimits.notifications||150)]);if(result[0].error)throw result[0].error;if(result[1].error)throw result[1].error;if(me?.id!==userId||patiyizLoadToken!==loadToken)return false;data.messages=result[0].data||[];data.notifications=result[1].data||[];return true}
 function queueLiveUpdate(){if(!me||document.hidden||navigator.onLine===false)return;if(liveReloadTimer)clearTimeout(liveReloadTimer);liveReloadTimer=setTimeout(async()=>{if(!me||document.hidden||navigator.onLine===false)return;const oldMessageCount=data.messages.filter(x=>x.receiver_id===me.id&&!x.read_at).length;const oldNoticeCount=data.notifications.filter(x=>x.owner_id===me.id&&!x.read).length;const previousConversation=view==='messages'?data.messages.filter(x=>(x.sender_id===me.id&&x.receiver_id===personId)||(x.sender_id===personId&&x.receiver_id===me.id)).map(x=>x.id+'_'+x.read_at+'_'+x.edited_at+'_'+x.body+'_'+x.attachment_path).join('|'):'';try{if(!await refreshLiveTables()||!me)return;navRender();if(document.hidden)return;if(view==='messages'){const nextConversation=data.messages.filter(x=>(x.sender_id===me.id&&x.receiver_id===personId)||(x.sender_id===personId&&x.receiver_id===me.id)).map(x=>x.id+'_'+x.read_at+'_'+x.edited_at+'_'+x.body+'_'+x.attachment_path).join('|');if(previousConversation!==nextConversation){const field=$('#message-form input[name="body"]');const draft=field?.value||'',focus=document.activeElement===field,position=field?.selectionStart??draft.length;render();const next=$('#message-form input[name="body"]');if(next){next.value=draft;if(focus){next.focus({preventScroll:true});next.setSelectionRange(position,position)}}}}else if(view==='notifications')render();const unread=data.messages.filter(x=>x.receiver_id===me.id&&!x.read_at).length;const notices=data.notifications.filter(x=>x.owner_id===me.id&&!x.read).length;if(unread>oldMessageCount||notices>oldNoticeCount)notify('Yeni bir Patiyiz bildirimin var 🐾');if(view==='messages')markConversationRead()}catch(err){console.warn('Canlı bildirim yenilemesi başarısız:',err.message)}},250)}
 function startLive(){if(!me||!sb)return;if(liveUserId===me.id&&liveChannel)return;stopLive();liveUserId=me.id;
