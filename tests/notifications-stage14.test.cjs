@@ -26,7 +26,7 @@ function setup(){
   ico:name=>'('+name+')',avatar:p=>p.display_name,button:label=>label,
   document:{getElementById:id=>id==='notification-v2-results'?element:id==='notification-v2-result-count'?counter:null},
   navRender:()=>{},navigator:{serviceWorker:{getRegistration:async()=>({pushManager:{getSubscription:async()=>({endpoint:'https://device.example/unique'})}})}},
-  window:{PushManager:function(){}},Notification:{permission:'granted'}
+  window:{PushManager:function(){},Notification:{permission:'granted'}}
  };
  vm.createContext(context);
  vm.runInContext(app.slice(start,end)+'\nglobalThis.api={notificationVisible,notificationMatches,notificationRows,notificationRenderResults,notificationCheckPush,notificationFetch,notificationsPage};',context);
@@ -90,7 +90,7 @@ test('Push detection checks granted permission, active device subscription and c
 });
 test('Push with permission blocked is not reported as active',async()=>{
  const {api,context}=setup();
- context.Notification.permission='denied';
+ context.window.Notification.permission='denied';
  await api.notificationCheckPush();
  assert.match(context.main.innerHTML,/Tarayıcı izni engellenmiş/);
 });
