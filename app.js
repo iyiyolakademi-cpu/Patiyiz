@@ -2822,7 +2822,7 @@ function clearPatiMediaUrls(){for(const url of patiMediaUrls)URL.revokeObjectURL
 function makePatiMediaUrl(file){const url=URL.createObjectURL(file);patiMediaUrls.push(url);return url}
 function postMediaField(mode){
  const reel=mode==='reels',story=mode==='story';
- const description=reel?'Kısa videonu galeriden seç veya kamerayla çek.':story?'Bir fotoğraf ya da kısa video seç.':'En fazla 10 fotoğraf veya 1 video paylaşabilirsin.';
+ const description=reel?'Kısa videonu galeriden seç veya kamerayla çek; 90 saniyeye kadar.':story?'Bir fotoğraf ya da kısa video seç.':'En fazla 10 fotoğraf veya 1 video paylaşabilirsin.';
  const title=reel?'Reels videosu':story?'Hikâyen':'Fotoğraf ve video';
  return '<section class="pati-compose-media" aria-label="Medya seçimi"><div class="pati-media-intro"><span class="pati-media-icon">'+(reel?'▷':story?'✦':'▧')+'</span><div><strong>'+title+'</strong><p>'+description+'</p></div></div>'+
  '<div class="pati-media-gallery" id="pati-post-media-gallery"><div class="pati-media-empty"><span>▧</span><strong>Galerinden bir an seç</strong><small>Fotoğraf veya video seçerek başlayabilirsin.</small></div></div>'+
@@ -2838,7 +2838,7 @@ function openComposerMediaPicker(kind){
  const input=form.querySelector('input[name="'+(reel?'video':'photo')+'"]');if(!input)return;
  // Native gallery/camera picker; chosen-image grid appears only after selection.
  if(kind==='camera'){input.setAttribute('capture','environment');input.multiple=false}
- else{input.removeAttribute('capture');input.multiple=!(reel||story)}
+ else{input.removeAttribute('capture');input.multiple=!story}
  input.click();
 }
 function openStoryComposer(autoPick=true,makeHighlight=false){
