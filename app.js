@@ -706,7 +706,7 @@ function reelHandleTap(button){
    patiyizReelsTap={post:'',time:0,timer:null};
    if(button.isConnected!==false&&!document.hidden)reelTogglePlay(button);
   }
- },280);
+ },390);
 }
 function reelTogglePlay(button){
  const video=button.closest('.pati-reel-item')?.querySelector('video');if(!video)return;
@@ -737,7 +737,7 @@ function reelToggleSound(button){
 }
 function reelsPage(){
  const nativeReels=typeof window!=='undefined'&&window.PatiyizNative?.isNative===true;
- const soundOn=nativeReels&&patiyizReelsSoundEnabled;
+ const soundOn=(nativeReels||patiIsIOSStandaloneReels())&&patiyizReelsSoundEnabled;
  const items=[...data.posts].filter(x=>x.video_url&&!blocked.has(x.author_id)).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
  main.innerHTML='<section class="pati-reels-head"><h1>Reels</h1><button type="button" data-action="pati-create-reels">'+ico('plus')+'<span>Video paylaş</span></button></section><div class="pati-reels-viewport">'+(items.length?items.map((p,index)=>{
   const author=profile(p.author_id),count=data.likes.filter(x=>x.post_id===p.id).length,likedPost=liked.has(p.id),savedPost=saved.has(p.id);
