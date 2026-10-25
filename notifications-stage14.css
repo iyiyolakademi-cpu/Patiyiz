@@ -1,0 +1,94 @@
+/* Patiyiz · 14. Bildirimler: scoped monochrome notifications hub */
+#main-content .notification-v2{max-width:970px;width:100%;margin:0 auto;padding:13px 7px calc(85px + env(safe-area-inset-bottom,0px));font-family:'Plus Jakarta Sans','DM Sans',system-ui,sans-serif;color:#1b1c20}
+#main-content .notification-v2 *{box-sizing:border-box}
+#main-content .notification-v2 button{font-family:inherit;cursor:pointer;touch-action:manipulation}
+#main-content .notification-v2 :is(button,input):focus-visible{outline:3px solid #81838c;outline-offset:3px}
+#main-content .notification-v2 .pati-alert-head{display:flex;justify-content:space-between;align-items:center;gap:15px;margin:5px 0 20px;padding:0;background:transparent;border:0;box-shadow:none}
+#main-content .notification-v2 .pati-alert-head .pati-alert-eyebrow{color:#94959d;font-size:10px;font-weight:850;letter-spacing:.13em}
+#main-content .notification-v2 .pati-alert-head h1{font-size:clamp(27px,4vw,35px);line-height:1.2;letter-spacing:-.04em;color:#202025;margin:8px 0}
+#main-content .notification-v2 .pati-alert-head p{font-size:12.5px;color:#70727a;margin:0;line-height:1.7}
+#main-content .notification-v2 .pati-alert-count{font-size:12px;background:#161619;border-radius:50px;color:#fff;padding:5px 9px;margin-left:9px;vertical-align:middle}
+#main-content .notification-v2 .pati-alert-head-icon{flex:0 0 51px;width:51px;height:51px;display:grid;place-items:center;border-radius:16px;background:#f2f2f4;color:#242428}
+#main-content .notification-v2 .notification-v2-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:10px 0 18px}
+#main-content .notification-v2 .notification-v2-stats>div{border:1px solid #e7e7ea;background:#fff;border-radius:14px;padding:15px;min-width:0;display:grid;gap:4px}
+#main-content .notification-v2 .notification-v2-stats b{color:#202126;font-size:25px;font-variant-numeric:tabular-nums;letter-spacing:-.04em}
+#main-content .notification-v2 .notification-v2-stats small{font-size:11px;color:#7d7f86}
+#main-content .notification-v2 .pati-alert-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 15px}
+#main-content .notification-v2 .pati-alert-tools button{display:inline-flex;gap:7px;align-items:center;justify-content:center;min-height:43px;padding:10px 13px;border:1px solid #e2e3e7;border-radius:12px;background:#f8f8f9;color:#42434a;font-size:11px;font-weight:800}
+#main-content .notification-v2 .pati-alert-tools button:disabled{opacity:.45;cursor:default}
+#main-content .notification-v2 .pati-alert-tools button:first-child{background:#19191c;color:#fff;border-color:#19191c}
+#main-content .notification-v2 .pati-alert-tools button:nth-child(2){color:#9c4141;border-color:#eedede;background:#fff7f7}
+#main-content .notification-v2 .pati-alert-push.notification-v2-push{display:flex;gap:13px;align-items:center;flex-wrap:wrap;background:#f4f4f5;border:1px solid #ededf0;padding:18px;border-radius:16px;margin:0 0 11px;color:#242529}
+#main-content .notification-v2 .notification-v2-push .pati-alert-push-icon{width:43px;height:43px;flex:0 0 43px;border-radius:13px;background:#e7e7e9;color:#303137;display:grid;place-items:center}
+#main-content .notification-v2 .notification-v2-push>div:nth-child(2){flex:1;min-width:130px}
+#main-content .notification-v2 .notification-v2-push strong{color:#27282e;font-size:13px}
+#main-content .notification-v2 .notification-v2-push p{color:#585a62;font-size:11px;font-weight:800;margin:5px 0}
+#main-content .notification-v2 .notification-v2-push small{color:#81828a;font-size:10px;line-height:1.6}
+#main-content .notification-v2 .notification-v2-push-actions{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+#main-content .notification-v2 .notification-v2-push-actions button{min-height:41px;background:#171719;color:#fff;border:1px solid #171719;border-radius:11px;padding:10px 13px;font-size:11px;font-weight:800}
+#main-content .notification-v2 .notification-v2-push-actions button:nth-child(2){background:#fff;color:#3c3d43;border-color:#dedfe2}
+#main-content .notification-v2 .notification-v2-push-actions button:disabled{opacity:.5;cursor:default}
+#main-content .notification-v2 .notification-v2-info{color:#787a82;font-size:10.8px;line-height:1.8;margin:0 3px 20px}
+#main-content .notification-v2 .notification-v2-search{display:grid;gap:9px;margin:0 0 16px}
+#main-content .notification-v2 .notification-v2-search label{font-size:12px;font-weight:800;color:#323339}
+#main-content .notification-v2 .notification-v2-search input{width:100%;min-height:47px;border:1px solid #dedee3;background:#f8f8f9;border-radius:12px;color:#242529;font-size:13px;padding:12px 14px;outline:0}
+#main-content .notification-v2 .notification-v2-search input:focus{border-color:#7f808a}
+#main-content .notification-v2 .notification-v2-filters{display:flex;gap:8px;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;padding:2px 0 12px}
+#main-content .notification-v2 .notification-v2-filters button{min-height:40px;flex:0 0 auto;border:1px solid #dedfe3;border-radius:30px;background:#fff;color:#575963;font-size:11px;font-weight:800;padding:9px 14px}
+#main-content .notification-v2 .notification-v2-filters button.active{background:#18181a;color:#fff;border-color:#18181a}
+#main-content .notification-v2 .notification-v2-list-head{display:flex;gap:12px;align-items:baseline;justify-content:space-between;margin:16px 0 13px}
+#main-content .notification-v2 .notification-v2-list-head h2{font-size:18px;letter-spacing:-.04em;color:#26262b;margin:0}
+#main-content .notification-v2 .notification-v2-list-head span{color:#85868e;font-size:11px}
+#main-content .notification-v2 .notification-v2-list{display:grid;gap:10px}
+#main-content .notification-v2 .pati-alert-row{display:flex;align-items:center;gap:9px;border:1px solid #e6e6ea;background:#fff;border-radius:15px;padding:13px;box-shadow:none;min-width:0}
+#main-content .notification-v2 .pati-alert-row.is-new{background:#f9f9fa;border-color:#d3d4d9}
+#main-content .notification-v2 .pati-alert-entry{display:flex;gap:12px;align-items:center;flex:1;min-width:0;text-align:left;border:0;background:transparent;padding:0;color:#242529}
+#main-content .notification-v2 .pati-alert-avatar{width:43px;height:43px;flex:0 0 43px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:#f0f0f2}
+#main-content .notification-v2 .pati-alert-content{min-width:0;flex:1;display:grid;gap:7px}
+#main-content .notification-v2 .pati-alert-title{color:#25252a;font-size:12.8px;line-height:1.5;font-weight:750;overflow-wrap:anywhere}
+#main-content .notification-v2 .pati-alert-meta{font-size:10.5px;color:#7b7d85}
+#main-content .notification-v2 .pati-alert-unread{width:8px;height:8px;flex:0 0 8px;border-radius:50%;background:#24252a}
+#main-content .notification-v2 .pati-alert-row-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end;flex:0 0 auto}
+#main-content .notification-v2 .pati-alert-row-actions button{min-height:37px;border:1px solid #e2e2e7;background:#f6f6f7;color:#474850;border-radius:10px;padding:8px 11px;font-size:10px;font-weight:800}
+#main-content .notification-v2 .pati-alert-row-actions .pati-alert-remove{color:#964043;background:#fff5f5;border-color:#f2dfdf}
+#main-content .notification-v2 .pati-alert-row-actions .pati-alert-follow-back{background:#18181a;color:#fff;border-color:#18181a}
+#main-content .notification-v2 .notification-v2-empty,#main-content .notification-v2 .notification-v2-loading{border:1px dashed #d7d8df;border-radius:17px;background:#fafafb;text-align:center;padding:30px 18px;color:#777981}
+#main-content .notification-v2 .notification-v2-empty>span{font-size:30px}
+#main-content .notification-v2 .notification-v2-empty h3{font-size:15px;color:#24242a;margin:9px 0 5px}
+#main-content .notification-v2 .notification-v2-empty p{font-size:12px;line-height:1.7;color:#7b7c85}
+#main-content .notification-v2 .notification-v2-empty button{min-height:43px;padding:10px 16px;border:0;border-radius:11px;background:#171719;color:#fff;font-size:11px;font-weight:800}
+#main-content .notification-v2 .notification-v2-error{background:#fff1f1;color:#91393d;border:1px solid #f0dcdd;border-radius:12px;padding:12px 14px;font-size:12px}
+@media(max-width:780px){#main-content .notification-v2 .pati-alert-row{flex-wrap:wrap}#main-content .notification-v2 .pati-alert-row-actions{width:100%;border-top:1px solid #eeeef0;padding-top:10px}#main-content .notification-v2 .pati-alert-row-actions button{flex:1 1 100px}}
+@media(max-width:620px){
+ #main-content .notification-v2{padding:11px 11px calc(105px + env(safe-area-inset-bottom,0px))}
+ #main-content .notification-v2 .pati-alert-head{margin:4px 0 16px}
+ #main-content .notification-v2 .pati-alert-head h1{font-size:27px}
+ #main-content .notification-v2 .pati-alert-head-icon{width:42px;height:42px;flex-basis:42px}
+ #main-content .notification-v2 .notification-v2-stats{gap:7px}
+ #main-content .notification-v2 .notification-v2-stats>div{padding:11px 8px;border-radius:12px}
+ #main-content .notification-v2 .notification-v2-stats b{font-size:21px}
+ #main-content .notification-v2 .notification-v2-stats small{font-size:9px}
+ #main-content .notification-v2 .pati-alert-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ #main-content .notification-v2 .pati-alert-tools button:last-child{grid-column:1/-1}
+ #main-content .notification-v2 .pati-alert-push.notification-v2-push{padding:14px}
+ #main-content .notification-v2 .notification-v2-push-actions{width:100%}
+ #main-content .notification-v2 .notification-v2-push-actions button{flex:1 1 120px}
+ #main-content .notification-v2 .pati-alert-row{padding:12px}
+ #main-content .notification-v2 .pati-alert-title{font-size:12px}
+ #main-content .notification-v2 .pati-alert-avatar{width:38px;height:38px;flex-basis:38px}
+}
+@media(max-width:360px){#main-content .notification-v2 .notification-v2-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+html[data-pati-theme="dark"] #main-content .notification-v2{color:#f3f3f5}
+html[data-pati-theme="dark"] #main-content .notification-v2 :is(.notification-v2-stats>div,.pati-alert-row,.notification-v2-empty,.notification-v2-loading){background:#212228;border-color:#404148}
+html[data-pati-theme="dark"] #main-content .notification-v2 :is(.pati-alert-head h1,.notification-v2-list-head h2,.notification-v2-stats b,.pati-alert-title,.notification-v2-empty h3){color:#f2f2f4!important}
+html[data-pati-theme="dark"] #main-content .notification-v2 :is(.pati-alert-head p,.pati-alert-meta,.notification-v2-stats small,.notification-v2-info,.notification-v2-empty p){color:#c8c9d0!important}
+html[data-pati-theme="dark"] #main-content .notification-v2 .pati-alert-push.notification-v2-push{background:#292a31;color:#f3f3f5;border-color:#46474f}
+html[data-pati-theme="dark"] #main-content .notification-v2 .notification-v2-push :is(strong,p){color:#f1f1f4}
+html[data-pati-theme="dark"] #main-content .notification-v2 :is(.notification-v2-search input,.notification-v2-filters button,.pati-alert-row-actions button,.pati-alert-tools button,.notification-v2-push-actions button){background:#303138;color:#f4f4f5;border-color:#50515a}
+html[data-pati-theme="dark"] #main-content .notification-v2 :is(.notification-v2-filters button.active,.pati-alert-tools button:first-child,.notification-v2-push-actions button:first-child){background:#f3f3f5;color:#19191b;border-color:#f3f3f5}
+html[data-pati-theme="dark"] #main-content .notification-v2 .pati-alert-row.is-new{background:#292a31;border-color:#595a63}
+html[data-pati-theme="dark"] #main-content .notification-v2 .pati-alert-entry{color:#f1f1f4}
+html[data-pati-theme="dark"] #main-content .notification-v2 .pati-alert-avatar{background:#393a42}
+html[data-pati-theme="dark"] #main-content .notification-v2 .pati-alert-unread{background:#fff}
+html[data-pati-theme="dark"] #main-content .notification-v2 .pati-alert-row-actions .pati-alert-remove{background:#4f3034;color:#ffe1e4;border-color:#6e4549}
+@media(prefers-reduced-motion:reduce){#main-content .notification-v2 *{transition:none!important}}
