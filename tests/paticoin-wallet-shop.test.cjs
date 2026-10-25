@@ -44,7 +44,9 @@ test('Coin kazanma animasyonu ve profil/menü bağlantıları korunur',()=>{
  assert.match(app,/rewards:patiRewardsPage,shop:patiShopPage/);
  assert.match(app,/Görevler & PatiCoin/);
  assert.match(app,/Pati Mağaza/);
- assert.match(app,/paticoin-profile-link/);
+ const profile=app.slice(app.indexOf('function profilePage(){'),app.indexOf('function formField('));
+ assert.doesNotMatch(profile,/paticoin-profile-link/);
+ assert.match(app,/\['saved-posts','Kaydettiklerim','bookmark'\]/);
  assert.match(css,/@keyframes patiCoinBounce/);
  assert.match(html,/app\.js\?v=20261024-release-reliability-1/);
 });
