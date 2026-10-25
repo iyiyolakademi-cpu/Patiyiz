@@ -124,6 +124,10 @@ if(native){
  void StatusBar.setStyle({style:Style.Light}).catch(console.warn);
  void Keyboard.addListener('keyboardDidShow',()=>document.documentElement.classList.add('patiyiz-native-keyboard-visible')).catch(console.warn);
  void Keyboard.addListener('keyboardDidHide',()=>document.documentElement.classList.remove('patiyiz-native-keyboard-visible')).catch(console.warn);
+ void App.addListener('appStateChange',({isActive})=>{
+  if(!isActive){document.querySelectorAll('.pati-reel-video,.pati-post-video').forEach(video=>video.pause());return}
+  document.dispatchEvent(new Event('patiyiz:native-resume-media'));
+ }).catch(console.warn);
  void App.addListener('backButton',async()=>{
   const back=new CustomEvent('patiyiz:native-back',{cancelable:true});document.dispatchEvent(back);
   if(!back.defaultPrevented)await App.minimizeApp().catch(console.warn);
