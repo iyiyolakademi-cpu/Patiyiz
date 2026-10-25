@@ -1967,7 +1967,7 @@ function careDueState(item,today=careToday()){
 function careVisibleItems(){
  const today=careToday(),q=careFold(careSearch);
  return careOwnItems().filter(x=>
-  (careFilter==='all'||careFilter==='upcoming'?(careFilter==='all'||(!x.done&&x.due_date>=today)):careFilter==='done'?!!x.done:careFilter==='today'?!x.done&&x.due_date===today:careFilter==='late'?!x.done&&x.due_date<today:false)
+  (careFilter==='all'||careFilter===careDueState(x,today))
   &&(carePetFilter==='all'||(carePetFilter==='none'?!x.pet_id:x.pet_id===carePetFilter))
   &&(careCategoryFilter==='Tümü'||x.category===careCategoryFilter)
   &&(!q||careFold([x.title,x.category,data.pets.find(p=>p.id===x.pet_id&&p.owner_id===me?.id)?.name||''].join(' ')).includes(q))
@@ -2005,7 +2005,7 @@ async function careRefresh(){
  finally{careLoading=false;if(me?.id===uid&&view==='care')carePage()}
 }
 function carePage(){
- const all=careOwnItems(),today=careToday(),counts={all:all.length,done:all.filter(x=>x.done).length,late:all.filter(x=>!x.done&&x.due_date<today).length,today:all.filter(x=>!x.done&&x.due_date===today).length,upcoming:all.filter(x=>!x.done&&x.due_date>=today).length};
+ const all=careOwnItems(),today=careToday(),counts={all:all.length,done:all.filter(x=>x.done).length,late:all.filter(x=>!x.done&&x.due_date<today).length,today:all.filter(x=>!x.done&&x.due_date===today).length,upcoming:all.filter(x=>!x.done&&x.due_date>today).length};
  const pets=data.pets.filter(p=>p.owner_id===me?.id);
  const list=careVisibleItems();
  main.innerHTML='<section class="care-v2">'
