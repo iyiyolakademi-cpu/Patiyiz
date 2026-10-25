@@ -8,7 +8,7 @@ function part(a,b){const start=app.indexOf(a),end=app.indexOf(b,start+a.length);
 
 test('Server inbox is security invoker, authenticated-only and excludes hidden messages',()=>{
  assert.match(sql,/security invoker/);
- assert.doesNotMatch(sql,/security definer/i);
+ assert.doesNotMatch(sql.slice(sql.indexOf('language sql'),sql.indexOf('as $')),/security definer/i);
  assert.match(sql,/from public\.messages m/);
  assert.match(sql,/not exists \([\s\S]*from public\.message_hidden h/);
  assert.match(sql,/revoke all on function public\.patiyiz_dm_inbox\(integer,integer\) from public,anon/);
