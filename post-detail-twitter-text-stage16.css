@@ -1,0 +1,52 @@
+/* Patiyiz · Post detail V2: vertical Instagram-style continuous browsing,
+   X-inspired text cards and reliable DM history layout. */
+#main-content .pati-detail-screen{width:100%;max-width:760px;min-width:0;margin:0 auto;padding:8px 10px 20px;display:flex;flex-direction:column;gap:12px}
+#main-content .pati-detail-toolbar{display:flex;align-items:center;gap:12px;min-height:51px;background:#fff;border:1px solid #ebebef;border-radius:14px;padding:8px 12px;color:#222329}
+#main-content .pati-detail-toolbar>button{display:inline-flex;align-items:center;gap:6px;min-height:42px;border:0;background:#f4f4f5;color:#24252a;border-radius:10px;font-size:12px;font-weight:800;padding:9px 13px;cursor:pointer}
+#main-content .pati-detail-toolbar>button .icon{width:16px;height:16px}
+#main-content .pati-detail-toolbar>div{flex:1;min-width:0;display:grid;gap:4px}
+#main-content .pati-detail-toolbar strong{font-size:14px}
+#main-content .pati-detail-toolbar small{color:#84858d;font-size:10px}
+#main-content .pati-detail-toolbar>span{white-space:nowrap;color:#888994;font-size:10px}
+#main-content .pati-detail-list{position:relative;height:calc(100dvh - 160px);min-height:250px;max-height:900px;overflow-y:auto;scrollbar-width:thin;scroll-snap-type:y proximity;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;display:block;border-radius:15px}
+#main-content .pati-detail-item{margin:0 0 12px;scroll-snap-align:start;scroll-margin-top:8px;min-width:0}
+#main-content .pati-detail-item>.pati-feed-card{margin:0!important;width:100%;max-width:none}
+#main-content .pati-detail-list:focus-visible,#main-content .pati-detail-toolbar button:focus-visible{outline:3px solid #858690;outline-offset:2px}
+/* Text-only cards follow a clean social-post structure: avatar/author, blue handle,
+   readable body, compact actions and timestamp. */
+#main-content .pati-feed-card.pati-feed-text-only{width:100%!important;max-width:720px;border:1px solid #e5e5e9!important;border-radius:20px!important;background:#fff!important;box-shadow:none!important;overflow:hidden}
+#main-content .pati-feed-text-only .pati-feed-card-header{padding:16px 18px 7px!important;min-height:65px;background:#fff!important}
+#main-content .pati-feed-text-only .pati-feed-card-header .pati-profile-row{gap:12px!important}
+#main-content .pati-feed-text-only .pati-feed-card-header .avatar{width:48px!important;height:48px!important;min-width:48px!important;flex-basis:48px!important}
+#main-content .pati-feed-text-only .pati-feed-card-header .pati-profile-row strong{font-size:15px!important;font-weight:800!important;color:#1c1d22!important;line-height:1.25}
+#main-content .pati-feed-text-only .pati-feed-card-header .pati-profile-row small{font-size:12px!important;color:#2691d5!important;margin-top:4px}
+#main-content .pati-feed-text-only .pati-feed-pet{padding:0 20px 3px 78px!important}
+#main-content .pati-feed-text-only .pati-feed-text-content{background:#fff!important;border:0!important;padding:16px 24px 18px!important;min-height:0}
+#main-content .pati-feed-text-only .pati-feed-text-content .pati-post-caption{font-size:clamp(15px,2.5vw,17px)!important;line-height:1.7!important;font-weight:470!important;color:#25262b!important;white-space:pre-wrap;overflow-wrap:anywhere;letter-spacing:.006em}
+#main-content .pati-feed-text-only .pati-feed-text-content .pati-hashtag{color:#1d90d4!important}
+#main-content .pati-feed-text-only .pati-social-actions{padding:0 18px!important;min-height:42px!important;border-top:1px solid #f2f2f4!important}
+#main-content .pati-feed-text-only .pati-post-details{display:flex!important;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:0 20px 16px!important}
+#main-content .pati-feed-text-only .pati-post-like-summary{font-size:11px;font-weight:700;color:#595a64}
+#main-content .pati-feed-text-only .pati-post-time{font-size:10px;color:#858691}
+@media(max-width:740px){
+ #main-content .pati-detail-screen{padding:5px 0 0;gap:5px;max-width:100%}
+ #main-content .pati-detail-toolbar{border-radius:0;border-left:0;border-right:0;padding:6px 12px}
+ #main-content .pati-detail-toolbar>span{display:none}
+ #main-content .pati-detail-list{height:calc(100dvh - 145px - env(safe-area-inset-bottom,0px));max-height:none;min-height:200px;border-radius:0;padding:0}
+ #main-content .pati-detail-item{margin-bottom:9px}
+ #main-content .pati-detail-item>.pati-feed-card{border-radius:0!important}
+ #main-content .pati-feed-posts>.pati-feed-text-only{border:1px solid #e5e5e9!important;border-radius:16px!important;margin:12px 9px!important;width:calc(100% - 18px)!important}
+ #main-content .pati-feed-text-only .pati-feed-card-header{padding:14px 14px 5px!important}
+ #main-content .pati-feed-text-only .pati-feed-text-content{padding:13px 17px 16px!important}
+ #main-content .pati-feed-text-only .pati-feed-card-header .avatar{width:42px!important;height:42px!important;min-width:42px!important;flex-basis:42px!important}
+}
+html[data-pati-theme="dark"] #main-content .pati-detail-toolbar,
+html[data-pati-theme="dark"] #main-content .pati-feed-card.pati-feed-text-only,
+html[data-pati-theme="dark"] #main-content .pati-feed-text-only .pati-feed-card-header,
+html[data-pati-theme="dark"] #main-content .pati-feed-text-only .pati-feed-text-content{background:#202126!important;border-color:#3b3d45!important}
+html[data-pati-theme="dark"] #main-content .pati-feed-text-only .pati-feed-card-header .pati-profile-row strong,
+html[data-pati-theme="dark"] #main-content .pati-feed-text-only .pati-feed-text-content .pati-post-caption,
+html[data-pati-theme="dark"] #main-content .pati-detail-toolbar strong{color:#f7f7f9!important}
+html[data-pati-theme="dark"] #main-content .pati-detail-toolbar>button{background:#36373e;color:#f3f3f5}
+html[data-pati-theme="dark"] #main-content .pati-feed-text-only .pati-social-actions{background:#202126!important;border-color:#35363d!important}
+@media(prefers-reduced-motion:reduce){#main-content .pati-detail-list{scroll-behavior:auto}}
