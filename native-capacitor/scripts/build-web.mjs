@@ -10,7 +10,7 @@ const files=[
 'style.css','patiyiz-inspired.css','ios-reels.css','follower-milestones.css','dm-fullscreen.css','pets-completion.css','reels-stage4.css','manifest.webmanifest','config.js','push-config.js',
 'knowledge.js','reels-editor.js','gallery-picker.js','academy-curriculum.js',
 'academy-101-part1.js','academy-101-part2.js','premium-academy.js','achievements.js','follower-milestones.js',
-'instagram-share-clean.css','patiyiz-upload.js','app.js','patiyiz-sw.js','patiyiz-camera-flow.js',
+'instagram-share-clean.css','post-detail-twitter-text-stage16.css','patiyiz-upload.js','app.js','patiyiz-sw.js','patiyiz-camera-flow.js',
 'patiyiz-selected-logo.svg','patiyiz-icon.svg','patiyiz-app-icon-192.png',
 'patiyiz-app-icon-512.png','patiyiz-apple-touch-icon.png','patiyiz-favicon-48.png'];
 await rm(out,{recursive:true,force:true});await mkdir(path.join(out,'vendor'),{recursive:true});
