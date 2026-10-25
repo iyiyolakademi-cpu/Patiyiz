@@ -61,7 +61,7 @@ test('Hayvan silme yalnızca sahip için ve adıyla ikinci doğrulama üzerinden
  assert.match(code,/if\(!result\.data\?\.length\)throw Error/);
  assert.match(code,/await patiLoadOwnedPets\(\)/);
  const form=segment("case 'pet-form':","case 'reply-form':");
- assert.match(form,/if\(editId&&\(!record\|\|record\.owner_id!==owner\)\)/);
+ assert.match(form,/if\(editId&&\(!existing\|\|existing\.owner_id!==owner\)\)/);
  assert.match(form,/if\(name\.length<2\|\|name\.length>70\)/);
  assert.match(form,/await save\('pets',payload,editId\)/);
 });
