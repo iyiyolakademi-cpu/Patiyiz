@@ -104,8 +104,8 @@ test('Profilde Instagram gibi ayrı öne çıkan albümler oluşturulur',()=>{
  assert.match(app,/case 'story-highlight-choose':chooseStoryHighlight\(id\)/);
  assert.match(app,/case 'story-highlight-album'/);
  const composer=extract('function openStoryComposer(','async function renderEditedStoryFile(');
- assert.match(composer,/makeHighlight\?'checked':''/);
- assert.match(app,/is_highlight:f\.get\('is_highlight'\)==='on'/);
+ assert.doesNotMatch(composer,/name="is_highlight"|makeHighlight\?'checked':''/);
+ assert.match(app,/is_highlight:false/);
 });
 
 test('Mobil uygulama bütün ekran genişliğini, güvenli alanları ve DM sayfasını kullanır',()=>{
