@@ -27,7 +27,7 @@
   actionLabel('insights','','<span>▥</span> İstatistikler')+'</div>';
  api.noteStrip=()=>{
   if(!me)return '';
-  const notes=data.profileNotes.filter(n=>new Date(n.expires_at).getTime()>Date.now()&&!blocked.has(n.author_id)&&(n.author_id===me.id||followed.has(n.author_id)));
+  const notes=data.profileNotes.filter(n=>new Date(n.expires_at).getTime()>Date.now()&&!blocked.has(n.author_id));
   if(!notes.length)return '';
   return '<div class="pati-social-notes-strip" aria-label="24 saatlik profil notları">'+
    notes.slice(0,16).map(n=>'<button type="button" data-social-action="'+(n.author_id===me.id?'note':'note-open')+'" data-id="'+clean(n.author_id)+'">'+avatar(profile(n.author_id),'s')+'<span><b>'+clean(userName(n.author_id))+'</b><small>'+clean(cut(n.body,48))+'</small></span>'+(n.audience==='close_friends'?'⭐':'')+'</button>').join('')+
@@ -110,12 +110,13 @@
    const vMap=new Map(views.map(v=>[v.post_id,Number(v.view_count)||0]));
    const total=ids.reduce((a,id)=>a+(vMap.get(id)||0),0);
    const sumLikes=likes.length,sumComments=comments.length;
-   const followers=data.follows.filter(f=>f.followee_id===uid).length;
+   const followerResult=await sb.from('follows').select('follower_id',{count:'exact',head:true}).eq('followee_id',uid);
+   const followers=followerResult.error?data.follows.filter(f=>f.followee_id===uid).length:Number(followerResult.count||0);
    const cards=[['Görüntülenme',total],['Beğeni',sumLikes],['Yorum',sumComments],['Takipçi',followers]];
    const top=[...posts].sort((a,b)=>(vMap.get(b.id)||0)-(vMap.get(a.id)||0)).slice(0,8);
    const body='<div class="pati-social-insights-grid">'+cards.map(([label,value])=>'<div><strong>'+Number(value).toLocaleString('tr-TR')+'</strong><small>'+label+'</small></div>').join('')+'</div>'+
     '<h4>Gönderi performansı</h4><div class="pati-social-insights-list">'+top.map(p=>'<div><span>'+clean(cut(p.body||'Medya paylaşımı',65))+'</span><b>◉ '+(vMap.get(p.id)||0).toLocaleString('tr-TR')+'</b></div>').join('')+'</div>'+
-    '<p class="pati-social-help">Bunlar Patiyiz veritabanında kayıtlı sayılardır; video izleme süresi veya tahmini erişim değildir. Bir bölüme erişim hatası olursa sayı eksik kalabilir.</p>';
+    '<p class="pati-social-help">Gönderi rakamları bu panelde değerlendirilen son 150 paylaşımın kayıtlı verileridir; video izleme süresi veya tahmini erişim değildir. Veri erişimi eksikse sayılar eksik olabilir.</p>';
    const content=document.querySelector('#pati-social-insights .modal-content');if(content)content.innerHTML=body;
   }catch(error){const content=document.querySelector('#pati-social-insights .modal-content');if(content)content.textContent='İstatistikler getirilemedi: '+String(error?.message||error)}
  };
