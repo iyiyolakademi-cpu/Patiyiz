@@ -79,5 +79,5 @@ test('Keşfet videoları görünene dek yüklenmez ve açılan gönderiden Keşf
  assert.match(lazy,/new IntersectionObserver/);
  assert.match(lazy,/video\.preload='metadata'/);
  assert.match(app,/patiExploreReturnTo=view==='explore';selectedPostId=id;navigate\('home'\)/);
- assert.match(app,/case 'post-back':\{selectedPostId='';const back=patiExploreReturnTo\?'explore':'home'/);
+ assert.match(app,/case 'post-back':\{[\s\S]*?detail\?\.origin\|\|\(patiExploreReturnTo\?'explore':'home'\)/);
 });
