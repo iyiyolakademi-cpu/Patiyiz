@@ -114,3 +114,31 @@
  #main-content .pati-edu-v2 .edu-v2-lesson-nav button{width:100%}
 }
 @media(prefers-reduced-motion:reduce){#main-content .pati-edu-v2 .edu-v2-card,#main-content .pati-edu-v2 .pati-edu-progressbar>span{transition:none}}
+
+/* Keep the Academy legible when Patiyiz dark theme overrides all headings globally. */
+html[data-pati-theme="dark"] #main-content .pati-edu-v2{--edu-ink:#f5f5f7;--edu-muted:#adb0b9;--edu-border:#36373d;--edu-pale:#28292f;color:#f5f5f7}
+html[data-pati-theme="dark"] #main-content .pati-edu-v2 .edu-v2-hero{background:#101114!important;border-color:#34343b}
+html[data-pati-theme="dark"] #main-content .pati-edu-v2 :is(.edu-v2-stats>div,.edu-v2-discovery,.pati-edu-lesson-body,.edu-v2-empty){background:#1b1c21!important;border-color:#373942!important;color:#f2f2f4!important}
+html[data-pati-theme="dark"] #main-content .pati-edu-v2 .edu-v2-card{background:#222329!important;border-color:#383940!important;color:#eee!important}
+html[data-pati-theme="dark"] #main-content .pati-edu-v2 :is(.edu-v2-stats strong,.edu-v2-discovery-head h2,.edu-v2-results-head h3,.edu-v2-filter-title strong,.edu-v2-card .pati-edu-card-body strong,.edu-v2-chapter-head h2,.edu-v2-empty h3){color:#f5f5f7!important}
+html[data-pati-theme="dark"] #main-content .pati-edu-v2 :is(.edu-v2-stats span,.edu-v2-sync,.edu-v2-discovery-head span,.edu-v2-results-head span,.edu-v2-card .pati-edu-status,.edu-v2-card .pati-edu-card-body small,.edu-v2-card .pati-edu-card-body>span,.edu-v2-lesson-meta,.pati-edu-notice,.edu-v2-empty p){color:#c0c1c9!important}
+html[data-pati-theme="dark"] #main-content .pati-edu-v2 .edu-v2-card .pati-edu-emoji{background:#303138;color:#fff}
+html[data-pati-theme="dark"] #main-content .pati-edu-v2 :is(.edu-v2-achievements,.pati-edu-learning-toolbar button,.edu-v2-status-filters button,.pati-edu-categories button,.edu-v2-previous){background:#2a2b31;color:#f5f5f7;border-color:#484951}
+html[data-pati-theme="dark"] #main-content .pati-edu-v2 :is(.edu-v2-resume,.edu-v2-status-filters button.active,.pati-edu-categories button.active){background:#f2f2f4!important;color:#151516!important;border-color:#f2f2f4}
+html[data-pati-theme="dark"] #main-content .pati-edu-v2 #pati-academy-search{background:#26272c!important;border-color:#404148!important;color:#fff!important}
+html[data-pati-theme="dark"] #main-content .pati-edu-v2 #pati-academy-search::placeholder{color:#a3a4af}
+html[data-pati-theme="dark"] #main-content .pati-edu-v2 .edu-v2-lesson-track{background:#41424b}
+html[data-pati-theme="dark"] #main-content .pati-edu-v2 .edu-v2-lesson-track span{background:#eee}
+html[data-pati-theme="dark"] #main-content .pati-edu-v2 .pati-edu-step p{color:#e0e0e5!important}
+html[data-pati-theme="dark"] #main-content .pati-edu-v2 .pati-edu-step{border-color:#373840!important}
+html[data-pati-theme="dark"] #main-content .pati-edu-v2 .pati-edu-step>b{background:#363740;color:#fff}
+html[data-pati-theme="dark"] #main-content .pati-edu-v2 .pati-edu-quiz{background:#28292f!important;border-color:#42434c!important}
+html[data-pati-theme="dark"] #main-content .pati-edu-v2 .pati-edu-quiz>p{color:#d2d2d8!important}
+html[data-pati-theme="dark"] #main-content .pati-edu-v2 .pati-edu-quiz>button{background:#212228;color:#f5f5f6;border-color:#494a51}
+html[data-pati-theme="dark"] #main-content .pati-edu-v2 .pati-edu-quiz>button.selected{background:#f4f4f5;color:#151516;border-color:#f4f4f5}
+html[data-pati-theme="dark"] #main-content .pati-edu-v2 .pati-edu-quiz>button.selected .edu-v2-answer-marker{background:#33343c;color:#fff}
+html[data-pati-theme="dark"] #main-content .pati-edu-v2 .edu-v2-success{background:#23402b!important;color:#dcf5e3!important}
+html[data-pati-theme="dark"] #main-content .pati-edu-v2 .edu-v2-try-again{background:#463924!important;color:#fff0cb!important}
+html[data-pati-theme="dark"] #main-content .pati-edu-v2 .edu-v2-lesson-nav button{background:#eee;color:#1b1b1b;border-color:#eee}
+html[data-pati-theme="dark"] #main-content .pati-edu-v2 .edu-v2-lesson-nav button.edu-v2-previous{background:#2c2d33;color:#fff;border-color:#595a61}
+html[data-pati-theme="dark"] #main-content .pati-edu-v2 .pati-edu-back{color:#d7d8df}
