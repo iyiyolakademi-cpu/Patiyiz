@@ -53,7 +53,7 @@ test('Thousands of messages with hundreds of conversations are indexed without p
  const fn=vm.runInNewContext(source+'\npatiIndexDmHistory',{Map,Date});
  const rows=Array.from({length:12000},(_,i)=>({id:'m'+i,sender_id:i%2?'self':'u'+(i%500),receiver_id:i%2?'u'+(i%500):'self',created_at:'2026-10-25T10:00:00Z',read_at:null}));
  const out=fn(rows,'self',new Set(),new Set());
- assert.equal(out.peers.size,250);
+ assert.equal(out.peers.size,500);
  assert.equal(out.unreadTotal,6000);
  assert.equal([...out.peers.values()].reduce((n,x)=>n+x.items.length,0),12000);
  const page=part('function messagesPage(){','function pushKeyBytes(');
