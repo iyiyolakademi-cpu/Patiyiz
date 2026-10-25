@@ -514,6 +514,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)document.qu
 document.addEventListener('patiyiz:native-resume-media',()=>{if(view==='reels'&&!document.hidden)setupReelsViewer()});
 function ensureViewData(to){const byView={community:[['questions','questions'],['replies','replies'],['question_votes','votes']],knowledge:[['kb_bookmarks','bookmarks']],lost:[['lost_reports','lost']],adoption:[['adoption_listings','adoption']],care:[['care_tasks','care']],messages:[['message_hidden','messageHidden']],profile:[],blocked:[['user_blocks','blocks']]};const missing=(byView[to]||[]).filter(([table])=>!patiyizLoadedTables.has(table));if(!missing.length)return;const requestedView=to,requestedUser=me?.id;Promise.all(missing.map(async([table,key])=>{let req=sb.from(table).select('*');if(table==='kb_bookmarks')req=req.eq('user_id',requestedUser);const r=await req.limit(350);if(r.error)throw r.error;return[table,key,r.data||[]]})).then(results=>{if(me?.id!==requestedUser)return;for(const[table,key,rows]of results){if(!patiyizLoadedTables.has(table)){data[key]=rows;patiyizLoadedTables.add(table);if(table==='kb_bookmarks')favorites=new Set(rows.map(x=>x.article_id))}}if(view===requestedView)render()}).catch(e=>console.warn('Bölüm verileri yüklenemedi:',e))}
 const patiMobileTabScroll=new Map();
+let patiSwipeNavDirection=0;
 let patiNavAnimationId=0;
 function navigate(to){
  if(!allowed.includes(to))to='home';
@@ -562,11 +563,13 @@ function navigate(to){
   requestAnimationFrame(()=>{window.scrollTo({top:0,left:0,behavior:'instant'});document.scrollingElement?.scrollTo(0,0)});
  }
  const mainElement=document.getElementById('main-content'),animationId=++patiNavAnimationId;
- if(mainElement&&to!=='reels'&&window.matchMedia?.('(max-width:740px)')?.matches&&!window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches){
-  mainElement.classList.remove('pati-view-enter');
+ const swipeDirection=patiSwipeNavDirection;patiSwipeNavDirection=0;
+ if(mainElement&&window.matchMedia?.('(max-width:740px)')?.matches&&!window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches){
+  mainElement.classList.remove('pati-view-enter','pati-view-swipe-next','pati-view-swipe-prev');
   void mainElement.offsetWidth;
   mainElement.classList.add('pati-view-enter');
-  setTimeout(()=>{if(animationId===patiNavAnimationId)mainElement.classList.remove('pati-view-enter')},230);
+  if(swipeDirection)mainElement.classList.add(swipeDirection>0?'pati-view-swipe-next':'pati-view-swipe-prev');
+  setTimeout(()=>{if(animationId===patiNavAnimationId)mainElement.classList.remove('pati-view-enter','pati-view-swipe-next','pati-view-swipe-prev')},260);
  }
  ensureViewData(view);
  if(view==='messages')markConversationRead();
@@ -731,7 +734,7 @@ let storyItems=[],storyIndex=0,storyTimer=null,storyLikes=[];
 function closeStory(){clearTimeout(storyTimer);storyTimer=null;storyItems=[];document.getElementById('story-overlay')?.remove();document.body.classList.remove('story-fullscreen-open');if(view==='profile')render()}
 async function recordStoryView(x){if(!me||x.pati_pet_highlight||x.author_id===me.id)return;try{const r=await sb.rpc('patiyiz_record_story_view',{p_story_id:x.id});if(r.error)console.warn('Hikâye görüntülemesi kaydedilemedi:',r.error.message)}catch(err){console.warn('Hikâye görüntüleme ağ hatası:',err)}}
 async function showStoryViewers(){const x=storyItems[storyIndex];if(!x||x.author_id!==me.id)return;clearTimeout(storyTimer);const [vr,lr]=await Promise.all([sb.from('patiyiz_story_views').select('viewer_id,last_viewed_at').eq('story_id',x.id).order('last_viewed_at',{ascending:false}),sb.from('patiyiz_story_likes').select('user_id').eq('story_id',x.id)]);if(vr.error){notify('Görüntüleyenler yüklenemedi.',true);return}if(lr.error)console.warn('Hikâye beğenileri yüklenemedi:',lr.error.message);const liked=new Set((lr.data||[]).map(v=>v.user_id));const list=(vr.data||[]).map(v=>'<div class="story-view-user">'+avatar(profile(v.viewer_id),'s')+'<div><strong>'+displayName(profile(v.viewer_id))+'</strong><small>'+new Date(v.last_viewed_at).toLocaleString('tr-TR',{hour:'2-digit',minute:'2-digit',day:'numeric',month:'short'})+'</small></div>'+(liked.has(v.viewer_id)?'<span class="pati-story-view-like" title="Hikâyeni beğendi">♥</span>':'')+'</div>').join('');const sheet=document.getElementById('story-viewers-sheet');if(sheet){sheet.innerHTML='<header>Görüntüleyenler ('+(vr.data||[]).length+') · ♥ '+liked.size+' <button data-action="story-viewers-close">×</button></header>'+(list||'<p>Henüz görüntüleyen yok.</p>');sheet.hidden=false}}
-function showStoryFrame(){const root=document.getElementById('story-overlay'),x=storyItems[storyIndex];if(!root||!x)return;clearTimeout(storyTimer);const user=profile(x.author_id);if(!x.pati_pet_highlight)recordStoryView(x);if(!x.pati_pet_highlight&&x.author_id!==me.id)void syncStoryLike(x.id);root.innerHTML='<div class="story-player"><div class="story-progress">'+storyItems.map((_,i)=>'<span class="story-track"><span class="'+(i===storyIndex?'story-playing':'')+'" style="width:'+(i<storyIndex?'100':'0')+'%"></span></span>').join('')+'</div><div class="story-player-head">'+avatar(user,'s')+'<strong>'+displayName(user)+'</strong><button data-action="story-close" aria-label="Kapat" class="story-close">×</button></div>'+(x.image_url?'<img class="story-big-photo" src="'+esc(x.image_url)+'" alt="Hikâye">':'<div class="pati-story-no-photo">🐾</div>')+''+(x.caption?'<p class="story-caption">'+esc(x.caption)+'</p>':'')+'<button class="story-hit prev" data-action="story-prev" aria-label="Önceki"></button><button class="story-hit next" data-action="story-next" aria-label="Sonraki"></button>'+(x.pati_pet_highlight?'<span class="pati-saved-story-label">Kalıcı hikâye</span>':x.author_id===me.id?'<button class="story-highlight-toggle" data-action="story-highlight-choose" data-id="'+esc(x.id)+'">✦ Öne çıkar</button><button class="story-delete" data-action="story-delete" data-id="'+esc(x.id)+'">🗑 Sil</button><button class="story-viewers-button" data-action="story-viewers">👁 Hareketler</button>':'<button class="pati-story-like" data-action="story-like" data-id="'+esc(x.id)+'" aria-label="Hikâyeyi beğen">♡</button><button class="story-delete" data-action="report" data-kind="story" data-id="'+esc(x.id)+'">Bildir</button>')+(!x.pati_pet_highlight&&x.author_id!==me.id?'<div class="pati-story-interactive">'+(x.poll_question?'<b>'+esc(x.poll_question)+'</b><div>'+((x.poll_options||[]).map((opt,i)=>'<button data-action="story-poll" data-id="'+esc(x.id)+'" data-index="'+i+'">'+esc(opt)+'</button>').join(''))+'</div>':x.question_prompt?'<b>'+esc(x.question_prompt)+'</b><button data-action="story-question" data-id="'+esc(x.id)+'">Yanıtla</button>':'')+'<button data-action="story-emoji" data-id="'+esc(x.id)+'">🐾 Tepki ver</button></div>':'')+'<div id="story-viewers-sheet" class="story-viewers-sheet" hidden></div></div>';storyTimer=setTimeout(()=>stepStory(1),6000)}
+function showStoryFrame(){const root=document.getElementById('story-overlay'),x=storyItems[storyIndex];if(!root||!x)return;clearTimeout(storyTimer);const user=profile(x.author_id);const storyGroupItems=storyItems.filter(s=>s.author_id===x.author_id);const storyGroupIndex=storyGroupItems.findIndex(s=>s.id===x.id);if(!x.pati_pet_highlight)recordStoryView(x);if(!x.pati_pet_highlight&&x.author_id!==me.id)void syncStoryLike(x.id);root.innerHTML='<div class="story-player"><div class="story-progress">'+storyGroupItems.map((_,i)=>'<span class="story-track"><span class="'+(i===storyGroupIndex?'story-playing':'')+'" style="width:'+(i<storyGroupIndex?'100':'0')+'%"></span></span>').join('')+'</div><div class="story-player-head">'+avatar(user,'s')+'<strong>'+displayName(user)+'</strong><button data-action="story-close" aria-label="Kapat" class="story-close">×</button></div>'+(x.image_url?'<img class="story-big-photo" src="'+esc(x.image_url)+'" alt="Hikâye">':'<div class="pati-story-no-photo">🐾</div>')+''+(x.caption?'<p class="story-caption">'+esc(x.caption)+'</p>':'')+'<button class="story-hit prev" data-action="story-prev" aria-label="Önceki"></button><button class="story-hit next" data-action="story-next" aria-label="Sonraki"></button>'+(x.pati_pet_highlight?'<span class="pati-saved-story-label">Kalıcı hikâye</span>':x.author_id===me.id?'<button class="story-highlight-toggle" data-action="story-highlight-choose" data-id="'+esc(x.id)+'">✦ Öne çıkar</button><button class="story-delete" data-action="story-delete" data-id="'+esc(x.id)+'">🗑 Sil</button><button class="story-viewers-button" data-action="story-viewers">👁 Hareketler</button>':'<button class="pati-story-like" data-action="story-like" data-id="'+esc(x.id)+'" aria-label="Hikâyeyi beğen">♡</button><button class="story-delete" data-action="report" data-kind="story" data-id="'+esc(x.id)+'">Bildir</button>')+'<div id="story-viewers-sheet" class="story-viewers-sheet" hidden></div></div>';const upcoming=storyItems[storyIndex+1];if(upcoming?.image_url&&typeof Image==='function'){const preload=new Image();preload.src=upcoming.image_url}storyTimer=setTimeout(()=>stepStory(1),6000)}
 async function syncStoryLike(id){
  const uid=me?.id;if(!uid)return;
  const r=await sb.from('patiyiz_story_likes').select('story_id').eq('story_id',id).eq('user_id',uid).maybeSingle();
@@ -755,7 +758,29 @@ async function toggleStoryLike(id){
  finally{btn.disabled=false}
 }
 function storiesStrip(){const live=data.stories.filter(x=>new Date(x.expires_at).getTime()>Date.now()&&!blocked.has(x.author_id)).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));const seen=new Set(),people=[];for(const x of live)if(!seen.has(x.author_id)){seen.add(x.author_id);people.push(x)}const own=people.find(x=>x.author_id===me.id);return '<section class="stories-section"><div class="stories-heading"><strong>Hikâyeler</strong></div><div class="stories-strip"><div class="story-person story-own"><button class="story-own-photo '+(own?'has-story':'')+'" data-action="'+(own?'story-view':'story-create')+'" '+(own?'data-id="'+esc(me.id)+'"':'')+'>'+avatar(current(),'s')+'</button><button class="story-own-plus" data-action="story-create">+</button><small>'+(own?'Hikâyem':'Hikâye ekle')+'</small></div>'+people.filter(x=>x.author_id!==me.id).map(x=>'<button class="story-person" data-action="story-view" data-id="'+esc(x.author_id)+'"><span class="story-avatar">'+avatar(profile(x.author_id),'s')+'</span><small>'+esc(profile(x.author_id).display_name)+'</small></button>').join('')+'</div></section>'}
-function openStory(id){const items=data.stories.filter(x=>x.author_id===id&&new Date(x.expires_at).getTime()>Date.now()).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));if(!items.length)return notify('Hikâye bulunamadı.');closeStory();storyItems=items;storyIndex=0;const layer=document.createElement('div');layer.id='story-overlay';layer.className='story-fullscreen';layer.setAttribute('role','dialog');layer.setAttribute('aria-modal','true');document.body.appendChild(layer);document.body.classList.add('story-fullscreen-open');showStoryFrame()}
+function patiBuildLiveStorySequence(selectedAuthor){
+ const now=Date.now(),grouped=new Map();
+ for(const item of data.stories){
+  if(!item?.author_id||blocked.has(item.author_id)||new Date(item.expires_at).getTime()<=now)continue;
+  if(!grouped.has(item.author_id))grouped.set(item.author_id,[]);
+  grouped.get(item.author_id).push(item);
+ }
+ if(!grouped.has(selectedAuthor))return null;
+ for(const entries of grouped.values())entries.sort((a,b)=>new Date(a.created_at)-new Date(b.created_at)||String(a.id).localeCompare(String(b.id)));
+ const authors=[...grouped.keys()].sort((a,b)=>{
+  if(a===me.id)return -1;if(b===me.id)return 1;
+  return new Date(grouped.get(b).at(-1).created_at)-new Date(grouped.get(a).at(-1).created_at)||String(a).localeCompare(String(b));
+ });
+ const items=authors.flatMap(id=>grouped.get(id));
+ return {items,index:items.findIndex(x=>x.author_id===selectedAuthor)};
+}
+function openStory(id){
+ const sequence=patiBuildLiveStorySequence(id);
+ if(!sequence)return notify('Hikâye bulunamadı.');
+ closeStory();storyItems=sequence.items;storyIndex=sequence.index;
+ const layer=document.createElement('div');layer.id='story-overlay';layer.className='story-fullscreen';layer.setAttribute('role','dialog');layer.setAttribute('aria-modal','true');
+ document.body.appendChild(layer);document.body.classList.add('story-fullscreen-open');showStoryFrame();
+}
 function openHighlightStory(id){
  const x=data.stories.find(x=>x.id===id&&x.is_highlight);
  if(!x)return notify('Kalıcı hikâye bulunamadı.',true);
@@ -2762,7 +2787,7 @@ function openComposerMediaPicker(kind){
 }
 function openStoryComposer(autoPick=true,makeHighlight=false){
  clearPatiMediaUrls();
- modal('Yeni hikâye',storyPhotoField()+textField('caption','Hikâye açıklaması (isteğe bağlı)','',false,300)+'<div class="pati-story-editor"><label>Üst yazı <input name="overlay_text" maxlength="100" placeholder="Patili bir an..."></label><label>Yazı rengi <select name="overlay_color"><option value="#ffffff">Beyaz</option><option value="#17181b">Siyah</option><option value="#ffe17a">Sarı</option></select></label><label>Çıkartma <select name="overlay_sticker"><option value="">Yok</option><option value="🐾">🐾</option><option value="❤️">❤️</option><option value="🐱">🐱</option><option value="🐶">🐶</option></select></label></div><div class="pati-story-interactions"><label>Etkileşim <select name="interaction_mode"><option value="">Yok</option><option value="poll">Anket</option><option value="question">Soru kutusu</option></select></label><label>Soru başlığı <input name="interaction_prompt" maxlength="120" placeholder="Patin en çok neyi seviyor?"></label><label>Anket seçeneği 1 <input name="poll_a" maxlength="60" placeholder="Oyun"></label><label>Anket seçeneği 2 <input name="poll_b" maxlength="60" placeholder="Uyku"></label></div><label class="pati-story-highlight-option"><input type="checkbox" name="is_highlight" value="on" '+(makeHighlight?'checked':'')+'><span><strong>Profilimde kalıcı göster</strong><small>Öne çıkan hikâyeler 24 saat sonra da görünür.</small></span></label>','story-form');
+ modal('Yeni hikâye',storyPhotoField()+textField('caption','Hikâye açıklaması (isteğe bağlı)','',false,300)+'<div class="pati-story-editor"><label>Üst yazı <input name="overlay_text" maxlength="100" placeholder="Patili bir an..."></label><label>Yazı rengi <select name="overlay_color"><option value="#ffffff">Beyaz</option><option value="#17181b">Siyah</option><option value="#ffe17a">Sarı</option></select></label><label>Çıkartma <select name="overlay_sticker"><option value="">Yok</option><option value="🐾">🐾</option><option value="❤️">❤️</option><option value="🐱">🐱</option><option value="🐶">🐶</option></select></label></div><label class="pati-story-highlight-option"><input type="checkbox" name="is_highlight" value="on" '+(makeHighlight?'checked':'')+'><span><strong>Profilimde kalıcı göster</strong><small>Öne çıkan hikâyeler 24 saat sonra da görünür.</small></span></label>','story-form');
  const footer=document.querySelector('#story-form .modal-footer button[type="submit"]');if(footer)footer.textContent='Hikâyeyi paylaş';
  if(autoPick)document.querySelector('#story-form input[name="story_gallery"]')?.click();
 }
@@ -3666,6 +3691,38 @@ document.addEventListener('change',e=>{
 let lastPhotoTap={id:'',time:0},tapTimer=0;
 function heartOnPhoto(el){const id=el.dataset.postId;if(!id)return;const heart=el.querySelector('.pati-heart-burst');if(heart){heart.classList.remove('pop');void heart.offsetWidth;heart.classList.add('pop')}if(!liked.has(id))void togglePostLike(id)}
 document.addEventListener('click',e=>{const el=e.target.closest('.pati-doubletap-photo');if(!el)return;const now=Date.now();if(lastPhotoTap.id===el.dataset.postId&&now-lastPhotoTap.time<380){e.preventDefault();lastPhotoTap.time=0;heartOnPhoto(el)}else lastPhotoTap={id:el.dataset.postId,time:now}},true);
+/* Instagram-like mobile tab gestures: 4 destination tabs, excluding the Share action. */
+const patiSwipeTabs=['home','explore','reels','profile'];
+let patiPageSwipe=null;
+function patiCanSwipePage(target){
+ if(!me||!patiSwipeTabs.includes(view)||!target?.closest?.('#main-content'))return false;
+ if(view==='profile'&&profileId&&profileId!==me.id)return false;
+ if(view==='explore'&&exploreTab==='users')return false;
+ if(window.matchMedia?.('(max-width:740px)')?.matches===false)return false;
+ if(document.getElementById('story-overlay')||document.querySelector('#modal-root .modal')||document.querySelector('#pati-create-sheet:not([hidden])'))return false;
+ if(target.closest('input,textarea,select,[contenteditable],.pati-carousel,.pati-ig-highlights,.stories-strip,.pati-detail-screen,.pati-search-screen,.pati-ig-tabs,.pati-reels-editor,.pati-crop-preview'))return false;
+ return true;
+}
+document.addEventListener('touchstart',event=>{
+ patiPageSwipe=null;
+ if(event.touches.length!==1||!patiCanSwipePage(event.target))return;
+ const t=event.touches[0],width=window.innerWidth||document.documentElement.clientWidth;
+ if(t.clientX<22||t.clientX>width-22)return;
+ patiPageSwipe={x:t.clientX,y:t.clientY,started:Date.now(),sourceView:view};
+},{passive:true});
+document.addEventListener('touchmove',event=>{if(event.touches.length>1)patiPageSwipe=null},{passive:true});
+document.addEventListener('touchcancel',()=>{patiPageSwipe=null},{passive:true});
+document.addEventListener('touchend',event=>{
+ const swipe=patiPageSwipe;patiPageSwipe=null;
+ if(!swipe||event.changedTouches.length!==1||event.touches.length||view!==swipe.sourceView)return;
+ if(!patiCanSwipePage(event.target)||Date.now()-swipe.started>1100)return;
+ const t=event.changedTouches[0],dx=t.clientX-swipe.x,dy=t.clientY-swipe.y;
+ if(Math.abs(dx)<75||Math.abs(dx)<Math.abs(dy)*1.5)return;
+ const idx=patiSwipeTabs.indexOf(view),direction=dx<0?1:-1,next=patiSwipeTabs[idx+direction];
+ if(!next)return;
+ if(next==='profile')profileId='';
+ patiSwipeNavDirection=direction;navigate(next);
+},{passive:true});
 let storyTouchY=null,storyTouchX=null;
 document.addEventListener('touchstart',e=>{if(!e.target.closest('#story-overlay'))return;storyTouchY=e.touches[0]?.clientY;storyTouchX=e.touches[0]?.clientX},{passive:true});
 document.addEventListener('touchend',e=>{if(storyTouchY===null)return;const target=e.target;const point=e.changedTouches[0];const diff=point?.clientY-storyTouchY,side=point?.clientX-storyTouchX;storyTouchY=null;storyTouchX=null;if(!target.closest('#story-overlay')||target.closest('.story-viewers-sheet'))return;if(diff>65&&Math.abs(diff)>Math.abs(side)*1.25){if(storyItems[storyIndex]?.author_id===me.id)showStoryViewers();else closeStory();return}
@@ -3858,7 +3915,7 @@ function resetSessionState(){
  blockedProfiles=[];patiDmSignedCache.clear();profileCountCache.clear();profileCountInFlight.clear();
  if(typeof patiPostSeen!=='undefined')patiPostSeen.clear();if(typeof patiPostViewCounts!=='undefined')patiPostViewCounts.clear();if(typeof patiPostViewObserver!=='undefined'&&patiPostViewObserver){patiPostViewObserver.disconnect();patiPostViewObserver=null}pageLimits={posts:40,messages:150,notifications:150};pageMore={posts:true,messages:true,notifications:true};
  if(typeof healthFilePortal!=='undefined')healthFilePortal=null;if(typeof healthFileOwner!=='undefined')healthFileOwner='';if(typeof achievementPortal!=='undefined')achievementPortal=null;if(typeof premiumPortal!=='undefined')premiumPortal=null;if(typeof premiumPortalOwner!=='undefined')premiumPortalOwner='';if(typeof educationCloudDone!=='undefined')educationCloudDone.clear();if(typeof educationCloudUser!=='undefined')educationCloudUser='';if(typeof pendingPostLikes!=='undefined')pendingPostLikes.clear();if(typeof likesChangeEpoch==='number')likesChangeEpoch++;if(typeof savesChangeEpoch==='number')savesChangeEpoch++;if(typeof pendingPostSaves!=='undefined')pendingPostSaves.clear();if(typeof savedMissingAttempted!=='undefined')savedMissingAttempted.clear();personId='';profileId='';selectedPostId='';followListId='';patiFollowPageState={key:'',rows:[],next:0,hasMore:true,loading:false,error:'',viewerFollowing:new Set()};search='';view='home';chatFilter='primary';mobileChatOpen=false;isAdmin=false;
- patiDetailState=null;storyItems=[];storyLikes=[];storyIndex=0;clearTimeout(storyTimer);storyTimer=null;lastPhotoTap={id:'',time:0};
+ patiDetailState=null;patiPageSwipe=null;patiSwipeNavDirection=0;storyItems=[];storyLikes=[];storyIndex=0;clearTimeout(storyTimer);storyTimer=null;lastPhotoTap={id:'',time:0};
  document.getElementById('story-overlay')?.remove();document.body.classList.remove('story-fullscreen-open');
  window.PatiyizGalleryPicker?.close();window.PatiyizCameraFlow?.close?.();window.PatiyizReelsEditor?.dispose();clearPatiMediaUrls();
  document.getElementById('modal-root')?.replaceChildren();
