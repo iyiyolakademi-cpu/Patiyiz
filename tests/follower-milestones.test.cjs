@@ -15,5 +15,5 @@ test('rewards are marked earned only by the server claim ledger',()=>{
 test('profile hint progress and finish state are stable',()=>{
  assert.match(api.profileHint(999),/1 takipçi kaldı/);
  assert.match(api.profileHint(5000),/10.000 takipçi/);
- assert.match(api.profileHint(100000),/Bütün/);
+ assert.match(api.profileHint(100000),/100.000 takipçi/);
 });
