@@ -240,16 +240,16 @@ function refreshOnReturn(){
 async function markConversationRead(){
  if(!me||view!=='messages'||!personId)return;
  const unread=data.messages.filter(x=>x.sender_id===personId&&x.receiver_id===me.id&&!x.read_at&&!patiDmSeenIds().has(x.id));
- const backendUnread=patiDmInbox.rows.find(x=>x.peer_id===personId)?.unread_count||0;
+ const backendUnread=typeof patiDmInbox!=='undefined'?(patiDmInbox.rows.find(x=>x.peer_id===personId)?.unread_count||0):0;
  if(!unread.length&&!backendUnread)return;
  const ids=unread.map(x=>x.id);
  if(!patiDmReadReceiptsEnabled()){patiDmStoreLocalSeen(ids);navRender();return}
  const now=new Date().toISOString();
  const r=await sb.from('messages').update({read_at:now}).eq('sender_id',personId).eq('receiver_id',me.id).is('read_at',null);
  if(r.error){console.warn('Okundu bilgisi kaydedilemedi',r.error.message);return}
- const thread=patiDmThreads.get(patiDmThreadKey(personId));
+ const thread=typeof patiDmThreads!=='undefined'?patiDmThreads.get(patiDmThreadKey(personId)):null;
  for(const row of thread?.rows||[])if(row.sender_id===personId&&row.receiver_id===me.id&&!row.read_at)row.read_at=now;
- const summary=patiDmInbox.rows.find(x=>x.peer_id===personId);
+ const summary=typeof patiDmInbox!=='undefined'?patiDmInbox.rows.find(x=>x.peer_id===personId):null;
  if(summary)summary.unread_count=0;
  unread.forEach(x=>x.read_at=now);navRender();
 }
@@ -2550,7 +2550,7 @@ window.addEventListener('online',()=>{notify('İnternet bağlantısı yeniden ku
 function resetSessionState(){
  if(typeof patiDmDisconnectTyping==='function')patiDmDisconnectTyping();
  if(typeof patiDmLocalSeenCache!=='undefined'){patiDmLocalSeenOwner='';patiDmLocalSeenCache.clear()}
- patiDmThreads.clear();patiDmInbox={owner:'',rows:[],offset:0,hasMore:true,loading:false,ready:false,error:''};
+ if(typeof patiDmThreads!=='undefined')patiDmThreads.clear();if(typeof patiDmInbox!=='undefined')patiDmInbox={owner:'',rows:[],offset:0,hasMore:true,loading:false,ready:false,error:''};
 
  patiyizLoadToken++;patiyizLoadedTables.clear();patiyizDeferredLoading=null;patiWellness={reminders:[],weights:[],loaded:false,loading:false,notified:new Set()};patiLeaderboard=[];patiInviteState={code:'',invited_count:0,already_used:false,coins_each:50,loading:false};patiDmReturnView='home';mobileChatOpen=false;patiCoinState={balance:0,earned:0,claims:[],items:[],orders:[],history:[],loading:false};patiFollowerRewardState={followers:null,claimed:[]};document.getElementById('paticoin-celebration')?.remove();
  data=Object.fromEntries(Object.keys(data).map(key=>[key,[]]));
