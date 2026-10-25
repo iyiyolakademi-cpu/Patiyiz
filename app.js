@@ -2000,6 +2000,37 @@ document.addEventListener('pointermove',e=>{if(messagePressOrigin&&(Math.abs(e.c
 for(const ev of ['pointerup','pointercancel','scroll'])document.addEventListener(ev,()=>{clearTimeout(messagePressTimer);messagePressTimer=null;messagePressOrigin=null},true);
 document.addEventListener('click',e=>{if(messageLongPressed){e.preventDefault();e.stopImmediatePropagation();messageLongPressed=false}},true);
 document.addEventListener('input',e=>{if(e.target?.name==='crop_zoom'){postCropZoom=+e.target.value;drawPostCrop()}});
+let patiPinch=null;
+document.addEventListener('touchstart',e=>{
+ if(e.touches.length!==2)return;
+ const image=e.target.closest?.('.pati-carousel-slide .pati-photo img');
+ if(!image)return;
+ const [a,b]=e.touches;
+ const distance=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);
+ if(distance<8)return;
+ patiPinch={image,distance,scale:1};
+ image.classList.add('pati-pinching');
+ image.style.transformOrigin='center center';
+},{passive:true});
+document.addEventListener('touchmove',e=>{
+ if(!patiPinch||e.touches.length!==2)return;
+ const {image,distance}=patiPinch;
+ if(!image.isConnected){patiPinch=null;return}
+ const [a,b]=e.touches,now=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);
+ patiPinch.scale=Math.max(1,Math.min(3,now/distance));
+ image.style.transform='scale('+patiPinch.scale.toFixed(3)+')';
+ if(e.cancelable)e.preventDefault();
+},{passive:false});
+const patiFinishPinch=()=>{
+ if(!patiPinch)return;
+ const image=patiPinch.image;patiPinch=null;
+ image.classList.remove('pati-pinching');
+ image.style.transform='';
+ image.style.transformOrigin='';
+};
+document.addEventListener('touchend',e=>{if(patiPinch&&e.touches.length<2)patiFinishPinch()},{passive:true});
+document.addEventListener('touchcancel',patiFinishPinch,{passive:true});
+
 document.addEventListener('input',e=>{
  const target=e.target;
  if(!target?.matches?.('[data-action="reel-seek"]'))return;
