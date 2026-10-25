@@ -95,9 +95,7 @@ test('Yazı oluştururken galeri açılmaz, medya alanları gizlenir ve yazı ge
 
 test('Profilde Instagram gibi ayrı öne çıkan albümler oluşturulur',()=>{
  const profile=extract('function profilePage(){','function formField(');
- assert.match(profile,/data-action="highlight-album-new"/);
- assert.match(profile,/Yeni<\/small>/);
- assert.match(profile,/albums\.map\(/);
+ assert.doesNotMatch(profile,/data-action="highlight-album-new"|pati-ig-highlight-section|Yeni<\/small>/);
  assert.doesNotMatch(profile,/data-action="story-create-highlight"/);
  assert.match(app,/function chooseStoryHighlight\(storyId\)/);
  assert.match(app,/function addStoryToHighlightAlbum\(storyId,albumId\)/);
