@@ -1454,7 +1454,7 @@ async function patiDmLoadThread(peer,older=false,quiet=false){
  if(!state){state={rows:[],hasMore:true,loading:false,ready:false,error:''};patiDmThreads.set(key,state)}
  if(state.loading||(older&&!state.hasMore))return;
  state.loading=true;state.error='';
- const beforeHistory=older&&personId===peer?document.querySelector('.chat-history'):null;
+ const beforeHistory=older&&personId===peer&&typeof document!=='undefined'?document.querySelector('.chat-history'):null;
  const anchor=beforeHistory?{height:beforeHistory.scrollHeight,top:beforeHistory.scrollTop}:null;
  const old=older&&state.rows.length?state.rows.reduce((t,row)=>!t||row.created_at<t?row.created_at:t,''):'';
  try{
