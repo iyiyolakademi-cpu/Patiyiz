@@ -45,7 +45,7 @@
  };
  api.collabProfilePosts=id=>{
   const ids=new Set(data.postCollabs.filter(c=>c.status==='accepted'&&c.collaborator_id===id).map(c=>c.post_id));
-  return data.posts.filter(p=>ids.has(p.id)&&p.audience==='public'&&!blocked.has(p.author_id));
+  return (data.posts||[]).filter(p=>ids.has(p.id)&&p.audience==='public'&&!blocked.has(p.author_id));
  };
  api.openFriends=()=>{
   const picks=data.profiles.filter(p=>p.id!==me.id&&!blocked.has(p.id))
