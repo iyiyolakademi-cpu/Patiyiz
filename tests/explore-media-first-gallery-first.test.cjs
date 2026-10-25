@@ -24,7 +24,7 @@ test('Keşfet ilk açıldığında isimler değil fotoğraf ve videolar görün�
  assert.match(output,/pati-explore-gallery/);
  assert.match(output,/data-action="pati-search-open"/);
  assert.doesNotMatch(output,/pati-search-user|pati-explore-people|pati-explore-pets|pati-explore-animals|Yazı paylaşımı/);
- assert.deepEqual([...output.matchAll(/data-id="([^"]+)"/g)].map(m=>m[1]),['new-photo','video','old-photo']);
+ assert.deepEqual([...output.matchAll(/data-action="explore-open-post" data-id="([^"]+)"/g)].map(m=>m[1]),['new-photo','video','old-photo']);
  assert.match(output,/cover\.jpg/);
  assert.match(output,/picture\.jpg/);
  assert.match(css,/#main-content \.pati-explore-media-screen \.pati-explore-gallery/);
