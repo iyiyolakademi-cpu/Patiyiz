@@ -535,6 +535,7 @@ function navigate(to){
  window.scrollTo(0,0);
  navRender();side();render();
  if(to==='pets'&&previous!=='pets'&&typeof patiLoadCommunityPets==='function')void patiLoadCommunityPets(true);
+ if(to==='pets'&&previous!=='pets')void patiLoadOwnedPets();
  if(to==='explore'&&previous!=='explore'&&typeof patiExploreLoadMedia==='function')void patiExploreLoadMedia(true);
  if(to==='follows-list')void patiLoadFollowPage(true);
  if(to==='messages'){
@@ -1519,6 +1520,18 @@ async function patiLoadCommunityPets(reset=false){
   state.loading=false;
   if(me?.id===uid&&patiPetsState===state&&view==='pets')petsPage();
  }
+}
+let patiOwnPetsRequest=0,patiPetPhotoObjectUrl='';
+async function patiLoadOwnedPets(){
+ if(!me||!sb)return;
+ const uid=me.id,token=patiyizLoadToken,request=++patiOwnPetsRequest;
+ try{
+  const response=await sb.from('pets').select('*').eq('owner_id',uid).order('created_at',{ascending:false}).limit(200);
+  if(response.error)throw response.error;
+  if(me?.id!==uid||patiyizLoadToken!==token||request!==patiOwnPetsRequest)return;
+  data.pets=[...data.pets.filter(p=>p.owner_id!==uid),...(response.data||[])];
+  if(view==='pets')petsPage();
+ }catch(error){if(me?.id===uid)console.warn('Hayvanlarım yüklenemedi:',error?.message||error)}
 }
 function petsPage(){
  const own=data.pets.filter(p=>p.owner_id===me.id);
@@ -2830,6 +2843,8 @@ window.addEventListener('online',()=>{notify('İnternet bağlantısı yeniden ku
  }).catch(e=>console.warn('Yenileme başarısız',e));refreshOnReturn()
  }});document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshOnReturn()});window.addEventListener('focus',refreshOnReturn);
 function resetSessionState(){
+ if(typeof patiOwnPetsRequest!=='undefined')patiOwnPetsRequest++;
+ if(typeof patiPetPhotoObjectUrl!=='undefined'&&patiPetPhotoObjectUrl){URL.revokeObjectURL(patiPetPhotoObjectUrl);patiPetPhotoObjectUrl=''}
  if(typeof patiExploreMedia!=='undefined'){patiExploreMedia={owner:'',rows:[],offset:0,hasMore:true,ready:false,loading:false,error:''};patiExploreUsers={owner:'',query:'',rows:[],ready:false,loading:false,error:''};if(patiExploreSearchTimer)clearTimeout(patiExploreSearchTimer);patiExploreSearchTimer=null}
 
  if(typeof patiDmDisconnectTyping==='function')patiDmDisconnectTyping();
