@@ -2646,7 +2646,36 @@ async function createStoryPublication(form,f,str){
  });
 }
 function composeQuestion(){modal('Topluluğa soru sor',formField('title','Soru başlığı (5–150 karakter)','text','',true)+selectField('category','Kategori',['Genel','Sağlık','Beslenme','Eğitim','Davranış','Bakım','Diğer'])+textField('body','Sorunun ayrıntıları (en az 5 karakter)','',true,2000),'question-form');const f=$('#question-form');if(f){f.querySelector('[name="title"]').minLength=5;f.querySelector('[name="title"]').maxLength=150;f.querySelector('[name="body"]').minLength=5;f.querySelector('.modal-footer .primary-btn').textContent='Soruyu yayınla'}}
-function composeLost(){modal('Kayıp hayvan ilanı',formField('name','Hayvanın adı','text','',true)+selectField('species','Tür',species)+formField('city','Şehir','text','',true)+formField('district','İlçe (isteğe bağlı)')+formField('last_seen','Son görüldüğü tarih','date',new Date().toISOString().slice(0,10),true)+textField('description','Açıklama (açık adres / telefon yazma)','',true,1200)+imageField(),'lost-form')}
+function composeLost(a){
+ if(a&&a.owner_id!==me?.id)return notify('Bu ilanı düzenleme yetkin yok.',true);
+ const today=new Date().toLocaleDateString('en-CA');
+ const media='<div class="lost-v2-form-media"><strong>Fotoğraf (isteğe bağlı)</strong><p>Net bir fotoğraf, hayvanın tanınmasını kolaylaştırır.</p>'
+ +(a?.photo_url?'<img class="lost-v2-existing" src="'+esc(a.photo_url)+'" alt="Mevcut ilan fotoğrafı">':'')
+ +'<div id="lost-photo-preview" class="lost-v2-preview" hidden></div><div class="lost-v2-pickers"><button type="button" data-action="lost-gallery">▧ Galeriyi aç</button><button type="button" data-action="lost-camera">◎ Fotoğraf çek</button></div>'
+ +'<input class="lost-v2-file" type="file" name="photo" accept="image/*,.heic,.heif" aria-label="Galeriden fotoğraf seç">'
+ +'<input class="lost-v2-file" type="file" name="photo_camera" accept="image/*" capture="environment" aria-label="Kameradan fotoğraf çek"></div>';
+ modal(a?'Kayıp ilanını düzenle':'Kayıp hayvan ilanı','<div class="lost-v2-form-tip">Açık adres veya telefon paylaşma; yalnızca yaklaşık konum yaz. İletişimi uygulama içinden yap.</div>'
+ +formField('name','Hayvanın adı','text',a?.name||'',true)+selectField('species','Tür',species,a?.species||'Kedi')
+ +formField('city','Şehir','text',a?.city||'',true)+formField('district','İlçe (isteğe bağlı)','text',a?.district||'')
+ +formField('last_seen','Son görüldüğü tarih','date',a?.last_seen||today,true)
+ +textField('description','Ayırt edici özellikleri ve yaklaşık görüldüğü yer',a?.description||'',true,1200)+media,'lost-form');
+ const form=document.getElementById('lost-form');
+ form.dataset.edit=a?.id||'';
+ const date=form.querySelector('[name="last_seen"]');date.max=today;
+ form.querySelector('[name="description"]').minLength=10;
+ form.querySelector('.modal-footer button[type="submit"]').textContent=a?'Değişiklikleri kaydet':'İlanı yayınla';
+}
+function lostValidateRecord(rec){
+ if(rec.name.length<2||rec.name.length>100)throw Error('Hayvanın adını 2–100 karakter arasında yaz.');
+ if(rec.city.length<2||rec.city.length>100||rec.district.length>100)throw Error('Şehir ve ilçe alanlarını kontrol et.');
+ if(rec.description.length<10||rec.description.length>1200)throw Error('Açıklama 10–1200 karakter olmalı.');
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(rec.last_seen))throw Error('Geçerli bir tarih seç.');
+ const d=new Date(rec.last_seen+'T12:00:00Z');
+ if(!Number.isFinite(d.getTime())||d.toISOString().slice(0,10)!==rec.last_seen||rec.last_seen>new Date().toLocaleDateString('en-CA'))throw Error('Gelecekteki tarih seçilemez.');
+ if(/(?:\+90[\s.-]*|0)?5\d{2}[\s().-]*\d{3}[\s.-]*\d{2}[\s.-]*\d{2}/.test(rec.description))throw Error('Açıklamaya telefon numarası ekleme.');
+ if(/\b(?:no\s*[:.]?\s*\d+|daire\s*[:.]?\s*\d+|kapı\s*no\s*[:.]?\s*\d+)\b/i.test(rec.description))throw Error('Açık adres yazma; yaklaşık bölge belirt.');
+ return rec;
+}
 function composeAdoption(a){modal(a?'Sahiplendirme ilanını düzenle':'Sahiplendirme ilanı oluştur',formField('name','Hayvanın adı','text',a?.name||'',true)+selectField('species','Hayvan türü',species,a?.species||'Kedi')+selectField('gender','Cinsiyet',petGenders,a?.gender||'Bilinmiyor')+formField('age','Yaş (isteğe bağlı)','text',a?.age||'')+formField('city','Şehir','text',a?.city||'',true)+formField('district','İlçe','text',a?.district||'')+textField('description','Hayvan hakkında bilgi (en az 15 karakter)','',true,2000)+(a?'<p class="small-note">Yeni fotoğraf yüklemezsen mevcut fotoğraf korunur.</p>':'')+imageField(),'adoption-form');const f=$('#adoption-form');f.dataset.edit=a?.id||'';if(a)f.querySelector('[name="description"]').value=a.description||''}
 function composeCare(){modal('Bakım görevi ekle',formField('title','Görev adı','text','',true)+selectField('category','Kategori',['Aşı','Veteriner','İlaç','Bakım','Diğer'])+formField('due_date','Tarih','date',new Date().toISOString().slice(0,10),true)+petOptions(),'care-form')}
 function editProfile(){
