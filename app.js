@@ -1398,7 +1398,7 @@ function showComments(postId){
   const count=data.commentLikes.filter(x=>x.comment_id===c.id).length;
   const isLiked=data.commentLikes.some(x=>x.comment_id===c.id&&x.user_id===me.id);
   const isExpanded=patiyizCommentExpandedReplies.has(c.id);
-  const fullName=esc(displayName(person));
+  const fullName=displayName(person);
   return '<div class="comment-item pati-sheet-comment '+(depth?'pati-sheet-reply':'')+'" style="--pati-comment-depth:'+Math.min(depth,3)+'" data-comment-id="'+esc(c.id)+'">'+
    '<div class="pati-sheet-comment-avatar">'+avatar(person,'s')+'</div>'+
    '<div class="pati-sheet-comment-main"><div class="pati-sheet-comment-line"><strong>'+fullName+'</strong><time>'+patiCommentAge(c.created_at)+'</time></div>'+
@@ -1414,7 +1414,7 @@ function showComments(postId){
  };
  const roots=items.filter(c=>!c.parent_id||!commentById.has(c.parent_id));
  const intro=post&&author?'<section class="pati-comment-post-summary">'+
-  '<div class="pati-comment-post-user">'+avatar(author,'s')+'<strong>'+esc(displayName(author))+'</strong>'+
+  '<div class="pati-comment-post-user">'+avatar(author,'s')+'<strong>'+displayName(author)+'</strong>'+
   (author.id!==me.id?'<button type="button" data-action="follow" data-id="'+esc(author.id)+'" class="pati-comment-follow '+(followed.has(author.id)?'is-following':'')+'">'+(followed.has(author.id)?'Takiptesin':'Takip et')+'</button>':'')+'</div>'+
   '<p>'+esc(cut(post.video_subtitle||post.body||'',500))+'</p><small>'+esc(day(post.created_at))+'</small>'+
   '</section>':'';
@@ -1432,7 +1432,7 @@ function showComments(postId){
  '<textarea name="body" aria-label="Yorum ekle" maxlength="750" rows="1" required placeholder="Yorum ekle..."></textarea>'+
  '<button type="submit" class="pati-comment-send">Gönder</button></div>';
  const input=form.querySelector('[name="body"]');if(input)input.value=draft;
- if(parent){form.dataset.parent=parent;const who=profile(data.comments.find(c=>c.id===parent)?.author_id);const hint=form.querySelector('#comment-reply-hint');if(hint)hint.innerHTML='↳ '+esc(displayName(who))+' kullanıcısına yanıt <button type="button" data-action="comment-reply-cancel">× Vazgeç</button>'}
+ if(parent){form.dataset.parent=parent;const who=profile(data.comments.find(c=>c.id===parent)?.author_id);const hint=form.querySelector('#comment-reply-hint');if(hint)hint.innerHTML='↳ '+displayName(who)+' kullanıcısına yanıt <button type="button" data-action="comment-reply-cancel">× Vazgeç</button>'}
  const list=form.querySelector('.comment-list');if(list)list.scrollTop=scroll;
 }
 function modal(title,form,id='entry-form'){let root=$('#modal-root');root.innerHTML=`<div class="modal-backdrop" data-action="close"><section class="modal" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="modal-header"><h2>${esc(title)}</h2><button type="button" class="close-modal" data-action="close" aria-label="Pencereyi kapat">×</button></div><form id="${id}"><div class="modal-content">${form}</div><div class="pati-upload-status" role="status" aria-live="polite" hidden><i class="pati-upload-spinner"></i><span>Yükleniyor…</span></div><div class="modal-footer"><button class="outline-btn" type="button" data-action="close">İptal</button><button class="primary-btn" type="submit">Kaydet</button></div></form></section></div>`}
