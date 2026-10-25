@@ -1,0 +1,97 @@
+/* Patiyiz — 12. Hayvan Sağlığı V2. Scoped to the wellness page. */
+#main-content .pati-wellness-page.wellness-v2{--wv-ink:#1c1c1f;--wv-muted:#767880;--wv-line:#e6e6e9;max-width:940px;margin:0 auto;padding:14px 6px 48px;color:var(--wv-ink);font-family:'Plus Jakarta Sans','DM Sans',system-ui,sans-serif}
+#main-content .wellness-v2 *{box-sizing:border-box}
+#main-content .wellness-v2 button{touch-action:manipulation;cursor:pointer;font-family:inherit}
+#main-content .wellness-v2 :is(button,input):focus-visible,#modal-root .pati-wellness-field :is(input,select,textarea):focus-visible{outline:3px solid #8d8f99;outline-offset:3px}
+#main-content .wellness-v2 .pati-wellness-heading{background:#151517!important;border:1px solid #313137;border-radius:22px;padding:clamp(24px,4vw,34px);color:#fff;box-shadow:none;margin-bottom:15px}
+#main-content .wellness-v2 .pati-wellness-heading span{color:#c3c3c9;letter-spacing:.13em;font-size:10px;font-weight:850}
+#main-content .wellness-v2 .pati-wellness-heading h1{color:#fff;font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;margin:10px 0;line-height:1.2}
+#main-content .wellness-v2 .pati-wellness-heading p{color:#d1d1d7;line-height:1.7;font-size:12.5px;max-width:640px}
+#main-content .wellness-v2 .pati-wellness-pet-tabs{gap:9px;padding:5px 0 16px;scrollbar-width:thin}
+#main-content .wellness-v2 .pati-wellness-pet-tabs button{min-height:43px;border:1px solid #dedfe3;background:#fff;color:#44454c;border-radius:30px;font-size:12px;font-weight:750;padding:10px 16px}
+#main-content .wellness-v2 .pati-wellness-pet-tabs button.active{background:#171719;color:#fff;border-color:#171719}
+#main-content .wellness-v2 .pati-wellness-actions{gap:10px;margin:0 0 14px}
+#main-content .wellness-v2 .pati-wellness-actions button{min-height:49px;background:#171719;color:#fff;border:1px solid #171719;border-radius:13px;padding:12px 16px;font-size:12px;font-weight:800}
+#main-content .wellness-v2 .pati-wellness-actions button:nth-child(2){background:#f5f5f6;color:#222328;border-color:#e1e1e6}
+#main-content .wellness-v2 .pati-wellness-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0 0 15px}
+#main-content .wellness-v2 .pati-wellness-summary>div{min-height:82px;display:grid;align-content:center;gap:5px;padding:13px;border:1px solid #e6e6ea;background:#fff;border-radius:15px}
+#main-content .wellness-v2 .pati-wellness-summary small{font-size:10.5px;color:#747680}
+#main-content .wellness-v2 .pati-wellness-summary strong{font-size:clamp(18px,2.5vw,25px);letter-spacing:-.035em;font-variant-numeric:tabular-nums;color:#18181b}
+#main-content .wellness-v2 .wellness-v2-heading-row{display:flex;align-items:baseline;justify-content:space-between;gap:14px;margin:23px 0 13px}
+#main-content .wellness-v2 .wellness-v2-heading-row h2{font-size:19px;letter-spacing:-.035em;color:#222328;margin:0}
+#main-content .wellness-v2 .wellness-v2-heading-row>span{font-size:11px;color:#787a82}
+#main-content .wellness-v2 .wellness-v2-heading-row>button{border:0;background:transparent;color:#44444c;font-size:11px;font-weight:800;min-height:36px;padding:7px 11px}
+#main-content .wellness-v2 .wellness-v2-filters{display:flex;gap:8px;overflow-x:auto;padding:3px 0 12px;scrollbar-width:thin;overscroll-behavior-x:contain}
+#main-content .wellness-v2 .wellness-v2-filters button{min-height:40px;white-space:nowrap;flex:0 0 auto;padding:9px 15px;border:1px solid #e1e1e4;background:#fff;color:#51535b;border-radius:30px;font-size:11px;font-weight:800}
+#main-content .wellness-v2 .wellness-v2-filters button.active{background:#18181a;color:#fff;border-color:#18181a}
+#main-content .wellness-v2 .pati-wellness-events{display:grid;gap:11px}
+#main-content .wellness-v2 .pati-wellness-event{display:flex;align-items:flex-start;gap:12px;padding:16px;border:1px solid #e6e6e9;background:#fff;border-radius:16px;min-width:0}
+#main-content .wellness-v2 .pati-wellness-event-icon{width:42px;height:42px;flex:0 0 42px;border-radius:12px;background:#f1f1f3;display:grid;place-items:center;font-size:23px}
+#main-content .wellness-v2 .wellness-v2-event-main{flex:1;min-width:0;display:grid;gap:7px}
+#main-content .wellness-v2 .wellness-v2-event-main strong{font-size:13.5px;color:#242429;overflow-wrap:anywhere;line-height:1.5}
+#main-content .wellness-v2 .wellness-v2-event-main small{font-size:11px;color:#777982;line-height:1.5}
+#main-content .wellness-v2 .wellness-v2-event-flags{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#main-content .wellness-v2 .wellness-v2-event-flags>span{font-weight:800;font-size:10px;color:#74757e}
+#main-content .wellness-v2 .wellness-v2-event-flags b{font-size:10px;line-height:1.2;border-radius:30px;padding:6px 9px;font-weight:800;background:#f0f0f2;color:#565761}
+#main-content .wellness-v2 .wellness-v2-event-flags b.is-overdue{background:#fff0f1;color:#93383a}
+#main-content .wellness-v2 .wellness-v2-event-flags b.is-completed{background:#eaf4ed;color:#305a42}
+#main-content .wellness-v2 .wellness-v2-note{font-size:11px;color:#6f7079;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;margin:0}
+#main-content .wellness-v2 .wellness-v2-repeat{font-size:10px;color:#777981;font-weight:750}
+#main-content .wellness-v2 .pati-wellness-event-actions{display:flex;gap:7px;flex-wrap:wrap;flex-direction:column;align-items:stretch;flex:0 0 auto}
+#main-content .wellness-v2 .pati-wellness-event-actions button{min-height:36px;padding:8px 11px;border:1px solid #dedfe2;border-radius:10px;background:#f4f4f5;color:#34353b;font-size:10.5px;font-weight:800}
+#main-content .wellness-v2 .pati-wellness-event-actions button:first-child:not(.wellness-v2-delete){background:#171719;color:#fff;border-color:#171719}
+#main-content .wellness-v2 .pati-wellness-event-actions button.wellness-v2-delete{background:#fff3f3;color:#9b4141;border-color:#f1dedf}
+#main-content .wellness-v2 .pati-wellness-weights{border:1px solid #e7e7eb;background:#fff;border-radius:16px;overflow:hidden}
+#main-content .wellness-v2 .pati-wellness-weight-row{min-height:64px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #ededf0;padding:13px 15px;font-size:12px}
+#main-content .wellness-v2 .pati-wellness-weight-row>span{font-size:11px;white-space:nowrap;color:#82848c}
+#main-content .wellness-v2 .pati-wellness-weight-row>div:nth-child(2){margin-left:auto;display:grid;gap:4px;text-align:right}
+#main-content .wellness-v2 .pati-wellness-weight-row strong{font-size:13px;color:#202024}
+#main-content .wellness-v2 .pati-wellness-weight-row small{font-size:10px;color:#85858c;overflow-wrap:anywhere;max-width:180px}
+#main-content .wellness-v2 .wellness-v2-weight-actions{display:flex;gap:6px;align-items:center}
+#main-content .wellness-v2 .wellness-v2-weight-actions button{min-height:37px;padding:8px 10px;border:1px solid #e6e6e9;border-radius:9px;background:#f7f7f8;color:#44454b;font-size:10px;font-weight:800}
+#main-content .wellness-v2 .wellness-v2-weight-actions button:last-child{background:#fff4f4;color:#a03e42;border-color:#f0e0e0}
+#main-content .wellness-v2 .pati-wellness-empty{font-size:12px;line-height:1.6;color:#81838b;padding:20px}
+#main-content .wellness-v2 .pati-wellness-disclaimer{font-size:11px;color:#757780;line-height:1.8;padding:18px 2px 0;margin-top:18px;border-top:1px solid #e9e9ec}
+#main-content .wellness-v2 .wellness-v2-error{padding:13px;background:#fff1f2;color:#8e383b;border:1px solid #f0dcdc;border-radius:11px;font-size:12px;line-height:1.65;margin:10px 0}
+#main-content .wellness-v2 .wellness-v2-error button{display:inline-flex;margin-left:8px;padding:8px 12px;border:0;border-radius:9px;background:#202023;color:#fff;font-size:11px;font-weight:800}
+#main-content .wellness-v2 .pati-wellness-empty-card{background:#f8f8fa;border:1px solid #e5e5e9;border-radius:16px}
+#main-content .wellness-v2 .pati-wellness-empty-card h2{color:#242428}
+#main-content .wellness-v2 .pati-wellness-empty-card button{background:#171719;color:#fff}
+#modal-root .wellness-v2-form-hint{font-size:11px;color:#7a7c83;line-height:1.7;margin:12px 0}
+@media(max-width:720px){
+ #main-content .wellness-v2 .pati-wellness-event{flex-wrap:wrap}
+ #main-content .wellness-v2 .pati-wellness-event-actions{width:100%;flex-direction:row;border-top:1px solid #efeff0;padding-top:11px}
+ #main-content .wellness-v2 .pati-wellness-event-actions button{flex:1 1 90px}
+}
+@media(max-width:620px){
+ #main-content .pati-wellness-page.wellness-v2{padding:10px 11px calc(100px + env(safe-area-inset-bottom,0px))}
+ #main-content .wellness-v2 .pati-wellness-heading{padding:22px 19px;border-radius:18px}
+ #main-content .wellness-v2 .pati-wellness-heading h1{font-size:25px}
+ #main-content .wellness-v2 .pati-wellness-summary{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ #main-content .wellness-v2 .pati-wellness-summary>div{padding:13px 12px;min-height:73px}
+ #main-content .wellness-v2 .pati-wellness-summary strong{font-size:22px}
+ #main-content .wellness-v2 .pati-wellness-event{padding:13px}
+ #main-content .wellness-v2 .pati-wellness-event-icon{width:38px;height:38px;flex-basis:38px}
+ #main-content .wellness-v2 .pati-wellness-weight-row{flex-wrap:wrap;gap:9px}
+ #main-content .wellness-v2 .wellness-v2-weight-actions{flex:1 1 100%;justify-content:flex-end;border-top:1px solid #efeff0;padding-top:9px}
+ #main-content .wellness-v2 .wellness-v2-weight-actions button{flex:1 1 100px}
+}
+@media(max-width:365px){#main-content .wellness-v2 .pati-wellness-actions{grid-template-columns:1fr}}
+html[data-pati-theme="dark"] #main-content .wellness-v2{--wv-ink:#f2f2f5;--wv-muted:#c7c8d0;--wv-line:#45464e;color:#f5f5f6}
+html[data-pati-theme="dark"] #main-content .wellness-v2 :is(.pati-wellness-summary>div,.pati-wellness-event,.pati-wellness-weights,.pati-wellness-empty-card){background:#212228!important;border-color:#404148!important;color:#f3f3f5}
+html[data-pati-theme="dark"] #main-content .wellness-v2 :is(.pati-wellness-summary strong,.pati-wellness-event strong,.pati-wellness-weight-row strong,.wellness-v2-heading-row h2,.pati-wellness-empty-card h2){color:#f6f6f7!important}
+html[data-pati-theme="dark"] #main-content .wellness-v2 :is(.pati-wellness-summary small,.pati-wellness-event small,.pati-wellness-weight-row span,.pati-wellness-weight-row small,.wellness-v2-note,.wellness-v2-repeat,.pati-wellness-disclaimer){color:#c9cad2!important}
+html[data-pati-theme="dark"] #main-content .wellness-v2 .pati-wellness-pet-tabs button,
+html[data-pati-theme="dark"] #main-content .wellness-v2 .wellness-v2-filters button{background:#2b2c32;color:#f3f3f5;border-color:#4b4c56}
+html[data-pati-theme="dark"] #main-content .wellness-v2 .pati-wellness-pet-tabs button.active,
+html[data-pati-theme="dark"] #main-content .wellness-v2 .wellness-v2-filters button.active{background:#f1f1f4;color:#151516;border-color:#f1f1f4}
+html[data-pati-theme="dark"] #main-content .wellness-v2 :is(.pati-wellness-actions button,.pati-wellness-event-actions button:first-child:not(.wellness-v2-delete)){background:#f2f2f3;color:#171718;border-color:#f2f2f3}
+html[data-pati-theme="dark"] #main-content .wellness-v2 :is(.pati-wellness-actions button:nth-child(2),.pati-wellness-event-actions button,.wellness-v2-weight-actions button){background:#303138;color:#f2f2f5;border-color:#4c4d55}
+html[data-pati-theme="dark"] #main-content .wellness-v2 .pati-wellness-event-actions button.wellness-v2-delete{background:#502e35;color:#ffe5e7;border-color:#78434a}
+html[data-pati-theme="dark"] #main-content .wellness-v2 .pati-wellness-event-icon{background:#36373f}
+html[data-pati-theme="dark"] #main-content .wellness-v2 .wellness-v2-event-flags b.is-overdue{background:#51333b;color:#ffe2e5}
+html[data-pati-theme="dark"] #main-content .wellness-v2 .wellness-v2-event-flags b.is-completed{background:#2c4537;color:#d6f5df}
+html[data-pati-theme="dark"] #main-content .wellness-v2 .wellness-v2-event-flags b.is-planned{background:#373840;color:#eee}
+html[data-pati-theme="dark"] #main-content .wellness-v2 .wellness-v2-heading-row>button{color:#efeff3}
+html[data-pati-theme="dark"] #main-content .wellness-v2 .wellness-v2-error{background:#4c3034;border-color:#794448;color:#fff}
+@media(prefers-reduced-motion:reduce){#main-content .wellness-v2 *{scroll-behavior:auto}}
