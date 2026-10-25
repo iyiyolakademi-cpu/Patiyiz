@@ -1952,8 +1952,80 @@ function adoptionPage(){
   +'<div class="adopt-v2-results-head"><h2>Yuva arayan dostlar</h2><span id="adoption-results-count" role="status" aria-live="polite">'+list.length+' ilan</span></div>'
   +'<div class="adopt-v2-grid" id="adoption-results">'+(adoptionLoading?'<p role="status" class="adopt-v2-loading">İlanlar yükleniyor…</p>':adoptionCards(list))+'</div></section>';
 }
-function carePage(){let today=new Date().toLocaleDateString('sv-SE');let all=data.care.filter(x=>x.owner_id===me.id);let c=all.filter(x=>careFilter==='all'||(careFilter==='done'?x.done:careFilter==='late'?!x.done&&x.due_date<today:!x.done&&x.due_date>=today)).sort((a,b)=>a.due_date.localeCompare(b.due_date));main.innerHTML=header('Bakım Takvimi','Hayvanlarının önemli bakım günlerini takip et.',button('+ Görev ekle','care-add')+button('Aşı, kilo ve hatırlatmalar','wellness-open')) +`<div class="pati-filter-tabs">${[['all','Tümü'],['upcoming','Yaklaşan'],['late','Geciken'],['done','Tamamlanan']].map(([key,label])=>`<button type="button" data-action="care-filter" data-id="${key}" class="${careFilter===key?'active':''}">${label} (${all.filter(x=>key==='all'||(key==='done'?x.done:key==='late'?!x.done&&x.due_date<today:!x.done&&x.due_date>=today)).length})</button>`).join('')}</div><div class="pati-note">Bakım takvimi bu hesapta saklanır. Şu sürümde otomatik e-posta / telefon hatırlatması gönderilmez.</div><div class="pati-list">${c.map(x=>`<div class="pati-card"><div class="pati-row between"><div><span class="pati-pill">${esc(x.category)}</span><h3 style="margin-top:10px;${x.done?'text-decoration:line-through;opacity:.6':''}">${esc(x.title)}</h3><p>${day(x.due_date)} ${x.pet_id?'· '+esc(data.pets.find(p=>p.id===x.pet_id)?.name||''):''}</p></div><div class="pati-row">${button(x.done?'Yeniden aç':'✓ Tamamla','care-done',`data-id="${x.id}"`)}<button data-action="care-del" data-id="${x.id}" class="small-btn danger-btn">Sil</button></div></div></div>`).join('')}</div>${c.length?'':empty('Bakım görevi eklenmedi')}`}
-
+let carePetFilter='all',careCategoryFilter='Tümü',careSearch='',careLoading=false,careLoadError='';
+const CARE_CATEGORIES=['Aşı','Veteriner','İlaç','Mama','Bakım','Diğer'];
+function careToday(){return new Date().toLocaleDateString('sv-SE')}
+function careDateValid(v){if(!/^\d{4}-\d{2}-\d{2}$/.test(String(v||'')))return false;const d=new Date(v+'T12:00:00Z');return !Number.isNaN(d.getTime())&&d.toISOString().slice(0,10)===v}
+function careFold(v){return String(v||'').toLocaleLowerCase('tr-TR').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i').trim()}
+function careOwnItems(){return data.care.filter(x=>x.owner_id===me?.id)}
+function careDueState(item,today=careToday()){
+ if(item.done)return 'done';
+ if(item.due_date<today)return 'late';
+ if(item.due_date===today)return 'today';
+ return 'upcoming';
+}
+function careVisibleItems(){
+ const today=careToday(),q=careFold(careSearch);
+ return careOwnItems().filter(x=>
+  (careFilter==='all'||careFilter==='upcoming'?(careFilter==='all'||(!x.done&&x.due_date>=today)):careFilter==='done'?!!x.done:careFilter==='today'?!x.done&&x.due_date===today:careFilter==='late'?!x.done&&x.due_date<today:false)
+  &&(carePetFilter==='all'||(carePetFilter==='none'?!x.pet_id:x.pet_id===carePetFilter))
+  &&(careCategoryFilter==='Tümü'||x.category===careCategoryFilter)
+  &&(!q||careFold([x.title,x.category,data.pets.find(p=>p.id===x.pet_id&&p.owner_id===me?.id)?.name||''].join(' ')).includes(q))
+ ).sort((a,b)=>Number(a.done)-Number(b.done)||String(a.due_date).localeCompare(String(b.due_date))||new Date(b.created_at)-new Date(a.created_at));
+}
+function careCard(x){
+ const state=careDueState(x),p=data.pets.find(p=>p.id===x.pet_id&&p.owner_id===me?.id);
+ const icons={Aşı:'💉',Veteriner:'🩺',İlaç:'💊',Mama:'🥣',Bakım:'🧼',Diğer:'📋'};
+ const labels={late:'Gecikti',today:'Bugün',upcoming:'Planlandı',done:'Tamamlandı'};
+ return '<article class="care-v2-item '+(x.done?'is-done':'')+'">'
+  +'<div class="care-v2-item-icon" aria-hidden="true">'+(icons[x.category]||'🐾')+'</div>'
+  +'<div class="care-v2-item-main"><div class="care-v2-item-head"><span>'+esc(x.category||'Bakım')+'</span><span class="care-v2-item-status is-'+state+'">'+labels[state]+'</span></div>'
+  +'<h3>'+esc(x.title)+'</h3>'
+  +'<p><span>📅 '+esc(day(x.due_date))+'</span>'+(p?'<span>🐾 '+esc(p.name)+'</span>':'<span>Genel görev</span>')+'</p>'
+  +'</div><div class="care-v2-actions">'
+  +'<button type="button" class="care-v2-complete" data-action="care-done" data-id="'+esc(x.id)+'">'+(x.done?'↶ Geri al':'✓ Tamamla')+'</button>'
+  +'<button type="button" data-action="care-edit" data-id="'+esc(x.id)+'">Düzenle</button>'
+  +'<button type="button" class="care-v2-delete" data-action="care-del" data-id="'+esc(x.id)+'">Sil</button></div></article>';
+}
+function careUpdateResults(){
+ if(view!=='care')return;
+ const list=careVisibleItems(),result=document.getElementById('care-results'),count=document.getElementById('care-result-count');
+ if(result)result.innerHTML=list.length?list.map(careCard).join(''):'<div class="care-v2-empty" role="status"><span>🐾</span><h3>Bu filtrelerde görev yok</h3><p>Başka bir tarih, kategori veya hayvan seçebilirsin.</p><button type="button" data-action="care-reset">Filtreleri temizle</button></div>';
+ if(count)count.textContent=list.length+' görev';
+}
+async function careRefresh(){
+ if(!me||careLoading)return;
+ const uid=me.id;careLoading=true;careLoadError='';if(view==='care')carePage();
+ try{
+  const r=await sb.from('care_tasks').select('*').eq('owner_id',uid).order('due_date',{ascending:true}).limit(350);
+  if(r.error)throw r.error;
+  if(me?.id!==uid)return;
+  data.care=r.data||[];patiyizLoadedTables.add('care_tasks');
+ }catch(error){console.warn('Bakım takvimi:',error);if(me?.id===uid)careLoadError='Görevler yenilenemedi. Bağlantını kontrol edip tekrar dene.'}
+ finally{careLoading=false;if(me?.id===uid&&view==='care')carePage()}
+}
+function carePage(){
+ const all=careOwnItems(),today=careToday(),counts={all:all.length,done:all.filter(x=>x.done).length,late:all.filter(x=>!x.done&&x.due_date<today).length,today:all.filter(x=>!x.done&&x.due_date===today).length,upcoming:all.filter(x=>!x.done&&x.due_date>=today).length};
+ const pets=data.pets.filter(p=>p.owner_id===me?.id);
+ const list=careVisibleItems();
+ main.innerHTML='<section class="care-v2">'
+  +'<div class="care-v2-heading"><div><small>PATİYİZ · GÜNLÜK BAKIM</small><h1>Bakım Takvimi</h1><p>Patili dostunun bakım rutinini tek yerden yönet.</p></div><button type="button" class="care-v2-add" data-action="care-add">+ Görev ekle</button></div>'
+  +'<div class="care-v2-hero"><div><small>BAKIM VE TAKİP</small><h2>Küçük rutinler, sağlıklı patiler.</h2><p>Aşı, veteriner, mama, ilaç ve günlük bakım işlerini planla. Tamamlanan görevleri güvenle takip et.</p></div><span aria-hidden="true">🐾</span></div>'
+  +'<div class="care-v2-metrics"><div><b>'+counts.all+'</b><span>Toplam görev</span></div><div><b>'+counts.today+'</b><span>Bugün</span></div><div><b>'+counts.late+'</b><span>Geciken</span></div><div><b>'+counts.done+'</b><span>Tamamlanan</span></div></div>'
+  +'<div class="care-v2-shortcut"><div><strong>⏰ Saatli ve tekrarlayan hatırlatmalar</strong><p>Aşı, mama ve ilaç için saat ve tekrar aralığı belirlemek istersen Hayvan Sağlığı bölümünü kullan.</p></div><button type="button" data-action="wellness-open">Sağlık hatırlatmaları →</button></div>'
+  +'<p class="care-v2-notice">Görevler Patiyiz hesabında saklanır. <strong>Bu takvim tek başına telefon bildirimi, SMS veya e-posta göndermez.</strong> Veteriner yönlendirmelerinin yerini almaz.</p>'
+  +'<div class="care-v2-toolbar"><label for="care-search">Görevlerde ara</label><div class="care-v2-search"><input id="care-search" type="search" placeholder="Görev, kategori veya hayvan adı…" value="'+esc(careSearch)+'" aria-controls="care-results" autocomplete="off"><button type="button" data-action="care-clear">Temizle</button></div></div>'
+  +'<div class="care-v2-filter-title"><strong>Görev durumu</strong><button type="button" data-action="care-refresh"'+(careLoading?' disabled':'')+'>'+(careLoading?'Yenileniyor…':'↻ Yenile')+'</button></div>'
+  +'<div class="care-v2-filters" role="group" aria-label="Görev durumu">'
+  +[['all','Tümü ('+counts.all+')'],['today','Bugün ('+counts.today+')'],['upcoming','Yaklaşan ('+counts.upcoming+')'],['late','Geciken ('+counts.late+')'],['done','Tamamlanan ('+counts.done+')']].map(([key,label])=>'<button type="button" data-action="care-filter" data-id="'+key+'" class="'+(careFilter===key?'active':'')+'" aria-pressed="'+String(careFilter===key)+'">'+label+'</button>').join('')+'</div>'
+  +'<div class="care-v2-filter-title"><strong>Hayvan</strong></div><div class="care-v2-filters" role="group" aria-label="Hayvan filtresi">'
+  +[['all','Tüm hayvanlar'],['none','Genel görevler'],...pets.map(p=>[p.id,p.name])].map(([key,label])=>'<button type="button" data-action="care-pet-filter" data-id="'+esc(key)+'" class="'+(carePetFilter===key?'active':'')+'" aria-pressed="'+String(carePetFilter===key)+'">'+esc(label)+'</button>').join('')+'</div>'
+  +'<div class="care-v2-filter-title"><strong>Bakım kategorisi</strong></div><div class="care-v2-filters" role="group" aria-label="Bakım kategorisi">'
+  +['Tümü',...CARE_CATEGORIES].map(key=>'<button type="button" data-action="care-category" data-id="'+esc(key)+'" class="'+(careCategoryFilter===key?'active':'')+'" aria-pressed="'+String(careCategoryFilter===key)+'">'+esc(key)+'</button>').join('')+'</div>'
+  +(careLoadError?'<p class="care-v2-error" role="alert">'+esc(careLoadError)+'</p>':'')
+  +'<div class="care-v2-result-header"><h2>Görev listesi</h2><span id="care-result-count" role="status" aria-live="polite">'+list.length+' görev</span></div>'
+  +'<div id="care-results" class="care-v2-list">'+(careLoading?'<p class="care-v2-loading" role="status">Görevler yükleniyor…</p>':list.length?list.map(careCard).join(''):'<div class="care-v2-empty" role="status"><span>🐾</span><h3>Bu filtrelerde görev yok</h3><p>Yeni görev ekleyebilir veya filtreleri temizleyebilirsin.</p><button type="button" data-action="care-reset">Filtreleri temizle</button></div>')+'</div></section>';
+}
 let dmRecorder=null,dmParts=[],dmStream=null,dmCancel=false,dmRecipient=null;
 async function uploadDmFile(file,type,receiver){if(!file?.size||file.size>8388608)throw Error('Dosya en fazla 8 MB olabilir.');const mime=file.type.split(';')[0];if(type==='image'&&!['image/jpeg','image/png','image/webp'].includes(mime))throw Error('JPG, PNG veya WebP seç.');if(type==='audio'&&!['audio/webm','audio/mp4','audio/ogg','audio/mpeg'].includes(mime))throw Error('Ses biçimi desteklenmiyor.');const ext=type==='image'?(mime==='image/png'?'png':mime==='image/webp'?'webp':'jpg'):(mime==='audio/mp4'?'m4a':mime==='audio/ogg'?'ogg':mime==='audio/mpeg'?'mp3':'webm');const author=me?.id;if(!author)throw Error('Mesaj göndermek için giriş yap.');const path=author+'/'+crypto.randomUUID()+'.'+ext;const up=await sb.storage.from('patiyiz-private-messages').upload(path,file,{contentType:mime});if(up.error)throw up.error;try{if(me?.id!==author)throw Error('Oturum değişti. Mesaj gönderilmedi.');const m=await sb.from('messages').insert({sender_id:author,receiver_id:receiver,body:type==='audio'?'🎤 Sesli mesaj':'📷 Fotoğraf',attachment_type:type,attachment_path:path}).select('*').single();if(m.error)throw m.error;return m.data}catch(error){try{await sb.storage.from('patiyiz-private-messages').remove([path])}catch(cleanup){console.warn('Gönderilemeyen medya temizlenemedi',cleanup)}throw error}}
 const patiDmSignedCache=new Map();
