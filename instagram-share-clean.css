@@ -1,0 +1,29 @@
+/* Patiyiz — simple Instagram-style native gallery + in-composer sharing. */
+#post-form .pati-compose-media{margin:0 0 12px;padding:10px;border:1px solid #e7e7e9;border-radius:16px;background:#fff}
+#post-form .pati-media-intro{padding:2px 3px 9px}
+#post-form .pati-media-gallery{aspect-ratio:4/5;max-height:470px;min-height:260px;background:#151517;border-radius:12px;overflow:hidden}
+#post-form .pati-media-gallery>img{width:100%;height:100%;object-fit:contain}
+#post-form .pati-media-thumbs{gap:8px;padding:10px 0 0}
+#post-form .pati-media-picker-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(95px,1fr));gap:8px;margin-top:12px}
+#post-form .pati-media-picker-actions button{min-height:44px;border-radius:11px;white-space:normal;font-size:11px;font-weight:800}
+#post-form .pati-media-help{font-size:10.5px;line-height:1.6;color:#7b7c84}
+#post-form .pati-media-controls{margin:10px 0 16px;padding:12px;border-radius:13px;border:1px solid #e9e9ed;background:#f8f8f9}
+#post-form .pati-media-controls>label{display:block;font-size:12px;font-weight:800;color:#313238;margin:0 0 9px}
+#post-form .pati-ratio-options{display:flex;gap:8px;flex-wrap:wrap}
+#post-form .pati-ratio-options button{flex:1 1 75px;min-height:40px;border-radius:10px;font-size:11px;font-weight:800}
+#post-form .pati-inline-crop-toggle{display:block;margin-top:10px;width:100%;min-height:41px;border:1px solid #dedee2;border-radius:10px;background:#fff;color:#383941;font-size:11px;font-weight:800;cursor:pointer}
+#post-form .pati-inline-crop-toggle:focus-visible,#post-form .pati-media-picker-actions button:focus-visible{outline:3px solid #81828c;outline-offset:2px}
+#post-form .pati-crop-preview[hidden]{display:none!important}
+#post-form .pati-crop-preview:not([hidden]){margin-top:12px}
+#story-form #story-photo-preview img{max-height:min(60dvh,510px);width:100%;object-fit:contain;border-radius:12px}
+@media(max-width:680px){
+ #post-form .pati-compose-media{padding:8px;border-radius:12px}
+ #post-form .pati-media-gallery{min-height:220px;aspect-ratio:4/5;max-height:54dvh}
+ #post-form .pati-media-picker-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #post-form .pati-media-picker-actions button{min-height:46px}
+ #post-form .pati-media-help{padding:0 2px}
+}
+html[data-pati-theme="dark"] #post-form :is(.pati-compose-media,.pati-media-controls){background:#23242a;color:#f5f5f7;border-color:#44454c}
+html[data-pati-theme="dark"] #post-form .pati-media-controls>label{color:#f5f5f7}
+html[data-pati-theme="dark"] #post-form .pati-inline-crop-toggle{background:#303137;color:#f4f4f7;border-color:#50515a}
+@media(prefers-reduced-motion:reduce){#post-form .pati-media-picker-actions button{transition:none}}

@@ -36,27 +36,25 @@ test('Profil araması sadece arama kutusuna basınca açılır, iptal Keşfet ı
  assert.match(app,/case 'pati-search-discover':exploreTab='media'/);
  assert.match(css,/#main-content \.pati-explore-media-screen>\.pati-explore-search-launch/);
 });
-test('Gönderide Galeri butonu Patiyiz ekranını direkt açar, işletim sistemi seçicisini açmaz',()=>{
+test('Gönderide Galeri tuşu önce gerçek cihaz seçicisini, kamera tuşu kamerayı açar',()=>{
  const code=part('function openComposerMediaPicker(kind){','function openStoryComposer(');
- let opened,clicked=0,cap=false;
- const input={
-  isConnected:true,multiple:false,click(){clicked++},
-  setAttribute(n,v){if(n==='capture')cap=true},removeAttribute(n){if(n==='capture')cap=false}
- };
- const f={dataset:{mode:'post'},querySelector:()=>input};
- const ctx={window:{PatiyizGalleryPicker:{open:(files,options)=>{opened={files,options}}}},
-  document:{getElementById:()=>f}};
+ let clicked=0,cap=false,opened=0;
+ const input={isConnected:true,multiple:false,click(){clicked++},
+  setAttribute(n){if(n==='capture')cap=true},removeAttribute(n){if(n==='capture')cap=false}};
+ const form={dataset:{mode:'post'},querySelector:()=>input};
+ const ctx={window:{PatiyizGalleryPicker:{open:()=>{opened++}}},document:{getElementById:()=>form}};
  const action=vm.runInNewContext(code+'\nopenComposerMediaPicker',ctx);
  action('gallery');
- assert.equal(clicked,0,'OS chooser must not show on first tap');
- assert.equal(opened.files.length,0);
- assert.equal(opened.options.multiple,true);
- assert.equal(opened.options.max,10);
- opened.options.onReopen();
- assert.equal(clicked,1,'OS access only after user chooses permission');
+ assert.equal(clicked,1,'Önce native galeri izni ve seçimi açılır');
+ assert.equal(opened,0,'Dosya seçmeden boş galeri ekranı gösterilmez');
+ assert.equal(input.multiple,true);
+ assert.equal(cap,false);
  action('camera');
  assert.equal(clicked,2);
  assert.equal(cap,true);
+ form.dataset.mode='reels';action('gallery');
+ assert.equal(clicked,3);
+ assert.equal(input.multiple,true,'Reels çoklu klip seçimi korunur');
 });
 test('DM galerisi formda sistem label yerine normal butondan açılır',()=>{
  const dm=part('function messagesPage(){','function pushKeyBytes(');
@@ -66,7 +64,7 @@ test('DM galerisi formda sistem label yerine normal butondan açılır',()=>{
  assert.match(app,/case 'pati-dm-gallery-open':document\.querySelector/);
  assert.match(app,/case 'pati-dm-gallery-open':document\.querySelector\('#message-form input\[name=\"dm_gallery\"\]'\)\?\.click\(\)/);
 });
-test('Galeri ilk dokunmada ekrana açılır ve fotoğraf iznini açıkça ister',async()=>{
+test('Galeri önizlemesi boş seçimde izinsiz fotoğraf taramaz ve seçme açıklamasını gösterir',async()=>{
  class El{
   constructor(type){this.type=type;this.children=[];this.dataset={};this.hidden=false;this.listeners={};this.className='';this.textContent='';this.elements={};}
   append(...els){this.children.push(...els)}

@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: '22'
       - name: Syntax checks
-        run: node --check app.js && node --check config.js && node --check knowledge.js && node --check academy-curriculum.js && node --check academy-101-part1.js && node --check academy-101-part2.js && node --check premium-academy.js && node --check health-file.js && node --check achievements.js && node --check follower-milestones.js && node --check gallery-picker.js && node --check photo-studio.js && node --check reels-editor.js && node --check patiyiz-upload.js && node --check patiyiz-sw.js
+        run: node --check app.js && node --check config.js && node --check knowledge.js && node --check academy-curriculum.js && node --check academy-101-part1.js && node --check academy-101-part2.js && node --check premium-academy.js && node --check health-file.js && node --check achievements.js && node --check follower-milestones.js && node --check gallery-picker.js && node --check reels-editor.js && node --check patiyiz-upload.js && node --check patiyiz-sw.js
       - name: Android PWA readiness (offline; no credentials)
         run: node android/check-readiness.mjs && node --check android/generate-assetlinks.mjs
       - name: Regression tests
