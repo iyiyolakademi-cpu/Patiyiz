@@ -2714,7 +2714,12 @@ function profilePage(){
 function formField(name,label,type='text',val='',required=false){return `<div class="pati-field"><label for="f-${name}">${esc(label)}</label><input id="f-${name}" name="${name}" type="${type}" ${required?'required':''} value="${esc(val)}"></div>`}
 function selectField(name,label,options,val=''){return `<div class="pati-field"><label>${esc(label)}</label><select name="${name}">${options.map(x=>`<option ${x===val?'selected':''}>${esc(x)}</option>`).join('')}</select></div>`}
 function textField(name,label,val='',required=true,max=1500){return `<div class="pati-field"><label>${esc(label)}</label><textarea name="${name}" maxlength="${max}" ${required?'required':''}>${esc(val)}</textarea></div>`}
-function storyPhotoField(){return '<section class="pati-compose-media pati-story-media"><div class="pati-media-intro"><span class="pati-media-icon">✦</span><div><strong>Hikâyene bir fotoğraf ekle</strong><p>Fotoğrafı galerinden seç veya anı hemen yakala.</p></div></div><div class="pati-media-gallery" id="story-photo-preview"><div class="pati-media-empty"><span>✧</span><strong>Hikâye önizlemesi burada görünecek</strong><small>Fotoğraf seçmek için aşağıya dokun.</small></div></div><div class="pati-media-picker-actions"><button type="button" class="pati-media-pick-primary" data-action="pati-story-gallery">▧ Galeriyi aç</button><button type="button" class="pati-media-pick-secondary" data-action="pati-story-camera">◎ Fotoğraf çek</button></div><input type="file" name="story_gallery" accept="image/*,.heic,.heif" class="pati-native-input" aria-label="Galeriden fotoğraf seç"><input type="file" name="story_camera" accept="image/*" capture="environment" class="pati-native-input" aria-label="Kamerayla fotoğraf çek"></section>'}
+function storyPhotoField(){
+ return '<section class="pati-story-quick-media" aria-label="Hikâye fotoğrafı seç"><div class="pati-story-quick-intro"><span class="pati-story-quick-icon" aria-hidden="true">✦</span><div><strong>Hikâyeni oluştur</strong><small>Galerinden seç veya fotoğraf çek.</small></div></div>'+
+  '<div class="pati-story-quick-buttons"><button type="button" data-action="pati-story-gallery" class="pati-story-quick-primary">Galeriden seç</button><button type="button" data-action="pati-story-camera" class="pati-story-quick-secondary">Kamera</button></div>'+
+  '<div class="pati-media-gallery pati-story-quick-preview" id="story-photo-preview" hidden></div>'+
+  '<input type="file" name="story_gallery" accept="image/*,.heic,.heif" class="pati-native-input" aria-label="Galeriden hikâye fotoğrafı seç"><input type="file" name="story_camera" accept="image/*" capture="environment" class="pati-native-input" aria-label="Kamerayla hikâye fotoğrafı çek"></section>';
+}
 
 function imageField(){return '<div class="pati-field"><label>Fotoğraf seç</label><input type="file" accept="image/*,.heic,.heif" name="photo" multiple><p class="small-note">Galeriden seç veya kamerayla çek. Büyük fotoğraflar otomatik hazırlanır.</p><div class="pati-upload-preview" hidden></div></div>'}
 let patiyizCommentSheetPost='';
@@ -2840,7 +2845,10 @@ function openComposerMediaPicker(kind){
 }
 function openStoryComposer(autoPick=true,makeHighlight=false){
  clearPatiMediaUrls();
- modal('Yeni hikâye',storyPhotoField()+textField('caption','Hikâye açıklaması (isteğe bağlı)','',false,300)+'<div class="pati-story-editor"><label>Üst yazı <input name="overlay_text" maxlength="100" placeholder="Patili bir an..."></label><label>Yazı rengi <select name="overlay_color"><option value="#ffffff">Beyaz</option><option value="#17181b">Siyah</option><option value="#ffe17a">Sarı</option></select></label><label>Çıkartma <select name="overlay_sticker"><option value="">Yok</option><option value="🐾">🐾</option><option value="❤️">❤️</option><option value="🐱">🐱</option><option value="🐶">🐶</option></select></label></div><label class="pati-story-highlight-option"><input type="checkbox" name="is_highlight" value="on" '+(makeHighlight?'checked':'')+'><span><strong>Profilimde kalıcı göster</strong><small>Öne çıkan hikâyeler 24 saat sonra da görünür.</small></span></label>','story-form');
+ const note='<label class="pati-story-quick-caption">Hikâye notu <span>(isteğe bağlı)</span><input name="caption" maxlength="300" placeholder="Bir şeyler yaz..." autocomplete="off"></label>';
+ const extras='<details class="pati-story-quick-extras"><summary>Yazı ve çıkartma ekle</summary><div class="pati-story-editor"><label>Üst yazı <input name="overlay_text" maxlength="100" placeholder="Hikâyendeki yazı"></label><label>Yazı rengi <select name="overlay_color"><option value="#ffffff">Beyaz</option><option value="#17181b">Siyah</option><option value="#ffe17a">Sarı</option></select></label><label>Çıkartma <select name="overlay_sticker"><option value="">Yok</option><option value="🐾">🐾</option><option value="❤️">❤️</option><option value="🐱">🐱</option><option value="🐶">🐶</option></select></label></div></details>';
+ const highlight='<label class="pati-story-highlight-option"><input type="checkbox" name="is_highlight" value="on" '+(makeHighlight?'checked':'')+'><span><strong>Öne çıkanlara kaydet</strong><small>Hikâyen 24 saat sonra da saklanabilir.</small></span></label>';
+ modal('Yeni hikâye',storyPhotoField()+note+extras+highlight,'story-form');
  const footer=document.querySelector('#story-form .modal-footer button[type="submit"]');if(footer)footer.textContent='Hikâyeyi paylaş';
  if(autoPick)document.querySelector('#story-form input[name="story_gallery"]')?.click();
 }
@@ -2855,7 +2863,7 @@ async function renderEditedStoryFile(file,form){
 }
 function updateStoryMediaPreview(file){
  const box=document.getElementById('story-photo-preview');if(!box)return;
- clearPatiMediaUrls();box.replaceChildren();box.classList.toggle('has-media',!!file?.size);
+ clearPatiMediaUrls();box.replaceChildren();box.hidden=!file?.size;box.classList.toggle('has-media',!!file?.size);
  if(!file?.size)return;
  const img=document.createElement('img');img.alt='Hikâye fotoğrafı önizlemesi';img.src=makePatiMediaUrl(file);box.appendChild(img);
  const info=document.createElement('span');info.className='pati-media-file-name';info.textContent=file.name;box.appendChild(info);
