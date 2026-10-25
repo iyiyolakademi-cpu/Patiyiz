@@ -2864,7 +2864,30 @@ function adoptionValidateRecord(rec){
  if(/\b(?:no\s*[:.]?\s*\d+|daire\s*[:.]?\s*\d+|kapı\s*no\s*[:.]?\s*\d+)\b/i.test(rec.description))throw Error('Açık adres paylaşma; sadece şehir ve ilçe belirt.');
  return rec;
 }
-function composeCare(){modal('Bakım görevi ekle',formField('title','Görev adı','text','',true)+selectField('category','Kategori',['Aşı','Veteriner','İlaç','Bakım','Diğer'])+formField('due_date','Tarih','date',new Date().toISOString().slice(0,10),true)+petOptions(),'care-form')}
+function composeCare(a){
+ if(a&&a.owner_id!==me?.id)return notify('Bu görevi düzenleme yetkin yok.',true);
+ const owned=data.pets.filter(p=>p.owner_id===me?.id);
+ const petPick='<div class="pati-field"><label for="care-task-pet">Hayvan profili (isteğe bağlı)</label><select id="care-task-pet" name="pet_id"><option value="">Genel görev</option>'
+ +owned.map(p=>'<option value="'+esc(p.id)+'"'+(a?.pet_id===p.id?' selected':'')+'>'+esc(p.name)+'</option>').join('')+'</select></div>';
+ modal(a?'Bakım görevini düzenle':'Yeni bakım görevi',
+ '<p class="care-v2-form-intro">Aşı, veteriner, mama, ilaç veya günlük bakım görevlerini tarihe göre takip et. Saatli alarmlar için Hayvan Sağlığı bölümünü kullan.</p>'
+ +formField('title','Görev adı','text',a?.title||'',true)
+ +selectField('category','Kategori',CARE_CATEGORIES,a?.category||'Bakım')
+ +formField('due_date','Görev tarihi','date',a?.due_date||careToday(),true)
+ +petPick,'care-form');
+ const form=document.getElementById('care-form');
+ form.dataset.edit=a?.id||'';
+ form.querySelector('[name="title"]').minLength=2;
+ form.querySelector('[name="title"]').maxLength=110;
+ form.querySelector('.modal-footer button[type="submit"]').textContent=a?'Değişiklikleri kaydet':'Görev ekle';
+}
+function careValidateRecord(record){
+ if(record.title.length<2||record.title.length>110)throw Error('Görev adı 2–110 karakter arasında olmalı.');
+ if(!CARE_CATEGORIES.includes(record.category))throw Error('Geçerli bakım kategorisi seç.');
+ if(!careDateValid(record.due_date))throw Error('Geçerli görev tarihi seç.');
+ if(record.pet_id&&!data.pets.some(p=>p.id===record.pet_id&&p.owner_id===me?.id))throw Error('Bu hayvan profiline görev ekleme yetkin yok.');
+ return record;
+}
 function editProfile(){
  const p=current();
  const pic=p.avatar_url?'<img src="'+esc(p.avatar_url)+'" alt="Mevcut profil fotoğrafın">':'<span>'+esc((p.display_name||'P').slice(0,1).toUpperCase())+'</span>';
