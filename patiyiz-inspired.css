@@ -2450,3 +2450,183 @@ html[data-pati-theme="dark"] #main-content .pati-social-actions button[data-acti
  #main-content .pati-alert-row .pati-alert-follow-back{padding:7px 6px!important;font-size:10px!important;max-width:104px}
  #main-content .pati-alert-row .pati-alert-entry{min-width:0;flex:1}
 }
+
+/* Patiyiz mobile profile seam: header and the name section share one surface */
+@media(max-width:740px){
+ body:has(#main-content .pati-ig-profile),
+ #app-root:not(.hidden):has(#main-content .pati-ig-profile){
+  background:#f7f7f9!important;
+ }
+ #app-root:not(.hidden):has(#main-content .pati-ig-profile)>.mobile-header{
+  background:#f7f7f9!important;
+  border-bottom:0!important;box-shadow:none!important;margin:0!important;
+ }
+ #app-root:not(.hidden)>.app-shell:has(.pati-ig-profile),
+ #app-root:not(.hidden)>.app-shell:has(.pati-ig-profile)>#main-content{
+  background:#f7f7f9!important;
+  margin-top:0!important;padding-top:0!important;
+ }
+ #app-root:not(.hidden) #main-content>.pati-ig-profile{
+  padding-top:0!important;margin-top:0!important;
+  background:#f7f7f9!important;
+ }
+ #main-content .pati-ig-profile .pati-ig-summary{
+  border-radius:0!important;margin-top:0!important;
+  background:#f7f7f9!important;
+ }
+ #main-content .pati-ig-profile .pati-ig-bio,
+ #main-content .pati-ig-profile .pati-ig-actions,
+ #main-content .pati-ig-profile .pati-ig-highlight-section,
+ #main-content .pati-ig-profile .pati-ig-tabs,
+ #main-content .pati-ig-profile .pati-ig-grid{background:#fff!important}
+}
+/* Instagram-inspired video comment bottom sheet; keep video visible above it. */
+#modal-root .modal-backdrop.pati-instagram-comments-backdrop{
+ position:fixed!important;inset:0!important;
+ display:flex!important;align-items:flex-end!important;justify-content:center!important;
+ padding:0!important;background:rgba(0,0,0,.38)!important;
+ z-index:100300!important;
+}
+#modal-root .modal.pati-instagram-comments{
+ position:relative!important;margin:0 auto!important;
+ width:min(100%,680px)!important;max-width:680px!important;
+ height:min(82dvh,860px)!important;max-height:calc(100dvh - 28px)!important;
+ display:flex!important;flex-direction:column!important;
+ overflow:hidden!important;box-sizing:border-box!important;
+ border:0!important;border-radius:25px 25px 0 0!important;
+ color:#f2f2f4!important;background:#181b1e!important;box-shadow:0 -12px 40px #0006!important;
+}
+#modal-root .pati-instagram-comments .modal-header{
+ position:relative!important;flex:0 0 auto!important;
+ min-height:74px!important;display:flex!important;align-items:center!important;justify-content:center!important;
+ padding:26px 50px 12px!important;background:#181b1e!important;border-bottom:1px solid #303337!important;
+}
+#modal-root .pati-instagram-comments .modal-header::before{
+ content:"";position:absolute;top:12px;left:50%;transform:translateX(-50%);
+ width:42px;height:4px;border-radius:99px;background:#8b9099;
+}
+#modal-root .pati-instagram-comments .modal-header h2{
+ margin:0!important;color:#f7f7f8!important;font-size:16px!important;text-align:center!important;font-weight:850!important;
+}
+#modal-root .pati-instagram-comments .close-modal{
+ color:#f7f7f8!important;background:#292c30!important;
+ border:0!important;border-radius:50%!important;min-width:32px!important;min-height:32px!important;
+ right:12px!important;top:25px!important;
+}
+#modal-root #comment-form{
+ display:flex!important;flex:1 1 auto!important;min-height:0!important;flex-direction:column!important;background:#181b1e!important;
+}
+#modal-root .pati-instagram-comments .modal-content{
+ display:flex!important;flex-direction:column!important;gap:0!important;
+ flex:1 1 auto!important;min-height:0!important;max-height:none!important;
+ overflow:hidden!important;padding:0 0 3px!important;background:#181b1e!important;
+}
+#comment-form .pati-comment-post-summary{
+ flex:0 0 auto!important;max-height:30%!important;overflow:auto!important;
+ padding:14px 18px 12px!important;border-bottom:1px solid #303337!important;
+ background:#181b1e!important;
+}
+#comment-form .pati-comment-post-user{
+ display:flex;align-items:center;gap:10px;min-width:0;min-height:38px;margin-bottom:10px;color:#f5f5f6;
+}
+#comment-form .pati-comment-post-user>.avatar,
+#comment-form .pati-comment-post-user>.avatar.s{width:36px!important;height:36px!important;border-radius:50%!important;flex:0 0 36px!important}
+#comment-form .pati-comment-post-user strong{font-size:14px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#comment-form .pati-comment-follow{
+ margin-left:auto;flex:0 0 auto;padding:6px 10px!important;min-height:31px!important;
+ border:1px solid #6c7179!important;border-radius:10px!important;background:transparent!important;
+ font-size:12px!important;color:#fff!important;font-weight:750!important;
+}
+#comment-form .pati-comment-follow.is-following{color:#9da3aa!important}
+#comment-form .pati-comment-post-summary p{font-size:13px!important;line-height:1.5!important;color:#ebedf1!important;margin:6px 0 10px!important;white-space:pre-wrap;overflow-wrap:anywhere}
+#comment-form .pati-comment-post-summary>small{color:#a5a9b0!important;font-size:11px!important}
+#comment-form .comment-list{
+ flex:1 1 auto!important;min-height:0!important;max-height:none!important;
+ overflow-y:auto!important;overscroll-behavior:contain;
+ padding:6px 12px 16px!important;background:#181b1e!important;
+ scrollbar-width:thin;
+}
+#comment-form .pati-sheet-comment{
+ --pati-comment-indent:calc(var(--pati-comment-depth,0) * 13px);
+ display:grid!important;grid-template-columns:35px minmax(0,1fr) 37px!important;
+ column-gap:10px!important;align-items:start!important;
+ margin:0!important;margin-left:var(--pati-comment-indent)!important;
+ padding:13px 2px 11px 2px!important;border:0!important;
+ color:#f2f3f5!important;
+}
+#comment-form .pati-sheet-comment .pati-sheet-comment-avatar .avatar{
+ width:34px!important;height:34px!important;min-width:34px!important;border-radius:50%!important;
+}
+#comment-form .pati-sheet-comment-main{min-width:0}
+#comment-form .pati-sheet-comment-line{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap}
+#comment-form .pati-sheet-comment-line strong{font-size:13px!important;color:#f3f4f5!important}
+#comment-form .pati-sheet-comment-line time{font-size:11px!important;color:#9b9ea5!important}
+#comment-form .pati-sheet-comment p{
+ margin:3px 0 7px!important;color:#f0f0f2!important;
+ font-size:14px!important;line-height:1.43!important;white-space:pre-wrap;overflow-wrap:anywhere;
+}
+#comment-form .pati-sheet-comment .comment-actions{
+ display:flex!important;gap:14px!important;margin:0!important;padding:0!important;
+}
+#comment-form .pati-sheet-comment .comment-actions button{
+ border:0!important;padding:3px 0!important;background:none!important;
+ font-size:11px!important;font-weight:700!important;color:#a9adb5!important;
+}
+#comment-form .pati-comment-heart{
+ display:flex!important;flex-direction:column!important;align-items:center!important;gap:3px!important;
+ padding:14px 0 0!important;border:0!important;background:transparent!important;color:#a8aeb7!important;
+}
+#comment-form .pati-comment-heart svg.icon{width:22px!important;height:22px!important;stroke:#b1b4bd!important;fill:none!important}
+#comment-form .pati-comment-heart.active svg.icon{fill:#ff3040!important;stroke:#ff3040!important}
+#comment-form .pati-comment-heart small{font-size:11px!important;color:#aab0b7!important}
+#comment-form .pati-comment-replies-toggle{
+ border:0!important;background:transparent!important;margin:8px 0 0!important;padding:3px 0!important;
+ color:#aaafb8!important;text-align:left!important;font-size:12px!important;font-weight:780!important;
+}
+#comment-form .pati-comment-children{margin-top:7px}
+#comment-form .pati-comments-empty{color:#aab0b7!important;text-align:center!important;padding:30px 12px!important;font-size:14px!important}
+#comment-form .pati-comment-reply-hint{
+ margin:0!important;flex:0 0 auto!important;padding:0 17px!important;background:#25282d!important;
+ color:#c7ccd4!important;font-size:12px!important;line-height:1.9!important;
+}
+#comment-form .pati-comment-reply-hint:empty{display:none!important}
+#comment-form .pati-comment-reply-hint button{border:0;background:none;color:#fff;font-weight:800}
+#modal-root .pati-instagram-comments .modal-footer{
+ display:flex!important;flex-direction:column!important;gap:7px!important;
+ margin:0!important;padding:7px 14px max(14px,env(safe-area-inset-bottom,0px))!important;
+ flex:0 0 auto!important;border-top:1px solid #34383c!important;background:#181b1e!important;
+}
+#comment-form .pati-comment-quick{
+ display:flex!important;flex-wrap:nowrap;gap:8px;overflow-x:auto;
+ margin:0!important;padding:3px 0!important;scrollbar-width:none;
+}
+#comment-form .pati-comment-quick button{
+ flex:0 0 auto!important;border:0!important;background:none!important;
+ font-size:19px!important;width:37px;height:34px;padding:0!important;
+}
+#comment-form .pati-comment-editor-row{
+ display:flex!important;align-items:center;gap:10px;width:100%;
+}
+#comment-form .pati-comment-me .avatar{width:38px!important;height:38px!important;min-width:38px!important;border-radius:50%!important}
+#comment-form .pati-comment-editor-row textarea{
+ flex:1 1 auto!important;min-width:0!important;height:44px!important;min-height:44px!important;max-height:88px!important;
+ padding:11px 13px!important;margin:0!important;resize:none!important;box-sizing:border-box!important;
+ background:#24272b!important;border:1px solid #343942!important;border-radius:22px!important;
+ color:#fff!important;font-size:15px!important;line-height:1.35!important;
+}
+#comment-form .pati-comment-editor-row textarea::placeholder{color:#999faa!important}
+#comment-form .pati-comment-editor-row .pati-comment-send{
+ border:0!important;background:#2e83f7!important;color:#fff!important;
+ border-radius:11px!important;padding:9px 12px!important;min-height:39px!important;
+ font-size:12px!important;font-weight:850!important;flex:0 0 auto!important;
+}
+@media(max-width:740px){
+ #modal-root .modal.pati-instagram-comments{
+  height:min(77dvh,830px)!important;max-height:calc(100dvh - 58px)!important;
+  width:100%!important;max-width:none!important;border-radius:25px 25px 0 0!important;
+ }
+ #comment-form .pati-comment-post-summary{max-height:29%!important}
+ #modal-root .pati-instagram-comments .modal-footer{
+  padding-bottom:calc(13px + env(safe-area-inset-bottom,0px))!important;
+ }
+}

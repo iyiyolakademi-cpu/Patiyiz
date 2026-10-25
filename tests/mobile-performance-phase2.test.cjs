@@ -22,7 +22,8 @@ function observerHarness(start,end,selector){
   document:{hidden:false,querySelectorAll:()=>videos,querySelector:()=>({})},
   window:{matchMedia:()=>({matches:false})},
   IntersectionObserver:class{constructor(cb,opts){callback=cb;options=opts}observe(v){tracked.push(v)}disconnect(){}},
-  patiyizVideoObserver:null,patiyizReelsObserver:null
+  patiyizVideoObserver:null,patiyizReelsObserver:null,
+  patiyizFeedActiveVideo:null,patiyizFeedSoundEnabled:false,patiFeedSoundButton:()=>{}
  };
  ctx.window.IntersectionObserver=ctx.IntersectionObserver;
  vm.runInNewContext(source+'\n'+start.match(/function (\w+)/)[1]+'()',ctx);
