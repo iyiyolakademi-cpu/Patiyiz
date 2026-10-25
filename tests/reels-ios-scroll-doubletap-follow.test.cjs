@@ -84,7 +84,7 @@ test('iPhone scroll-snap activates next and previous video even without observer
  assert.equal(p.videos[0].playCount,2);
 });
 test('Follow action maintains current Reel screen without re-render',()=>{
- assert.match(app,/table==='follows'&&view==='reels'/);
+ assert.match(app,/isFollow&&view==='reels'/);
  assert.match(app,/\.pati-reel-follow\[data-id=/);
  assert.match(app,/case 'follow':run\(\(\)=>doToggle\('follows'/);
  assert.match(app,/case 'reel-play':reelHandleTap\(target\)/);
