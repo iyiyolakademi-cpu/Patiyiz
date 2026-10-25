@@ -1269,11 +1269,13 @@ async function loadBlockedNames(){const r=await sb.rpc('patiyiz_my_blocked_profi
 function blockedPage(){const ids=[...blocked];main.innerHTML=header('Engellenenler','Engellediğin hesapları buradan yönetebilirsin.')+(ids.length?`<div class="pati-list">${ids.map(id=>{const p=data.profiles.find(x=>x.id===id)||blockedProfiles.find(x=>x.id===id);return `<div class="pati-card" style="display:flex;align-items:center;justify-content:space-between;gap:12px"><div class="pati-profile-row">${avatar(p||{display_name:'Engellenmiş hesap'})}<div><strong>${esc(p?.display_name||'Engellenmiş hesap')}</strong><small>Engellendi</small></div></div>${button('Engeli kaldır','block',`data-id="${esc(id)}"`,'outline-btn')}</div>`}).join('')}</div>`:empty('Engellenen hesap yok','Engellediğin hesaplar burada görünecek.'))}
 function followListPage(){const owner=followListId||me.id,followers=followListMode==='followers';const ids=[...new Set(data.follows.filter(f=>followers?f.followee_id===owner:f.follower_id===owner).map(f=>followers?f.follower_id:f.followee_id))].filter(id=>!blocked.has(id));main.innerHTML=`<div class="pati-follow-backbar"><button type="button" class="pati-follow-back" data-action="followers-back" aria-label="Profile geri dön">←</button><span>Profile dön</span></div>`+header(followers?'Takipçiler':'Takip edilenler','Kullanıcı profillerini görüntüleyebilirsin.')+`<div class="pati-list">${ids.map(id=>`<div class="pati-card pati-follow-person">${userRow(id)}${id!==me.id?button(followed.has(id)?'Takiptesin':data.follows.some(f=>f.follower_id===id&&f.followee_id===me.id)?'Sen de takip et':'Takip et','follow',`data-id="${esc(id)}"`+(data.follows.some(f=>f.follower_id===id&&f.followee_id===me.id)&&!followed.has(id)?' data-follow-back="true"':'')):''}</div>`).join('')}</div>`;}
 function settingsPage(){main.innerHTML=header('Ayarlar ve Gizlilik','Hesap, güvenlik ve bildirim tercihlerini yönet.')+`<div class="pati-settings-list"><section class="pati-card pati-theme-card"><h3>◑ Görünüm</h3><p>Uygulamanın açık veya koyu görünümünü seç. Seçimin bu cihazda saklanır.</p><div class="pati-theme-options"><button type="button" data-action="theme-set" data-id="light" aria-pressed="${patiyizCurrentTheme()==='light'}" class="${patiyizCurrentTheme()==='light'?'active':''}">☀️ Açık</button><button type="button" data-action="theme-set" data-id="dark" aria-pressed="${patiyizCurrentTheme()==='dark'}" class="${patiyizCurrentTheme()==='dark'?'active':''}">☾ Koyu</button></div></section>${isAdmin?`<section class="pati-card"><h3>🛡️ Yönetim Paneli</h3><p>Patiyiz kullanıcılarını, içerikleri ve şikâyetleri yönet.</p>${button('Yönetim Panelini Aç','open-admin')}</section>`:''}<section class="pati-card"><h3>🔒 Hesap güvenliği</h3><p>Şifreni güncellemek için yeni şifreni belirle.</p>${button('Şifremi değiştir','settings-password')}</section><section class="pati-card"><h3>🔔 Telefon bildirimleri</h3><p>Bu cihazda Patiyiz bildirimlerini açabilir veya kapatabilirsin.</p><div class="pati-actionbar">${button('Bildirimleri aç','push-enable')}${button('Bu cihazda bildirimleri kapat','push-disable','','outline-btn')}</div></section><section class="pati-card"><h3>🛡️ Gizlilik ve engellenenler</h3><p>Engellediğin kullanıcıları görüntüle ve engellerini yönet.</p>${button('Engellenenler ('+blocked.size+')','blocked-list')}</section><section class="pati-card"><h3>📄 Gizlilik ve kullanım şartları</h3><p>Kişisel verilerin işlenmesini ve topluluk kurallarını incele.</p><div class="pati-actionbar"><a href="privacy.html" target="_blank" rel="noopener">Gizlilik Politikası</a><a href="terms.html" target="_blank" rel="noopener">Kullanım Şartları</a></div></section><section class="pati-card"><h3>Hesabım</h3><p>Oturumunu kapatabilir veya hesabını ve bağlı kişisel verilerini kalıcı olarak silebilirsin.</p><div class="pati-actionbar">${button('Çıkış yap','logout','','outline-btn')}${!isAdmin?button('Hesabımı kalıcı olarak sil','delete-account-open','','danger'):''}</div></section></div>`}
-const profileCountCache=new Map(),profileCountInFlight=new Set();
-async function syncProfileCounts(id){
+const profileCountCache=new Map(),profileCountInFlight=new Set(),profileCountRevision=new Map();
+const pendingProfileFollows=new Set();
+async function syncProfileCounts(id,force=false){
  if(!me||!id||profileCountInFlight.has(id))return;
  const cached=profileCountCache.get(id);
- if(cached&&Date.now()-cached.at<20000){renderProfileCounts(id,cached.value);return}
+ if(!force&&cached&&Date.now()-cached.at<20000){renderProfileCounts(id,cached.value);return}
+ const revision=profileCountRevision.get(id)||0;
  profileCountInFlight.add(id);
  try{
   const results=await Promise.all([
@@ -1282,6 +1284,8 @@ async function syncProfileCounts(id){
    sb.from('follows').select('followee_id',{count:'exact',head:true}).eq('follower_id',id)
   ]);
   if(results.some(r=>r.error))throw results.find(r=>r.error).error;
+  // An older count query must not overwrite an in-flight follow/unfollow action.
+  if(revision!==(profileCountRevision.get(id)||0))return;
   const value={posts:results[0].count??0,followers:results[1].count??0,following:results[2].count??0};
   profileCountCache.set(id,{value,at:Date.now()});renderProfileCounts(id,value);
  }catch(e){console.warn('Profil sayaçları yüklenemedi:',e.message)}
@@ -1725,18 +1729,88 @@ async function togglePostSave(id){
  }
 }
 
-async function doToggle(table,keys,present){if(table==='follows'){profileCountCache.delete(keys.followee_id);profileCountCache.delete(me.id)}
+async function doToggle(table,keys,present){
  const config={post_likes:['likes','post_id',liked],post_saves:['saves','post_id',saved],follows:['follows','followee_id',followed],question_votes:['votes','question_id',voted],kb_bookmarks:['bookmarks','article_id',favorites]};
  const item=config[table],rowKey=item&&keys[item[1]];
- if(item){const arr=data[item[0]],ix=arr.findIndex(x=>Object.keys(keys).every(k=>x[k]===keys[k]));if(present){if(ix>=0)arr.splice(ix,1);item[2].delete(rowKey)}else{arr.push({...keys,created_at:new Date().toISOString()});item[2].add(rowKey)};if(['post_likes','post_saves'].includes(table)){document.querySelectorAll('[data-action="'+(table==='post_likes'?'like':'save')+'"][data-id="'+rowKey+'"]').forEach(btn=>{btn.classList.toggle('active',!present);btn.setAttribute('aria-pressed',String(!present));if(table==='post_likes'){const count=data.likes.filter(x=>x.post_id===rowKey).length;const label=btn.querySelector('.pati-reel-count')||btn.querySelector('span');if(label)label.textContent=count;document.querySelectorAll('.pati-feed-card[data-post-id="'+rowKey+'"] .pati-post-like-summary').forEach(summary=>summary.textContent=count+' beğeni');}})}else if(table==='follows'&&view==='reels'){
-  document.querySelectorAll('.pati-reel-follow[data-id="'+rowKey+'"]').forEach(btn=>{
-   const inbound=data.follows.some(f=>f.follower_id===rowKey&&f.followee_id===me.id);
-   btn.textContent=present?(inbound?'Sen de takip et':'Takip et'):'Takiptesin';
-   btn.setAttribute('aria-pressed',String(!present));
-   if(present&&inbound)btn.dataset.followBack='true';else delete btn.dataset.followBack;
-  });
- }else render()}
- try{let r;if(present){let q=sb.from(table).delete();for(const [k,v]of Object.entries(keys))q=q.eq(k,v);r=await q}else r=await sb.from(table).insert(keys);if(r.error)throw r.error;if(!item)await refresh()}catch(e){if(item){const arr=data[item[0]],ix=arr.findIndex(x=>Object.keys(keys).every(k=>x[k]===keys[k]));if(present){if(ix<0)arr.push({...keys});item[2].add(rowKey)}else{if(ix>=0)arr.splice(ix,1);item[2].delete(rowKey)}render()}throw e}
+ const isFollow=table==='follows',pendingKey=isFollow?keys.follower_id+'|'+keys.followee_id:'';
+ if(isFollow){
+  if(!keys.followee_id||keys.followee_id===me.id||pendingProfileFollows.has(pendingKey))return;
+  pendingProfileFollows.add(pendingKey);
+ }
+ const snapshots=new Map();
+ const affected=isFollow?[keys.followee_id,keys.follower_id]:[];
+ if(isFollow){
+  for(const id of new Set(affected)){
+   const cached=profileCountCache.get(id);
+   const old={posts:cached?.value.posts??data.posts.filter(p=>p.author_id===id).length,
+    followers:cached?.value.followers??data.follows.filter(f=>f.followee_id===id).length,
+    following:cached?.value.following??data.follows.filter(f=>f.follower_id===id).length};
+   snapshots.set(id,{cached,old});
+   profileCountRevision.set(id,(profileCountRevision.get(id)||0)+1);
+  }
+ }
+ const optimistic=()=>{
+  if(!isFollow)return;
+  const delta=present?-1:1;
+  for(const [id,snapshot] of snapshots){
+   const value={...snapshot.old};
+   if(id===keys.followee_id)value.followers=Math.max(0,value.followers+delta);
+   if(id===keys.follower_id)value.following=Math.max(0,value.following+delta);
+   profileCountCache.set(id,{value,at:Date.now()});
+   renderProfileCounts(id,value);
+  }
+ };
+ const repaint=()=>{
+  if(isFollow&&view==='reels'){
+   document.querySelectorAll('.pati-reel-follow[data-id="'+rowKey+'"]').forEach(btn=>{
+    const isFollowing=followed.has(rowKey),inbound=data.follows.some(f=>f.follower_id===rowKey&&f.followee_id===me.id);
+    btn.textContent=isFollowing?'Takiptesin':inbound?'Sen de takip et':'Takip et';
+    btn.setAttribute('aria-pressed',String(isFollowing));
+    if(!isFollowing&&inbound)btn.dataset.followBack='true';else delete btn.dataset.followBack;
+   });
+  }else render();
+ };
+ if(item){
+  const arr=data[item[0]],ix=arr.findIndex(x=>Object.keys(keys).every(k=>x[k]===keys[k]));
+  if(present){if(ix>=0)arr.splice(ix,1);item[2].delete(rowKey)}
+  else if(ix<0){arr.push({...keys,created_at:new Date().toISOString()});item[2].add(rowKey)}
+  if(['post_likes','post_saves'].includes(table)){
+   document.querySelectorAll('[data-action="'+(table==='post_likes'?'like':'save')+'"][data-id="'+rowKey+'"]').forEach(btn=>{
+    btn.classList.toggle('active',!present);btn.setAttribute('aria-pressed',String(!present));
+    if(table==='post_likes'){
+     const count=data.likes.filter(x=>x.post_id===rowKey).length;
+     const label=btn.querySelector('.pati-reel-count')||btn.querySelector('span');
+     if(label)label.textContent=count;
+     document.querySelectorAll('.pati-feed-card[data-post-id="'+rowKey+'"] .pati-post-like-summary').forEach(summary=>summary.textContent=count+' beğeni');
+    }
+   });
+  }else{optimistic();repaint()}
+ }
+ try{
+  let r;
+  if(present){let q=sb.from(table).delete();for(const [k,v]of Object.entries(keys))q=q.eq(k,v);r=await q}
+  else r=await sb.from(table).insert(keys);
+  if(r.error)throw r.error;
+  if(!item)await refresh();
+  if(isFollow){
+   pendingProfileFollows.delete(pendingKey);
+   // Refresh server-confirmed numbers without delaying the immediate UI update.
+   const id=profileId||me?.id;
+   if(id&&snapshots.has(id))void syncProfileCounts(id,true);
+  }
+ }catch(e){
+  if(item){
+   const arr=data[item[0]],ix=arr.findIndex(x=>Object.keys(keys).every(k=>x[k]===keys[k]));
+   if(present){if(ix<0)arr.push({...keys});item[2].add(rowKey)}
+   else{if(ix>=0)arr.splice(ix,1);item[2].delete(rowKey)}
+   if(isFollow)for(const [id,snapshot] of snapshots){
+    profileCountRevision.set(id,(profileCountRevision.get(id)||0)+1);
+    if(snapshot.cached)profileCountCache.set(id,snapshot.cached);else profileCountCache.delete(id);
+   }
+   repaint();
+  }
+  throw e;
+ }finally{if(isFollow)pendingProfileFollows.delete(pendingKey)}
 }
 async function deleteOwnedMedia(record){
  if(!record||record.author_id!==me.id)return;
