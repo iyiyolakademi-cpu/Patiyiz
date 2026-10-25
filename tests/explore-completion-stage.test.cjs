@@ -12,8 +12,7 @@ test('Keşfet medya yüklemesi ilk 45 ve sonraki 45 kaydı yalnız gönderilerde
  const ctx={me:{id:'me'},patiyizLoadToken:8,view:'home',exploreTab:'media',console,Set,Map,Promise,
   PATI_EXPLORE_MEDIA_PAGE:45,patiExploreMedia:{owner:'',rows:[],offset:0,hasMore:true,ready:false,loading:false,error:''},
   data:{posts:[],profiles:[{id:'me'}]},explorePage(){},
-  sb:{from(table){queries.push({table});return{select(){return this},or(filter){queries.push({filter});return this},order(){return this},
-   range(a,b){queries.push({a,b});return Promise.resolve({data:rows.slice(a,b+1),error:null})}}}}
+  sb:{rpc(name,args){queries.push({name,args});return Promise.resolve({data:rows.slice(args.p_offset,args.p_offset+args.p_limit),error:null})}}
  };
  const fn=vm.runInNewContext(part('async function patiExploreLoadMedia(','async function patiExploreLookup(')+'\npatiExploreLoadMedia',ctx);
  await fn(true);await fn();await fn();
@@ -21,9 +20,9 @@ test('Keşfet medya yüklemesi ilk 45 ve sonraki 45 kaydı yalnız gönderilerde
  assert.equal(ctx.patiExploreMedia.hasMore,false);
  assert.equal(ctx.data.posts.length,94);
  assert.equal(ctx.patiExploreMedia.offset,94);
- assert.deepEqual(queries.filter(x=>'a'in x).map(x=>[x.a,x.b]),[[0,44],[45,89],[90,134]]);
- assert.ok(queries.every(q=>!q.table||q.table==='posts'));
- assert.ok(queries.some(q=>q.filter==='image_url.not.is.null,video_url.not.is.null'));
+ assert.deepEqual(queries.map(x=>[x.args.p_offset,x.args.p_limit]),[[0,45],[45,45],[90,45]]);
+ assert.ok(queries.every(x=>x.name==='patiyiz_explore_ranked'));
+ assert.ok(queries.every(x=>x.args.p_sort==='popular'));
 });
 
 test('Arama hem kullanıcı adında hem görünen isimde sunucu sorgusu yapar',async()=>{
@@ -64,7 +63,7 @@ test('Keşfet başlangıcı üç sütunlu medya ızgarasıdır, kullanıcı aram
  assert.match(src,/data-action="pati-search-open"/);
  assert.match(src,/explore-more/);
  assert.match(src,/video_url/);
- assert.match(src,/i<9\?'eager':'lazy'/);
+ assert.match(src,/i<6\?'eager':'lazy'/);
  assert.match(src,/i<3\?'fetchpriority="high"'/);
  assert.match(css,/#main-content \.pati-explore-media-screen \.pati-explore-gallery/);
  assert.match(app,/if\(to==='explore'&&previous!=='explore'&&typeof patiExploreLoadMedia==='function'\)void patiExploreLoadMedia\(true\)/);
@@ -74,7 +73,7 @@ test('Keşfet başlangıcı üç sütunlu medya ızgarasıdır, kullanıcı aram
 
 test('Keşfet videoları görünene dek yüklenmez ve açılan gönderiden Keşfet’e dönülür',()=>{
  const src=part('function explorePage(){','function communityPage(){');
- assert.match(src,/preload="none" data-explore-preview/);
+ assert.match(src,/preload="'\+\(i<3\?'metadata':'none'\)\+'" data-explore-preview/);
  const lazy=part('function patiExploreLazyVideos(){','function explorePage(){');
  assert.match(lazy,/new IntersectionObserver/);
  assert.match(lazy,/video\.preload='metadata'/);
