@@ -1018,7 +1018,7 @@ function reelsPage(){
  const source=page?.ready?[...page.rows,...data.posts]:data.posts;
  const items=[...new Map(source.map(p=>[p.id,p])).values()]
   .filter(x=>x.video_url&&!blocked.has(x.author_id))
-  .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)||String(b.id).localeCompare(String(a.id));
+  .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)||String(b.id).localeCompare(String(a.id)));
  main.innerHTML='<section class="pati-reels-head"><h1>Reels</h1><button type="button" data-action="pati-create-reels">'+ico('plus')+'<span>Video paylaş</span></button></section><div class="pati-reels-viewport">'+(items.length?items.map((p,index)=>{
   const cached=typeof patiPostRenderStats!=='undefined'&&patiPostRenderStats;
   const author=profile(p.author_id),count=cached?(cached.get(p.id)?.likes||0):data.likes.filter(x=>x.post_id===p.id).length,commentCount=cached?(cached.get(p.id)?.comments||0):data.comments.filter(x=>x.post_id===p.id).length,likedPost=liked.has(p.id),savedPost=saved.has(p.id);
