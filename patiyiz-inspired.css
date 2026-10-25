@@ -2744,7 +2744,8 @@ html[data-pati-theme="dark"] #main-content .pati-social-actions button[data-acti
 .pati-pet-edit-modal .pati-pet-edit-cover small{display:block;margin-top:6px;color:#73757c;font-size:11px;line-height:1.4}
 .pati-pet-edit-modal .pati-pet-photo-select{display:inline-flex;align-items:center;justify-content:center;
  background:#1d1d22;color:#fff;padding:9px 12px;border-radius:10px;font-size:12px;font-weight:750;cursor:pointer}
-.pati-pet-edit-modal #pati-pet-photo{max-width:100%;font-size:11px;margin-top:8px}
+.pati-pet-edit-modal #pati-pet-photo{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip-path:inset(50%)}
+.pati-pet-edit-modal .pati-pet-photo-select:focus-within{outline:2px solid #111;outline-offset:2px}
 .pati-pet-edit-modal .pati-pet-delete{border:1px solid #efc7c7;border-radius:10px;background:#fff5f5;
  color:#a22d35;padding:9px 10px;font-size:11px;font-weight:800;cursor:pointer;margin-right:auto}
 @media(max-width:500px){
