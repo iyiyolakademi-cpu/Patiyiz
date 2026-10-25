@@ -15,7 +15,7 @@ test('Reels playback displays a seekbar driven by video timeupdate',()=>{
  assert.match(render,/data-action="reel-seek"/);
  assert.match(render,/type="range"/);
  const observer=part('function setupReelsViewer(){','function reelHandleTap(');
- assert.match(observer,/addEventListener\('timeupdate',update\)/);
+ assert.match(observer,/addEventListener\?\.\('timeupdate',update\)/);
  assert.match(observer,/loadedmetadata/);
  assert.match(observer,/Math\.round\(ratio\*1000\)/);
  assert.match(app,/video\.currentTime=\(Math\.max\(0,Math\.min\(1000,Number\(target\.value\)/);
