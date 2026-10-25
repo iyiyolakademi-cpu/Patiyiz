@@ -57,7 +57,7 @@ test('Thousands of messages with hundreds of conversations are indexed without p
  assert.equal(out.unreadTotal,6000);
  assert.equal([...out.peers.values()].reduce((n,x)=>n+x.items.length,0),12000);
  const page=part('function messagesPage(){','function pushKeyBytes(');
- assert.match(page,/patiIndexDmHistory\(data.messages,me.id,hiddenIds,patiDmSeenIds\(\)\)/);
+ assert.match(page,/patiIndexDmHistory\(\[\.\.\.merged\.values\(\)\],me.id,hiddenIds,patiDmSeenIds\(\)\)/);
  assert.match(page,/peers\.get\(id\)/);
  assert.doesNotMatch(page,/all\.filter\(x=>x.sender_id===id/);
 });
