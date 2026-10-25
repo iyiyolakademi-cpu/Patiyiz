@@ -2299,3 +2299,46 @@ html[data-pati-theme="dark"] #main-content .pati-dm-layout .bubble-chat.mine{bac
 html[data-pati-theme="dark"] #main-content .pati-reel-item{background:#050506}
 html[data-pati-theme="dark"] #startup{background:#101114!important;color:#fff!important}
 html[data-pati-theme="dark"] #startup .pati-splash-publisher{color:#fff!important}
+
+/* Reels 2. aşama: avatar, follow, double-tap; maintain existing full-screen layouts */
+#main-content .pati-reel-author .pati-reel-avatar-link{
+ display:inline-flex;align-items:center;justify-content:center;
+ flex:0 0 auto;padding:0!important;margin:0;border:0!important;
+ border-radius:50%;background:transparent!important;box-shadow:none!important;
+ min-width:36px;min-height:36px;cursor:pointer;
+}
+#main-content .pati-reel-author .pati-reel-avatar-link .avatar{
+ width:36px;height:36px;min-width:36px;max-width:36px;
+ display:grid;place-items:center;border-radius:50%;overflow:hidden;
+}
+#main-content .pati-reel-author .pati-reel-follow{
+ margin-left:auto;flex:0 0 auto;min-height:32px;min-width:75px;
+ border:1px solid #ffffffd9!important;border-radius:9px!important;
+ background:rgba(255,255,255,.17)!important;color:#fff!important;
+ padding:6px 10px!important;font-size:12px!important;
+ font-weight:800!important;white-space:nowrap;cursor:pointer;
+}
+#main-content .pati-reel-author .pati-reel-follow[aria-pressed="true"]{
+ background:rgba(20,20,20,.53)!important;border-color:#ffffff70!important;
+}
+#main-content .pati-reel-tap{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+#main-content .pati-reel-heart-burst{
+ position:absolute;left:50%;top:50%;width:90px;height:90px;
+ transform:translate(-50%,-50%) scale(.4);opacity:0;pointer-events:none;
+ display:grid;place-items:center;color:white;filter:drop-shadow(0 5px 16px #000a);
+}
+#main-content .pati-reel-heart-burst svg.icon{
+ width:90px!important;height:90px!important;fill:#fff!important;stroke:#fff!important;
+}
+#main-content .pati-reel-heart-burst.pop{
+ animation:pati-reels-heart-pop .65s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes pati-reels-heart-pop{
+ 0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}
+ 28%{opacity:1;transform:translate(-50%,-50%) scale(1.16)}
+ 60%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+ 100%{opacity:0;transform:translate(-50%,-50%) scale(1.25)}
+}
+@media(prefers-reduced-motion:reduce){
+ #main-content .pati-reel-heart-burst.pop{animation:none;opacity:1;transform:translate(-50%,-50%)}
+}
