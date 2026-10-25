@@ -49,7 +49,7 @@ test('Mobil üst menü düğmesi tüm gerçek bölümlere erişim sağlar',()=>{
  assert.match(header,/data-action="tools"/);
  assert.match(header,/aria-label="Tüm Özellikler menüsünü aç"/);
  const fragment=excerpt('function openMobileFeaturesMenu(){','function side(){');
- const known=['community','pets','messages','notifications','education','knowledge','lost','adoption','care','settings','blocked'];
+ const known=['community','pets','messages','notifications','education','knowledge','lost','adoption','my-pet','settings','blocked'];
  let rendered='';
  let type='',removed=false;
  const fn=vm.runInNewContext(fragment+'\nopenMobileFeaturesMenu',{
