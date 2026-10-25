@@ -67,7 +67,7 @@ test('Keşfet başlangıcı üç sütunlu medya ızgarasıdır, kullanıcı aram
  assert.match(src,/i<9\?'eager':'lazy'/);
  assert.match(src,/i<3\?'fetchpriority="high"'/);
  assert.match(css,/#main-content \.pati-explore-media-screen \.pati-explore-gallery/);
- assert.match(app,/if\(to==='explore'&&previous!=='explore'\)void patiExploreLoadMedia\(true\)/);
+ assert.match(app,/if\(to==='explore'&&previous!=='explore'&&typeof patiExploreLoadMedia==='function'\)void patiExploreLoadMedia\(true\)/);
  assert.match(app,/case 'pati-search-open':search='';exploreTab='users';explorePage\(\);requestAnimationFrame/);
  assert.match(app,/void patiExploreLookup\(''\)/);
 });
