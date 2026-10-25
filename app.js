@@ -293,6 +293,7 @@ const patiCoinTasks=[
  ['weekly_comments5','Haftada 5 yorum yap',8,'Bu hafta beş yorum yaz','weekly']
 ];
 let patiCoinState={balance:0,earned:0,claims:[],items:[],orders:[],history:[],loading:false};
+let patiFollowerRewardState={followers:null,claimed:[]};
 let patiCoinCheckoutItem=null;
 let patiInviteState={code:'',invited_count:0,already_used:false,coins_each:50,loading:false};
 async function patiInviteLoad(){
@@ -322,6 +323,13 @@ async function patiCoinSync(withAnimation=false){
  if(!me||!sb||patiCoinState.loading)return;
  const uid=me.id;patiCoinState.loading=true;
  try{
+  // Followers are counted and awarded by Postgres; never trust browser totals.
+  try{
+   const milestone=await sb.rpc('patiyiz_my_follower_milestones');
+   if(milestone.error)throw milestone.error;
+   if(me?.id!==uid)return;
+   patiFollowerRewardState={followers:milestone.data?.followers??null,claimed:milestone.data?.claimed||[]};
+  }catch(error){console.warn('Takipçi ödülleri doğrulanamadı:',error)}
   const claimed=await sb.rpc('patiyiz_claim_completed_tasks');
   if(claimed.error)throw claimed.error;
   if(me?.id!==uid)return;
@@ -369,9 +377,10 @@ function patiRewardsPage(){
    return '<article class="paticoin-task '+(claimed?'pati-mission-claimed':'')+'"><div class="paticoin-task-icon">'+(claimed?'✓':'🐾')+'</div><div><strong>'+esc(title)+'</strong><small>'+esc(info)+'</small></div><b class="'+(claimed?'earned':'')+'">'+(claimed?'✓ Tamamlandı':'+'+coins+' 🪙')+'</b></article>';
   }).join('')+'</div>';
  };
+ const milestones=window.PatiyizFollowerMilestones?.renderPanel(patiFollowerRewardState.followers,patiFollowerRewardState.claimed)||'';
  const invite='<section class="paticoin-invite"><h2>🎁 Arkadaşını davet et</h2><p>Sen ve davet ettiğin kişi <b>50’şer PatiCoin</b> kazanırsınız. Her hesap yalnızca bir davet kodu kullanabilir.</p><div class="paticoin-invite-code"><strong>'+esc(patiInviteState.code||'Kod hazırlanıyor…')+'</strong><button data-action="paticoin-invite-share">Paylaş</button></div><small>Davet ettiğin kişi: '+(patiInviteState.invited_count||0)+'</small>'+(patiInviteState.already_used?'<p>✓ Davet kodu kullanma hakkını tamamladın.</p>':'<label class="paticoin-invite-entry">Arkadaşının kodu<input id="pati-invite-code" maxlength="9" autocomplete="off" placeholder="P1234ABCD"></label><button class="paticoin-invite-redeem" data-action="paticoin-invite-redeem">Kodu kullan · +50 🪙</button>')+'</section>';
  main.innerHTML='<section class="paticoin-page"><div class="paticoin-hero"><span>🐾 PATİYİZ GÖREV MERKEZİ</span><h1>PatiCoin</h1><strong>🪙 '+Number(patiCoinState.balance).toLocaleString('tr-TR')+' <small>PatiCoin</small></strong><p>Toplam kazanılan: '+Number(patiCoinState.earned).toLocaleString('tr-TR')+' coin</p><div class="paticoin-actions"><button data-action="paticoin-claim">Görevlerimi kontrol et</button><button data-action="paticoin-shop">Pati Mağaza →</button></div></div>'+
- '<div class="paticoin-mission-heading"><div><h2>🎯 Tek Seferlik Görevler</h2><p>Her hesapta yalnız bir kez puan kazandırır.</p></div><span>'+patiCoinTasks.filter(x=>!x[4]).length+' görev</span></div>'+missionList('once')+
+ milestones+'<div class="paticoin-mission-heading"><div><h2>🎯 Tek Seferlik Görevler</h2><p>Her hesapta yalnız bir kez puan kazandırır.</p></div><span>'+patiCoinTasks.filter(x=>!x[4]).length+' görev</span></div>'+missionList('once')+
  '<div class="paticoin-mission-heading"><div><h2>☀️ Günlük Görevler</h2><p>Her yeni gün yeniden yapılabilir. Aynı görevden günde bir kez puan kazanılır.</p></div><span>5 görev</span></div>'+missionList('daily')+
  '<div class="paticoin-mission-heading"><div><h2>🗓️ Haftalık Görevler</h2><p>Her pazartesi yeniden başlar. Aynı görevden haftada en fazla bir kez puan kazanılır.</p></div><span>4 görev</span></div>'+missionList('weekly')+
  invite+'<p class="paticoin-disclaimer"><b>Ödül kuralları:</b> Hesabın en az 7 günlük olmalı, son 30 günde 3 farklı gün aktif olmalısın. 14 günde en fazla 1 ödül talebi oluşturabilirsin. Puanlar yalnızca sunucunun doğruladığı işlemler için verilir; eski kazançlar korunur.</p></section>';
@@ -1426,6 +1435,10 @@ function renderProfileCounts(id,stats){
  if(view!=='profile'||(profileId||me?.id)!==id)return;
  const wrap=main.querySelector('.pati-ig-stats');if(!wrap)return;
  for(const key of ['posts','followers','following']){const b=wrap.querySelector('[data-pati-count="'+key+'"]');if(b)b.textContent=stats[key]}
+ if(id===me?.id&&window.PatiyizFollowerMilestones){
+  const hint=main.querySelector('.pati-follower-hint');
+  if(hint)hint.innerHTML=window.PatiyizFollowerMilestones.profileHint(stats.followers);
+ }
 }
 function profilePage(){
  const p=profile(profileId||me.id),own=p.id===me.id,pets=data.pets.filter(x=>x.owner_id===p.id);
@@ -1445,6 +1458,7 @@ function profilePage(){
  main.innerHTML=(own?patiyizProgressCard():'')+'<div class="pati-ig-profile">'+(!own?'<div class="pati-profile-back">'+button('← Geri','profile-back')+'</div>':'')+
  '<div class="pati-ig-summary"><div class="pati-ig-avatar">'+avatar(p,'l')+'</div><div class="pati-ig-info"><div class="pati-ig-handle-row"><strong class="pati-ig-handle">@'+esc(p.handle||'patiyiz')+'</strong>'+verifiedBadge(p)+'</div><strong class="pati-ig-name">'+esc(p.display_name||'Patiyiz üyesi')+'</strong><div class="pati-ig-stats"><span><b data-pati-count="posts">'+(cachedCounts?.posts??posts.length)+'</b><small>gönderi</small></span><button type="button" data-action="followers-list" data-id="'+esc(p.id)+'" data-mode="followers"><b data-pati-count="followers">'+followers+'</b><small>takipçi</small></button><button type="button" data-action="followers-list" data-id="'+esc(p.id)+'" data-mode="following"><b data-pati-count="following">'+following+'</b><small>takip edilen</small></button></div></div></div>'+
  (p.bio?'<div class="pati-ig-bio">'+esc(p.bio)+'</div>':'')+mutualMarkup+
+ (own&&window.PatiyizFollowerMilestones?'<button class="pati-follower-hint" type="button" data-action="paticoin-rewards" aria-label="Takipçi ödüllerimi gör">'+window.PatiyizFollowerMilestones.profileHint(followers)+'</button>':'')+
  '<div class="pati-ig-actions">'+(own?button('Profili düzenle','edit-profile'):button(followed.has(p.id)?'Takiptesin':followBack?'Sen de takip et':'Takip et','follow','data-id="'+esc(p.id)+'"'+(followBack?' data-follow-back="true"':''))+button('Mesaj gönder','chat','data-id="'+esc(p.id)+'"')+button('Hesabı bildir','report','data-id="'+esc(p.id)+'" data-kind="profile"'))+'</div>'+
  '<section class="pati-ig-highlight-section" aria-label="Kalıcı hikâyeler"><div class="pati-ig-highlights">'+
  (own?'<button type="button" class="pati-ig-highlight pati-new-highlight" data-action="highlight-album-new" aria-label="Yeni öne çıkanlar albümü oluştur"><span class="pati-ig-highlight-ring">＋</span><small>Yeni</small></button>':'')+
@@ -2265,7 +2279,7 @@ function resetSessionState(){
  if(typeof patiDmDisconnectTyping==='function')patiDmDisconnectTyping();
  if(typeof patiDmLocalSeenCache!=='undefined'){patiDmLocalSeenOwner='';patiDmLocalSeenCache.clear()}
 
- patiyizLoadToken++;patiyizLoadedTables.clear();patiyizDeferredLoading=null;patiWellness={reminders:[],weights:[],loaded:false,loading:false,notified:new Set()};patiLeaderboard=[];patiInviteState={code:'',invited_count:0,already_used:false,coins_each:50,loading:false};patiCoinState={balance:0,earned:0,claims:[],items:[],orders:[],history:[],loading:false};document.getElementById('paticoin-celebration')?.remove();
+ patiyizLoadToken++;patiyizLoadedTables.clear();patiyizDeferredLoading=null;patiWellness={reminders:[],weights:[],loaded:false,loading:false,notified:new Set()};patiLeaderboard=[];patiInviteState={code:'',invited_count:0,already_used:false,coins_each:50,loading:false};patiCoinState={balance:0,earned:0,claims:[],items:[],orders:[],history:[],loading:false};patiFollowerRewardState={followers:null,claimed:[]};document.getElementById('paticoin-celebration')?.remove();
  data=Object.fromEntries(Object.keys(data).map(key=>[key,[]]));
  for(const group of [favorites,followed,liked,saved,voted,blocked])group.clear();
  blockedProfiles=[];patiDmSignedCache.clear();profileCountCache.clear();profileCountInFlight.clear();
