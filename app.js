@@ -574,7 +574,30 @@ async function refreshKeys(specs){
  navRender();render();
 }
 async function refresh(){const userId=me?.id,loadToken=patiyizLoadToken;if(!userId)return;await load();if(me?.id!==userId||patiyizLoadToken!==loadToken)return;navRender();render();if(view==='blocked')loadBlockedNames()}
-async function loadMore(key){pageLimits[key]=(pageLimits[key]||40)+50;await refresh()}
+// Only fetch the requested older rows instead of reloading 25+ unrelated tables.
+async function loadMore(key){pageLimits[key]=(pageLimits[key]||40)+50;
+ if(key!=='messages'&&key!=='notifications'){await refresh();return}
+ const uid=me?.id,loadToken=patiyizLoadToken,previous=pageLimits[key]-50,limit=50;
+ if(!uid||!sb){pageLimits[key]=previous;return}
+ try{
+  const existing=data[key]||[];
+  const oldest=existing.reduce((time,row)=>!time||row.created_at<time?row.created_at:time,'');
+  let query=sb.from(key).select('*').order('created_at',{ascending:false}).limit(limit);
+  if(oldest)query=query.lt('created_at',oldest);
+  const response=await query;
+  if(response.error)throw response.error;
+  if(me?.id!==uid||loadToken!==patiyizLoadToken)return;
+  const rows=response.data||[],ids=new Set(existing.map(row=>row.id));
+  for(const row of rows)if(!ids.has(row.id)){existing.push(row);ids.add(row.id)}
+  data[key]=existing;
+  pageLimits[key]=previous+rows.length;
+  pageMore[key]=rows.length===limit;
+  navRender();render();
+ }catch(error){
+  if(me?.id===uid&&loadToken===patiyizLoadToken)pageLimits[key]=previous;
+  throw error;
+ }
+}
 function formatPatiPostBody(raw){
  return esc(raw||'').replace(/(^|[\s])#([\p{L}\p{N}_]{2,35})/gu,(_m,prefix,tag)=>prefix+'<button type="button" class="pati-hashtag" data-action="hashtag" data-id="'+tag+'">#'+tag+'</button>');
 }
@@ -2101,6 +2124,10 @@ async function doToggle(table,keys,present){
   const arr=data[item[0]],ix=arr.findIndex(x=>Object.keys(keys).every(k=>x[k]===keys[k]));
   if(present){if(ix>=0)arr.splice(ix,1);item[2].delete(rowKey)}
   else if(ix<0){arr.push({...keys,created_at:new Date().toISOString()});item[2].add(rowKey)}
+  if(isFollow&&patiFollowPageState.key.startsWith(me.id+':')){
+   if(present)patiFollowPageState.viewerFollowing.delete(rowKey);
+   else patiFollowPageState.viewerFollowing.add(rowKey);
+  }
   if(['post_likes','post_saves'].includes(table)){
    document.querySelectorAll('[data-action="'+(table==='post_likes'?'like':'save')+'"][data-id="'+rowKey+'"]').forEach(btn=>{
     btn.classList.toggle('active',!present);btn.setAttribute('aria-pressed',String(!present));
@@ -2131,6 +2158,10 @@ async function doToggle(table,keys,present){
    const arr=data[item[0]],ix=arr.findIndex(x=>Object.keys(keys).every(k=>x[k]===keys[k]));
    if(present){if(ix<0)arr.push({...keys});item[2].add(rowKey)}
    else{if(ix>=0)arr.splice(ix,1);item[2].delete(rowKey)}
+   if(isFollow&&patiFollowPageState.key.startsWith(me.id+':')){
+    if(present)patiFollowPageState.viewerFollowing.add(rowKey);
+    else patiFollowPageState.viewerFollowing.delete(rowKey);
+   }
    if(isFollow)for(const [id,snapshot] of snapshots){
     profileCountRevision.set(id,(profileCountRevision.get(id)||0)+1);
     if(snapshot.cached)profileCountCache.set(id,snapshot.cached);else profileCountCache.delete(id);
