@@ -1,0 +1,31 @@
+/* Patiyiz 15. aşama — paylaşılan menü ve hesap sayfaları son düzenleri */
+#app-root .sidebar{scrollbar-color:#dedee2 transparent}
+#app-root .sidebar #desktop-nav .nav-link{display:flex;align-items:center;gap:12px;min-height:48px;width:100%;min-width:0;padding:11px 14px;border-radius:14px;position:relative;text-align:left}
+#app-root .sidebar #desktop-nav .nav-link .icon{flex:0 0 20px;width:20px;height:20px}
+#app-root .sidebar #desktop-nav .nav-link .pati-count-badge{flex:0 0 auto;margin-left:auto;min-width:20px;height:20px;font-size:11px;background:#db5160;color:#fff}
+#app-root .sidebar #desktop-nav .nav-link[aria-current="page"]{background:#ededf0!important;color:#202025!important}
+#app-root .sidebar #desktop-nav .nav-link:focus-visible{outline:3px solid #8b8c96;outline-offset:2px}
+#app-root .sidebar #desktop-nav .nav-link.active::before{background:#212124!important}
+#tools-form .pati-mobile-menu-item>.pati-count-badge{flex:0 0 auto!important;width:auto!important;min-width:21px;max-width:44px;height:21px;padding:0 6px;margin-left:auto;margin-right:3px;font-size:10px;font-weight:800;background:#db5160;color:#fff;line-height:1}
+#tools-form .pati-mobile-menu-item>span:not(.pati-count-badge){flex:1;min-width:0}
+#tools-form .pati-mobile-menu-item:focus-visible{outline:3px solid #85858f;outline-offset:2px}
+#main-content .pati-settings-notifications{min-width:0}
+#main-content .pati-settings-notifications .pati-actionbar{display:flex;gap:10px;flex-wrap:wrap}
+#main-content .pati-settings-notifications [data-view="notifications"]{min-height:45px;border-radius:12px;border:1px solid #25262b;background:#171719;color:#fff;padding:11px 16px;font-size:12px;font-weight:800;cursor:pointer}
+#main-content .pati-settings-notifications [data-view="notifications"]:focus-visible{outline:3px solid #878993;outline-offset:3px}
+#main-content .pati-achievements .pati-badge,#main-content .pati-achievements .pati-cert-card{min-width:0;overflow-wrap:anywhere}
+#main-content .pati-achievements .pati-cert-card button:disabled{opacity:.62;cursor:not-allowed}
+#main-content .pati-achievements .pati-badge small,#main-content .pati-achievements .pati-cert-card small{font-variant-numeric:tabular-nums}
+@media(max-width:900px){
+ #app-root .sidebar #desktop-nav .nav-link{min-height:46px;gap:10px;padding:10px 11px;font-size:12px}
+}
+@media(max-width:740px){
+ #main-content .pati-settings-notifications [data-view="notifications"]{width:100%;min-height:48px}
+ #tools-form .pati-mobile-menu-item>.pati-count-badge{min-width:20px;font-size:10px}
+}
+html[data-pati-theme="dark"] #app-root .sidebar{scrollbar-color:#55565d transparent}
+html[data-pati-theme="dark"] #app-root .sidebar #desktop-nav .nav-link[aria-current="page"]{background:#34353c!important;color:#fff!important}
+html[data-pati-theme="dark"] #app-root .sidebar #desktop-nav .nav-link.active::before{background:#fff!important}
+html[data-pati-theme="dark"] #main-content .pati-settings-notifications [data-view="notifications"]{background:#f3f3f6;color:#161619;border-color:#f3f3f6}
+html[data-pati-theme="dark"] #tools-form .pati-mobile-menu-item>.pati-count-badge{background:#db5160;color:#fff}
+@media(prefers-reduced-motion:reduce){#app-root .sidebar #desktop-nav .nav-link{transition:none}}
