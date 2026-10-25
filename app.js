@@ -2279,7 +2279,7 @@ function resetSessionState(){
  if(typeof patiDmDisconnectTyping==='function')patiDmDisconnectTyping();
  if(typeof patiDmLocalSeenCache!=='undefined'){patiDmLocalSeenOwner='';patiDmLocalSeenCache.clear()}
 
- patiyizLoadToken++;patiyizLoadedTables.clear();patiyizDeferredLoading=null;patiWellness={reminders:[],weights:[],loaded:false,loading:false,notified:new Set()};patiLeaderboard=[];patiInviteState={code:'',invited_count:0,already_used:false,coins_each:50,loading:false};patiCoinState={balance:0,earned:0,claims:[],items:[],orders:[],history:[],loading:false};document.getElementById('paticoin-celebration')?.remove();
+ patiyizLoadToken++;patiyizLoadedTables.clear();patiyizDeferredLoading=null;patiWellness={reminders:[],weights:[],loaded:false,loading:false,notified:new Set()};patiLeaderboard=[];patiInviteState={code:'',invited_count:0,already_used:false,coins_each:50,loading:false};patiCoinState={balance:0,earned:0,claims:[],items:[],orders:[],history:[],loading:false};patiFollowerRewardState={followers:null,claimed:[]};document.getElementById('paticoin-celebration')?.remove();
  data=Object.fromEntries(Object.keys(data).map(key=>[key,[]]));
  for(const group of [favorites,followed,liked,saved,voted,blocked])group.clear();
  blockedProfiles=[];patiDmSignedCache.clear();profileCountCache.clear();profileCountInFlight.clear();
