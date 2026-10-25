@@ -114,7 +114,7 @@ const starter=()=>{
 const showSetup=()=>{starter();authRoot.classList.remove('hidden');authRoot.innerHTML=`<div class="auth-card setup-card"><div class="auth-brand"><div class="brand-icon"><img class="patiyiz-chosen-logo" src="patiyiz-selected-logo.svg?v=20261024-new-p-logo-1" alt="Patiyiz"></div><h1>Patiyiz</h1></div><h2>Kurulum gerekli</h2><p class="auth-sub">Uygulamanın güvenli kayıt sistemi için önce Supabase projesi oluşturulmalı.</p><p class="small-note">1. Supabase projesi oluşturun.<br>2. supabase_kurulum.sql dosyasını SQL Editor'da çalıştırın.<br>3. <b>config.js</b> dosyasına <b>Project URL</b> ve <b>publishable key</b> girin.<br>4. Dosyaları GitHub Pages'e yükleyin.<br><b>Secret/service_role anahtarını kesinlikle bu dosyaya koymayın.</b></p></div>`};
 function showAuth(msg='') {starter();appRoot.classList.add('hidden');authRoot.classList.remove('hidden');let isSign=authMode==='signup',reset=authMode==='reset';authRoot.innerHTML=`<div class="auth-shell"><aside class="auth-story" aria-label="Patiyiz topluluğu"><div class="auth-story-top"><span class="auth-story-icon" aria-hidden="true"><svg viewBox="0 0 64 64" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><ellipse cx="13" cy="19" rx="6" ry="9" transform="rotate(-22 13 19)"/><ellipse cx="27" cy="11" rx="6" ry="9" transform="rotate(-7 27 11)"/><ellipse cx="43" cy="14" rx="6" ry="9" transform="rotate(15 43 14)"/><ellipse cx="54" cy="27" rx="5" ry="8" transform="rotate(32 54 27)"/><path d="M33 26c-6-1-9 5-14 10-5 4-10 10-7 17 3 8 11 7 19 4 4-2 9-1 14 1 9 3 16-2 13-10-2-6-8-10-12-15-4-5-7-7-13-7Z"/></svg></span><strong>patiyiz</strong><span class="auth-story-topline">BİRLİKTE DAHA GÜZEL</span></div><div class="auth-story-bottom"><span class="auth-story-label"><span class="auth-story-dot"></span> HAYVANSEVERLERİN DÜNYASI</span><h2>Onların hikâyesi,<br><em>bizim dünyamız.</em></h2><p>Patili dostlarınla anılarını paylaş, yeni arkadaşlıklar kur ve merak ettiklerini keşfet.</p></div></aside><div class="auth-pane"><div class="auth-card"><div class="auth-brand"><div class="brand-icon auth-matching-logo" aria-label="Patiyiz logosu"><img class="patiyiz-chosen-logo" src="patiyiz-selected-logo.svg?v=20261024-new-p-logo-1" alt="Patiyiz"></div><div><h1>patiyiz</h1><p>Hayvanseverlerin buluşma noktası</p></div></div>${reset?'':`<div class="auth-tabs"><button data-auth="login" class="${authMode==='login'?'active':''}">Giriş yap</button><button data-auth="signup" class="${isSign?'active':''}">Kayıt ol</button></div>`}<div class="auth-eyebrow">🐾 PATİYİZ'E HOŞ GELDİN</div><h2>${reset?'Şifreni yenileyelim':isSign?'Aramıza katıl':'Yeniden merhaba!'}</h2><p class="auth-sub">${reset?'E-posta adresini yaz, sana şifre yenileme bağlantısı gönderelim.':isSign?'Patili dostunla yeni bir dünyaya adım at. Üyelik ücretsiz.':'Patili dostların ve güzel hikâyeler burada seni bekliyor.'}</p>${msg?`<div class="pati-note">${esc(msg)}</div>`:''}<form id="auth-form">${isSign?`<div class="pati-field"><label for="display_name">Adın</label><input id="display_name" name="display_name" required minlength="2" maxlength="70" autocomplete="name" placeholder="Ad ve soyad"></div>`:''}<div class="pati-field"><label for="email">E-posta</label><input id="email" name="email" type="email" required autocomplete="email" placeholder="ornek@eposta.com"></div>${reset?'':`<div class="pati-field"><label for="password">Şifre</label><input id="password" name="password" type="password" required minlength="6" autocomplete="${isSign?'new-password':'current-password'}" placeholder="Şifreni gir"></div>`}<span class="pati-auth-terms">${isSign?'<label><input name="age_accepted" type="checkbox" value="yes" required> 18 yaşını doldurduğumu onaylıyorum.</label><label><input name="terms_accepted" type="checkbox" value="yes" required> <a href="terms.html" target="_blank" rel="noopener">Kullanım Şartlarını</a> ve <a href="privacy.html" target="_blank" rel="noopener">Gizlilik Politikasını</a> okudum, kabul ediyorum.</label>':'<a href="privacy.html" target="_blank" rel="noopener">Gizlilik Politikası</a> · <a href="terms.html" target="_blank" rel="noopener">Kullanım Şartları</a>'}</span><button class="primary-btn auth-submit" type="submit"><span>${reset?'Sıfırlama bağlantısı gönder':isSign?'Ücretsiz hesap oluştur':'Giriş yap'}</span><span aria-hidden="true">→</span></button></form><div class="auth-bottom"><button class="btn-link" data-auth="${reset?'login':'reset'}">${reset?'← Girişe dön':'Şifremi unuttum'}</button></div><p class="small-note"><span aria-hidden="true">🔒</span> E-posta doğrulama ve güvenli giriş. Gelen kutunu, gerekirse spam klasörünü kontrol et.</p></div></div></div>`}
 async function checkAdmin(){if(!me||!sb){isAdmin=false;return}try{const {data,error}=await sb.rpc('patiyiz_is_admin');isAdmin=!error&&data===true}catch(e){isAdmin=false}if(!appRoot.classList.contains('hidden')){navRender();if(view==='settings')render()}}
-function showApp(){starter();if(me)window.setTimeout(()=>patiInviteLoad(),1700);if(me){window.setTimeout(()=>patiPublicActivityInit(),750);window.setTimeout(()=>patiWellnessFetch(true),1300)}if(me)window.setTimeout(()=>patiCoinSync(true),1600);if(me)window.setTimeout(()=>educationCloudLoad(),1200);authRoot.classList.add('hidden');appRoot.classList.remove('hidden');navigate(view);startLive();routePendingNotification();checkAdmin();
+function showApp(){starter();if(me)window.setTimeout(()=>patiInviteLoad(),1700);if(me){window.setTimeout(()=>patiPublicActivityInit(),750);window.setTimeout(()=>patiWellnessFetch(true),1300)}if(me)window.setTimeout(()=>patiCoinSync(true),1600);if(me)window.setTimeout(()=>educationCloudLoad(),1200);authRoot.classList.add('hidden');appRoot.classList.remove('hidden');navigate(view);startLive();routePendingNotification();void routePendingLost();checkAdmin();
  if(!patiyizDeferredLoading){
   const userId=me.id;
   const signature=()=>data.posts.map(x=>x.id).join(',')+'|'+data.stories.map(x=>x.id).join(',');
@@ -538,6 +538,7 @@ function navigate(to){
  if(to==='reels'&&previous!=='reels'&&typeof patiLoadMoreReels==='function')void patiLoadMoreReels(true);
  if(to==='pets'&&previous!=='pets'&&typeof patiLoadCommunityPets==='function')void patiLoadCommunityPets(true);
  if(to==='pets'&&previous!=='pets')void patiLoadOwnedPets();
+ if(to==='lost'&&previous!=='lost')void lostRefresh();
  if(to==='explore'&&previous!=='explore'&&typeof patiExploreLoadMedia==='function')void patiExploreLoadMedia(true);
  if(to==='follows-list')void patiLoadFollowPage(true);
  if(to==='messages'){
@@ -1847,6 +1848,21 @@ async function lostRefresh(){
  }catch(e){console.warn('Kayıp ilanları:',e);if(me?.id===uid)lostError='İlanlar yüklenemedi. İnternetini kontrol edip tekrar dene.'}
  finally{lostLoading=false;if(me?.id===uid&&view==='lost')lostPage()}
 }
+async function routePendingLost(){
+ const params=new URL(location.href).searchParams,id=params.get('lost')||'';
+ if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id))return;
+ params.delete('lost');
+ history.replaceState(null,'',location.pathname+(params.toString()?'?'+params.toString():'')+location.hash);
+ if(!me)return;
+ lostStatus='all';lostSpecies='Tümü';lostSearch='';
+ navigate('lost');
+ await lostRefresh();
+ if(view!=='lost')return;
+ const card=document.querySelector('[data-lost-id="'+id+'"]');
+ if(card){card.classList.add('is-linked');card.scrollIntoView({block:'center',behavior:'smooth'})}
+ else notify('İlan bulunamadı veya artık görüntülenemiyor.',true);
+}
+let lostPhotoObjectUrl='';
 function lostPage(){
  const safe=data.lost.filter(x=>!blocked.has(x.owner_id));
  const counts={missing:safe.filter(x=>!x.found).length,found:safe.filter(x=>x.found).length,mine:safe.filter(x=>x.owner_id===me?.id).length};
@@ -2372,7 +2388,7 @@ function showComments(postId){
  const list=form.querySelector('.comment-list');if(list)list.scrollTop=scroll;
 }
 function modal(title,form,id='entry-form'){let root=$('#modal-root');root.innerHTML=`<div class="modal-backdrop" data-action="close"><section class="modal" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="modal-header"><h2>${esc(title)}</h2><button type="button" class="close-modal" data-action="close" aria-label="Pencereyi kapat">×</button></div><form id="${id}"><div class="modal-content">${form}</div><div class="pati-upload-status" role="status" aria-live="polite" hidden><i class="pati-upload-spinner"></i><span>Yükleniyor…</span></div><div class="modal-footer"><button class="outline-btn" type="button" data-action="close">İptal</button><button class="primary-btn" type="submit">Kaydet</button></div></form></section></div>`}
-function closeModal(force=false){if(!force&&busy&&document.querySelector('#modal-root .pati-upload-status:not([hidden])')){notify('İşlem sürüyor. Tamamlanmasını bekle.',true);return}if(typeof patiPetPhotoObjectUrl!=='undefined'&&patiPetPhotoObjectUrl){URL.revokeObjectURL(patiPetPhotoObjectUrl);patiPetPhotoObjectUrl=''}window.PatiyizReelsEditor?.dispose();clearPatiMediaUrls();$('#modal-root').innerHTML='';if(document.getElementById('story-overlay')&&!storyTimer&&storyItems.length)storyTimer=setTimeout(()=>stepStory(1),6000)}
+function closeModal(force=false){if(!force&&busy&&document.querySelector('#modal-root .pati-upload-status:not([hidden])')){notify('İşlem sürüyor. Tamamlanmasını bekle.',true);return}if(typeof patiPetPhotoObjectUrl!=='undefined'&&patiPetPhotoObjectUrl){URL.revokeObjectURL(patiPetPhotoObjectUrl);patiPetPhotoObjectUrl=''}window.PatiyizReelsEditor?.dispose();clearPatiMediaUrls();if(typeof lostPhotoObjectUrl!=='undefined'&&lostPhotoObjectUrl){URL.revokeObjectURL(lostPhotoObjectUrl);lostPhotoObjectUrl=''}$('#modal-root').innerHTML='';if(document.getElementById('story-overlay')&&!storyTimer&&storyItems.length)storyTimer=setTimeout(()=>stepStory(1),6000)}
 const species=['Kedi','Köpek','Muhabbet kuşu','Papağan','Kanarya','Kuş','Tavşan','Hamster','Ginepig','Fare','Sıçan','Gerbil','Çinçilla','Kemirgen','Balık','Japon balığı','Beta balığı','Akvaryum balığı','Kaplumbağa','Su kaplumbağası','Kara kaplumbağası','Kertenkele','Geko','İguana','Bukalemun','Yılan','Sürüngen','Kurbağa','Semender','Amfibi','Kirpi','Gelincik','At','Midilli','Eşek','Keçi','Koyun','İnek','Tavuk','Ördek','Kaz','Güvercin','Arı','Omurgasız','Diğer'];
 const petGenders=['Belirtilmedi','Erkek','Dişi','Bilinmiyor','İnterseks'];
 const ownPets=()=>data.pets.filter(p=>p.owner_id===me.id);
@@ -3088,6 +3104,18 @@ document.addEventListener('input',e=>{
  target.style.setProperty('--pati-reel-progress',(Number(target.value)/10)+'%');
 });
 let cropDrag=null;document.addEventListener('pointerdown',e=>{if(e.target.id==='pati-crop-canvas'){cropDrag={x:e.clientX,y:e.clientY,startX:postCropX,startY:postCropY};e.target.setPointerCapture(e.pointerId)}});document.addEventListener('pointermove',e=>{if(!cropDrag||e.target.id!=='pati-crop-canvas')return;postCropX=Math.max(0,Math.min(1,cropDrag.startX-(e.clientX-cropDrag.x)/280));postCropY=Math.max(0,Math.min(1,cropDrag.startY-(e.clientY-cropDrag.y)/280));drawPostCrop()});document.addEventListener('pointerup',()=>{cropDrag=null});
+document.addEventListener('change',e=>{
+ const input=e.target;
+ if(!input?.matches?.('#lost-form input[name="photo"],#lost-form input[name="photo_camera"]'))return;
+ const file=input.files?.[0],preview=document.getElementById('lost-photo-preview');
+ if(!file?.size)return;
+ if(file.size>30*1024*1024){input.value='';notify('Fotoğraf 30 MB sınırını aşıyor.',true);return}
+ if(!file.type.startsWith('image/')&&!/\.(heic|heif)$/i.test(file.name||'')){input.value='';notify('Görsel dosyası seç.',true);return}
+ const other=document.querySelector('#lost-form input[name="'+(input.name==='photo'?'photo_camera':'photo')+'"]');if(other)other.value='';
+ if(lostPhotoObjectUrl)URL.revokeObjectURL(lostPhotoObjectUrl);
+ lostPhotoObjectUrl=URL.createObjectURL(file);
+ if(preview){preview.hidden=false;preview.innerHTML='<img src="'+esc(lostPhotoObjectUrl)+'" alt="Yeni ilan fotoğrafı önizlemesi"><small>'+esc(file.name||'Fotoğraf hazır')+'</small>'}
+});
 document.addEventListener('change',e=>{
  const input=e.target;
  if(input?.id==='pati-pet-photo'){
