@@ -28,9 +28,9 @@ test('New tables are fetched and available in the first authenticated paint',()=
  assert.match(app,/\['patiyiz_profile_notes','profileNotes',400\]/);
  assert.match(app,/\['patiyiz_post_collabs','postCollabs',500\]/);
  assert.match(app,/profileNotes:'patiyiz_profile_notes'/);
- assert.match(app,/window\.PatiyizSocial\?\.profileTools/);
- assert.match(app,/window\.PatiyizSocial\?\.collabProfilePosts/);
- assert.match(app,/window\.PatiyizSocial\?\.noteStrip/);
+ assert.match(app,/globalThis\.PatiyizSocial\?\.profileTools/);
+ assert.match(app,/globalThis\.PatiyizSocial\?\.collabProfilePosts/);
+ assert.match(app,/globalThis\.PatiyizSocial\?\.noteStrip/);
 });
 test('Close friends membership writes only owner-scoped rows and never grants media visibility',()=>{
  assert.match(ext,/owner_id:me\.id,friend_id:id/);
@@ -53,7 +53,7 @@ test('Profile notes are temporary, audience-scoped, escaped and user-authored',(
  assert.match(ext,/\['followers','close_friends'\]/);
  assert.match(ext,/onConflict:'author_id'/);
  assert.match(ext,/clean\(n\.body\)/);
- assert.match(app,/window\.PatiyizSocial\?\.profileNote/);
+ assert.match(app,/globalThis\.PatiyizSocial\?\.profileNote/);
 });
 test('Professional insights use saved actual counts, never fake watch time',()=>{
  assert.match(ext,/patiyiz_post_view_totals/);
