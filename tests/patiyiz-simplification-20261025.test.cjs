@@ -26,7 +26,9 @@ test('Keşfet sunucuda RLS ile sıralanır, sıralama değişimi yeni sayfalama 
 test('Hikâye tek aşamalı seçim ve isteğe bağlı düzenleme sunar; gizli kalıcı hikâye kontrolü yoktur',()=>{
  const composer=cut('function openStoryComposer(','async function renderEditedStoryFile(');
  const profile=cut('function profilePage(){','function formField(');
- assert.match(composer,/Fotoğraf seç → Düzenle → Paylaş/);
+ assert.match(composer,/compose\(null,'story',autoPick\)/);
+ const unified=cut("function compose(post,mode='post',autoPick=true){",'function uploadStatus(');
+ assert.match(unified,/Medya seç/);assert.match(unified,/Düzenle/);assert.match(unified,/Paylaş/);
  assert.doesNotMatch(composer,/Öne çıkanlara kaydet/);
  assert.doesNotMatch(profile,/pati-ig-highlight-section/);
  assert.match(app,/is_highlight:false/);
