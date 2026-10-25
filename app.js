@@ -1454,6 +1454,8 @@ async function patiDmLoadThread(peer,older=false,quiet=false){
  if(!state){state={rows:[],hasMore:true,loading:false,ready:false,error:''};patiDmThreads.set(key,state)}
  if(state.loading||(older&&!state.hasMore))return;
  state.loading=true;state.error='';
+ const beforeHistory=older&&personId===peer?document.querySelector('.chat-history'):null;
+ const anchor=beforeHistory?{height:beforeHistory.scrollHeight,top:beforeHistory.scrollTop}:null;
  const old=older&&state.rows.length?state.rows.reduce((t,row)=>!t||row.created_at<t?row.created_at:t,''):'';
  try{
   let query=sb.from('messages').select('*')
@@ -1477,7 +1479,13 @@ async function patiDmLoadThread(peer,older=false,quiet=false){
   }
  }finally{
   state.loading=false;
-  if(me?.id===uid&&patiDmThreads.get(key)===state&&personId===peer&&view==='messages'&&!quiet)patiDmSafeRender();
+  if(me?.id===uid&&patiDmThreads.get(key)===state&&personId===peer&&view==='messages'&&!quiet){
+   patiDmSafeRender();
+   if(anchor&&typeof requestAnimationFrame==='function')requestAnimationFrame(()=>{
+    const next=document.querySelector('.chat-history');
+    if(next)next.scrollTop=Math.max(0,anchor.top+next.scrollHeight-anchor.height);
+   });
+  }
  }
 }
 function patiIndexDmHistory(rows,userId,hiddenIds,seenIds){
@@ -1529,7 +1537,7 @@ function messagesPage(){
  const box=main.querySelector('.chat-people');
  if(box)box.insertAdjacentHTML('beforeend','<div class="pati-load-more">'+(inbox.loading?'Sohbetler yükleniyor…':button(inbox.error?'Yeniden dene':'Daha fazla sohbet','dm-inbox-more'))+'</div>');
  }
- if(pageMore.messages){const box=main.querySelector('.chat-people');if(box)box.insertAdjacentHTML('beforeend',`<div class="pati-load-more">${button('Eski mesajları yükle','load-more','data-id="messages"')}</div>`)}const history=main.querySelector('.chat-history');
+ const history=main.querySelector('.chat-history');
  if(history&&personId){
   const threadState=patiDmThreads.get(patiDmThreadKey(personId));
   if(threadState?.hasMore||threadState?.error||threadState?.loading){
