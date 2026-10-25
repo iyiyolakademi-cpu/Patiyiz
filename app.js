@@ -81,6 +81,7 @@ let isAdmin=false;let pageLimits={posts:40,messages:150,notifications:150};let p
 let favorites=new Set(), followed=new Set(),liked=new Set(),saved=new Set(),voted=new Set(),blocked=new Set();
 let patiyizLoadedTables=new Set(),patiyizDeferredLoading=null,patiyizLoadToken=0;
 let patiHomeFeedIds=null,patiHomeFeedCursor=null,patiHomeLoadError='';
+const patiHomeCountCache=new Map(),patiHomeCountsLoading=new Set();
 let likesChangeEpoch=0;const pendingPostLikes=new Set();
 const notify=(msg,bad=false)=>{const host=$('#toasts');const el=document.createElement('div');el.className='pati-toast'+(bad?' error':'');el.textContent=msg;host.append(el);setTimeout(()=>el.remove(),4000)};
 const friendly=e=>{const m=String(e?.message||e||'İşlem başarısız.');if(/Failed to fetch|NetworkError|network request failed|fetch failed/i.test(m))return 'Bağlantı kurulamadı. İnternetini kontrol edip tekrar dene.';if(/JWT expired|Invalid JWT|session expired/i.test(m))return 'Oturumun süresi doldu. Yeniden giriş yapmalısın.';if(/permission denied|row-level security policy/i.test(m))return 'Bu işlem için yetkin yok veya ilgili kayıt artık kullanılamıyor.';if(/Invalid login credentials/i.test(m))return 'E-posta veya şifre hatalı.';if(/Email not confirmed/i.test(m))return 'E-posta adresinizi gelen kutunuzdan doğrulayın.';if(/User already registered/i.test(m))return 'Bu e-posta zaten kayıtlı.';if(/Password should/i.test(m))return 'Şifreniz en az 6 karakter olmalı.';if(/questions_title_check/i.test(m))return 'Soru başlığı en az 5, en fazla 150 karakter olmalı.';if(/questions_body_check/i.test(m))return 'Soru açıklaması en az 5, en fazla 2000 karakter olmalı.';return m};
@@ -1013,6 +1014,40 @@ function openPatiShareModal(postId){
   if(noMatch)noMatch.hidden=visible>0||people.length===0;
  });
 }
+// Reconcile exact per-post totals without rendering or reloading the playing videos.
+function patiApplyHomePostCounts(id,row){
+ if(typeof document==='undefined'||!row)return;
+ const card=document.querySelector('.pati-feed-card[data-post-id="'+id+'"]');
+ if(!card)return;
+ const like=card.querySelector('[data-action="like"] span'),comment=card.querySelector('[data-action="comment"] span'),sum=card.querySelector('.pati-post-like-summary');
+ if(like)like.textContent=String(row.like_count);
+ if(comment)comment.textContent=String(row.comment_count);
+ if(sum)sum.textContent=String(row.like_count)+' beğeni';
+}
+async function patiSyncHomePostCounts(posts){
+ if(!me||!sb||view!=='home')return;
+ const uid=me.id,token=patiyizLoadToken,now=Date.now();
+ const ids=[...new Set((posts||[]).map(p=>p.id).filter(Boolean))].slice(0,240),missing=[];
+ for(const id of ids){
+  const cached=patiHomeCountCache.get(id);
+  if(cached)patiApplyHomePostCounts(id,cached);
+  if((!cached||now-cached.at>45000)&&!patiHomeCountsLoading.has(id)){patiHomeCountsLoading.add(id);missing.push(id)}
+ }
+ for(let i=0;i<missing.length;i+=60){
+  const page=missing.slice(i,i+60);
+  try{
+   const result=await sb.rpc('patiyiz_feed_post_counts',{p_post_ids:page});
+   if(result.error)throw result.error;
+   if(me?.id!==uid||patiyizLoadToken!==token)return;
+   for(const row of result.data||[]){
+    const count={like_count:Number(row.like_count)||0,comment_count:Number(row.comment_count)||0,at:Date.now()};
+    patiHomeCountCache.set(row.post_id,count);
+    if(view==='home')patiApplyHomePostCounts(row.post_id,count);
+   }
+  }catch(error){console.warn('Akış sayaçları doğrulanamadı:',error?.message||error)}
+  finally{for(const id of page)patiHomeCountsLoading.delete(id)}
+ }
+}
 function homePage(){
  const list=[...data.posts].filter(p=>!blocked.has(p.author_id)&&
   (typeof patiHomeFeedIds==='undefined'||!patiHomeFeedIds||patiHomeFeedIds.has(p.id)))
@@ -1023,6 +1058,7 @@ function homePage(){
   esc(patiHomeLoadError)+' '+button('Tekrar dene','home-retry')+'</div>':'')
  +(pageMore.posts&&!((typeof patiHomeLoadError!=='undefined'&&patiHomeLoadError))&&
   patiyizLoadedTables.has('posts')?'<div class="pati-load-more">'+button('Daha fazla paylaşım yükle','load-more','data-id="posts"')+'</div>':'')+'</div>';
+ if(typeof patiSyncHomePostCounts==='function')void patiSyncHomePostCounts(selectedPostId?list.filter(p=>p.id===selectedPostId):list);
 }
 
 let savedPostsLoading=false;const savedMissingAttempted=new Set();
@@ -2170,6 +2206,7 @@ async function togglePostLike(id){
   data.likes=[...data.likes.filter(x=>x.post_id!==id),...authoritative];
   liked=new Set(data.likes.filter(x=>x.user_id===owner).map(x=>x.post_id));
   const count=authoritative.length;
+  if(typeof patiHomeCountCache!=='undefined')patiHomeCountCache.delete(id);
   document.querySelectorAll('[data-action="like"][data-id="'+id+'"]').forEach(btn=>{
    btn.classList.toggle('active',savedLike);btn.setAttribute('aria-pressed',String(savedLike));
    if(savedLike){btn.classList.remove?.('pati-like-pop');void btn.offsetWidth;btn.classList.add?.('pati-like-pop')}
@@ -2563,6 +2600,7 @@ case 'comment-form':{
  if(result.error)throw result.error;
  if(me?.id!==owner)return;
  if(!data.comments.some(c=>c.id===result.data.id))data.comments.push(result.data);
+ if(typeof patiHomeCountCache!=='undefined')patiHomeCountCache.delete(postId);
  if(record.parent_id)patiyizCommentExpandedReplies.add(record.parent_id);
  // Do not restore already-posted text from the prior modal while re-rendering.
  const sentInput=form.querySelector('[name="body"]');if(sentInput)sentInput.value='';
@@ -2626,7 +2664,7 @@ function resetSessionState(){
  if(typeof patiDmThreads!=='undefined')patiDmThreads.clear();if(typeof patiDmInbox!=='undefined')patiDmInbox={owner:'',rows:[],offset:0,hasMore:true,loading:false,ready:false,error:''};
 
  patiyizLoadToken++;patiyizLoadedTables.clear();patiyizDeferredLoading=null;
- if(typeof patiHomeFeedIds!=='undefined'){patiHomeFeedIds=null;patiHomeFeedCursor=null;patiHomeLoadError=''};patiWellness={reminders:[],weights:[],loaded:false,loading:false,notified:new Set()};patiLeaderboard=[];patiInviteState={code:'',invited_count:0,already_used:false,coins_each:50,loading:false};patiDmReturnView='home';mobileChatOpen=false;patiCoinState={balance:0,earned:0,claims:[],items:[],orders:[],history:[],loading:false};patiFollowerRewardState={followers:null,claimed:[]};document.getElementById('paticoin-celebration')?.remove();
+ if(typeof patiHomeFeedIds!=='undefined'){patiHomeFeedIds=null;patiHomeFeedCursor=null;patiHomeLoadError=''};if(typeof patiHomeCountCache!=='undefined'){patiHomeCountCache.clear();patiHomeCountsLoading.clear()}patiWellness={reminders:[],weights:[],loaded:false,loading:false,notified:new Set()};patiLeaderboard=[];patiInviteState={code:'',invited_count:0,already_used:false,coins_each:50,loading:false};patiDmReturnView='home';mobileChatOpen=false;patiCoinState={balance:0,earned:0,claims:[],items:[],orders:[],history:[],loading:false};patiFollowerRewardState={followers:null,claimed:[]};document.getElementById('paticoin-celebration')?.remove();
  data=Object.fromEntries(Object.keys(data).map(key=>[key,[]]));
  for(const group of [favorites,followed,liked,saved,voted,blocked])group.clear();
  blockedProfiles=[];patiDmSignedCache.clear();profileCountCache.clear();profileCountInFlight.clear();
