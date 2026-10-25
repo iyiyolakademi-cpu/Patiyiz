@@ -42,6 +42,7 @@ const form=(mode='post',photos=[],video=null)=>({
  querySelector(sel){
   if(sel.includes('name="photo"'))return{files:photos};
   if(sel.includes('name="cover_photo"'))return{files:[]};
+   if(sel.includes('name="video"'))return{files:video?[video]:[]};
   return null;
  }
 });
@@ -55,19 +56,15 @@ test('Paylaşım boşsa ağ veya depolama isteği yapmadan reddedilir',async()=>
  assert.equal(x.state.lastInserted,undefined);
 });
 
-test('Anketin iki seçeneği ve soru başlığı medya yüklemesinden ÖNCE doğrulanır',async()=>{
- let requested=0;
- const x=env({upload:async()=>{requested++;return''}});
- const f={dataset:{storyInput:'story_gallery'}};
- const fdata={get(name){return name==='story_gallery'?{size:100,name:'pet.jpg'}:null}};
- const missingQuestion=k=>({interaction_mode:'poll',interaction_prompt:'',poll_a:'Kedi',poll_b:'Köpek'})[k]||'';
- const missingOption=k=>({interaction_mode:'poll',interaction_prompt:'Favorin?',poll_a:'Kedi',poll_b:''})[k]||'';
- await assert.rejects(()=>x.createStoryPublication(f,fdata,missingQuestion),/başlığı gerekli/);
- await assert.rejects(()=>x.createStoryPublication(f,fdata,missingOption),/iki seçenek gerekli/);
- assert.equal(requested,0);
+test('Hikâyede boş seçim ve eşzamanlı fotoğraf/video yüklenmeden reddedilir',async()=>{
+ const x=env();
+ const f=form('story',[],null);
+ await assert.rejects(()=>x.createStoryPublication(f,data(),()=>''),/fotoğraf veya video seç/);
+ const video={size:1024,name:'story.mp4',type:'video/mp4'};
+ const photo={size:512,name:'story.jpg',type:'image/jpeg'};
+ await assert.rejects(()=>x.createStoryPublication(form('story',[photo],video),data(video),()=>''),/tek bir fotoğraf veya video/);
  assert.equal(x.state.lastInserted,undefined);
 });
-
 test('Birden fazla görselden sonra işleme hatasında yüklenmiş dosya yalnızca sahibinden temizlenir',async()=>{
  const x=env();
  const f=form();
@@ -155,7 +152,7 @@ test('MP4 veya WebM MIME eksikse dosya uzantısından geçerli video türü seç
 
 test('Yeni yayın akışı kayıt kimliğini sabit tutar ve başarısız içerik doğrulamasını temizler',()=>{
  assert.match(app,/case 'story-form':\{const result=await createStoryPublication\(/);
- assert.match(app,/case 'post-form':\{if\(form.dataset.edit\)/);
+ assert.match(app,/case 'post-form':\{if\(form.dataset.mode==='story'\)/);
  assert.match(app,/if\(!body&&!photoFiles.length&&!hasVideo\)/);
  assert.match(app,/await cleanPublicationMedia\(uploaded\.filter\(url=>!references\.has\(url\)\),owner\)/);
 });
