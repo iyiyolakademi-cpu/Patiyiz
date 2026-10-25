@@ -2763,7 +2763,35 @@ function lostValidateRecord(rec){
  if(/\b(?:no\s*[:.]?\s*\d+|daire\s*[:.]?\s*\d+|kapı\s*no\s*[:.]?\s*\d+)\b/i.test(rec.description))throw Error('Açık adres yazma; yaklaşık bölge belirt.');
  return rec;
 }
-function composeAdoption(a){modal(a?'Sahiplendirme ilanını düzenle':'Sahiplendirme ilanı oluştur',formField('name','Hayvanın adı','text',a?.name||'',true)+selectField('species','Hayvan türü',species,a?.species||'Kedi')+selectField('gender','Cinsiyet',petGenders,a?.gender||'Bilinmiyor')+formField('age','Yaş (isteğe bağlı)','text',a?.age||'')+formField('city','Şehir','text',a?.city||'',true)+formField('district','İlçe','text',a?.district||'')+textField('description','Hayvan hakkında bilgi (en az 15 karakter)','',true,2000)+(a?'<p class="small-note">Yeni fotoğraf yüklemezsen mevcut fotoğraf korunur.</p>':'')+imageField(),'adoption-form');const f=$('#adoption-form');f.dataset.edit=a?.id||'';if(a)f.querySelector('[name="description"]').value=a.description||''}
+function composeAdoption(a){
+ if(a&&a.owner_id!==me?.id)return notify('Bu ilanı düzenleme yetkin yok.',true);
+ const media='<div class="adopt-v2-form-media"><strong>Hayvanın fotoğrafı (isteğe bağlı)</strong><p>Net bir fotoğraf tanışmayı kolaylaştırır. Yeni fotoğraf seçmezsen eskisi korunur.</p>'
+ +(a?.photo_url?'<img src="'+esc(a.photo_url)+'" class="adopt-v2-old-photo" alt="Mevcut ilan fotoğrafı">':'')
+ +'<div class="pati-upload-preview" hidden></div><div class="adopt-v2-photo-actions"><button type="button" data-action="adoption-gallery">▧ Galeriyi aç</button><button type="button" data-action="adoption-camera">◎ Fotoğraf çek</button></div>'
+ +'<input class="adopt-v2-native-file" name="photo" type="file" accept="image/*,.heic,.heif" aria-label="Galeriden fotoğraf seç">'
+ +'<input class="adopt-v2-native-file" name="photo_camera" type="file" accept="image/*" capture="environment" aria-label="Kameradan fotoğraf çek"></div>';
+ modal(a?'Sahiplendirme ilanını düzenle':'Sahiplendirme ilanı oluştur',
+ '<p class="adopt-v2-form-info">Sahiplendirme ücretsizdir. Açık adresini, telefonunu veya ödeme bilgisi yazma. Sağlık ve bakım bilgilerini açıklamada paylaş.</p>'
+ +formField('name','Hayvanın adı','text',a?.name||'',true)
+ +selectField('species','Hayvan türü',species,a?.species||'Kedi')
+ +selectField('gender','Cinsiyet',petGenders,a?.gender||'Bilinmiyor')
+ +formField('age','Yaş (isteğe bağlı)','text',a?.age||'')
+ +formField('city','Şehir','text',a?.city||'',true)
+ +formField('district','İlçe','text',a?.district||'')
+ +textField('description','Sağlık, davranış ve bakım koşulları (en az 15 karakter)',a?.description||'',true,2000)
+ +media,'adoption-form');
+ const form=document.getElementById('adoption-form');form.dataset.edit=a?.id||'';
+ form.querySelector('[name="description"]').minLength=15;
+ form.querySelector('.modal-footer button[type="submit"]').textContent=a?'Değişiklikleri kaydet':'İlanı yayınla';
+}
+function adoptionValidateRecord(rec){
+ if(rec.name.length<2||rec.name.length>100)throw Error('Hayvanın adı 2–100 karakter arasında olmalı.');
+ if(!rec.species||rec.city.length<2||rec.city.length>100||rec.district.length>100)throw Error('Hayvan türünü, şehir ve ilçe bilgilerini kontrol et.');
+ if(rec.age.length>60||rec.description.length<15||rec.description.length>2000)throw Error('Yaş alanını ve en az 15 karakterlik açıklamayı kontrol et.');
+ if(/(?:\+90[\s.-]*|0)?5\d{2}[\s().-]*\d{3}[\s.-]*\d{2}[\s.-]*\d{2}/.test(rec.description))throw Error('Telefon numarası paylaşma. İletişim için Patiyiz mesajlarını kullan.');
+ if(/\b(?:no\s*[:.]?\s*\d+|daire\s*[:.]?\s*\d+|kapı\s*no\s*[:.]?\s*\d+)\b/i.test(rec.description))throw Error('Açık adres paylaşma; sadece şehir ve ilçe belirt.');
+ return rec;
+}
 function composeCare(){modal('Bakım görevi ekle',formField('title','Görev adı','text','',true)+selectField('category','Kategori',['Aşı','Veteriner','İlaç','Bakım','Diğer'])+formField('due_date','Tarih','date',new Date().toISOString().slice(0,10),true)+petOptions(),'care-form')}
 function editProfile(){
  const p=current();
