@@ -17,3 +17,6 @@ with check (
   or object_path like (owner_id::text || '/' || pet_id::text || '/%')
  )
 );
+
+-- Data API privilege is separate from RLS: owner and pet checks above still apply.
+grant update on public.patiyiz_health_documents to authenticated;
