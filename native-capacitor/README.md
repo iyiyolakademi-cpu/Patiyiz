@@ -9,6 +9,8 @@ Bu klasör **PWABuilder / TWA'dan ayrı** native Android prototipidir. PWABuilde
 - Supabase ve TUS kütüphaneleri CDN'den değil, paket içinden yüklenir. Supabase veri alışverişi ve medya yüklemeleri için **internet gerekir**.
 - Android sistem durum çubuğu koyu, yazılar açık; fiziksel geri tuşu modal/sohbet/ekranları kapatır.
 - Telefonun uygulama simgesi mevcut 512px Patiyiz logosundan hazırlanır; splash açılışı Patiyiz logosuyla eşleşir.
+- Android içinden profil ve gönderi paylaşırken `https://localhost` yerine herkeste açılabilen `https://patiyiz.com/` bağlantıları kullanılır; bu değişiklik **yalnızca yerel Capacitor paketi** için yapılır.
+- APK oluşturmadan önce derleyici HTML'de referans verilen JavaScript, CSS, simge ve manifest dosyalarının pakete gerçekten kopyalandığını doğrular. Eksik dosyada işlem durur.
 - Google Play paket kimliği **\`com.patiyiz.app\`** korunur, ancak **test için üretilen debug APK, eski PWABuilder imzasıyla aynı değildir**.
 
 ## GitHub'dan test APK'sı alma

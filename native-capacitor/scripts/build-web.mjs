@@ -1,5 +1,5 @@
 /* Build a native-only static copy. Production PWA files are unchanged. */
-import {readFile,writeFile,mkdir,cp,rm} from 'node:fs/promises';
+import {readFile,writeFile,mkdir,cp,rm,access} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {build} from 'esbuild';
@@ -34,6 +34,11 @@ await writeFile(path.join(out,'admin.html'),admin);
 // then the person returns to the native app and signs in with email/password.
 app=app.replaceAll('redirectTo:location.origin+location.pathname',"redirectTo:'https://patiyiz.com/'");
 app=app.replaceAll('emailRedirectTo:location.origin+location.pathname',"emailRedirectTo:'https://patiyiz.com/'");
+// Android WebView uses https://localhost internally; public links must use the real domain.
+app=replace(app,"case 'profile-share':{const u=location.origin+location.pathname;","case 'profile-share':{const u='https://patiyiz.com/';",'public profile sharing');
+const nativePostShareSource="location.origin+location.pathname+'#post-'";
+if(!app.includes(nativePostShareSource))throw Error('Missing post share URL anchor for native Android');
+app=app.replaceAll(nativePostShareSource,"'https://patiyiz.com/#post-'");
 app=replace(app,"function showApp(){starter();","function showApp(){starter();if(window.PatiyizNative?.isNative)window.PatiyizNative.setSession(me?.id,sb);",'native auth session');
 app=replace(app,"authRoot.classList.add('hidden');appRoot.classList.remove('hidden');navigate(view);","authRoot.classList.add('hidden');appRoot.classList.remove('hidden');navigate(window.PatiyizNative?.consumeScreen()||view);",'native initial route');
 app=replace(app,"case 'logout':run(async()=>{const r=await sb.auth.signOut();",
@@ -87,4 +92,17 @@ await build({entryPoints:[path.join(native,'src','native-shell.js')],bundle:true
  define:{__PATIYIZ_FCM_ENABLED__:process.env.PATIYIZ_FCM_ENABLED==='true'?'true':'false'},
  outfile:path.join(out,'native-shell.js')});
 if(html.includes('https://cdn.jsdelivr.net/npm/@supabase/')||html.includes('https://cdn.jsdelivr.net/npm/tus-js-client'))throw Error('Unexpected remote SDK');
+// Prevent a seemingly successful APK with missing local JS, CSS, icons or manifest.
+for(const tag of html.match(/<(?:script|link|img)[^>]*>/gi)||[]){
+ const match=tag.match(/(?:src|href)="([^"]+)"/i);
+ if(!match)continue;
+ const resource=match[1];
+ if(['https:','http:','data:','//','#'].some(prefix=>resource.startsWith(prefix)))continue;
+ const relative=resource.split(/[?#]/)[0];
+ if(!relative)continue;
+ const local=path.resolve(out,relative.startsWith('/')?relative.slice(1):relative);
+ if(!local.startsWith(out+path.sep))throw Error('Invalid bundled asset path: '+resource);
+ try{await access(local)}catch{throw Error('Missing bundled Android asset: '+resource)}
+}
+if(app.includes('location.origin+location.pathname'))throw Error('Unconverted localhost URL in native app sharing');
 console.log('Native Android web assets bundled: '+files.length+' files, local Supabase/TUS and native shell.');
