@@ -17,7 +17,7 @@ test('Feed/Reels counters use one index per render with blocked authors excluded
  assert.equal(stats.get('p2').comments,1);
  assert.equal(stats.get('not-there'),undefined);
  const render=part('function render(){','async function load(mode');
- assert.match(render,/patiPostRenderStats=patiBuildPostStats\(data.likes,data.comments,blocked\)/);
+ assert.match(render,/patiPostRenderStats=\['home','reels','profile','explore','saved-posts'\]\.includes\(view\)\?patiBuildPostStats\(data.likes,data.comments,blocked\):null/);
  const card=part('function postCard(','function openPost(');
  assert.match(card,/indexed\.get\(p.id\)\?\.comments\|\|0/);
  assert.match(card,/indexed\.get\(p.id\)\?\.likes\|\|0/);
