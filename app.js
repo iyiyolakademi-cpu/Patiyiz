@@ -1490,6 +1490,7 @@ async function patiShareMetric(kind,uuid,status){
 // Authenticated RLS governs what each user may view or modify.
 let patiPetsDirectory={owner:'',own:[],rows:[],offset:0,hasMore:true,ready:false,loading:false,error:''};
 const PATI_PETS_PAGE_SIZE=36;
+let patiPetPhotoObjectUrl='';
 async function patiLoadPetsDirectory(reset=false){
  if(!me||!sb)return;
  const uid=me.id,token=patiyizLoadToken;
@@ -2067,7 +2068,7 @@ function showComments(postId){
  const list=form.querySelector('.comment-list');if(list)list.scrollTop=scroll;
 }
 function modal(title,form,id='entry-form'){let root=$('#modal-root');root.innerHTML=`<div class="modal-backdrop" data-action="close"><section class="modal" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="modal-header"><h2>${esc(title)}</h2><button type="button" class="close-modal" data-action="close" aria-label="Pencereyi kapat">×</button></div><form id="${id}"><div class="modal-content">${form}</div><div class="pati-upload-status" role="status" aria-live="polite" hidden><i class="pati-upload-spinner"></i><span>Yükleniyor…</span></div><div class="modal-footer"><button class="outline-btn" type="button" data-action="close">İptal</button><button class="primary-btn" type="submit">Kaydet</button></div></form></section></div>`}
-function closeModal(force=false){if(!force&&busy&&document.querySelector('#modal-root .pati-upload-status:not([hidden])')){notify('İşlem sürüyor. Tamamlanmasını bekle.',true);return}window.PatiyizReelsEditor?.dispose();clearPatiMediaUrls();$('#modal-root').innerHTML='';if(document.getElementById('story-overlay')&&!storyTimer&&storyItems.length)storyTimer=setTimeout(()=>stepStory(1),6000)}
+function closeModal(force=false){if(!force&&busy&&document.querySelector('#modal-root .pati-upload-status:not([hidden])')){notify('İşlem sürüyor. Tamamlanmasını bekle.',true);return}if(typeof patiPetPhotoObjectUrl!=='undefined'&&patiPetPhotoObjectUrl){URL.revokeObjectURL(patiPetPhotoObjectUrl);patiPetPhotoObjectUrl=''}window.PatiyizReelsEditor?.dispose();clearPatiMediaUrls();$('#modal-root').innerHTML='';if(document.getElementById('story-overlay')&&!storyTimer&&storyItems.length)storyTimer=setTimeout(()=>stepStory(1),6000)}
 const species=['Kedi','Köpek','Muhabbet kuşu','Papağan','Kanarya','Kuş','Tavşan','Hamster','Ginepig','Fare','Sıçan','Gerbil','Çinçilla','Kemirgen','Balık','Japon balığı','Beta balığı','Akvaryum balığı','Kaplumbağa','Su kaplumbağası','Kara kaplumbağası','Kertenkele','Geko','İguana','Bukalemun','Yılan','Sürüngen','Kurbağa','Semender','Amfibi','Kirpi','Gelincik','At','Midilli','Eşek','Keçi','Koyun','İnek','Tavuk','Ördek','Kaz','Güvercin','Arı','Omurgasız','Diğer'];
 const petGenders=['Belirtilmedi','Erkek','Dişi','Bilinmiyor','İnterseks'];
 const ownPets=()=>data.pets.filter(p=>p.owner_id===me.id);
@@ -2361,6 +2362,7 @@ function editProfile(){
  if(submit)submit.textContent='Bitti';
 }
 function editPet(p){
+ if(typeof patiPetPhotoObjectUrl!=='undefined'&&patiPetPhotoObjectUrl){URL.revokeObjectURL(patiPetPhotoObjectUrl);patiPetPhotoObjectUrl=''}
  if(p&&p.owner_id!==me.id)return notify('Yalnızca kendi hayvanını düzenleyebilirsin.',true);
  const photo=p?.photo_url?'<img src="'+esc(p.photo_url)+'" alt="Mevcut hayvan fotoğrafı" loading="eager">':'<span class="pati-pet-placeholder">'+petIcon(p?.species||'Kedi')+'</span>';
  const fields='<div class="pati-pet-edit-cover"><div class="pati-pet-edit-photo">'+photo+'</div><div><strong>'+(p?'Fotoğrafını güncelle':'Bir fotoğraf seç')+'</strong><label class="pati-pet-photo-select" for="pati-pet-photo">Galeriden fotoğraf seç</label><input id="pati-pet-photo" name="photo" type="file" accept="image/*,.heic,.heif" aria-label="Hayvan fotoğrafı seç"><small>JPG, PNG veya HEIC. Fotoğraf eklemek isteğe bağlıdır.</small></div></div>'+
@@ -2728,6 +2730,18 @@ document.addEventListener('input',e=>{
 let cropDrag=null;document.addEventListener('pointerdown',e=>{if(e.target.id==='pati-crop-canvas'){cropDrag={x:e.clientX,y:e.clientY,startX:postCropX,startY:postCropY};e.target.setPointerCapture(e.pointerId)}});document.addEventListener('pointermove',e=>{if(!cropDrag||e.target.id!=='pati-crop-canvas')return;postCropX=Math.max(0,Math.min(1,cropDrag.startX-(e.clientX-cropDrag.x)/280));postCropY=Math.max(0,Math.min(1,cropDrag.startY-(e.clientY-cropDrag.y)/280));drawPostCrop()});document.addEventListener('pointerup',()=>{cropDrag=null});
 document.addEventListener('change',e=>{
  const input=e.target;
+ if(input?.id==='pati-pet-photo'){
+  const file=input.files?.[0];
+  if(!file)return;
+  if(file.size>30*1024*1024){input.value='';notify('Fotoğraf 30 MB sınırını aşıyor.',true);return}
+  const preview=document.querySelector('#pet-form .pati-pet-edit-photo');
+  if(preview){
+   if(patiPetPhotoObjectUrl)URL.revokeObjectURL(patiPetPhotoObjectUrl);
+   patiPetPhotoObjectUrl=URL.createObjectURL(file);
+   preview.innerHTML='<img src="'+esc(patiPetPhotoObjectUrl)+'" alt="Seçilen hayvan fotoğrafı önizlemesi">';
+  }
+  return;
+ }
  if(input?.name==='dm_camera'||input?.name==='dm_gallery'){
   const files=[...(input.files||[])],isGallery=input.name==='dm_gallery';input.value='';
   if(files[0])run(()=>sendDmImage(files[0]));
