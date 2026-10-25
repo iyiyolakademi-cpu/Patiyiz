@@ -540,6 +540,7 @@ function navigate(to){
  if(to==='pets'&&previous!=='pets')void patiLoadOwnedPets();
  if(to==='explore'&&previous!=='explore'&&typeof patiExploreLoadMedia==='function')void patiExploreLoadMedia(true);
  if(to==='follows-list')void patiLoadFollowPage(true);
+ if(to==='notifications'&&previous!=='notifications'){void notificationFetch();void notificationCheckPush();}
  if(to==='messages'){
   if(previous!=='messages')void patiDmLoadInbox(true);
   if(personId)void patiDmLoadThread(personId);
@@ -2337,27 +2338,91 @@ async function enablePhonePush(){
   const record={user_id:me.id,endpoint:sub.endpoint,p256dh:json.keys.p256dh,auth_secret:json.keys.auth};
   const saved=await sb.from('push_subscriptions').upsert(record,{onConflict:'endpoint'});
   if(saved.error)throw saved.error;
-  notify('Telefon bildirimleri açıldı!');if(view==='notifications')render();
+  notify('Telefon bildirimleri açıldı!');if(view==='notifications')void notificationCheckPush();
  }catch(e){console.error(e);notify('Bildirim açılamadı: '+friendly(e),true)}
 }
+let notificationFilter='all',notificationSearch='',notificationBusy=false,notificationLoadError='',notificationPushStatus='checking',notificationPushOwner='',notificationPushLoading=false;
+const notificationKinds={messages:['message-circle','Mesaj'],comments:['message-square','Yorum'],post_likes:['heart','Beğeni'],follows:['user-plus','Takip'],pet_reminder:['calendar','Pati bakımı']};
+function notificationVisible(){
+ return [...data.notifications].filter(n=>n.owner_id===me?.id&&!blocked.has(n.actor_id))
+  .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)||String(b.id).localeCompare(String(a.id)));
+}
+function notificationMatches(){
+ const query=String(notificationSearch||'').toLocaleLowerCase('tr-TR');
+ return notificationVisible().filter(n=>{
+  const group=n.kind==='messages'?'messages':n.kind==='pet_reminder'?'care':'social';
+  return (notificationFilter==='all'||notificationFilter==='unread'&&!n.read||notificationFilter===group)
+   &&(!query||[n.text,notificationKinds[n.kind]?.[1]||'Etkinlik',data.profiles.find(p=>p.id===n.actor_id)?.display_name||''].join(' ').toLocaleLowerCase('tr-TR').includes(query));
+ });
+}
+function notificationRows(list){
+ return list.map(n=>{
+  const [symbol,label]=notificationKinds[n.kind]||['bell','Etkinlik'];
+  const actor=n.actor_id?data.profiles.find(p=>p.id===n.actor_id):null;
+  const followBack=n.kind==='follows'&&actor&&actor.id!==me?.id&&!followed.has(actor.id)&&data.follows.some(f=>f.follower_id===actor.id&&f.followee_id===me?.id);
+  return '<article class="pati-alert-row '+(n.read?'is-read':'is-new')+'" data-notification-id="'+esc(n.id)+'">'
+  +'<button type="button" class="pati-alert-entry" data-action="open-notification" data-id="'+esc(n.id)+'"><span class="pati-alert-avatar">'+(actor?avatar(actor,'s'):ico(symbol))+'</span><span class="pati-alert-content"><strong class="pati-alert-title">'+esc(n.text)+'</strong><small class="pati-alert-meta">'+esc(label)+' · '+esc(day(n.created_at))+(n.read?'':' · Yeni')+'</small></span>'+(n.read?'':'<span class="pati-alert-unread" aria-label="Okunmadı"></span>')+'</button>'
+  +'<div class="pati-alert-row-actions">'
+  +(followBack?'<button type="button" class="pati-alert-follow-back" data-action="follow" data-id="'+esc(actor.id)+'" data-follow-back="true">Sen de takip et</button>':'')
+  +'<button type="button" class="notification-v2-read" data-action="notification-toggle-read" data-id="'+esc(n.id)+'" aria-label="'+(n.read?'Okunmadı olarak işaretle':'Okundu olarak işaretle')+'">'+(n.read?'Okunmadı':'✓ Okundu')+'</button>'
+  +'<button type="button" class="pati-alert-remove" data-action="notification-delete" data-id="'+esc(n.id)+'" aria-label="Bildirimi sil">'+ico('trash')+'</button></div></article>';
+ }).join('');
+}
+function notificationRenderResults(){
+ if(view!=='notifications')return;
+ const list=notificationMatches(),all=notificationVisible(),target=document.getElementById('notification-v2-results'),count=document.getElementById('notification-v2-result-count');
+ if(target)target.innerHTML=list.length?notificationRows(list):'<div class="notification-v2-empty" role="status"><span aria-hidden="true">🔔</span><h3>Bu filtrelerde bildirim bulunamadı</h3><p>Başka bir kategori seçebilir veya filtreleri temizleyebilirsin.</p><button type="button" data-action="notifications-clear">Filtreleri temizle</button></div>';
+ if(count)count.textContent=list.length+' / '+all.length+' bildirim';
+}
+async function notificationCheckPush(){
+ const owner=me?.id;if(!owner||notificationPushLoading)return;
+ notificationPushLoading=true;notificationPushOwner=owner;notificationPushStatus='checking';if(view==='notifications')notificationsPage();
+ try{
+  if(!('serviceWorker' in navigator)||!('PushManager' in window)||!('Notification' in window)){notificationPushStatus='unsupported';return}
+  if(Notification.permission==='denied'){notificationPushStatus='blocked';return}
+  if(Notification.permission!=='granted'){notificationPushStatus='off';return}
+  const reg=await navigator.serviceWorker.getRegistration('./');
+  const sub=await reg?.pushManager?.getSubscription();
+  if(!sub){notificationPushStatus='off';return}
+  const r=await sb.from('push_subscriptions').select('id').eq('user_id',owner).eq('endpoint',sub.endpoint).limit(1);
+  if(r.error)throw r.error;
+  if(me?.id!==owner)return;
+  notificationPushStatus=r.data?.length?'on':'off';
+ }catch(error){console.warn('Telefon bildirim durumu:',error);if(me?.id===owner)notificationPushStatus='error'}
+ finally{notificationPushLoading=false;if(view==='notifications'&&me?.id===owner)notificationsPage()}
+}
+async function notificationFetch(){
+ if(!me||notificationBusy)return;
+ const uid=me.id,token=patiyizLoadToken;notificationBusy=true;notificationLoadError='';if(view==='notifications')notificationsPage();
+ try{
+  const cap=pageLimits.notifications||150;
+  const r=await sb.from('notifications').select('*').eq('owner_id',uid).order('created_at',{ascending:false}).limit(cap);
+  if(r.error)throw r.error;if(me?.id!==uid||patiyizLoadToken!==token)return;
+  data.notifications=r.data||[];pageMore.notifications=(r.data||[]).length>=cap;patiyizLoadedTables.add('notifications');navRender();
+ }catch(e){console.warn('Bildirim yenileme hatası:',e);if(me?.id===uid)notificationLoadError='Bildirimler yenilenemedi. Bağlantını kontrol edip tekrar dene.'}
+ finally{notificationBusy=false;if(me?.id===uid&&view==='notifications')notificationsPage()}
+}
 function notificationsPage(){
- const list=[...data.notifications].filter(n=>n.owner_id===me.id).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
- const unread=list.filter(n=>!n.read).length;
- const kindInfo=n=>{const k=n.kind||'';if(k==='messages')return ['message-circle','Mesaj'];if(k==='comments')return ['message-square','Yorum'];if(k==='post_likes')return ['heart','Beğeni'];if(k==='follows')return ['user-plus','Takip'];if(k==='pet_reminder')return ['calendar','Pati bakımı'];return ['bell','Etkinlik']};
- const rows=items=>items.map(n=>{const [symbol,label]=kindInfo(n),actor=n.actor_id?data.profiles.find(p=>p.id===n.actor_id):null;
-  const followBack=n.kind==='follows'&&actor&&actor.id!==me.id&&!followed.has(actor.id)&&data.follows.some(f=>f.follower_id===actor.id&&f.followee_id===me.id);
-  return '<div class="pati-alert-row '+(n.read?'is-read':'is-new')+'"><button type="button" class="pati-alert-entry" data-action="open-notification" data-id="'+esc(n.id)+'"><span class="pati-alert-avatar">'+(actor?avatar(actor,'s'):ico(symbol))+'</span><span class="pati-alert-content"><span class="pati-alert-title">'+esc(n.text)+'</span><span class="pati-alert-meta">'+label+' · '+day(n.created_at)+(n.read?'':' · Yeni')+'</span></span>'+(n.read?'':'<span class="pati-alert-unread" aria-label="Okunmadı"></span>')+'</button>'+(followBack?'<button type="button" class="pati-alert-follow-back" data-action="follow" data-id="'+esc(actor.id)+'" data-follow-back="true">Sen de takip et</button>':'')+'<button type="button" class="pati-alert-remove" data-action="notification-delete" data-id="'+esc(n.id)+'" aria-label="Bildirimi sil">'+ico('trash')+'</button></div>'}).join('');
- const recent=list.filter(n=>!n.read),past=list.filter(n=>n.read);
- main.innerHTML='<section class="pati-alerts"><div class="pati-alert-head"><div><span class="pati-alert-eyebrow">HESABINDAKİ HAREKETLER</span><h1>Bildirimler'+(unread?'<span class="pati-alert-count">'+unread+'</span>':'')+'</h1><p>Topluluğunda olup bitenleri buradan takip et.</p></div><span class="pati-alert-head-icon">'+ico('bell')+'</span></div>'+
- '<div class="pati-alert-tools"><button type="button" data-action="notifications-read" '+(unread?'':'disabled')+'>'+ico('check-check')+' Tümünü okundu yap</button><button type="button" data-action="notifications-delete-all" '+(list.length?'':'disabled')+'>'+ico('trash-2')+' Tümünü temizle</button></div>'+
- '<div class="pati-alert-push"><span class="pati-alert-push-icon">'+ico('smartphone')+'</span><div><strong>Telefon bildirimleri</strong><p>Yeni mesaj, yorum ve beğenilerden haberdar ol.</p></div><button type="button" data-action="push-enable">Etkinleştir</button></div>'+
- (recent.length?'<div class="pati-alert-group"><div class="pati-alert-group-head"><h2>Yeni bildirimler</h2><span>'+recent.length+'</span></div><div class="pati-alert-list">'+rows(recent)+'</div></div>':'')+
- (past.length?'<div class="pati-alert-group"><div class="pati-alert-group-head"><h2>Önceki bildirimler</h2></div><div class="pati-alert-list">'+rows(past)+'</div></div>':'')+
- (!list.length?'<div class="pati-alert-empty">'+ico('bell')+'<strong>Henüz bildirimin yok</strong><p>Yeni etkileşimlerin burada görünecek.</p></div>':'')+
- (pageMore.notifications?'<div class="pati-load-more">'+button('Eski bildirimleri yükle','load-more','data-id="notifications"')+'</div>':'')+'</section>';
+ const list=notificationMatches(),all=notificationVisible(),unread=all.filter(n=>!n.read).length;
+ const counts={messages:all.filter(x=>x.kind==='messages').length,care:all.filter(x=>x.kind==='pet_reminder').length,social:all.filter(x=>x.kind!=='messages'&&x.kind!=='pet_reminder').length};
+ const statusText={checking:'Durum kontrol ediliyor…',on:'Bu cihazda açık',off:'Bu cihazda kapalı',blocked:'Tarayıcı izni engellenmiş',unsupported:'Bu cihaz desteklemiyor',error:'Durum doğrulanamadı'}[notificationPushStatus];
+ main.innerHTML='<section class="pati-alerts notification-v2"><div class="pati-alert-head"><div><span class="pati-alert-eyebrow">PATİYİZ · HESAP HAREKETLERİ</span><h1>Bildirimler'+(unread?'<span class="pati-alert-count">'+unread+'</span>':'')+'</h1><p>Mesajları, takipleri, etkileşimleri ve bakım hatırlatmalarını burada takip et.</p></div><span class="pati-alert-head-icon">'+ico('bell')+'</span></div>'
+  +'<div class="notification-v2-stats"><div><b>'+all.length+'</b><small>Toplam</small></div><div><b>'+unread+'</b><small>Okunmamış</small></div><div><b>'+counts.messages+'</b><small>Mesaj</small></div><div><b>'+counts.care+'</b><small>Bakım</small></div></div>'
+  +'<div class="pati-alert-tools"><button type="button" data-action="notifications-read" '+(!unread||notificationBusy?'disabled':'')+'>'+ico('check-check')+' Tümünü okundu yap</button><button type="button" data-action="notifications-delete-all" '+(!all.length||notificationBusy?'disabled':'')+'>'+ico('trash-2')+' Tümünü temizle</button><button type="button" data-action="notifications-refresh" '+(notificationBusy?'disabled':'')+'>↻ '+(notificationBusy?'Yenileniyor…':'Yenile')+'</button></div>'
+  +'<div class="pati-alert-push notification-v2-push"><span class="pati-alert-push-icon">'+ico('smartphone')+'</span><div><strong>Telefon bildirimleri</strong><p role="status">'+esc(statusText)+'</p><small>Bu cihazdaki bildirim iznini ve Patiyiz aboneliğini kontrol et.</small></div><div class="notification-v2-push-actions">'
+  +(notificationPushStatus==='on'?'<button type="button" data-action="push-disable">Bu cihazda kapat</button>':notificationPushStatus==='unsupported'?'<span>Desteklenmiyor</span>':'<button type="button" data-action="push-enable" '+(notificationPushLoading?'disabled':'')+'>Etkinleştir</button>')
+  +'<button type="button" data-action="notifications-check-push" '+(notificationPushLoading?'disabled':'')+'>Durumu kontrol et</button></div></div>'
+  +'<p class="notification-v2-info">Telefon bildirimleri cihaz ve tarayıcı izinlerine bağlıdır. İzin vermek teslimatı garanti etmez. Uygulama içindeki kayıtlı bildirimlerin görülmesi için telefon bildirimlerinin açık olması gerekmez.</p>'
+  +'<div class="notification-v2-search"><label for="notification-v2-search">Bildirimlerde ara</label><input id="notification-v2-search" type="search" value="'+esc(notificationSearch)+'" placeholder="Bildirim içeriği veya türü…" autocomplete="off" aria-controls="notification-v2-results"></div>'
+  +'<div class="notification-v2-filters" role="group" aria-label="Bildirim filtreleri">'
+  +[['all','Tümü ('+all.length+')'],['unread','Okunmamış ('+unread+')'],['messages','Mesajlar ('+counts.messages+')'],['social','Etkileşimler ('+counts.social+')'],['care','Bakım ('+counts.care+')']].map(([k,label])=>'<button type="button" data-action="notifications-filter" data-id="'+k+'" class="'+(notificationFilter===k?'active':'')+'" aria-pressed="'+String(notificationFilter===k)+'">'+label+'</button>').join('')+'</div>'
+  +(notificationLoadError?'<p class="notification-v2-error" role="alert">'+esc(notificationLoadError)+'</p>':'')
+  +'<div class="notification-v2-list-head"><h2>Bildirim geçmişi</h2><span role="status" aria-live="polite" id="notification-v2-result-count">'+list.length+' / '+all.length+' bildirim</span></div>'
+  +'<div id="notification-v2-results" class="notification-v2-list">'+(notificationBusy?'<p role="status" class="notification-v2-loading">Bildirimler yenileniyor…</p>':list.length?notificationRows(list):'<div class="notification-v2-empty" role="status"><span aria-hidden="true">🔔</span><h3>Bu filtrelerde bildirim bulunamadı</h3><p>Başka bir kategori seçebilir veya filtreleri temizleyebilirsin.</p><button type="button" data-action="notifications-clear">Filtreleri temizle</button></div>')+'</div>'
+  +(pageMore.notifications?'<div class="pati-load-more">'+button('Eski bildirimleri yükle','load-more','data-id="notifications"')+'</div>':'')+'</section>';
 }
 async function openNotification(id){const n=data.notifications.find(x=>x.id===id&&x.owner_id===me.id);if(!n){navigate('notifications');return}
- if(!n.read){const result=await sb.from('notifications').update({read:true}).eq('id',n.id).eq('owner_id',me.id);if(!result.error){n.read=true;navRender()}}
+ if(!n.read){const result=await sb.from('notifications').update({read:true}).eq('id',n.id).eq('owner_id',me.id).select('id');if(!result.error&&result.data?.length){n.read=true;navRender()}}
  if(['comments','post_likes'].includes(n.kind)&&n.post_id){openPost(n.post_id);return}
  if(n.kind==='messages'&&n.actor_id&&n.actor_id!==me.id&&!blocked.has(n.actor_id)){personId=n.actor_id;mobileChatOpen=true;navigate('messages');return}
  if(n.kind==='pet_reminder'){navigate('wellness');return}
@@ -3346,10 +3411,39 @@ case 'care-done':{const item=data.care.find(x=>x.id===id&&x.owner_id===me.id);if
   data.care=data.care.map(x=>x.id===id?result.data[0]:x);
   if(view==='care')carePage();
  },item.done?'Görev yeniden açıldı.':'Görev tamamlandı.');break;}
-case 'push-enable':enablePhonePush();break;case 'notifications-read':run(async()=>{let r=await sb.from('notifications').update({read:true}).eq('owner_id',me.id).eq('read',false);if(r.error)throw r.error;await refresh()},'Tüm bildirimler okundu olarak işaretlendi.');break;
-case 'notification-delete':if(confirm('Bu bildirim silinsin mi?'))run(async()=>{const r=await sb.from('notifications').delete().eq('id',id).eq('owner_id',me.id);if(r.error)throw r.error;await refresh()},'Bildirim silindi.');break;
-case 'notifications-delete-all':if(confirm('Tüm bildirimlerin kalıcı olarak silinsin mi? Bu işlem geri alınamaz.'))run(async()=>{const r=await sb.from('notifications').delete().eq('owner_id',me.id);if(r.error)throw r.error;await refresh()},'Tüm bildirimlerin silindi.');break;
-case 'blocked-list':navigate('blocked');break;case 'follow-load-more':void patiLoadFollowPage();break;case 'followers-list':followReturnList=false;followListId=id;followListMode=target.dataset.mode==='following'?'following':'followers';navigate('follows-list');break;case 'followers-back':profileId=followListId;followReturnList=false;navigate('profile');break;case 'return-follow-list':followReturnList=false;navigate('follows-list');break;case 'delete-account-open':modal('Hesabımı kalıcı olarak sil',`<div class="pati-delete-warning"><strong>⚠️ Bu işlem geri alınamaz.</strong><p>Profilin, gönderilerin, hikâyelerin, mesajların, sesli yorumların ve yüklediğin dosyalar silinir. Başka kullanıcıların seninle yazışmalarındaki mesajlar da etkilenebilir. Yönetici hesapları buradan silinemez.</p></div><div class="pati-field"><label>Mevcut şifren</label><input type="password" name="delete_password" autocomplete="current-password" required></div><div class="pati-field"><label>Onaylamak için HESABIMI SIL yaz</label><input name="delete_confirm" autocomplete="off" required placeholder="HESABIMI SIL"></div>`,'delete-account-form');break;case 'settings-password':modal('Şifremi değiştir',formField('new_password','Yeni şifre (en az 8 karakter)','password','',true),'settings-password-form');break;case 'push-disable':run(disablePhonePush,'Bu cihazda telefon bildirimleri kapatıldı.');break;case 'block':{const isBlocked=blocked.has(id);const question=isBlocked?'Bu kişinin engelini kaldırmak istiyor musun?':'Bu kullanıcıyı engellemek istiyor musun?';if(confirm(question))run(async()=>{await doToggle('user_blocks',{blocker_id:me.id,blocked_id:id},isBlocked);if($('#blocked-form'))closeModal();notify(isBlocked?'Engel kaldırıldı.':'Kullanıcı engellendi.');},null);break}
+case 'push-enable':enablePhonePush();break;
+case 'notifications-check-push':void notificationCheckPush();break;
+case 'notifications-refresh':void notificationFetch();break;
+case 'notifications-filter':notificationFilter=id;notificationsPage();break;
+case 'notifications-clear':notificationFilter='all';notificationSearch='';notificationsPage();document.getElementById('notification-v2-search')?.focus();break;
+case 'notification-toggle-read':{const item=data.notifications.find(x=>x.id===id&&x.owner_id===me.id);if(!item)break;
+ run(async()=>{const next=!item.read;const r=await sb.from('notifications').update({read:next}).eq('id',id).eq('owner_id',me.id).select('id');
+ if(r.error)throw r.error;if(!r.data?.length)throw Error('Bildirim güncellenemedi veya yetkin yok.');
+ item.read=next;navRender();if(view==='notifications')notificationsPage();
+ },item.read?'Bildirim okunmadı olarak işaretlendi.':'Bildirim okundu olarak işaretlendi.');break;}
+case 'notifications-read':run(async()=>{
+ const uid=me.id;const r=await sb.from('notifications').update({read:true}).eq('owner_id',uid).eq('read',false).select('id');
+ if(r.error)throw r.error;
+ if(me?.id!==uid)return;
+ const ids=new Set((r.data||[]).map(x=>x.id));
+ data.notifications.forEach(x=>{if(ids.has(x.id))x.read=true});
+ navRender();if(view==='notifications')notificationsPage();
+},'Tüm bildirimler okundu olarak işaretlendi.');break;
+case 'notification-delete':if(confirm('Bu bildirim silinsin mi?'))run(async()=>{
+ const uid=me.id;const record=data.notifications.find(x=>x.id===id&&x.owner_id===uid);if(!record)return;
+ const r=await sb.from('notifications').delete().eq('id',id).eq('owner_id',uid).select('id');
+ if(r.error)throw r.error;if(!r.data?.length)throw Error('Bildirim silinemedi veya yetkin yok.');
+ if(me?.id!==uid)return;data.notifications=data.notifications.filter(x=>x.id!==id);
+ navRender();if(view==='notifications')notificationsPage();
+},'Bildirim silindi.');break;
+case 'notifications-delete-all':if(confirm('Tüm bildirimlerin kalıcı olarak silinsin mi? Bu işlem geri alınamaz.'))run(async()=>{
+ const uid=me.id;const r=await sb.from('notifications').delete().eq('owner_id',uid).select('id');
+ if(r.error)throw r.error;if(me?.id!==uid)return;
+ const ids=new Set((r.data||[]).map(x=>x.id));
+ data.notifications=data.notifications.filter(x=>!ids.has(x.id));
+ navRender();if(view==='notifications')notificationsPage();
+},'Tüm bildirimlerin silindi.');break;
+case 'blocked-list':navigate('blocked');break;case 'follow-load-more':void patiLoadFollowPage();break;case 'followers-list':followReturnList=false;followListId=id;followListMode=target.dataset.mode==='following'?'following':'followers';navigate('follows-list');break;case 'followers-back':profileId=followListId;followReturnList=false;navigate('profile');break;case 'return-follow-list':followReturnList=false;navigate('follows-list');break;case 'delete-account-open':modal('Hesabımı kalıcı olarak sil',`<div class="pati-delete-warning"><strong>⚠️ Bu işlem geri alınamaz.</strong><p>Profilin, gönderilerin, hikâyelerin, mesajların, sesli yorumların ve yüklediğin dosyalar silinir. Başka kullanıcıların seninle yazışmalarındaki mesajlar da etkilenebilir. Yönetici hesapları buradan silinemez.</p></div><div class="pati-field"><label>Mevcut şifren</label><input type="password" name="delete_password" autocomplete="current-password" required></div><div class="pati-field"><label>Onaylamak için HESABIMI SIL yaz</label><input name="delete_confirm" autocomplete="off" required placeholder="HESABIMI SIL"></div>`,'delete-account-form');break;case 'settings-password':modal('Şifremi değiştir',formField('new_password','Yeni şifre (en az 8 karakter)','password','',true),'settings-password-form');break;case 'push-disable':run(async()=>{await disablePhonePush();if(view==='notifications')void notificationCheckPush()},'Bu cihazda telefon bildirimleri kapatıldı.');break;case 'block':{const isBlocked=blocked.has(id);const question=isBlocked?'Bu kişinin engelini kaldırmak istiyor musun?':'Bu kullanıcıyı engellemek istiyor musun?';if(confirm(question))run(async()=>{await doToggle('user_blocks',{blocker_id:me.id,blocked_id:id},isBlocked);if($('#blocked-form'))closeModal();notify(isBlocked?'Engel kaldırıldı.':'Kullanıcı engellendi.');},null);break}
 case 'report':closeStory();modal('İçeriği bildir',textField('reason','Şikâyet nedeni (en az 5 karakter)','',true,500),'report-form');$('#report-form').dataset.kind=target.dataset.kind;$('#report-form').dataset.record=id;break;
 case 'tools':openMobileFeaturesMenu();break;default:break}}
 let messagePressTimer=null,messagePressOrigin=null,messageLongPressed=false;
@@ -3538,6 +3632,7 @@ document.addEventListener('input',e=>{if(e.target?.id!=='kb-search')return;kbSea
 document.addEventListener('input',e=>{if(e.target?.id!=='lost-search')return;lostSearch=e.target.value;lostUpdateResults()});
 document.addEventListener('input',e=>{if(e.target?.id!=='adoption-search')return;adoptionSearch=e.target.value;adoptionUpdateResults()});
 document.addEventListener('input',e=>{if(e.target?.id!=='care-search')return;careSearch=e.target.value;careUpdateResults()});
+document.addEventListener('input',e=>{if(e.target?.id!=='notification-v2-search')return;notificationSearch=e.target.value;notificationRenderResults()});
 document.addEventListener('input',e=>{if(e.target?.id!=='explore-search')return;search=e.target.value;const focused=e.target;const pos=focused.selectionStart;const oldScroll=window.scrollY;explorePage();patiExploreQueueSearch();const next=$('#explore-search');if(next){next.focus();try{next.setSelectionRange(pos,pos)}catch(_){}}window.scrollTo(0,oldScroll)});
 document.addEventListener('submit',async e=>{let form=e.target,id=form.id;if(id==='pati-explore-form'){e.preventDefault();search=$('#explore-search')?.value.trim()||'';render();return}if(id==='settings-password-form'){e.preventDefault();const password=String(new FormData(form).get('new_password')||'');if(password.length<8)return notify('Yeni şifre en az 8 karakter olmalı.',true);await run(async()=>{const r=await sb.auth.updateUser({password});if(r.error)throw r.error;closeModal();},'Şifren güncellendi.');return}if(id==='auth-form')return;if(id==='delete-account-form'){e.preventDefault();if(busy)return;const formData=new FormData(form);const password=String(formData.get('delete_password')||'');const confirmation=String(formData.get('delete_confirm')||'').trim();if(confirmation!=='HESABIMI SIL')return notify('Onay için HESABIMI SIL yazmalısın.',true);if(!password)return notify('Mevcut şifren gerekli.',true);if(!confirm('Hesabın ve tüm kişisel verilerin kalıcı olarak silinsin mi?'))return;await run(async()=>{const session=await sb.auth.getSession();if(!session.data.session)throw Error('Lütfen yeniden giriş yap.');const response=await fetch(cfg.supabaseUrl+'/functions/v1/patiyiz-delete-account',{method:'POST',headers:{'content-type':'application/json','authorization':'Bearer '+session.data.session.access_token,'apikey':cfg.supabasePublishableKey},body:JSON.stringify({password,confirmation})});let result;try{result=await response.json()}catch{}if(!response.ok)throw Error(result?.message||'Hesap silinemedi.');closeModal();await sb.auth.signOut();me=null;isAdmin=false;showAuth('Hesabın silindi.');},null);return}if(!['wellness-reminder-form','wellness-weight-form','post-form','question-form','lost-form','care-form','profile-form','pet-form','reply-form','comment-form','report-form','message-form','dm-edit-form','verification-request-form','adoption-form','story-form','story-answer-form','highlight-album-form','highlight-album-add-form'].includes(id))return;e.preventDefault();if(busy)return;const primary=form.querySelector('.modal-footer button[type="submit"]');if(primary){primary.disabled=true;primary.dataset.originalText=primary.textContent;primary.textContent='⏳ Paylaşım hazırlanıyor…'}const status=form.querySelector('.pati-upload-status');if(status){status.hidden=false;status.querySelector('span').textContent='Paylaşım hazırlanıyor…'}const f=new FormData(form),str=k=>String(f.get(k)||'').trim();await run(async()=>{switch(id){case 'story-answer-form':{const out=await sb.from('patiyiz_story_responses').insert({story_id:form.dataset.story,user_id:me.id,kind:'question',response:str('response')});if(out.error)throw out.error;closeModal(true);notify('Yanıtın gönderildi.');break}case 'story-form':{const result=await createStoryPublication(form,f,str);data.stories=[result,...data.stories.filter(x=>x.id!==result.id)];closeModal(true);render();notify(result.is_highlight?'Hikâyen profilinde kalıcı olarak görünecek.':'Hikâyen 24 saat boyunca görüntülenecek.');break}case 'verification-request-form':{if(current().is_verified)throw Error('Hesabın zaten doğrulanmış.');const r=await sb.from('verification_requests').insert({user_id:me.id,note:str('note')});if(r.error){if(r.error.code==='23505')throw Error('Zaten bekleyen bir mavi tik talebin var.');throw r.error}closeModal();notify('Mavi tik talebin yöneticiye gönderildi.');break}case 'highlight-album-form':{const title=str('title').trim(),story_id=str('story_id');if(!title||title.length>32)throw Error('Albüm adı 1–32 karakter olmalı.');const story=data.stories.find(x=>x.id===story_id&&x.author_id===me.id);if(!story)throw Error('Hikâye bulunamadı.');if(!story.is_highlight){const mark=await sb.from('patiyiz_stories').update({is_highlight:true}).eq('id',story_id).eq('author_id',me.id);if(mark.error)throw mark.error;story.is_highlight=true}const out=await sb.from('patiyiz_highlight_albums').insert({owner_id:me.id,title}).select('id').single();if(out.error)throw out.error;const item=await sb.from('patiyiz_highlight_items').insert({album_id:out.data.id,story_id});if(item.error){await sb.from('patiyiz_highlight_albums').delete().eq('id',out.data.id);throw item.error}closeModal(true);await refresh();notify('Yeni öne çıkanlar albümü oluşturuldu.');break}
 case 'highlight-album-add-form':{const story_id=str('story_id'),album_id=form.dataset.album;if(!story_id||!album_id)throw Error('Hikâye ve albüm seç.');const out=await sb.from('patiyiz_highlight_items').upsert({album_id,story_id},{onConflict:'album_id,story_id'});if(out.error)throw out.error;closeModal(true);await refresh();notify('Hikâye albüme eklendi.');break}

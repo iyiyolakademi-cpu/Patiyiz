@@ -27,7 +27,7 @@ test('Scheduled notifications integrate with existing Web Push and care page',()
  assert.match(sql,/'pet_reminder'/);
  for(const kind of ['vaccine','vet','food','medicine']) assert.ok(sql.includes("when '"+kind+"'"));
  assert.match(app,/if\(n\.kind==='pet_reminder'\)\{navigate\('wellness'\);return\}/);
- assert.match(app,/if\(k==='pet_reminder'\)return \['calendar','Pati bakımı'\]/);
+ assert.match(app,/pet_reminder:\['calendar','Pati bakımı'\]/);
  assert.match(app,/bildirimlerine izin verirsen zamanı geldiğinde uygulama kapalıyken de bildirim gönderilebilir/);
  assert.match(html,/app\.js\?v=20261024-release-reliability-1&amp;pet_push=1/);
 });
