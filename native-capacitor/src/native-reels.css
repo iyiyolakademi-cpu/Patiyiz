@@ -1,0 +1,63 @@
+/* Capacitor Android only: portrait Reels occupy the full app viewport.
+   Cover removes letterboxing; landscape content may crop at the edges.
+   System status/navigation bars remain under Android control. */
+@media (max-width:740px) {
+ html.patiyiz-native-android #app-root:has(#main-content .pati-reels-viewport) {
+  background:#000!important;
+ }
+ html.patiyiz-native-android #app-root:has(#main-content .pati-reels-viewport)>.app-shell {
+  margin:0!important;padding:0!important;
+  min-height:100dvh!important;height:100dvh!important;
+ }
+ html.patiyiz-native-android #app-root:has(#main-content .pati-reels-viewport) #main-content {
+  position:fixed!important;inset:0!important;
+  display:block!important;box-sizing:border-box!important;
+  margin:0!important;padding:0!important;
+  width:100vw!important;max-width:none!important;
+  height:100dvh!important;min-height:0!important;
+  overflow:hidden!important;background:#000!important;
+  z-index:1!important;
+ }
+ html.patiyiz-native-android #main-content .pati-reels-viewport,
+ html.patiyiz-native-android #main-content .pati-reel-item {
+  height:100dvh!important;min-height:0!important;max-height:none!important;
+  width:100vw!important;max-width:none!important;
+  padding:0!important;margin:0!important;
+  border-radius:0!important;background:#000!important;
+ }
+ html.patiyiz-native-android #main-content .pati-reel-video {
+  display:block!important;
+  width:100%!important;height:100%!important;
+  object-fit:cover!important;object-position:center center!important;
+  background:#000!important;
+ }
+ html.patiyiz-native-android #app-root:has(#main-content .pati-reels-viewport)>.mobile-header {
+  position:fixed!important;top:0!important;left:0!important;right:0!important;
+  z-index:25!important;border:0!important;box-shadow:none!important;
+  background:linear-gradient(180deg,rgba(0,0,0,.77),rgba(0,0,0,0))!important;
+ }
+ html.patiyiz-native-android #app-root:has(#main-content .pati-reels-viewport)>.mobile-header .brand-word,
+ html.patiyiz-native-android #app-root:has(#main-content .pati-reels-viewport)>.mobile-header .brand-caption,
+ html.patiyiz-native-android #app-root:has(#main-content .pati-reels-viewport)>.mobile-header button {
+  color:#fff!important;
+ }
+ html.patiyiz-native-android #app-root:has(#main-content .pati-reels-viewport)>.mobile-bottom {
+  position:fixed!important;bottom:0!important;left:0!important;right:0!important;
+  z-index:25!important;border:0!important;box-shadow:none!important;
+  background:linear-gradient(0deg,rgba(0,0,0,.94),rgba(0,0,0,.66) 55%,rgba(0,0,0,0))!important;
+ }
+ html.patiyiz-native-android #app-root:has(#main-content .pati-reels-viewport)>.mobile-bottom .mobile-nav-btn,
+ html.patiyiz-native-android #app-root:has(#main-content .pati-reels-viewport)>.mobile-bottom .mobile-nav-btn small,
+ html.patiyiz-native-android #app-root:has(#main-content .pati-reels-viewport)>.mobile-bottom svg {
+  color:#fff!important;stroke:#fff!important;
+ }
+ html.patiyiz-native-android #main-content .pati-reel-rail {
+  bottom:calc(84px + env(safe-area-inset-bottom,0px))!important;
+ }
+ html.patiyiz-native-android #main-content .pati-reel-author {
+  bottom:calc(172px + env(safe-area-inset-bottom,0px))!important;
+ }
+ html.patiyiz-native-android #main-content .pati-reel-caption {
+  bottom:calc(112px + env(safe-area-inset-bottom,0px))!important;
+ }
+}
