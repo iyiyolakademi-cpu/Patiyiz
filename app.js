@@ -582,12 +582,12 @@ function patiUpdateReelsSoundButton(button,video){
 }
 
 function setupReelsViewer(){
- if(patiyizReelsCleanup){patiyizReelsCleanup();patiyizReelsCleanup=null}
+ if(typeof patiyizReelsCleanup==='function'){patiyizReelsCleanup();patiyizReelsCleanup=null}
  if(patiyizReelsObserver){patiyizReelsObserver.disconnect();patiyizReelsObserver=null}
  const videos=[...document.querySelectorAll('#main-content .pati-reel-video')];
  if(!videos.length)return;
  const native=typeof window!=='undefined'&&window.PatiyizNative?.isNative===true;
- const iosHome=typeof document!=='undefined'&&patiIsIOSStandaloneReels();
+ const iosHome=typeof patiIsIOSStandaloneReels==='function'&&patiIsIOSStandaloneReels();
  const viewport=document.querySelector('.pati-reels-viewport');
  const soundOn=()=>typeof patiyizReelsSoundEnabled==='boolean'?patiyizReelsSoundEnabled:native;
  let activeVideo=null;
@@ -737,7 +737,7 @@ function reelToggleSound(button){
 }
 function reelsPage(){
  const nativeReels=typeof window!=='undefined'&&window.PatiyizNative?.isNative===true;
- const soundOn=(nativeReels||patiIsIOSStandaloneReels())&&patiyizReelsSoundEnabled;
+ const soundOn=(nativeReels||(typeof patiIsIOSStandaloneReels==='function'&&patiIsIOSStandaloneReels()))&&patiyizReelsSoundEnabled;
  const items=[...data.posts].filter(x=>x.video_url&&!blocked.has(x.author_id)).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
  main.innerHTML='<section class="pati-reels-head"><h1>Reels</h1><button type="button" data-action="pati-create-reels">'+ico('plus')+'<span>Video paylaş</span></button></section><div class="pati-reels-viewport">'+(items.length?items.map((p,index)=>{
   const author=profile(p.author_id),count=data.likes.filter(x=>x.post_id===p.id).length,likedPost=liked.has(p.id),savedPost=saved.has(p.id);
