@@ -10,7 +10,7 @@ const files=[
 'style.css','patiyiz-inspired.css','ios-reels.css','follower-milestones.css','dm-fullscreen.css','pets-completion.css','reels-stage4.css','manifest.webmanifest','config.js','push-config.js',
 'knowledge.js','reels-editor.js','gallery-picker.js','academy-curriculum.js',
 'academy-101-part1.js','academy-101-part2.js','premium-academy.js','achievements.js','follower-milestones.js',
-'photo-studio.js','patiyiz-upload.js','app.js','patiyiz-sw.js','patiyiz-camera-flow.js',
+'instagram-share-clean.css','patiyiz-upload.js','app.js','patiyiz-sw.js','patiyiz-camera-flow.js',
 'patiyiz-selected-logo.svg','patiyiz-icon.svg','patiyiz-app-icon-192.png',
 'patiyiz-app-icon-512.png','patiyiz-apple-touch-icon.png','patiyiz-favicon-48.png'];
 await rm(out,{recursive:true,force:true});await mkdir(path.join(out,'vendor'),{recursive:true});
@@ -40,10 +40,8 @@ app=replace(app,"case 'logout':run(async()=>{const r=await sb.auth.signOut();",
  "case 'logout':run(async()=>{if(window.PatiyizNative?.isNative)await window.PatiyizNative.nativeLogout();const r=await sb.auth.signOut();",'native safe signout');
 app=replace(app,"async function disablePhonePush(){if(!me)throw Error('Önce giriş yapmalısın.');",
  "async function disablePhonePush(){if(!me)throw Error('Önce giriş yapmalısın.');if(window.PatiyizNative?.isNative){await window.PatiyizNative.disablePush();return}",'native opt-out');
-app=replace(app,"function openComposerMediaPicker(kind){\n const f=document.getElementById('post-form');if(!f)return;",
- "function openComposerMediaPicker(kind){\n const f=document.getElementById('post-form');if(!f)return;",'composer picker');
-app=replace(app,"if(!input)return;\n if(kind==='gallery'&&!video&&window.PatiyizGalleryPicker){",
- "if(!input)return;\n if(!video&&window.PatiyizNative?.isNative){void window.PatiyizNative.pickPhotoForInput(input,kind==='camera'?'camera':'photos',kind!=='camera');return}\n if(kind==='gallery'&&!video&&window.PatiyizGalleryPicker){",'native composer picker');
+app=replace(app,"const input=form.querySelector('input[name=\"'+(reel?'video':'photo')+'\"]');if(!input)return;",
+ "const input=form.querySelector('input[name=\"'+(reel?'video':'photo')+'\"]');if(!input)return;\\n if(!reel&&window.PatiyizNative?.isNative){void window.PatiyizNative.pickPhotoForInput(input,kind==='camera'?'camera':'photos',kind!=='camera');return}",'native composer picker');
 app=replace(app,"if(autoPick)document.querySelector('#story-form input[name=\"story_gallery\"]')?.click();",
  "if(autoPick){const input=document.querySelector('#story-form input[name=\"story_gallery\"]');if(window.PatiyizNative?.isNative)void window.PatiyizNative.pickPhotoForInput(input,'photos');else input?.click()}",'native story auto picker');
 app=replace(app,"case 'pati-story-gallery':document.querySelector('#story-form input[name=\"story_gallery\"]')?.click();break;",
