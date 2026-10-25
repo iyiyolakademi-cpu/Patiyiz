@@ -55,11 +55,11 @@ test('New PatiCoin missions are exact-period idempotent, server-validated and ba
  assert.match(sql,/patiyiz_pet_reminders/);
  assert.doesNotMatch(sql,/truncate|delete\s+from\s+public\.patiyiz_reward_(wallets|ledger)/i);
 });
-test('PatiCoin menu and header are reorganized without profile clutter or health vault',()=>{
+test('PatiCoin menu is organized while private Health File has its own section',()=>{
  const nav=piece('const nav=[','const cfg=');
  assert.doesNotMatch(nav,/\['rewards'/);
  assert.doesNotMatch(nav,/\['shop'/);
- assert.doesNotMatch(nav,/\['healthfile'/);
+ assert.match(nav,/\['healthfile'/);
  const menu=piece('function openMobileFeaturesMenu()','const patiCoinTasks=[');
  assert.match(menu,/title:'PatiCoin Merkezi'/);
  assert.match(menu,/Görevler & PatiCoin/);
@@ -67,7 +67,7 @@ test('PatiCoin menu and header are reorganized without profile clutter or health
  assert.doesNotMatch(menu,/Dijital Sağlık Dosyası/);
  assert.match(html,/id="pati-header-coins"/);
  assert.match(html,/id="pati-desktop-coins"/);
- assert.doesNotMatch(html,/src="health-file\.js/);
+ assert.match(html,/src="health-file\.js/);
  assert.match(app,/case 'saved-posts':navigate\('saved-posts'\)/);
  const profile=piece('function profilePage(){','function formField(');
  assert.doesNotMatch(profile,/Kaydettiklerim/);assert.match(app,/\['saved-posts','Kaydettiklerim','bookmark'\]/);

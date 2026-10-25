@@ -1,0 +1,80 @@
+/* Patiyiz · 13. Dijital Sağlık Dosyası · private mobile archive */
+#main-content .health-stage13{max-width:1040px;margin:0 auto;padding:14px 9px calc(90px + env(safe-area-inset-bottom,0px));font-family:'Plus Jakarta Sans','DM Sans',system-ui,sans-serif;color:#1d1e22}
+#main-content .health-stage13 *{box-sizing:border-box}
+#main-content .health-stage13 button{touch-action:manipulation;cursor:pointer;font-family:inherit}
+#main-content .health-stage13 :is(button,input,select,textarea):focus-visible{outline:3px solid #85878e;outline-offset:3px}
+#main-content .health-stage13 .hf-header{background:#151518;border:1px solid #303035;box-shadow:none;border-radius:22px;padding:clamp(25px,4vw,39px)}
+#main-content .health-stage13 .hf-header span{color:#c8c8cc;letter-spacing:.14em;font-size:10px;font-weight:800}
+#main-content .health-stage13 .hf-header h1{color:#fff;letter-spacing:-.04em;line-height:1.2;margin:10px 0;font-size:clamp(25px,4vw,34px)}
+#main-content .health-stage13 .hf-header p{color:#d2d2d7;line-height:1.7;font-size:12.5px;max-width:680px;margin:0}
+#main-content .health-stage13 .hf-controls{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:19px 0 14px}
+#main-content .health-stage13 .hf-pets{display:flex;gap:8px;flex-wrap:wrap;min-width:0}
+#main-content .health-stage13 .hf-pets button{min-height:43px;border:1px solid #dedee3;background:#fff;color:#414149;border-radius:30px;padding:10px 16px;font-size:12px;font-weight:750}
+#main-content .health-stage13 .hf-pets button.active{background:#161619;color:#fff;border-color:#161619}
+#main-content .health-stage13 .hf-report{min-height:43px;border:1px solid #dedee1;color:#2c2d32;background:#f7f7f8;font-weight:750;font-size:11px;border-radius:11px;padding:10px 13px}
+#main-content .health-stage13 .hf-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0 0 13px}
+#main-content .health-stage13 .hf-metrics>div{min-height:76px;padding:13px 15px;border:1px solid #e6e6ea;background:#fff;border-radius:15px;display:grid;align-content:center;gap:4px}
+#main-content .health-stage13 .hf-metrics strong{font-variant-numeric:tabular-nums;font-size:24px;color:#202126}
+#main-content .health-stage13 .hf-metrics small{font-size:11px;color:#7a7c85}
+#main-content .health-stage13 .hf-privacy{padding:12px 14px;margin:0 0 19px;font-size:11px;line-height:1.7;color:#62646d;border-radius:12px;background:#f3f3f4}
+#main-content .health-stage13 .hf-columns{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:15px;align-items:start}
+#main-content .health-stage13 .hf-card{border:1px solid #e7e7eb;background:#fff;border-radius:18px;padding:clamp(17px,2.5vw,24px);min-width:0}
+#main-content .health-stage13 .hf-section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 8px}
+#main-content .health-stage13 .hf-section-title h2{font-size:19px;letter-spacing:-.035em;color:#202024;margin:0}
+#main-content .health-stage13 .hf-section-title>span{font-size:11px;color:#787a80;white-space:nowrap}
+#main-content .health-stage13 .hf-section-title button{background:#ededf0;color:#303139;border:1px solid #dddddf;border-radius:10px;min-height:37px;padding:9px 12px;font-weight:750;font-size:11px}
+#main-content .health-stage13 .hf-compose>p{color:#757780;font-size:12px;line-height:1.75;margin:0 0 12px}
+#main-content .health-stage13 .hf-card form{display:grid;gap:13px;margin:15px 0 0}
+#main-content .health-stage13 .hf-card form label{font-size:12px;color:#303136;font-weight:800;line-height:1.5;display:grid;gap:8px}
+#main-content .health-stage13 .hf-card :is(input,select,textarea){width:100%;min-height:44px;background:#fafafa;border:1px solid #dedee2;color:#25252a;border-radius:11px;font-size:13px;padding:10px 12px;font-family:inherit;font-weight:500}
+#main-content .health-stage13 .hf-card textarea{resize:vertical;min-height:92px}
+#main-content .health-stage13 .hf-card input[type="file"]{font-size:11.5px;padding:10px}
+#main-content .health-stage13 .hf-primary{min-height:47px;background:#171719;color:#fff;border:1px solid #171719;border-radius:12px;font-size:12px;font-weight:850;padding:11px 16px}
+#main-content .health-stage13 .hf-primary:disabled{opacity:.6;cursor:wait}
+#main-content .health-stage13 .hf-existing-file{background:#f2f2f3;color:#5e6068;font-size:11px;line-height:1.7;padding:11px;border-radius:10px;margin:0}
+#main-content .health-stage13 .hf-search-label{display:block;font-size:11.5px;font-weight:800;color:#43444c;margin:17px 0 8px}
+#main-content .health-stage13 .hf-history input[type="search"]{background:#f7f7f8;border:1px solid #e2e2e7}
+#main-content .health-stage13 .hf-filters{display:flex;gap:7px;overflow-x:auto;scrollbar-width:thin;overscroll-behavior-x:contain;padding:13px 0 16px}
+#main-content .health-stage13 .hf-filters button{flex:0 0 auto;white-space:nowrap;border-radius:30px;border:1px solid #e0e0e5;background:#fff;color:#555760;font-size:10.5px;font-weight:750;min-height:38px;padding:9px 12px}
+#main-content .health-stage13 .hf-filters button.active{background:#151518;border-color:#151518;color:#fff}
+#main-content .health-stage13 .hf-record-list{display:grid;gap:10px}
+#main-content .health-stage13 .hf-record{border:1px solid #e8e8eb;border-radius:13px;padding:15px;display:flex;flex-wrap:wrap;gap:11px;background:#fafafb;align-items:flex-start}
+#main-content .health-stage13 .hf-record-details{min-width:0;flex:1}
+#main-content .health-stage13 .hf-record-tag{font-size:10.5px;color:#70717c;font-weight:750;margin-bottom:8px}
+#main-content .health-stage13 .hf-record strong{color:#25252b;font-size:13px;line-height:1.55;overflow-wrap:anywhere}
+#main-content .health-stage13 .hf-record small{color:#80828a;font-size:10.5px;display:block;margin-top:6px}
+#main-content .health-stage13 .hf-record p{color:#656771;font-size:11.5px;line-height:1.75;white-space:pre-wrap;overflow-wrap:anywhere;margin:9px 0 0}
+#main-content .health-stage13 .hf-record-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+#main-content .health-stage13 .hf-record-actions button{border:1px solid #dedee3;border-radius:10px;color:#303138;background:#fff;padding:8px 11px;min-height:38px;font-size:10.5px;font-weight:800}
+#main-content .health-stage13 .hf-record-actions .hf-delete{background:#fff5f5;color:#9a4444;border-color:#efdede}
+#main-content .health-stage13 .hf-empty{border:1px dashed #d7d7dd;background:#fafafb;border-radius:13px;padding:23px 15px;text-align:center}
+#main-content .health-stage13 .hf-empty strong{color:#303138;font-size:13px}
+#main-content .health-stage13 .hf-empty p{color:#787981;font-size:12px;line-height:1.7}
+#main-content .health-stage13 .hf-empty button{border:0;background:#19191c;color:white;border-radius:10px;min-height:42px;padding:9px 14px;font-size:11.5px;font-weight:800}
+#main-content .health-stage13 .hf-disclaimer{font-size:11px;color:#767781;line-height:1.8;padding:16px 0;margin-top:16px;border-top:1px solid #e8e8eb}
+#main-content .health-stage13 .hf-error{background:#fff2f2;border:1px solid #ead7d7;color:#984b4b;border-radius:10px;padding:10px 12px;font-size:12px}
+@media(max-width:780px){#main-content .health-stage13 .hf-columns{grid-template-columns:1fr}}
+@media(max-width:600px){
+ #main-content .health-stage13{padding:11px 11px calc(110px + env(safe-area-inset-bottom,0px))}
+ #main-content .health-stage13 .hf-header{padding:23px 19px;border-radius:18px}
+ #main-content .health-stage13 .hf-controls{align-items:stretch}
+ #main-content .health-stage13 .hf-pets{width:100%;overflow:auto;flex-wrap:nowrap}
+ #main-content .health-stage13 .hf-report{width:100%}
+ #main-content .health-stage13 .hf-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ #main-content .health-stage13 .hf-metrics>div{min-height:70px}
+ #main-content .health-stage13 .hf-metrics strong{font-size:21px}
+ #main-content .health-stage13 .hf-record{padding:13px}
+ #main-content .health-stage13 .hf-record-actions{width:100%;border-top:1px solid #ededf1;padding-top:10px}
+ #main-content .health-stage13 .hf-record-actions button{flex:1 1 100px}
+}
+html[data-pati-theme="dark"] #main-content .health-stage13{color:#f3f3f6}
+html[data-pati-theme="dark"] #main-content .health-stage13 :is(.hf-card,.hf-metrics>div,.hf-record,.hf-empty){background:#212227;border-color:#414248}
+html[data-pati-theme="dark"] #main-content .health-stage13 :is(.hf-metrics strong,.hf-section-title h2,.hf-record strong,.hf-empty strong,.hf-card form label){color:#f3f3f5!important}
+html[data-pati-theme="dark"] #main-content .health-stage13 :is(.hf-metrics small,.hf-record small,.hf-record-tag,.hf-record p,.hf-compose>p,.hf-disclaimer,.hf-empty p){color:#c8c9d0!important}
+html[data-pati-theme="dark"] #main-content .health-stage13 :is(.hf-privacy,.hf-existing-file){background:#2c2d33;color:#cccdd4}
+html[data-pati-theme="dark"] #main-content .health-stage13 .hf-card :is(input,select,textarea){background:#292a30;color:#f4f4f6;border-color:#4a4b53}
+html[data-pati-theme="dark"] #main-content .health-stage13 :is(.hf-pets button,.hf-filters button,.hf-report,.hf-section-title button,.hf-record-actions button){background:#2b2c32;color:#eeeef2;border-color:#505159}
+html[data-pati-theme="dark"] #main-content .health-stage13 :is(.hf-pets button.active,.hf-filters button.active,.hf-primary){background:#f2f2f4;color:#19191b;border-color:#f2f2f4}
+html[data-pati-theme="dark"] #main-content .health-stage13 .hf-record-actions .hf-delete{background:#4b3034;color:#ffe2e4;border-color:#70494c}
+html[data-pati-theme="dark"] #main-content .health-stage13 .hf-error{background:#4b2b31;border-color:#7b4b54;color:#fff}
+@media print{#main-content .health-stage13{display:none!important}}
