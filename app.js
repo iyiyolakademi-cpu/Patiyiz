@@ -538,7 +538,7 @@ function setupFeedVideos(){
 }
 document.addEventListener('visibilitychange',()=>{if(document.hidden)document.querySelectorAll('.pati-post-video,.pati-reel-video').forEach(v=>v.pause());else{setupFeedVideos();setupReelsViewer();if(me&&sb)queueLiveUpdate()}});
 document.addEventListener('patiyiz:native-resume-media',()=>{if(view==='reels'&&!document.hidden)setupReelsViewer()});
-function ensureViewData(to){const byView={community:[['questions','questions'],['replies','replies'],['question_votes','votes']],knowledge:[['kb_bookmarks','bookmarks']],lost:[['lost_reports','lost']],adoption:[['adoption_listings','adoption']],care:[['care_tasks','care']],messages:[['message_hidden','messageHidden']],profile:[],blocked:[['user_blocks','blocks']]};const missing=(byView[to]||[]).filter(([table])=>!patiyizLoadedTables.has(table));if(!missing.length)return;const requestedView=to,requestedUser=me?.id;Promise.all(missing.map(async([table,key])=>{let req=sb.from(table).select('*');if(table==='kb_bookmarks')req=req.eq('user_id',requestedUser);const r=await req.limit(350);if(r.error)throw r.error;return[table,key,r.data||[]]})).then(results=>{if(me?.id!==requestedUser)return;for(const[table,key,rows]of results){if(!patiyizLoadedTables.has(table)){data[key]=rows;patiyizLoadedTables.add(table);if(table==='kb_bookmarks')favorites=new Set(rows.map(x=>x.article_id))}}if(view===requestedView)render()}).catch(e=>console.warn('Bölüm verileri yüklenemedi:',e))}
+function ensureViewData(to){const byView={community:[['questions','questions'],['replies','replies'],['question_votes','votes']],knowledge:[['kb_bookmarks','bookmarks']],lost:[['lost_reports','lost']],adoption:[['adoption_listings','adoption']],care:[['care_tasks','care']],'my-pet':[['care_tasks','care']],messages:[['message_hidden','messageHidden']],profile:[],blocked:[['user_blocks','blocks']]};const missing=(byView[to]||[]).filter(([table])=>!patiyizLoadedTables.has(table));if(!missing.length)return;const requestedView=to,requestedUser=me?.id;Promise.all(missing.map(async([table,key])=>{let req=sb.from(table).select('*');if(table==='kb_bookmarks')req=req.eq('user_id',requestedUser);const r=await req.limit(350);if(r.error)throw r.error;return[table,key,r.data||[]]})).then(results=>{if(me?.id!==requestedUser)return;for(const[table,key,rows]of results){if(!patiyizLoadedTables.has(table)){data[key]=rows;patiyizLoadedTables.add(table);if(table==='kb_bookmarks')favorites=new Set(rows.map(x=>x.article_id))}}if(view===requestedView)render()}).catch(e=>console.warn('Bölüm verileri yüklenemedi:',e))}
 const patiMobileTabScroll=new Map();
 let patiSwipeNavDirection=0;
 let patiNavAnimationId=0;
@@ -1561,7 +1561,7 @@ function healthFilePage(){
   healthFilePortal=window.PatiyizHealthFile.create({
    sb,getUser:()=>me,getPets:()=>data.pets,
    getReminders:()=>patiWellness.reminders,getWeights:()=>patiWellness.weights,
-   esc,notify,onChange:()=>{if(view==='healthfile'&&healthFileOwner===me?.id)render()}
+   esc,notify,onChange:()=>{if((view==='healthfile'||(view==='my-pet'&&patiMyPetTab==='healthfile'))&&healthFileOwner===me?.id)render()}
   });
  }
  main.innerHTML=healthFilePortal.render();
@@ -1724,13 +1724,13 @@ async function patiWellnessFetch(silent=false){
   ]);
   if(a.error)throw a.error;if(b.error)throw b.error;if(me?.id!==uid)return;
   patiWellness={...patiWellness,reminders:a.data||[],weights:b.data||[],loaded:true,error:''};
-  if(view==='wellness')render();
+  if(view==='wellness'||(view==='my-pet'&&patiMyPetTab==='wellness'))render();
   patiWellnessAlerts();
   if(!patiWellnessHeartbeat){
    patiWellnessHeartbeat=true;
    window.setInterval(()=>{if(me&&document.visibilityState==='visible')patiWellnessAlerts()},60000);
   }
- }catch(e){console.warn('Bakım takvimi yüklenemedi:',e);if(me?.id===uid){patiWellness.error='Sağlık kayıtları yüklenemedi. İnternet bağlantını kontrol edip tekrar dene.';if(view==='wellness')render()}if(!silent)notify('Sağlık takvimi yüklenemedi: '+friendly(e),true)}
+ }catch(e){console.warn('Bakım takvimi yüklenemedi:',e);if(me?.id===uid){patiWellness.error='Sağlık kayıtları yüklenemedi. İnternet bağlantını kontrol edip tekrar dene.';if(view==='wellness'||(view==='my-pet'&&patiMyPetTab==='wellness'))render()}if(!silent)notify('Sağlık takvimi yüklenemedi: '+friendly(e),true)}
  finally{patiWellness.loading=false}
 }
 function patiWellnessDayKey(){return new Date().toLocaleDateString('sv-SE')}
@@ -2216,21 +2216,21 @@ function careCard(x){
   +'<button type="button" class="care-v2-delete" data-action="care-del" data-id="'+esc(x.id)+'">Sil</button></div></article>';
 }
 function careUpdateResults(){
- if(view!=='care')return;
+ if(view!=='care'&&!(view==='my-pet'&&patiMyPetTab==='care'))return;
  const list=careVisibleItems(),result=document.getElementById('care-results'),count=document.getElementById('care-result-count');
  if(result)result.innerHTML=list.length?list.map(careCard).join(''):'<div class="care-v2-empty" role="status"><span>🐾</span><h3>Bu filtrelerde görev yok</h3><p>Başka bir tarih, kategori veya hayvan seçebilirsin.</p><button type="button" data-action="care-reset">Filtreleri temizle</button></div>';
  if(count)count.textContent=list.length+' görev';
 }
 async function careRefresh(){
  if(!me||careLoading)return;
- const uid=me.id;careLoading=true;careLoadError='';if(view==='care')carePage();
+ const uid=me.id;careLoading=true;careLoadError='';if(view==='care'||(view==='my-pet'&&patiMyPetTab==='care'))render();
  try{
   const r=await sb.from('care_tasks').select('*').eq('owner_id',uid).order('due_date',{ascending:true}).limit(350);
   if(r.error)throw r.error;
   if(me?.id!==uid)return;
   data.care=r.data||[];patiyizLoadedTables.add('care_tasks');
  }catch(error){console.warn('Bakım takvimi:',error);if(me?.id===uid)careLoadError='Görevler yenilenemedi. Bağlantını kontrol edip tekrar dene.'}
- finally{careLoading=false;if(me?.id===uid&&view==='care')carePage()}
+ finally{careLoading=false;if(me?.id===uid&&(view==='care'||(view==='my-pet'&&patiMyPetTab==='care')))render()}
 }
 function carePage(){
  const all=careOwnItems(),today=careToday(),counts={all:all.length,done:all.filter(x=>x.done).length,late:all.filter(x=>!x.done&&x.due_date<today).length,today:all.filter(x=>!x.done&&x.due_date===today).length,upcoming:all.filter(x=>!x.done&&x.due_date>today).length};
@@ -3565,7 +3565,7 @@ case 'chat':if(!id||id===me.id)return notify('Kendine mesaj gönderemezsin.',tru
   const result=await sb.from('care_tasks').delete().eq('id',id).eq('owner_id',me.id).select('id');
   if(result.error)throw result.error;
   if(!result.data?.length)throw Error('Görev silinemedi veya yetkin yok.');
-  data.care=data.care.filter(x=>x.id!==id);if(view==='care')carePage();
+  data.care=data.care.filter(x=>x.id!==id);if(view==='care'||(view==='my-pet'&&patiMyPetTab==='care'))render();
  },'Bakım görevi silindi.');break;}case 'logout':run(async()=>{const r=await sb.auth.signOut();if(r.error)throw r.error;me=null;isAdmin=false;authMode='login';showAuth()},'Çıkış yapıldı');break;
 case 'like':void togglePostLike(id);break;case 'share-post':openPatiShareModal(id);break;case 'pati-copy-post':{const link=location.origin+location.pathname+'#post-'+id;if(navigator.clipboard?.writeText)navigator.clipboard.writeText(link).then(()=>notify('Paylaşım bağlantısı kopyalandı.'),()=>notify('Bağlantı kopyalanamadı.',true));else notify(link);break}case 'pati-share-system':{const link=location.origin+location.pathname+'#post-'+id;if(navigator.share)navigator.share({title:'Patiyiz paylaşımı',url:link}).catch(()=>{});else if(navigator.clipboard?.writeText)navigator.clipboard.writeText(link).then(()=>notify('Bağlantı kopyalandı.'));break}case 'send-post-dm':{const post=data.posts.find(x=>x.id===target.dataset.post);if(!post||id===me.id)break;run(async()=>{const r=await sb.from('messages').insert({sender_id:me.id,receiver_id:id,body:'📨 Paylaşım: '+location.origin+location.pathname+'#post-'+post.id});if(r.error)throw r.error;closeModal();},'Paylaşım mesajla gönderildi.');break;}case 'save':void togglePostSave(id);break;case 'follow':run(()=>doToggle('follows',{follower_id:me.id,followee_id:id},followed.has(id)||patiFollowPageState.viewerFollowing.has(id)));break;case 'vote':run(()=>doToggle('question_votes',{question_id:id,user_id:me.id},voted.has(id)));break;case 'kb-save':run(()=>doToggle('kb_bookmarks',{article_id:id,user_id:me.id},favorites.has(id)));break;
 case 'toggle-found':{const a=data.lost.find(x=>x.id===id&&x.owner_id===me.id);if(!a)break;const found=!a.found;
@@ -3580,7 +3580,7 @@ case 'care-done':{const item=data.care.find(x=>x.id===id&&x.owner_id===me.id);if
   if(result.error)throw result.error;
   if(!result.data?.length)throw Error('Görev güncellenemedi veya yetkin yok.');
   data.care=data.care.map(x=>x.id===id?result.data[0]:x);
-  if(view==='care')carePage();
+  if(view==='care'||(view==='my-pet'&&patiMyPetTab==='care'))render();
  },item.done?'Görev yeniden açıldı.':'Görev tamamlandı.');break;}
 case 'push-enable':enablePhonePush();break;
 case 'notifications-check-push':void notificationCheckPush();break;
@@ -3884,7 +3884,7 @@ case 'wellness-reminder-form':await patiWellnessSaveReminder(form,str);break;cas
  if(result.error)throw result.error;
  if(!result.data?.length)throw Error('Görev kaydedilemedi. Oturum ve hesap izinlerini kontrol et.');
  const item=result.data[0];data.care=[item,...data.care.filter(x=>x.id!==item.id)];
- patiyizLoadedTables.add('care_tasks');closeModal(true);if(view==='care')carePage();
+ patiyizLoadedTables.add('care_tasks');closeModal(true);if(view==='care'||(view==='my-pet'&&patiMyPetTab==='care'))render();
  notify(editId?'Bakım görevi güncellendi.':'Bakım görevi eklendi.');break;}
 case 'profile-form':{let handle=str('handle').toLowerCase();if(!/^[a-z0-9_]{3,24}$/.test(handle))throw Error('Kullanıcı adı 3–24 karakter, küçük harf, rakam veya alt çizgi olmalı.');let o={display_name:str('display_name'),handle,city:str('city'),bio:str('bio')},image=await upload(f.get('photo'));if(image)o.avatar_url=image;await save('profiles',o,me.id);break}
 case 'pet-form':{
@@ -4009,7 +4009,7 @@ async function boot(){if(!ready){showSetup();return}sb=window.supabase.createCli
 document.addEventListener('submit',async e=>{if(e.target.id!=='reset-password-form')return;e.preventDefault();let password=new FormData(e.target).get('password');await run(async()=>{let r=await sb.auth.updateUser({password});if(r.error)throw r.error;closeModal()},'Şifren güncellendi')});
 document.addEventListener('click',e=>{
  const h=e.target.closest('[data-health-pet],[data-health-open],[data-health-delete],[data-health-print],[data-health-retry],[data-health-edit],[data-health-cancel],[data-health-filter],[data-health-clear]');
- if(h&&view==='healthfile'&&healthFilePortal){
+ if(h&&(view==='healthfile'||(view==='my-pet'&&patiMyPetTab==='healthfile'))&&healthFilePortal){
   if(h.hasAttribute('data-health-retry'))void healthFilePortal.load(true);
   else if(h.hasAttribute('data-health-edit'))healthFilePortal.edit(h.dataset.healthEdit);
   else if(h.hasAttribute('data-health-cancel'))healthFilePortal.cancelEdit();
@@ -4032,10 +4032,10 @@ document.addEventListener('click',e=>{
  }
 });
 document.addEventListener('input',e=>{
- if(e.target?.id==='hf-search'&&view==='healthfile'&&healthFilePortal)healthFilePortal.setSearch(e.target.value);
+ if(e.target?.id==='hf-search'&&(view==='healthfile'||(view==='my-pet'&&patiMyPetTab==='healthfile'))&&healthFilePortal)healthFilePortal.setSearch(e.target.value);
 });
 document.addEventListener('submit',e=>{
- if(e.target?.id!=='pati-health-record-form'||view!=='healthfile'||!healthFilePortal)return;
+ if(e.target?.id!=='pati-health-record-form'||!(view==='healthfile'||(view==='my-pet'&&patiMyPetTab==='healthfile'))||!healthFilePortal)return;
  e.preventDefault();void healthFilePortal.save(e.target);
 });
 boot();
