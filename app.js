@@ -1280,14 +1280,17 @@ async function patiExploreLoadMetrics(posts,uid,token){
 async function patiExploreLoadMedia(reset=false){
  if(!me||!sb)return;
  const uid=me.id,token=patiyizLoadToken;
- if(reset||patiExploreMedia.owner!==uid)patiExploreMedia={owner:uid,rows:[],offset:0,hasMore:true,ready:false,loading:false,error:''};
+ if(reset||patiExploreMedia.owner!==uid||patiExploreMedia.sort!==patiExploreSort)patiExploreMedia={owner:uid,sort:patiExploreSort,rows:[],offset:0,hasMore:true,ready:false,loading:false,error:''};
  const state=patiExploreMedia;
  if(state.loading||!state.hasMore)return;
  state.loading=true;state.error='';
  if(view==='explore'&&exploreTab==='media')explorePage();
  try{
-  const result=await sb.from('posts').select('*').or('image_url.not.is.null,video_url.not.is.null')
-   .order('created_at',{ascending:false}).order('id',{ascending:false}).range(state.offset,state.offset+PATI_EXPLORE_MEDIA_PAGE-1);
+  let result=await sb.rpc('patiyiz_explore_ranked',{p_sort:state.sort,p_limit:PATI_EXPLORE_MEDIA_PAGE,p_offset:state.offset});
+  if(result.error?.code==='PGRST202'||result.error?.code==='42883'){
+   result=await sb.from('posts').select('*').or('image_url.not.is.null,video_url.not.is.null')
+    .order('created_at',{ascending:false}).order('id',{ascending:false}).range(state.offset,state.offset+PATI_EXPLORE_MEDIA_PAGE-1);
+  }
   if(result.error)throw result.error;
   if(me?.id!==uid||token!==patiyizLoadToken||patiExploreMedia!==state)return;
   const rows=result.data||[],existing=new Set(state.rows.map(p=>p.id));
@@ -1347,7 +1350,7 @@ function patiExploreLazyVideos(){
  items.forEach(video=>video.addEventListener('loadeddata',()=>video.classList.add('is-ready'),{once:true}));
  const observer=new IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting){
   const video=entry.target;if(video.preload==='none'){video.preload='metadata';video.load?.()}observer.unobserve(video)
- }},{rootMargin:'360px 0px'});
+ }},{rootMargin:'720px 0px'});
  items.forEach(video=>observer.observe(video));
 }
 function explorePage(){
@@ -1366,14 +1369,14 @@ function explorePage(){
  if(exploreTab==='media'){
    const selectedSort=typeof patiExploreSort==='string'?patiExploreSort:'popular';
   const page=typeof patiExploreMedia!=='undefined'&&patiExploreMedia.owner===me.id?patiExploreMedia:null;
-  const source=page?.ready?[...page.rows,...data.posts]:data.posts;
+  const source=page?.ready?page.rows:data.posts;
   const media=[...new Map(source.map(p=>[p.id,p])).values()].filter(p=>!blocked.has(p.author_id)&&(p.image_url||p.images?.length||p.video_url))
-   .sort((a,b)=>(typeof patiExploreScore==='function'?patiExploreScore(b,selectedSort)-patiExploreScore(a,selectedSort):0)||new Date(b.created_at)-new Date(a.created_at)||String(b.id).localeCompare(String(a.id)));
+   .sort((a,b)=>page?.ready?0:((typeof patiExploreScore==='function'?patiExploreScore(b,selectedSort)-patiExploreScore(a,selectedSort):0)||new Date(b.created_at)-new Date(a.created_at)||String(b.id).localeCompare(String(a.id))));
   const tiles=media.map((p,i)=>{
    const photo=p.image_url||(p.images||[])[0],video=!!p.video_url;
-   const preview=photo?'<img src="'+esc(photo)+'" loading="'+(i<9?'eager':'lazy')+'" decoding="async" '+(i<3?'fetchpriority="high"':'')+' alt="Paylaşım">':
-    p.video_cover_url?'<img src="'+esc(p.video_cover_url)+'" loading="'+(i<9?'eager':'lazy')+'" decoding="async" alt="Reels kapağı">':
-    '<video class="pati-explore-preview-video" src="'+esc(p.video_url)+'#t=0.1" muted playsinline preload="none" data-explore-preview="1" aria-label="Video önizlemesi"></video>';
+   const preview=photo?'<img src="'+esc(photo)+'" loading="'+(i<6?'eager':'lazy')+'" decoding="async" '+(i<3?'fetchpriority="high"':'')+' alt="Paylaşım">':
+    p.video_cover_url?'<img src="'+esc(p.video_cover_url)+'" loading="'+(i<6?'eager':'lazy')+'" decoding="async" '+(i<3?'fetchpriority="high"':'')+' alt="Reels kapağı">':
+    '<video class="pati-explore-preview-video" src="'+esc(p.video_url)+'#t=0.1" muted playsinline preload="'+(i<3?'metadata':'none')+'" data-explore-preview="1" aria-label="Video önizlemesi"></video>';
    return '<button type="button" class="pati-explore-media" data-action="explore-open-post" data-id="'+esc(p.id)+'" aria-label="Paylaşımı aç">'+preview+(video?'<span class="pati-explore-video-icon">'+ico('up')+'</span>':'')+'</button>';
   }).join('');
   main.innerHTML='<section class="pati-explore-media-screen" aria-label="Keşfet gönderileri"><button type="button" class="pati-explore-search-launch" data-action="pati-search-open" aria-label="Kullanıcı ara">'+ico('search')+'<span>Kullanıcı ara</span></button>'+'<div class="pati-explore-sort" role="group" aria-label="Keşfet sıralaması">'+[['popular','Öne çıkanlar'],['views','Çok izlenen'],['likes','Çok beğenilen'],['recent','En yeni']].map(([mode,label])=>'<button type="button" class="'+(selectedSort===mode?'active':'')+'" aria-pressed="'+(selectedSort===mode)+'" data-action="explore-sort" data-id="'+mode+'">'+label+'</button>').join('')+'</div>'+
@@ -3512,7 +3515,7 @@ case 'premium-resume':if(premiumPortal){void premiumPortal.resume(id,Number(targ
 case 'premium-join':if(premiumPortal)void premiumPortal.join();break;
 case 'premium-leave':if(premiumPortal)void premiumPortal.leave();break;
 case 'premium-free':navigate('education');break;
-case 'education-open':educationBackScroll=window.scrollY||0;educationLesson=id;educationRemember(id);render();window.scrollTo(0,0);break;case 'education-back':educationLesson='';render();requestAnimationFrame(()=>window.scrollTo(0,educationBackScroll));break;case 'education-next':case 'education-previous':educationLesson=id;educationRemember(id);window.scrollTo(0,0);render();break;case 'education-continue':educationBackScroll=window.scrollY||0;educationLesson=id;educationRemember(id);window.scrollTo(0,0);render();break;case 'education-status':educationStatus=id;render();break;case 'education-filter':educationCategory=id;educationLesson='';render();break;case 'education-clear':educationSearch='';educationUpdateResults();document.getElementById('pati-academy-search')?.focus();break;case 'education-reset':educationSearch='';educationCategory='Tümü';educationStatus='Tümü';render();break;case 'education-answer':{const l=patiyizLessons.find(x=>x.id===id);if(l&&!educationDone().has(id)){educationAnswer[id]=Number(target.dataset.choice);if(educationAnswer[id]===l.answer)educationMark(id);render()}break;}case 'kb-read':kbListScroll=window.scrollY||0;articleId=id;render();window.scrollTo(0,0);break;case 'knowledge-back':articleId='';render();requestAnimationFrame(()=>window.scrollTo(0,kbListScroll));break;case 'kb-filter':kbFilter=id;render();break;case 'kb-category':kbCategory=id;render();break;case 'kb-clear':kbSearch='';render();document.getElementById('kb-search')?.focus();break;case 'kb-reset':kbFilter='Tümü';kbCategory='Tümü';kbSearch='';render();break;case 'kb-search':kbSearch=$('#kb-search')?.value||'';kbUpdateResults();break;case 'explore-more':void patiExploreLoadMedia();break;case 'explore-sort':{if(['popular','views','likes','recent'].includes(id)){patiExploreSort=id;explorePage()}break}case 'explore-search-retry':void patiExploreLookup(search);break;case 'explore-open-post':openPost(id);break;case 'pati-search-open':search='';exploreTab='users';explorePage();requestAnimationFrame(()=>document.getElementById('explore-search')?.focus());void patiExploreLookup('');break;case 'pati-search-cancel':search='';exploreTab='media';explorePage();break;case 'pati-search-discover':exploreTab='media';search='';explorePage();break;case 'explore-tab':exploreTab=id;render();break;case 'explore-animal':exploreAnimal=id;render();break;case 'explore-sort':exploreSort=exploreSort==='latest'?'popular':exploreSort==='popular'?'recommended':'latest';render();break;case 'explore-search':search=$('#explore-search')?.value||'';render();break;case 'lost-search':lostSearch=$('#lost-search')?.value||'';lostUpdateResults();break;
+case 'education-open':educationBackScroll=window.scrollY||0;educationLesson=id;educationRemember(id);render();window.scrollTo(0,0);break;case 'education-back':educationLesson='';render();requestAnimationFrame(()=>window.scrollTo(0,educationBackScroll));break;case 'education-next':case 'education-previous':educationLesson=id;educationRemember(id);window.scrollTo(0,0);render();break;case 'education-continue':educationBackScroll=window.scrollY||0;educationLesson=id;educationRemember(id);window.scrollTo(0,0);render();break;case 'education-status':educationStatus=id;render();break;case 'education-filter':educationCategory=id;educationLesson='';render();break;case 'education-clear':educationSearch='';educationUpdateResults();document.getElementById('pati-academy-search')?.focus();break;case 'education-reset':educationSearch='';educationCategory='Tümü';educationStatus='Tümü';render();break;case 'education-answer':{const l=patiyizLessons.find(x=>x.id===id);if(l&&!educationDone().has(id)){educationAnswer[id]=Number(target.dataset.choice);if(educationAnswer[id]===l.answer)educationMark(id);render()}break;}case 'kb-read':kbListScroll=window.scrollY||0;articleId=id;render();window.scrollTo(0,0);break;case 'knowledge-back':articleId='';render();requestAnimationFrame(()=>window.scrollTo(0,kbListScroll));break;case 'kb-filter':kbFilter=id;render();break;case 'kb-category':kbCategory=id;render();break;case 'kb-clear':kbSearch='';render();document.getElementById('kb-search')?.focus();break;case 'kb-reset':kbFilter='Tümü';kbCategory='Tümü';kbSearch='';render();break;case 'kb-search':kbSearch=$('#kb-search')?.value||'';kbUpdateResults();break;case 'explore-more':void patiExploreLoadMedia();break;case 'explore-sort':{if(['popular','views','likes','recent'].includes(id)&&patiExploreSort!==id){patiExploreSort=id;explorePage();void patiExploreLoadMedia(true)}break}case 'explore-search-retry':void patiExploreLookup(search);break;case 'explore-open-post':openPost(id);break;case 'pati-search-open':search='';exploreTab='users';explorePage();requestAnimationFrame(()=>document.getElementById('explore-search')?.focus());void patiExploreLookup('');break;case 'pati-search-cancel':search='';exploreTab='media';explorePage();break;case 'pati-search-discover':exploreTab='media';search='';explorePage();break;case 'explore-tab':exploreTab=id;render();break;case 'explore-animal':exploreAnimal=id;render();break;case 'explore-sort':exploreSort=exploreSort==='latest'?'popular':exploreSort==='popular'?'recommended':'latest';render();break;case 'explore-search':search=$('#explore-search')?.value||'';render();break;case 'lost-search':lostSearch=$('#lost-search')?.value||'';lostUpdateResults();break;
 case 'lost-status':lostStatus=id;lostPage();break;
 case 'lost-species':lostSpecies=id;lostPage();break;
 case 'lost-clear':lostSearch='';lostPage();document.getElementById('lost-search')?.focus();break;
