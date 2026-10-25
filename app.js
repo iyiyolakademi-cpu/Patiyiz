@@ -77,6 +77,8 @@ let patiFollowPageState={key:'',rows:[],next:0,hasMore:true,loading:false,error:
 const PATI_FOLLOW_PAGE_SIZE=40;let patiExploreMedia={owner:'',rows:[],offset:0,hasMore:true,ready:false,loading:false,error:''},patiExploreUsers={owner:'',query:'',rows:[],ready:false,loading:false,error:''},patiExploreSearchTimer=null;
 const PATI_EXPLORE_MEDIA_PAGE=45;
 let patiExploreReturnTo=false;
+let patiDetailState=null; // Continuously scrollable selected media/text from profile or Explore.
+
 let sb,me,view='home',articleId='',personId='',profileId='',selectedPostId='',exploreTab='media',exploreAnimal='Tümü',exploreSort='latest',kbFilter='Tümü',kbSearch='',search='',authMode='login',busy=false;
 patiApplyTheme(patiyizCurrentTheme());
 let postCropX=.5,postCropY=.5,postCropRatio='4:5',postCropZoom=1,postCropObjectUrl='',dmMediaSending=false,postCropIndex=0;
@@ -673,7 +675,56 @@ function postCard(p,priority=false){
  (hasMedia?media:'<div class="pati-feed-text-content">'+(caption||'<p class="pati-post-caption">🐾</p>')+'</div>')+
  controls+'<div class="pati-post-details"><strong class="pati-post-like-summary">'+count+' beğeni</strong>'+(hasMedia?caption:'')+'<time class="pati-post-time">'+esc(day(p.created_at))+'</time></div></article>';
 }
-function openPost(id){const post=data.posts.find(p=>p.id===id);if(!post){notify('Bu paylaşım artık bulunamıyor.',true);navigate('notifications');return}if(blocked.has(post.author_id)){notify('Bu paylaşım görüntülenemiyor.',true);return}patiExploreReturnTo=view==='explore';selectedPostId=id;navigate('home')}
+function patiDetailCandidates(source){
+ if(source==='profile'){
+  const author=profileId||me.id;
+  const sorted=data.posts.filter(p=>p.author_id===author&&!blocked.has(p.author_id))
+   .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)||String(b.id).localeCompare(String(a.id)));
+  return sorted.filter(p=>profilePostsTab==='text'?!(p.image_url||p.images?.length||p.video_url):
+   profilePostsTab==='videos'?!!p.video_url:!!(p.image_url||p.images?.length||p.video_url));
+ }
+ if(source==='explore'){
+  const remote=patiExploreMedia.owner===me.id&&patiExploreMedia.ready?patiExploreMedia.rows:[];
+  return [...new Map([...remote,...data.posts].map(p=>[p.id,p])).values()]
+   .filter(p=>!blocked.has(p.author_id)&&(p.image_url||p.images?.length||p.video_url))
+   .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)||String(b.id).localeCompare(String(a.id)));
+ }
+ return [];
+}
+function patiDetailPage(){
+ const state=patiDetailState;
+ if(!state||!state.rows?.length)return empty('Gönderiler bulunamadı','Listeye geri dön.');
+ const old=document.querySelector('#pati-detail-list');
+ const savedOffset=old&&state.positioned?old.scrollTop:0;
+ const rows=state.rows.filter(p=>!blocked.has(p.author_id));
+ main.innerHTML='<section class="pati-detail-screen" aria-label="Kaydırılabilir gönderi akışı">'+
+  '<header class="pati-detail-toolbar"><button type="button" data-action="post-back" aria-label="Gönderi listesine dön">'+ico('arrow-left')+' Geri</button><div><strong>Gönderiler</strong><small>Diğer paylaşımlar için yukarı veya aşağı kaydır</small></div><span>'+rows.length+' gönderi</span></header>'+
+  '<div class="pati-detail-list" id="pati-detail-list" role="feed" aria-label="Sıralı gönderiler" tabindex="0">'+
+  rows.map((post,i)=>'<section class="pati-detail-item" data-detail-post-id="'+esc(post.id)+'" aria-label="'+(i+1)+'. gönderi, toplam '+rows.length+'">'+postCard(post,i<2)+'</section>').join('')+'</div></section>';
+ const list=document.getElementById('pati-detail-list');
+ if(!list)return;
+ const target=list.querySelector('[data-detail-post-id="'+CSS.escape(state.initialId)+'"]');
+ const position=()=>{
+  if(!list.isConnected||patiDetailState!==state)return;
+  list.scrollTop=state.positioned?savedOffset:target?.offsetTop||0;
+  state.positioned=true;
+ };
+ position();
+ requestAnimationFrame(position);
+ if(!old)requestAnimationFrame(()=>requestAnimationFrame(position));
+}
+function openPost(id){
+ const origin=view;
+ const options=(origin==='profile'||origin==='explore')?patiDetailCandidates(origin):[];
+ const post=options.find(p=>p.id===id)||data.posts.find(p=>p.id===id);
+ if(!post){notify('Bu paylaşım artık bulunamıyor.',true);return}
+ if(blocked.has(post.author_id)){notify('Bu paylaşım görüntülenemiyor.',true);return}
+ patiDetailState=options.some(p=>p.id===id)?{
+  origin,rows:options,initialId:id,positioned:false,
+  profileId,profilePostsTab,returnScroll:window.scrollY||0
+ }:null;
+ patiExploreReturnTo=view==='explore';selectedPostId=id;navigate('home');
+}
 let storyItems=[],storyIndex=0,storyTimer=null,storyLikes=[];
 function closeStory(){clearTimeout(storyTimer);storyTimer=null;storyItems=[];document.getElementById('story-overlay')?.remove();document.body.classList.remove('story-fullscreen-open');if(view==='profile')render()}
 async function recordStoryView(x){if(!me||x.pati_pet_highlight||x.author_id===me.id)return;try{const r=await sb.rpc('patiyiz_record_story_view',{p_story_id:x.id});if(r.error)console.warn('Hikâye görüntülemesi kaydedilemedi:',r.error.message)}catch(err){console.warn('Hikâye görüntüleme ağ hatası:',err)}}
@@ -1103,6 +1154,7 @@ async function patiSyncHomePostCounts(posts){
  }
 }
 function homePage(){
+ if(selectedPostId&&patiDetailState){patiDetailPage();return}
  const list=[...data.posts].filter(p=>!blocked.has(p.author_id)&&
   (typeof patiHomeFeedIds==='undefined'||!patiHomeFeedIds||patiHomeFeedIds.has(p.id)))
   .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)||String(b.id).localeCompare(String(a.id)));
@@ -3295,7 +3347,13 @@ case 'pet-delete':{const pet=data.pets.find(p=>p.id===id);
  },'Hayvan profili silindi.');
  break}
 case 'pets-more':void patiLoadCommunityPets();break;
-case 'my-profile':profileId='';lastDetailView='';navigate('profile');break;case 'view-user':followReturnList=view==='follows-list';if(!followReturnList&&view!=='profile')lastDetailView=view;profileId=id;navigate('profile');break;case 'profile-back':{const dest=lastDetailView&&allowed.includes(lastDetailView)?lastDetailView:'explore';lastDetailView='';profileId='';followReturnList=false;navigate(dest);break}case 'open-notification':openNotification(id);break;case 'post-back':{selectedPostId='';const back=patiExploreReturnTo?'explore':'home';patiExploreReturnTo=false;navigate(back);break}case 'open-knowledge':navigate('knowledge');break;case 'premium-open':if(premiumPortal){void premiumPortal.open(id);window.scrollTo(0,0)}break;
+case 'my-profile':profileId='';lastDetailView='';navigate('profile');break;case 'view-user':followReturnList=view==='follows-list';if(!followReturnList&&view!=='profile')lastDetailView=view;profileId=id;navigate('profile');break;case 'profile-back':{const dest=lastDetailView&&allowed.includes(lastDetailView)?lastDetailView:'explore';lastDetailView='';profileId='';followReturnList=false;navigate(dest);break}case 'open-notification':openNotification(id);break;case 'post-back':{
+ const detail=patiDetailState;patiDetailState=null;selectedPostId='';
+ const back=detail?.origin||(patiExploreReturnTo?'explore':'home');patiExploreReturnTo=false;
+ if(detail?.origin==='profile'){profileId=detail.profileId;profilePostsTab=detail.profilePostsTab}
+ navigate(back);
+ if(detail)requestAnimationFrame(()=>window.scrollTo({top:detail.returnScroll||0,behavior:'instant'}));
+ break}case 'open-knowledge':navigate('knowledge');break;case 'premium-open':if(premiumPortal){void premiumPortal.open(id);window.scrollTo(0,0)}break;
 case 'premium-day':if(premiumPortal){premiumPortal.openDay(Number(id));window.scrollTo(0,0)}break;
 case 'premium-back':premiumPortal?.back();window.scrollTo(0,0);break;
 case 'premium-refresh':if(premiumPortal){void premiumPortal.load().then(()=>premiumPortal.open(premiumPortal.state.selected))}break;
@@ -3758,7 +3816,7 @@ function resetSessionState(){
  blockedProfiles=[];patiDmSignedCache.clear();profileCountCache.clear();profileCountInFlight.clear();
  if(typeof patiPostSeen!=='undefined')patiPostSeen.clear();if(typeof patiPostViewCounts!=='undefined')patiPostViewCounts.clear();if(typeof patiPostViewObserver!=='undefined'&&patiPostViewObserver){patiPostViewObserver.disconnect();patiPostViewObserver=null}pageLimits={posts:40,messages:150,notifications:150};pageMore={posts:true,messages:true,notifications:true};
  if(typeof healthFilePortal!=='undefined')healthFilePortal=null;if(typeof healthFileOwner!=='undefined')healthFileOwner='';if(typeof achievementPortal!=='undefined')achievementPortal=null;if(typeof premiumPortal!=='undefined')premiumPortal=null;if(typeof premiumPortalOwner!=='undefined')premiumPortalOwner='';if(typeof educationCloudDone!=='undefined')educationCloudDone.clear();if(typeof educationCloudUser!=='undefined')educationCloudUser='';if(typeof pendingPostLikes!=='undefined')pendingPostLikes.clear();if(typeof likesChangeEpoch==='number')likesChangeEpoch++;if(typeof savesChangeEpoch==='number')savesChangeEpoch++;if(typeof pendingPostSaves!=='undefined')pendingPostSaves.clear();if(typeof savedMissingAttempted!=='undefined')savedMissingAttempted.clear();personId='';profileId='';selectedPostId='';followListId='';patiFollowPageState={key:'',rows:[],next:0,hasMore:true,loading:false,error:'',viewerFollowing:new Set()};search='';view='home';chatFilter='primary';mobileChatOpen=false;isAdmin=false;
- storyItems=[];storyLikes=[];storyIndex=0;clearTimeout(storyTimer);storyTimer=null;lastPhotoTap={id:'',time:0};
+ patiDetailState=null;storyItems=[];storyLikes=[];storyIndex=0;clearTimeout(storyTimer);storyTimer=null;lastPhotoTap={id:'',time:0};
  document.getElementById('story-overlay')?.remove();document.body.classList.remove('story-fullscreen-open');
  window.PatiyizGalleryPicker?.close();window.PatiyizCameraFlow?.close?.();window.PatiyizReelsEditor?.dispose();clearPatiMediaUrls();
  document.getElementById('modal-root')?.replaceChildren();
