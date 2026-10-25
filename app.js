@@ -355,7 +355,7 @@ async function patiCoinSync(withAnimation=false){
   const [wallet,ledger,items,orders,history]=await Promise.all([
    sb.from('patiyiz_reward_wallets').select('balance,lifetime_earned').eq('user_id',uid).maybeSingle(),
    sb.from('patiyiz_reward_ledger').select('task_code').eq('user_id',uid).not('task_code','is',null),
-   sb.from('patiyiz_reward_items').select('id,name,description,kind,coins,emoji').eq('enabled',true).order('sort_order'),
+   sb.from('patiyiz_reward_items').select('id,name,description,kind,coins,emoji,stock_available').eq('enabled',true).order('sort_order'),
    sb.from('patiyiz_reward_redemptions').select('id,item_id,coins_spent,destination,status,created_at,admin_note,proof_url,reviewed_at,fulfilled_at').eq('user_id',uid).order('created_at',{ascending:false}).limit(30),
    sb.from('patiyiz_reward_fulfillment_events').select('redemption_id,previous_status,next_status,note,created_at').order('created_at',{ascending:false}).limit(100)
   ]);
@@ -416,10 +416,10 @@ function patiShopPage(){
   const donation=p.kind==='donation',stock=Math.max(0,Number(p.stock_available)||0),soldOut=stock===0,affordable=Number(patiCoinState.balance)>=Number(p.coins);
   const pending=patiCoinState.orders.some(o=>o.item_id===p.id&&['pending','approved','preparing'].includes(o.status));
   const stateText=pending?'Talebin beklemede':soldOut?'Stokta yok':!affordable?'Yetersiz PatiCoin':'Stok: '+stock+' adet';
-  const actionText=pending?'Talebi görüntüle':soldOut?'Stokta yok':!affordable?'PatiCoin kazan':'Talep oluştur';
+  const actionText=pending?'Talep beklemede':soldOut?'Stokta yok':!affordable?'PatiCoin kazan':'Talep oluştur';
   return '<article class="paticoin-item pati-shop-card '+(donation?'pati-shop-tree':'')+'"><div class="pati-shop-card-top"><span class="paticoin-item-icon" aria-hidden="true">'+esc(p.emoji)+'</span><span class="pati-shop-type">'+(donation?'Doğa için':p.kind==='food'?'Destek':'Ürün')+'</span></div>'+
    '<div class="pati-shop-card-copy"><h3>'+esc(p.name)+'</h3><p>'+esc(p.description)+'</p></div>'+
-   '<span class="pati-shop-stock-state '+(soldOut?'is-out':pending?'is-pending':!affordable?'is-low':'is-available')+'" role="status">'+stateText+'</span><div class="pati-shop-card-bottom"><strong>'+coin+Number(p.coins).toLocaleString('tr-TR')+' <small>PatiCoin</small></strong><button type="button" '+(soldOut?'disabled aria-disabled="true"':'')+' data-action="paticoin-buy" data-id="'+esc(p.id)+'">'+actionText+'</button></div></article>';
+   '<span class="pati-shop-stock-state '+(pending?'is-pending':soldOut?'is-out':!affordable?'is-low':'is-available')+'" role="status">'+stateText+'</span><div class="pati-shop-card-bottom"><strong>'+coin+Number(p.coins).toLocaleString('tr-TR')+' <small>PatiCoin</small></strong><button type="button" '+(soldOut||pending?'disabled aria-disabled="true"':'')+' data-action="'+(!affordable?'paticoin-rewards':'paticoin-buy')+'" data-id="'+esc(p.id)+'">'+actionText+'</button></div></article>';
  }).join('');
  const orders=patiCoinState.orders.map(o=>{
   const events=patiCoinState.history.filter(e=>e.redemption_id===o.id),note=o.admin_note?'<p class="paticoin-order-note">Bilgi: '+esc(o.admin_note)+'</p>':'';
