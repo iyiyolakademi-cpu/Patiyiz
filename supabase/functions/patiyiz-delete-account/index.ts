@@ -26,7 +26,8 @@ Deno.serve(async req=>{
  const {data:passwordCheck,error:passwordError}=await passwordClient.auth.signInWithPassword({email:verified.user.email,password:json.password});
  if(passwordError||passwordCheck.user?.id!==uid)return answer(403,"Şifren doğrulanamadı. Hesap silinmedi.");
  // Clean up owned files using Storage API, not direct storage.objects SQL.
- for(const bucket of ["patiyiz-media","patiyiz-voice-comments","patiyiz-videos"]){
+ // Include private chat uploads authored by this user; never leave sensitive attachments orphaned.
+ for(const bucket of ["patiyiz-media","patiyiz-voice-comments","patiyiz-videos","patiyiz-private-messages"]){
   for(let page=0;page<300;page++){
    const {data:objects,error:listingError}=await admin.storage.from(bucket).list(uid,{limit:100,offset:0});
    if(listingError)return answer(503,"Dosyalar listelenemedi; hesap silinmedi.");
