@@ -155,7 +155,7 @@ function renderRewards(){
    const link=o.proof_url?'<a href="'+esc(o.proof_url)+'" target="_blank" rel="noopener noreferrer">Teslimat kanıtını aç ↗</a>':'';
    return '<article class="reward-admin-card" data-reward-order="'+esc(o.id)+'"><div class="reward-admin-head"><strong>'+esc(o.emoji)+' '+esc(o.product_name)+'</strong><span class="reward-status reward-'+esc(o.status)+'">'+esc(rewardStatus(o.status))+'</span></div>'+
     '<small>'+esc(o.display_name)+' · @'+esc(o.handle||'üye')+' · '+esc(niceDate(o.created_at))+'</small>'+
-    '<p>'+(o.destination==='street_animals'?'🐾 Sokak hayvanlarına':('🐶 '+esc(o.pet_name||'Kendi hayvanına')))+' · '+Number(o.coins_spent)+' PatiCoin</p>'+
+    '<p>'+(o.destination==='environment'?'🌱 Doğa için fidan':o.destination==='street_animals'?'🐾 Sokak hayvanlarına':('🐶 '+esc(o.pet_name||'Kendi hayvanına')))+' · '+Number(o.coins_spent)+' PatiCoin</p>'+
     (o.admin_note?'<p class="reward-note">Not: '+esc(o.admin_note)+'</p>':'')+link+tools+
     (history.length?'<details><summary>İşlem geçmişi ('+history.length+')</summary><div class="reward-events">'+history.map(e=>
      '<p>'+esc(rewardStatus(e.previous_status))+' → '+esc(rewardStatus(e.next_status))+' · '+esc(niceDate(e.created_at))+(e.note?' · '+esc(e.note):'')+'</p>').join('')+'</div></details>':'')+
