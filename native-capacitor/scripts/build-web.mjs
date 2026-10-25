@@ -15,6 +15,7 @@ const files=[
 'patiyiz-app-icon-512.png','patiyiz-apple-touch-icon.png','patiyiz-favicon-48.png'];
 await rm(out,{recursive:true,force:true});await mkdir(path.join(out,'vendor'),{recursive:true});
 for(const name of files)await cp(path.join(root,name),path.join(out,name));
+await cp(path.join(native,'src/native-reels.css'),path.join(out,'native-reels.css'));
 let html=await readFile(path.join(out,'index.html'),'utf8');
 let app=await readFile(path.join(out,'app.js'),'utf8');
 function replace(s,a,b,label){if(!s.includes(a))throw Error('Missing native source anchor: '+label);return s.replace(a,b);}
@@ -23,6 +24,7 @@ html=replace(html,'<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-
 html=replace(html,'<script src="https://cdn.jsdelivr.net/npm/tus-js-client@4.3.1/dist/tus.min.js" defer></script>',
  '<script src="vendor/tus-compat.js" defer></script>','TUS CDN');
 html=replace(html,'<script src="app.js?', '<script src="native-shell.js" defer></script><script src="app.js?','native entry');
+html=replace(html,'</head>','<link rel="stylesheet" href="native-reels.css">\n</head>','native Reels CSS');
 html=html.replace(/<link rel="canonical" href="https:\/\/patiyiz\.com\/">/,'');
 await writeFile(path.join(out,'index.html'),html);
 let admin=await readFile(path.join(out,'admin.html'),'utf8');
