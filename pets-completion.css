@@ -1,0 +1,7 @@
+/* Patiler: keep pet cards compact while offering a separate owner-only edit action. */
+.pati-pet-list-item{min-width:0;display:flex;flex-direction:column;gap:7px}
+.pati-pet-list-item>.pati-pets-tile{width:100%;flex:1}
+.pati-pets-edit{width:100%;display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid rgba(120,120,128,.18);background:transparent;color:inherit;border-radius:13px;font:inherit;font-size:13px;font-weight:600;padding:10px 8px;cursor:pointer}
+.pati-pets-edit .icon{width:16px;height:16px}
+.pati-pets-edit:focus-visible,.pati-pet-list-item>.pati-pets-tile:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+@media(max-width:450px){.pati-pet-list-item{gap:5px}.pati-pets-edit{padding:9px 6px;font-size:12px}}
