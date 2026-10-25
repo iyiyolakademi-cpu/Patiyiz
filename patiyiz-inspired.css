@@ -2715,3 +2715,113 @@ html[data-pati-theme="dark"] #main-content .pati-social-actions button[data-acti
  #main-content .pati-dm-dots b{animation:none!important}
  #main-content .pati-carousel-slide .pati-photo img{transition:none!important}
 }
+
+/* Patiyiz Social extras — close friends, collaboration, 24-hour notes and creator insights */
+#main-content .pati-social-profile-tools{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;
+ padding:12px;background:#fff;border-bottom:1px solid #eeeeef;
+}
+#main-content .pati-social-profile-tools button{
+ display:flex;align-items:center;justify-content:center;gap:7px;
+ min-width:0;min-height:46px;padding:9px 8px;border:1px solid #e6e7ec!important;
+ border-radius:13px;background:#fafafa!important;color:#1c1c1f!important;
+ font-size:12px!important;font-weight:770!important;white-space:normal;cursor:pointer;
+}
+#main-content .pati-social-profile-tools button:active{transform:scale(.98)}
+#main-content .pati-social-dot{
+ padding:3px 5px;border-radius:6px;background:#1877f2;color:#fff;font-size:9px;
+}
+#main-content .pati-social-profile-note{
+ background:#f7f7ff;color:#2a292f;
+ border-bottom:1px solid #ecedfa;padding:11px 15px;
+ border-radius:0;font-size:13px;line-height:1.45;
+}
+#main-content .pati-social-profile-note button{
+ background:transparent;border:0;color:#1877f2;font-weight:750;margin-left:4px;padding:3px;
+}
+#main-content .pati-social-notes-strip{
+ display:flex;align-items:center;gap:9px;overflow-x:auto;
+ padding:9px 12px;border-bottom:1px solid #ededf2;
+ scrollbar-width:none;background:#fff;
+}
+#main-content .pati-social-notes-strip button{
+ flex:0 0 auto;display:flex;align-items:center;gap:8px;
+ width:min(225px,68vw);min-height:52px;padding:7px 10px;
+ background:#f7f7fa;border:1px solid #eeeeF2;border-radius:14px;
+ text-align:left;color:#1d1d1f;
+}
+#main-content .pati-social-notes-strip .avatar{flex:0 0 auto;min-width:34px;width:34px;height:34px;border-radius:50%}
+#main-content .pati-social-notes-strip button>span:not(.avatar){
+ display:flex;flex-direction:column;gap:3px;min-width:0;
+}
+#main-content .pati-social-notes-strip small,
+#main-content .pati-social-notes-strip b{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#main-content .pati-social-notes-strip b{font-size:11px}
+#main-content .pati-social-notes-strip small{color:#6e707c;font-size:11px}
+#main-content .pati-close-badge{
+ display:inline-block;padding:5px 9px;margin:4px 12px;
+ color:#1c7540;background:#e9f8ed;border-radius:9px;
+ font-size:11px;font-weight:800;
+}
+#main-content .pati-social-collab-label{
+ display:inline-block;font-size:12px;color:#5e5e70;padding:4px 11px;
+}
+#main-content .pati-reel-item>.pati-social-collab-label{
+ color:white;position:absolute;bottom:calc(195px + env(safe-area-inset-bottom,0px));
+ left:12px;z-index:7;background:#0008;border-radius:9px;max-width:70%;
+}
+#modal-root .pati-social-modal{
+ background:#fff!important;color:#202126!important;border-radius:18px!important;
+ max-width:540px!important;box-sizing:border-box;
+}
+#modal-root .pati-social-modal .modal-content{background:#fff!important;color:#202126!important;max-height:min(68dvh,600px)!important;overflow:auto!important}
+#modal-root .pati-social-list-modal .modal-footer{display:none!important}
+#modal-root .pati-social-modal .pati-social-help{
+ color:#646873!important;line-height:1.55;font-size:13px;
+ margin:5px 0 15px;
+}
+#modal-root .pati-social-modal .pati-social-field{
+ display:flex;flex-direction:column;gap:7px;margin:13px 0;
+ font-size:12px;font-weight:780;color:#30323a;
+}
+#modal-root .pati-social-modal .pati-social-field textarea,
+#modal-root .pati-social-modal .pati-social-field select{
+ border:1px solid #dde1e7!important;background:#f9f9fb!important;
+ border-radius:11px!important;min-height:42px;padding:11px!important;color:#202126!important;
+ width:100%;box-sizing:border-box;font-size:14px!important;
+}
+#modal-root .pati-social-modal .pati-social-field small{font-size:11px;color:#818691}
+#modal-root .pati-social-modal .pati-social-user-list{
+ display:grid;gap:7px;max-height:56dvh;overflow:auto;
+}
+#modal-root .pati-social-modal .pati-social-user{
+ display:flex;align-items:center;gap:10px;min-height:49px;
+ border-bottom:1px solid #f0f0f3;padding:5px 0;
+}
+#modal-root .pati-social-user .avatar{width:36px!important;height:36px!important;min-width:36px!important;border-radius:50%}
+#modal-root .pati-social-user>span:not(.avatar){display:flex;flex:1;min-width:0;flex-direction:column;gap:3px}
+#modal-root .pati-social-user b{font-size:13px;color:#2a2b30}
+#modal-root .pati-social-user small{font-size:11px;color:#8a8c95}
+#modal-root .pati-social-modal [data-social-action]{
+ border:1px solid #e0e4f0;border-radius:9px;background:#f4f7ff;color:#1877f2;
+ min-height:34px;padding:6px 11px;font-weight:820;font-size:12px;
+}
+#modal-root .pati-social-modal [data-social-action].active{color:#267144;background:#effcf3;border-color:#c9e8d1}
+#modal-root .pati-social-modal [data-social-action].pati-social-danger{color:#bf2633;background:#fff5f5;border-color:#ffd5d5}
+#modal-root .pati-social-invitation{border-bottom:1px solid #eee;padding:13px 0;line-height:1.5;font-size:13px}
+#modal-root .pati-social-invitation p{color:#7b7d86;font-size:12px}
+#modal-root .pati-social-note-body{font-size:17px;line-height:1.55;white-space:pre-wrap}
+#modal-root .pati-social-insights-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#modal-root .pati-social-insights-grid div{
+ border:1px solid #e7e9f0;border-radius:13px;background:#fafbff;
+ min-height:81px;padding:12px;display:flex;flex-direction:column;justify-content:center;gap:7px;
+}
+#modal-root .pati-social-insights-grid strong{font-size:25px;color:#1d2633}
+#modal-root .pati-social-insights-grid small{color:#6b7585;font-size:12px}
+#modal-root .pati-social-insights-list{display:grid;gap:0}
+#modal-root .pati-social-insights-list>div{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:11px 3px;border-bottom:1px solid #eee;font-size:12px}
+@media(max-width:740px){
+ #main-content .pati-social-profile-tools{gap:7px;padding:9px}
+ #main-content .pati-social-profile-tools button{font-size:11px!important}
+ #modal-root .pati-social-modal{width:100%!important;max-width:none!important;margin-top:auto;border-radius:22px 22px 0 0!important}
+}
