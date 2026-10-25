@@ -1676,7 +1676,7 @@ function petsPage(){
 }
 let kbCategory='Tümü',kbListScroll=0;
 const kbSpeciesOptions=['Tümü','Kedi','Köpek','Kuş','Tavşan','Balık','Kemirgen','Genel','Kaydedilenler'];
-const kbCategoryOptions=['Tümü',...new Set(knowledge.map(a=>a.category).filter(Boolean))].sort((a,b)=>a==='Tümü'?-1:b==='Tümü'?1:a.localeCompare(b,'tr'));
+function kbCategoryOptions(){return ['Tümü',...new Set(knowledge.map(a=>a.category).filter(Boolean))].sort((a,b)=>a==='Tümü'?-1:b==='Tümü'?1:a.localeCompare(b,'tr'))}
 function kbFold(value){return String(value||'').toLocaleLowerCase('tr-TR').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i').trim()}
 function kbSavedCount(){return knowledge.filter(a=>favorites.has(a.id)).length}
 function kbResults(){
@@ -1734,7 +1734,7 @@ function knowledgePage(){
   +'<button type="button" data-action="kb-filter" data-id="Kaydedilenler" class="'+(kbFilter==='Kaydedilenler'?'is-active':'')+'"><span aria-hidden="true">♡</span><strong>Kaydettiklerim</strong><small><span id="kb-saved-count">'+saved+'</span> rehber</small></button></div>'
   +'<label for="kb-search" class="kb-v2-search-label">Rehberlerde ara</label><div class="kb-v2-search"><span aria-hidden="true">⌕</span><input id="kb-search" type="search" inputmode="search" autocomplete="off" placeholder="Örn. beslenme, tuvalet, yavru bakımı..." value="'+esc(kbSearch)+'" aria-controls="kb-results"><button type="button" data-action="kb-clear" aria-label="Aramayı temizle">Temizle</button></div>'
   +'<div class="kb-v2-filter-head"><strong>Hayvan türü</strong><small>Bir tür seç</small></div><div class="kb-v2-chips" role="group" aria-label="Hayvan türü">'+kbSpeciesOptions.map(t=>'<button type="button" data-action="kb-filter" data-id="'+esc(t)+'" class="'+(kbFilter===t?'is-active':'')+'" aria-pressed="'+String(kbFilter===t)+'">'+esc(t)+'</button>').join('')+'</div>'
-  +'<div class="kb-v2-filter-head"><strong>Konu</strong><small>İlgilendiğin alan</small></div><div class="kb-v2-chips kb-v2-categories" role="group" aria-label="Rehber konusu">'+kbCategoryOptions.map(t=>'<button type="button" data-action="kb-category" data-id="'+esc(t)+'" class="'+(kbCategory===t?'is-active':'')+'" aria-pressed="'+String(kbCategory===t)+'">'+esc(t)+'</button>').join('')+'</div>'
+  +'<div class="kb-v2-filter-head"><strong>Konu</strong><small>İlgilendiğin alan</small></div><div class="kb-v2-chips kb-v2-categories" role="group" aria-label="Rehber konusu">'+kbCategoryOptions().map(t=>'<button type="button" data-action="kb-category" data-id="'+esc(t)+'" class="'+(kbCategory===t?'is-active':'')+'" aria-pressed="'+String(kbCategory===t)+'">'+esc(t)+'</button>').join('')+'</div>'
   +'<div class="kb-v2-results-head"><h2>Rehberleri keşfet</h2><span id="kb-count" role="status" aria-live="polite">'+items.length+' rehber bulundu</span></div><div id="kb-results" class="kb-v2-grid">'+kbCards(items)+'</div>'
   +'<p class="kb-v2-list-note">Rehberlerdeki bilgiler genel bilgilendirme amaçlıdır; veteriner hekimin önerisinin yerini almaz.</p></section>';
 }
