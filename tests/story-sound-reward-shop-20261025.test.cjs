@@ -20,7 +20,10 @@ test('Hikâye oluşturma ekranında büyük boş önizleme ve anketler yoktur',(
  const open=part('function openStoryComposer(','async function renderEditedStoryFile(');
  assert.doesNotMatch(composer,/Hikâye önizlemesi burada görünecek/);
  assert.match(composer,/id="story-photo-preview" hidden/);
- assert.match(open,/if\(autoPick\)document\.querySelector/);
+ assert.match(open,/return compose\(null,'story',autoPick\)/);
+ const unified=part("function compose(post,mode='post',autoPick=true){",'function uploadStatus(');
+ assert.match(unified,/postMediaField\(mode\)/);
+ assert.match(unified,/openComposerMediaPicker\('gallery'\)/);
  assert.doesNotMatch(open,/name="interaction_mode"/);
  assert.match(css,/#story-form #story-photo-preview\[hidden\]/);
 });
