@@ -9,9 +9,9 @@ const files=[
 'index.html','admin.html','privacy.html','terms.html','delete-account.html',
 'style.css','patiyiz-inspired.css','ios-reels.css','follower-milestones.css','dm-fullscreen.css','pets-completion.css','reels-stage4.css','manifest.webmanifest','config.js','push-config.js',
 'knowledge.js','reels-editor.js','gallery-picker.js','academy-curriculum.js',
-'academy-101-part1.js','academy-101-part2.js','premium-academy.js','achievements.js','follower-milestones.js',
+'academy-101-part1.js','academy-101-part2.js','follower-milestones.js',
 'instagram-share-clean.css','post-detail-twitter-text-stage16.css','patiyiz-upload.js','app.js','patiyiz-sw.js','patiyiz-camera-flow.js',
-'pati-coin.svg','profile-explore-coin-polish.css','patiyiz-mobile-rewards-shop-20261025.css','patiyiz-ux-hayvanim-20261025.css','patiyiz-selected-logo.svg','patiyiz-icon.svg','patiyiz-app-icon-192.png',
+'pati-coin.svg','profile-explore-coin-polish.css','patiyiz-mobile-rewards-shop-20261025.css','patiyiz-ux-hayvanim-20261025.css','patiyiz-shared-create-studio-20261025.css','patiyiz-selected-logo.svg','patiyiz-icon.svg','patiyiz-app-icon-192.png',
 'patiyiz-app-icon-512.png','patiyiz-apple-touch-icon.png','patiyiz-favicon-48.png'];
 await rm(out,{recursive:true,force:true});await mkdir(path.join(out,'vendor'),{recursive:true});
 for(const name of files)await cp(path.join(root,name),path.join(out,name));
