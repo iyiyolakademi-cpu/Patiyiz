@@ -14,11 +14,11 @@ test('All five screenshot sidebar sections exist in desktop routes and view disp
 });
 test('Mobile all-features menu exposes all five sections and Health File',()=>{
  for(const n of ["['profile','Profilim','user']","['messages','Mesajlar','message']","['notifications','Bildirimler','bell']","['achievements','🏅 Rozetler ve Belgeler','library']","['settings','Ayarlar ve Gizlilik','settings']","['healthfile','Sağlık Dosyası','library']"])assert.ok(menu.includes(n),n);
- assert.match(menu,/countBadge\(unreadCounts\(\)\.notifications\)/);
- assert.match(menu,/countBadge\(unreadCounts\(\)\.messages\)/);
+ assert.match(menu,/menuBadge\(menuCounts\.notifications\)/);
+ assert.match(menu,/menuBadge\(menuCounts\.messages\)/);
 });
 test('Sidebar and header notifications expose accessible unread labels',()=>{
- assert.match(app,/topBell\.setAttribute\('aria-label',counts\.notifications/);
+ assert.match(app,/topBell\.setAttribute\?\.\('aria-label',counts\.notifications/);
  assert.match(app,/topMessages\.setAttribute\('aria-label'/);
  assert.match(app,/aria-current=/);
  assert.match(app,/id==='messages'\?countBadge\(counts\.messages\)/);
