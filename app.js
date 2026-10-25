@@ -435,9 +435,14 @@ function patiCoinShowCheckout(id){
  if(!product)return notify('Ürün artık mevcut değil.',true);
  if(patiCoinState.balance<product.coins)return notify('Yetersiz PatiCoin. Önce görevlerini tamamla.',true);
  patiCoinCheckoutItem=product.id;
- const pets=data.pets.filter(p=>p.owner_id===me.id);
- const content='<div class="paticoin-checkout"><div class="paticoin-checkout-item">'+esc(product.emoji)+' <b>'+esc(product.name)+'</b><span><img class="pati-coin-icon" src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true"> '+product.coins+'</span></div><h3>Ürünü kimin için alıyorsun?</h3><label><input type="radio" name="paticoin-destination" value="own_pet" '+(pets.length?'checked':'disabled')+'> 🐶 Kendi hayvanım için</label><label><input type="radio" name="paticoin-destination" value="street_animals" '+(!pets.length?'checked':'')+'> 🐾 Sokak hayvanları için</label>'+
- '<div class="paticoin-pet-selector"><label for="paticoin-pet-id">Hayvanını seç</label><select id="paticoin-pet-id">'+pets.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('')+'</select></div><p class="paticoin-disclaimer">Onayladığında coin düşer ve teslimat/destek talebin beklemeye alınır. Bu işlem anında bağış veya kargo gönderimi değildir.</p><button type="button" class="paticoin-confirm" data-action="paticoin-confirm"><img class="pati-coin-icon" src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true"> '+product.coins+' coin kullan · Talep oluştur</button></div>';
+ const pets=data.pets.filter(p=>p.owner_id===me.id),donation=product.kind==='donation';
+ const coin='<img class="pati-coin-icon" src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true">';
+ const destination=donation?
+  '<div class="pati-shop-tree-destination"><label><input type="radio" name="paticoin-destination" value="environment" checked> 🌱 Doğa için 1 fidan</label><p>Talep gönderildiğinde coin bakiyenden düşer. Fidan dikimi ancak yönetici onayı ve bağış kanıtı sonrası tamamlandı sayılır.</p></div>':
+  '<h3>Ürünü kimin için alıyorsun?</h3><label><input type="radio" name="paticoin-destination" value="own_pet" '+(pets.length?'checked':'disabled')+'> 🐶 Kendi hayvanım için</label><label><input type="radio" name="paticoin-destination" value="street_animals" '+(!pets.length?'checked':'')+'> 🐾 Sokak hayvanları için</label>'+
+  '<div class="paticoin-pet-selector"><label for="paticoin-pet-id">Hayvanını seç</label><select id="paticoin-pet-id">'+pets.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('')+'</select></div>';
+ const content='<div class="paticoin-checkout"><div class="paticoin-checkout-item">'+esc(product.emoji)+' <b>'+esc(product.name)+'</b><span>'+coin+product.coins+'</span></div>'+destination+
+  '<p class="paticoin-disclaimer">Onayladığında talebin incelemeye alınır. Anında bağış veya teslimat gerçekleşmiş sayılmaz.</p><button type="button" class="paticoin-confirm" data-action="paticoin-confirm">'+coin+product.coins+' coin kullan · Talep oluştur</button></div>';
  modal('PatiCoin ile al',content,'paticoin-checkout-form');
  const form=document.getElementById('paticoin-checkout-form');form.querySelector('.modal-footer')?.remove();
  const sync=()=>{const chosen=form.querySelector('input[name="paticoin-destination"]:checked')?.value;const selector=form.querySelector('.paticoin-pet-selector');if(selector)selector.hidden=chosen!=='own_pet'};
