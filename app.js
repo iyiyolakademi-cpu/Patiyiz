@@ -2124,7 +2124,7 @@ async function doToggle(table,keys,present){
   const arr=data[item[0]],ix=arr.findIndex(x=>Object.keys(keys).every(k=>x[k]===keys[k]));
   if(present){if(ix>=0)arr.splice(ix,1);item[2].delete(rowKey)}
   else if(ix<0){arr.push({...keys,created_at:new Date().toISOString()});item[2].add(rowKey)}
-  if(isFollow&&patiFollowPageState.key.startsWith(me.id+':')){
+  if(isFollow&&typeof patiFollowPageState!=='undefined'&&patiFollowPageState.key.startsWith(me.id+':')){
    if(present)patiFollowPageState.viewerFollowing.delete(rowKey);
    else patiFollowPageState.viewerFollowing.add(rowKey);
   }
@@ -2158,7 +2158,7 @@ async function doToggle(table,keys,present){
    const arr=data[item[0]],ix=arr.findIndex(x=>Object.keys(keys).every(k=>x[k]===keys[k]));
    if(present){if(ix<0)arr.push({...keys});item[2].add(rowKey)}
    else{if(ix>=0)arr.splice(ix,1);item[2].delete(rowKey)}
-   if(isFollow&&patiFollowPageState.key.startsWith(me.id+':')){
+   if(isFollow&&typeof patiFollowPageState!=='undefined'&&patiFollowPageState.key.startsWith(me.id+':')){
     if(present)patiFollowPageState.viewerFollowing.add(rowKey);
     else patiFollowPageState.viewerFollowing.delete(rowKey);
    }
