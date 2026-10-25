@@ -20,7 +20,7 @@
   const shownDocs=()=>visibleDocs().filter(d=>(state.typeFilter==='all'||d.doc_type===state.typeFilter)
    &&(!state.query||fold([d.title,d.notes,types[d.doc_type]?.[1]||'',d.document_date].join(' ')).includes(fold(state.query))));
   function selectType(kind){if(kind!=='all'&&!Object.hasOwn(types,kind))return;state.typeFilter=kind;changed()}
-  function setSearch(query){state.query=String(query||'').slice(0,120);changed()}
+  function setSearch(query){state.query=String(query||'').slice(0,120);updateResults()}
   function edit(id){const d=visibleDocs().find(x=>x.id===id);if(!d)return;state.editingId=id;changed()}
   function cancelEdit(){state.editingId='';changed()}
   
@@ -127,32 +127,56 @@
    document.getElementById('pati-achievement-print')?.remove();document.getElementById(print.id)?.remove();document.body.append(print);
    window.print();
   }
+  function recordCards(list){
+   const safe=v=>esc(String(v??''));
+   if(!list.length)return '<div class="hf-empty" role="status"><strong>Bu filtrelerde sağlık kaydı bulunamadı.</strong><p>Başka bir kategori seçebilir veya ilk kaydını oluşturabilirsin.</p><button type="button" data-health-clear>Tüm kayıtları göster</button></div>';
+   return list.map(d=>'<article class="hf-record"><div class="hf-record-details"><div class="hf-record-tag">'+safe(types[d.doc_type]?.[0]||'📄')+' '+safe(types[d.doc_type]?.[1]||'Kayıt')+'</div>'
+    +'<strong>'+safe(d.title)+'</strong><small>'+safe(day(d.document_date))+(d.object_path?' · 🔒 Özel belge':' · Not kaydı')+'</small>'
+    +(d.notes?'<p>'+safe(d.notes)+'</p>':'')+'</div>'
+    +'<div class="hf-record-actions">'+(d.object_path?'<button type="button" data-health-open="'+safe(d.id)+'">Belgeyi aç</button>':'')
+    +'<button type="button" data-health-edit="'+safe(d.id)+'">Düzenle</button><button type="button" data-health-delete="'+safe(d.id)+'" class="hf-delete">Sil</button></div></article>').join('');
+  }
+  function updateResults(){
+   const el=document.getElementById('hf-record-list'),counter=document.getElementById('hf-record-count');
+   const records=shownDocs();
+   if(el)el.innerHTML=recordCards(records);
+   if(counter)counter.textContent=records.length+' kayıt';
+  }
   function render(){
    const safe=v=>esc(String(v??''));
    const animals=pets();
    if(!state.petId||!animals.some(p=>p.id===state.petId))state.petId=animals[0]?.id||'';
    const active=current();
-   if(!active)return '<section class="health-file"><h1>🐾 Dijital Pati Sağlık Dosyası</h1><p>Özel sağlık dosyası oluşturmak için önce bir hayvan profili ekle.</p><button data-action="health-add-pet" class="hf-primary">Hayvan ekle</button></section>';
-   const docs=state.docs.filter(x=>x.pet_id===active.id);
-   const weights=getWeights().filter(x=>x.pet_id===active.id);
-   const reminders=getReminders().filter(x=>x.pet_id===active.id);
-   return '<section class="health-file"><div class="hf-header"><span>🔒 YALNIZCA SANA ÖZEL</span><h1>Dijital Pati Sağlık Dosyası</h1><p>Aşı kartları, tahliller, veteriner notları ve sağlık geçmişini güvenle sakla.</p></div>'+
-    '<div class="hf-controls"><div class="hf-pets">'+animals.map(p=>'<button type="button" class="'+(p.id===active.id?'active':'')+'" data-health-pet="'+safe(p.id)+'">'+safe(p.name)+'</button>').join('')+'</div>'+
-    '<button type="button" data-health-print class="hf-report">🖨️ Sağlık raporu / PDF oluştur</button></div>'+
-    '<div class="hf-metrics"><div><strong>'+docs.length+'</strong><small>Sağlık belgesi</small></div><div><strong>'+weights.length+'</strong><small>Kilo kaydı</small></div><div><strong>'+reminders.length+'</strong><small>Bakım hatırlatıcısı</small></div></div>'+
-    '<div class="hf-columns"><div class="hf-card"><h2>➕ Sağlık kaydı ekle</h2><p>PDF veya fotoğraf eklemek isteğe bağlıdır. Kayıtları yalnız hesabından görebilirsin.</p>'+
-    '<form id="pati-health-record-form"><label>Kayıt türü<select name="health-type" required>'+Object.entries(types).map(([k,v])=>'<option value="'+k+'">'+v[0]+' '+v[1]+'</option>').join('')+'</select></label>'+
-    '<label>Başlık<input name="health-title" minlength="2" maxlength="100" placeholder="Örn. Yıllık aşı kontrolü" required></label>'+
-    '<label>Kayıt tarihi<input type="date" name="health-date" value="'+new Date().toISOString().slice(0,10)+'" required></label>'+
-    '<label>Notlar<textarea name="health-notes" maxlength="1000" rows="3" placeholder="Veteriner notu, gözlem veya açıklama (isteğe bağlı)"></textarea></label>'+
-    '<label>Belge / fotoğraf (isteğe bağlı, en fazla 10 MB)<input name="health-file" type="file" accept=".pdf,image/jpeg,image/png,image/webp,application/pdf"></label>'+
-    '<button class="hf-primary" type="submit" '+(state.saving?'disabled':'')+'>'+(state.saving?'Kaydediliyor…':'Kaydı güvenle sakla')+'</button></form></div>'+
-    '<div class="hf-card"><h2>🗂️ Sağlık geçmişi</h2>'+ (state.loading?'<p>Sağlık geçmişi yükleniyor…</p>':'')+
-    (state.error?'<p role="alert">'+safe(state.error)+'</p><button data-health-retry type="button">Tekrar dene</button>':'')+
-    (docs.map(d=>'<article class="hf-record"><div><strong>'+safe(types[d.doc_type]?.[0]||'📄')+' '+safe(d.title)+'</strong><small>'+safe(day(d.document_date))+' · '+safe(types[d.doc_type]?.[1]||'Kayıt')+'</small><p>'+safe(d.notes||'')+'</p></div><div class="hf-record-actions">'+(d.object_path?'<button type="button" data-health-open="'+safe(d.id)+'">Belgeyi aç</button>':'')+'<button type="button" data-health-delete="'+safe(d.id)+'">Sil</button></div></article>').join('')||'<p class="hf-empty">Henüz sağlık kaydın yok. İlk belgeyi soldan ekleyebilirsin.</p>')+
-    '</div></div><p class="hf-disclaimer">Özel dosyalara erişim Supabase yetki kontrolüyle sınırlandırılır. Paylaşılabilir açık bağlantı üretilmez. Bu kayıtlar veteriner teşhisi veya resmî aşı kartı yerine geçmez.</p></section>';
+   if(!active)return '<section class="health-file health-stage13"><div class="hf-header"><span>🔒 YALNIZCA SANA ÖZEL</span><h1>Dijital Pati Sağlık Dosyası</h1><p>Sağlık dosyasını oluşturmak için önce bir hayvan profili ekle.</p></div><div class="hf-empty"><button type="button" data-action="health-add-pet" class="hf-primary">Hayvan ekle</button></div></section>';
+   const docs=visibleDocs(),weights=(getWeights()||[]).filter(x=>x.pet_id===active.id),reminders=(getReminders()||[]).filter(x=>x.pet_id===active.id);
+   const editing=state.editingId?docs.find(x=>x.id===state.editingId):null;
+   if(state.editingId&&!editing)state.editingId='';
+   const filtered=shownDocs();
+   return '<section class="health-file health-stage13">'
+    +'<div class="hf-header"><span>🔒 YALNIZCA SANA ÖZEL</span><h1>Dijital Pati Sağlık Dosyası</h1><p>Aşı kartlarını, tahlilleri ve veteriner notlarını yalnızca kendi hesabında sakla.</p></div>'
+    +'<div class="hf-controls"><div class="hf-pets" role="group" aria-label="Hayvan seç">'+animals.map(p=>'<button type="button" class="'+(p.id===active.id?'active':'')+'" data-health-pet="'+safe(p.id)+'" aria-pressed="'+String(p.id===active.id)+'">'+safe(p.name)+'</button>').join('')+'</div>'
+    +'<button type="button" data-health-print class="hf-report">🖨️ Yazdır / PDF kaydet</button></div>'
+    +'<div class="hf-metrics"><div><strong>'+docs.length+'</strong><small>Sağlık kaydı</small></div><div><strong>'+docs.filter(d=>!!d.object_path).length+'</strong><small>Özel belge</small></div><div><strong>'+weights.length+'</strong><small>Kilo kaydı</small></div><div><strong>'+reminders.length+'</strong><small>Hatırlatma</small></div></div>'
+    +'<p class="hf-privacy">🔐 Dosyalar özel depolama alanında saklanır. Sağlık belgeleri yalnızca kısa süreli, yetkili bağlantıyla açılır. Yazdırma raporuna belge ekleri dahil edilmez.</p>'
+    +'<div class="hf-columns"><div class="hf-card hf-compose"><div class="hf-section-title"><h2>'+(editing?'✎ Sağlık kaydını düzenle':'＋ Yeni sağlık kaydı')+'</h2>'+(editing?'<button type="button" data-health-cancel>Vazgeç</button>':'')+'</div>'
+    +'<p>'+(editing?'Yeni belge seçmezsen mevcut belge korunur.':'PDF ya da fotoğraf yüklemek isteğe bağlıdır. Belge olmadan da veteriner notu ekleyebilirsin.')+'</p>'
+    +'<form id="pati-health-record-form"><label>Kayıt türü<select name="health-type" required>'+Object.entries(types).map(([k,v])=>'<option value="'+safe(k)+'"'+((editing?.doc_type||'vaccine')===k?' selected':'')+'>'+safe(v[0])+' '+safe(v[1])+'</option>').join('')+'</select></label>'
+    +'<label>Başlık<input name="health-title" minlength="2" maxlength="100" value="'+safe(editing?.title||'')+'" placeholder="Örn. Yıllık aşı kontrolü" required></label>'
+    +'<label>Kayıt tarihi<input type="date" name="health-date" max="'+today()+'" value="'+safe(editing?.document_date||today())+'" required></label>'
+    +'<label>Notlar<textarea name="health-notes" maxlength="1000" rows="4" placeholder="Veteriner notları, gözlem ve kontroller">'+safe(editing?.notes||'')+'</textarea></label>'
+    +(editing?.object_path?'<p class="hf-existing-file">🔒 Mevcut özel belge saklanıyor. Yeni dosya seçersen eskisinin yerine geçer.</p>':'')
+    +'<label>Belge / fotoğraf (isteğe bağlı, en fazla 10 MB)<input name="health-file" type="file" accept=".pdf,image/jpeg,image/png,image/webp,application/pdf"></label>'
+    +'<button class="hf-primary" type="submit" '+(state.saving?'disabled':'')+'>'+(state.saving?'Kaydediliyor…':editing?'Değişiklikleri kaydet':'Kaydı güvenle sakla')+'</button></form></div>'
+    +'<div class="hf-card hf-history"><div class="hf-section-title"><h2>🗂️ Sağlık geçmişi</h2><span id="hf-record-count" aria-live="polite">'+filtered.length+' kayıt</span></div>'
+    +(state.loading?'<p role="status">Sağlık geçmişi yükleniyor…</p>':'')
+    +(state.error?'<p class="hf-error" role="alert">'+safe(state.error)+'</p><button data-health-retry type="button">Tekrar dene</button>':'')
+    +'<label class="hf-search-label" for="hf-search">Sağlık kayıtlarında ara</label><input type="search" id="hf-search" value="'+safe(state.query)+'" placeholder="Başlık, not veya kayıt türü…" autocomplete="off" aria-controls="hf-record-list">'
+    +'<div class="hf-filters" role="group" aria-label="Sağlık dosyası türü">'
+    +[['all','Tümü'],...Object.entries(types).map(([k,v])=>[k,v[1]])].map(([k,label])=>'<button type="button" data-health-filter="'+safe(k)+'" class="'+(state.typeFilter===k?'active':'')+'" aria-pressed="'+String(state.typeFilter===k)+'">'+safe(label)+'</button>').join('')+'</div>'
+    +'<div id="hf-record-list" class="hf-record-list">'+recordCards(filtered)+'</div></div></div>'
+    +'<p class="hf-disclaimer">Sağlık dosyası kişisel takip içindir; resmî veteriner sağlık belgesi veya veteriner muayenesinin yerini almaz. Belgeye erişim izinli kullanıcılarla sınırlıdır.</p></section>';
   }
-  return {state,load,selectPet,selectType,setSearch,edit,cancelEdit,shownDocs,save,openFile,remove,report,render};
+  return {state,load,selectPet,selectType,setSearch,edit,cancelEdit,shownDocs,updateResults,save,openFile,remove,report,render};
  }
  window.PatiyizHealthFile={create};
 })();
