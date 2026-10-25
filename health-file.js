@@ -7,12 +7,23 @@
  const types={vaccine:['💉','Aşı kaydı'],vet:['🩺','Veteriner muayenesi'],test:['🧪','Tahlil / sonuç'],medicine:['💊','İlaç / reçete'],other:['📄','Diğer sağlık kaydı']};
  const allowed=['application/pdf','image/jpeg','image/png','image/webp'];
  function create({sb,getUser,getPets,getReminders,getWeights,esc,notify,onChange}){
-  const state={petId:'',docs:[],loading:false,loaded:false,attempted:false,saving:false,error:'',printView:false};
+  const state={petId:'',docs:[],loading:false,loaded:false,attempted:false,saving:false,error:'',printView:false,editingId:'',query:'',typeFilter:'all'};
   const changed=()=>onChange?.();
   const pets=()=>getPets().filter(p=>p.owner_id===getUser()?.id);
   const current=()=>pets().find(p=>p.id===state.petId);
   const checked=()=>{if(!current())throw Error('Sağlık dosyasına erişmek için kendi hayvanını seçmelisin.');};
-  const day=d=>{try{return new Date((d||'')+'T12:00:00').toLocaleDateString('tr-TR')}catch{return d}};
+  const day=d=>{if(!dateValid(String(d||'')))return String(d||'');return new Date(d+'T12:00:00').toLocaleDateString('tr-TR')};
+  const today=()=>new Date().toLocaleDateString('sv-SE');
+  const dateValid=d=>{if(!/^\d{4}-\d{2}-\d{2}$/.test(d||''))return false;const dt=new Date(d+'T12:00:00Z');return Number.isFinite(dt.getTime())&&dt.toISOString().slice(0,10)===d};
+  const fold=s=>String(s||'').toLocaleLowerCase('tr-TR').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i').trim();
+  const visibleDocs=()=>state.docs.filter(d=>d.owner_id===getUser()?.id&&d.pet_id===state.petId);
+  const shownDocs=()=>visibleDocs().filter(d=>(state.typeFilter==='all'||d.doc_type===state.typeFilter)
+   &&(!state.query||fold([d.title,d.notes,types[d.doc_type]?.[1]||'',d.document_date].join(' ')).includes(fold(state.query))));
+  function selectType(kind){if(kind!=='all'&&!Object.hasOwn(types,kind))return;state.typeFilter=kind;changed()}
+  function setSearch(query){state.query=String(query||'').slice(0,120);changed()}
+  function edit(id){const d=visibleDocs().find(x=>x.id===id);if(!d)return;state.editingId=id;changed()}
+  function cancelEdit(){state.editingId='';changed()}
+  
   async function load(force=false){
    if(state.loading||state.loaded&&!force)return;
    const uid=getUser()?.id;if(!uid)return;
@@ -25,43 +36,54 @@
    }catch(e){console.warn('Patiyiz sağlık dosyası:',e);state.error='Sağlık kayıtları yüklenemedi. Lütfen yeniden dene.'}
    finally{state.loading=false;changed()}
   }
-  function selectPet(id){if(!pets().some(p=>p.id===id))return;state.petId=id;state.printView=false;changed()}
+  function selectPet(id){if(!pets().some(p=>p.id===id))return;state.petId=id;state.printView=false;state.editingId='';state.query='';state.typeFilter='all';changed()}
   async function save(form){
    if(state.saving)return;
    if(!state.petId)state.petId=pets()[0]?.id||'';
    checked();
    const uid=getUser().id,petId=state.petId;
+   const editing=state.editingId?visibleDocs().find(d=>d.id===state.editingId):null;
+   if(state.editingId&&!editing){notify('Bu sağlık kaydını düzenleme yetkin yok.',true);return}
    const file=form.querySelector('[name="health-file"]')?.files?.[0]||null;
    const title=String(form.querySelector('[name="health-title"]')?.value||'').trim();
    const kind=form.querySelector('[name="health-type"]')?.value;
    const document_date=form.querySelector('[name="health-date"]')?.value;
    const notes=String(form.querySelector('[name="health-notes"]')?.value||'').trim();
-   if(title.length<2||title.length>100||notes.length>1000||!types[kind]||!/^\d{4}-\d{2}-\d{2}$/.test(document_date)){
-    notify('Başlık, kategori, tarih veya açıklamayı kontrol et.',true);return;
+   if(title.length<2||title.length>100||notes.length>1000||!Object.hasOwn(types,kind)||!dateValid(document_date)||document_date>today()){
+    notify('Başlık, kategori, tarih veya açıklamayı kontrol et. Gelecekteki tarihler kabul edilmez.',true);return;
    }
    if(file&&(!allowed.includes(file.type)||file.size>10*1024*1024||file.size===0)){
     notify('Yalnızca PDF, JPG, PNG, WEBP ve en fazla 10 MB dosya yüklenebilir.',true);return;
    }
    state.saving=true;changed();
-   let object_path=null;
+   let uploadedPath=null;
    try{
+    const payload={doc_type:kind,title,notes,document_date};
+    if(!editing){payload.owner_id=uid;payload.pet_id=petId;payload.object_path=null;payload.mime_type=null;payload.byte_size=null}
     if(file){
      const ext={'application/pdf':'pdf','image/jpeg':'jpg','image/png':'png','image/webp':'webp'}[file.type];
-     object_path=uid+'/'+petId+'/'+crypto.randomUUID()+'.'+ext;
-     const uploaded=await sb.storage.from(bucket).upload(object_path,file,{contentType:file.type,upsert:false});
-     if(uploaded.error)throw uploaded.error;
+     uploadedPath=uid+'/'+petId+'/'+crypto.randomUUID()+'.'+ext;
+     const result=await sb.storage.from(bucket).upload(uploadedPath,file,{contentType:file.type,upsert:false});
+     if(result.error)throw result.error;
+     payload.object_path=uploadedPath;payload.mime_type=file.type;payload.byte_size=file.size;
     }
-    const saved=await sb.from('patiyiz_health_documents').insert({
-     owner_id:uid,pet_id:petId,doc_type:kind,title,notes,document_date,
-     object_path,mime_type:file?.type||null,byte_size:file?.size||null
-    });
+    const saved=editing?
+     await sb.from('patiyiz_health_documents').update(payload).eq('id',editing.id).eq('owner_id',uid).eq('pet_id',petId).select('id'):
+     await sb.from('patiyiz_health_documents').insert(payload).select('id');
     if(saved.error)throw saved.error;
-    form.reset();state.loaded=false;notify('Sağlık kaydı özel dosyana eklendi.');
+    if(!saved.data?.length)throw Error('Sağlık kaydı sunucuda doğrulanamadı.');
+    if(editing&&uploadedPath&&editing.object_path&&editing.object_path!==uploadedPath){
+     const old=await sb.storage.from(bucket).remove([editing.object_path]);
+     if(old.error)console.warn('Eski sağlık belgesi depodan temizlenemedi:',old.error);
+    }
+    uploadedPath=null;
+    form.reset();state.editingId='';state.loaded=false;
+    notify(editing?'Sağlık kaydı güncellendi.':'Sağlık kaydı özel dosyana eklendi.');
     await load(true);
    }catch(e){
-    if(object_path){try{await sb.storage.from(bucket).remove([object_path])}catch(_){}}
-    console.warn('Patiyiz sağlık kaydı yüklenemedi:',e);
-    notify('Sağlık kaydı eklenemedi. Dosya ve bağlantı izinlerini kontrol et.',true);
+    if(uploadedPath){try{const cleanup=await sb.storage.from(bucket).remove([uploadedPath]);if(cleanup.error)console.warn('Sağlık yüklemesi geri alınamadı:',cleanup.error)}catch(err){console.warn('Sağlık yükleme temizleme:',err)}}
+    console.warn('Patiyiz sağlık kaydı kaydedilemedi:',e);
+    notify('Sağlık kaydı kaydedilemedi. Dosya ve bağlantı izinlerini kontrol et.',true);
    }finally{state.saving=false;changed()}
   }
   async function openFile(id){
@@ -76,13 +98,14 @@
    if(!rec)return;
    if(!confirm('Bu sağlık kaydını kalıcı olarak silmek istiyor musun?'))return;
    try{
-    const result=await sb.from('patiyiz_health_documents').delete().eq('id',id).eq('owner_id',getUser().id);
+    const result=await sb.from('patiyiz_health_documents').delete().eq('id',id).eq('owner_id',getUser().id).eq('pet_id',state.petId).select('id');
     if(result.error)throw result.error;
+    if(!result.data?.length)throw Error('Silinecek kayıt sunucuda doğrulanamadı.');
     if(rec.object_path){
      const removed=await sb.storage.from(bucket).remove([rec.object_path]);
      if(removed.error)console.warn('Sağlık belgesinin depodan temizlenmesi ertelendi:',removed.error);
     }
-    state.docs=state.docs.filter(x=>x.id!==id);notify('Kayıt silindi.');changed();
+    state.docs=state.docs.filter(x=>x.id!==id);if(state.editingId===id)state.editingId='';notify('Kayıt silindi.');changed();
    }catch(e){notify('Kayıt silinemedi.',true)}
   }
   function report(){
@@ -129,7 +152,7 @@
     (docs.map(d=>'<article class="hf-record"><div><strong>'+safe(types[d.doc_type]?.[0]||'📄')+' '+safe(d.title)+'</strong><small>'+safe(day(d.document_date))+' · '+safe(types[d.doc_type]?.[1]||'Kayıt')+'</small><p>'+safe(d.notes||'')+'</p></div><div class="hf-record-actions">'+(d.object_path?'<button type="button" data-health-open="'+safe(d.id)+'">Belgeyi aç</button>':'')+'<button type="button" data-health-delete="'+safe(d.id)+'">Sil</button></div></article>').join('')||'<p class="hf-empty">Henüz sağlık kaydın yok. İlk belgeyi soldan ekleyebilirsin.</p>')+
     '</div></div><p class="hf-disclaimer">Özel dosyalara erişim Supabase yetki kontrolüyle sınırlandırılır. Paylaşılabilir açık bağlantı üretilmez. Bu kayıtlar veteriner teşhisi veya resmî aşı kartı yerine geçmez.</p></section>';
   }
-  return {state,load,selectPet,save,openFile,remove,report,render};
+  return {state,load,selectPet,selectType,setSearch,edit,cancelEdit,shownDocs,save,openFile,remove,report,render};
  }
  window.PatiyizHealthFile={create};
 })();
