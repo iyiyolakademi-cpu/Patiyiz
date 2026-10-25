@@ -1616,7 +1616,7 @@ function patiWellnessPage(){
  }).join('');
  const weightRows=weights.slice(0,30).map(w=>'<div class="pati-wellness-weight-row"><span>'+esc(day(w.measured_on))+'</span><div><strong>'+Number(w.weight_kg).toLocaleString('tr-TR',{maximumFractionDigits:2})+' kg</strong>'+(w.note?'<small>'+esc(w.note)+'</small>':'')+'</div><div class="wellness-v2-weight-actions"><button type="button" data-action="wellness-weight-edit" data-id="'+esc(w.id)+'">Düzenle</button><button type="button" data-action="wellness-weight-delete" data-id="'+esc(w.id)+'">Sil</button></div></div>').join('');
  main.innerHTML='<section class="pati-wellness-page wellness-v2">'
-  +'<div class="pati-wellness-heading"><span>PATİYİZ · HAYVAN SAĞLIĞI</span><h1>Sağlık ve Bakım</h1><p>Aşı, veteriner randevusu, ilaç ve beslenme hatırlatmaları ile kilo geçmişi.</p></div>'
+  +'<div class="pati-wellness-heading"><span>PATİYİZ · HAYVAN SAĞLIĞI</span><h1>Hayvan Sağlığı & Takvimi</h1><p>Aşı, veteriner randevusu, ilaç ve beslenme hatırlatmaları ile kilo geçmişi.</p></div>'
   +(patiWellness.error?'<div class="wellness-v2-error" role="alert">'+esc(patiWellness.error)+' <button type="button" data-action="wellness-refresh">Tekrar dene</button></div>':'')
   +(pets.length?'<div class="pati-wellness-pet-tabs" role="group" aria-label="Hayvan profili">'+pets.map(p=>'<button type="button" data-action="wellness-pet" data-id="'+esc(p.id)+'" class="'+(p.id===selectedId?'active':'')+'" aria-pressed="'+String(p.id===selectedId)+'">'+esc(p.name)+'</button>').join('')+'</div>'
   +'<div class="pati-wellness-actions"><button type="button" data-action="wellness-reminder-add">＋ Hatırlatma oluştur</button><button type="button" data-action="wellness-weight-add">＋ Kilo ölçümü ekle</button></div>'
@@ -1626,7 +1626,7 @@ function patiWellnessPage(){
   +'<div class="pati-wellness-events">'+(patiWellness.loading&&!patiWellness.loaded?'<p class="pati-wellness-empty" role="status">Sağlık kayıtları yükleniyor…</p>':cards||'<p class="pati-wellness-empty">Bu durumda hatırlatma bulunamadı.</p>')+'</div>'
   +'<div class="wellness-v2-heading-row"><h2>Kilo geçmişi</h2><span>'+weights.length+' kayıt</span></div>'
   +'<div class="pati-wellness-weights">'+(weightRows||'<p class="pati-wellness-empty">Henüz kilo ölçümü eklenmedi.</p>')+'</div>'
-  +'<p class="pati-wellness-disclaimer">Bu kayıtlar bilgilendirme ve kişisel takip içindir; veteriner muayenesinin yerini almaz. Uygulama açık ve çevrimiçiyken yaklaşan hatırlatmaları gösterebilir. Arka plan bildirimleri izin, bağlantı ve cihaz desteğine bağlıdır; garanti edilmez. Acil sağlık sorunlarında veteriner hekime başvur.</p>'
+  +'<p class="pati-wellness-disclaimer">Bu kayıtlar bilgilendirme ve kişisel takip içindir; veteriner muayenesinin yerini almaz. Uygulama açık ve çevrimiçiyken yaklaşan hatırlatmaları gösterebilir. Bildirimler bölümünden telefon bildirimlerine izin verirsen zamanı geldiğinde uygulama kapalıyken de bildirim gönderilebilir; teslimat cihaz, bağlantı ve izin koşullarına bağlıdır, garanti edilmez. Acil sağlık sorunlarında veteriner hekime başvur.</p>'
   :'<div class="pati-wellness-empty-card"><h2>Önce patili dostunu ekle 🐾</h2><p>Sağlık ve kilo takibi için hayvan profili gerekli.</p><button type="button" data-action="pet-add">＋ Hayvan ekle</button></div>')
   +'</section>';
 }
