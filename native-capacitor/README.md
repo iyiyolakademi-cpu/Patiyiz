@@ -83,3 +83,12 @@ Android Studio'da **Run** veya \`Build > Build APK(s)\` ile \`app-debug.apk\` ol
 Capacitor belgelerinde \`server.url\` **canlı yeniden yükleme/geliştirme için** tasarlanmıştır, üretim için değildir. Bu yapılandırmada \`webDir: "www"\` ile Patiyiz'in HTML/CSS/JS dosyaları yerel Android paketinin içindedir.
 
 Kaynaklar: https://capacitorjs.com/docs/getting-started · https://capacitorjs.com/docs/android
+
+### Android Reels test düzeltmesi (2. aşama)
+
+- Yalnız Capacitor Android uygulamasında Reels otomatik oynatması sesli başlar. Web sürümünün sessiz otomatik oynatma davranışı korunur.
+- Ses kapatma tercihi sonraki videolarda korunur. Görünürlük izleyici tek videoyu oynatır; geri kaydırılınca önceki video yeniden açılır.
+- Arka plana geçerken video durdurulur; öne dönüldüğünde görünen Reels yeniden oynatılır.
+- Android Reels video alanı object-fit:cover kullanır. Ekranı doldurmak için yatay veya farklı oranlı videoların kenarları kırpılabilir; sistem durum çubukları uygulama alanının dışında kalabilir.
+- Sesli otomatik oynatma için yalnız Capacitor WebView içinde setMediaPlaybackRequiresUserGesture(false) etkinleştirilir. Gerçek cihaz ses seviyesi ve medya davranışı ayrıca test edilmelidir.
+- Canlı web sitesi, Supabase verisi ve AAB bu aşamada değiştirilmedi. Düzeltmeleri doğrulamak için yeni debug APK gerekir; eski APK otomatik güncellenmez. Mevcut sürümü kaldırmadan önce yerel taslakları yedekleyin.
