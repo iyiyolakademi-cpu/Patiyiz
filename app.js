@@ -272,7 +272,7 @@ function openMobileFeaturesMenu(){
  const menuBadge=value=>typeof countBadge==='function'?countBadge(value):'';
  const groups=[
   {title:'Sosyal',items:[['community','Topluluk','users'],['pets','Patiler','paw'],['profile','Profilim','user'],['messages','Mesajlar','message'],['notifications','Bildirimler','bell']]},
-  {title:'PatiCoin Merkezi',items:[['rewards','🪙 Görevler & PatiCoin','paw'],['shop','🛍️ Pati Mağaza','grid']]},
+  {title:'PatiCoin Merkezi',items:[['rewards','Görevler & PatiCoin','paw'],['shop','🛍️ Pati Mağaza','grid']]},
   {title:'Keşfet ve öğren',items:[['education','Eğitim / Akademi','library'],['premium','✦ Premium Akademi','library'],['knowledge','Bilgi Merkezi','info'],['lost','Kayıp İlanları','location'],['adoption','Sahiplendirme','heart']]},
   {title:'Hayvanlarım ve hesabım',items:[['care','Bakım Takvimi','calendar'],['wellness','Aşı, Veteriner & Sağlık','heart'],['healthfile','Sağlık Dosyası','library'],['saved-posts','Kaydettiklerim','bookmark'],['achievements','🏅 Rozetler ve Belgeler','library'],['settings','Ayarlar ve Gizlilik','settings'],['blocked','Engellenenler','shield']]}
  ];
