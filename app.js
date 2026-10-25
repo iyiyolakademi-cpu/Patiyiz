@@ -2077,6 +2077,9 @@ case 'comment-form':{
  if(me?.id!==owner)return;
  if(!data.comments.some(c=>c.id===result.data.id))data.comments.push(result.data);
  if(record.parent_id)patiyizCommentExpandedReplies.add(record.parent_id);
+ // Do not restore already-posted text from the prior modal while re-rendering.
+ const sentInput=form.querySelector('[name="body"]');if(sentInput)sentInput.value='';
+ delete form.dataset.parent;
  showComments(postId);
  const list=document.querySelector('#comment-form .comment-list');
  if(list)list.scrollTop=list.scrollHeight;
