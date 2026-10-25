@@ -75,7 +75,7 @@ test('Empty state and summary stay visible with no records',()=>{
  assert.match(ctx.main.innerHTML,/İlan oluştur/);
 });
 test('Client checks contact details and unsafe street-address information',()=>{
- const from=src.indexOf('function adoptionValidateRecord(rec){'),to=src.indexOf('function composeCare(){',from);
+ const from=src.indexOf('function adoptionValidateRecord(rec){'),to=src.indexOf('function composeCare(',from);
  assert.ok(from>0&&to>from);
  const ctx={};vm.createContext(ctx);
  vm.runInContext(src.slice(from,to)+'\nglobalThis.validate=adoptionValidateRecord;',ctx);
