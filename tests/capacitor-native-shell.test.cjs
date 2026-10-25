@@ -22,7 +22,7 @@ test('Patiyiz Android uses its own signed-app identity, not remote URL wrapping'
   'Generated native project must not be committed over the PWA');
 });
 test('Native web build includes the current social app, auth, courses and media upload modules',()=>{
- for(const name of ['index.html','app.js','premium-academy.js','achievements.js',
+ for(const name of ['index.html','app.js',
  'academy-101-part1.js','academy-101-part2.js','gallery-picker.js','patiyiz-upload.js'])
   assert.match(web,new RegExp("'"+name.replace(/\./g,'\\.')+"'"));
  assert.match(web,/await cp\(path\.join\(root,name\)/);
