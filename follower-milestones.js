@@ -14,10 +14,10 @@
  function nextTarget(count){return tiers.find(t=>count<t.need)||null}
  function profileHint(count){
   const c=countOf(count),next=nextTarget(c);
-  if(!next)return '<span class="pati-goal-header"><span class="pati-goal-medal" aria-hidden="true">✦</span><span><small>TÜM HEDEFLER TAMAMLANDI</small><strong>Elmas Pati</strong></span><span class="pati-goal-arrow" aria-hidden="true">↗</span></span><span class="pati-goal-subtitle">100.000 takipçi başarısına ulaştın. Tebrikler!</span>';
+  if(!next)return '<span class="pati-goal-header"><img class="pati-goal-logo" src="patiyiz-selected-logo.svg?v=20261024-new-p-logo-1" alt="" aria-hidden="true"><span><small>TÜM HEDEFLER TAMAMLANDI</small><strong>Elmas Pati</strong></span><span class="pati-goal-arrow" aria-hidden="true">↗</span></span><span class="pati-goal-subtitle">100.000 takipçi başarısına ulaştın. Tebrikler!</span>';
   const previous=tiers.filter(t=>t.need<=c).at(-1)?.need||0;
   const percent=Math.min(100,Math.max(0,(c-previous)/(next.need-previous)*100));
-  return '<span class="pati-goal-header"><span class="pati-goal-medal" aria-hidden="true">✦</span><span><small>SIRADAKİ HEDEF</small><strong>'+number(next.need)+' takipçi</strong></span><span class="pati-goal-arrow" aria-hidden="true">↗</span></span>'+
+  return '<span class="pati-goal-header"><img class="pati-goal-logo" src="patiyiz-selected-logo.svg?v=20261024-new-p-logo-1" alt="" aria-hidden="true"><span><small>SIRADAKİ HEDEF</small><strong>'+number(next.need)+' takipçi</strong></span><span class="pati-goal-arrow" aria-hidden="true">↗</span></span>'+
    '<span class="pati-goal-subtitle">'+next.title+' rozetine ilerliyorsun</span>'+
    '<span class="pati-goal-stats"><span>'+number(c)+' takipçi</span><strong>%'+Math.floor(percent)+'</strong></span>'+
    '<span class="pati-follower-progress" role="progressbar" aria-label="Sıradaki hedefe ilerleme" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+percent.toFixed(0)+'"><i style="width:'+percent.toFixed(2)+'%"></i></span>'+
