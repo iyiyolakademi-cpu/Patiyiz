@@ -28,6 +28,7 @@ function setup(){
   navRender:()=>{},navigator:{serviceWorker:{getRegistration:async()=>({pushManager:{getSubscription:async()=>({endpoint:'https://device.example/unique'})}})}},
   window:{PushManager:function(){},Notification:{permission:'granted'}}
  };
+ context.Notification=context.window.Notification;
  vm.createContext(context);
  vm.runInContext(app.slice(start,end)+'\nglobalThis.api={notificationVisible,notificationMatches,notificationRows,notificationRenderResults,notificationCheckPush,notificationFetch,notificationsPage};',context);
  return {context,api:context.api,element,counter};
