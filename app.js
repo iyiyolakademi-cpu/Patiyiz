@@ -407,10 +407,11 @@ function patiRewardsPage(){
 }
 let patiShopFilter='all';
 function patiShopPage(){
- const label={pending:'Talep alındı · Beklemede',approved:'Onaylandı · Stok ayrıldı',preparing:'Hazırlanıyor',fulfilled:'Teslimat / bağış tamamlandı',cancelled:'İptal edildi · PatiCoin iade edildi'};
+ const activeFilter=typeof patiShopFilter==='string'?patiShopFilter:'all';
+ const label={pending:'Talep alındı · Beklemede',approved:'Onaylandı · Stok ayrıldı',preparing:'Hazırlanıyor',fulfilled:'Teslim/bağış tamamlandı',cancelled:'İptal edildi · PatiCoin iade edildi'};
  const coin='<img class="pati-coin-icon" src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true">';
  const filters=[['all','Tümü'],['food','Mama & Destek'],['supply','Ürünler'],['donation','Doğa bağışı']];
- const shown=patiCoinState.items.filter(p=>patiShopFilter==='all'||p.kind===patiShopFilter);
+ const shown=patiCoinState.items.filter(p=>activeFilter==='all'||p.kind===activeFilter);
  const cards=shown.map(p=>{
   const donation=p.kind==='donation',available=Number(patiCoinState.balance)>=Number(p.coins);
   return '<article class="paticoin-item pati-shop-card '+(donation?'pati-shop-tree':'')+'"><div class="pati-shop-card-top"><span class="paticoin-item-icon" aria-hidden="true">'+esc(p.emoji)+'</span><span class="pati-shop-type">'+(donation?'Doğa için':p.kind==='food'?'Destek':'Ürün')+'</span></div>'+
@@ -426,7 +427,7 @@ function patiShopPage(){
  }).join('');
  main.innerHTML='<section class="paticoin-page pati-shop-v2"><header class="pati-shop-hero"><div><span class="pati-shop-eyebrow">PATIYIZ · ÖDÜL MAĞAZASI</span><h1>Pati Mağaza</h1><p>Katılımını iyiliğe dönüştür. Ödülleri incele, PatiCoin ile güvenli talep oluştur.</p></div><button class="pati-shop-wallet" type="button" data-action="paticoin-rewards"><span>BAKİYEN</span><strong>'+coin+Number(patiCoinState.balance||0).toLocaleString('tr-TR')+'</strong><small>Görevleri gör →</small></button></header>'+
   '<div class="pati-shop-section-title"><div><span>ÖDÜL KOLEKSİYONU</span><h2>Bir iyilik seç</h2></div><small>'+patiCoinState.items.length+' seçenek</small></div>'+
-  '<div class="pati-shop-filter" role="group" aria-label="Mağaza kategorileri">'+filters.map(([key,name])=>'<button type="button" data-action="paticoin-shop-filter" data-id="'+key+'" aria-pressed="'+(patiShopFilter===key)+'" class="'+(patiShopFilter===key?'active':'')+'">'+name+'</button>').join('')+'</div>'+
+  '<div class="pati-shop-filter" role="group" aria-label="Mağaza kategorileri">'+filters.map(([key,name])=>'<button type="button" data-action="paticoin-shop-filter" data-id="'+key+'" aria-pressed="'+(activeFilter===key)+'" class="'+(activeFilter===key?'active':'')+'">'+name+'</button>').join('')+'</div>'+
   '<div class="paticoin-items">'+(cards||'<p class="pati-shop-empty">Bu kategoride henüz ürün bulunmuyor.</p>')+'</div>'+
   '<p class="paticoin-disclaimer pati-shop-note">İşlemler bir talep oluşturur. Fiziksel teslimat veya fidan dikimi ancak yönetici tarafından kanıtlı olarak tamamlandığında gerçekleşmiş sayılır. Hesabın en az 7 günlük ve son 30 günde 3 farklı gün aktif olması gerekir; 14 günde en fazla 1 talep oluşturabilirsin.</p>'+
   '<div class="paticoin-shop-orders-heading"><h2>Talep geçmişim</h2><button class="paticoin-refresh" data-action="paticoin-refresh">↻ Güncelle</button></div><div class="paticoin-orders">'+(orders||'<p class="pati-shop-no-orders">Henüz talebin yok. Mağazadaki ödülleri keşfet.</p>')+'</div></section>';
@@ -443,7 +444,7 @@ function patiCoinShowCheckout(id){
   '<h3>Ürünü kimin için alıyorsun?</h3><label><input type="radio" name="paticoin-destination" value="own_pet" '+(pets.length?'checked':'disabled')+'> 🐶 Kendi hayvanım için</label><label><input type="radio" name="paticoin-destination" value="street_animals" '+(!pets.length?'checked':'')+'> 🐾 Sokak hayvanları için</label>'+
   '<div class="paticoin-pet-selector"><label for="paticoin-pet-id">Hayvanını seç</label><select id="paticoin-pet-id">'+pets.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('')+'</select></div>';
  const content='<div class="paticoin-checkout"><div class="paticoin-checkout-item">'+esc(product.emoji)+' <b>'+esc(product.name)+'</b><span>'+coin+product.coins+'</span></div>'+destination+
-  '<p class="paticoin-disclaimer">Onayladığında talebin incelemeye alınır. Anında bağış veya teslimat gerçekleşmiş sayılmaz.</p><button type="button" class="paticoin-confirm" data-action="paticoin-confirm">'+coin+product.coins+' coin kullan · Talep oluştur</button></div>';
+  '<p class="paticoin-disclaimer">Onayladığında talebin beklemeye alınır. Anında bağış veya teslimat gerçekleşmiş sayılmaz.</p><button type="button" class="paticoin-confirm" data-action="paticoin-confirm">'+coin+product.coins+' coin kullan · Talep oluştur</button></div>';
  modal('PatiCoin ile al',content,'paticoin-checkout-form');
  const form=document.getElementById('paticoin-checkout-form');form.querySelector('.modal-footer')?.remove();
  const sync=()=>{const chosen=form.querySelector('input[name="paticoin-destination"]:checked')?.value;const selector=form.querySelector('.paticoin-pet-selector');if(selector)selector.hidden=chosen!=='own_pet'};
@@ -484,7 +485,7 @@ function setupFeedVideos(){
  if(!videos.length)return;
  const native=typeof window!=='undefined'&&window.PatiyizNative?.isNative===true;
  const iosHome=typeof document!=='undefined'&&document.documentElement?.classList?.contains('patiyiz-ios-reels');
- const permitted=()=>!document.hidden&&!document.getElementById('story-overlay')&&!(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches&&!native&&!iosHome);
+ const permitted=()=>!document.hidden&&!document.getElementById?.('story-overlay')&&!(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches&&!native&&!iosHome);
  const ratios=new Map();
  const playVideo=video=>{
   if(!video||!permitted()||video.dataset.userPaused)return;
@@ -929,7 +930,7 @@ function setupReelsViewer(){
  let activeVideo=null;
  const ratios=new Map();
  const playVideo=video=>{
-  if(document.getElementById('story-overlay')){video?.pause();return}
+  if(document.getElementById?.('story-overlay')){video?.pause();return}
   if(activeVideo!==video){activeVideo?.pause();activeVideo=video}
   if(video.paused!==false)video.muted=!soundOn();
   if(video.paused!==false){
@@ -968,7 +969,7 @@ function setupReelsViewer(){
     if(entry.intersectionRatio<.65&&video!==activeVideo)video.pause();
    }
   }
-  if(document.hidden||document.getElementById('story-overlay')){activeVideo?.pause();return}
+  if(document.hidden||document.getElementById?.('story-overlay')){activeVideo?.pause();return}
   let nextVideo=null,maxRatio=.64;
   for(const [video,ratio] of ratios){
    if(ratio>maxRatio){maxRatio=ratio;nextVideo=video}
@@ -1357,10 +1358,11 @@ function explorePage(){
   return;
  }
  if(exploreTab==='media'){
+   const selectedSort=typeof patiExploreSort==='string'?patiExploreSort:'popular';
   const page=typeof patiExploreMedia!=='undefined'&&patiExploreMedia.owner===me.id?patiExploreMedia:null;
   const source=page?.ready?[...page.rows,...data.posts]:data.posts;
   const media=[...new Map(source.map(p=>[p.id,p])).values()].filter(p=>!blocked.has(p.author_id)&&(p.image_url||p.images?.length||p.video_url))
-   .sort((a,b)=>patiExploreScore(b,patiExploreSort)-patiExploreScore(a,patiExploreSort)||new Date(b.created_at)-new Date(a.created_at)||String(b.id).localeCompare(String(a.id)));
+   .sort((a,b)=>(typeof patiExploreScore==='function'?patiExploreScore(b,selectedSort)-patiExploreScore(a,selectedSort):0)||new Date(b.created_at)-new Date(a.created_at)||String(b.id).localeCompare(String(a.id)));
   const tiles=media.map((p,i)=>{
    const photo=p.image_url||(p.images||[])[0],video=!!p.video_url;
    const preview=photo?'<img src="'+esc(photo)+'" loading="'+(i<9?'eager':'lazy')+'" decoding="async" '+(i<3?'fetchpriority="high"':'')+' alt="Paylaşım">':
@@ -1368,7 +1370,7 @@ function explorePage(){
     '<video class="pati-explore-preview-video" src="'+esc(p.video_url)+'#t=0.1" muted playsinline preload="none" data-explore-preview="1" aria-label="Video önizlemesi"></video>';
    return '<button type="button" class="pati-explore-media" data-action="explore-open-post" data-id="'+esc(p.id)+'" aria-label="Paylaşımı aç">'+preview+(video?'<span class="pati-explore-video-icon">'+ico('up')+'</span>':'')+'</button>';
   }).join('');
-  main.innerHTML='<section class="pati-explore-media-screen" aria-label="Keşfet gönderileri"><button type="button" class="pati-explore-search-launch" data-action="pati-search-open" aria-label="Kullanıcı ara">'+ico('search')+'<span>Kullanıcı ara</span></button>'+'<div class="pati-explore-sort" role="group" aria-label="Keşfet sıralaması">'+[['popular','Öne çıkanlar'],['views','Çok izlenen'],['likes','Çok beğenilen'],['recent','En yeni']].map(([mode,label])=>'<button type="button" class="'+(patiExploreSort===mode?'active':'')+'" aria-pressed="'+(patiExploreSort===mode)+'" data-action="explore-sort" data-id="'+mode+'">'+label+'</button>').join('')+'</div>'+
+  main.innerHTML='<section class="pati-explore-media-screen" aria-label="Keşfet gönderileri"><button type="button" class="pati-explore-search-launch" data-action="pati-search-open" aria-label="Kullanıcı ara">'+ico('search')+'<span>Kullanıcı ara</span></button>'+'<div class="pati-explore-sort" role="group" aria-label="Keşfet sıralaması">'+[['popular','Öne çıkanlar'],['views','Çok izlenen'],['likes','Çok beğenilen'],['recent','En yeni']].map(([mode,label])=>'<button type="button" class="'+(selectedSort===mode?'active':'')+'" aria-pressed="'+(selectedSort===mode)+'" data-action="explore-sort" data-id="'+mode+'">'+label+'</button>').join('')+'</div>'+
    (media.length?'<div class="pati-explore-gallery">'+tiles+'</div>':page?.loading?'<p class="pati-search-empty" role="status">Paylaşımlar yükleniyor…</p>':empty('Henüz fotoğraf veya video yok','İlk paylaşımı sen yap!'))+
    (page?.error?'<p class="pati-search-empty" role="alert">'+esc(page.error)+'</p>':'')+
    (page?.loading?'<p class="pati-search-empty" role="status">Yeni paylaşımlar getiriliyor…</p>':page?.hasMore||page?.error?'<div class="pati-explore-load-more">'+button(page.error?'Tekrar dene':'Daha fazla paylaşım yükle','explore-more')+'</div>':'')+'</section>';
