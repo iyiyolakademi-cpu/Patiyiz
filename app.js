@@ -1804,7 +1804,66 @@ function knowledgePage(){
   +'<div class="kb-v2-results-head"><h2>Rehberleri keşfet</h2><span id="kb-count" role="status" aria-live="polite">'+items.length+' rehber bulundu</span></div><div id="kb-results" class="kb-v2-grid">'+kbCards(items)+'</div>'
   +'<p class="kb-v2-list-note">Rehberlerdeki bilgiler genel bilgilendirme amaçlıdır; veteriner hekimin önerisinin yerini almaz.</p></section>';
 }
-function lostPage(){const list=[...data.lost].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).filter(x=>x.name.toLocaleLowerCase('tr').includes(search.toLocaleLowerCase('tr'))||x.city.toLocaleLowerCase('tr').includes(search.toLocaleLowerCase('tr')));main.innerHTML=header('Kayıp hayvanlar','Kayıp dostları güvenli şekilde bulmaya yardımcı ol.',button('+ İlan oluştur','lost-add'))+`<div class="pati-note">Güvenlik için yalnızca şehir / ilçe ve yaklaşık konum yayınla; açık ev adresi veya telefon numarası yazma.</div><div class="toolbar"><input id="lost-search" class="input-search" placeholder="Şehir veya isim ara" value="${esc(search)}"><button class="soft-btn" data-action="lost-search">Ara</button></div><div class="pati-list">${list.map(x=>`<article class="pati-card"><div class="pati-row between"><span class="pati-pill">${x.found?'✅ Bulundu':'📍 Kayıp'}</span><span class="meta">${day(x.last_seen)}</span></div><h3>${petIcon(x.species)} ${esc(x.name)} · ${esc(x.species)}</h3><p>📍 ${esc(x.city)} / ${esc(x.district)}</p>${x.photo_url?photo(x.photo_url):''}<p>${esc(x.description)}</p><div class="pati-actionbar">${x.owner_id===me.id?`<button data-action="toggle-found" data-id="${x.id}">${x.found?'Yeniden kayıp':'Bulundu olarak işaretle'}</button><button data-action="delete-lost" data-id="${x.id}" class="danger">İlanı sil</button>`:button('Sahibine mesaj gönder','chat',`data-id="${x.owner_id}"`)+`<button data-action="report" data-id="${x.id}" data-kind="lost">Bildir</button>`}</div></article>`).join('')}</div>${list.length?'':empty('Henüz ilan yok')}`}
+
+let lostStatus='missing',lostSpecies='Tümü',lostSearch='',lostLoading=false,lostError='';
+function lostFold(v){return String(v||'').toLocaleLowerCase('tr-TR').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i').trim()}
+function lostMatches(){
+ const q=lostFold(lostSearch);
+ return [...data.lost].filter(x=>!blocked.has(x.owner_id)
+ &&(lostStatus==='all'||lostStatus==='mine'&&x.owner_id===me?.id||lostStatus==='found'&&x.found||lostStatus==='missing'&&!x.found)
+ &&(lostSpecies==='Tümü'||x.species===lostSpecies)
+ &&(!q||lostFold([x.name,x.species,x.city,x.district,x.description].join(' ')).includes(q)))
+ .sort((a,b)=>Number(a.found)-Number(b.found)||new Date(b.created_at)-new Date(a.created_at));
+}
+function lostCards(list){
+ if(!list.length)return '<div class="lost-v2-empty" role="status"><span>🐾</span><h3>Bu filtrelerde ilan bulunamadı</h3><p>Başka bir şehir, tür veya durum deneyebilirsin.</p><button type="button" data-action="lost-reset">Filtreleri temizle</button></div>';
+ return list.map(x=>{
+  const own=x.owner_id===me?.id,found=!!x.found;
+  return '<article class="lost-v2-card'+(found?' is-found':'')+'" data-lost-id="'+esc(x.id)+'">'
+  +'<div class="lost-v2-cover">'+(x.photo_url?'<img src="'+esc(x.photo_url)+'" alt="'+esc(x.name)+' ilan fotoğrafı" loading="lazy" decoding="async">':'<span class="lost-v2-placeholder">'+petIcon(x.species)+'</span>')
+  +'<span class="lost-v2-badge '+(found?'is-found':'')+'">'+(found?'✓ Bulundu':'● Kayıp')+'</span></div>'
+  +'<div class="lost-v2-card-info"><div class="lost-v2-meta"><span>'+esc(x.species)+'</span><time>'+esc(day(x.last_seen))+'</time></div>'
+  +'<h3>'+esc(x.name)+'</h3><p class="lost-v2-city">📍 '+esc(x.city)+(x.district?' / '+esc(x.district):'')+'</p>'
+  +'<p class="lost-v2-description">'+esc(x.description)+'</p><div class="lost-v2-actions">'
+  +(own?'<button type="button" data-action="lost-edit" data-id="'+esc(x.id)+'">Düzenle</button><button type="button" data-action="toggle-found" data-id="'+esc(x.id)+'">'+(found?'Yeniden kayıp':'✓ Bulundu')+'</button><button type="button" data-action="delete-lost" data-id="'+esc(x.id)+'" class="lost-v2-danger">Sil</button>'
+  :(!found?'<button type="button" data-action="chat" data-id="'+esc(x.owner_id)+'" class="lost-v2-primary">Sahibine mesaj</button>':'')+'<button type="button" data-action="report" data-id="'+esc(x.id)+'" data-kind="lost">Bildir</button>')
+  +'<button type="button" data-action="lost-share" data-id="'+esc(x.id)+'">Paylaş</button></div></div></article>';
+ }).join('');
+}
+function lostUpdateResults(){
+ if(view!=='lost')return;
+ const list=lostMatches(),area=document.getElementById('lost-results'),label=document.getElementById('lost-results-count');
+ if(area)area.innerHTML=lostCards(list);
+ if(label)label.textContent=list.length+' ilan';
+}
+async function lostRefresh(){
+ if(!me||lostLoading)return;
+ const uid=me.id;lostLoading=true;lostError='';if(view==='lost')lostPage();
+ try{
+  const r=await sb.from('lost_reports').select('*').order('created_at',{ascending:false}).limit(350);
+  if(r.error)throw r.error;
+  if(me?.id!==uid)return;
+  data.lost=r.data||[];patiyizLoadedTables.add('lost_reports');
+ }catch(e){console.warn('Kayıp ilanları:',e);if(me?.id===uid)lostError='İlanlar yüklenemedi. İnternetini kontrol edip tekrar dene.'}
+ finally{lostLoading=false;if(me?.id===uid&&view==='lost')lostPage()}
+}
+function lostPage(){
+ const safe=data.lost.filter(x=>!blocked.has(x.owner_id));
+ const counts={missing:safe.filter(x=>!x.found).length,found:safe.filter(x=>x.found).length,mine:safe.filter(x=>x.owner_id===me?.id).length};
+ const kinds=['Tümü',...new Set(safe.map(x=>x.species).filter(Boolean))];
+ const list=lostMatches();
+ main.innerHTML='<section class="lost-v2"><div class="lost-v2-heading"><div><small>PATİYİZ · YARDIMLAŞMA</small><h1>Kayıp İlanları</h1><p>Kaybolan dostlarımızı birlikte bulalım.</p></div><button type="button" data-action="lost-add" class="lost-v2-create">+ İlan oluştur</button></div>'
+ +'<div class="lost-v2-hero"><div><small>TOPLULUK DESTEĞİ</small><h2>Bir paylaşım, bir kavuşma olabilir.</h2><p>Kayıp hayvanları bulmak için birlikte hareket edelim.</p></div><span>🐾</span></div>'
+ +'<div class="lost-v2-stats"><div><b>'+counts.missing+'</b><span>Aranıyor</span></div><div><b>'+counts.found+'</b><span>Bulundu</span></div><div><b>'+counts.mine+'</b><span>İlanlarım</span></div></div>'
+ +'<p class="lost-v2-privacy">🔒 Açık adres veya telefon numarası paylaşma. Yalnızca şehir / ilçe belirt; iletişim uygulama içi mesajlarla yapılsın.</p>'
+ +'<label for="lost-search">İlanlarda ara</label><div class="lost-v2-search"><input id="lost-search" type="search" value="'+esc(lostSearch)+'" placeholder="Hayvan adı, tür, şehir veya ilçe..." autocomplete="off" aria-controls="lost-results"><button type="button" data-action="lost-clear">Temizle</button></div>'
+ +'<div class="lost-v2-row"><strong>Durum</strong><button type="button" data-action="lost-refresh"'+(lostLoading?' disabled':'')+'>'+(lostLoading?'Yenileniyor…':'↻ Yenile')+'</button></div>'
+ +'<div class="lost-v2-filters" role="group" aria-label="İlan durumu">'+[['missing','Kayıp ('+counts.missing+')'],['found','Bulundu ('+counts.found+')'],['mine','İlanlarım ('+counts.mine+')'],['all','Tümü']].map(([key,title])=>'<button type="button" data-action="lost-status" data-id="'+key+'" class="'+(lostStatus===key?'active':'')+'" aria-pressed="'+(lostStatus===key)+'">'+title+'</button>').join('')+'</div>'
+ +'<div class="lost-v2-row"><strong>Hayvan türü</strong></div><div class="lost-v2-filters" role="group" aria-label="Hayvan türü">'+kinds.map(x=>'<button type="button" data-action="lost-species" data-id="'+esc(x)+'" class="'+(lostSpecies===x?'active':'')+'" aria-pressed="'+(lostSpecies===x)+'">'+esc(x)+'</button>').join('')+'</div>'
+ +(lostError?'<div class="lost-v2-error" role="alert">'+esc(lostError)+'</div>':'')
+ +'<div class="lost-v2-results-head"><h2>İlanları keşfet</h2><span role="status" aria-live="polite" id="lost-results-count">'+list.length+' ilan</span></div>'
+ +'<div class="lost-v2-grid" id="lost-results">'+(lostLoading?'<p role="status" class="lost-v2-loading">İlanlar yükleniyor…</p>':lostCards(list))+'</div></section>';
+}
 function adoptionPage(){const q=search.toLocaleLowerCase('tr'),list=[...data.adoption].filter(x=>!blocked.has(x.owner_id)&&[x.name,x.species,x.city,x.district].some(t=>String(t||'').toLocaleLowerCase('tr').includes(q))).sort((a,b)=>Number(a.adopted)-Number(b.adopted)||new Date(b.created_at)-new Date(a.created_at));main.innerHTML=header('Hayvan Sahiplendirme','Patili dostlara güvenli ve sevgi dolu yuvalar bulalım.',button('+ Sahiplendirme ilanı','adoption-add'))+`<div class="pati-note">Sahiplendirme ilanları ücretsizdir. Açık adresini ve telefon numaranı herkese açık açıklamaya yazma; iletişim için Patiyiz mesajlarını kullan.</div><div class="toolbar"><input class="input-search" id="adoption-search" placeholder="Hayvan, tür veya şehir ara" value="${esc(search)}"><button class="soft-btn" data-action="adoption-search">Ara</button></div><div class="pati-list">${list.map(x=>`<article class="pati-card adoption-card"><div class="pati-row between"><span class="pati-pill">${x.adopted?'✅ Sahiplendirildi':'🐾 Yuva arıyor'}</span><small>${day(x.created_at)}</small></div><h3>${petIcon(x.species)} ${esc(x.name)} · ${esc(x.species)}</h3><p>${esc(x.gender||'Bilinmiyor')}${x.age?' · '+esc(x.age):''} · 📍 ${esc(x.city)}${x.district?' / '+esc(x.district):''}</p>${x.photo_url?photo(x.photo_url):''}<p style="white-space:pre-wrap;overflow-wrap:anywhere">${esc(x.description)}</p><div class="pati-actionbar">${x.owner_id===me.id?button('Düzenle','adoption-edit',`data-id="${x.id}"`)+button(x.adopted?'Yeniden yayına al':'Sahiplendirildi','adoption-toggle',`data-id="${x.id}"`)+button('İlanı sil','adoption-delete',`data-id="${x.id}"`,'outline-btn'):(!x.adopted?button('İlan sahibine mesaj gönder','chat',`data-id="${x.owner_id}"`):'')}${x.owner_id!==me.id?userRow(x.owner_id)+button('İlanı bildir','report',`data-id="${x.id}" data-kind="adoption"`):''}</div></article>`).join('')}</div>${list.length?'':empty('Henüz sahiplendirme ilanı yok','İlk ilanı sen oluşturabilirsin.')}`}
 function carePage(){let today=new Date().toLocaleDateString('sv-SE');let all=data.care.filter(x=>x.owner_id===me.id);let c=all.filter(x=>careFilter==='all'||(careFilter==='done'?x.done:careFilter==='late'?!x.done&&x.due_date<today:!x.done&&x.due_date>=today)).sort((a,b)=>a.due_date.localeCompare(b.due_date));main.innerHTML=header('Bakım Takvimi','Hayvanlarının önemli bakım günlerini takip et.',button('+ Görev ekle','care-add')+button('Aşı, kilo ve hatırlatmalar','wellness-open')) +`<div class="pati-filter-tabs">${[['all','Tümü'],['upcoming','Yaklaşan'],['late','Geciken'],['done','Tamamlanan']].map(([key,label])=>`<button type="button" data-action="care-filter" data-id="${key}" class="${careFilter===key?'active':''}">${label} (${all.filter(x=>key==='all'||(key==='done'?x.done:key==='late'?!x.done&&x.due_date<today:!x.done&&x.due_date>=today)).length})</button>`).join('')}</div><div class="pati-note">Bakım takvimi bu hesapta saklanır. Şu sürümde otomatik e-posta / telefon hatırlatması gönderilmez.</div><div class="pati-list">${c.map(x=>`<div class="pati-card"><div class="pati-row between"><div><span class="pati-pill">${esc(x.category)}</span><h3 style="margin-top:10px;${x.done?'text-decoration:line-through;opacity:.6':''}">${esc(x.title)}</h3><p>${day(x.due_date)} ${x.pet_id?'· '+esc(data.pets.find(p=>p.id===x.pet_id)?.name||''):''}</p></div><div class="pati-row">${button(x.done?'Yeniden aç':'✓ Tamamla','care-done',`data-id="${x.id}"`)}<button data-action="care-del" data-id="${x.id}" class="small-btn danger-btn">Sil</button></div></div></div>`).join('')}</div>${c.length?'':empty('Bakım görevi eklenmedi')}`}
 
