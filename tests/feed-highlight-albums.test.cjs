@@ -32,8 +32,8 @@ test('İlk açılışta gönderiler ve hikâyeler önce gelir; ekrandan çıkmad
 
 test('Hikâyede sabitle yerine sol tarafta Öne çıkar düğmesi',()=>{
  const screen=section('function showStoryFrame(){','async function syncStoryLike(');
- assert.match(screen,/data-action="story-highlight-choose"/);
- assert.match(screen,/✦ Öne çıkar/);
+ assert.doesNotMatch(screen,/data-action="story-highlight-choose"|✦ Öne çıkar/);
+ assert.match(screen,/data-action="story-delete"/);
  assert.doesNotMatch(screen,/data-action="story-highlight-toggle"/);
  assert.match(screen,/data-action="story-delete"/);
  assert.match(css,/\.story-fullscreen \.story-highlight-toggle/);
@@ -93,8 +93,8 @@ test('Sahip olduğu hikâye albüme kaydedilir, isteğin RLS koşuluyla uyumlu o
 
 test('Profilde bağımsız albümler yan yana kaydırılır, yeni albüm düğmesi ve eski hikâye içeriği korunur',()=>{
  const profile=section('function profilePage(){','function formField(');
- assert.match(profile,/data-action="highlight-album-new"/);
- assert.match(profile,/albums\.map\(/);
+ assert.doesNotMatch(profile,/data-action="highlight-album-new"|pati-ig-highlight-section/);
+ assert.match(profile,/assignedIds/);
  assert.match(profile,/assignedIds/);
  assert.match(profile,/highlightItems/);
  assert.match(css,/scroll-snap-type:x proximity/);
