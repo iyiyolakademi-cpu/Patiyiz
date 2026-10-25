@@ -1585,7 +1585,7 @@ function patiWellnessDateLocal(raw){
 function patiWellnessRemindersFor(petId,status=patiWellnessTab){
  const now=Date.now();
  return patiWellness.reminders.filter(x=>x.pet_id===petId
-  &&(status==='all'||status==='completed'?status==='all'||!!x.completed_at:status==='late'?!x.completed_at&&Date.parse(x.due_at)<now:!x.completed_at))
+  &&(status==='all'||(status==='completed'?!!x.completed_at:status==='late'?!x.completed_at&&Date.parse(x.due_at)<now:!x.completed_at)))
   .sort((a,b)=>Number(!!a.completed_at)-Number(!!b.completed_at)||Date.parse(a.due_at)-Date.parse(b.due_at));
 }
 function patiWellnessWeightHistory(petId){
@@ -1593,7 +1593,7 @@ function patiWellnessWeightHistory(petId){
   .sort((a,b)=>String(b.measured_on).localeCompare(String(a.measured_on))||String(b.id).localeCompare(String(a.id)));
 }
 function patiWellnessPage(){
- if(!patiWellness.loaded&&!patiWellness.loading)void patiWellnessFetch(true);
+ if(!patiWellness.loaded&&!patiWellness.loading&&!patiWellness.error)void patiWellnessFetch(true);
  const pets=patiWellnessOwnedPets();
  const selectedId=patiWellnessPetId&&pets.some(p=>p.id===patiWellnessPetId)?patiWellnessPetId:pets[0]?.id||'';
  patiWellnessPetId=selectedId;
@@ -1630,39 +1630,74 @@ function patiWellnessPage(){
   :'<div class="pati-wellness-empty-card"><h2>Önce patili dostunu ekle 🐾</h2><p>Sağlık ve kilo takibi için hayvan profili gerekli.</p><button type="button" data-action="pet-add">＋ Hayvan ekle</button></div>')
   +'</section>';
 }
-function patiWellnessReminderDialog(){
+function patiWellnessReminderDialog(existing){
  if(!patiWellnessOwnedPets().length)return notify('Önce hayvan profili ekle.',true);
- const defaultDate=new Date(Date.now()+86400000);const dateLocal=new Date(defaultDate.getTime()-defaultDate.getTimezoneOffset()*60000).toISOString().slice(0,16);
- modal('Yeni sağlık hatırlatması',patiPetSelector()+
- '<label class="pati-wellness-field">Hatırlatma türü<select name="kind">'+Object.entries(patiReminderNames).map(([k,v])=>'<option value="'+k+'">'+esc(v)+'</option>').join('')+'</select></label>'+
- '<label class="pati-wellness-field">Başlık<input name="title" required minlength="2" maxlength="110" placeholder="Örn. Karma aşı, veteriner, akşam maması"></label>'+
- '<label class="pati-wellness-field">Tarih ve saat<input type="datetime-local" name="due_at" required value="'+dateLocal+'"></label>'+
- '<label class="pati-wellness-field">Ne kadar önce hatırlat?<select name="remind_minutes_before"><option value="0">Zamanında</option><option value="30">30 dakika önce</option><option value="60" selected>1 saat önce</option><option value="1440">1 gün önce</option><option value="2880">2 gün önce</option></select></label>'+
- '<label class="pati-wellness-field">Tekrar<select name="repeat_days"><option value="">Bir kere</option><option value="1">Her gün</option><option value="7">Her hafta</option><option value="30">30 günde bir</option><option value="365">Her yıl</option></select></label>'+
- '<label class="pati-wellness-field">Not (isteğe bağlı)<textarea name="note" maxlength="500" rows="2" placeholder="Doz, veteriner iletişim bilgisi vb."></textarea></label>','wellness-reminder-form');
- const select=document.querySelector('#wellness-reminder-form select[name="pet_id"]');if(select)select.value=patiWellnessPetId||patiWellnessOwnedPets()[0].id;
+ if(existing&&(!patiWellness.reminders.some(x=>x.id===existing.id)||existing.completed_at||!patiWellnessOwnedPets().some(p=>p.id===existing.pet_id)))return notify('Bu hatırlatma düzenlenemez.',true);
+ const future=new Date(Date.now()+86400000);
+ const dateLocal=existing?patiWellnessDateLocal(existing.due_at):patiWellnessDateLocal(future);
+ const one=(key,value)=>String(key)===String(value)?' selected':'';
+ modal(existing?'Hatırlatmayı düzenle':'Yeni sağlık hatırlatması',patiPetSelector()+
+ '<label class="pati-wellness-field">Hatırlatma türü<select name="kind">'+Object.entries(patiReminderNames).map(([k,v])=>'<option value="'+esc(k)+'"'+one(k,existing?.kind||'vaccine')+'>'+esc(v)+'</option>').join('')+'</select></label>'+
+ '<label class="pati-wellness-field">Başlık<input name="title" required minlength="2" maxlength="110" value="'+esc(existing?.title||'')+'" placeholder="Örn. Karma aşı, veteriner, akşam maması"></label>'+
+ '<label class="pati-wellness-field">Tarih ve saat<input type="datetime-local" name="due_at" required value="'+esc(dateLocal)+'"></label>'+
+ '<label class="pati-wellness-field">Ne kadar önce hatırlat?<select name="remind_minutes_before">'+[[0,'Zamanında'],[30,'30 dakika önce'],[60,'1 saat önce'],[1440,'1 gün önce'],[2880,'2 gün önce']].map(([v,name])=>'<option value="'+v+'"'+one(v,existing?.remind_minutes_before??60)+'>'+name+'</option>').join('')+'</select></label>'+
+ '<label class="pati-wellness-field">Tekrar<select name="repeat_days">'+[[null,'Bir kere'],[1,'Her gün'],[7,'Her hafta'],[30,'30 günde bir'],[365,'Her yıl']].map(([v,name])=>'<option value="'+(v??'')+'"'+one(v??'',existing?.repeat_days??'')+'>'+name+'</option>').join('')+'</select></label>'+
+ '<label class="pati-wellness-field">Not (isteğe bağlı)<textarea name="note" maxlength="500" rows="2" placeholder="Veteriner tavsiyesi, gerekli bakım bilgisi vb.">'+esc(existing?.note||'')+'</textarea></label>'+
+ '<p class="wellness-v2-form-hint">Tıbbi doz ve tedavi kararlarını yalnızca veteriner hekiminle belirle.</p>','wellness-reminder-form');
+ const form=document.getElementById('wellness-reminder-form');form.dataset.edit=existing?.id||'';
+ const select=form.querySelector('select[name="pet_id"]');if(select)select.value=existing?.pet_id||patiWellnessPetId||patiWellnessOwnedPets()[0].id;
+ form.querySelector('.modal-footer button[type="submit"]').textContent=existing?'Hatırlatmayı kaydet':'Hatırlatma oluştur';
 }
-function patiWellnessWeightDialog(){
+function patiWellnessWeightDialog(existing){
  if(!patiWellnessOwnedPets().length)return notify('Önce hayvan profili ekle.',true);
- modal('Kilo ölçümü kaydet',patiPetSelector()+
- '<label class="pati-wellness-field">Kilo (kg)<input name="weight_kg" type="number" min="0.01" max="300" step="0.01" required placeholder="Örn. 4.20"></label>'+
- '<label class="pati-wellness-field">Ölçüm tarihi<input name="measured_on" type="date" required value="'+new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10)+'"></label>'+
- '<label class="pati-wellness-field">Not (isteğe bağlı)<input name="note" maxlength="250" placeholder="Örn. Veteriner kontrolü"></label>','wellness-weight-form');
- const select=document.querySelector('#wellness-weight-form select[name="pet_id"]');if(select)select.value=patiWellnessPetId||patiWellnessOwnedPets()[0].id;
+ if(existing&&(!patiWellness.weights.some(x=>x.id===existing.id)||!patiWellnessOwnedPets().some(p=>p.id===existing.pet_id)))return notify('Bu kilo kaydı düzenlenemez.',true);
+ modal(existing?'Kilo ölçümünü düzenle':'Kilo ölçümü kaydet',patiPetSelector()+
+ '<label class="pati-wellness-field">Kilo (kg)<input name="weight_kg" type="number" min="0.01" max="300" step="0.01" required value="'+esc(existing?.weight_kg||'')+'" placeholder="Örn. 4.20"></label>'+
+ '<label class="pati-wellness-field">Ölçüm tarihi<input name="measured_on" type="date" required max="'+patiWellnessDayKey()+'" value="'+esc(existing?.measured_on||patiWellnessDayKey())+'"></label>'+
+ '<label class="pati-wellness-field">Not (isteğe bağlı)<input name="note" maxlength="250" value="'+esc(existing?.note||'')+'" placeholder="Örn. Veteriner kontrolü"></label>','wellness-weight-form');
+ const form=document.getElementById('wellness-weight-form');form.dataset.edit=existing?.id||'';
+ const select=form.querySelector('select[name="pet_id"]');if(select)select.value=existing?.pet_id||patiWellnessPetId||patiWellnessOwnedPets()[0].id;
+ form.querySelector('.modal-footer button[type="submit"]').textContent=existing?'Ölçümü kaydet':'Kilo kaydet';
+}
+function patiWellnessValidateReminder(rec){
+ if(!patiWellnessOwnedPets().some(p=>p.id===rec.pet_id))throw Error('Kendi hayvanını seç.');
+ if(!Object.prototype.hasOwnProperty.call(patiReminderNames,rec.kind))throw Error('Geçerli hatırlatma türü seç.');
+ if(rec.title.length<2||rec.title.length>110||rec.note.length>500)throw Error('Hatırlatma adı 2–110 karakter, not en fazla 500 karakter olmalı.');
+ if(!Number.isFinite(Date.parse(rec.due_at)))throw Error('Geçerli hatırlatma tarihi seç.');
+ if(![0,30,60,1440,2880].includes(rec.remind_minutes_before))throw Error('Geçerli bildirim öncesi zaman seç.');
+ if(rec.repeat_days!==null&&![1,7,30,365].includes(rec.repeat_days))throw Error('Geçerli tekrar aralığı seç.');
+ return rec;
+}
+function patiWellnessValidateWeight(rec){
+ if(!patiWellnessOwnedPets().some(p=>p.id===rec.pet_id))throw Error('Kendi hayvanını seç.');
+ if(!Number.isFinite(rec.weight_kg)||rec.weight_kg<=0||rec.weight_kg>300)throw Error('Kilo 0–300 kg arasında olmalı.');
+ if(!patiWellnessValidDate(rec.measured_on)||rec.measured_on>patiWellnessDayKey())throw Error('Ölçüm tarihi geçersiz veya gelecekte.');
+ if(rec.note.length>250)throw Error('Not en fazla 250 karakter olmalı.');
+ return rec;
 }
 async function patiWellnessSaveReminder(form,str){
- const petId=str('pet_id');if(!patiWellnessOwnedPets().some(p=>p.id===petId))throw Error('Kendi hayvanını seç.');
- const date=new Date(str('due_at'));if(!Number.isFinite(date.getTime()))throw Error('Hatırlatma tarihi geçersiz.');
- const repeat=str('repeat_days')?Number(str('repeat_days')):null;
- const r=await sb.from('patiyiz_pet_reminders').insert({owner_id:me.id,pet_id:petId,kind:str('kind'),title:str('title'),due_at:date.toISOString(),
-  note:str('note'),remind_minutes_before:Number(str('remind_minutes_before')),repeat_days:repeat});
- if(r.error)throw r.error;closeModal(true);await patiWellnessFetch();notify('Hatırlatma kaydedildi.');
+ const d=new Date(str('due_at'));if(!Number.isFinite(d.getTime()))throw Error('Hatırlatma tarihi geçersiz.');
+ const editId=form.dataset.edit||'';
+ if(editId&&!patiWellness.reminders.some(x=>x.id===editId&&!x.completed_at&&patiWellnessOwnedPets().some(p=>p.id===x.pet_id)))throw Error('Bu hatırlatmayı düzenleme yetkin yok.');
+ const rec=patiWellnessValidateReminder({pet_id:str('pet_id'),kind:str('kind'),title:str('title'),note:str('note'),due_at:d.toISOString(),remind_minutes_before:Number(str('remind_minutes_before')),repeat_days:str('repeat_days')?Number(str('repeat_days')):null});
+ if(!editId)rec.owner_id=me.id;
+ const r=editId?await sb.from('patiyiz_pet_reminders').update(rec).eq('id',editId).eq('owner_id',me.id).is('completed_at',null).select('*'):
+  await sb.from('patiyiz_pet_reminders').insert(rec).select('*');
+ if(r.error)throw r.error;
+ if(!r.data?.length)throw Error('Hatırlatma kaydedilemedi veya düzenleme yetkin yok.');
+ patiWellness.notified.delete(r.data[0].id);
+ closeModal(true);await patiWellnessFetch(true);notify(editId?'Hatırlatma güncellendi.':'Hatırlatma kaydedildi.');
 }
 async function patiWellnessSaveWeight(form,str){
- const petId=str('pet_id');if(!patiWellnessOwnedPets().some(p=>p.id===petId))throw Error('Kendi hayvanını seç.');
- const weight=Number(str('weight_kg'));if(!Number.isFinite(weight)||weight<=0||weight>300)throw Error('0–300 kg arası ölçüm gerekli.');
- const r=await sb.from('patiyiz_pet_weights').insert({owner_id:me.id,pet_id:petId,weight_kg:weight,measured_on:str('measured_on'),note:str('note')});
- if(r.error)throw r.error;closeModal(true);await patiWellnessFetch();notify('Kilo ölçümü kaydedildi.');
+ const editId=form.dataset.edit||'';
+ if(editId&&!patiWellness.weights.some(x=>x.id===editId&&patiWellnessOwnedPets().some(p=>p.id===x.pet_id)))throw Error('Bu kilo kaydını düzenleme yetkin yok.');
+ const rec=patiWellnessValidateWeight({pet_id:str('pet_id'),weight_kg:Number(str('weight_kg')),measured_on:str('measured_on'),note:str('note')});
+ if(!editId)rec.owner_id=me.id;
+ const r=editId?await sb.from('patiyiz_pet_weights').update(rec).eq('id',editId).eq('owner_id',me.id).select('*'):
+  await sb.from('patiyiz_pet_weights').insert(rec).select('*');
+ if(r.error)throw r.error;
+ if(!r.data?.length)throw Error('Kilo kaydı kaydedilemedi veya değiştirme yetkin yok.');
+ closeModal(true);await patiWellnessFetch(true);notify(editId?'Kilo kaydı güncellendi.':'Kilo ölçümü kaydedildi.');
 }
 async function patiWellnessToggle(id){
  const entry=patiWellness.reminders.find(x=>x.id===id);
