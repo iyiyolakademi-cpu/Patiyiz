@@ -88,7 +88,7 @@ test('Old message actions and read markers cover selected thread, not global mes
  assert.match(app,/case 'dm-thread-older':void patiDmLoadThread\(personId,true\)/);
  assert.match(app,/const m=patiDmFindMessage\(id\)/);
  const read=part('async function markConversationRead(){','function unreadCounts(){');
- assert.match(read,/\.eq\('sender_id',personId\)\.eq\('receiver_id',me\.id\)\.is\('read_at',null\)/);
+ assert.match(read,/\.eq\('sender_id',peer\)\.eq\('receiver_id',uid\)\.is\('read_at',null\)/);
  assert.match(read,/unread\.forEach\(x=>x\.read_at=now\);/);
  const reset=part('function resetSessionState(){','async function boot(){');
  assert.match(reset,/patiDmThreads\.clear\(\)/);
