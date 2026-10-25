@@ -36,11 +36,11 @@ function player(native=true){
 }
 test('Native Android Reel starts audibly, while web preserves muted autoplay',()=>{
  const n=player(true);n.api.reelsPage();
- assert.match(n.main.innerHTML,/playsinline loop preload="auto"/);
- assert.doesNotMatch(n.main.innerHTML,/playsinline muted loop/);
+ assert.match(n.main.innerHTML,/playsinline webkit-playsinline loop preload="auto"/);
+ assert.doesNotMatch(n.main.innerHTML,/playsinline webkit-playsinline muted loop/);
  assert.match(n.main.innerHTML,/aria-label="Sesi kapat" aria-pressed="true"/);
  const w=player(false);w.api.reelsPage();
- assert.match(w.main.innerHTML,/playsinline muted loop preload="auto"/);
+ assert.match(w.main.innerHTML,/playsinline webkit-playsinline muted loop preload="auto"/);
  assert.match(w.main.innerHTML,/aria-label="Sesi aç" aria-pressed="false"/);
 });
 test('Swiping away pauses old audio and swiping back restarts the prior Reel with sound',()=>{
