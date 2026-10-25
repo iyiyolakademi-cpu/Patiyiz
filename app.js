@@ -3710,9 +3710,14 @@ function resetSessionState(){
 async function boot(){if(!ready){showSetup();return}sb=window.supabase.createClient(cfg.supabaseUrl,cfg.supabasePublishableKey);try{let {data:result,error}=await sb.auth.getSession();if(error)throw error;me=result.session?.user;if(me){showApp()}else{showAuth()}sb.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){stopLive();resetSessionState();me=null;authMode='login';showAuth()}else if(event==='PASSWORD_RECOVERY'){modal('Yeni şifre belirle',formField('password','Yeni şifre','password','',true),'reset-password-form');}else if(event==='SIGNED_IN'&&session?.user&&(!me||me.id!==session.user.id)){stopLive();resetSessionState();me=session.user;const signedUser=me.id;setTimeout(async()=>{if(me?.id!==signedUser)return;if(me?.id===signedUser)showApp()},0)}})}catch(e){starter();showAuth('Bağlantı kurulamadı. Supabase ayarlarını kontrol et.');notify(friendly(e),true)}}
 document.addEventListener('submit',async e=>{if(e.target.id!=='reset-password-form')return;e.preventDefault();let password=new FormData(e.target).get('password');await run(async()=>{let r=await sb.auth.updateUser({password});if(r.error)throw r.error;closeModal()},'Şifren güncellendi')});
 document.addEventListener('click',e=>{
- const h=e.target.closest('[data-health-pet],[data-health-open],[data-health-delete],[data-health-print],[data-health-retry]');
+ const h=e.target.closest('[data-health-pet],[data-health-open],[data-health-delete],[data-health-print],[data-health-retry],[data-health-edit],[data-health-cancel],[data-health-filter],[data-health-clear]');
  if(h&&view==='healthfile'&&healthFilePortal){
   if(h.hasAttribute('data-health-retry'))void healthFilePortal.load(true);
+  else if(h.hasAttribute('data-health-edit'))healthFilePortal.edit(h.dataset.healthEdit);
+  else if(h.hasAttribute('data-health-cancel'))healthFilePortal.cancelEdit();
+  else if(h.hasAttribute('data-health-filter'))healthFilePortal.selectType(h.dataset.healthFilter);
+  else if(h.hasAttribute('data-health-clear')){healthFilePortal.selectType('all');healthFilePortal.setSearch('');}
+
   else if(h.dataset.healthPet)healthFilePortal.selectPet(h.dataset.healthPet);
   else if(h.dataset.healthOpen)void healthFilePortal.openFile(h.dataset.healthOpen);
   else if(h.dataset.healthDelete)void healthFilePortal.remove(h.dataset.healthDelete);
@@ -3727,6 +3732,9 @@ document.addEventListener('click',e=>{
    premiumCompleted:premiumPortal?.state?.completed||new Set(),member:!!premiumPortal?.state?.member
   });
  }
+});
+document.addEventListener('input',e=>{
+ if(e.target?.id==='hf-search'&&view==='healthfile'&&healthFilePortal)healthFilePortal.setSearch(e.target.value);
 });
 document.addEventListener('submit',e=>{
  if(e.target?.id!=='pati-health-record-form'||view!=='healthfile'||!healthFilePortal)return;
