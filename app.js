@@ -464,7 +464,7 @@ function setupFeedVideos(){
  if(!videos.length)return;
  const native=typeof window!=='undefined'&&window.PatiyizNative?.isNative===true;
  const iosHome=typeof document!=='undefined'&&document.documentElement?.classList?.contains('patiyiz-ios-reels');
- const permitted=()=>!document.hidden&&!(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches&&!native&&!iosHome);
+ const permitted=()=>!document.hidden&&!document.getElementById('story-overlay')&&!(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches&&!native&&!iosHome);
  const ratios=new Map();
  const playVideo=video=>{
   if(!video||!permitted()||video.dataset.userPaused)return;
@@ -731,10 +731,19 @@ function openPost(id){
  patiExploreReturnTo=view==='explore';selectedPostId=id;navigate('home');
 }
 let storyItems=[],storyIndex=0,storyTimer=null,storyLikes=[];
-function closeStory(){clearTimeout(storyTimer);storyTimer=null;storyItems=[];document.getElementById('story-overlay')?.remove();document.body.classList.remove('story-fullscreen-open');if(view==='profile')render()}
+function patiPauseStoryBackgroundMedia(){
+ document.querySelectorAll('video,audio').forEach(media=>{if(!media.closest('#story-overlay')){try{media.pause()}catch(_){}}});
+ if(patiyizFeedActiveVideo){patiyizFeedActiveVideo.pause();patiyizFeedActiveVideo=null}
+}
+function closeStory(resume=true){
+ clearTimeout(storyTimer);storyTimer=null;storyItems=[];
+ document.getElementById('story-overlay')?.remove();document.body.classList.remove('story-fullscreen-open');
+ if(!resume)return;
+ if(view==='profile')render();else{setupFeedVideos();setupReelsViewer()}
+}
 async function recordStoryView(x){if(!me||x.pati_pet_highlight||x.author_id===me.id)return;try{const r=await sb.rpc('patiyiz_record_story_view',{p_story_id:x.id});if(r.error)console.warn('Hikâye görüntülemesi kaydedilemedi:',r.error.message)}catch(err){console.warn('Hikâye görüntüleme ağ hatası:',err)}}
 async function showStoryViewers(){const x=storyItems[storyIndex];if(!x||x.author_id!==me.id)return;clearTimeout(storyTimer);const [vr,lr]=await Promise.all([sb.from('patiyiz_story_views').select('viewer_id,last_viewed_at').eq('story_id',x.id).order('last_viewed_at',{ascending:false}),sb.from('patiyiz_story_likes').select('user_id').eq('story_id',x.id)]);if(vr.error){notify('Görüntüleyenler yüklenemedi.',true);return}if(lr.error)console.warn('Hikâye beğenileri yüklenemedi:',lr.error.message);const liked=new Set((lr.data||[]).map(v=>v.user_id));const list=(vr.data||[]).map(v=>'<div class="story-view-user">'+avatar(profile(v.viewer_id),'s')+'<div><strong>'+displayName(profile(v.viewer_id))+'</strong><small>'+new Date(v.last_viewed_at).toLocaleString('tr-TR',{hour:'2-digit',minute:'2-digit',day:'numeric',month:'short'})+'</small></div>'+(liked.has(v.viewer_id)?'<span class="pati-story-view-like" title="Hikâyeni beğendi">♥</span>':'')+'</div>').join('');const sheet=document.getElementById('story-viewers-sheet');if(sheet){sheet.innerHTML='<header>Görüntüleyenler ('+(vr.data||[]).length+') · ♥ '+liked.size+' <button data-action="story-viewers-close">×</button></header>'+(list||'<p>Henüz görüntüleyen yok.</p>');sheet.hidden=false}}
-function showStoryFrame(){const root=document.getElementById('story-overlay'),x=storyItems[storyIndex];if(!root||!x)return;clearTimeout(storyTimer);const user=profile(x.author_id);const storyGroupItems=storyItems.filter(s=>s.author_id===x.author_id);const storyGroupIndex=storyGroupItems.findIndex(s=>s.id===x.id);if(!x.pati_pet_highlight)recordStoryView(x);if(!x.pati_pet_highlight&&x.author_id!==me.id)void syncStoryLike(x.id);root.innerHTML='<div class="story-player"><div class="story-progress">'+storyGroupItems.map((_,i)=>'<span class="story-track"><span class="'+(i===storyGroupIndex?'story-playing':'')+'" style="width:'+(i<storyGroupIndex?'100':'0')+'%"></span></span>').join('')+'</div><div class="story-player-head">'+avatar(user,'s')+'<strong>'+displayName(user)+'</strong><button data-action="story-close" aria-label="Kapat" class="story-close">×</button></div>'+(x.image_url?'<img class="story-big-photo" src="'+esc(x.image_url)+'" alt="Hikâye">':'<div class="pati-story-no-photo">🐾</div>')+''+(x.caption?'<p class="story-caption">'+esc(x.caption)+'</p>':'')+'<button class="story-hit prev" data-action="story-prev" aria-label="Önceki"></button><button class="story-hit next" data-action="story-next" aria-label="Sonraki"></button>'+(x.pati_pet_highlight?'<span class="pati-saved-story-label">Kalıcı hikâye</span>':x.author_id===me.id?'<button class="story-highlight-toggle" data-action="story-highlight-choose" data-id="'+esc(x.id)+'">✦ Öne çıkar</button><button class="story-delete" data-action="story-delete" data-id="'+esc(x.id)+'">🗑 Sil</button><button class="story-viewers-button" data-action="story-viewers">👁 Hareketler</button>':'<button class="pati-story-like" data-action="story-like" data-id="'+esc(x.id)+'" aria-label="Hikâyeyi beğen">♡</button><button class="story-delete" data-action="report" data-kind="story" data-id="'+esc(x.id)+'">Bildir</button>')+'<div id="story-viewers-sheet" class="story-viewers-sheet" hidden></div></div>';const upcoming=storyItems[storyIndex+1];if(upcoming?.image_url&&typeof Image==='function'){const preload=new Image();preload.src=upcoming.image_url}storyTimer=setTimeout(()=>stepStory(1),6000)}
+function showStoryFrame(){const root=document.getElementById('story-overlay'),x=storyItems[storyIndex];if(!root||!x)return;clearTimeout(storyTimer);patiPauseStoryBackgroundMedia();const user=profile(x.author_id);const storyGroupItems=storyItems.filter(s=>s.author_id===x.author_id);const storyGroupIndex=storyGroupItems.findIndex(s=>s.id===x.id);if(!x.pati_pet_highlight)recordStoryView(x);if(!x.pati_pet_highlight&&x.author_id!==me.id)void syncStoryLike(x.id);root.innerHTML='<div class="story-player"><div class="story-progress">'+storyGroupItems.map((_,i)=>'<span class="story-track"><span class="'+(i===storyGroupIndex?'story-playing':'')+'" style="width:'+(i<storyGroupIndex?'100':'0')+'%"></span></span>').join('')+'</div><div class="story-player-head">'+avatar(user,'s')+'<strong>'+displayName(user)+'</strong><button data-action="story-close" aria-label="Kapat" class="story-close">×</button></div>'+(x.image_url?'<img class="story-big-photo" src="'+esc(x.image_url)+'" alt="Hikâye">':'<div class="pati-story-no-photo">🐾</div>')+''+(x.caption?'<p class="story-caption">'+esc(x.caption)+'</p>':'')+'<button class="story-hit prev" data-action="story-prev" aria-label="Önceki"></button><button class="story-hit next" data-action="story-next" aria-label="Sonraki"></button>'+(x.pati_pet_highlight?'<span class="pati-saved-story-label">Kalıcı hikâye</span>':x.author_id===me.id?'<button class="story-highlight-toggle" data-action="story-highlight-choose" data-id="'+esc(x.id)+'">✦ Öne çıkar</button><button class="story-delete" data-action="story-delete" data-id="'+esc(x.id)+'">🗑 Sil</button><button class="story-viewers-button" data-action="story-viewers">👁 Hareketler</button>':'<button class="pati-story-like" data-action="story-like" data-id="'+esc(x.id)+'" aria-label="Hikâyeyi beğen">♡</button>')+'<div id="story-viewers-sheet" class="story-viewers-sheet" hidden></div></div>';const upcoming=storyItems[storyIndex+1];if(upcoming?.image_url&&typeof Image==='function'){const preload=new Image();preload.src=upcoming.image_url}storyTimer=setTimeout(()=>stepStory(1),6000)}
 async function syncStoryLike(id){
  const uid=me?.id;if(!uid)return;
  const r=await sb.from('patiyiz_story_likes').select('story_id').eq('story_id',id).eq('user_id',uid).maybeSingle();
@@ -777,19 +786,19 @@ function patiBuildLiveStorySequence(selectedAuthor){
 function openStory(id){
  const sequence=patiBuildLiveStorySequence(id);
  if(!sequence)return notify('Hikâye bulunamadı.');
- closeStory();storyItems=sequence.items;storyIndex=sequence.index;
+ closeStory(false);storyItems=sequence.items;storyIndex=sequence.index;
  const layer=document.createElement('div');layer.id='story-overlay';layer.className='story-fullscreen';layer.setAttribute('role','dialog');layer.setAttribute('aria-modal','true');
  document.body.appendChild(layer);document.body.classList.add('story-fullscreen-open');showStoryFrame();
 }
 function openHighlightStory(id){
  const x=data.stories.find(x=>x.id===id&&x.is_highlight);
  if(!x)return notify('Kalıcı hikâye bulunamadı.',true);
- closeStory();storyItems=[x];storyIndex=0;const layer=document.createElement('div');layer.id='story-overlay';layer.className='story-fullscreen';layer.setAttribute('role','dialog');layer.setAttribute('aria-modal','true');document.body.appendChild(layer);document.body.classList.add('story-fullscreen-open');showStoryFrame();
+ closeStory(false);storyItems=[x];storyIndex=0;const layer=document.createElement('div');layer.id='story-overlay';layer.className='story-fullscreen';layer.setAttribute('role','dialog');layer.setAttribute('aria-modal','true');document.body.appendChild(layer);document.body.classList.add('story-fullscreen-open');showStoryFrame();
 }
 function openPetHighlight(id){
  const pet=data.pets.find(x=>x.id===id);
  if(!pet)return notify('Patili dost bulunamadı.',true);
- closeStory();storyItems=[{id:'pet-'+pet.id,author_id:pet.owner_id,image_url:pet.photo_url||'',caption:[pet.name,pet.species,pet.breed].filter(Boolean).join(' · '),pati_pet_highlight:true,is_highlight:true}];storyIndex=0;
+ closeStory(false);storyItems=[{id:'pet-'+pet.id,author_id:pet.owner_id,image_url:pet.photo_url||'',caption:[pet.name,pet.species,pet.breed].filter(Boolean).join(' · '),pati_pet_highlight:true,is_highlight:true}];storyIndex=0;
  const layer=document.createElement('div');layer.id='story-overlay';layer.className='story-fullscreen';layer.setAttribute('role','dialog');layer.setAttribute('aria-modal','true');document.body.appendChild(layer);document.body.classList.add('story-fullscreen-open');showStoryFrame();
 }
 function openHighlightAlbum(id){
@@ -797,7 +806,7 @@ function openHighlightAlbum(id){
  const ids=new Set(data.highlightItems.filter(x=>x.album_id===id).map(x=>x.story_id));
  const items=data.stories.filter(x=>ids.has(x.id)&&x.is_highlight).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
  if(!items.length)return notify('Bu albümde görüntülenebilir hikâye yok.',true);
- closeStory();storyItems=items;storyIndex=0;
+ closeStory(false);storyItems=items;storyIndex=0;
  const layer=document.createElement('div');layer.id='story-overlay';layer.className='story-fullscreen';layer.setAttribute('role','dialog');layer.setAttribute('aria-modal','true');document.body.appendChild(layer);document.body.classList.add('story-fullscreen-open');showStoryFrame();
 }
 function chooseStoryHighlight(storyId){
@@ -839,7 +848,7 @@ function manageHighlightAlbums(){
  const albums=data.highlightAlbums.filter(x=>x.owner_id===me.id);
  modal('Kalıcı hikâyelerini yönet','<p class="small-note">Albümüne hikâye ekle veya albümü kaldır. Albümü kaldırınca hikâyelerin silinmez.</p>'+albums.map(x=>'<div class="pati-album-manage"><b>'+esc(x.title)+'</b><button type="button" data-action="highlight-album-add" data-id="'+esc(x.id)+'">Hikâye ekle</button><button type="button" data-action="highlight-album-delete" data-id="'+esc(x.id)+'">Sil</button></div>').join('')+(!albums.length?'<p>Henüz albüm yok.</p>':''),'highlight-album-manager');
 }
-function openHighlights(id){const items=data.stories.filter(x=>x.author_id===id&&x.is_highlight).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));if(!items.length)return notify('Öne çıkan hikâye bulunamadı.');closeStory();storyItems=items;storyIndex=0;const layer=document.createElement('div');layer.id='story-overlay';layer.className='story-fullscreen';document.body.appendChild(layer);document.body.classList.add('story-fullscreen-open');showStoryFrame()}
+function openHighlights(id){const items=data.stories.filter(x=>x.author_id===id&&x.is_highlight).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));if(!items.length)return notify('Öne çıkan hikâye bulunamadı.');closeStory(false);storyItems=items;storyIndex=0;const layer=document.createElement('div');layer.id='story-overlay';layer.className='story-fullscreen';document.body.appendChild(layer);document.body.classList.add('story-fullscreen-open');showStoryFrame()}
 function stepStory(n){if(!storyItems.length)return;clearTimeout(storyTimer);if(document.getElementById('story-viewers-sheet')?.hidden===false&&n===1)return;const next=storyIndex+n;if(next<0){showStoryFrame();return}if(next>=storyItems.length){closeStory();return}storyIndex=next;showStoryFrame()}
 
 const patiyizOnboardingThankYouUntil=new Map(),patiyizOnboardingDismissed=new Set();
@@ -900,6 +909,7 @@ function setupReelsViewer(){
  let activeVideo=null;
  const ratios=new Map();
  const playVideo=video=>{
+  if(document.getElementById('story-overlay')){video?.pause();return}
   if(activeVideo!==video){activeVideo?.pause();activeVideo=video}
   if(video.paused!==false)video.muted=!soundOn();
   if(video.paused!==false){
@@ -938,7 +948,7 @@ function setupReelsViewer(){
     if(entry.intersectionRatio<.65&&video!==activeVideo)video.pause();
    }
   }
-  if(document.hidden){activeVideo?.pause();return}
+  if(document.hidden||document.getElementById('story-overlay')){activeVideo?.pause();return}
   let nextVideo=null,maxRatio=.64;
   for(const [video,ratio] of ratios){
    if(ratio>maxRatio){maxRatio=ratio;nextVideo=video}
