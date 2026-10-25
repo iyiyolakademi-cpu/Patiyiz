@@ -2752,6 +2752,7 @@ case 'pet-delete':{const pet=data.pets.find(p=>p.id===id);
   await refresh();await patiLoadOwnedPets();if(view==='pets')await patiLoadCommunityPets(true);
  },'Hayvan profili silindi.');
  break}
+case 'pets-more':void patiLoadCommunityPets();break;
 case 'my-profile':profileId='';lastDetailView='';navigate('profile');break;case 'view-user':followReturnList=view==='follows-list';if(!followReturnList&&view!=='profile')lastDetailView=view;profileId=id;navigate('profile');break;case 'profile-back':{const dest=lastDetailView&&allowed.includes(lastDetailView)?lastDetailView:'explore';lastDetailView='';profileId='';followReturnList=false;navigate(dest);break}case 'open-notification':openNotification(id);break;case 'post-back':{selectedPostId='';const back=patiExploreReturnTo?'explore':'home';patiExploreReturnTo=false;navigate(back);break}case 'open-knowledge':navigate('knowledge');break;case 'education-filter':educationCategory=id;educationLesson='';render();break;case 'premium-open':if(premiumPortal){void premiumPortal.open(id);window.scrollTo(0,0)}break;
 case 'premium-day':if(premiumPortal){premiumPortal.openDay(Number(id));window.scrollTo(0,0)}break;
 case 'premium-back':premiumPortal?.back();window.scrollTo(0,0);break;
