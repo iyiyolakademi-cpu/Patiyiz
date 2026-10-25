@@ -209,12 +209,12 @@ function patiDmSetupTyping(){
 }
 function stopLive(){patiDmDisconnectTyping();if(liveReloadTimer)clearTimeout(liveReloadTimer);liveReloadTimer=null;if(liveReconnectTimer)clearTimeout(liveReconnectTimer);liveReconnectTimer=null;if(liveChannel&&sb)sb.removeChannel(liveChannel);liveChannel=null;liveInitialized=false;liveUserId=null}
 async function refreshLiveTables(){const userId=me?.id,loadToken=patiyizLoadToken;if(!userId)return false;const result=await Promise.all([sb.from('messages').select('*').order('created_at',{ascending:false}).limit(pageLimits.messages||150),sb.from('notifications').select('*').order('created_at',{ascending:false}).limit(pageLimits.notifications||150)]);if(result[0].error)throw result[0].error;if(result[1].error)throw result[1].error;if(me?.id!==userId||patiyizLoadToken!==loadToken)return false;data.messages=result[0].data||[];data.notifications=result[1].data||[];return true}
-function queueLiveUpdate(){if(!me||document.hidden||navigator.onLine===false)return;if(liveReloadTimer)clearTimeout(liveReloadTimer);liveReloadTimer=setTimeout(async()=>{if(!me||document.hidden||navigator.onLine===false)return;const oldMessageCount=data.messages.filter(x=>x.receiver_id===me.id&&!x.read_at).length;const oldNoticeCount=data.notifications.filter(x=>x.owner_id===me.id&&!x.read).length;const previousConversation=view==='messages'?data.messages.filter(x=>(x.sender_id===me.id&&x.receiver_id===personId)||(x.sender_id===personId&&x.receiver_id===me.id)).map(x=>x.id+'_'+x.read_at+'_'+x.edited_at+'_'+x.body+'_'+x.attachment_path).join('|'):'';try{if(!await refreshLiveTables()||!me)return;navRender();if(document.hidden)return;if(view==='messages'){const nextConversation=data.messages.filter(x=>(x.sender_id===me.id&&x.receiver_id===personId)||(x.sender_id===personId&&x.receiver_id===me.id)).map(x=>x.id+'_'+x.read_at+'_'+x.edited_at+'_'+x.body+'_'+x.attachment_path).join('|');if(previousConversation!==nextConversation){const field=$('#message-form input[name="body"]');const draft=field?.value||'',focus=document.activeElement===field,position=field?.selectionStart??draft.length;render();const next=$('#message-form input[name="body"]');if(next){next.value=draft;if(focus){next.focus({preventScroll:true});next.setSelectionRange(position,position)}}}}else if(view==='notifications')render();const unread=data.messages.filter(x=>x.receiver_id===me.id&&!x.read_at).length;const notices=data.notifications.filter(x=>x.owner_id===me.id&&!x.read).length;if(unread>oldMessageCount||notices>oldNoticeCount)notify('Yeni bir Patiyiz bildirimin var 🐾');if(view==='messages')markConversationRead()}catch(err){console.warn('Canlı bildirim yenilemesi başarısız:',err.message)}},250)}
+function queueLiveUpdate(){if(!me||document.hidden||navigator.onLine===false)return;if(liveReloadTimer)clearTimeout(liveReloadTimer);liveReloadTimer=setTimeout(async()=>{if(!me||document.hidden||navigator.onLine===false)return;const previousInbox=patiDmInbox.rows.map(x=>x.peer_id+'_'+x.message_id+'_'+x.unread_count).join('|');const oldMessageCount=data.messages.filter(x=>x.receiver_id===me.id&&!x.read_at).length;const oldNoticeCount=data.notifications.filter(x=>x.owner_id===me.id&&!x.read).length;const previousConversation=view==='messages'?data.messages.filter(x=>(x.sender_id===me.id&&x.receiver_id===personId)||(x.sender_id===personId&&x.receiver_id===me.id)).map(x=>x.id+'_'+x.read_at+'_'+x.edited_at+'_'+x.body+'_'+x.attachment_path).join('|'):'';try{if(!await refreshLiveTables()||!me)return;if(view==='messages'){await patiDmLoadInbox(true,true);if(personId)await patiDmLoadThread(personId,false,true)}navRender();if(document.hidden)return;if(view==='messages'){const nextInbox=patiDmInbox.rows.map(x=>x.peer_id+'_'+x.message_id+'_'+x.unread_count).join('|');const nextConversation=data.messages.filter(x=>(x.sender_id===me.id&&x.receiver_id===personId)||(x.sender_id===personId&&x.receiver_id===me.id)).map(x=>x.id+'_'+x.read_at+'_'+x.edited_at+'_'+x.body+'_'+x.attachment_path).join('|');if(previousConversation!==nextConversation||previousInbox!==nextInbox){const field=$('#message-form input[name="body"]');const draft=field?.value||'',focus=document.activeElement===field,position=field?.selectionStart??draft.length;render();const next=$('#message-form input[name="body"]');if(next){next.value=draft;if(focus){next.focus({preventScroll:true});next.setSelectionRange(position,position)}}}}else if(view==='notifications')render();const unread=data.messages.filter(x=>x.receiver_id===me.id&&!x.read_at).length;const notices=data.notifications.filter(x=>x.owner_id===me.id&&!x.read).length;if(unread>oldMessageCount||notices>oldNoticeCount)notify('Yeni bir Patiyiz bildirimin var 🐾');if(view==='messages')markConversationRead()}catch(err){console.warn('Canlı bildirim yenilemesi başarısız:',err.message)}},250)}
 function startLive(){if(!me||!sb)return;if(liveUserId===me.id&&liveChannel)return;stopLive();liveUserId=me.id;
  const channel=sb.channel('patiyiz-live-'+me.id)
  .on('postgres_changes',{event:'*',schema:'public',table:'messages',filter:'receiver_id=eq.'+me.id},queueLiveUpdate)
  .on('postgres_changes',{event:'*',schema:'public',table:'messages',filter:'sender_id=eq.'+me.id},queueLiveUpdate)
- .on('postgres_changes',{event:'INSERT',schema:'public',table:'patiyiz_dm_deletion_events',filter:'owner_id=eq.'+me.id},queueLiveUpdate)
+ .on('postgres_changes',{event:'INSERT',schema:'public',table:'patiyiz_dm_deletion_events',filter:'owner_id=eq.'+me.id},payload=>{if(payload?.new?.message_id)patiDmRemoveCached(payload.new.message_id);queueLiveUpdate()})
  .on('postgres_changes',{event:'INSERT',schema:'public',table:'notifications',filter:'owner_id=eq.'+me.id},queueLiveUpdate);
  liveChannel=channel;
  channel.subscribe(status=>{
@@ -240,13 +240,19 @@ function refreshOnReturn(){
 async function markConversationRead(){
  if(!me||view!=='messages'||!personId)return;
  const unread=data.messages.filter(x=>x.sender_id===personId&&x.receiver_id===me.id&&!x.read_at&&!patiDmSeenIds().has(x.id));
- if(!unread.length)return;
+ const backendUnread=patiDmInbox.rows.find(x=>x.peer_id===personId)?.unread_count||0;
+ if(!unread.length&&!backendUnread)return;
  const ids=unread.map(x=>x.id);
  if(!patiDmReadReceiptsEnabled()){patiDmStoreLocalSeen(ids);navRender();return}
  const now=new Date().toISOString();
- const r=await sb.from('messages').update({read_at:now}).in('id',ids).eq('receiver_id',me.id);
+ const r=await sb.from('messages').update({read_at:now}).eq('sender_id',personId).eq('receiver_id',me.id).is('read_at',null);
  if(r.error){console.warn('Okundu bilgisi kaydedilemedi',r.error.message);return}
- unread.forEach(x=>x.read_at=now);navRender();
+ unread.forEach(x=>x.read_at=now);
+ const thread=patiDmThreads.get(patiDmThreadKey(personId));
+ for(const row of thread?.rows||[])if(row.sender_id===personId&&row.receiver_id===me.id&&!row.read_at)row.read_at=now;
+ const summary=patiDmInbox.rows.find(x=>x.peer_id===personId);
+ if(summary)summary.unread_count=0;
+ navRender();
 }
 function unreadCounts(){const hidden=new Set(data.messageHidden.filter(x=>x.user_id===me?.id).map(x=>x.message_id));return {messages:data.messages.filter(x=>x.receiver_id===me?.id&&!x.read_at&&!patiDmSeenIds().has(x.id)&&!blocked.has(x.sender_id)&&!hidden.has(x.id)).length,notifications:data.notifications.filter(x=>x.owner_id===me?.id&&!x.read&&!blocked.has(x.actor_id)).length}}
 function unreadMessageSources(){const hidden=new Set(data.messageHidden.filter(x=>x.user_id===me?.id).map(x=>x.message_id));const messages=data.messages.filter(x=>x.receiver_id===me?.id&&!x.read_at&&!patiDmSeenIds().has(x.id)&&!blocked.has(x.sender_id)&&!hidden.has(x.id));const tally=new Map();for(const m of messages)tally.set(m.sender_id,(tally.get(m.sender_id)||0)+1);return [...tally].sort((a,b)=>b[1]-a[1]).map(([id,count])=>({id,count,name:profile(id).display_name}))}
@@ -1383,6 +1389,10 @@ let patiDmInbox={owner:'',rows:[],offset:0,hasMore:true,loading:false,ready:fals
 const patiDmThreads=new Map();
 const PATI_DM_INBOX_PAGE=80,PATI_DM_THREAD_PAGE=50;
 function patiDmThreadKey(peer){return (me?.id||'')+':'+peer}
+function patiDmFindMessage(id){
+ return data.messages.find(row=>row.id===id)||
+  [...patiDmThreads.values()].flatMap(state=>state.rows).find(row=>row.id===id);
+}
 function patiDmRemoveCached(id){
  for(const state of patiDmThreads.values())state.rows=state.rows.filter(row=>row.id!==id);
  for(const state of [patiDmInbox])state.rows=state.rows.filter(row=>row.message_id!==id);
@@ -1426,7 +1436,10 @@ async function patiDmLoadInbox(reset=false,quiet=false){
   }
  }finally{
   state.loading=false;
-  if(patiDmInbox===state&&me?.id===uid&&view==='messages'&&!quiet)patiDmSafeRender();
+  if(patiDmInbox===state&&me?.id===uid&&view==='messages'&&!quiet){
+   patiDmSafeRender();
+   if(personId&&!patiDmThreads.get(patiDmThreadKey(personId))?.ready)void patiDmLoadThread(personId);
+  }
  }
 }
 async function patiDmLoadThread(peer,older=false,quiet=false){
@@ -2317,8 +2330,8 @@ case 'chat':if(!id||id===me.id)return notify('Kendine mesaj gönderemezsin.',tru
  v.muted=!patiyizFeedSoundEnabled;
  patiFeedSoundButton(v);
  if(!v.muted){document.querySelectorAll('#main-content .pati-post-video').forEach(other=>{if(other!==v)other.pause()});patiyizFeedActiveVideo=v;v.play().catch(err=>{v.muted=true;patiFeedSoundButton(v);console.warn('Akış sesi açılamadı:',err?.message||err)})}
- }break;}case 'dm-record':run(()=>startDmRecord());break;case 'dm-record-stop':if(dmRecorder?.state==='recording')dmRecorder.stop();break;case 'dm-record-cancel':dmCancel=true;if(dmRecorder?.state==='recording')dmRecorder.stop();break;case 'dm-exit':patiDmTypingInput('');mobileChatOpen=false;patiDmDisconnectTyping();navigate(patiDmReturnView&&patiDmReturnView!=='messages'?patiDmReturnView:'home');break;case 'chat-back':patiDmTypingInput('');mobileChatOpen=false;patiDmDisconnectTyping();render();break;case 'dm-reply':{const m=data.messages.find(x=>x.id===id);const f=document.getElementById('message-form');if(m&&f){f.dataset.reply=id;const input=f.querySelector('input[name="body"]');if(input){input.placeholder='↳ '+cut(m.body||'Medya',50);input.focus()}}break}case 'dm-edit':{const m=data.messages.find(x=>x.id===id&&x.sender_id===me.id);if(!m||m.attachment_path)break;modal('Mesajı düzenle',textField('body','Mesaj',m.body,true,1000),'dm-edit-form');document.getElementById('dm-edit-form').dataset.message=id;break}case 'message-delete':{
- const m=data.messages.find(x=>x.id===id&&(x.sender_id===me.id||x.receiver_id===me.id));if(!m)break;
+ }break;}case 'dm-record':run(()=>startDmRecord());break;case 'dm-record-stop':if(dmRecorder?.state==='recording')dmRecorder.stop();break;case 'dm-record-cancel':dmCancel=true;if(dmRecorder?.state==='recording')dmRecorder.stop();break;case 'dm-exit':patiDmTypingInput('');mobileChatOpen=false;patiDmDisconnectTyping();navigate(patiDmReturnView&&patiDmReturnView!=='messages'?patiDmReturnView:'home');break;case 'chat-back':patiDmTypingInput('');mobileChatOpen=false;patiDmDisconnectTyping();render();break;case 'dm-reply':{const m=patiDmFindMessage(id);const f=document.getElementById('message-form');if(m&&f){f.dataset.reply=id;const input=f.querySelector('input[name="body"]');if(input){input.placeholder='↳ '+cut(m.body||'Medya',50);input.focus()}}break}case 'dm-edit':{const m=patiDmFindMessage(id);if(m?.sender_id!==me.id)break;if(!m||m.attachment_path)break;modal('Mesajı düzenle',textField('body','Mesaj',m.body,true,1000),'dm-edit-form');document.getElementById('dm-edit-form').dataset.message=id;break}case 'message-delete':{
+ const m=patiDmFindMessage(id);if(!m||(m.sender_id!==me.id&&m.receiver_id!==me.id))break;
  closeModal();
  if(!confirm('Bu mesaj her iki kullanıcıdan kalıcı olarak silinecek. Silinsin mi?'))break;
  run(async()=>{
@@ -2327,6 +2340,7 @@ case 'chat':if(!id||id===me.id)return notify('Kendine mesaj gönderemezsin.',tru
   if(res.error||!res.data?.deleted)throw new Error(res.data?.message||res.error?.message||'Mesaj silinemedi.');
   if(me?.id!==sender)return;
   data.messages=data.messages.filter(x=>x.id!==m.id);
+  patiDmRemoveCached(m.id);
   data.messageHidden=data.messageHidden.filter(x=>x.message_id!==m.id);
   render();
  },'Mesaj iki tarafın sohbetinden silindi.');
@@ -2342,7 +2356,7 @@ case 'blocked-list':navigate('blocked');break;case 'follow-load-more':void patiL
 case 'report':closeStory();modal('İçeriği bildir',textField('reason','Şikâyet nedeni (en az 5 karakter)','',true,500),'report-form');$('#report-form').dataset.kind=target.dataset.kind;$('#report-form').dataset.record=id;break;
 case 'tools':openMobileFeaturesMenu();break;default:break}}
 let messagePressTimer=null,messagePressOrigin=null,messageLongPressed=false;
-function openMessageOptions(el){if(!el||view!=='messages'||!me)return;const id=el.dataset.messageId;const msg=data.messages.find(x=>x.id===id&&(x.sender_id===me.id||x.receiver_id===me.id));if(!msg)return;modal('Mesaj seçenekleri',`<p class="small-note">Silinen mesaj her iki kullanıcı için de kalıcı olarak kaldırılır.</p><div class="pati-actionbar"><button type="button" class="outline-btn pati-msg-delete" data-action="message-delete" data-id="${esc(id)}">🗑️ Sil</button></div>`,'message-options-form');$('#message-options-form .modal-footer')?.remove();}
+function openMessageOptions(el){if(!el||view!=='messages'||!me)return;const id=el.dataset.messageId;const msg=patiDmFindMessage(id);if(!msg||(msg.sender_id!==me.id&&msg.receiver_id!==me.id))return;modal('Mesaj seçenekleri',`<p class="small-note">Silinen mesaj her iki kullanıcı için de kalıcı olarak kaldırılır.</p><div class="pati-actionbar"><button type="button" class="outline-btn pati-msg-delete" data-action="message-delete" data-id="${esc(id)}">🗑️ Sil</button></div>`,'message-options-form');$('#message-options-form .modal-footer')?.remove();}
 document.addEventListener('contextmenu',e=>{const bubble=e.target.closest('.bubble-chat[data-message-id]');if(bubble){e.preventDefault();openMessageOptions(bubble)}});
 document.addEventListener('pointerdown',e=>{const bubble=e.target.closest('.bubble-chat[data-message-id]');if(!bubble||e.pointerType==='mouse')return;clearTimeout(messagePressTimer);messagePressOrigin={x:e.clientX,y:e.clientY,id:bubble.dataset.messageId};messagePressTimer=setTimeout(()=>{messageLongPressed=true;openMessageOptions(bubble);messagePressTimer=null},520)});
 document.addEventListener('pointermove',e=>{if(messagePressOrigin&&(Math.abs(e.clientX-messagePressOrigin.x)>12||Math.abs(e.clientY-messagePressOrigin.y)>12)){clearTimeout(messagePressTimer);messagePressTimer=null;messagePressOrigin=null}});
@@ -2528,7 +2542,12 @@ window.visualViewport?.addEventListener('resize',patiResizeChatViewport);
 window.visualViewport?.addEventListener('scroll',patiResizeChatViewport);
 window.addEventListener('resize',patiResizeChatViewport);
 window.addEventListener('offline',()=>{notify('İnternet bağlantısı kesildi. Paylaşım ve mesaj işlemleri bağlantı gelince tekrar denenebilir.',true)});
-window.addEventListener('online',()=>{notify('İnternet bağlantısı yeniden kuruldu.');if(me&&sb){refresh().catch(e=>console.warn('Yenileme başarısız',e));refreshOnReturn()}});document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshOnReturn()});window.addEventListener('focus',refreshOnReturn);
+window.addEventListener('online',()=>{notify('İnternet bağlantısı yeniden kuruldu.');if(me&&sb){
+ const userId=me.id,token=patiyizLoadToken;
+ refresh().then(()=>{if(me?.id!==userId||patiyizLoadToken!==token)return;
+  if(view==='messages'){void patiDmLoadInbox(true);if(personId)void patiDmLoadThread(personId)}
+ }).catch(e=>console.warn('Yenileme başarısız',e));refreshOnReturn()
+ }});document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshOnReturn()});window.addEventListener('focus',refreshOnReturn);
 function resetSessionState(){
  if(typeof patiDmDisconnectTyping==='function')patiDmDisconnectTyping();
  if(typeof patiDmLocalSeenCache!=='undefined'){patiDmLocalSeenOwner='';patiDmLocalSeenCache.clear()}
