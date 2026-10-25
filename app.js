@@ -1708,10 +1708,17 @@ async function patiWellnessToggle(id){
  });
 }
 async function patiWellnessDelete(table,id){
- if(!confirm('Bu kaydı silmek istiyor musun?'))return;
+ const tableReminders=table==='patiyiz_pet_reminders',tableWeights=table==='patiyiz_pet_weights';
+ if(!tableReminders&&!tableWeights)return;
+ const list=tableReminders?patiWellness.reminders:patiWellness.weights;
+ if(!list.some(x=>x.id===id&&patiWellnessOwnedPets().some(p=>p.id===x.pet_id)))return notify('Bu kaydı silme yetkin yok.',true);
+ if(!confirm('Bu sağlık kaydını kalıcı olarak silmek istiyor musun?'))return;
  await run(async()=>{
-  const r=await sb.from(table).delete().eq('id',id).eq('owner_id',me.id);if(r.error)throw r.error;
-  await patiWellnessFetch();notify('Kayıt silindi.');
+  const r=await sb.from(table).delete().eq('id',id).eq('owner_id',me.id).select('id');
+  if(r.error)throw r.error;
+  if(!r.data?.length)throw Error('Kayıt silinemedi veya hesap yetkin yok.');
+  if(tableReminders)patiWellness.notified.delete(id);
+  await patiWellnessFetch(true);notify('Sağlık kaydı silindi.');
  });
 }
 let patiWellnessPetId='';
@@ -3233,7 +3240,12 @@ case 'care-edit':{const item=data.care.find(x=>x.id===id&&x.owner_id===me.id);if
  run(async()=>{const r=await sb.from('adoption_listings').update({adopted}).eq('id',id).eq('owner_id',me.id).select('*');
  if(r.error)throw r.error;if(!r.data?.length)throw Error('İlan güncellenemedi veya yetkin yok.');
  data.adoption=data.adoption.map(x=>x.id===id?r.data[0]:x);if(view==='adoption')adoptionPage();
- },adopted?'İlan sahiplendirildi olarak işaretlendi.':'İlan yeniden yayına alındı.');break}case 'adoption-delete':remove('adoption_listings',id);break;case 'care-add':composeCare();break;case 'wellness-open':navigate('wellness');break;case 'wellness-reminder-add':patiWellnessReminderDialog();break;case 'wellness-weight-add':patiWellnessWeightDialog();break;case 'wellness-pet':patiWellnessPetId=id;render();break;case 'wellness-reminder-done':void patiWellnessToggle(id);break;case 'wellness-reminder-delete':void patiWellnessDelete('patiyiz_pet_reminders',id);break;case 'wellness-weight-delete':void patiWellnessDelete('patiyiz_pet_weights',id);break;case 'profile-posts-tab':profilePostsTab=id;render();break;case 'profile-open-post':openPost(id);break;case 'profile-pet-details':{const pet=data.pets.find(x=>x.id===id);if(pet)modal(pet.name,'<p>'+esc(pet.species||'')+' · '+esc(pet.breed||'')+'</p><p>'+esc(pet.personality||'')+'</p>','profile-pet-details-form');break;}case 'profile-share':{const u=location.origin+location.pathname; if(navigator.share){navigator.share({title:'Patiyiz profilim',url:u}).catch(()=>{});}else if(navigator.clipboard){navigator.clipboard.writeText(u).then(()=>notify('Patiyiz bağlantısı kopyalandı.')).catch(()=>notify('Bağlantı kopyalanamadı.',true));}break;}case 'edit-profile':editProfile();break;case 'pet-add':editPet();break;case 'pet-edit':{const pet=data.pets.find(p=>p.id===id);
+ },adopted?'İlan sahiplendirildi olarak işaretlendi.':'İlan yeniden yayına alındı.');break}case 'adoption-delete':remove('adoption_listings',id);break;case 'care-add':composeCare();break;case 'wellness-open':navigate('wellness');break;case 'wellness-reminder-add':patiWellnessReminderDialog();break;case 'wellness-weight-add':patiWellnessWeightDialog();break;case 'wellness-pet':patiWellnessPetId=id;render();break;
+case 'wellness-filter':patiWellnessTab=id;render();break;
+case 'wellness-refresh':patiWellness.error='';void patiWellnessFetch();break;
+case 'wellness-reminder-edit':{const item=patiWellness.reminders.find(x=>x.id===id&&!x.completed_at&&patiWellnessOwnedPets().some(p=>p.id===x.pet_id));if(item)patiWellnessReminderDialog(item);break;}
+case 'wellness-weight-edit':{const item=patiWellness.weights.find(x=>x.id===id&&patiWellnessOwnedPets().some(p=>p.id===x.pet_id));if(item)patiWellnessWeightDialog(item);break;}
+case 'wellness-reminder-done':void patiWellnessToggle(id);break;case 'wellness-reminder-delete':void patiWellnessDelete('patiyiz_pet_reminders',id);break;case 'wellness-weight-delete':void patiWellnessDelete('patiyiz_pet_weights',id);break;case 'profile-posts-tab':profilePostsTab=id;render();break;case 'profile-open-post':openPost(id);break;case 'profile-pet-details':{const pet=data.pets.find(x=>x.id===id);if(pet)modal(pet.name,'<p>'+esc(pet.species||'')+' · '+esc(pet.breed||'')+'</p><p>'+esc(pet.personality||'')+'</p>','profile-pet-details-form');break;}case 'profile-share':{const u=location.origin+location.pathname; if(navigator.share){navigator.share({title:'Patiyiz profilim',url:u}).catch(()=>{});}else if(navigator.clipboard){navigator.clipboard.writeText(u).then(()=>notify('Patiyiz bağlantısı kopyalandı.')).catch(()=>notify('Bağlantı kopyalanamadı.',true));}break;}case 'edit-profile':editProfile();break;case 'pet-add':editPet();break;case 'pet-edit':{const pet=data.pets.find(p=>p.id===id);
  if(pet&&pet.owner_id===me.id)editPet(pet);
  else notify('Bu hayvan profilini yalnızca sahibi düzenleyebilir.',true);
  break}
