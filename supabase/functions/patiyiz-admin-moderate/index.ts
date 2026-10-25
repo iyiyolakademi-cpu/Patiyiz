@@ -48,7 +48,7 @@ Deno.serve(async req=>{
    for(const [value,bucket] of refs){
     if(typeof value!=="string"||!value)continue;
     let path=value;
-    if(/^https?:\\/\\//i.test(value)){
+    if(/^https?:\/\//i.test(value)){
      try{
       const candidate=new URL(value);
       const publicPrefix="/storage/v1/object/public/"+bucket+"/";
@@ -58,7 +58,7 @@ Deno.serve(async req=>{
     }
     // Protect files owned by other users even if a content row contains a forged URL.
     if(!/^[0-9a-f-]{36}$/.test(owner)||!path.toLowerCase().startsWith(owner+"/"))continue;
-    if(!/^[0-9a-f-]{36}\\/[a-z0-9._-]{1,220}\\.(jpg|jpeg|png|webp|gif|mp4|mov|webm|m4a|ogg|aac|mp3)$/i.test(path))continue;
+    if(!/^[0-9a-f-]{36}\/[a-z0-9._-]{1,220}\.(jpg|jpeg|png|webp|gif|mp4|mov|webm|m4a|ogg|aac|mp3)$/i.test(path))continue;
     if(path.includes(".."))continue;
     removals.set(bucket+":"+path,{bucket,path});
    }
