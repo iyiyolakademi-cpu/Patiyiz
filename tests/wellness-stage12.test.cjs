@@ -17,7 +17,7 @@ function harness(){
  const weights=[{id:'w1',pet_id:'cat',weight_kg:4.8,measured_on:'2026-09-10',note:'İlk kayıt'},{id:'w2',pet_id:'cat',weight_kg:5,measured_on:'2026-10-10',note:'Kontrol'},{id:'w3',pet_id:'dog',weight_kg:10,measured_on:'2026-10-10',note:''}];
  const ctx={
   data:{pets},me:{id:'person'},view:'wellness',patiWellnessOwnedPets:()=>pets.filter(p=>p.owner_id==='person'),patiWellness:{reminders,weights,loaded:true,loading:false,notified:new Set(),error:''},
-  patiWellnessPetId:'cat',patiReminderNames:{vaccine:'Aşı takvimi',vet:'Veteriner randevusu',food:'Mama / öğün',medicine:'İlaç hatırlatması'},
+  patiWellnessPetId:'cat',patiWellnessTab:'active',patiReminderNames:{vaccine:'Aşı takvimi',vet:'Veteriner randevusu',food:'Mama / öğün',medicine:'İlaç hatırlatması'},
   main:{innerHTML:''},console,Date,esc:x=>String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'),day:x=>x,
   document:{},notify:()=>{},patiWellnessFetch:()=>{}
  };
