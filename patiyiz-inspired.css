@@ -2630,3 +2630,88 @@ html[data-pati-theme="dark"] #main-content .pati-social-actions button[data-acti
   padding-bottom:calc(13px + env(safe-area-inset-bottom,0px))!important;
  }
 }
+
+/* Patiyiz 2. aşama — Instagram-inspired micro-interactions */
+@keyframes patiLikeMicroPop{
+ 0%{transform:scale(1)}38%{transform:scale(1.27)}65%{transform:scale(.94)}100%{transform:scale(1)}
+}
+@keyframes patiFollowMicroPop{
+ 0%{transform:scale(.94);opacity:.7}55%{transform:scale(1.055);opacity:1}100%{transform:scale(1)}
+}
+#main-content button.pati-like-pop svg.icon,
+#main-content button.pati-like-pop{animation:patiLikeMicroPop .34s ease-out both}
+#main-content button.pati-follow-pop,
+#main-content .pati-reel-follow.pati-follow-pop{animation:patiFollowMicroPop .33s ease-out both}
+#main-content .pati-reel-progress{
+ position:absolute;left:12px;right:12px;
+ bottom:calc(80px + env(safe-area-inset-bottom,0px));
+ z-index:19;display:flex;align-items:center;height:25px;
+ pointer-events:auto;filter:drop-shadow(0 1px 2px #0009);
+}
+#main-content .pati-reel-progress input[type="range"]{
+ -webkit-appearance:none;appearance:none;width:100%;height:3px;
+ margin:0!important;padding:0!important;outline:none;
+ border:0!important;border-radius:40px;background:linear-gradient(90deg,#fff 0 var(--pati-reel-progress,0%),#ffffff66 var(--pati-reel-progress,0%) 100%)!important;
+ cursor:pointer;touch-action:pan-x;min-height:3px!important;
+}
+#main-content .pati-reel-progress input[type="range"]::-webkit-slider-thumb{
+ -webkit-appearance:none;appearance:none;width:12px;height:12px;
+ border-radius:50%;border:2px solid #fff;background:#fff;box-shadow:0 1px 3px #0009;
+}
+#main-content .pati-reel-progress input[type="range"]::-moz-range-thumb{
+ width:10px;height:10px;border:2px solid #fff;border-radius:50%;background:#fff;
+}
+#main-content .pati-carousel-slide .pati-photo img{
+ transition:transform .22s ease-out;transform-origin:center center;
+ backface-visibility:hidden;
+}
+#main-content .pati-carousel-slide .pati-photo img.pati-pinching{
+ transition:none!important;will-change:transform;
+}
+#main-content .pati-carousel-slide:has(img.pati-pinching){
+ position:relative;z-index:9;overflow:hidden;
+}
+#main-content .pati-mutual-followers{
+ display:flex;align-items:center;gap:10px;min-height:44px;
+ padding:8px 14px;background:#fff;color:#737780;font-size:12px;
+}
+#main-content .pati-mutual-followers strong{color:#24252a;font-size:12px}
+#main-content .pati-mutual-avatars{display:flex;align-items:center;padding-left:4px;flex-shrink:0}
+#main-content .pati-mutual-avatars button{
+ width:28px;height:28px;min-height:28px;border-radius:50%;
+ padding:0!important;margin-left:-5px;background:#fff;
+ border:2px solid #fff;overflow:hidden;cursor:pointer;
+}
+#main-content .pati-mutual-avatars .avatar,
+#main-content .pati-mutual-avatars .avatar.s{
+ display:flex;align-items:center;justify-content:center;width:26px!important;height:26px!important;
+ min-width:26px!important;border-radius:50%;font-size:10px;
+}
+#main-content .pati-dm-typing-indicator{
+ display:inline-flex;align-items:center;gap:6px;font-size:11px!important;
+ font-weight:760;color:#358bf8!important;white-space:nowrap;
+}
+#main-content .pati-dm-typing-indicator[hidden]{display:none!important}
+#main-content .pati-dm-dots{display:inline-flex;gap:3px;align-items:center;height:13px}
+#main-content .pati-dm-dots b{
+ width:4px;height:4px;border-radius:50%;background:#358bf8;
+ animation:patiDmTypingDot 1.1s infinite ease-in-out;
+}
+#main-content .pati-dm-dots b:nth-child(2){animation-delay:.15s}
+#main-content .pati-dm-dots b:nth-child(3){animation-delay:.3s}
+@keyframes patiDmTypingDot{
+ 0%,65%,100%{transform:translateY(0);opacity:.5}
+ 35%{transform:translateY(-4px);opacity:1}
+}
+#main-content .pati-dm-receipts-setting button[data-action="dm-receipts-toggle"]{
+ border-radius:11px;padding:10px 14px;background:#111;color:#fff;
+ border:1px solid #222;font-weight:800;min-height:40px;
+}
+#main-content .pati-dm-receipts-setting button[aria-checked="false"]{
+ background:#f1f1f3;color:#313438;border-color:#dcdfe2;
+}
+@media(prefers-reduced-motion:reduce){
+ #main-content .pati-like-pop,#main-content .pati-follow-pop,
+ #main-content .pati-dm-dots b{animation:none!important}
+ #main-content .pati-carousel-slide .pati-photo img{transition:none!important}
+}
