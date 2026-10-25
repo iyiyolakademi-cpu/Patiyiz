@@ -247,12 +247,11 @@ async function markConversationRead(){
  const now=new Date().toISOString();
  const r=await sb.from('messages').update({read_at:now}).eq('sender_id',personId).eq('receiver_id',me.id).is('read_at',null);
  if(r.error){console.warn('Okundu bilgisi kaydedilemedi',r.error.message);return}
- unread.forEach(x=>x.read_at=now);
  const thread=patiDmThreads.get(patiDmThreadKey(personId));
  for(const row of thread?.rows||[])if(row.sender_id===personId&&row.receiver_id===me.id&&!row.read_at)row.read_at=now;
  const summary=patiDmInbox.rows.find(x=>x.peer_id===personId);
  if(summary)summary.unread_count=0;
- navRender();
+ unread.forEach(x=>x.read_at=now);navRender();
 }
 function unreadCounts(){const hidden=new Set(data.messageHidden.filter(x=>x.user_id===me?.id).map(x=>x.message_id));return {messages:data.messages.filter(x=>x.receiver_id===me?.id&&!x.read_at&&!patiDmSeenIds().has(x.id)&&!blocked.has(x.sender_id)&&!hidden.has(x.id)).length,notifications:data.notifications.filter(x=>x.owner_id===me?.id&&!x.read&&!blocked.has(x.actor_id)).length}}
 function unreadMessageSources(){const hidden=new Set(data.messageHidden.filter(x=>x.user_id===me?.id).map(x=>x.message_id));const messages=data.messages.filter(x=>x.receiver_id===me?.id&&!x.read_at&&!patiDmSeenIds().has(x.id)&&!blocked.has(x.sender_id)&&!hidden.has(x.id));const tally=new Map();for(const m of messages)tally.set(m.sender_id,(tally.get(m.sender_id)||0)+1);return [...tally].sort((a,b)=>b[1]-a[1]).map(([id,count])=>({id,count,name:profile(id).display_name}))}
