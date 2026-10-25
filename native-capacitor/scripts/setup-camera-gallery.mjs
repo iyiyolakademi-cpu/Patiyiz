@@ -9,7 +9,7 @@ await mkdir(path.dirname(activity),{recursive:true});
 await copyFile(path.join(root,'android-source/PatiyizGalleryPlugin.java'),target);
 let main=await readFile(activity,'utf8');
 if(!main.includes('registerPlugin(PatiyizGalleryPlugin.class)')){
- main=main.replace('public class MainActivity extends BridgeActivity {','public class MainActivity extends BridgeActivity {\n  @Override public void onCreate(android.os.Bundle state) {\n    registerPlugin(PatiyizGalleryPlugin.class);\n    super.onCreate(state);\n  }');
+ main=main.replace('public class MainActivity extends BridgeActivity {','public class MainActivity extends BridgeActivity {\n  @Override public void onCreate(android.os.Bundle state) {\n    registerPlugin(PatiyizGalleryPlugin.class);\n    super.onCreate(state);\n    // Only in our trusted Capacitor WebView: enable audible swipe autoplay.\n    getBridge().getWebView().getSettings().setMediaPlaybackRequiresUserGesture(false);\n  }');
 }
 await writeFile(activity,main);
 const xml=path.join(android,'app/src/main/AndroidManifest.xml');
