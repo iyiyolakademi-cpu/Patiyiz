@@ -13,7 +13,7 @@ test('All five screenshot sidebar sections exist in desktop routes and view disp
  for(const text of ['achievements:achievementsPage','messages:messagesPage','notifications:notificationsPage','profile:profilePage','settings:settingsPage'])assert.ok(app.includes(text),text);
 });
 test('Mobile all-features menu exposes all five sections and Health File',()=>{
- for(const n of ["['profile','Profilim','user']","['messages','Mesajlar','message']","['notifications','Bildirimler','bell']","['achievements','🏅 Rozetler ve Belgeler','library']","['settings','Ayarlar ve Gizlilik','settings']","['healthfile','Sağlık Dosyası','library']"])assert.ok(menu.includes(n),n);
+ for(const n of ["['profile','Profilim','user']","['messages','Mesajlar','message']","['notifications','Bildirimler','bell']","['achievements','🏅 Rozetler ve Belgeler','library']","['settings','Ayarlar ve Gizlilik','settings']","['my-pet','Hayvanım · Bakım ve Sağlık','heart']"])assert.ok(menu.includes(n),n);
  assert.match(menu,/menuBadge\(menuCounts\.notifications\)/);
  assert.match(menu,/menuBadge\(menuCounts\.messages\)/);
 });
