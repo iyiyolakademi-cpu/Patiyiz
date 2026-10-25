@@ -2422,7 +2422,7 @@ function notificationsPage(){
   +(pageMore.notifications?'<div class="pati-load-more">'+button('Eski bildirimleri yükle','load-more','data-id="notifications"')+'</div>':'')+'</section>';
 }
 async function openNotification(id){const n=data.notifications.find(x=>x.id===id&&x.owner_id===me.id);if(!n){navigate('notifications');return}
- if(!n.read){const result=await sb.from('notifications').update({read:true}).eq('id',n.id).eq('owner_id',me.id);if(!result.error){n.read=true;navRender()}}
+ if(!n.read){const result=await sb.from('notifications').update({read:true}).eq('id',n.id).eq('owner_id',me.id).select('id');if(!result.error&&result.data?.length){n.read=true;navRender()}}
  if(['comments','post_likes'].includes(n.kind)&&n.post_id){openPost(n.post_id);return}
  if(n.kind==='messages'&&n.actor_id&&n.actor_id!==me.id&&!blocked.has(n.actor_id)){personId=n.actor_id;mobileChatOpen=true;navigate('messages');return}
  if(n.kind==='pet_reminder'){navigate('wellness');return}
