@@ -654,13 +654,17 @@ function reelToggleSound(button){
  const video=button.closest('.pati-reel-item')?.querySelector('video');if(!video)return;
  patiyizReelsSoundEnabled=video.muted;
  video.muted=!patiyizReelsSoundEnabled;
- patiUpdateReelsSoundButton(button,video);
- if(patiIsIOSStandaloneReels()&&!video.muted){
-  // The user's sound-button tap is the media gesture required by Safari.
+ const update=()=>{
+  const label=video.muted?'Sesi aç':'Sesi kapat';
+  button.innerHTML=ico(video.muted?'volume-x':'volume')+'<span class="pati-reel-tool-label">'+label+'</span>';
+  button.setAttribute('aria-label',label);button.setAttribute('aria-pressed',String(!video.muted));
+ };
+ update();
+ if(typeof document!=='undefined'&&document.documentElement?.classList?.contains('patiyiz-ios-reels')&&!video.muted&&typeof video.play==='function'){
+  // Sound is explicitly enabled in the iOS Home Screen application by a tap.
   video.play().catch(err=>{
    console.warn('iOS sesli oynatma engellendi:',err?.message||err);
-   video.muted=true;
-   patiUpdateReelsSoundButton(button,video);
+   video.muted=true;update();
   });
  }
 }
