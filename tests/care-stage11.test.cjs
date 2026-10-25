@@ -49,25 +49,25 @@ test('Today, upcoming, overdue and completed categories are mutually exclusive',
 });
 test('Per-pet and category filters intersect and hidden owner pets do not leak',()=>{
  const {ctx,api}=harness();
- ctx.carePetFilter='p1';ctx.careCategoryFilter='Mama';
+ vm.runInContext("carePetFilter='p1';careCategoryFilter='Mama'",ctx);
  assert.deepEqual(Array.from(api.careVisibleItems(),x=>x.id),['c3']);
- ctx.carePetFilter='none';ctx.careCategoryFilter='Tümü';
+ vm.runInContext("carePetFilter='none';careCategoryFilter='Tümü'",ctx);
  assert.deepEqual(Array.from(api.careVisibleItems(),x=>x.id),['c4']);
- ctx.carePetFilter='p3';
+ vm.runInContext("carePetFilter='p3'",ctx);
  assert.deepEqual(Array.from(api.careVisibleItems(),x=>x.id),[]);
 });
 test('Turkish search searches task title, categories and owned pet names',()=>{
  const {ctx,api}=harness();
- ctx.careSearch='SEKER';
+ vm.runInContext("careSearch='SEKER'",ctx);
  assert.deepEqual(Array.from(api.careVisibleItems(),x=>x.id),['c1','c3']);
- ctx.careSearch='asI';
+ vm.runInContext("careSearch='asI'",ctx);
  assert.deepEqual(Array.from(api.careVisibleItems(),x=>x.id),['c1']);
- ctx.careSearch='gizli';
+ vm.runInContext("careSearch='gizli'",ctx);
  assert.deepEqual(Array.from(api.careVisibleItems(),x=>x.id),[]);
 });
 test('Search renders only matching result cards without replacing input',()=>{
  const {ctx,api,result,count}=harness();
- ctx.careSearch='veteriner';
+ vm.runInContext("careSearch='veteriner'",ctx);
  api.careUpdateResults();
  assert.match(result.innerHTML,/Veteriner randevusu/);
  assert.doesNotMatch(result.innerHTML,/Karma aşı kontrolü/);
@@ -110,7 +110,7 @@ test('Edit validates required fields, category and own-pet membership',()=>{
  assert.equal(ctx.validate({...valid}).title,'Karma aşı');
  assert.throws(()=>ctx.validate({...valid,title:'X'}),/Görev adı/);
  assert.throws(()=>ctx.validate({...valid,category:'Hack'}),/kategori/);
- assert.throws(()=>ctx.validate({...valid,due_date:'2026-02-31'}),/Görev tarihi/);
+ assert.throws(()=>ctx.validate({...valid,due_date:'2026-02-31'}),/görev tarihi/i);
  assert.throws(()=>ctx.validate({...valid,pet_id:'p3'}),/yetkin yok/);
 });
 test('Create, edit, complete and delete only access the current owner rows',()=>{
