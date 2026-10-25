@@ -88,5 +88,5 @@ test('Follow action maintains current Reel screen without re-render',()=>{
  assert.match(app,/\.pati-reel-follow\[data-id=/);
  assert.match(app,/case 'follow':run\(\(\)=>doToggle\('follows'/);
  assert.match(app,/case 'reel-play':reelHandleTap\(target\)/);
- assert.match(index,/app\.js\?v=20261025-reels-swipe-follow-1/);
+ assert.match(index,/app\.js\?v=20261024-release-reliability-1[^\"]*reels20261025=1/);
 });
