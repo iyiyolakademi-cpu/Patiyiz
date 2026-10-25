@@ -8,7 +8,7 @@ const FILTERS={
  siyahbeyaz:'grayscale(1) contrast(1.12)',
  sinema:'contrast(1.22) saturate(.77) brightness(.92)'
 };
-const MAX_CLIPS=6,MAX_SECONDS=60,WIDTH=480,HEIGHT=854;
+const MAX_CLIPS=6,MAX_SECONDS=90,WIDTH=480,HEIGHT=854;
 const clamp=(n,min,max)=>Math.min(max,Math.max(min,Number(n)||0));
 const clean=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const seconds=n=>Number(n||0).toFixed(1)+' sn';
@@ -38,7 +38,7 @@ function controls(c){
 function mount(form){
  dispose();
  const root=document.createElement('section');root.className='prs-studio';root.setAttribute('aria-label','Reels video stüdyosu');
- root.innerHTML='<div class="prs-head"><strong>✦ Reels Stüdyosu</strong><span>En fazla 6 klip · 60 saniye</span></div>'+
+ root.innerHTML='<div class="prs-head"><strong>✦ Reels Stüdyosu</strong><span>En fazla 6 klip · 90 saniye</span></div>'+
  '<div class="prs-screen"><video class="prs-preview" playsinline controls preload="metadata"></video><div class="prs-overlay"></div></div>'+
  '<div class="prs-clip-list" aria-label="Video klipleri"></div>'+
  '<div class="prs-current">Video seçerek başla</div>'+
@@ -147,7 +147,7 @@ function onChange(e){
   if(field==='start')c.start=clamp(e.target.value,0,c.end-.2);
   if(field==='end')c.end=clamp(e.target.value,c.start+.2,c.duration);
   if(field==='speed')c.speed=clamp(e.target.value,.5,2);
-  if(duration(s.clips)>MAX_SECONDS){setStatus('Toplam süre 60 saniyeyi geçemez. Süreleri kısalt.',true)}
+  if(duration(s.clips)>MAX_SECONDS){setStatus('Toplam süre 90 saniyeyi geçemez. Süreleri kısalt.',true)}
   render();
  }
 }
