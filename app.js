@@ -2594,6 +2594,25 @@ patiResizeChatViewport();
 window.visualViewport?.addEventListener('resize',patiResizeChatViewport);
 window.visualViewport?.addEventListener('scroll',patiResizeChatViewport);
 window.addEventListener('resize',patiResizeChatViewport);
+// Multi-photo counter follows both finger swipes and arrow buttons.
+function patiUpdateCarouselCounter(track){
+ const box=track?.closest?.('.pati-carousel'),label=box?.querySelector('.pati-carousel-count');
+ if(!label)return;
+ const slides=track.querySelectorAll('.pati-carousel-slide'),total=slides.length;
+ if(total<2)return;
+ const width=track.clientWidth||slides[0]?.clientWidth||1;
+ const index=Math.max(1,Math.min(total,Math.round(track.scrollLeft/width)+1));
+ label.textContent=index+' / '+total;
+}
+document.addEventListener('scroll',event=>{
+ const track=event.target;
+ if(!track?.classList?.contains('pati-carousel-track')||track.dataset.patiCountPending)return;
+ track.dataset.patiCountPending='1';
+ requestAnimationFrame(()=>{
+  delete track.dataset.patiCountPending;
+  if(track.isConnected)patiUpdateCarouselCounter(track);
+ });
+},true);
 window.addEventListener('offline',()=>{notify('İnternet bağlantısı kesildi. Paylaşım ve mesaj işlemleri bağlantı gelince tekrar denenebilir.',true)});
 window.addEventListener('online',()=>{notify('İnternet bağlantısı yeniden kuruldu.');if(me&&sb){
  const userId=me.id,token=patiyizLoadToken;
