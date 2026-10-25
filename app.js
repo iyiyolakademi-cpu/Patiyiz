@@ -1879,7 +1879,79 @@ function lostPage(){
  +'<div class="lost-v2-results-head"><h2>İlanları keşfet</h2><span role="status" aria-live="polite" id="lost-results-count">'+list.length+' ilan</span></div>'
  +'<div class="lost-v2-grid" id="lost-results">'+(lostLoading?'<p role="status" class="lost-v2-loading">İlanlar yükleniyor…</p>':lostCards(list))+'</div></section>';
 }
-function adoptionPage(){const q=search.toLocaleLowerCase('tr'),list=[...data.adoption].filter(x=>!blocked.has(x.owner_id)&&[x.name,x.species,x.city,x.district].some(t=>String(t||'').toLocaleLowerCase('tr').includes(q))).sort((a,b)=>Number(a.adopted)-Number(b.adopted)||new Date(b.created_at)-new Date(a.created_at));main.innerHTML=header('Hayvan Sahiplendirme','Patili dostlara güvenli ve sevgi dolu yuvalar bulalım.',button('+ Sahiplendirme ilanı','adoption-add'))+`<div class="pati-note">Sahiplendirme ilanları ücretsizdir. Açık adresini ve telefon numaranı herkese açık açıklamaya yazma; iletişim için Patiyiz mesajlarını kullan.</div><div class="toolbar"><input class="input-search" id="adoption-search" placeholder="Hayvan, tür veya şehir ara" value="${esc(search)}"><button class="soft-btn" data-action="adoption-search">Ara</button></div><div class="pati-list">${list.map(x=>`<article class="pati-card adoption-card"><div class="pati-row between"><span class="pati-pill">${x.adopted?'✅ Sahiplendirildi':'🐾 Yuva arıyor'}</span><small>${day(x.created_at)}</small></div><h3>${petIcon(x.species)} ${esc(x.name)} · ${esc(x.species)}</h3><p>${esc(x.gender||'Bilinmiyor')}${x.age?' · '+esc(x.age):''} · 📍 ${esc(x.city)}${x.district?' / '+esc(x.district):''}</p>${x.photo_url?photo(x.photo_url):''}<p style="white-space:pre-wrap;overflow-wrap:anywhere">${esc(x.description)}</p><div class="pati-actionbar">${x.owner_id===me.id?button('Düzenle','adoption-edit',`data-id="${x.id}"`)+button(x.adopted?'Yeniden yayına al':'Sahiplendirildi','adoption-toggle',`data-id="${x.id}"`)+button('İlanı sil','adoption-delete',`data-id="${x.id}"`,'outline-btn'):(!x.adopted?button('İlan sahibine mesaj gönder','chat',`data-id="${x.owner_id}"`):'')}${x.owner_id!==me.id?userRow(x.owner_id)+button('İlanı bildir','report',`data-id="${x.id}" data-kind="adoption"`):''}</div></article>`).join('')}</div>${list.length?'':empty('Henüz sahiplendirme ilanı yok','İlk ilanı sen oluşturabilirsin.')}`}
+let adoptionStatus='open',adoptionSpecies='Tümü',adoptionSearch='',adoptionLoading=false,adoptionLoadError='';
+function adoptionFold(v){return String(v||'').toLocaleLowerCase('tr-TR').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i').trim()}
+function adoptionMatches(){
+ const q=adoptionFold(adoptionSearch);
+ return [...data.adoption].filter(x=>!blocked.has(x.owner_id)
+  &&(adoptionStatus==='all'||adoptionStatus==='mine'&&x.owner_id===me?.id||adoptionStatus==='adopted'&&x.adopted||adoptionStatus==='open'&&!x.adopted)
+  &&(adoptionSpecies==='Tümü'||x.species===adoptionSpecies)
+  &&(!q||adoptionFold([x.name,x.species,x.city,x.district,x.gender,x.age,x.description].join(' ')).includes(q)))
+  .sort((a,b)=>Number(a.adopted)-Number(b.adopted)||new Date(b.created_at)-new Date(a.created_at));
+}
+function adoptionCards(list){
+ if(!list.length)return '<div class="adopt-v2-empty" role="status"><span>🐾</span><h3>Bu filtrelerde ilan bulunamadı</h3><p>Diğer şehir, hayvan türü veya ilan durumlarını deneyebilirsin.</p><button type="button" data-action="adoption-reset">Filtreleri temizle</button></div>';
+ return list.map(x=>{
+  const own=x.owner_id===me?.id,adopted=!!x.adopted;
+  return '<article class="adopt-v2-card'+(adopted?' is-adopted':'')+'" data-adoption-id="'+esc(x.id)+'">'
+   +'<div class="adopt-v2-cover">'+(x.photo_url?'<img src="'+esc(x.photo_url)+'" alt="'+esc(x.name)+' fotoğrafı" loading="lazy" decoding="async">':'<span class="adopt-v2-placeholder">'+petIcon(x.species)+'</span>')
+   +'<span class="adopt-v2-badge'+(adopted?' is-adopted':'')+'">'+(adopted?'✓ Sahiplendirildi':'♡ Yuva arıyor')+'</span></div>'
+   +'<div class="adopt-v2-info"><div class="adopt-v2-meta"><span>'+esc(x.species)+' · '+esc(x.gender||'Belirtilmedi')+'</span><small>'+esc(day(x.created_at))+'</small></div>'
+   +'<h3>'+esc(x.name)+'</h3><p class="adopt-v2-location">📍 '+esc(x.city)+(x.district?' / '+esc(x.district):'')+(x.age?' · '+esc(x.age):'')+'</p>'
+   +'<p class="adopt-v2-description">'+esc(x.description)+'</p>'
+   +'<div class="adopt-v2-actions">'
+   +(own?'<button type="button" data-action="adoption-edit" data-id="'+esc(x.id)+'">Düzenle</button><button type="button" data-action="adoption-toggle" data-id="'+esc(x.id)+'">'+(adopted?'Yeniden yayına al':'✓ Sahiplendirildi')+'</button><button type="button" data-action="adoption-delete" data-id="'+esc(x.id)+'" class="adopt-v2-danger">Sil</button>'
+   :(!adopted?'<button type="button" data-action="chat" data-id="'+esc(x.owner_id)+'" class="adopt-v2-contact">Sahibine mesaj gönder</button>':'')+'<button type="button" data-action="report" data-id="'+esc(x.id)+'" data-kind="adoption">Bildir</button>')
+   +'<button type="button" data-action="adoption-share" data-id="'+esc(x.id)+'">Paylaş</button></div></div></article>';
+ }).join('');
+}
+function adoptionUpdateResults(){
+ if(view!=='adoption')return;
+ const list=adoptionMatches(),container=document.getElementById('adoption-results'),count=document.getElementById('adoption-results-count');
+ if(container)container.innerHTML=adoptionCards(list);
+ if(count)count.textContent=list.length+' ilan';
+}
+async function adoptionRefresh(){
+ if(!me||adoptionLoading)return;
+ const uid=me.id;adoptionLoading=true;adoptionLoadError='';if(view==='adoption')adoptionPage();
+ try{
+  const r=await sb.from('adoption_listings').select('*').order('created_at',{ascending:false}).limit(350);
+  if(r.error)throw r.error;
+  if(me?.id!==uid)return;
+  data.adoption=r.data||[];patiyizLoadedTables.add('adoption_listings');
+ }catch(e){if(me?.id===uid)adoptionLoadError='İlanlar yenilenemedi. İnternet bağlantını kontrol edip tekrar dene.';console.warn('Sahiplendirme ilanları:',e)}
+ finally{adoptionLoading=false;if(me?.id===uid&&view==='adoption')adoptionPage()}
+}
+async function routePendingAdoption(){
+ const u=new URL(location.href),id=u.searchParams.get('adoption');
+ if(!id||!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id))return;
+ u.searchParams.delete('adoption');history.replaceState(null,'',u.pathname+u.search+u.hash);
+ if(!me)return;
+ adoptionStatus='all';adoptionSpecies='Tümü';adoptionSearch='';
+ navigate('adoption');await adoptionRefresh();
+ if(view!=='adoption')return;
+ const card=document.querySelector('[data-adoption-id="'+id+'"]');
+ if(card){card.classList.add('is-linked');card.scrollIntoView({block:'center',behavior:'smooth'})}
+ else notify('İlan bulunamadı veya artık görüntülenemiyor.',true);
+}
+function adoptionPage(){
+ const visible=data.adoption.filter(x=>!blocked.has(x.owner_id));
+ const counts={open:visible.filter(x=>!x.adopted).length,adopted:visible.filter(x=>x.adopted).length,mine:visible.filter(x=>x.owner_id===me?.id).length};
+ const kinds=['Tümü',...new Set(visible.map(x=>x.species).filter(Boolean))];
+ const list=adoptionMatches();
+ main.innerHTML='<section class="adopt-v2">'
+  +'<div class="adopt-v2-heading"><div><small>PATİYİZ · YUVA BUL</small><h1>Sahiplendirme</h1><p>Patili dostlarımız için güvenli ve sevgi dolu yuvalar.</p></div><button type="button" data-action="adoption-add" class="adopt-v2-create">+ İlan oluştur</button></div>'
+  +'<div class="adopt-v2-hero"><div><small>SORUMLU SAHİPLENME</small><h2>Bir dost, ömür boyu sorumluluk.</h2><p>İlanları keşfet, sorularını mesajla sor ve doğru yuva için güvenle iletişime geç.</p></div><span aria-hidden="true">🐾</span></div>'
+  +'<div class="adopt-v2-stats"><div><b>'+counts.open+'</b><span>Yuva arıyor</span></div><div><b>'+counts.adopted+'</b><span>Sahiplendirildi</span></div><div><b>'+counts.mine+'</b><span>İlanlarım</span></div></div>'
+  +'<p class="adopt-v2-safety">🔒 Sahiplendirme ilanları ücretsizdir. Açık adresini ve telefon numaranı yazma. İletişimi uygulama içi mesajlardan yap; sağlık, bakım koşulları ve sorumlulukları görüş.</p>'
+  +'<label for="adoption-search">İlanlarda ara</label><div class="adopt-v2-search"><input id="adoption-search" type="search" value="'+esc(adoptionSearch)+'" autocomplete="off" aria-controls="adoption-results" placeholder="Hayvan adı, şehir, ilçe, tür…"><button type="button" data-action="adoption-clear">Temizle</button></div>'
+  +'<div class="adopt-v2-row"><strong>İlan durumu</strong><button type="button" data-action="adoption-refresh"'+(adoptionLoading?' disabled':'')+'>'+(adoptionLoading?'Yenileniyor…':'↻ Yenile')+'</button></div>'
+  +'<div class="adopt-v2-filters" role="group" aria-label="İlan durumu">'+[['open','Yuva arıyor ('+counts.open+')'],['adopted','Sahiplendirildi ('+counts.adopted+')'],['mine','İlanlarım ('+counts.mine+')'],['all','Tümü']].map(([key,label])=>'<button type="button" data-action="adoption-status" data-id="'+key+'" class="'+(adoptionStatus===key?'active':'')+'" aria-pressed="'+String(adoptionStatus===key)+'">'+label+'</button>').join('')+'</div>'
+  +'<div class="adopt-v2-row"><strong>Hayvan türü</strong></div><div class="adopt-v2-filters" role="group" aria-label="Hayvan türü">'+kinds.map(x=>'<button type="button" data-action="adoption-species" data-id="'+esc(x)+'" class="'+(adoptionSpecies===x?'active':'')+'" aria-pressed="'+String(adoptionSpecies===x)+'">'+esc(x)+'</button>').join('')+'</div>'
+  +(adoptionLoadError?'<p role="alert" class="adopt-v2-error">'+esc(adoptionLoadError)+'</p>':'')
+  +'<div class="adopt-v2-results-head"><h2>Yuva arayan dostlar</h2><span id="adoption-results-count" role="status" aria-live="polite">'+list.length+' ilan</span></div>'
+  +'<div class="adopt-v2-grid" id="adoption-results">'+(adoptionLoading?'<p role="status" class="adopt-v2-loading">İlanlar yükleniyor…</p>':adoptionCards(list))+'</div></section>';
+}
 function carePage(){let today=new Date().toLocaleDateString('sv-SE');let all=data.care.filter(x=>x.owner_id===me.id);let c=all.filter(x=>careFilter==='all'||(careFilter==='done'?x.done:careFilter==='late'?!x.done&&x.due_date<today:!x.done&&x.due_date>=today)).sort((a,b)=>a.due_date.localeCompare(b.due_date));main.innerHTML=header('Bakım Takvimi','Hayvanlarının önemli bakım günlerini takip et.',button('+ Görev ekle','care-add')+button('Aşı, kilo ve hatırlatmalar','wellness-open')) +`<div class="pati-filter-tabs">${[['all','Tümü'],['upcoming','Yaklaşan'],['late','Geciken'],['done','Tamamlanan']].map(([key,label])=>`<button type="button" data-action="care-filter" data-id="${key}" class="${careFilter===key?'active':''}">${label} (${all.filter(x=>key==='all'||(key==='done'?x.done:key==='late'?!x.done&&x.due_date<today:!x.done&&x.due_date>=today)).length})</button>`).join('')}</div><div class="pati-note">Bakım takvimi bu hesapta saklanır. Şu sürümde otomatik e-posta / telefon hatırlatması gönderilmez.</div><div class="pati-list">${c.map(x=>`<div class="pati-card"><div class="pati-row between"><div><span class="pati-pill">${esc(x.category)}</span><h3 style="margin-top:10px;${x.done?'text-decoration:line-through;opacity:.6':''}">${esc(x.title)}</h3><p>${day(x.due_date)} ${x.pet_id?'· '+esc(data.pets.find(p=>p.id===x.pet_id)?.name||''):''}</p></div><div class="pati-row">${button(x.done?'Yeniden aç':'✓ Tamamla','care-done',`data-id="${x.id}"`)}<button data-action="care-del" data-id="${x.id}" class="small-btn danger-btn">Sil</button></div></div></div>`).join('')}</div>${c.length?'':empty('Bakım görevi eklenmedi')}`}
 
 let dmRecorder=null,dmParts=[],dmStream=null,dmCancel=false,dmRecipient=null;
