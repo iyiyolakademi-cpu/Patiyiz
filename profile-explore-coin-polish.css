@@ -36,3 +36,20 @@
 html[data-pati-theme="dark"] #main-content .pati-follower-hint{background:linear-gradient(135deg,#222327,#302b23);border-color:#4a4032;color:#f9f7f1}
 html[data-pati-theme="dark"] #main-content .pati-follower-hint .pati-goal-subtitle,html[data-pati-theme="dark"] #main-content .pati-follower-hint .pati-goal-foot small{color:#c9c3b7}
 @media(max-width:420px){#main-content .pati-follower-hint{padding:13px 14px}#main-content .pati-follower-hint .pati-goal-header strong{font-size:15px}}
+
+/* Next-target badge uses the actual Patiyiz logo instead of a gold square. */
+#main-content .pati-follower-hint .pati-goal-logo{
+ width:44px;height:44px;max-width:44px;flex:none;display:block;
+ object-fit:contain;background:#000;border-radius:12px;border:0;
+ box-shadow:0 1px 3px rgba(0,0,0,.1)
+}
+/* Gesture-triggered navigation slides in the swipe direction. */
+@media(max-width:740px){
+ #main-content.pati-view-enter.pati-view-swipe-next{animation:pati-tab-enter-next .25s cubic-bezier(.18,.74,.2,1) both}
+ #main-content.pati-view-enter.pati-view-swipe-prev{animation:pati-tab-enter-prev .25s cubic-bezier(.18,.74,.2,1) both}
+}
+@keyframes pati-tab-enter-next{from{opacity:.8;transform:translate3d(13%,0,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes pati-tab-enter-prev{from{opacity:.8;transform:translate3d(-13%,0,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@media(prefers-reduced-motion:reduce){
+ #main-content.pati-view-enter.pati-view-swipe-next,#main-content.pati-view-enter.pati-view-swipe-prev{animation:none!important}
+}
