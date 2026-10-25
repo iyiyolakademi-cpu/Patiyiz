@@ -59,7 +59,7 @@ test('PatiCoin menu is organized while private Health File has its own section',
  const nav=piece('const nav=[','const cfg=');
  assert.doesNotMatch(nav,/\['rewards'/);
  assert.doesNotMatch(nav,/\['shop'/);
- assert.match(nav,/\['healthfile'/);
+ assert.match(nav,/\['my-pet','Hayvanım'/);
  const menu=piece('function openMobileFeaturesMenu()','const patiCoinTasks=[');
  assert.match(menu,/title:'PatiCoin Merkezi'/);
  assert.match(menu,/Görevler & PatiCoin/);
