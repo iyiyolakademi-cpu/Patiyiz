@@ -60,9 +60,11 @@ test('iOS standalone Reels CSS fills viewer but respects safe areas',()=>{
 test('iPhone muted autoplay continues when audible autoplay is rejected',async()=>{
  const p=init();p.api.setupReelsViewer();const cb=p.callback();
  cb([{target:p.videos[0],isIntersecting:true,intersectionRatio:.98}]);
- assert.equal(p.videos[0].muted,true);
+ assert.equal(p.videos[0].muted,false);
  assert.equal(p.videos[0].paused,false);
  const sound={closest:()=>({querySelector:()=>p.videos[0]}),innerHTML:'',labels:{},setAttribute(k,v){this.labels[k]=v}};
+ p.api.reelToggleSound(sound);
+ assert.equal(p.videos[0].muted,true);
  p.api.reelToggleSound(sound);
  assert.equal(p.videos[0].muted,false);
  cb([{target:p.videos[1],isIntersecting:true,intersectionRatio:.92},{target:p.videos[0],isIntersecting:false,intersectionRatio:0}]);
