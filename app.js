@@ -771,7 +771,7 @@ function setupReelsViewer(){
   const update=()=>{
    const ratio=Number.isFinite(v.duration)&&v.duration>0?Math.min(1,v.currentTime/v.duration):0;
    range.value=String(Math.round(ratio*1000));
-   range.style.setProperty('--pati-reel-progress',(ratio*100).toFixed(2)+'%');
+   range.style?.setProperty?.('--pati-reel-progress',(ratio*100).toFixed(2)+'%');
   };
   v.addEventListener?.('timeupdate',update);
   v.addEventListener?.('loadedmetadata',update);
