@@ -1,0 +1,117 @@
+/* Patiyiz Premium Akademi · 8. bölüm — isolated black/white, responsive presentation */
+#main-content .premium-v2{--pv-ink:#171719;--pv-muted:#747780;--pv-border:#e6e6e9;--pv-soft:#f5f5f6;max-width:1000px;padding:12px 5px 44px;margin:0 auto;color:var(--pv-ink);font-family:'Plus Jakarta Sans','DM Sans',system-ui,sans-serif}
+#main-content .premium-v2 *,#main-content .premium-v2 *::before{box-sizing:border-box}
+#main-content .premium-v2 button{font-family:inherit;touch-action:manipulation}
+#main-content .premium-v2 :is(button,a):focus-visible{outline:3px solid #767881;outline-offset:3px}
+#main-content .premium-v2 .premium-topbar{margin:6px 0 17px;color:#38383f;letter-spacing:.09em;font-size:11px}
+#main-content .premium-v2 .premium-status{background:#ededee;color:#55575f;border:1px solid #e4e4e7;border-radius:40px;font-weight:750;letter-spacing:0}
+#main-content .premium-v2 .premium-status.is-active{background:#111;color:#fff;border-color:#111}
+#main-content .premium-v2 .premium-hero{background:#121214;box-shadow:none;border:1px solid #343437;border-radius:23px;padding:clamp(23px,4.8vw,40px)}
+#main-content .premium-v2 .premium-hero::after{content:"✦";color:#ffffff12}
+#main-content .premium-v2 .premium-hero .premium-eyebrow{color:#babac1;font-weight:800}
+#main-content .premium-v2 .premium-hero h1{color:#fff;max-width:640px;line-height:1.17;letter-spacing:-.045em}
+#main-content .premium-v2 .premium-hero p{color:#d1d1d6;font-size:13px;line-height:1.8}
+#main-content .premium-v2 .premium-numbers{gap:clamp(16px,3vw,38px);margin:24px 0}
+#main-content .premium-v2 .premium-numbers strong{font-size:26px;letter-spacing:-.035em;color:#fff}
+#main-content .premium-v2 .premium-numbers small{color:#c5c5ca}
+#main-content .premium-v2 .premium-heading{margin:29px 0 13px;gap:10px}
+#main-content .premium-v2 .premium-heading span{color:#7b7d86}
+#main-content .premium-v2 .premium-heading h2{color:#171719;letter-spacing:-.03em;font-size:clamp(19px,3vw,24px)}
+#main-content .premium-v2 .premium-course-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#main-content .premium-v2 .premium-course-card{border-color:#e8e8ec;background:#fff;box-shadow:none;min-height:270px;padding:22px 19px;border-radius:19px}
+#main-content .premium-v2 .premium-course-icon{background:#f0f0f2;color:#222;font-size:27px}
+#main-content .premium-v2 .premium-course-card small{color:#777983;font-size:10.5px}
+#main-content .premium-v2 .premium-course-card h3{color:#1a1a1d;font-size:18px;line-height:1.35}
+#main-content .premium-v2 .premium-course-card p{color:#62646c;font-size:12px;line-height:1.7}
+#main-content .premium-v2 .premium-mini-progress{font-size:11px;color:#606168}
+#main-content .premium-v2 .premium-course-card>button{min-height:46px;background:#161617;color:#fff;border-radius:12px;font-size:12px}
+#main-content .premium-v2 .premium-plan-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#main-content .premium-v2 .premium-plan{background:#fafafb;border-color:#e7e7eb;border-radius:17px;padding:20px}
+#main-content .premium-v2 .premium-plan small{color:#686b73}
+#main-content .premium-v2 .premium-plan h3{color:#1b1c20;font-size:27px}
+#main-content .premium-v2 .premium-plan span,#main-content .premium-v2 .premium-plan p{color:#6d6e77}
+#main-content .premium-v2 .premium-pricing-note{margin:14px 0 8px;background:#f6f6f7;border-left:3px solid #484a51;border-radius:9px;padding:12px 14px;font-size:11.5px;color:#42434a;line-height:1.7}
+#main-content .premium-v2 .premium-signup{background:#f7f7f8;border:1px solid #e7e7e9;border-radius:17px;padding:24px}
+#main-content .premium-v2 .premium-signup h2{color:#161719}
+#main-content .premium-v2 .premium-signup p{color:#565862}
+#main-content .premium-v2 .premium-primary-btn,#main-content .premium-v2 .premium-dashboard-heading button,#main-content .premium-v2 .premium-next-step button{background:#171719;color:#fff;border:1px solid #171719;border-radius:12px;min-height:44px}
+#main-content .premium-v2 .premium-soft-btn{background:#f8f8f9;color:#32333a;border:1px solid #dedee1;margin:8px 5px 0 0}
+#main-content .premium-v2 .premium-error{background:#fff4f4;border-color:#e9c9cc;color:#8a2934}
+#main-content .premium-v2 .premium-unavailable{border:1px dashed #bbbcc1;padding:26px 20px;border-radius:16px;background:#f9f9fa;text-align:center;margin:18px 0}
+#main-content .premium-v2 .premium-unavailable h2{color:#202127;font-size:18px}
+#main-content .premium-v2 .premium-unavailable p{color:#676872;font-size:12px}
+#main-content .premium-v2 .premium-unavailable button{border:0;background:#18191b;color:#fff;padding:12px 18px;border-radius:11px;font-weight:750;min-height:44px}
+#main-content .premium-v2 .premium-back{color:#50515a;min-height:44px}
+#main-content .premium-v2 .premium-course-hero{background:#151518;border:1px solid #33343a;padding:clamp(23px,4vw,33px)}
+#main-content .premium-v2 .premium-course-hero span,#main-content .premium-v2 .premium-course-hero small{color:#c7c7cd}
+#main-content .premium-v2 .premium-course-hero h1{color:#fff}
+#main-content .premium-v2 .premium-course-hero p{color:#d1d2d8;line-height:1.65}
+#main-content .premium-v2 .premium-preview-row{background:#fff;border-color:#e6e7e9}
+#main-content .premium-v2 .premium-preview-row>span{color:#171719}
+#main-content .premium-v2 .premium-preview-row p{color:#5d5f67}
+#main-content .premium-v2 .premium-lock{background:#f8f8f9;border:1px dashed #c7c9cd}
+#main-content .premium-v2 .premium-lock p{color:#575861}
+#main-content .premium-v2 .premium-course-progress strong{color:#2b2c32}
+#main-content .premium-v2 .premium-progress{background:#ededf0;height:10px}
+#main-content .premium-v2 .premium-progress span{background:#141415}
+#main-content .premium-v2 .premium-days{gap:10px}
+#main-content .premium-v2 .premium-day-btn{background:#fff;border:1px solid #e6e6e9;padding:15px;border-radius:14px;min-height:99px}
+#main-content .premium-v2 .premium-day-btn:hover{border-color:#a9a9b0}
+#main-content .premium-v2 .premium-day-btn small,#main-content .premium-v2 .premium-day-btn span{color:#6c6d76}
+#main-content .premium-v2 .premium-day-btn strong{color:#222328}
+#main-content .premium-v2 .premium-day-btn.is-finished{background:#f1f1f2;border-color:#b8b9bc}
+#main-content .premium-v2 .premium-day-view{background:#fff;border:1px solid #e6e6ea}
+#main-content .premium-v2 .premium-day-view small{color:#777881}
+#main-content .premium-v2 .premium-day-view h2,#main-content .premium-v2 .premium-day-view h3{color:#18191b}
+#main-content .premium-v2 .premium-day-view p{color:#484951;line-height:1.85}
+#main-content .premium-v2 .premium-day-navigation{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin-top:23px}
+#main-content .premium-v2 .premium-day-navigation button{margin:0;font-size:12px;padding:11px 14px}
+#main-content .premium-v2 .premium-dashboard{background:#f7f7f8;border:1px solid #e5e5e8;border-radius:18px}
+#main-content .premium-v2 .premium-dashboard-heading span{color:#73757d}
+#main-content .premium-v2 .premium-dashboard-heading h2{color:#19191c}
+#main-content .premium-v2 .premium-dashboard-heading p{color:#60616a}
+#main-content .premium-v2 .premium-dash-grid article{border-color:#e2e2e5;background:#fff}
+#main-content .premium-v2 .premium-dash-grid strong{color:#171718}
+#main-content .premium-v2 .premium-dash-grid small{color:#73757d}
+#main-content .premium-v2 .premium-next-step{border-color:#e3e3e7;background:#fff}
+#main-content .premium-v2 .premium-next-step h3{color:#1d1d20}
+#main-content .premium-v2 .premium-next-step p{color:#6d6f76}
+@media(max-width:880px){#main-content .premium-v2 .premium-course-grid,#main-content .premium-v2 .premium-plan-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){
+ #main-content .premium-v2{padding:11px 11px calc(102px + env(safe-area-inset-bottom,0px))}
+ #main-content .premium-v2 .premium-hero{border-radius:17px;padding:23px 19px}
+ #main-content .premium-v2 .premium-topbar{margin-bottom:13px}
+ #main-content .premium-v2 .premium-course-grid,#main-content .premium-v2 .premium-plan-grid,#main-content .premium-v2 .premium-preview,#main-content .premium-v2 .premium-days{grid-template-columns:1fr}
+ #main-content .premium-v2 .premium-course-card{min-height:225px;padding:19px}
+ #main-content .premium-v2 .premium-plan{padding:18px}
+ #main-content .premium-v2 .premium-numbers{gap:15px}
+ #main-content .premium-v2 .premium-course-hero{padding:23px 18px}
+ #main-content .premium-v2 .premium-course-hero h1{font-size:25px}
+ #main-content .premium-v2 .premium-day-view{padding:17px 15px}
+ #main-content .premium-v2 .premium-day-navigation button{flex:1 1 125px}
+ #main-content .premium-v2 .premium-dash-grid{gap:7px}
+ #main-content .premium-v2 .premium-dash-grid article{padding:11px}
+ #main-content .premium-v2 .premium-dash-grid strong{font-size:20px}
+ #main-content .premium-v2 .premium-next-step{flex-wrap:wrap}
+ #main-content .premium-v2 .premium-next-step button{width:100%}
+}
+@media(max-width:350px){#main-content .premium-v2 .premium-dash-grid{grid-template-columns:1fr}#main-content .premium-v2 .premium-day-navigation{flex-direction:column}#main-content .premium-v2 .premium-day-navigation button{width:100%}}
+/* Patiyiz optional dark mode: override older global !important theme rules. */
+html[data-pati-theme="dark"] #main-content .premium-v2{--pv-ink:#f5f5f7;--pv-muted:#b6b7bf;--pv-border:#414249;color:#eee}
+html[data-pati-theme="dark"] #main-content .premium-v2 :is(.premium-course-card,.premium-plan,.premium-signup,.premium-dashboard,.premium-preview-row,.premium-day-view,.premium-dash-grid article,.premium-next-step,.premium-lock,.premium-unavailable){background:#202127!important;border-color:#414249!important;color:#f3f3f5!important}
+html[data-pati-theme="dark"] #main-content .premium-v2 :is(.premium-course-card h3,.premium-plan h3,.premium-signup h2,.premium-heading h2,.premium-unavailable h2,.premium-course-progress strong,.premium-day-view h2,.premium-day-view h3,.premium-dashboard-heading h2,.premium-dash-grid strong,.premium-next-step h3){color:#f3f3f5!important}
+html[data-pati-theme="dark"] #main-content .premium-v2 :is(.premium-course-card p,.premium-plan p,.premium-signup p,.premium-preview-row p,.premium-day-view p,.premium-dashboard-heading p,.premium-next-step p,.premium-lock p,.premium-unavailable p,.premium-plan span,.premium-course-card small,.premium-mini-progress,.premium-day-view small){color:#cbcbd3!important}
+html[data-pati-theme="dark"] #main-content .premium-v2 :is(.premium-day-btn,.premium-pricing-note){background:#292a30;color:#eee;border-color:#454650}
+html[data-pati-theme="dark"] #main-content .premium-v2 .premium-day-btn strong{color:#f2f2f4}
+html[data-pati-theme="dark"] #main-content .premium-v2 :is(.premium-day-btn small,.premium-day-btn span,.premium-dash-grid small,.premium-topbar,.premium-heading span){color:#c2c3ca}
+html[data-pati-theme="dark"] #main-content .premium-v2 .premium-day-btn.is-finished{background:#33343b}
+html[data-pati-theme="dark"] #main-content .premium-v2 .premium-progress{background:#44464e}
+html[data-pati-theme="dark"] #main-content .premium-v2 .premium-progress>span{background:#fff}
+html[data-pati-theme="dark"] #main-content .premium-v2 .premium-status{background:#35363d;color:#fff;border-color:#4c4d54}
+html[data-pati-theme="dark"] #main-content .premium-v2 .premium-status.is-active{background:#f4f4f5;color:#111;border-color:#f4f4f5}
+html[data-pati-theme="dark"] #main-content .premium-v2 :is(.premium-primary-btn,.premium-dashboard-heading button,.premium-next-step button,.premium-course-card>button){background:#f4f4f5!important;color:#171718!important;border-color:#f4f4f5!important}
+html[data-pati-theme="dark"] #main-content .premium-v2 .premium-soft-btn{background:#2b2c32!important;color:#eee!important;border-color:#5a5b64!important}
+html[data-pati-theme="dark"] #main-content .premium-v2 .premium-pricing-note{border-left:3px solid #aaacb5}
+html[data-pati-theme="dark"] #main-content .premium-v2 .premium-back{color:#d2d3d8}
+html[data-pati-theme="dark"] #main-content .premium-v2 .premium-error{background:#4a292c!important;border-color:#82464d!important;color:#fff!important}
+@media(prefers-reduced-motion:reduce){#main-content .premium-v2 .premium-progress span{transition:none}}
