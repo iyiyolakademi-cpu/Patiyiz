@@ -1035,7 +1035,7 @@ function reelsPage(){
   '<button type="button" data-action="reel-sound" class="pati-reel-tool" aria-label="'+(soundOn?'Sesi kapat':'Sesi aç')+'" aria-pressed="'+soundOn+'">'+ico(soundOn?'volume':'volume-x')+'<span class="pati-reel-tool-label">'+(soundOn?'Sesi kapat':'Sesi aç')+'</span></button></div></article>'
  }).join(''):'<div class="pati-reels-empty">'+(page?.loading?'Reels videoları yükleniyor…':'Henüz Reels yok. İlk videoyu sen paylaş!')+'</div>')+
  (page?.loading?'<div class="pati-reels-load-more" role="status">Videolar yükleniyor…</div>':
- page?.hasMore||page?.error?'<div class="pati-reels-load-more">'+(page?.error?'<p role="alert">'+esc(page.error)+'</p>':'')+button(page?.error?'Tekrar dene':'Daha fazla Reels yükle','reels-more')+'</div>':'')+'</div>';
+ page?.hasMore||page?.error?'<div class="pati-reels-load-more">'+(page?.error?'<p role="alert">'+esc(page.error)+'</p>':'')+'<button type="button" data-action="reels-more">'+(page?.error?'Tekrar dene':'Daha fazla Reels yükle')+'</button>'+'</div>':'')+'</div>';
 }
 
 function closePatiCreate(){const el=$('#pati-create-sheet');if(el)el.hidden=true;document.body.classList.remove('pati-create-open')}
