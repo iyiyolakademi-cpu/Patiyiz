@@ -52,7 +52,7 @@ test('Home video playback is exclusive, audible when supported and has silent au
  assert.match(source,/video\.muted=!patiyizFeedSoundEnabled/);
  assert.match(source,/video\.play\(\)\.catch/);
  assert.match(app,/case 'video-sound':\{const v=/);
- assert.match(app,/patiFeedSoundEnabled=v\.muted/);
+ assert.match(app,/patiyizFeedSoundEnabled=v\.muted/);
  assert.match(app,/playsinline webkit-playsinline/);
 });
 test('Instagram-style comments show a post summary, likes and collapsible threaded replies',()=>{
