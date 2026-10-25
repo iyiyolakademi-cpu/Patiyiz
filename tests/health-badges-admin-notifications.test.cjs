@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 const health=fs.readFileSync('health-file.js','utf8');
-const badges=fs.readFileSync('achievements.js','utf8');
+
 const app=fs.readFileSync('app.js','utf8');
 const html=fs.readFileSync('index.html','utf8');
 const admin=fs.readFileSync('admin.html','utf8');
@@ -54,28 +54,11 @@ test('Health metadata saves for the signed-in owner and never invents a public d
  assert.doesNotMatch(health,/getPublicUrl/);
  assert.match(health,/createSignedUrl\(record\.object_path,90\)/);
 });
-test('Badge thresholds and 101/101 completion require verified cloud values',()=>{
- const ctx={window:{},Date,console};vm.runInNewContext(badges,ctx);
- const a=ctx.window.PatiyizAchievements.create({esc,notify(){}});
- const fakeProgress=new Set(Array.from({length:101},(_,i)=>'fake-'+i));
- const locked=a.render({freeCompleted:new Set(),premiumCompleted:new Set(),premiumMember:false,cloudReady:false});
- assert.match(locked,/İlk Adım/);
- assert.match(locked,/101 dersi tamamlayınca açılır/);
- const done=a.render({freeCompleted:fakeProgress,premiumCompleted:new Set(),premiumMember:false,cloudReady:true});
- assert.match(done,/Belgeyi oluştur \/ PDF/);
- assert.ok(!done.includes('Resmî mesleki'));
- assert.match(badges,/Resmî meslek/);
-});
-test('Premium dashboard is connected to daily training and achievement pages',()=>{
- const script=fs.readFileSync('premium-academy.js','utf8');
- assert.match(script,/PREMIUM KONTROL PANELİ/);
- assert.match(script,/data-action="premium-achievements"/);
- assert.match(script,/data-action="premium-resume"/);
- assert.match(app,/case 'premium-resume'/);
- assert.match(app,/case 'premium-achievements'/);
+test('Badges and premium removed but owner health records remain',()=>{
+ assert.doesNotMatch(app,/achievementsPage\(|premiumPage\(|achievementPortal|premiumPortal/);
+ assert.doesNotMatch(html,/achievements\.js|premium-academy\.js/);
  assert.match(app,/healthfile:healthFilePage/);
- assert.match(app,/achievements:achievementsPage/);
- assert.doesNotMatch(app,/case 'healthfile-open'/);
+ assert.equal(fs.existsSync('achievements.js'),false);
 });
 test('Storage and health tables restrict access to the owner and always private bucket',()=>{
  assert.match(sql,/patiyiz-health-private','patiyiz-health-private',false/);
@@ -105,11 +88,11 @@ test('Only administrators can broadcast with idempotency, rate limit and audit',
  assert.match(sql,/grant execute on function public\.patiyiz_admin_announce/);
  assert.doesNotMatch(admin,/service_role/);
 });
-test('All three scripts and administrator inline JavaScript are syntactically valid',()=>{
- for(const [name,source] of [['health-file.js',health],['achievements.js',badges]])assert.doesNotThrow(()=>new vm.Script(source,{filename:name}));
- const matches=[...admin.matchAll(/<script>([\s\S]*?)<\/script>/g)];
- assert.ok(matches.length>=1);
- assert.doesNotThrow(()=>new vm.Script(matches.at(-1)[1],{filename:'admin.html:inline'}));
- assert.match(html,/src="health-file\.js/);assert.match(html,/achievements\.js/);
- assert.ok(html.indexOf('achievements.js')<html.indexOf('src="app.js'));
+test('Health and administrator inline JavaScript syntax remain valid',()=>{
+ assert.doesNotThrow(()=>new vm.Script(health,{filename:'health-file.js'}));
+ const scripts=[...admin.matchAll(/<script>([\s\S]*?)<\/script>/g)];
+ assert.ok(scripts.length>=1);
+ assert.doesNotThrow(()=>new vm.Script(scripts.at(-1)[1],{filename:'admin.html:inline'}));
+ assert.match(html,/src="health-file\.js/);
+ assert.doesNotMatch(html,/achievements\.js|premium-academy\.js/);
 });
