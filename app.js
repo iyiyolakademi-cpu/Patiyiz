@@ -766,16 +766,16 @@ function setupReelsViewer(){
  },{root:viewport,rootMargin:'70% 0px 70% 0px',threshold:[0,.25,.65,.9]});
  videos.forEach(v=>{
   patiyizReelsObserver.observe(v);
-  const range=v.closest('.pati-reel-item')?.querySelector('[data-action="reel-seek"]');
+  const range=v.closest?.('.pati-reel-item')?.querySelector?.('[data-action="reel-seek"]');
   if(!range)return;
   const update=()=>{
    const ratio=Number.isFinite(v.duration)&&v.duration>0?Math.min(1,v.currentTime/v.duration):0;
    range.value=String(Math.round(ratio*1000));
    range.style.setProperty('--pati-reel-progress',(ratio*100).toFixed(2)+'%');
   };
-  v.addEventListener('timeupdate',update);
-  v.addEventListener('loadedmetadata',update);
-  v.addEventListener('durationchange',update);
+  v.addEventListener?.('timeupdate',update);
+  v.addEventListener?.('loadedmetadata',update);
+  v.addEventListener?.('durationchange',update);
   update();
  });
  // On iPhone, scroll-snap can settle without a new IntersectionObserver threshold.
@@ -1852,7 +1852,7 @@ async function togglePostLike(id){
   const count=authoritative.length;
   document.querySelectorAll('[data-action="like"][data-id="'+id+'"]').forEach(btn=>{
    btn.classList.toggle('active',savedLike);btn.setAttribute('aria-pressed',String(savedLike));
-   if(savedLike){btn.classList.remove('pati-like-pop');void btn.offsetWidth;btn.classList.add('pati-like-pop')}
+   if(savedLike){btn.classList.remove?.('pati-like-pop');void btn.offsetWidth;btn.classList.add?.('pati-like-pop')}
    const label=btn.querySelector('.pati-reel-count')||btn.querySelector('span');
    if(label)label.textContent=String(count);
   });
@@ -1966,7 +1966,7 @@ async function doToggle(table,keys,present){
   }else{
    render();
    if(isFollow){
-    const button=document.querySelector('[data-action="follow"][data-id="'+rowKey+'"]');
+    const button=document.querySelector?.('[data-action="follow"][data-id="'+rowKey+'"]');
     if(button)button.classList.add('pati-follow-pop');
    }
   }
@@ -2262,7 +2262,8 @@ window.addEventListener('resize',patiResizeChatViewport);
 window.addEventListener('offline',()=>{notify('İnternet bağlantısı kesildi. Paylaşım ve mesaj işlemleri bağlantı gelince tekrar denenebilir.',true)});
 window.addEventListener('online',()=>{notify('İnternet bağlantısı yeniden kuruldu.');if(me&&sb){refresh().catch(e=>console.warn('Yenileme başarısız',e));refreshOnReturn()}});document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshOnReturn()});window.addEventListener('focus',refreshOnReturn);
 function resetSessionState(){
- patiDmDisconnectTyping();patiDmLocalSeenOwner='';patiDmLocalSeenCache.clear();
+ if(typeof patiDmDisconnectTyping==='function')patiDmDisconnectTyping();
+ if(typeof patiDmLocalSeenCache!=='undefined'){patiDmLocalSeenOwner='';patiDmLocalSeenCache.clear()}
 
  patiyizLoadToken++;patiyizLoadedTables.clear();patiyizDeferredLoading=null;patiWellness={reminders:[],weights:[],loaded:false,loading:false,notified:new Set()};patiLeaderboard=[];patiInviteState={code:'',invited_count:0,already_used:false,coins_each:50,loading:false};patiCoinState={balance:0,earned:0,claims:[],items:[],orders:[],history:[],loading:false};document.getElementById('paticoin-celebration')?.remove();
  data=Object.fromEntries(Object.keys(data).map(key=>[key,[]]));
