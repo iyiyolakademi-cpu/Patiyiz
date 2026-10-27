@@ -35,7 +35,7 @@
      removeFingerprintOnSuccess:true,
      retryDelays:RETRIES,
      chunkSize:CHUNK,
-     metadata:{bucketName:bucket,objectName:key,contentType:mime,cacheControl:'3600'},
+     metadata:{bucketName:bucket,objectName:key,contentType:mime,cacheControl:'86400'},
      onProgress:(sent,total)=>{if(total>0&&typeof onProgress==='function')onProgress(Math.min(99,Math.floor(sent*100/total)))},
      onError:err=>done(err instanceof Error?err:new Error(String(err))),
      onSuccess:()=>{onProgress?.(100);done(null)}
@@ -45,7 +45,7 @@
    });
   }
   // Small files and older browsers preserve the proven SDK path.
-  const result=await sb.storage.from(bucket).upload(key,file,{contentType:mime,upsert:false});
+  const result=await sb.storage.from(bucket).upload(key,file,{contentType:mime,cacheControl:'86400',upsert:false});
   if(!result.error)onProgress?.(100);
   return result;
  }
