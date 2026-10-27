@@ -2966,7 +2966,7 @@ function compose(post,mode='post',autoPick=true){
  const f=document.getElementById('post-form');f.dataset.edit=post?.id||'';f.dataset.mode=story?'story':reel?'reels':textOnly?'text':'post';
  const submit=f.querySelector('.modal-footer button[type="submit"]');if(submit)submit.textContent=post?'Değişiklikleri kaydet':story?'Hikâyeyi paylaş':reel?'Reels paylaş':textOnly?'Yazıyı paylaş':'Paylaş';
  if(!post&&!story){const controls=document.createElement('div');controls.className='pati-draft-controls';controls.innerHTML='<button type="button" data-action="pati-draft-save">▤ Açıklama taslağını kaydet</button><button type="button" data-action="pati-draft-load">↺ Taslağı aç</button>';f.querySelector('.modal-content')?.appendChild(controls)}
- if(reel){if(!window.PatiyizReelsEditor)notify('Reels düzenleyici yüklenemedi. Sayfayı yenile.',true);else window.PatiyizReelsEditor.mount(f)}
+ if(reel&&autoPick){if(!window.PatiyizReelsEditor)notify('Reels düzenleyici yüklenemedi. Sayfayı yenile.',true);else window.PatiyizReelsEditor.mount(f)}
  if(!post&&!textOnly&&autoPick)openComposerMediaPicker('gallery');
  if(textOnly)f.querySelector('textarea[name="body"]')?.focus();
 }
@@ -3790,6 +3790,9 @@ document.addEventListener('change',e=>{
   if(input.name==='photo'){input.removeAttribute('capture');input.multiple=post.dataset.mode!=='story'&&post.dataset.mode!=='reels'}
   if(input.files?.length){const other=post.querySelector('input[name="'+(input.name==='photo'?'video':'photo')+'"]');if(other)other.value=''}
   postCropIndex=0;postCropX=.5;postCropY=.5;postCropZoom=1;
+  // Camera-first flow already owns the selected files and preview. Do not
+  // open a second gallery sheet or mount the legacy Reels editor underneath.
+  if(post.dataset.cameraFirst==='1')return;
   const controls=post.querySelector('.pati-media-controls');if(controls)controls.hidden=!(post.querySelector('input[name="photo"]')?.files?.length);
   const crop=post.querySelector('.pati-crop-preview');if(crop)crop.hidden=true;
   updatePostMediaPreview();
