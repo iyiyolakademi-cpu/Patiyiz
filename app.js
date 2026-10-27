@@ -483,6 +483,30 @@ function patiFeedSoundButton(video){
  button.setAttribute('aria-label',video.muted?'Sesi aç':'Sesi kapat');
  button.setAttribute('aria-pressed',String(!video.muted));
 }
+// Size feed videos and photos to their own original width-to-height ratios.
+function setupFeedMediaRatios(){
+ const set=(frame,w,h)=>{if(frame&&Number.isFinite(w)&&Number.isFinite(h)&&w>0&&h>0)frame.style.setProperty('--pati-feed-aspect',w+' / '+h)};
+ document.querySelectorAll('#main-content .pati-feed-card .pati-video-frame').forEach(frame=>{
+  const v=frame.querySelector('video');if(!v)return;
+  const update=()=>set(frame,v.videoWidth,v.videoHeight);
+  v.addEventListener('loadedmetadata',update);
+  if(v.readyState>=1)update();
+ });
+ document.querySelectorAll('#main-content .pati-feed-card .pati-carousel').forEach(carousel=>{
+  const track=carousel.querySelector('.pati-carousel-track');
+  const pictures=[...carousel.querySelectorAll('.pati-carousel-slide img')];
+  if(!track||!pictures.length)return;
+  const update=()=>{
+   const index=Math.max(0,Math.min(pictures.length-1,Math.round(track.scrollLeft/Math.max(1,track.clientWidth))));
+   const img=pictures[index];
+   set(carousel,img.naturalWidth,img.naturalHeight);
+  };
+  pictures.forEach(img=>{img.addEventListener('load',update);if(img.complete&&img.naturalWidth)update()});
+  let scheduled=false;
+  track.addEventListener('scroll',()=>{if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;update()})},{passive:true});
+  update();
+ });
+}
 function setupFeedVideos(){
  if(patiyizVideoObserver){patiyizVideoObserver.disconnect();patiyizVideoObserver=null}
  if(patiyizFeedActiveVideo){patiyizFeedActiveVideo.pause();patiyizFeedActiveVideo=null}
@@ -623,7 +647,7 @@ function patiBuildPostStats(likes,comments,hiddenAuthors){
  }
  return stats;
 }
-function render(){try{patiPostRenderStats=['home','reels','profile','explore','saved-posts'].includes(view)?patiBuildPostStats(data.likes,data.comments,blocked):null;({home:homePage,explore:explorePage,reels:reelsPage,pets:petsPage,wellness:patiWellnessPage,healthfile:healthFilePage,'saved-posts':savedPostsPage,rewards:patiRewardsPage,shop:patiShopPage,community:communityPage,knowledge:knowledgePage,education:educationPage,lost:lostPage,adoption:adoptionPage,care:carePage,'my-pet':patiMyPetCenterPage,messages:messagesPage,notifications:notificationsPage,profile:profilePage,blocked:blockedPage,settings:settingsPage,'follows-list':followListPage}[view]||homePage)();setupFeedVideos();setupReelsViewer();patiWatchPostViews()}catch(e){console.error(e);main.innerHTML=header('Bir hata oldu')+empty('Ekran açılamadı','Sayfayı yenile veya daha sonra tekrar dene.')}}
+function render(){try{patiPostRenderStats=['home','reels','profile','explore','saved-posts'].includes(view)?patiBuildPostStats(data.likes,data.comments,blocked):null;({home:homePage,explore:explorePage,reels:reelsPage,pets:petsPage,wellness:patiWellnessPage,healthfile:healthFilePage,'saved-posts':savedPostsPage,rewards:patiRewardsPage,shop:patiShopPage,community:communityPage,knowledge:knowledgePage,education:educationPage,lost:lostPage,adoption:adoptionPage,care:carePage,'my-pet':patiMyPetCenterPage,messages:messagesPage,notifications:notificationsPage,profile:profilePage,blocked:blockedPage,settings:settingsPage,'follows-list':followListPage}[view]||homePage)();setupFeedMediaRatios();setupFeedVideos();setupReelsViewer();patiWatchPostViews()}catch(e){console.error(e);main.innerHTML=header('Bir hata oldu')+empty('Ekran açılamadı','Sayfayı yenile veya daha sonra tekrar dene.')}}
 async function load(mode='all'){if(!me)return;const userId=me.id,loadToken=patiyizLoadToken,likesEpoch=(typeof likesChangeEpoch==='number'?likesChangeEpoch:0),savesEpoch=(typeof savesChangeEpoch==='number'?savesChangeEpoch:0);let specs=[['profiles','profiles',800],['pets','pets',600],['posts','posts',200],['post_likes','likes',2000],['post_saves','saves',2000],['comments','comments',1500],['comment_likes','commentLikes',3000],['follows','follows',2000],['questions','questions',150],['replies','replies',1500],['question_votes','votes',2000],['lost_reports','lost',300],['adoption_listings','adoption',300],['patiyiz_stories','stories',250],['patiyiz_story_responses','storyResponses',1000],['patiyiz_reposts','reposts',600],['patiyiz_post_pins','pins',500],['patiyiz_highlight_albums','highlightAlbums',250],['patiyiz_highlight_items','highlightItems',500],['care_tasks','care',500],['messages','messages',1000],['message_hidden','messageHidden',1000],['notifications','notifications',500],['kb_bookmarks','bookmarks',300],['user_blocks','blocks',500]];if(mode==='initial')specs=specs.filter(([table])=>['profiles','pets','posts','post_likes','post_saves','patiyiz_stories','patiyiz_highlight_albums','patiyiz_highlight_items','user_blocks'].includes(table));else if(mode==='feed')specs=specs.filter(([table])=>['profiles','posts','post_likes','post_saves','patiyiz_stories','patiyiz_highlight_albums','patiyiz_highlight_items'].includes(table));else if(mode==='deferred')specs=specs.filter(([table])=>!patiyizLoadedTables.has(table));
 const fetchSpec=async([table,key,limit])=>{const chunks=[];const size=250,cap=Math.max(1,Math.min(5000,pageLimits[key]||limit));try{for(let start=0;start<cap;start+=size){let req=sb.from(table).select('*').range(start,Math.min(start+size-1,cap-1));if(table==='kb_bookmarks')req=req.eq('user_id',userId);if(['messages','notifications','comments','posts','replies','questions','lost_reports','patiyiz_stories','patiyiz_story_responses','adoption_listings'].includes(table))req=req.order('created_at',{ascending:false});if(table==='posts')req=req.order('id',{ascending:false});const r=await req;if(r.error)throw r.error;chunks.push(...(r.data||[]));if((r.data||[]).length<size)break;}if(pageLimits[key])pageMore[key]=chunks.length>=cap;return[key,chunks,true]}catch(e){console.warn(table,'yüklenemedi:',e.message);if(table==='posts'&&typeof patiHomeLoadError!=='undefined')patiHomeLoadError='Gönderiler yüklenemedi.';return[key,data[key]||[],false]}};const results=[];if(mode==='deferred'){for(let i=0;i<specs.length;i+=4){if(me?.id!==userId||patiyizLoadToken!==loadToken)return;results.push(...await Promise.all(specs.slice(i,i+4).map(fetchSpec)))}}else results.push(...await Promise.all(specs.map(fetchSpec)));if(me?.id!==userId||patiyizLoadToken!==loadToken)return;for(const [k,val,ok]of results){
  if(k==='posts'&&ok&&typeof patiHomeFeedIds!=='undefined'){
@@ -1693,13 +1717,9 @@ function patiWellnessDueItems(){
  return patiWellness.reminders.filter(x=>!x.completed_at).sort((a,b)=>new Date(a.due_at)-new Date(b.due_at));
 }
 function patiWellnessAlerts(){
- if(!me||!patiWellness.loaded)return;
- const now=Date.now();
- const due=patiWellnessDueItems().filter(x=>{
-  const t=Date.parse(x.due_at);
-  return Number.isFinite(t)&&t-(x.remind_minutes_before*60000)<=now&&!patiWellness.notified.has(x.id);
- }).slice(0,3);
- for(const x of due){patiWellness.notified.add(x.id);notify((patiReminderNames[x.kind]||'Bakım')+': '+x.title+' · '+(data.pets.find(p=>p.id===x.pet_id)?.name||'Patili dost'))}
+ // Do not display automatic vaccine, care or feeding toasts at login.
+ // Calendar records and their due/late states remain inside Hayvanım.
+ return;
 }
 async function patiWellnessFetch(silent=false){
  if(!me||!sb||patiWellness.loading)return;
@@ -1713,10 +1733,7 @@ async function patiWellnessFetch(silent=false){
   patiWellness={...patiWellness,reminders:a.data||[],weights:b.data||[],loaded:true,error:''};
   if(view==='wellness'||(view==='my-pet'&&patiMyPetTab==='wellness'))render();
   patiWellnessAlerts();
-  if(!patiWellnessHeartbeat){
-   patiWellnessHeartbeat=true;
-   window.setInterval(()=>{if(me&&document.visibilityState==='visible')patiWellnessAlerts()},60000);
-  }
+  // Avoid recurring due-reminder toast popups; health data remains available.
  }catch(e){console.warn('Bakım takvimi yüklenemedi:',e);if(me?.id===uid){patiWellness.error='Sağlık kayıtları yüklenemedi. İnternet bağlantını kontrol edip tekrar dene.';if(view==='wellness'||(view==='my-pet'&&patiMyPetTab==='wellness'))render()}if(!silent)notify('Sağlık takvimi yüklenemedi: '+friendly(e),true)}
  finally{patiWellness.loading=false}
 }
