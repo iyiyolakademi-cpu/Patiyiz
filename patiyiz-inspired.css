@@ -2702,3 +2702,44 @@ html[data-pati-theme="dark"] #main-content .pati-social-actions button[data-acti
  #patiyiz-camera-screen[data-capture-aspect="portrait"] .pati-camera-shutter{width:58px;height:58px;flex-basis:58px}
  #patiyiz-camera-screen[data-capture-aspect="portrait"] .pati-camera-recent{width:44px;height:44px;flex-basis:44px}
 }
+
+/* iPhone full-screen camera reliability, independent of CSS viewport/media width.
+   iOS standalone windows may report a wider layout viewport than their screen. */
+#patiyiz-camera-screen[data-capture-aspect="portrait"]{position:fixed!important;inset:0!important;width:100%!important;height:100dvh!important;min-height:0!important;display:block!important;overflow:hidden!important;background:#000!important}
+#patiyiz-camera-screen[data-capture-aspect="portrait"] .pati-camera-stage,
+#patiyiz-camera-screen[data-capture-aspect="portrait"] .pati-camera-viewfinder{
+ position:absolute!important;inset:0!important;display:block!important;
+ width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;
+ padding:0!important;margin:0!important;aspect-ratio:auto!important;min-height:0!important
+}
+#patiyiz-camera-screen[data-capture-aspect="portrait"] .pati-camera-viewfinder :is(#pati-camera-live,#pati-camera-chosen-image,#pati-camera-chosen-video){
+ position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+ max-width:none!important;max-height:none!important;object-fit:cover!important
+}
+#patiyiz-camera-screen[data-capture-aspect="portrait"] .pati-camera-head{
+ position:absolute!important;top:0!important;left:0!important;right:0!important;z-index:7!important;
+ background:linear-gradient(180deg,rgba(0,0,0,.57),transparent)!important;
+ padding:max(15px,env(safe-area-inset-top,0px)) 16px 17px!important;
+ box-sizing:border-box!important;width:100%!important
+}
+#patiyiz-camera-screen[data-capture-aspect="portrait"] .pati-camera-bottom{
+ position:absolute!important;left:0!important;right:0!important;bottom:0!important;
+ z-index:7!important;width:100%!important;box-sizing:border-box!important;
+ background:linear-gradient(0deg,rgba(0,0,0,.77),rgba(0,0,0,.32) 58%,transparent)!important;
+ padding:48px 16px max(20px,env(safe-area-inset-bottom,0px))!important;
+ max-height:70dvh;overflow-y:auto;overscroll-behavior:contain
+}
+#patiyiz-camera-screen[data-capture-aspect="portrait"]:not(.pati-camera-has-media) .pati-camera-selected-count{display:none!important}
+#patiyiz-camera-screen[data-capture-aspect="portrait"] .pati-camera-create-tabs{min-height:23px!important}
+#patiyiz-camera-screen[data-capture-aspect="portrait"] .pati-camera-gallery-panel{
+ position:absolute!important;top:22%!important;bottom:0!important;left:0!important;right:0!important;z-index:10!important
+}
+#patiyiz-camera-screen .pati-camera-recent{display:flex!important;align-items:center!important;justify-content:center!important}
+#patiyiz-camera-screen .pati-camera-gallery-placeholder{font-size:33px;line-height:1;color:#fff;font-weight:400;pointer-events:none}
+#patiyiz-camera-screen .pati-camera-gallery-placeholder[hidden]{display:none!important}
+#patiyiz-camera-screen .pati-camera-recent img[hidden]{display:none!important}
+#patiyiz-camera-screen .pati-camera-recent img:not([hidden]){width:100%;height:100%;object-fit:cover}
+#patiyiz-camera-screen[data-capture-aspect="portrait"] .pati-camera-unavailable{position:absolute;inset:0;z-index:3;align-content:center}
+@supports(height:100svh){
+ #patiyiz-camera-screen[data-capture-aspect="portrait"]{height:100dvh!important}
+}
