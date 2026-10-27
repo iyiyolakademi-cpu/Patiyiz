@@ -164,7 +164,7 @@ async function capture(){
  if(blob)await accept(new File([blob],'patiyiz-kamera-'+Date.now()+'.jpg',{type:'image/jpeg'}));
 }
 function bestRecorderMime(){
- if(typeof MediaRecorder==='undefined')return '';
+ if(typeof MediaRecorder==='undefined'||typeof MediaRecorder.isTypeSupported!=='function')return '';
  for(const type of ['video/mp4;codecs=h264,aac','video/mp4','video/webm;codecs=vp8,opus','video/webm']){
   if(MediaRecorder.isTypeSupported(type))return type;
  }
@@ -343,4 +343,10 @@ function open({mode='post',onMedia,onPhotos,onPublish,onCancel,onEdit}={}){
 }
 window.PatiyizCameraFlow={open,close:cleanup,cancel(){if(!state)return;const cb=state.onCancel;cleanup();cb?.()},get active(){return !!state}};
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&state){const cb=state.onCancel;cleanup();cb?.()}});
+// Release camera and microphone in background; recover the preview on return.
+document.addEventListener('visibilitychange',()=>{
+ if(!state)return;
+ if(document.hidden){if(state.recorder?.state==='recording')stopRecorder();stopCamera();return}
+ if(!state.selected.length)void startCamera();
+});
 })();
