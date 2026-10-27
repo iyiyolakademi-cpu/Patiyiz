@@ -202,7 +202,7 @@ async function accept(file){
  if(!state)return;
  if(!file?.size){showMessage('Dosya seçilemedi.');return}
  const video=isVideo(file);
- if(video&&file.size>200*1024*1024){showMessage('Video çok büyük. 200 MB altındaki bir video seçip sıkıştırmayı deneyebilirsin.');return}
+ if(video&&file.size>500*1024*1024){showMessage('Video 500 MB üzerinde. Galeride küçülterek yeniden dene.');return}
  if(video&& !/^video\/(mp4|webm|quicktime)$/.test(file.type||'') && !/\.(mp4|mov|webm)$/i.test(file.name||'')){showMessage('MP4, MOV veya WebM videosu seç.');return}
  if(!video&&!(/^image\//.test(file.type||'')||/\.(heic|heif|jpe?g|png|webp)$/i.test(file.name||''))){showMessage('Fotoğraf ya da video seçmelisin.');return}
  if(state.mode==='reels'&&!video){showMessage('Reels için video seç.');return}
@@ -221,6 +221,7 @@ async function accept(file){
   else if(!video)state.onPhotos(selected);
  }catch(err){showMessage(err?.message||'Medya eklenemedi.');return}
  renderSelected();
+ void window.PatiyizCameraDraft?.save(state.userId,state.mode,selected,state.root.querySelector('#pati-camera-caption')?.value||'');
 }
 async function capture(){
  if(!state)return;
@@ -343,7 +344,7 @@ function setCaptureType(type){
  });
  resetSelection();void startCamera();
 }
-function open({mode='post',onMedia,onPhotos,onPublish,onCancel,onSwitch}={}){
+function open({mode='post',onMedia,onPhotos,onPublish,onCancel,onSwitch,userId}={}){
  if(state)return;
  if(!['post','story','reels'].includes(mode))mode='post';
  if((typeof onMedia!=='function'&&typeof onPhotos!=='function')||typeof onPublish!=='function')throw Error('Kamera paylaşım formuna bağlanmalı.');
@@ -354,16 +355,17 @@ function open({mode='post',onMedia,onPhotos,onPublish,onCancel,onSwitch}={}){
  root.innerHTML='<header class="pati-camera-head"><button type="button" data-camera="cancel" aria-label="Geri">×</button><strong>'+title+'</strong><span>patiyiz</span></header>'+
  '<div class="pati-camera-stage"><div class="pati-camera-viewfinder"><video id="pati-camera-live" autoplay playsinline muted></video><canvas id="pati-camera-framed" width="720" height="'+(mode==='post'?720:1280)+'" hidden></canvas><img id="pati-camera-chosen-image" alt="Seçilen fotoğraf" hidden><video id="pati-camera-chosen-video" playsinline controls preload="metadata" hidden></video><div class="pati-camera-unavailable" id="pati-camera-camera-fallback" hidden><strong>Kamerana erişilemiyor</strong><button type="button" data-camera="retry">Kamerayı yeniden aç</button></div></div></div>'+
  '<div id="pati-camera-alert" class="pati-camera-alert" role="status" hidden></div>'+
- '<section id="pati-camera-gallery-panel" class="pati-camera-gallery-panel" hidden><div class="pati-camera-gallery-title"><strong>Fotoğraflarım</strong><button type="button" data-camera="toggle">⌄ Kapat</button></div><div class="pati-camera-gallery-scroll"><div id="pati-camera-gallery-grid" class="pati-camera-gallery-grid"></div><p id="pati-camera-gallery-state">Fotoğraflar yükleniyor…</p><button id="pati-camera-gallery-fallback" data-camera="fallback" type="button" hidden>Sistem galerisinden seç</button><button type="button" data-camera="video-gallery">Videoları aç</button><button type="button" data-camera="more">Daha fazla fotoğraf</button></div></section>'+
+ '<section id="pati-camera-gallery-panel" class="pati-camera-gallery-panel" hidden><div class="pati-camera-gallery-title"><strong>Fotoğraflarım</strong><button type="button" data-camera="toggle">⌄ Kapat</button></div><div class="pati-camera-gallery-scroll"><div id="pati-camera-gallery-grid" class="pati-camera-gallery-grid"></div><p id="pati-camera-gallery-state">Fotoğraflar yükleniyor…</p><button id="pati-camera-gallery-fallback" data-camera="fallback" type="button" hidden>Sistem galerisinden seç</button><button type="button" data-camera="video-gallery">Tüm videoları seç</button><button type="button" data-camera="fallback">Telefon galerisi · fotoğraf veya video</button><button type="button" data-camera="more">Daha fazla fotoğraf</button></div></section>'+
  '<div class="pati-camera-tools"><button type="button" id="pati-camera-torch" data-camera="torch" aria-pressed="false" hidden>Flaş</button><label>Yakınlaştır <input type="range" id="pati-camera-zoom" min="1" max="3" step=".1" hidden></label></div>'+ 
  '<div class="pati-camera-bottom">'+(reel?'':'<div class="pati-camera-modes"><button type="button" data-camera-mode="photo" data-camera="mode" class="active" aria-pressed="true">Fotoğraf</button><button type="button" data-camera-mode="video" data-camera="mode" aria-pressed="false">Video</button></div>')+
  '<div class="pati-camera-controls"><button data-camera="toggle" type="button" class="pati-camera-recent" aria-label="Tüm fotoğraf ve videoları gör"><span class="pati-camera-gallery-placeholder" aria-hidden="true">▧</span><img id="pati-camera-gallery-thumb" alt="" hidden></button><button data-camera="shutter" type="button" id="pati-camera-shutter" class="pati-camera-shutter'+(reel?' video-mode':'')+'" aria-label="'+(reel?'Video kaydet':'Fotoğraf çek')+'"><span></span></button><button data-camera="flip" type="button" class="pati-camera-flip" aria-label="Kamerayı çevir">⟳</button></div>'+
  '<div id="pati-camera-selected-count" class="pati-camera-selected-count">Fotoğraf çek veya galeriden seç</div>'+(mode==='post'?'':'<nav class="pati-camera-create-tabs" aria-label="Paylaşım türünü seç"><button data-camera="switch" data-camera-target="post" type="button">GÖNDERİ</button><button data-camera="switch" data-camera-target="story" type="button"'+(mode==='story'?' class="active" aria-current="page"':'')+'>HİKÂYE</button><button data-camera="switch" data-camera-target="reels" type="button"'+(mode==='reels'?' class="active" aria-current="page"':'')+'>REELS</button></nav>')+'<textarea id="pati-camera-caption" maxlength="2000" rows="2" placeholder="Bir açıklama ekle…"></textarea>'+
+ '<button type="button" id="pati-camera-restore" data-camera="restore" hidden>Son paylaşımı geri getir</button>'+ 
  '<div class="pati-camera-actions"><button type="button" id="pati-camera-retake" data-camera="retake" hidden>Yeniden çek</button><button type="button" id="pati-camera-publish" data-camera="publish" disabled>Paylaş</button></div></div>'+
  '<input id="pati-camera-file-fallback" type="file" accept="image/*,video/*,.mov,.heic,.heif" '+(mode==='post'?'multiple':'')+' hidden>'+
  '<input id="pati-camera-video-fallback" type="file" accept="video/mp4,video/webm,video/quicktime,video/*,.mov" hidden>';
  document.body.appendChild(root);document.body.classList.add('pati-camera-active');
- state={root,stream:null,cameraRequest:0,microphoneEnabled:false,recordStream:null,previewFrame:0,liveFrameRaf:0,torchOn:false,recorder:null,recordLimitTimer:null,mode,captureType:reel?'video':'photo',facing:'environment',selected:[],urls:[],offset:0,more:false,loading:false,onMedia,onPhotos,onPublish,onCancel,onSwitch,publishing:false};
+ state={root,stream:null,cameraRequest:0,microphoneEnabled:false,recordStream:null,previewFrame:0,liveFrameRaf:0,torchOn:false,recorder:null,recordLimitTimer:null,mode,captureType:reel?'video':'photo',facing:'environment',selected:[],urls:[],offset:0,more:false,loading:false,onMedia,onPhotos,onPublish,onCancel,onSwitch,userId,publishing:false};
  root.dataset.captureAspect=mode==='post'?'square':'portrait';
  if(mode==='story'||mode==='reels')applyPortraitFullscreen(root);
  void window.PatiyizNative?.setCameraImmersive?.(mode==='story'||mode==='reels');
@@ -387,8 +389,15 @@ function open({mode='post',onMedia,onPhotos,onPublish,onCancel,onSwitch}={}){
    try{await track.applyConstraints({advanced:[{torch:next}]});state.torchOn=next;const t=state.root.querySelector('#pati-camera-torch');t.setAttribute('aria-pressed',String(next));t.textContent=next?'Flaş açık':'Flaş'}catch(_){showMessage('Flaş bu cihazda desteklenmiyor.')}
    return;
   }
+  if(action==='restore'){
+   const draft=await window.PatiyizCameraDraft?.load(state.userId);if(!draft||draft.mode!==state.mode)return;
+   resetSelection();for(const file of draft.files){if(state!==current)break;await accept(file)}
+   const caption=state?.root.querySelector('#pati-camera-caption');if(caption)caption.value=draft.caption||'';
+   state?.root.querySelector('#pati-camera-restore')?.setAttribute('hidden','');return;
+  }
   if(action==='retake'){
    if(state.publishing)return;
+   void window.PatiyizCameraDraft?.clear(state.userId);
    resetSelection();
    state.root.querySelector('#pati-camera-alert').hidden=true;
    await startCamera();return;
@@ -429,6 +438,8 @@ function open({mode='post',onMedia,onPhotos,onPublish,onCancel,onSwitch}={}){
   if(state!==current||!state.more||state.loading)return;
   const el=e.target;if(el.scrollTop+el.clientHeight>=el.scrollHeight-350)void loadGallery();
  });
+ const saved=window.PatiyizCameraDraft?.load(userId);
+ if(saved)saved.then(item=>{if(state===current&&item?.mode===mode)root.querySelector('#pati-camera-restore').hidden=false}).catch(()=>{});
  if(native()){
   window.PatiyizNativeGallery.getPhotos({offset:0,limit:1,previewOnly:true}).then(r=>{
    if(state===current&&r.photos?.length)showGalleryThumbnail(state.root,r.photos[0].thumbnail);
@@ -442,7 +453,13 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&state){const cb=sta
 // Release camera and microphone in background; recover the preview on return.
 document.addEventListener('visibilitychange',()=>{
  if(!state)return;
- if(document.hidden){if(state.recorder?.state==='recording')stopRecorder();stopCamera();return}
+ if(document.hidden){
+  if(state.recorder?.state==='recording'){
+   const current=state;stopRecorder();
+   // Let recorder.onstop finalize the video and select it before releasing tracks.
+   setTimeout(()=>{if(state===current)stopCamera()},900);
+  }else stopCamera();return;
+ }
  if(!state.selected.length)void startCamera();
 });
 })();
