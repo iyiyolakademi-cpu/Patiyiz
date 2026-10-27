@@ -2908,7 +2908,7 @@ function mountPatiyizCamera(mode){
  // The standard modal stays hidden; camera UI owns the caption and share button.
  // Retain the existing authenticated publication transaction, not an editor step.
  window.PatiyizCameraFlow.open({
-  mode,
+  mode,userId:me.id,
   onSwitch(nextMode){
    // Keep the bottom mode strip functional, not decorative.
    closeModal(true);
@@ -2934,11 +2934,13 @@ function mountPatiyizCamera(mode){
    const f=new FormData(form),str=k=>String(f.get(k)||'').trim();
    if(mode==='story'){
     const result=await createStoryPublication(form,f,str);
+    void window.PatiyizCameraDraft?.clear(me.id);
     data.stories=[result,...data.stories.filter(x=>x.id!==result.id)];
     window.PatiyizCameraFlow?.close();closeModal(true);render();
     notify('Hikâyen 24 saat boyunca görüntülenecek.');
    }else{
     const result=await createPostPublication(form,f,str);
+    void window.PatiyizCameraDraft?.clear(me.id);
     profileCountCache.delete(me.id);
     window.PatiyizCameraFlow?.close();closeModal(true);
     try{await refresh()}catch(error){console.warn('Paylaşım kaydedildi, akış yenilemesi başarısız:',error.message)}
