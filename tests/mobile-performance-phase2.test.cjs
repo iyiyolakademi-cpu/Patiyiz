@@ -45,12 +45,12 @@ test('Akış videosu görünürken 70 videoyu tekrar tekrar pause etmez',async()
  callback([{target:videos[1],isIntersecting:false,intersectionRatio:0}]);
  assert.equal(videos[1].paused,true);
 });
-test('Reels yalnız görünür videoyu oynatır; yaklaşan videoyu metadata ile hazırlar',()=>{
+test('Reels yalnız aktif videoyu yükler; yaklaşan videoda metadata isteği yapılmaz',()=>{
  const {videos,callback,options}=observerHarness('function setupReelsViewer(){','function reelTogglePlay(','.pati-reel-video');
  assert.equal(options.rootMargin,'70% 0px 70% 0px');
  callback([{target:videos[2],isIntersecting:true,intersectionRatio:.2}]);
- assert.equal(videos[2].preload,'metadata');
- assert.equal(videos[2].loaded,1);
+ assert.equal(videos[2].preload,'none');
+ assert.equal(videos[2].loaded,0);
  callback([{target:videos[0],isIntersecting:true,intersectionRatio:.8}]);
  callback([{target:videos[1],isIntersecting:true,intersectionRatio:.9}]);
  assert.equal(videos[0].pausedCalls,1);

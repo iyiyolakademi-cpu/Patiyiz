@@ -54,7 +54,7 @@ test('Reels ekranında ilk video öncelikli hazırlanır; videonun tamamı kırp
  assert.match(cssEnd,/#main-content \.pati-reels-head\{display:none!important/);
 });
 
-test('Reels gözlemcisi komşu videoyu veri tasarruflu olarak hazırlıyor',()=>{
+test('Reels gözlemcisi komşu videoyu indirmeden bekletiyor',()=>{
  const source=part('function setupReelsViewer(){','function reelTogglePlay(');
  const videos=[{preload:'auto',readyState:3,pause(){},play(){return Promise.resolve()},dataset:{}},{preload:'none',readyState:0,load(){this.loaded=true},pause(){},play(){return Promise.resolve()},dataset:{}}];
  let observerCb=null,opts=null;
@@ -63,7 +63,7 @@ test('Reels gözlemcisi komşu videoyu veri tasarruflu olarak hazırlıyor',()=>
  const fn=vm.runInNewContext(source+'\nsetupReelsViewer',sandbox);fn();
  assert.equal(opts.rootMargin,'70% 0px 70% 0px');
  observerCb([{target:videos[1],isIntersecting:true,intersectionRatio:.1}]);
- assert.equal(videos[1].preload,'metadata');assert.equal(videos[1].loaded,true);
+ assert.equal(videos[1].preload,'none');assert.equal(videos[1].loaded,undefined);
 });
 
 test('Sohbetlerde arama kutusu var ve medya erişim bağlantıları yeniden kullanılabiliyor',async()=>{

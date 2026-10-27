@@ -71,12 +71,10 @@ test('Keşfet başlangıcı üç sütunlu medya ızgarasıdır, kullanıcı aram
  assert.match(app,/void patiExploreLookup\(''\)/);
 });
 
-test('Keşfet videoları görünene dek yüklenmez ve açılan gönderiden Keşfet’e dönülür',()=>{
+test('Keşfet video kapaksızsa veri tüketmeyen önizleme gösterir ve geri dönülür',()=>{
  const src=part('function explorePage(){','function communityPage(){');
- assert.match(src,/preload="'\+\(i<3\?'metadata':'none'\)\+'" data-explore-preview/);
- const lazy=part('function patiExploreLazyVideos(){','function explorePage(){');
- assert.match(lazy,/new IntersectionObserver/);
- assert.match(lazy,/video\.preload='metadata'/);
+ assert.match(src,/pati-explore-preview-video.*role="img"/);
+ assert.doesNotMatch(src,/<video class="pati-explore-preview-video"/);
  assert.match(app,/patiExploreReturnTo=view==='explore';selectedPostId=id;navigate\('home'\)/);
  assert.match(app,/case 'post-back':\{[\s\S]*?detail\?\.origin\|\|\(patiExploreReturnTo\?'explore':'home'\)/);
 });
