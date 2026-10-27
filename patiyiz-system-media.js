@@ -61,7 +61,7 @@
   info.textContent=files.length>1?files.length+' fotoğraf seçildi':(video?'Video':'Fotoğraf')+' seçildi · '+fmtSize(first.size);
   const publish=root.querySelector('#pati-system-publish');
   publish.disabled=false;publish.textContent='Paylaş';
-  root.querySelector('#pati-system-caption').focus({preventScroll:true});
+  // Let the person view their selected media before choosing to type a caption.
  }
  async function acceptFiles(files){
   if(!state)return;
