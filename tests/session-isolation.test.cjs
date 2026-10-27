@@ -80,7 +80,7 @@ test('Realtime verisi de oturum değiştiğinde uygulanmaz', async () => {
     me: { id: 'first' }, patiyizLoadToken: 3,
     data: { messages: [{ id: 'safe' }], notifications: [] },
     pageLimits: { messages: 150, notifications: 150 },
-    sb: { from() { return { select() { return this; }, order() { return this; }, limit() { return gate; } }; } }
+    sb: { from() { return { select() { return this; }, or() { return this; }, eq() { return this; }, order() { return this; }, limit() { return gate; } }; } }
   };
   const fn = vm.runInNewContext(segment('async function refreshLiveTables(){', 'function queueLiveUpdate(){') + '\nrefreshLiveTables', ctx);
   const promise = fn();
