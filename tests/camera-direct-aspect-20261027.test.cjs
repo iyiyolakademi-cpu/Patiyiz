@@ -38,7 +38,7 @@ test('Camera capture and selected photo uses only caption and Share',()=>{
  assert.match(html,/patiyiz-camera-flow\.js[^"]*framing=1/);
 });
 test('Square and portrait camera video capture includes microphone audio when supported',()=>{
- assert.match(camera,/const \{w,h\}=targetFrame\(current.mode\)/);
+ assert.match(camera,/const frame=targetFrame\(current.mode\),w=720,h=Math.round\(frame.h\*720\/frame.w\)/);
  assert.match(camera,/canvas\.captureStream\(24\)/);
  assert.match(camera,/getAudioTracks\(\)\.forEach\(track=>output.addTrack\(track\)\)/);
 });
