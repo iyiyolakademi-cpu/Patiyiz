@@ -56,6 +56,7 @@ function cleanup(){
  state.recordStream?.getVideoTracks().forEach(t=>t.stop());state.recordStream=null;
  stopCamera();
  state.urls.forEach(u=>URL.revokeObjectURL(u));
+ void window.PatiyizNative?.setCameraImmersive?.(false);
  state.root.remove();document.body.classList.remove('pati-camera-active');state=null;
 }
 function renderSelected(){
@@ -296,6 +297,7 @@ function open({mode='post',onMedia,onPhotos,onPublish,onCancel,onSwitch}={}){
  document.body.appendChild(root);document.body.classList.add('pati-camera-active');
  state={root,stream:null,cameraRequest:0,microphoneEnabled:false,recordStream:null,previewFrame:0,recorder:null,recordLimitTimer:null,mode,captureType:reel?'video':'photo',facing:'user',selected:[],urls:[],offset:0,more:false,loading:false,onMedia,onPhotos,onPublish,onCancel,onSwitch,publishing:false};
  root.dataset.captureAspect=mode==='post'?'square':'portrait';
+ void window.PatiyizNative?.setCameraImmersive?.(mode==='story'||mode==='reels');
  const current=state;
  root.addEventListener('click',async e=>{
   const b=e.target.closest('[data-camera]');if(!b||state!==current)return;
