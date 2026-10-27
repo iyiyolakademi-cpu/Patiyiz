@@ -2961,7 +2961,6 @@ async function drawPostCrop(){const input=document.querySelector('#post-form inp
 async function cropPostPhoto(file,aspect){if(!file?.size)return file;const dims={'9:16':[1080,1920],'4:5':[1080,1350],'1:1':[1080,1080],'1.91:1':[1080,566]};const [w,h]=dims[aspect]||dims['4:5'];const url=URL.createObjectURL(file);try{const img=new Image();img.src=url;await img.decode();const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');const scale=Math.max(w/img.naturalWidth,h/img.naturalHeight)*postCropZoom;const dw=img.naturalWidth*scale,dh=img.naturalHeight*scale;ctx.drawImage(img,(w-dw)*postCropX,(h-dh)*postCropY,dw,dh);const blob=await new Promise(resolve=>c.toBlob(resolve,'image/jpeg',.86));if(!blob)throw Error('Görsel kırpılamadı.');return new File([blob],'patiyiz-post-'+Date.now()+'.jpg',{type:'image/jpeg'})}finally{URL.revokeObjectURL(url)}}
 async function uploadVideo(file){
  if(!file||!file.size)return null;
- if(navigator.onLine===false)throw Error('İnternet bağlantısı yok. Video bağlantı geldiğinde yüklenebilir.');
  const max=50*1024*1024;
  // Free storage allows up to 50 MB per object. Try local compression without
  // uploading the original when a supported browser can preserve the sound.
@@ -2971,6 +2970,7 @@ async function uploadVideo(file){
   file=await window.PatiyizVideoPrepare.prepare(file,message=>uploadStatus(message));
  }
  if(file.size>max)throw Error('Video 50 MB altında olmalı. Lütfen videoyu daha düşük çözünürlükte kaydet.');
+ if(navigator.onLine===false)throw Error('İnternet bağlantısı yok. Video bağlantı geldiğinde yüklenebilir.');
  const guessed=/\.mov$/i.test(file.name)?'video/quicktime':/\.webm$/i.test(file.name)?'video/webm':/\.mp4$/i.test(file.name)?'video/mp4':'';
  const mime=['video/mp4','video/webm','video/quicktime'].includes(file.type)?file.type:(!file.type||file.type==='application/octet-stream'?guessed:file.type);
  if(!['video/mp4','video/webm','video/quicktime'].includes(mime))throw Error('MP4, WebM veya MOV video seç.');
