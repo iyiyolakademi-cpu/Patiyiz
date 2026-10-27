@@ -2766,3 +2766,21 @@ html[data-pati-theme="dark"] #main-content .pati-social-actions button[data-acti
 #patiyiz-camera-screen .pati-camera-tools [hidden]{display:none!important}
 #patiyiz-camera-screen.pati-camera-has-media .pati-camera-tools{display:none!important}
 #patiyiz-camera-screen .pati-camera-create-tabs button{touch-action:manipulation}
+
+/* Camera six-pack: frame-matched preview, focus ring, local draft recovery. */
+#patiyiz-camera-screen #pati-camera-framed{
+ position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+ max-height:none!important;max-width:none!important;object-fit:cover!important;pointer-events:none;
+}
+#patiyiz-camera-screen #pati-camera-framed[hidden]{display:none!important}
+#patiyiz-camera-screen .pati-camera-focus{
+ position:absolute;z-index:6;width:56px;height:56px;pointer-events:none;
+ border:2px solid #fff;border-radius:50%;transform:translate(-50%,-50%);
+ box-shadow:0 1px 8px #0008
+}
+#patiyiz-camera-screen #pati-camera-restore{margin:8px 0;padding:12px;border-radius:12px;
+ width:100%;border:1px solid #ffffff65;background:#21232a;color:#fff;font-weight:750}
+#patiyiz-camera-screen .pati-camera-tools{right:12px;top:max(100px,calc(env(safe-area-inset-top,0px) + 85px))}
+#patiyiz-camera-screen .pati-camera-tools:has(input[hidden]):has(button[hidden]){display:none!important}
+#patiyiz-camera-screen .pati-camera-gallery-scroll button[data-camera="fallback"]{display:block;
+ width:calc(100% - 24px);margin:8px 12px;background:#fff;color:#111;font-weight:800;padding:12px;border-radius:13px}
