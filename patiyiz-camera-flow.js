@@ -56,6 +56,7 @@ function cleanup(){
  state.recordStream?.getVideoTracks().forEach(t=>t.stop());state.recordStream=null;
  stopCamera();
  state.urls.forEach(u=>URL.revokeObjectURL(u));
+ void window.PatiyizNative?.setCameraImmersive?.(false);
  state.root.remove();document.body.classList.remove('pati-camera-active');state=null;
 }
 function renderSelected(){
@@ -70,6 +71,7 @@ function renderSelected(){
  root.querySelector('#pati-camera-selected-count').textContent=text;
  root.classList.toggle('pati-camera-has-media',has);
  root.querySelector('#pati-camera-publish').disabled=!has;
+ root.querySelector('#pati-camera-retake').hidden=!has;
 }
 async function startCamera(){
  if(!state)return;
@@ -274,7 +276,7 @@ function setCaptureType(type){
  });
  resetSelection();void startCamera();
 }
-function open({mode='post',onMedia,onPhotos,onPublish,onCancel,onEdit}={}){
+function open({mode='post',onMedia,onPhotos,onPublish,onCancel,onSwitch}={}){
  if(state)return;
  if(!['post','story','reels'].includes(mode))mode='post';
  if((typeof onMedia!=='function'&&typeof onPhotos!=='function')||typeof onPublish!=='function')throw Error('Kamera paylaşım formuna bağlanmalı.');
@@ -288,13 +290,14 @@ function open({mode='post',onMedia,onPhotos,onPublish,onCancel,onEdit}={}){
  '<section id="pati-camera-gallery-panel" class="pati-camera-gallery-panel" hidden><div class="pati-camera-gallery-title"><strong>Fotoğraflarım</strong><button type="button" data-camera="toggle">⌄ Kapat</button></div><div class="pati-camera-gallery-scroll"><div id="pati-camera-gallery-grid" class="pati-camera-gallery-grid"></div><p id="pati-camera-gallery-state">Fotoğraflar yükleniyor…</p><button id="pati-camera-gallery-fallback" data-camera="fallback" type="button" hidden>Sistem galerisinden seç</button><button type="button" data-camera="video-gallery">Videoları aç</button><button type="button" data-camera="more">Daha fazla fotoğraf</button></div></section>'+
  '<div class="pati-camera-bottom">'+(reel?'':'<div class="pati-camera-modes"><button type="button" data-camera-mode="photo" data-camera="mode" class="active" aria-pressed="true">Fotoğraf</button><button type="button" data-camera-mode="video" data-camera="mode" aria-pressed="false">Video</button></div>')+
  '<div class="pati-camera-controls"><button data-camera="toggle" type="button" class="pati-camera-recent" aria-label="Tüm fotoğraf ve videoları gör"><img id="pati-camera-gallery-thumb" alt="" src="patiyiz-app-icon-192.png"></button><button data-camera="shutter" type="button" id="pati-camera-shutter" class="pati-camera-shutter'+(reel?' video-mode':'')+'" aria-label="'+(reel?'Video kaydet':'Fotoğraf çek')+'"><span></span></button><button data-camera="flip" type="button" class="pati-camera-flip" aria-label="Kamerayı çevir">⟳</button></div>'+
- '<div id="pati-camera-selected-count" class="pati-camera-selected-count">Fotoğraf çek veya galeriden seç</div><textarea id="pati-camera-caption" maxlength="2000" rows="2" placeholder="Bir açıklama ekle…"></textarea>'+
- '<div class="pati-camera-actions"><button type="button" id="pati-camera-publish" data-camera="publish" disabled>Paylaş</button></div></div>'+
+ '<div id="pati-camera-selected-count" class="pati-camera-selected-count">Fotoğraf çek veya galeriden seç</div>'+(mode==='post'?'':'<nav class="pati-camera-create-tabs" aria-label="Paylaşım türünü seç"><button data-camera="switch" data-camera-target="post" type="button">GÖNDERİ</button><button data-camera="switch" data-camera-target="story" type="button"'+(mode==='story'?' class="active" aria-current="page"':'')+'>HİKÂYE</button><button data-camera="switch" data-camera-target="reels" type="button"'+(mode==='reels'?' class="active" aria-current="page"':'')+'>REELS</button></nav>')+'<textarea id="pati-camera-caption" maxlength="2000" rows="2" placeholder="Bir açıklama ekle…"></textarea>'+
+ '<div class="pati-camera-actions"><button type="button" id="pati-camera-retake" data-camera="retake" hidden>Yeniden çek</button><button type="button" id="pati-camera-publish" data-camera="publish" disabled>Paylaş</button></div></div>'+
  '<input id="pati-camera-file-fallback" type="file" accept="image/*,video/*,.mov,.heic,.heif" '+(mode==='post'?'multiple':'')+' hidden>'+
  '<input id="pati-camera-video-fallback" type="file" accept="video/mp4,video/webm,video/quicktime,video/*,.mov" hidden>';
  document.body.appendChild(root);document.body.classList.add('pati-camera-active');
- state={root,stream:null,cameraRequest:0,microphoneEnabled:false,recordStream:null,previewFrame:0,recorder:null,recordLimitTimer:null,mode,captureType:reel?'video':'photo',facing:'user',selected:[],urls:[],offset:0,more:false,loading:false,onMedia,onPhotos,onPublish,onCancel,publishing:false};
+ state={root,stream:null,cameraRequest:0,microphoneEnabled:false,recordStream:null,previewFrame:0,recorder:null,recordLimitTimer:null,mode,captureType:reel?'video':'photo',facing:'user',selected:[],urls:[],offset:0,more:false,loading:false,onMedia,onPhotos,onPublish,onCancel,onSwitch,publishing:false};
  root.dataset.captureAspect=mode==='post'?'square':'portrait';
+ void window.PatiyizNative?.setCameraImmersive?.(mode==='story'||mode==='reels');
  const current=state;
  root.addEventListener('click',async e=>{
   const b=e.target.closest('[data-camera]');if(!b||state!==current)return;
@@ -302,6 +305,18 @@ function open({mode='post',onMedia,onPhotos,onPublish,onCancel,onEdit}={}){
   if(action==='cancel'){const cb=state.onCancel;cleanup();cb?.();return}
   if(action==='retry'){await startCamera();return}
   if(action==='toggle'){await toggleGallery();return}
+  if(action==='switch'){
+   const next=b.dataset.cameraTarget;
+   if(state.publishing||state.recorder?.state==='recording'){showMessage('İşlem devam ederken modu değiştiremezsin.');return}
+   if(!['post','story','reels'].includes(next)||next===state.mode)return;
+   const cb=state.onSwitch;cleanup();cb?.(next);return;
+  }
+  if(action==='retake'){
+   if(state.publishing)return;
+   resetSelection();
+   state.root.querySelector('#pati-camera-alert').hidden=true;
+   await startCamera();return;
+  }
   if(action==='fallback'){galleryFallback('photo');return}
   if(action==='video-gallery'){galleryFallback('video');return}
   if(action==='more'){if(state.more)await loadGallery();return}

@@ -96,7 +96,15 @@ async function disablePush(){
  registeredToken='';
 }
 async function nativeLogout(){await disablePush();activeUser='';activeClient=null}
-window.PatiyizNative={isNative:native,firebaseConfigured,pickPhotoForInput,enablePush,disablePush,nativeLogout,
+// In the packaged Android app, portrait Story/Reels capture may use the
+// entire physical screen (the system status bar returns on camera close).
+let cameraStatusQueue=Promise.resolve();
+function setCameraImmersive(active){
+ if(!native)return Promise.resolve();
+ cameraStatusQueue=cameraStatusQueue.then(()=>active?StatusBar.hide():StatusBar.show()).catch(err=>console.warn('Camera status bar:',err));
+ return cameraStatusQueue;
+}
+window.PatiyizNative={isNative:native,firebaseConfigured,pickPhotoForInput,enablePush,disablePush,nativeLogout,setCameraImmersive,
  setSession(userId,client){
   activeUser=userId||'';activeClient=client||null;
   if(native&&firebaseConfigured&&activeUser&&activeClient){
