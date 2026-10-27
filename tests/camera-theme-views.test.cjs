@@ -19,7 +19,7 @@ test('Plus opens a single camera screen and not legacy media chooser modal',()=>
  assert.match(app,/else if\(view==='home'\|\|view==='profile'\)startPatiCameraPost\(\)/);
  assert.match(app,/function startPatiCameraPost\(\)/);
  assert.match(app,/compose\(null,'post',false\)/);
- assert.match(app,/window\.PatiyizCameraFlow\.open/);
+ assert.match(app,/window\.PatiyizSystemMediaFlow\.open/);
  assert.match(app,/async onPublish\(caption\)/);
  assert.match(app,/await createPostPublication\(form,f,str\)/);
  assert.match(app,/new DataTransfer\(\)/);
