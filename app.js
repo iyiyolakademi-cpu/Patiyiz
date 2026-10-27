@@ -2902,6 +2902,11 @@ function draftRestore(){
 function mountPatiyizCamera(mode){
  const form=document.getElementById('post-form');if(!form)return;
  if(!window.PatiyizCameraFlow){openComposerMediaPicker('gallery');return}
+ form.dataset.cameraFirst='1';
+ const aspect=form.querySelector('input[name="aspect"]');
+ if(aspect)aspect.value=mode==='post'?'1:1':'9:16';
+ // The standard modal stays hidden; camera UI owns the caption and share button.
+ // Retain the existing authenticated publication transaction, not an editor step.
  window.PatiyizCameraFlow.open({
   mode,
   onMedia(files,type){
@@ -2912,17 +2917,27 @@ function mountPatiyizCamera(mode){
    const transfer=new DataTransfer();
    files.forEach(file=>transfer.items.add(file));
    other.value='';input.files=transfer.files;
+   // Keep the hidden composer in sync with the file selection.
    input.dispatchEvent(new Event('change',{bubbles:true}));
   },
   onCancel(){closeModal(true)},
-  onEdit(){/* Keep selected files and open the original editor. */},
-  onPublish(caption){
+  async onPublish(caption){
    if(!form.isConnected)throw Error('Paylaşım ekranı kapandı.');
    const body=form.querySelector('textarea[name="body"]');if(body)body.value=caption;
-   // Close the camera before submitting. If a network error occurs the composer
-   // remains visible and the person can retry without losing selected files.
-   window.PatiyizCameraFlow?.close();
-   form.requestSubmit();
+   const f=new FormData(form),str=k=>String(f.get(k)||'').trim();
+   if(mode==='story'){
+    const result=await createStoryPublication(form,f,str);
+    data.stories=[result,...data.stories.filter(x=>x.id!==result.id)];
+    window.PatiyizCameraFlow?.close();closeModal(true);render();
+    notify('Hikâyen 24 saat boyunca görüntülenecek.');
+   }else{
+    const result=await createPostPublication(form,f,str);
+    profileCountCache.delete(me.id);
+    window.PatiyizCameraFlow?.close();closeModal(true);
+    try{await refresh()}catch(error){console.warn('Paylaşım kaydedildi, akış yenilemesi başarısız:',error.message)}
+    notify('Paylaşım yayınlandı.');
+    try{localStorage.removeItem(patiDraftKey())}catch(_){}
+   }
   }
  });
 }
@@ -2940,7 +2955,7 @@ function startPatiCameraReels(){
 }
 
 function compose(post,mode='post',autoPick=true){
- postCropX=.5;postCropY=.5;postCropRatio=mode==='story'?'9:16':'4:5';postCropZoom=1;postCropIndex=0;clearPatiMediaUrls();
+ postCropX=.5;postCropY=.5;postCropRatio=mode==='story'||mode==='reels'?'9:16':'1:1';postCropZoom=1;postCropIndex=0;clearPatiMediaUrls();
  const reel=!post&&mode==='reels',story=!post&&mode==='story',textOnly=!post&&mode==='text';
  const title=post?'Paylaşımı düzenle':story?'Yeni hikâye':reel?'Yeni Reels':textOnly?'Yeni yazı':'Yeni gönderi';
  const sizes=story?[['9:16','▯ Dikey'],['1:1','□ Kare'],['1.91:1','▭ Yatay']]:[['4:5','▯ Dikey'],['1.91:1','▭ Yatay'],['1:1','□ Kare']];
@@ -3103,7 +3118,7 @@ async function createPostPublication(form,f,str){
   }
   record.image_url=record.images[0]||null;
   let video=videoFile;
-  if(form.dataset.mode==='reels'&&hasVideo){
+  if(form.dataset.mode==='reels'&&hasVideo&&form.dataset.cameraFirst!=='1'){
    if(!window.PatiyizReelsEditor)throw Error('Reels editörü yüklenemedi. Sayfayı yenile.');
    uploadStatus('Reels klipleri hazırlanıyor…');
    video=await window.PatiyizReelsEditor.exportVideo(percent=>uploadStatus('Reels işleniyor… %'+percent));
