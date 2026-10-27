@@ -2558,3 +2558,18 @@ html[data-pati-theme="dark"] #main-content .pati-social-actions button[data-acti
  #main-content .pati-dm-dots b{animation:none!important}
  #main-content .pati-carousel-slide .pati-photo img{transition:none!important}
 }
+
+/* Unified camera-first media flow: square gallery, photo/video modes and recording */
+#patiyiz-camera-screen .pati-camera-modes{display:flex;gap:7px;justify-content:center}
+#patiyiz-camera-screen .pati-camera-modes button{border:0;border-radius:18px;background:#25262b;padding:7px 20px;color:#e5e6eb;font-size:13px;font-weight:700}
+#patiyiz-camera-screen .pati-camera-modes button.active{background:#fff;color:#131416}
+#patiyiz-camera-screen .pati-camera-shutter.video-mode span{background:#ef4444}
+#patiyiz-camera-screen .pati-camera-shutter.recording span{width:60%;height:60%;border-radius:8px;background:#ef4444}
+#patiyiz-camera-screen .pati-camera-actions{display:flex;gap:9px;align-items:center}
+#patiyiz-camera-screen .pati-camera-actions #pati-camera-edit{flex:0 0 28%;background:#292a30;border:1px solid #55565d;padding:12px 8px;border-radius:12px;font-weight:750}
+#patiyiz-camera-screen .pati-camera-actions #pati-camera-publish{flex:1;min-width:0}
+#patiyiz-camera-screen .pati-camera-stage #pati-camera-chosen-video{object-fit:contain;background:#090a0c}
+#patiyiz-camera-screen .pati-camera-gallery-scroll [data-camera="video-gallery"]{display:block;width:calc(100% - 24px);border:1px solid #585a61;border-radius:11px;margin:9px 12px 15px;padding:12px;background:#292b31;font-weight:750}
+#patiyiz-camera-screen .pati-camera-gallery-panel{bottom:min(235px,39dvh)}
+#patiyiz-camera-screen .pati-camera-recent{border-radius:10px;flex:0 0 55px}
+@media(max-width:740px){#patiyiz-camera-screen .pati-camera-stage{min-height:0}#patiyiz-camera-screen .pati-camera-bottom{padding-bottom:max(14px,env(safe-area-inset-bottom,0px))}}
