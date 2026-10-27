@@ -39,6 +39,6 @@ test('Camera capture and selected photo uses only caption and Share',()=>{
 });
 test('Square and portrait camera video capture includes microphone audio when supported',()=>{
  assert.match(camera,/const frame=targetFrame\(current.mode\),w=720,h=Math.round\(frame.h\*720\/frame.w\)/);
- assert.match(camera,/canvas\.captureStream\(24\)/);
+ assert.match(camera,/canvas\.captureStream\(30\)/);
  assert.match(camera,/getAudioTracks\(\)\.forEach\(track=>output.addTrack\(track\)\)/);
 });
