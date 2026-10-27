@@ -66,6 +66,7 @@ function renderSelected(){
  const text=!has?(state.captureType==='video'?'Video çek veya sol alttan galeriyi aç':'Fotoğraf çek veya sol alttan galeriyi aç'):
  video?'Video seçildi · Devam ederek paylaş':state.selected.length+' fotoğraf seçildi';
  root.querySelector('#pati-camera-selected-count').textContent=text;
+ root.classList.toggle('pati-camera-has-media',has);
  root.querySelector('#pati-camera-publish').disabled=!has;
 }
 async function startCamera(){
@@ -161,7 +162,7 @@ function toggleRecord(){
   const chunks=[];
   // Record the same square/portrait frame displayed to the user. Retain mic
   // audio tracks; older browsers fall back to the original camera stream.
-  const {w,h}=targetFrame(current.mode);
+  const frame=targetFrame(current.mode),w=720,h=Math.round(frame.h*720/frame.w);
   const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
   const ctx=canvas.getContext('2d',{alpha:false});
   const canCapture=!!ctx&&typeof canvas.captureStream==='function'&&typeof requestAnimationFrame==='function';
@@ -309,6 +310,7 @@ function open({mode='post',onMedia,onPhotos,onPublish,onCancel,onEdit}={}){
    if(state===current&&r.photos?.length)state.root.querySelector('#pati-camera-gallery-thumb').src=r.photos[0].thumbnail;
   }).catch(()=>{});
  }
+ renderSelected();
  void startCamera();
 }
 window.PatiyizCameraFlow={open,close:cleanup,cancel(){if(!state)return;const cb=state.onCancel;cleanup();cb?.()},get active(){return !!state}};
