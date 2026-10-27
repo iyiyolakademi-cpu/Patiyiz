@@ -74,6 +74,7 @@ function paintFramePreview(current){
 function cameraCapabilities(current){
  const track=current.stream?.getVideoTracks()[0],caps=track?.getCapabilities?.()||{};
  const zoom=current.root.querySelector('#pati-camera-zoom'),torch=current.root.querySelector('#pati-camera-torch');
+ current.focusModes=caps.focusMode||[];
  if(torch){torch.hidden=!caps.torch||current.facing!=='environment';torch.setAttribute('aria-pressed','false')}
  current.torchOn=false;
  if(zoom){
@@ -353,7 +354,7 @@ function open({mode='post',onMedia,onPhotos,onPublish,onCancel,onSwitch,userId}=
  root.id='patiyiz-camera-screen';root.setAttribute('role','dialog');
  root.setAttribute('aria-modal','true');root.setAttribute('aria-label',title);
  root.innerHTML='<header class="pati-camera-head"><button type="button" data-camera="cancel" aria-label="Geri">×</button><strong>'+title+'</strong><span>patiyiz</span></header>'+
- '<div class="pati-camera-stage"><div class="pati-camera-viewfinder"><video id="pati-camera-live" autoplay playsinline muted></video><canvas id="pati-camera-framed" width="720" height="'+(mode==='post'?720:1280)+'" hidden></canvas><img id="pati-camera-chosen-image" alt="Seçilen fotoğraf" hidden><video id="pati-camera-chosen-video" playsinline controls preload="metadata" hidden></video><div class="pati-camera-unavailable" id="pati-camera-camera-fallback" hidden><strong>Kamerana erişilemiyor</strong><button type="button" data-camera="retry">Kamerayı yeniden aç</button></div></div></div>'+
+ '<div class="pati-camera-stage"><span class="pati-camera-focus" hidden aria-hidden="true"></span><div class="pati-camera-viewfinder"><video id="pati-camera-live" autoplay playsinline muted></video><canvas id="pati-camera-framed" width="720" height="'+(mode==='post'?720:1280)+'" hidden></canvas><img id="pati-camera-chosen-image" alt="Seçilen fotoğraf" hidden><video id="pati-camera-chosen-video" playsinline controls preload="metadata" hidden></video><div class="pati-camera-unavailable" id="pati-camera-camera-fallback" hidden><strong>Kamerana erişilemiyor</strong><button type="button" data-camera="retry">Kamerayı yeniden aç</button></div></div></div>'+
  '<div id="pati-camera-alert" class="pati-camera-alert" role="status" hidden></div>'+
  '<section id="pati-camera-gallery-panel" class="pati-camera-gallery-panel" hidden><div class="pati-camera-gallery-title"><strong>Fotoğraflarım</strong><button type="button" data-camera="toggle">⌄ Kapat</button></div><div class="pati-camera-gallery-scroll"><div id="pati-camera-gallery-grid" class="pati-camera-gallery-grid"></div><p id="pati-camera-gallery-state">Fotoğraflar yükleniyor…</p><button id="pati-camera-gallery-fallback" data-camera="fallback" type="button" hidden>Sistem galerisinden seç</button><button type="button" data-camera="video-gallery">Tüm videoları seç</button><button type="button" data-camera="fallback">Telefon galerisi · fotoğraf veya video</button><button type="button" data-camera="more">Daha fazla fotoğraf</button></div></section>'+
  '<div class="pati-camera-tools"><button type="button" id="pati-camera-torch" data-camera="torch" aria-pressed="false" hidden>Flaş</button><label>Yakınlaştır <input type="range" id="pati-camera-zoom" min="1" max="3" step=".1" hidden></label></div>'+ 
@@ -428,6 +429,15 @@ function open({mode='post',onMedia,onPhotos,onPublish,onCancel,onSwitch,userId}=
  });
  root.querySelector('#pati-camera-video-fallback').addEventListener('change',async e=>{
   const file=e.target.files?.[0];if(file&&state===current)await accept(file);e.target.value='';
+ });
+ root.querySelector('.pati-camera-stage').addEventListener('pointerup',async e=>{
+  if(state!==current||state.selected.length||state.recorder?.state==='recording')return;
+  const track=state.stream?.getVideoTracks()[0];if(!track)return;
+  if(Array.isArray(state.focusModes)&&state.focusModes.includes('single-shot')){
+   try{await track.applyConstraints({advanced:[{focusMode:'single-shot'}]})}catch(_){}
+  }
+  const marker=state.root.querySelector('.pati-camera-focus');
+  if(marker){const box=state.root.querySelector('.pati-camera-stage').getBoundingClientRect();marker.style.left=(e.clientX-box.left)+'px';marker.style.top=(e.clientY-box.top)+'px';marker.hidden=false;setTimeout(()=>{if(state===current)marker.hidden=true},600)}
  });
  root.querySelector('#pati-camera-zoom').addEventListener('input',async e=>{
   if(state!==current||state.recorder?.state==='recording')return;
