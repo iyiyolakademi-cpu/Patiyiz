@@ -2880,3 +2880,41 @@ body.pati-system-media-active #modal-root{visibility:hidden!important;pointer-ev
  #patiyiz-system-media .pati-system-options button,
  #patiyiz-system-media .pati-system-options .pati-system-option-icon{transition:none}
 }
+
+/* Feed media ratio fix: no black sidebars for portrait Reels videos in the home feed.
+   Once media metadata loads, --pati-feed-aspect is its actual pixel ratio. */
+#main-content .pati-feed-card .pati-video-frame{
+ width:100%!important;height:auto!important;max-height:none!important;
+ aspect-ratio:var(--pati-feed-aspect,9 / 16)!important;
+ overflow:hidden!important;background:transparent!important;
+}
+#main-content .pati-feed-card .pati-video-frame .pati-post-video{
+ display:block!important;width:100%!important;height:100%!important;
+ max-height:none!important;object-fit:cover!important;
+ object-position:center!important;margin:0!important;
+ background:transparent!important;border-radius:0!important;
+}
+#main-content .pati-feed-card .pati-carousel{
+ width:100%!important;height:auto!important;max-height:none!important;
+ aspect-ratio:var(--pati-feed-aspect,4 / 5)!important;
+ overflow:hidden!important;background:transparent!important;
+}
+#main-content .pati-feed-card .pati-carousel-track{
+ height:100%!important;align-items:stretch!important;
+}
+#main-content .pati-feed-card .pati-carousel-slide{
+ height:100%!important;min-width:100%!important;overflow:hidden!important;
+}
+#main-content .pati-feed-card .pati-carousel-slide .pati-photo{
+ display:block!important;width:100%!important;height:100%!important;
+ aspect-ratio:auto!important;max-height:none!important;
+ margin:0!important;border-radius:0!important;background:transparent!important;
+}
+#main-content .pati-feed-card .pati-carousel-slide .pati-photo img{
+ display:block!important;width:100%!important;height:100%!important;
+ object-fit:cover!important;object-position:center!important;
+}
+/* Reels player fills its portrait viewport instead of showing black side bands. */
+#main-content .pati-reel-video{
+ object-fit:cover!important;object-position:center center!important;
+}
