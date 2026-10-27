@@ -17,6 +17,21 @@ const bytesToFile=(str,name='patiyiz-fotograf.jpg')=>{
  return new File(chunks,name,{type:'image/jpeg',lastModified:Date.now()});
 };
 const urlFor=f=>URL.createObjectURL(f);
+// Post is square; Stories and Reels have a 9:16 portrait camera.
+const targetFrame=mode=>mode==='post'?{w:1080,h:1080}:{w:1080,h:1920};
+function drawCameraFrame(ctx,video,width,height,selfie){
+ const vw=video.videoWidth||width,vh=video.videoHeight||height;
+ // A front-facing selfie should show more of the subject instead of forcing
+ // another digital zoom to fill the post square.
+ const scale=selfie?Math.min(width/vw,height/vh):Math.max(width/vw,height/vh);
+ const dw=vw*scale,dh=vh*scale;
+ ctx.fillStyle='#090a0e';ctx.fillRect(0,0,width,height);
+ ctx.save();
+ if(selfie){ctx.translate(width,0);ctx.scale(-1,1)}
+ ctx.drawImage(video,(width-dw)/2,(height-dh)/2,dw,dh);
+ ctx.restore();
+}
+
 function showMessage(message){
  const el=state?.root.querySelector('#pati-camera-alert');
  if(el){el.textContent=String(message);el.hidden=false}
@@ -25,6 +40,7 @@ function stopCamera(){
  if(!state)return;
  state.stream?.getTracks().forEach(track=>track.stop());state.stream=null;
  const video=state.root.querySelector('#pati-camera-live');if(video)video.srcObject=null;
+ if(state.previewFrame){cancelAnimationFrame(state.previewFrame);state.previewFrame=0}
 }
 function stopRecorder(){
  if(!state)return;
@@ -35,6 +51,7 @@ function cleanup(){
  if(!state)return;
  if(state.recordLimitTimer)clearTimeout(state.recordLimitTimer);
  if(state.recorder?.state==='recording')state.recorder.stop();
+ state.recordStream?.getVideoTracks().forEach(t=>t.stop());state.recordStream=null;
  stopCamera();
  state.urls.forEach(u=>URL.revokeObjectURL(u));
  state.root.remove();document.body.classList.remove('pati-camera-active');state=null;
@@ -50,7 +67,6 @@ function renderSelected(){
  video?'Video seçildi · Devam ederek paylaş':state.selected.length+' fotoğraf seçildi';
  root.querySelector('#pati-camera-selected-count').textContent=text;
  root.querySelector('#pati-camera-publish').disabled=!has;
- root.querySelector('#pati-camera-edit').hidden=!has;
 }
 async function startCamera(){
  if(!state)return;
@@ -59,11 +75,21 @@ async function startCamera(){
   if(native())await window.PatiyizNativeGallery.ensureCamera();
   if(!navigator.mediaDevices?.getUserMedia)throw Error('Kamera desteklenmiyor.');
   const stream=await navigator.mediaDevices.getUserMedia({
-   video:{facingMode:{ideal:current.facing},width:{ideal:1280},height:{ideal:1920}},
+   video:{facingMode:{ideal:current.facing},width:{ideal:1080},height:{ideal:1920},
+    aspectRatio:{ideal:current.mode==='post'?1:9/16},resizeMode:'none'},
    audio:current.captureType==='video'
   });
   if(state!==current){stream.getTracks().forEach(t=>t.stop());return}
   current.stream=stream;
+  // Some mobile cameras start with digital zoom enabled. Ask for the lowest
+  // supported zoom; unsupported browsers keep their native lens field of view.
+  if(current.facing==='user'){
+   const track=stream.getVideoTracks()[0],cap=track?.getCapabilities?.();
+   if(Number.isFinite(cap?.zoom?.min)&&cap.zoom.min>=0){
+    try{await track.applyConstraints({advanced:[{zoom:cap.zoom.min}]})}catch(_){}
+   }
+  }
+  current.root.classList.toggle('pati-camera-selfie',current.facing==='user');
   const video=current.root.querySelector('#pati-camera-live');
   video.srcObject=stream;video.hidden=current.selected.length>0;
   void video.play().catch(()=>{});
@@ -111,9 +137,9 @@ async function capture(){
  if(!state)return;
  const v=state.root.querySelector('#pati-camera-live');
  if(!state.stream||!v.videoWidth){showMessage('Kamera henüz hazır değil.');return}
- const width=Math.min(v.videoWidth,1600),height=Math.round(width*v.videoHeight/v.videoWidth);
- const cv=document.createElement('canvas');cv.width=width;cv.height=height;
- cv.getContext('2d').drawImage(v,0,0,width,height);
+ const {w,h}=targetFrame(state.mode);
+ const cv=document.createElement('canvas');cv.width=w;cv.height=h;
+ drawCameraFrame(cv.getContext('2d'),v,w,h,state.facing==='user');
  const blob=await new Promise(resolve=>cv.toBlob(resolve,'image/jpeg',.88));
  if(blob)await accept(new File([blob],'patiyiz-kamera-'+Date.now()+'.jpg',{type:'image/jpeg'}));
 }
@@ -133,12 +159,29 @@ function toggleRecord(){
  if(!mime){current.root.querySelector('#pati-camera-video-fallback').click();return}
  try{
   const chunks=[];
-  const recorder=new MediaRecorder(current.stream,{mimeType:mime,videoBitsPerSecond:1600000,audioBitsPerSecond:96000});
+  // Record the same square/portrait frame displayed to the user. Retain mic
+  // audio tracks; older browsers fall back to the original camera stream.
+  const {w,h}=targetFrame(current.mode);
+  const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+  const ctx=canvas.getContext('2d',{alpha:false});
+  const canCapture=!!ctx&&typeof canvas.captureStream==='function'&&typeof requestAnimationFrame==='function';
+  const output=canCapture?canvas.captureStream(24):current.stream;
+  if(canCapture){
+   current.recordStream=output;
+   current.stream.getAudioTracks().forEach(track=>output.addTrack(track));
+   const paint=()=>{if(state!==current||!current.recorder||current.recorder.state!=='recording')return;
+    drawCameraFrame(ctx,current.root.querySelector('#pati-camera-live'),w,h,current.facing==='user');
+    current.previewFrame=requestAnimationFrame(paint)};
+   current.drawRecordedFrame=paint;
+  }
+  const recorder=new MediaRecorder(output,{mimeType:mime,videoBitsPerSecond:1600000,audioBitsPerSecond:96000});
   current.recorder=recorder;
   recorder.ondataavailable=e=>{if(e.data?.size)chunks.push(e.data)};
   recorder.onerror=()=>showMessage('Kayıt tamamlanamadı. Galeriden video seçebilirsin.');
   recorder.onstop=()=>{
    button.classList.remove('recording');
+   if(current.previewFrame){cancelAnimationFrame(current.previewFrame);current.previewFrame=0}
+   current.recordStream?.getVideoTracks().forEach(t=>t.stop());current.recordStream=null;
    if(state!==current)return;
    if(current.recordLimitTimer){clearTimeout(current.recordLimitTimer);current.recordLimitTimer=null}
    const blob=new Blob(chunks,{type:mime.split(';')[0]});
@@ -149,6 +192,7 @@ function toggleRecord(){
    }else showMessage('Video kaydedilemedi. Tekrar dene.');
   };
   recorder.start(1000);button.classList.add('recording');
+  current.drawRecordedFrame?.();
   const maxSeconds=current.mode==='reels'?90:current.mode==='story'?120:180;
   current.recordLimitTimer=setTimeout(()=>{if(state===current)stopRecorder()},maxSeconds*1000);
   showMessage('Kayıt başladı. Durdurmak için kırmızı düğmeye yeniden dokun.');
@@ -210,17 +254,18 @@ function open({mode='post',onMedia,onPhotos,onPublish,onCancel,onEdit}={}){
  root.id='patiyiz-camera-screen';root.setAttribute('role','dialog');
  root.setAttribute('aria-modal','true');root.setAttribute('aria-label',title);
  root.innerHTML='<header class="pati-camera-head"><button type="button" data-camera="cancel" aria-label="Geri">×</button><strong>'+title+'</strong><span>patiyiz</span></header>'+
- '<div class="pati-camera-stage"><video id="pati-camera-live" autoplay playsinline muted></video><img id="pati-camera-chosen-image" alt="Seçilen fotoğraf" hidden><video id="pati-camera-chosen-video" playsinline controls preload="metadata" hidden></video><div class="pati-camera-unavailable" id="pati-camera-camera-fallback" hidden><strong>Kamerana erişilemiyor</strong><button type="button" data-camera="retry">Kamerayı yeniden aç</button></div></div>'+
+ '<div class="pati-camera-stage"><div class="pati-camera-viewfinder"><video id="pati-camera-live" autoplay playsinline muted></video><img id="pati-camera-chosen-image" alt="Seçilen fotoğraf" hidden><video id="pati-camera-chosen-video" playsinline controls preload="metadata" hidden></video><div class="pati-camera-unavailable" id="pati-camera-camera-fallback" hidden><strong>Kamerana erişilemiyor</strong><button type="button" data-camera="retry">Kamerayı yeniden aç</button></div></div></div>'+
  '<div id="pati-camera-alert" class="pati-camera-alert" role="status" hidden></div>'+
  '<section id="pati-camera-gallery-panel" class="pati-camera-gallery-panel" hidden><div class="pati-camera-gallery-title"><strong>Fotoğraflarım</strong><button type="button" data-camera="toggle">⌄ Kapat</button></div><div class="pati-camera-gallery-scroll"><div id="pati-camera-gallery-grid" class="pati-camera-gallery-grid"></div><p id="pati-camera-gallery-state">Fotoğraflar yükleniyor…</p><button id="pati-camera-gallery-fallback" data-camera="fallback" type="button" hidden>Sistem galerisinden seç</button><button type="button" data-camera="video-gallery">Videoları aç</button><button type="button" data-camera="more">Daha fazla fotoğraf</button></div></section>'+
  '<div class="pati-camera-bottom">'+(reel?'':'<div class="pati-camera-modes"><button type="button" data-camera-mode="photo" data-camera="mode" class="active" aria-pressed="true">Fotoğraf</button><button type="button" data-camera-mode="video" data-camera="mode" aria-pressed="false">Video</button></div>')+
  '<div class="pati-camera-controls"><button data-camera="toggle" type="button" class="pati-camera-recent" aria-label="Tüm fotoğraf ve videoları gör"><img id="pati-camera-gallery-thumb" alt="" src="patiyiz-app-icon-192.png"></button><button data-camera="shutter" type="button" id="pati-camera-shutter" class="pati-camera-shutter'+(reel?' video-mode':'')+'" aria-label="'+(reel?'Video kaydet':'Fotoğraf çek')+'"><span></span></button><button data-camera="flip" type="button" class="pati-camera-flip" aria-label="Kamerayı çevir">⟳</button></div>'+
  '<div id="pati-camera-selected-count" class="pati-camera-selected-count">Fotoğraf çek veya galeriden seç</div><textarea id="pati-camera-caption" maxlength="2000" rows="2" placeholder="Bir açıklama ekle…"></textarea>'+
- '<div class="pati-camera-actions"><button type="button" id="pati-camera-edit" data-camera="edit" hidden>Düzenle</button><button type="button" id="pati-camera-publish" data-camera="publish" disabled>Devam et ve paylaş</button></div></div>'+
+ '<div class="pati-camera-actions"><button type="button" id="pati-camera-publish" data-camera="publish" disabled>Paylaş</button></div></div>'+
  '<input id="pati-camera-file-fallback" type="file" accept="image/*,video/*,.mov,.heic,.heif" '+(mode==='post'?'multiple':'')+' hidden>'+
  '<input id="pati-camera-video-fallback" type="file" accept="video/mp4,video/webm,video/quicktime,video/*,.mov" hidden>';
  document.body.appendChild(root);document.body.classList.add('pati-camera-active');
- state={root,stream:null,recorder:null,recordLimitTimer:null,mode,captureType:reel?'video':'photo',facing:'environment',selected:[],urls:[],offset:0,more:false,loading:false,onMedia,onPhotos,onPublish,onEdit,onCancel,publishing:false};
+ state={root,stream:null,recordStream:null,previewFrame:0,recorder:null,recordLimitTimer:null,mode,captureType:reel?'video':'photo',facing:'user',selected:[],urls:[],offset:0,more:false,loading:false,onMedia,onPhotos,onPublish,onCancel,publishing:false};
+ root.dataset.captureAspect=mode==='post'?'square':'portrait';
  const current=state;
  root.addEventListener('click',async e=>{
   const b=e.target.closest('[data-camera]');if(!b||state!==current)return;
@@ -234,12 +279,11 @@ function open({mode='post',onMedia,onPhotos,onPublish,onCancel,onEdit}={}){
   if(action==='mode'){setCaptureType(b.dataset.cameraMode);return}
   if(action==='shutter'){if(state.captureType==='video')toggleRecord();else await capture();return}
   if(action==='flip'){state.facing=state.facing==='environment'?'user':'environment';await startCamera();return}
-  if(action==='edit'){const cb=state.onEdit;cleanup();cb?.();return}
   if(action==='publish'){
    if(state.publishing||!state.selected.length||state.recorder?.state==='recording')return;
    state.publishing=true;b.disabled=true;b.textContent='Paylaşım hazırlanıyor…';
    try{await state.onPublish(state.root.querySelector('#pati-camera-caption').value)}
-   catch(err){if(state===current){showMessage(err?.message||'Paylaşım hazırlanamadı.');state.publishing=false;b.disabled=false;b.textContent='Devam et ve paylaş'}}
+   catch(err){if(state===current){showMessage(err?.message||'Paylaşım hazırlanamadı.');state.publishing=false;b.disabled=false;b.textContent='Paylaş'}}
   }
  });
  root.addEventListener('click',async e=>{
