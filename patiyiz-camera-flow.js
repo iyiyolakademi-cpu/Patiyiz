@@ -23,7 +23,7 @@ const urlFor=f=>URL.createObjectURL(f);
 function applyPortraitFullscreen(root){
  const force=(node,rules)=>{
   if(!node)return;
-  for(const [name,value] of Object.entries(rules))node.style.setProperty(name,value,'important');
+  for(const [name,value] of Object.entries(rules))node.style.setProperty(name.replace(/[A-Z]/g,ch=>'-'+ch.toLowerCase()),value,'important');
  };
  force(root,{position:'fixed',inset:'0',width:'100%',height:'100dvh',display:'block',
   padding:'0',margin:'0',overflow:'hidden',background:'#000'});
