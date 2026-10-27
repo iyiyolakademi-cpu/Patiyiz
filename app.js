@@ -1088,6 +1088,9 @@ function reelHandleTap(button){
 function reelTogglePlay(button){
  const video=button.closest('.pati-reel-item')?.querySelector('video');if(!video)return;
  if(video.paused){
+  const url=video.dataset?.patiVideoSrc;
+  if(url&&!video.getAttribute?.('src'))video.src=url;
+  if(video.preload==='none')video.preload='metadata';
   delete video.dataset.manualPause;
   document.querySelectorAll('#main-content .pati-reel-video').forEach(other=>{if(other!==video)other.pause()});
   video.muted=!patiyizReelsSoundEnabled;
