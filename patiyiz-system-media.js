@@ -54,6 +54,7 @@
    current.urls.push(el.src);
    el.playsInline=true;el.controls=true;el.preload='metadata';
    el.setAttribute('aria-label','Seçilen videonun önizlemesi');
+   el.classList.toggle('pati-selfie-mirrored',current.mirrorSelfie);
    media.appendChild(el);
   }else{
    for(const f of files.slice(0,10)){
@@ -64,13 +65,15 @@
    }
   }
   media.classList.toggle('multiple',files.length>1);
+  const option=root.querySelector('#pati-system-mirror-option'),toggle=root.querySelector('#pati-system-mirror');
+  option.hidden=!video;toggle.checked=video&&current.mirrorSelfie;
   const info=root.querySelector('#pati-system-summary');
   info.textContent=files.length>1?files.length+' fotoğraf seçildi':(video?'Video':'Fotoğraf')+' seçildi · '+fmtSize(first.size);
   const publish=root.querySelector('#pati-system-publish');
   publish.disabled=false;publish.textContent='Paylaş';
   // Let the person view their selected media before choosing to type a caption.
  }
- async function acceptFiles(files){
+ async function acceptFiles(files,source='gallery'){
   if(!state)return;
   const current=state,selected=[...files].filter(f=>f?.size);
   if(!selected.length)return;
@@ -90,6 +93,10 @@
   }
   if(state!==current)return;
   current.files=selected;
+  // Web capture does not reveal which physical lens was used. Start mirrored
+  // for a camera recording and let people turn it off for rear-camera clips.
+  current.mirrorSelfie=!!videos.length&&source==='camera-video';
+  current.onMirrorChange?.(current.mirrorSelfie);
   void window.PatiyizCameraDraft?.save(current.userId,current.mode,selected,current.root.querySelector('#pati-system-caption')?.value||'');
   showPreview();
  }
@@ -118,11 +125,11 @@
    if(state!==current)return;
    const caption=current.root.querySelector('#pati-system-caption');
    caption.value=saved.caption||'';
-   await acceptFiles(saved.files);
+   await acceptFiles(saved.files,'gallery');
    restore.hidden=true;
   };
  }
- function open({mode='post',userId,onMedia,onPublish,onCancel,onSwitch}={}){
+ function open({mode='post',userId,onMedia,onMirrorChange,onPublish,onCancel,onSwitch}={}){
   if(state)return;
   if(!['post','story','reels'].includes(mode))mode='post';
   if(typeof onMedia!=='function'||typeof onPublish!=='function')throw Error('Paylaşım bağlanamadı.');
@@ -145,7 +152,8 @@
    '</div><button id="pati-system-restore" class="pati-system-restore" type="button" hidden>Önceki seçimi geri getir</button></div>'+
    '<div id="pati-system-preview" hidden>'+
    '<div id="pati-system-preview-media" class="pati-system-preview-media"></div>'+
-   '<p id="pati-system-summary" class="pati-system-summary"></p>'+
+   '<p id="pati-system-summary" class="pati-system-summary"></p>'+ 
+   '<label id="pati-system-mirror-option" class="pati-system-mirror-option" hidden><input id="pati-system-mirror" type="checkbox"><span><strong>Selfie gibi göster</strong><small>Ön kamerada ekranda gördüğün ayna yönünü paylaşımda koru. Arka kamerada kapat.</small></span></label>'+
    '<label class="pati-system-caption-label" for="pati-system-caption">Açıklama</label>'+
    '<textarea id="pati-system-caption" maxlength="2000" rows="3" placeholder="Bir açıklama yaz…"></textarea>'+
    '<div class="pati-system-publish-actions"><button type="button" data-system="rechoose">Başka seç</button><button type="button" id="pati-system-publish" data-system="publish">Paylaş</button></div>'+
@@ -158,16 +166,22 @@
    '<input id="pati-system-gallery" type="file" accept="'+(kind(mode)==='video'?'video/*,.mov,.mp4,.webm,.m4v':'image/*,video/*,.heic,.heif,.mov,.mp4,.webm,.m4v')+'"'+(mode==='post'?' multiple':'')+' hidden>';
   document.body.appendChild(root);
   document.body.classList.add('pati-system-media-active');
-  state={root,mode,userId,onMedia,onPublish,onCancel,onSwitch,publishing:false,files:[],urls:[]};
+  state={root,mode,userId,onMedia,onMirrorChange,onPublish,onCancel,onSwitch,publishing:false,files:[],urls:[],mirrorSelfie:false};
   const current=state;
   for(const n of ['camera-photo','camera-video','gallery']){
    root.querySelector('#pati-system-'+n).addEventListener('change',async event=>{
     if(state!==current)return;
     const selected=[...(event.target.files||[])];
     event.target.value='';
-    await acceptFiles(selected);
+    await acceptFiles(selected,n);
    });
   }
+  root.querySelector('#pati-system-mirror').addEventListener('change',e=>{
+   if(state!==current||state.publishing||!state.files.some(isVideo))return;
+   state.mirrorSelfie=!!e.target.checked;
+   state.root.querySelector('#pati-system-preview-media video')?.classList.toggle('pati-selfie-mirrored',state.mirrorSelfie);
+   state.onMirrorChange?.(state.mirrorSelfie);
+  });
   root.addEventListener('click',async e=>{
    if(state!==current)return;
    const btn=e.target.closest('[data-system]');
@@ -182,7 +196,7 @@
    if(['camera-photo','camera-video','gallery'].includes(action)){launchPicker(action);return}
    if(action==='rechoose'){
     if(state.publishing)return;
-    freeURLs(state);state.files=[];
+    freeURLs(state);state.files=[];state.mirrorSelfie=false;state.onMirrorChange?.(false);
     root.querySelector('#pati-system-preview').hidden=true;
     root.querySelector('#pati-system-chooser').hidden=false;clearError();
     return;
