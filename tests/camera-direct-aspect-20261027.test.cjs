@@ -19,7 +19,7 @@ test('Post uses 1:1 square, Story and Reels use 9:16 portrait frames',()=>{
  assert.match(css,/aspect-ratio:1\/1/);
 });
 test('Selfie starts with front camera, mirrors preview and asks for supported minimum zoom',()=>{
- assert.match(camera,/facing:'user'/);
+ assert.match(camera,/facing:'environment'/);
  assert.match(camera,/facingMode:\{ideal:current.facing\}/);
  assert.match(camera,/zoom:cap.zoom.min/);
  assert.match(camera,/drawCameraFrame\(cv.getContext\('2d'\),v,w,h,state.facing==='user'\)/);
