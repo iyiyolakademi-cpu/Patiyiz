@@ -54,7 +54,9 @@ test('Camera flow skips second gallery and hidden Reels editor',()=>{
 });
 test('Backgrounding releases camera and resumes it on return',()=>{
  assert.match(camera,/document\.addEventListener\('visibilitychange'/);
- assert.match(camera,/if\(document\.hidden\)\{if\(state\.recorder\?\.state==='recording'\)stopRecorder\(\);stopCamera\(\);return\}/);
+ assert.match(camera,/if\(document\.hidden\)\{/);
+ assert.match(camera,/const current=state;stopRecorder\(\)/);
+ assert.match(camera,/setTimeout\(\(\)=>\{if\(state===current\)stopCamera\(\)\},900\)/);
  assert.match(camera,/if\(!state\.selected\.length\)void startCamera\(\)/);
  assert.match(camera,/typeof MediaRecorder\.isTypeSupported!=='function'/);
 });
