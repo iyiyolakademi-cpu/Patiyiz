@@ -2965,7 +2965,7 @@ async function uploadVideo(file){
  // Free storage allows up to 50 MB per object. Try local compression without
  // uploading the original when a supported browser can preserve the sound.
  if(file.size>max){
-  if(!window.PatiyizVideoPrepare?.prepare)throw Error('Video 50 MB sınırını aşıyor. 720p MP4 olarak dışa aktarıp tekrar dene.');
+  if(typeof window==='undefined'||!window.PatiyizVideoPrepare?.prepare)throw Error('Video 50 MB sınırını aşıyor. 720p MP4 olarak dışa aktarıp tekrar dene.');
   uploadStatus('Büyük video cihazında sıkıştırılıyor…');
   file=await window.PatiyizVideoPrepare.prepare(file,message=>uploadStatus(message));
  }
