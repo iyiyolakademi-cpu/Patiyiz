@@ -61,7 +61,7 @@ test('Eski hesaptan kalan gecikmiş mesaj sorgusu yeni hesabın verilerini deği
   let renders = 0;
   const ctx = {
     me: { id: 'first' }, patiyizLoadToken: 0, data: { messages: [{ id: 'first-message' }] },
-    sb: { from() { return { select() { return this; }, order() { return this; }, limit() { return gate; } }; } },
+    sb: { from() { return { select() { return this; }, or() { return this; }, eq() { return this; }, order() { return this; }, limit() { return gate; } }; } },
     navRender() { renders++; }, render() { renders++; }
   };
   const fn = vm.runInNewContext(segment('async function refreshKeys(specs){', 'async function refresh(){') + '\nrefreshKeys', ctx);
