@@ -64,8 +64,10 @@ test('Thousands of messages with hundreds of conversations are indexed without p
 
 test('Feed video is not eagerly downloaded when far below screen',()=>{
  const card=part('function postCard(','function openPost(');
- assert.match(card,/isPriority\?'metadata':'none'/);
+ assert.match(card,/loop preload="none"/);
+ assert.match(card,/data-pati-video-src/);
  assert.doesNotMatch(card,/isPriority\?'auto':'metadata'/);
  const observer=part('function setupFeedVideos(){',"document.addEventListener('visibilitychange'");
- assert.match(observer,/if\(video\.preload==='none'\)video\.preload='metadata'/);
+ assert.match(observer,/const attach=video=>/);
+ assert.doesNotMatch(observer,/if\(video\.preload==='none'\)video\.preload='metadata'/);
 });
