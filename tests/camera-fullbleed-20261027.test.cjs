@@ -21,7 +21,7 @@ test('Story and Reels portrait viewfinder occupies the entire phone viewport',()
 });
 
 test('Full-screen framing applies equally to front and rear camera, with mirrored selfie',()=>{
- assert.match(camera,/facing:'user'/);
+ assert.match(camera,/facing:'environment'/);
  assert.match(camera,/state\.facing=state\.facing==='environment'\?'user':'environment'/);
  assert.match(style,/pati-camera-selfie[^{]*#pati-camera-live\{transform:scaleX\(-1\)/);
  assert.match(full,/pati-camera-selfie[^{]*#pati-camera-live\{[\s\S]*?object-fit:cover!important/);
