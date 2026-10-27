@@ -52,3 +52,9 @@ test('Camera flow skips second gallery and hidden Reels editor',()=>{
  assert.match(app,/if\(post\.dataset\.mode==='reels'&&input\.name==='video'&&window\.PatiyizReelsEditor\)/);
  assert.match(html,/patiyiz-camera-flow\.js[^\"]*cameraq=1/);
 });
+test('Backgrounding releases camera and resumes it on return',()=>{
+ assert.match(camera,/document\.addEventListener\('visibilitychange'/);
+ assert.match(camera,/if\(document\.hidden\)\{if\(state\.recorder\?\.state==='recording'\)stopRecorder\(\);stopCamera\(\);return\}/);
+ assert.match(camera,/if\(!state\.selected\.length\)void startCamera\(\)/);
+ assert.match(camera,/typeof MediaRecorder\.isTypeSupported!=='function'/);
+});
