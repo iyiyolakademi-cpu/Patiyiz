@@ -24,9 +24,9 @@ test('Reels ilk oynatıcıyı açar, diğer videoları indirmez',()=>{
   profile:()=>({id:'user',display_name:'Test',handle:'test'}),avatar:()=>'',displayName:()=>'',ico:()=>'',esc:String,cut:s=>s};
  const reelsPage=vm.runInNewContext(part('function reelsPage(){','function closePatiCreate()')+'\nreelsPage',ctx);
  reelsPage();
- assert.match(main.innerHTML,/class="pati-reel-video" src="https:\/\/cdn.example\/0.mov"/);
+ assert.match(main.innerHTML,/class="pati-reel-video" src="https:\/\/cdn.example\/2.mov"/);
  assert.match(main.innerHTML,/class="pati-reel-video" data-pati-video-src="https:\/\/cdn.example\/1.mov"/);
- assert.match(main.innerHTML,/class="pati-reel-video" data-pati-video-src="https:\/\/cdn.example\/2.mov"/);
+ assert.match(main.innerHTML,/class="pati-reel-video" data-pati-video-src="https:\/\/cdn.example\/0.mov"/);
  assert.equal((main.innerHTML.match(/class="pati-reel-video" src="/g)||[]).length,1);
 });
 
@@ -34,7 +34,7 @@ test('Yeni yüklemelerde HTTP önbelleği bir gün olur',()=>{
  assert.match(uploader,/cacheControl:'86400'/);
  assert.match(uploader,/upload\(key,file,\{contentType:mime,cacheControl:'86400'/);
  assert.match(app,/bucket:'patiyiz-videos'.+cacheControl:'86400'/);
- assert.match(html,/app\.js\?v=20261027-quota-media-1/);
+ assert.match(html,/app\.js\?v=20261024-release-reliability-1[^"]*quota=20261027/);
 });
 test('Canlı sorgular tek oturuma göre filtrelenir, arka planda kanal kapanır',()=>{
  const partLive=part('async function refreshLiveTables(){','function queueLiveUpdate(){');
