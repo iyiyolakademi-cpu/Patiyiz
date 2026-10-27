@@ -6,8 +6,8 @@ test('Every media option uses a distinct inline SVG instead of a placeholder gly
  for(const n of ['photo','video','gallery']){
   assert.match(picker,new RegExp(''+n+":'<svg viewBox="));
   assert.match(picker,new RegExp('pati-system-option-'+n+'" aria-hidden="true"'));
-  assert.match(picker,new RegExp('\\\\+optionIcons\\\\.'+n+'\\\\+'));
-  assert.match(style,new RegExp('\\\\.pati-system-option-'+n+'\\\\{'));
+  assert.ok(picker.includes('+optionIcons.'+n+'+'));
+  assert.ok(style.includes('.pati-system-option-'+n+'{'));
  }
  assert.doesNotMatch(picker,/pati-system-option-icon">[▣◉▦]/);
 });
