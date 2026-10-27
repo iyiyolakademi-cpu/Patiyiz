@@ -2823,7 +2823,7 @@ function showComments(postId){
  const list=form.querySelector('.comment-list');if(list)list.scrollTop=scroll;
 }
 function modal(title,form,id='entry-form'){let root=$('#modal-root');root.innerHTML=`<div class="modal-backdrop" data-action="close"><section class="modal" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="modal-header"><h2>${esc(title)}</h2><button type="button" class="close-modal" data-action="close" aria-label="Pencereyi kapat">×</button></div><form id="${id}"><div class="modal-content">${form}</div><div class="pati-upload-status" role="status" aria-live="polite" hidden><i class="pati-upload-spinner"></i><span>Yükleniyor…</span></div><div class="modal-footer"><button class="outline-btn" type="button" data-action="close">İptal</button><button class="primary-btn" type="submit">Kaydet</button></div></form></section></div>`}
-function closeModal(force=false){if(!force&&busy&&document.querySelector('#modal-root .pati-upload-status:not([hidden])')){notify('İşlem sürüyor. Tamamlanmasını bekle.',true);return}if(typeof patiPetPhotoObjectUrl!=='undefined'&&patiPetPhotoObjectUrl){URL.revokeObjectURL(patiPetPhotoObjectUrl);patiPetPhotoObjectUrl=''}window.PatiyizReelsEditor?.dispose();clearPatiMediaUrls();if(typeof lostPhotoObjectUrl!=='undefined'&&lostPhotoObjectUrl){URL.revokeObjectURL(lostPhotoObjectUrl);lostPhotoObjectUrl=''}$('#modal-root').innerHTML='';if(document.getElementById('story-overlay')&&!storyTimer&&storyItems.length)storyTimer=setTimeout(()=>stepStory(1),6000)}
+function closeModal(force=false){if(!force&&busy&&document.querySelector('#modal-root .pati-upload-status:not([hidden])')){notify('İşlem sürüyor. Tamamlanmasını bekle.',true);return}window.PatiyizSystemMediaFlow?.close?.();if(typeof patiPetPhotoObjectUrl!=='undefined'&&patiPetPhotoObjectUrl){URL.revokeObjectURL(patiPetPhotoObjectUrl);patiPetPhotoObjectUrl=''}window.PatiyizReelsEditor?.dispose();clearPatiMediaUrls();if(typeof lostPhotoObjectUrl!=='undefined'&&lostPhotoObjectUrl){URL.revokeObjectURL(lostPhotoObjectUrl);lostPhotoObjectUrl=''}$('#modal-root').innerHTML='';if(document.getElementById('story-overlay')&&!storyTimer&&storyItems.length)storyTimer=setTimeout(()=>stepStory(1),6000)}
 const species=['Kedi','Köpek','Muhabbet kuşu','Papağan','Kanarya','Kuş','Tavşan','Hamster','Ginepig','Fare','Sıçan','Gerbil','Çinçilla','Kemirgen','Balık','Japon balığı','Beta balığı','Akvaryum balığı','Kaplumbağa','Su kaplumbağası','Kara kaplumbağası','Kertenkele','Geko','İguana','Bukalemun','Yılan','Sürüngen','Kurbağa','Semender','Amfibi','Kirpi','Gelincik','At','Midilli','Eşek','Keçi','Koyun','İnek','Tavuk','Ördek','Kaz','Güvercin','Arı','Omurgasız','Diğer'];
 const petGenders=['Belirtilmedi','Erkek','Dişi','Bilinmiyor','İnterseks'];
 const ownPets=()=>data.pets.filter(p=>p.owner_id===me.id);
@@ -2901,13 +2901,13 @@ function draftRestore(){
 }
 function mountPatiyizCamera(mode){
  const form=document.getElementById('post-form');if(!form)return;
- if(!window.PatiyizCameraFlow){openComposerMediaPicker('gallery');return}
+ if(!window.PatiyizSystemMediaFlow){notify('Telefon kamerası ve galeri seçicisi yüklenemedi. Sayfayı yenile.',true);closeModal(true);return}
  form.dataset.cameraFirst='1';
  const aspect=form.querySelector('input[name="aspect"]');
  if(aspect)aspect.value=mode==='post'?'1:1':'9:16';
  // The standard modal stays hidden; camera UI owns the caption and share button.
  // Retain the existing authenticated publication transaction, not an editor step.
- window.PatiyizCameraFlow.open({
+ window.PatiyizSystemMediaFlow.open({
   mode,userId:me.id,
   onSwitch(nextMode){
    // Keep the bottom mode strip functional, not decorative.
@@ -2936,13 +2936,13 @@ function mountPatiyizCamera(mode){
     const result=await createStoryPublication(form,f,str);
     void window.PatiyizCameraDraft?.clear(me.id);
     data.stories=[result,...data.stories.filter(x=>x.id!==result.id)];
-    window.PatiyizCameraFlow?.close();closeModal(true);render();
+    window.PatiyizSystemMediaFlow?.close();closeModal(true);render();
     notify('Hikâyen 24 saat boyunca görüntülenecek.');
    }else{
     const result=await createPostPublication(form,f,str);
     void window.PatiyizCameraDraft?.clear(me.id);
     profileCountCache.delete(me.id);
-    window.PatiyizCameraFlow?.close();closeModal(true);
+    window.PatiyizSystemMediaFlow?.close();closeModal(true);
     try{await refresh()}catch(error){console.warn('Paylaşım kaydedildi, akış yenilemesi başarısız:',error.message)}
     notify('Paylaşım yayınlandı.');
     try{localStorage.removeItem(patiDraftKey())}catch(_){}
@@ -4067,7 +4067,7 @@ function resetSessionState(){
  if(typeof healthFilePortal!=='undefined')healthFilePortal=null;if(typeof healthFileOwner!=='undefined')healthFileOwner='';if(typeof educationCloudDone!=='undefined')educationCloudDone.clear();if(typeof educationCloudUser!=='undefined')educationCloudUser='';if(typeof pendingPostLikes!=='undefined')pendingPostLikes.clear();if(typeof likesChangeEpoch==='number')likesChangeEpoch++;if(typeof savesChangeEpoch==='number')savesChangeEpoch++;if(typeof pendingPostSaves!=='undefined')pendingPostSaves.clear();if(typeof savedMissingAttempted!=='undefined')savedMissingAttempted.clear();personId='';profileId='';selectedPostId='';followListId='';patiFollowPageState={key:'',rows:[],next:0,hasMore:true,loading:false,error:'',viewerFollowing:new Set()};search='';view='home';chatFilter='primary';mobileChatOpen=false;isAdmin=false;
  patiDetailState=null;patiPageSwipe=null;patiSwipeNavDirection=0;storyItems=[];storyLikes=[];storyIndex=0;clearTimeout(storyTimer);storyTimer=null;lastPhotoTap={id:'',time:0};
  document.getElementById('story-overlay')?.remove();document.body.classList.remove('story-fullscreen-open');
- window.PatiyizGalleryPicker?.close();window.PatiyizCameraFlow?.close?.();window.PatiyizReelsEditor?.dispose();clearPatiMediaUrls();
+ window.PatiyizGalleryPicker?.close();window.PatiyizSystemMediaFlow?.close?.();window.PatiyizCameraFlow?.close?.();window.PatiyizReelsEditor?.dispose();clearPatiMediaUrls();
  document.getElementById('modal-root')?.replaceChildren();
  dmCancel=true;if(dmRecorder?.state==='recording')try{dmRecorder.stop()}catch(e){console.warn('Ses kaydı durdurulamadı',e)}
  dmStream?.getTracks().forEach(track=>track.stop());dmStream=null;dmRecipient=null;dmParts=[];dmMediaSending=false;
