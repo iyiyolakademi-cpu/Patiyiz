@@ -1,0 +1,203 @@
+/* Patiyiz system camera + gallery publisher.
+ * No in-browser camera stream: the OS owns camera focus, exposure, lenses and
+ * gallery permissions. User chooses a file and Patiyiz only previews/publishes it.
+ */
+(()=>{
+ 'use strict';
+ let state=null;
+ const isVideo=f=>!!f&&(/^video\//i.test(f.type||'')||/\.(mp4|mov|m4v|webm)$/i.test(f.name||''));
+ const isPhoto=f=>!!f&&(/^image\//i.test(f.type||'')||/\.(jpe?g|png|webp|heic|heif)$/i.test(f.name||''));
+ const title=mode=>mode==='story'?'Yeni hikâye':mode==='reels'?'Yeni Reels':'Yeni gönderi';
+ const kind=mode=>mode==='reels'?'video':'mixed';
+ const fmtSize=bytes=>bytes>=1048576?Math.round(bytes/1048576)+' MB':Math.max(1,Math.round(bytes/1024))+' KB';
+ function error(message){
+  if(!state)return;
+  const node=state.root.querySelector('#pati-system-error');
+  node.textContent=String(message);node.hidden=false;
+ }
+ function clearError(){
+  if(!state)return;
+  const node=state.root.querySelector('#pati-system-error');node.hidden=true;node.textContent='';
+ }
+ function freeURLs(current){
+  for(const url of current.urls)URL.revokeObjectURL(url);
+  current.urls.length=0;
+ }
+ function close(){
+  if(!state)return;
+  const current=state;state=null;
+  freeURLs(current);
+  current.root.remove();
+  document.body.classList.remove('pati-system-media-active');
+ }
+ function showPreview(){
+  if(!state)return;
+  const current=state,root=current.root;
+  const files=current.files,first=files[0],chosen=!!files.length;
+  const chooser=root.querySelector('#pati-system-chooser'),preview=root.querySelector('#pati-system-preview');
+  chooser.hidden=chosen;preview.hidden=!chosen;
+  if(!chosen)return;
+  const media=root.querySelector('#pati-system-preview-media');
+  media.replaceChildren();
+  freeURLs(current);
+  const video=isVideo(first);
+  if(video){
+   const el=document.createElement('video');
+   el.src=URL.createObjectURL(first);
+   current.urls.push(el.src);
+   el.playsInline=true;el.controls=true;el.preload='metadata';
+   el.setAttribute('aria-label','Seçilen videonun önizlemesi');
+   media.appendChild(el);
+  }else{
+   for(const f of files.slice(0,10)){
+    const image=document.createElement('img');
+    image.src=URL.createObjectURL(f);current.urls.push(image.src);
+    image.alt='Seçilen fotoğraf';image.loading='lazy';
+    media.appendChild(image);
+   }
+  }
+  media.classList.toggle('multiple',files.length>1);
+  const info=root.querySelector('#pati-system-summary');
+  info.textContent=files.length>1?files.length+' fotoğraf seçildi':(video?'Video':'Fotoğraf')+' seçildi · '+fmtSize(first.size);
+  const publish=root.querySelector('#pati-system-publish');
+  publish.disabled=false;publish.textContent='Paylaş';
+  root.querySelector('#pati-system-caption').focus({preventScroll:true});
+ }
+ async function acceptFiles(files){
+  if(!state)return;
+  const current=state,selected=[...files].filter(f=>f?.size);
+  if(!selected.length)return;
+  if(selected.length>10){error('Bir gönderide en fazla 10 fotoğraf seçebilirsin.');return}
+  const videos=selected.filter(isVideo),photos=selected.filter(isPhoto);
+  if(photos.length+videos.length!==selected.length){error('Yalnızca fotoğraf veya video seçebilirsin.');return}
+  if(current.mode==='reels'&&(!videos.length||selected.length!==1)){error('Reels için tek bir video seç.');return}
+  if(current.mode==='story'&&selected.length!==1){error('Hikâye için tek bir fotoğraf veya video seç.');return}
+  if(videos.length&&(videos.length>1||photos.length)){error('Videoyu fotoğraflardan ayrı paylaşmalısın.');return}
+  if(videos[0]?.size>500*1024*1024){error('Video 500 MB sınırını aşıyor. Galeride küçültüp yeniden dene.');return}
+  clearError();
+  try{
+   await current.onMedia(selected,videos.length?'video':'photo');
+  }catch(err){
+   if(state===current)error(err?.message||'Seçilen medya paylaşıma hazırlanamadı.');
+   return;
+  }
+  if(state!==current)return;
+  current.files=selected;
+  void window.PatiyizCameraDraft?.save(current.userId,current.mode,selected,current.root.querySelector('#pati-system-caption')?.value||'');
+  showPreview();
+ }
+ function launchPicker(name){
+  if(!state||state.publishing)return;
+  const current=state,input=current.root.querySelector('#pati-system-'+name);
+  if(!input)return;
+  input.value='';
+  // Capacitor native Camera opens the real Android photo-camera activity.
+  // Video capture and web/iOS use the platform file capture UI.
+  if(name==='camera-photo'&&window.PatiyizNative?.isNative&&typeof window.PatiyizNative.pickPhotoForInput==='function'){
+   void window.PatiyizNative.pickPhotoForInput(input,'camera',false).catch(err=>{
+    if(state===current)error(err?.message||'Telefon kamerası açılamadı.');
+   });
+   return;
+  }
+  try{input.click()}catch(err){error('Telefonun kamera/galeri seçicisi açılamadı. Cihaz izinlerini kontrol et.')}
+ }
+ async function restoreDraft(){
+  if(!state)return;
+  const current=state,restore=current.root.querySelector('#pati-system-restore');
+  const saved=await window.PatiyizCameraDraft?.load(current.userId);
+  if(state!==current||!saved||saved.mode!==current.mode)return;
+  restore.hidden=false;
+  restore.onclick=async()=>{
+   if(state!==current)return;
+   const caption=current.root.querySelector('#pati-system-caption');
+   caption.value=saved.caption||'';
+   await acceptFiles(saved.files);
+   restore.hidden=true;
+  };
+ }
+ function open({mode='post',userId,onMedia,onPublish,onCancel,onSwitch}={}){
+  if(state)return;
+  if(!['post','story','reels'].includes(mode))mode='post';
+  if(typeof onMedia!=='function'||typeof onPublish!=='function')throw Error('Paylaşım bağlanamadı.');
+  const root=document.createElement('section');
+  root.id='patiyiz-system-media';
+  root.setAttribute('role','dialog');root.setAttribute('aria-modal','true');
+  root.setAttribute('aria-label',title(mode));
+  root.dataset.mode=mode;
+  root.innerHTML=
+   '<div class="pati-system-panel">'+
+   '<header class="pati-system-head"><button type="button" data-system="close" aria-label="Vazgeç">×</button><strong>'+title(mode)+'</strong><span>patiyiz</span></header>'+
+   '<div id="pati-system-error" class="pati-system-error" role="alert" hidden></div>'+
+   '<div id="pati-system-chooser">'+
+   '<div class="pati-system-intro"><div class="pati-system-intro-symbol">＋</div><h2>Nasıl paylaşmak istersin?</h2><p>Telefonunun kamerasını veya galerisini kullan.</p></div>'+
+   '<div class="pati-system-options">'+
+   (mode==='reels'?'':
+    '<button type="button" data-system="camera-photo"><span class="pati-system-option-icon">▣</span><span><strong>Fotoğraf çek</strong><small>Telefonun normal kamerası</small></span></button>')+
+   '<button type="button" data-system="camera-video"><span class="pati-system-option-icon">◉</span><span><strong>Video çek</strong><small>Telefonun video kamerası</small></span></button>'+
+   '<button type="button" data-system="gallery"><span class="pati-system-option-icon">▦</span><span><strong>Galeriden seç</strong><small>'+(mode==='reels'?'Fotoğraf arşivinden video seç':'Fotoğraf veya video seç')+'</small></span></button>'+
+   '</div><button id="pati-system-restore" class="pati-system-restore" type="button" hidden>Önceki seçimi geri getir</button></div>'+
+   '<div id="pati-system-preview" hidden>'+
+   '<div id="pati-system-preview-media" class="pati-system-preview-media"></div>'+
+   '<p id="pati-system-summary" class="pati-system-summary"></p>'+
+   '<label class="pati-system-caption-label" for="pati-system-caption">Açıklama</label>'+
+   '<textarea id="pati-system-caption" maxlength="2000" rows="3" placeholder="Bir açıklama yaz…"></textarea>'+
+   '<div class="pati-system-publish-actions"><button type="button" data-system="rechoose">Başka seç</button><button type="button" id="pati-system-publish" data-system="publish">Paylaş</button></div>'+
+   '</div>'+
+   '<nav class="pati-system-modes" aria-label="İçerik türü">'+
+   ['post','story','reels'].map(m=>'<button type="button" data-system="switch" data-mode="'+m+'"'+(m===mode?' aria-current="page" class="active"':'')+'>'+(m==='post'?'GÖNDERİ':m==='story'?'HİKÂYE':'REELS')+'</button>').join('')+'</nav>'+
+   '</div>'+
+   '<input id="pati-system-camera-photo" type="file" accept="image/*" capture="environment" hidden>'+
+   '<input id="pati-system-camera-video" type="file" accept="video/*,.mp4,.mov,.webm,.m4v" capture="environment" hidden>'+
+   '<input id="pati-system-gallery" type="file" accept="'+(kind(mode)==='video'?'video/*,.mov,.mp4,.webm,.m4v':'image/*,video/*,.heic,.heif,.mov,.mp4,.webm,.m4v')+'"'+(mode==='post'?' multiple':'')+' hidden>';
+  document.body.appendChild(root);
+  document.body.classList.add('pati-system-media-active');
+  state={root,mode,userId,onMedia,onPublish,onCancel,onSwitch,publishing:false,files:[],urls:[]};
+  const current=state;
+  for(const n of ['camera-photo','camera-video','gallery']){
+   root.querySelector('#pati-system-'+n).addEventListener('change',async event=>{
+    if(state!==current)return;
+    const selected=[...(event.target.files||[])];
+    event.target.value='';
+    await acceptFiles(selected);
+   });
+  }
+  root.addEventListener('click',async e=>{
+   if(state!==current)return;
+   const btn=e.target.closest('[data-system]');
+   if(!btn)return;
+   const action=btn.dataset.system;
+   if(action==='close'){if(state.publishing)return;const cb=state.onCancel;close();cb?.();return}
+   if(action==='switch'){
+    if(state.publishing)return;
+    const next=btn.dataset.mode;if(next===state.mode)return;
+    const cb=state.onSwitch;close();cb?.(next);return;
+   }
+   if(['camera-photo','camera-video','gallery'].includes(action)){launchPicker(action);return}
+   if(action==='rechoose'){
+    if(state.publishing)return;
+    freeURLs(state);state.files=[];
+    root.querySelector('#pati-system-preview').hidden=true;
+    root.querySelector('#pati-system-chooser').hidden=false;clearError();
+    return;
+   }
+   if(action==='publish'){
+    if(state.publishing||!state.files.length)return;
+    state.publishing=true;
+    const publish=root.querySelector('#pati-system-publish');
+    publish.disabled=true;publish.textContent='Paylaşılıyor…';clearError();
+    try{await state.onPublish(root.querySelector('#pati-system-caption').value)}
+    catch(err){
+     if(state===current){
+      error(err?.message||'Paylaşım yüklenemedi. Tekrar dene.');
+      state.publishing=false;publish.disabled=false;publish.textContent='Tekrar paylaş';
+     }
+    }
+   }
+  });
+  void restoreDraft();
+ }
+ window.PatiyizSystemMediaFlow={open,close,get active(){return !!state}};
+ document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&state&&!state.publishing){const cb=state.onCancel;close();cb?.()}
+ });
+})();
