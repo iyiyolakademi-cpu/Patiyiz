@@ -98,5 +98,5 @@ test('Video yükleme geçici ağ hatasında bir kez daha denenir',async()=>{
  assert.equal(tries,2);assert.equal(url,'https://storage.invalid/success.mp4');
  ctx.navigator.onLine=false;
  await assert.rejects(()=>upload({name:'example.mp4',size:1200,type:'video/mp4'}),/İnternet bağlantısı yok/);
- await assert.rejects(()=>upload({name:'too-big.mp4',size:30*1024*1024,type:'video/mp4'}),/15 MB/);
+ await assert.rejects(()=>upload({name:'too-big.mp4',size:30*1024*1024,type:'video/mp4'}),/50 MB/);
 });
