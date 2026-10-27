@@ -2743,3 +2743,26 @@ html[data-pati-theme="dark"] #main-content .pati-social-actions button[data-acti
 @supports(height:100svh){
  #patiyiz-camera-screen[data-capture-aspect="portrait"]{height:100dvh!important}
 }
+
+/* Final camera pack: identical canvas preview and uploaded 1:1 or 9:16 frame. */
+#patiyiz-camera-screen .pati-camera-viewfinder #pati-camera-framed{
+ position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+ object-fit:cover!important;max-width:none!important;max-height:none!important;
+ pointer-events:none;background:#000
+}
+#patiyiz-camera-screen .pati-camera-viewfinder #pati-camera-framed[hidden]{display:none!important}
+#patiyiz-camera-screen .pati-camera-tools{
+ position:absolute;right:12px;top:max(94px,calc(env(safe-area-inset-top,0px) + 78px));
+ z-index:8;display:flex;align-items:center;flex-direction:column;gap:12px;
+ color:#fff;font-size:11px;text-shadow:0 1px 7px #000
+}
+#patiyiz-camera-screen .pati-camera-tools button{
+ background:#14151bb0;border:1px solid #fff8;color:#fff;border-radius:50%;
+ width:52px;height:52px;font-weight:800;font-size:11px
+}
+#patiyiz-camera-screen .pati-camera-tools button[aria-pressed="true"]{background:#fff;color:#151515}
+#patiyiz-camera-screen .pati-camera-tools label{display:flex;align-items:center;flex-direction:column;gap:5px;padding:7px;background:#15151580;border-radius:13px}
+#patiyiz-camera-screen .pati-camera-tools input{max-width:100px;accent-color:#fff;touch-action:none}
+#patiyiz-camera-screen .pati-camera-tools [hidden]{display:none!important}
+#patiyiz-camera-screen.pati-camera-has-media .pati-camera-tools{display:none!important}
+#patiyiz-camera-screen .pati-camera-create-tabs button{touch-action:manipulation}
