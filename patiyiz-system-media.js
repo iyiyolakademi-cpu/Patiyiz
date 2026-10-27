@@ -9,6 +9,13 @@
  const isPhoto=f=>!!f&&(/^image\//i.test(f.type||'')||/\.(jpe?g|png|webp|heic|heif)$/i.test(f.name||''));
  const title=mode=>mode==='story'?'Yeni hikâye':mode==='reels'?'Yeni Reels':'Yeni gönderi';
  const kind=mode=>mode==='reels'?'video':'mixed';
+ // Compact native-style icons; local inline vectors, no icon-font/network dependency.
+ const optionIcons={
+  photo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7.5h3l1.6-2h6.8l1.6 2H20a1.5 1.5 0 0 1 1.5 1.5v9A1.5 1.5 0 0 1 20 19.5H4A1.5 1.5 0 0 1 2.5 18V9A1.5 1.5 0 0 1 4 7.5Z"/><circle cx="12" cy="13" r="3.4"/><path d="M18 10.5h.01"/></svg>',
+  video:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5.5" width="14" height="13" rx="3"/><path d="m17 10 4-2.3v8.6L17 14"/><path d="m9 9.5 4 2.5-4 2.5Z" fill="currentColor" stroke="none"/></svg>',
+  gallery:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5.5" y="5.5" width="15.5" height="15.5" rx="2.3"/><path d="M3 17.3V4.9A1.9 1.9 0 0 1 4.9 3H17"/><circle cx="15.6" cy="10.3" r="1.6"/><path d="m7.2 17.3 4.1-4.6 3.2 3.1 2.4-2.4 3.3 3.7"/></svg>'
+ };
+
  const fmtSize=bytes=>bytes>=1048576?Math.round(bytes/1048576)+' MB':Math.max(1,Math.round(bytes/1024))+' KB';
  function error(message){
   if(!state)return;
@@ -132,9 +139,9 @@
    '<div class="pati-system-intro"><div class="pati-system-intro-symbol">＋</div><h2>Nasıl paylaşmak istersin?</h2><p>Telefonunun kamerasını veya galerisini kullan.</p></div>'+
    '<div class="pati-system-options">'+
    (mode==='reels'?'':
-    '<button type="button" data-system="camera-photo"><span class="pati-system-option-icon">▣</span><span><strong>Fotoğraf çek</strong><small>Telefonun normal kamerası</small></span></button>')+
-   '<button type="button" data-system="camera-video"><span class="pati-system-option-icon">◉</span><span><strong>Video çek</strong><small>Telefonun video kamerası</small></span></button>'+
-   '<button type="button" data-system="gallery"><span class="pati-system-option-icon">▦</span><span><strong>Galeriden seç</strong><small>'+(mode==='reels'?'Fotoğraf arşivinden video seç':'Fotoğraf veya video seç')+'</small></span></button>'+
+    '<button type="button" data-system="camera-photo"><span class="pati-system-option-icon pati-system-option-photo" aria-hidden="true">'+optionIcons.photo+'</span><span><strong>Fotoğraf çek</strong><small>Telefonun normal kamerası</small></span></button>')+
+   '<button type="button" data-system="camera-video"><span class="pati-system-option-icon pati-system-option-video" aria-hidden="true">'+optionIcons.video+'</span><span><strong>Video çek</strong><small>Telefonun video kamerası</small></span></button>'+
+   '<button type="button" data-system="gallery"><span class="pati-system-option-icon pati-system-option-gallery" aria-hidden="true">'+optionIcons.gallery+'</span><span><strong>Galeriden seç</strong><small>'+(mode==='reels'?'Fotoğraf arşivinden video seç':'Fotoğraf veya video seç')+'</small></span></button>'+
    '</div><button id="pati-system-restore" class="pati-system-restore" type="button" hidden>Önceki seçimi geri getir</button></div>'+
    '<div id="pati-system-preview" hidden>'+
    '<div id="pati-system-preview-media" class="pati-system-preview-media"></div>'+

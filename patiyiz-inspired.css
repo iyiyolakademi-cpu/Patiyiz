@@ -2839,3 +2839,44 @@ body.pati-system-media-active #modal-root{visibility:hidden!important;pointer-ev
 #patiyiz-system-media #pati-system-publish{flex:2;border:0;background:#fff;color:#121317}
 #patiyiz-system-media #pati-system-publish:disabled{opacity:.4}
 @media(max-width:600px){#patiyiz-system-media .pati-system-panel{gap:13px}#patiyiz-system-media .pati-system-intro{padding-top:4px}}
+
+/* Patiyiz premium system media chooser — three distinct device action icons. */
+#patiyiz-system-media .pati-system-options{gap:11px}
+#patiyiz-system-media .pati-system-options button{
+ gap:16px;min-height:84px;padding:13px 16px;border:1px solid #383940;
+ background:linear-gradient(115deg,#1c1d22 0%,#16171b 100%);
+ border-radius:20px;position:relative;transition:border-color .18s ease,background .18s ease,transform .18s ease;
+}
+#patiyiz-system-media .pati-system-options button::after{
+ content:"";display:block;width:8px;height:8px;border-top:1.8px solid #888b95;
+ border-right:1.8px solid #888b95;transform:rotate(45deg);margin-left:auto;flex:none;
+}
+#patiyiz-system-media .pati-system-options .pati-system-option-icon{
+ display:grid;place-items:center;width:54px;height:54px;flex:0 0 54px;
+ border-radius:17px;border:1px solid rgba(255,255,255,.10);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.075),0 5px 15px rgba(0,0,0,.14);
+ font-size:initial;line-height:normal;transition:transform .18s ease;
+}
+#patiyiz-system-media .pati-system-options .pati-system-option-icon svg{
+ display:block;width:28px;height:28px;fill:none;stroke:currentColor;
+}
+#patiyiz-system-media .pati-system-options .pati-system-option-photo{
+ color:#e3eef5;background:linear-gradient(135deg,#33414d,#20282f)
+}
+#patiyiz-system-media .pati-system-options .pati-system-option-video{
+ color:#ffe1e3;background:linear-gradient(135deg,#493138,#2b2026)
+}
+#patiyiz-system-media .pati-system-options .pati-system-option-gallery{
+ color:#ede7ff;background:linear-gradient(135deg,#3a344b,#24212f)
+}
+#patiyiz-system-media .pati-system-options button strong{font-size:15.5px;letter-spacing:-.015em}
+#patiyiz-system-media .pati-system-options button small{font-size:12.5px;color:#aeb1bb}
+@media(hover:hover){
+ #patiyiz-system-media .pati-system-options button:hover{border-color:#777b87;background:#24262d}
+ #patiyiz-system-media .pati-system-options button:hover .pati-system-option-icon{transform:scale(1.045)}
+}
+#patiyiz-system-media .pati-system-options button:active{transform:scale(.99)}
+@media(prefers-reduced-motion:reduce){
+ #patiyiz-system-media .pati-system-options button,
+ #patiyiz-system-media .pati-system-options .pati-system-option-icon{transition:none}
+}
