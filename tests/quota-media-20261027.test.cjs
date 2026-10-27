@@ -33,7 +33,7 @@ test('Reels ilk oynatıcıyı açar, diğer videoları indirmez',()=>{
 test('Yeni yüklemelerde HTTP önbelleği bir gün olur',()=>{
  assert.match(uploader,/cacheControl:'86400'/);
  assert.match(uploader,/upload\(key,file,\{contentType:mime,cacheControl:'86400'/);
- assert.match(app,/bucket:'patiyiz-videos'.+cacheControl:'86400'/);
+ assert.match(app,/bucket:'patiyiz-videos'[\s\S]*cacheControl:'86400'/);
  assert.match(html,/app\.js\?v=20261024-release-reliability-1[^"]*quota=20261027/);
 });
 test('Canlı sorgular tek oturuma göre filtrelenir, arka planda kanal kapanır',()=>{
