@@ -2909,6 +2909,13 @@ function mountPatiyizCamera(mode){
  // Retain the existing authenticated publication transaction, not an editor step.
  window.PatiyizCameraFlow.open({
   mode,
+  onSwitch(nextMode){
+   // Keep the bottom mode strip functional, not decorative.
+   closeModal(true);
+   if(nextMode==='post')startPatiCameraPost();
+   else if(nextMode==='story')startPatiCameraStory();
+   else if(nextMode==='reels')startPatiCameraReels();
+  },
   onMedia(files,type){
    const photo=form.querySelector('input[name="photo"]');
    const video=form.querySelector('input[name="video"]');
