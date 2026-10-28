@@ -2270,7 +2270,7 @@ function careCard(x){
  const state=careDueState(x),p=data.pets.find(p=>p.id===x.pet_id&&p.owner_id===me?.id);
  const icons={Aşı:'💉',Veteriner:'🩺',İlaç:'💊',Mama:'🥣',Bakım:'🧼',Diğer:'📋'};
  const labels={late:'Gecikti',today:'Bugün',upcoming:'Planlandı',done:'Tamamlandı'};
- return '<article class="care-v2-item '+(x.done?'is-done':'')+'">'
+ return '<article class="care-v2-item pati-ref-care-task '+(x.done?'is-done':'')+'">'
   +'<div class="care-v2-item-icon" aria-hidden="true">'+(icons[x.category]||'🐾')+'</div>'
   +'<div class="care-v2-item-main"><div class="care-v2-item-head"><span>'+esc(x.category||'Bakım')+'</span><span class="care-v2-item-status is-'+state+'">'+labels[state]+'</span></div>'
   +'<h3>'+esc(x.title)+'</h3>'
@@ -2300,13 +2300,17 @@ function carePage(){
  const all=careOwnItems(),today=careToday();
  const counts={today:all.filter(x=>!x.done&&x.due_date===today).length,upcoming:all.filter(x=>!x.done&&x.due_date>today).length,done:all.filter(x=>x.done).length};
  const list=careVisibleItems();
- const select=(k,label,n)=>'<button type="button" data-action="care-filter" data-id="'+k+'" class="pati-simple-filter '+(careFilter===k?'active':'')+'" aria-pressed="'+(careFilter===k)+'"><b>'+n+'</b><span>'+label+'</span></button>';
- main.innerHTML='<section class="care-v2 pati-care-simple"><div class="pati-simple-head"><div><small>HAYVANIM MERKEZİ</small><h1>Bakım Takvimi</h1><p>Bakım görevlerini kolayca takip et.</p></div><button type="button" class="pati-simple-add" data-action="care-add">+ Görev Ekle</button></div>'+
- '<div class="pati-simple-filters" role="group" aria-label="Görev durumunu seç">'+select('today','Bugün',counts.today)+select('upcoming','Yaklaşan',counts.upcoming)+select('done','Tamamlanan',counts.done)+'</div>'+
- '<div class="pati-simple-list-head"><h2>Görevlerim</h2><button type="button" data-action="care-filter" data-id="all" aria-pressed="'+(careFilter==='all')+'">Tümünü gör →</button></div>'+
- (careLoadError?'<p class="care-v2-error" role="alert">'+esc(careLoadError)+'</p>':'')+
- '<div id="care-results" class="care-v2-list">'+(careLoading?'<p role="status">Görevler yükleniyor…</p>':list.length?list.map(careCard).join(''):'<div class="pati-simple-empty" role="status"><span>🐾</span><strong>Henüz görev bulunmuyor</strong><p>Yeni bir görev oluşturarak başlayabilirsin.</p><button type="button" data-action="care-add">+ Görev ekle</button></div>')+'</div>'+
- '<p class="pati-simple-disclaimer">Bakım takvimi tek başına cihaz bildirimi göndermez; veteriner önerilerinin yerini almaz.</p></section>';
+ const active=data.pets.find(p=>p.id===patiHubSelectedPetId&&p.owner_id===me?.id)||data.pets.find(p=>p.owner_id===me?.id);
+ const image=active?.photo_url||(/kedi/i.test(active?.species||'')?'pati-illustration-cat.svg':'pati-illustration-dog.svg');
+ const next=all.filter(x=>!x.done).sort((x,y)=>String(x.due_date).localeCompare(String(y.due_date)))[0];
+ const filter=(k,title,value)=>'<button type="button" data-action="care-filter" data-id="'+k+'" class="pati-simple-filter '+(careFilter===k?'active':'')+'" aria-pressed="'+(careFilter===k)+'"><b>'+value+'</b><span>'+title+'</span></button>';
+ main.innerHTML='<section class="care-v2 pati-care-simple pati-ref-care"><div class="pati-ref-subhead"><div><small>GÜNLÜK RUTİN</small><h1>Bakım Takvimi</h1><p>Küçük adımlar, mutlu patiler.</p></div><button type="button" class="pati-ref-add-round" data-action="care-add" aria-label="Görev ekle">+</button></div>'+
+  '<div class="pati-ref-care-hero"><div class="pati-ref-care-hero-copy"><small>🐾 '+esc(active?.name||'Patili dostum')+'</small><h2>'+(next?'Yaklaşan bakım görevin var!':'Bugün patiler keyifli!')+'</h2><p>'+(next?esc(next.title)+' · '+esc(day(next.due_date)):'Yeni bir görev planlayabilirsin.')+'</p><button type="button" data-action="care-add">+ Bakım ekle</button></div><img src="'+esc(image)+'" alt="'+esc(active?.name||'Hayvan')+'" loading="lazy"></div>'+
+  '<div class="pati-ref-care-summary"><strong>Bakım durumun</strong><small>Bir bölümü seçerek görevlerini görüntüle.</small></div><div class="pati-simple-filters" role="group" aria-label="Görev durumu">'+filter('today','Bugün',counts.today)+filter('upcoming','Yaklaşan',counts.upcoming)+filter('done','Tamamlanan',counts.done)+'</div>'+
+  '<div class="pati-simple-list-head"><h2>Bakım Listesi</h2><button type="button" data-action="care-filter" data-id="all" aria-pressed="'+(careFilter==='all')+'">Tüm görevler →</button></div>'+
+  (careLoadError?'<p class="care-v2-error" role="alert">'+esc(careLoadError)+'</p>':'')+
+  '<div class="care-v2-list pati-ref-care-timeline" id="care-results">'+(careLoading?'<p role="status">Görevler yükleniyor…</p>':list.length?list.map(careCard).join(''):'<div class="pati-simple-empty" role="status"><span>🐾</span><strong>Bu bölümde görev yok.</strong><p>Dilersen yeni bir görev ekleyebilirsin.</p><button type="button" data-action="care-add">+ Görev ekle</button></div>')+'</div>'+
+  '<p class="pati-simple-disclaimer">Takvim, veteriner önerilerinin yerini almaz; görev kaydı tek başına cihaz bildirimi göndermez.</p></section>';
 }
 let dmRecorder=null,dmParts=[],dmStream=null,dmCancel=false,dmRecipient=null;
 async function uploadDmFile(file,type,receiver){if(!file?.size||file.size>8388608)throw Error('Dosya en fazla 8 MB olabilir.');const mime=file.type.split(';')[0];if(type==='image'&&!['image/jpeg','image/png','image/webp'].includes(mime))throw Error('JPG, PNG veya WebP seç.');if(type==='audio'&&!['audio/webm','audio/mp4','audio/ogg','audio/mpeg'].includes(mime))throw Error('Ses biçimi desteklenmiyor.');const ext=type==='image'?(mime==='image/png'?'png':mime==='image/webp'?'webp':'jpg'):(mime==='audio/mp4'?'m4a':mime==='audio/ogg'?'ogg':mime==='audio/mpeg'?'mp3':'webm');const author=me?.id;if(!author)throw Error('Mesaj göndermek için giriş yap.');const path=author+'/'+crypto.randomUUID()+'.'+ext;const up=await sb.storage.from('patiyiz-private-messages').upload(path,file,{contentType:mime});if(up.error)throw up.error;try{if(me?.id!==author)throw Error('Oturum değişti. Mesaj gönderilmedi.');const m=await sb.from('messages').insert({sender_id:author,receiver_id:receiver,body:type==='audio'?'🎤 Sesli mesaj':'📷 Fotoğraf',attachment_type:type,attachment_path:path}).select('*').single();if(m.error)throw m.error;return m.data}catch(error){try{await sb.storage.from('patiyiz-private-messages').remove([path])}catch(cleanup){console.warn('Gönderilemeyen medya temizlenemedi',cleanup)}throw error}}
