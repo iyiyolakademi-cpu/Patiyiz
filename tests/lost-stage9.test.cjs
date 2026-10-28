@@ -65,8 +65,8 @@ test('Listing heading and state filters remain visible with empty records',()=>{
  api.lostPage();
  assert.match(ctx.main.innerHTML,/Kayıp İlanları/);
  assert.match(ctx.main.innerHTML,/İlan oluştur/);
- assert.match(ctx.main.innerHTML,/Kayıp \(0\)/);
- assert.match(ctx.main.innerHTML,/İlanlarım \(0\)/);
+ assert.match(ctx.main.innerHTML,/data-id="missing"/);
+ assert.match(ctx.main.innerHTML,/data-id="mine"/);
  assert.match(ctx.main.innerHTML,/Filtreleri temizle/);
 });
 test('Creation validates dates and privacy-sensitive information',()=>{
