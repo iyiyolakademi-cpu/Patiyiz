@@ -27,7 +27,8 @@ test('Alt menü eski isimlerin yerine gerçekten beş hedefi gösterir',()=>{
  assert.deepEqual(labels,['Akış','Keşfet','Mesajlar','Reels','Profil']);
  assert.match(markup,/data-view="reels"/);
  assert.doesNotMatch(markup,/data-view="pets"/);
- assert.match(markup,/data-action="pati-create-open"/);
+ assert.match(markup,/data-view="messages"/);
+ assert.match(html,/id="pati-header-share"[^>]*data-action="pati-create-open"/);
  assert.match(desktop,/Patiler/);
  assert.equal(dom['#app-root>.mobile-fab'].hidden,true);
  assert.match(css,/#app-root:not\(\.hidden\)>\.mobile-fab\{/);
