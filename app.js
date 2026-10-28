@@ -3170,7 +3170,7 @@ function patiDmSharedCard(message){
  const reel=!!post.video_url;
  return '<button type="button" class="pati-dm-shared-card '+(reel?'pati-dm-shared-reel':'')+'" data-action="dm-open-shared-post" data-id="'+esc(id)+'" aria-label="'+(reel?'Reels':'Gönderi')+' paylaşımını aç">'+
   '<span class="pati-dm-shared-by">'+avatar(person,'s')+'<span><b>'+displayName(person)+'</b><small>@'+esc(person.handle||'patiyiz')+' · '+(reel?'Reels':'Gönderi')+'</small></span></span>'+
-  '<span class="pati-dm-shared-cover">'+(cover?'<img src="'+esc(cover)+'" loading="lazy" decoding="async" alt="Paylaşılan '+(reel?'Reels':'gönderi')+' kapağı">':'<span class="pati-dm-shared-placeholder">'+ico(reel?'reels-tab':'image')+'</span>')+'<span class="pati-dm-shared-play" aria-hidden="true">'+ico(reel?'play':'arrow-up-right')+'</span></span>'+
+  '<span class="pati-dm-shared-cover">'+(cover?'<img src="'+esc(cover)+'" loading="lazy" decoding="async" alt="Paylaşılan '+(reel?'Reels':'gönderi')+' kapağı">':'<span class="pati-dm-shared-placeholder">'+ico(reel?'reels-tab':'image')+'</span>')+'<span class="pati-dm-shared-play" aria-hidden="true"></span></span>'+
   (post.body?'<span class="pati-dm-shared-caption">'+esc(cut(post.body,100))+'</span>':'')+'</button>';
 }
 async function patiDmHydrateSharedPosts(messages,peer){
@@ -3526,7 +3526,7 @@ function patiInstagramProfileLink(profileRow){
  const input=profileRow?.instagram_url;
  if(!input)return '';
  let url;try{url=patiNormalizeInstagramUrl(input)}catch(_){return ''}
- return '<a class="pati-profile-instagram-link" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer" aria-label="Instagram profilini aç">'+ico('external-link')+' <span>Instagram</span> <b>@'+esc(url.split('/')[3])+'</b></a>';
+ return '<a class="pati-profile-instagram-link" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer" aria-label="Instagram profilini aç">'+'<span class="pati-instagram-external" aria-hidden="true">↗</span>'+' <span>Instagram</span> <b>@'+esc(url.split('/')[3])+'</b></a>';
 }
 function profilePage(){
  const p=profile(profileId||me.id),own=p.id===me.id,pets=data.pets.filter(x=>x.owner_id===p.id);
@@ -5366,6 +5366,7 @@ function resetSessionState(){
 
  patiyizLoadToken++;patiyizLoadedTables.clear();patiyizDeferredLoading=null;
  if(typeof patiHomeFeedIds!=='undefined'){patiHomeFeedIds=null;patiHomeFeedCursor=null;patiHomeLoadError=''};if(typeof patiHomeCountCache!=='undefined'){patiHomeCountCache.clear();patiHomeCountsLoading.clear()};if(typeof patiPostCommentPages!=='undefined')patiPostCommentPages.clear();patiWellness={reminders:[],weights:[],loaded:false,loading:false,notified:new Set()};patiLeaderboard=[];patiInviteState={code:'',invited_count:0,already_used:false,coins_each:50,loading:false};patiDmReturnView='home';mobileChatOpen=false;patiCoinState={balance:0,earned:0,claims:[],items:[],orders:[],history:[],loading:false};patiFollowerRewardState={followers:null,claimed:[]};document.getElementById('paticoin-celebration')?.remove();
+ if(typeof patiDmSharedPosts!=='undefined'){patiDmSharedPosts.clear();patiDmSharedFetched.clear();patiDmSharedReturnPeer='';patiDmSharedRetryAt=0}
  data=Object.fromEntries(Object.keys(data).map(key=>[key,[]]));
  for(const group of [favorites,followed,liked,saved,voted,blocked])group.clear();
  blockedProfiles=[];patiDmSignedCache.clear();profileCountCache.clear();profileCountInFlight.clear();
