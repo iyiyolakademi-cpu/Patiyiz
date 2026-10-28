@@ -9,7 +9,7 @@ const css=fs.readFileSync('patiyiz-collab-following-20261028.css','utf8');
 test('shared posts and following feed preserve JavaScript syntax',()=>new vm.Script(app));
 test('collaborator invitation always needs recipient consent',()=>{
  assert.match(sql,/status = 'pending'/);
- assert.match(sql,/user_id =? \(select auth\.uid\(\)\)/);
+ assert.match(sql,/user_id\s*=\s*\(select auth\.uid\(\)\)/);
  assert.match(sql,/status in \('accepted','declined'\)/);
  assert.match(sql,/grant update\(status\)/);
  assert.match(sql,/constraint patiyiz_post_collaborators_one_partner unique\(post_id\)/);
