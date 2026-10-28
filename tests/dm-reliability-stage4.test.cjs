@@ -44,7 +44,7 @@ test('History: only chosen conversation is requested, with older cursor and no g
  let calls=[],cur={};
  const ctx={me:{id:uid},patiyizLoadToken:5,personId:peer,view:'home',console,Map,Set,Promise,PATI_DM_THREAD_PAGE:50,
   patiDmThreads:new Map(),patiDmSafeRender(){},
-  patiDmThreadKey:p=>uid+':'+p,
+  patiDmThreadKey:p=>uid+':'+p,patiDmCutoff:()=>0,
   sb:{from(table){cur={table};return{
     select(){return this},or(v){cur.filter=v;return this},order(){return this},
     limit(v){cur.limit=v;return this},lt(k,v){cur.older=v;return this},
