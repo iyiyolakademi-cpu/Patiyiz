@@ -589,6 +589,7 @@ function navigate(to){
  if(to==='my-pet')patiPetHubOrigin=false;
  else if(!hubScreens.has(to))patiPetHubOrigin=false;
  const previous=view,primary=['home','explore','reels'],reselect=previous===to&&primary.includes(to);
+ if(to==='education'&&previous!=='education'){educationCategory='Tümü';educationLesson='';educationSearch='';educationStatus='Tümü';patiAcademyBrowseAll=false}
  if(to==='messages'&&previous!=='messages')patiDmReturnView=previous;
  if(to==='home'&&typeof me!=='undefined'&&me?.id&&typeof patiCollabRefresh==='function')void patiCollabRefresh();
  if(to==='messages'&&previous!=='messages'&&personId)patiDmPendingLatestPeer=personId;
