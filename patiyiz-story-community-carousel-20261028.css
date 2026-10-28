@@ -121,3 +121,15 @@ html[data-pati-theme="dark"] #modal-root .pati-community-form-intro p,
 html[data-pati-theme="dark"] #modal-root .pati-community-form-note{color:#c2c4ca}
 html[data-pati-theme="dark"] #main-content .pati-page-back{color:#fff;background:#242429;border-color:#4d4d53}
 @media(prefers-reduced-motion:reduce){#patiyiz-system-media .pati-system-preview-media{scroll-behavior:auto}}
+
+/* Prevent story caption, shared-post attribution and owner actions overlapping. */
+#story-overlay.pati-story-own .story-caption{bottom:calc(130px + env(safe-area-inset-bottom,0px))!important}
+#story-overlay .pati-story-shared-source{position:absolute;bottom:calc(90px + env(safe-area-inset-bottom,0px));left:14px;right:14px;max-width:calc(100% - 28px);z-index:14;min-height:42px;display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid #ffffff70;border-radius:13px;background:#0b0b0bd9;color:#fff;padding:9px 12px;font-size:12px;line-height:1.45;text-align:center}
+#story-overlay.pati-story-has-source .story-caption{bottom:calc(154px + env(safe-area-inset-bottom,0px))!important}
+#story-overlay.pati-story-has-source.pati-story-own .story-caption{bottom:calc(178px + env(safe-area-inset-bottom,0px))!important}
+/* Full-size, finger-friendly publishing controls on compact phones. */
+@media(max-width:600px){
+ #patiyiz-system-media[data-mode="post"] .pati-system-publish-actions{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+ #patiyiz-system-media[data-mode="post"] .pati-system-publish-actions button{min-width:0!important;min-height:49px;font-size:12px;padding:9px 5px;line-height:1.35;white-space:normal}
+ #patiyiz-system-media[data-mode="post"] #pati-system-publish{grid-column:1/-1;min-height:52px;font-size:15px}
+}
