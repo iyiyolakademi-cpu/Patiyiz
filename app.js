@@ -274,6 +274,16 @@ function unreadMessageSources(){const hidden=new Set(data.messageHidden.filter(x
 const countBadge=n=>n?`<span class="pati-count-badge" aria-label="${n} okunmamış">${n>99?'99+':n}</span>`:'';
 function navRender(){const fab=$('#app-root>.mobile-fab');if(fab){fab.hidden=true;fab.style.display='none'}const sideCreate=$('.nav-create');if(sideCreate){const action=view==='community'?'question':view==='care'?'care-add':view==='lost'?'lost-add':view==='home'?'compose':'';sideCreate.hidden=!action;sideCreate.style.display=action?'':'none';if(action){sideCreate.dataset.action=action;sideCreate.innerHTML=ico('plus')+(view==='community'?' Soru sor':view==='care'?' Görev ekle':view==='lost'?' İlan oluştur':view==='adoption'?' Sahiplendirme ilanı':' Yeni paylaşım')}}const counts=unreadCounts();const coinHeader=$('#pati-header-coins'),desktopCoin=$('#pati-desktop-coins');for(const counter of [coinHeader,desktopCoin])if(counter){counter.innerHTML='<span aria-hidden="true"><img class="pati-coin-icon" src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true"></span><strong>'+Number(patiCoinState.balance||0).toLocaleString('tr-TR')+'</strong>';counter.setAttribute('aria-label',Number(patiCoinState.balance||0)+' PatiCoin · görevleri aç')}const topMessages=$('#pati-header-messages');if(topMessages){topMessages.innerHTML=ico('message')+countBadge(counts.messages);topMessages.classList.toggle('active',view==='messages');topMessages.setAttribute('aria-label',counts.messages?'Mesajlar, '+counts.messages+' okunmamış mesaj':'Mesajlar')}const topBell=$('#pati-header-notifications');if(topBell){topBell.innerHTML=ico('bell')+countBadge(counts.notifications);topBell.classList.toggle('active',view==='notifications');topBell.setAttribute?.('aria-label',counts.notifications?'Bildirimler, '+counts.notifications+' okunmamış bildirim':'Bildirimler')}let navItem=([id,label,icon])=>`<button type="button" class="nav-link ${view===id?'active':''}" data-view="${id}" aria-current="${view===id?'page':'false'}" aria-label="${label}${id==='messages'&&counts.messages?', '+counts.messages+' okunmamış mesaj':id==='notifications'&&counts.notifications?', '+counts.notifications+' okunmamış bildirim':''}">${ico(icon)}${label}${id==='messages'?countBadge(counts.messages):id==='notifications'?countBadge(counts.notifications):''}</button>`;$('#desktop-nav').innerHTML=nav.map(navItem).join('')+(isAdmin?`<button class="nav-link patiyiz-admin-nav" type="button" data-action="open-admin">${ico('shield')}Yönetim Paneli</button>`:'');$('#mobile-nav').innerHTML=[['home','Akış','home'],['explore','Keşfet','search']].map(([id,label,icon])=>`<button type="button" class="mobile-nav-btn ${view===id?'active':''}" data-view="${id}" aria-label="${label}" aria-current="${view===id?'page':'false'}"><span class="pati-mobile-nav-glyph">${ico(icon)}</span><small>${label}</small></button>`).join('')+`<button type="button" class="mobile-nav-btn pati-messages-nav ${view==='messages'?'active':''}" data-view="messages" aria-label="Mesajlar${counts.messages?', '+counts.messages+' okunmamış mesaj':''}" aria-current="${view==='messages'?'page':'false'}"><span class="pati-mobile-nav-glyph">${ico('message')}${countBadge(counts.messages)}</span><small>Mesajlar</small></button>`+[['reels','Reels','reels-tab'],['profile','Profil','user']].map(([id,label,icon])=>`<button type="button" class="mobile-nav-btn ${view===id?'active':''}" data-view="${id}" aria-label="${label}" aria-current="${view===id?'page':'false'}"><span class="pati-mobile-nav-glyph">${ico(icon)}</span><small>${label}</small></button>`).join('')
 }
+function patiMenuNotificationsHTML(){
+ const list=notificationVisible().slice(0,8),total=notificationVisible().length;
+ return '<div class="pati-menu-notifications-top"><h3>'+ico('bell')+' Bildirimler'+(total?' <span class="pati-menu-notice-count">'+total+'</span>':'')+'</h3>'+
+ '<button type="button" data-view="notifications" class="pati-menu-notifications-all">Tümünü gör</button></div>'+
+ '<div class="pati-menu-notifications-list">'+(list.length?notificationRows(list):'<p class="pati-menu-notifications-empty">Yeni bildirimin yok.</p>')+'</div>';
+}
+function patiMenuRenderNotifications(){
+ const target=document.getElementById('pati-feature-notifications-content');
+ if(target)target.innerHTML=patiMenuNotificationsHTML();
+}
 function openMobileFeaturesMenu(){
  const groups=[
   {title:'Topluluk',tone:'purple',items:[['messages','Mesajlar','message'],['community','Soru & Cevap','users'],['pets','Patileri keşfet','paw']]},
@@ -286,7 +296,7 @@ function openMobileFeaturesMenu(){
   '</div></section>').join('');
  const addPet='<div class="pati-feature-add-pet"><button type="button" class="pati-mobile-menu-item" data-action="pet-add"><span class="pati-menu-icon">'+ico('plus')+'</span><span>Yeni hayvan ekle</span><span class="pati-menu-arrow">'+ico('arrow')+'</span></button></div>';
  const admin=isAdmin?'<section class="pati-feature-group pati-menu-tone-blue"><h3>Yönetim</h3><button type="button" class="pati-mobile-menu-item" data-action="open-admin"><span class="pati-menu-icon">'+ico('shield')+'</span><span>Yönetim Paneli</span><span class="pati-menu-arrow">'+ico('arrow')+'</span></button></section>':'';
- modal('Menü','<div class="pati-features-list pati-color-menu"><p class="pati-feature-intro">İhtiyacın olan bölüme kolayca ulaş.</p>'+sections+addPet+admin+'</div>','tools-form');
+ modal('Menü','<div class="pati-features-list pati-color-menu"><section class="pati-feature-notifications" aria-label="Bildirimlerin" id="pati-feature-notifications-content">'+patiMenuNotificationsHTML()+'</section><p class="pati-feature-intro">İhtiyacın olan bölüme kolayca ulaş.</p>'+sections+addPet+admin+'</div>','tools-form');
  $('#tools-form .modal-footer')?.remove();
 }
 const patiCoinTasks=[
@@ -4071,7 +4081,7 @@ case 'pet-delete':{const pet=data.pets.find(p=>p.id===id);
  },'Hayvan profili silindi.');
  break}
 case 'pets-more':void patiLoadCommunityPets();break;
-case 'my-profile':profileId='';lastDetailView='';navigate('profile');break;case 'view-user':followReturnList=view==='follows-list';if(!followReturnList&&view!=='profile')lastDetailView=view;profileId=id;navigate('profile');break;case 'profile-back':{const dest=lastDetailView&&allowed.includes(lastDetailView)?lastDetailView:'explore';lastDetailView='';profileId='';followReturnList=false;navigate(dest);break}case 'open-notification':openNotification(id);break;case 'post-back':{
+case 'my-profile':profileId='';lastDetailView='';navigate('profile');break;case 'view-user':followReturnList=view==='follows-list';if(!followReturnList&&view!=='profile')lastDetailView=view;profileId=id;navigate('profile');break;case 'profile-back':{const dest=lastDetailView&&allowed.includes(lastDetailView)?lastDetailView:'explore';lastDetailView='';profileId='';followReturnList=false;navigate(dest);break}case 'open-notification':if(target.closest('#tools-form'))closeModal(true);openNotification(id);break;case 'post-back':{
  const detail=patiDetailState;patiDetailState=null;selectedPostId='';
  const back=detail?.origin||(patiExploreReturnTo?'explore':'home');patiExploreReturnTo=false;
  if(detail?.origin==='profile'){profileId=detail.profileId;profilePostsTab=detail.profilePostsTab}
@@ -4180,7 +4190,7 @@ case 'notification-delete':run(async()=>{
  const r=await sb.from('notifications').delete().eq('id',id).eq('owner_id',uid).select('id');
  if(r.error)throw r.error;if(!r.data?.length)throw Error('Bildirim silinemedi veya yetkin yok.');
  if(me?.id!==uid)return;data.notifications=data.notifications.filter(x=>x.id!==id);
- navRender();if(view==='notifications')notificationsPage();
+ navRender();if(view==='notifications')notificationsPage();patiMenuRenderNotifications();
 },'Bildirim silindi.');break;
 case 'notifications-delete-all':if(confirm('Tüm bildirimlerin kalıcı olarak silinsin mi? Bu işlem geri alınamaz.'))run(async()=>{
  const uid=me.id;const r=await sb.from('notifications').delete().eq('owner_id',uid).select('id');
