@@ -56,7 +56,7 @@ test('Turkish content search works without replacing the search field',()=>{
  assert.doesNotMatch(element.innerHTML,/Yeni mesaj aldınız/);
  assert.equal(counter.textContent,'1 / 3 bildirim');
 });
-test('Row layout opens notifications; deletion is available only on long-press',()=>{
+test('Row layout opens notifications and has a direct delete button',()=>{
  const {api,context}=setup();
  const a=api.notificationRows([context.data.notifications[0]]);
  const b=api.notificationRows([context.data.notifications[1]]);
@@ -64,9 +64,10 @@ test('Row layout opens notifications; deletion is available only on long-press',
  assert.match(a,/data-notification-id="n1"/);
  assert.match(a,/Okunmadı/);
  assert.match(b,/is-read/);
- assert.doesNotMatch(a,/notification-toggle-read|data-action="notification-delete"|pati-alert-follow-back/);
- assert.match(app,/function openNotificationDeleteOptions\(el\)/);
- assert.match(app,/data-action="notification-delete"/);
+ assert.doesNotMatch(a,/notification-toggle-read|pati-alert-follow-back/);
+ assert.match(a,/data-action="notification-delete"/);
+ assert.match(a,/aria-label="Bildirimi sil"/);
+ assert.doesNotMatch(app,/function openNotificationDeleteOptions\(el\)/);
 });
 test('Notification screen contains only the list with no dashboard tools',()=>{
  const {api,context}=setup();
