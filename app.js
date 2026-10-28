@@ -1633,6 +1633,7 @@ function healthFilePage(){
 let patiMyPetTab='hub';
 let patiHubSelectedPetId='';
 let patiHealthLanding=true;
+let patiHealthTopic='all';
 function patiMyPetCenterPage(){
  if(patiMyPetTab==='hub'){
   const pets=(data.pets||[]).filter(p=>p.owner_id===me?.id);
@@ -1668,6 +1669,7 @@ function patiMyPetCenterPage(){
  } else if(patiMyPetTab==='wellness'){
   if(patiHubSelectedPetId)patiWellnessPetId=patiHubSelectedPetId;
   patiWellnessPage();
+  if(!patiHealthLanding)main.querySelector('.wellness-v2')?.classList.add('pati-health-detail', 'pati-health-topic-'+patiHealthTopic);
  } else if(patiMyPetTab==='healthfile')healthFilePage();
  else carePage();
  const back=document.createElement('div');back.className='pati-hub-detail-back';
@@ -1813,7 +1815,7 @@ function patiWellnessPage(){
  const open=all.filter(x=>!x.completed_at),late=open.filter(x=>Date.parse(x.due_at)<Date.now()),done=all.filter(x=>x.completed_at);
  const weights=patiWellnessWeightHistory(selectedId),latest=weights[0],previous=weights[1];
  const diff=latest&&previous?Number(latest.weight_kg)-Number(previous.weight_kg):null;
- const viewItems=patiWellnessRemindersFor(selectedId);
+ const viewItems=patiWellnessRemindersFor(selectedId).filter(x=>view!=='my-pet'||patiHealthTopic==='all'||patiHealthTopic==='weight'||x.kind===patiHealthTopic);
  const icons={vaccine:'💉',vet:'🩺',food:'🥣',medicine:'💊'};
  if(view==='my-pet'&&patiHealthLanding){
   const selected=pets.find(p=>p.id===selectedId),photo=selected?.photo_url||'';
@@ -3615,7 +3617,7 @@ case 'care-edit':{const item=data.care.find(x=>x.id===id&&x.owner_id===me.id);if
  run(async()=>{const r=await sb.from('adoption_listings').update({adopted}).eq('id',id).eq('owner_id',me.id).select('*');
  if(r.error)throw r.error;if(!r.data?.length)throw Error('İlan güncellenemedi veya yetkin yok.');
  data.adoption=data.adoption.map(x=>x.id===id?r.data[0]:x);if(view==='adoption')adoptionPage();
- },adopted?'İlan sahiplendirildi olarak işaretlendi.':'İlan yeniden yayına alındı.');break}case 'adoption-delete':remove('adoption_listings',id);break;case 'care-add':composeCare();break;case 'wellness-open':patiMyPetTab='wellness';navigate('my-pet');break;case 'pati-health-action':patiHealthLanding=false;patiWellnessTab='active';render();if(id==='weight')requestAnimationFrame(()=>document.querySelector('.pati-wellness-weights')?.scrollIntoView({block:'start'}));break;case 'pati-hub-select-pet':patiHubSelectedPetId=id;patiWellnessPetId=id;render();break;case 'pati-my-pet-tab':{if(['hub','care','wellness','healthfile','own-pets'].includes(id)){patiMyPetTab=id;if(id==='wellness')patiHealthLanding=true;render()}break}case 'wellness-reminder-add':patiWellnessReminderDialog();break;case 'wellness-weight-add':patiWellnessWeightDialog();break;case 'wellness-pet':patiWellnessPetId=id;render();break;
+ },adopted?'İlan sahiplendirildi olarak işaretlendi.':'İlan yeniden yayına alındı.');break}case 'adoption-delete':remove('adoption_listings',id);break;case 'care-add':composeCare();break;case 'wellness-open':patiMyPetTab='wellness';navigate('my-pet');break;case 'pati-health-action':patiHealthLanding=false;patiHealthTopic=id;patiWellnessTab='active';render();if(id==='weight')requestAnimationFrame(()=>document.querySelector('.pati-wellness-weights')?.scrollIntoView({block:'start'}));break;case 'pati-hub-select-pet':patiHubSelectedPetId=id;patiWellnessPetId=id;render();break;case 'pati-my-pet-tab':{if(['hub','care','wellness','healthfile','own-pets'].includes(id)){patiMyPetTab=id;if(id==='wellness')patiHealthLanding=true;render()}break}case 'wellness-reminder-add':patiWellnessReminderDialog();break;case 'wellness-weight-add':patiWellnessWeightDialog();break;case 'wellness-pet':patiWellnessPetId=id;render();break;
 case 'wellness-filter':patiWellnessTab=id;render();break;
 case 'wellness-refresh':patiWellness.error='';void patiWellnessFetch();break;
 case 'wellness-reminder-edit':{const item=patiWellness.reminders.find(x=>x.id===id&&!x.completed_at&&patiWellnessOwnedPets().some(p=>p.id===x.pet_id));if(item)patiWellnessReminderDialog(item);break;}
