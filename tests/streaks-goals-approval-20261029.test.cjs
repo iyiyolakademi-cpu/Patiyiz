@@ -60,16 +60,18 @@ test('Right-side Onayla button is the only pointer click selection trigger',()=>
  assert.match(picker,/class="pati-collab-approve"/);
  assert.match(picker,/data-pati-approve-id/);
  assert.match(picker,/>Onayla<\/button>/);
- assert.match(picker,/const approve=event\.target\.closest\('button\[data-pati-approve-id\]'\)/);
- assert.match(picker,/if\(!approve\)return/);
+ assert.match(picker,/const approve=event\.target\?\.closest\?\.\('button\[data-pati-approve-id\]'\)/);
+ assert.match(picker,/results\.addEventListener\('pointerdown',approveFromEvent\)/);
+ assert.match(picker,/results\.addEventListener\('touchstart',approveFromEvent/);
+ assert.match(picker,/if\(!approve\|\|!results\.contains\(approve\)\)return false/);
  assert.match(picker,/choose\(p\)/);
  assert.doesNotMatch(picker,/event\.target\.closest\('\[data-pati-user-id\]'\)/);
  assert.match(css,/\.pati-collab-search-results \.pati-collab-approve/);
  assert.match(css,/html\[data-pati-theme="dark"\] \.pati-collab-search-results \.pati-collab-approve/);
 });
 test('Cache invalidations and responsive dark/light styles remain intact',()=>{
- assert.match(html,/patiyiz-delight-20261029\.js\?v=3/);
- assert.match(html,/patiyiz-collab-picker-20261029\.js\?v=2/);
+ assert.match(html,/patiyiz-delight-20261029\.js\?v=4/);
+ assert.match(html,/patiyiz-collab-picker-20261029\.js\?v=3/);
  assert.match(html,/streak_menu_rewards_collab_approve=20261029/);
  assert.match(css,/html\[data-pati-theme="light"\]/);
  assert.match(css,/html\[data-pati-theme="dark"\]/);

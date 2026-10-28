@@ -17,7 +17,7 @@ test('Animated original dog mascot has safe motion reduction and no external dep
  assert.match(mascot,/<svg [^>]*viewBox="0 0 240 240"/);
  for(const key of ['blink','wave','wag','tilt','prefers-reduced-motion'])assert.ok(mascot.includes(key),key);
  assert.doesNotMatch(mascot,/(?:href|src)=["']https?:\/\/|<script\b/i);
- assert.match(html,/patiyiz-delight-20261029\.js\?v=3/);
+ assert.match(html,/patiyiz-delight-20261029\.js\?v=4/);
  assert.match(native,/'patiyiz-mascot\.svg'/);
 });
 test('Streak is database-owned, private and synchronized between devices',()=>{

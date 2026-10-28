@@ -220,9 +220,9 @@ function patiStreaksPage(){
    patiStreakGoalState.error||'Bir hedef seç. Günlük serin hedefe ulaşınca ödül otomatik kazanılır.';
  const retry=patiStreakGoalState.error?'<button type="button" class="pati-streaks-retry" data-action="pati-streak-refresh">Yeniden dene</button>':'';
  main.innerHTML='<div class="pati-streaks-page">'+
-   '<header class="pati-streaks-top"><button type="button" class="pati-streaks-back" data-action="pati-streak-back" aria-label="Önceki sayfaya dön">←</button><div><h1>Seriler</h1><p>Her gün bir pati izi, yeni bir başarı.</p></div></header>'+
+   '<header class="pati-streaks-top"><button type="button" class="pati-streaks-back" data-action="pati-streak-back" aria-label="Önceki sayfaya dön">←</button><div class="pati-streak-title"><span class="pati-streak-kicker">PATİYİZ · GÜNLÜK SERİ</span><h1>Seriler</h1><p>Her gün bir pati izi, yeni bir başarı.</p></div></header>'+
    (window.PatiyizDelight?.streakPanel({count:days,best},patiStreakToday())||'')+
-   '<section class="pati-streak-goal-section"><div class="pati-streak-goals-header"><h2>Seri hedefini belirle</h2><p>'+esc(label)+'</p></div>'+
+   '<section class="pati-streak-goal-section"><div class="pati-streak-goals-header"><h2>Seri hedefini belirle</h2><p>'+esc(label)+'</p>'+(goal?'<div class="pati-streak-goal-current"><span aria-hidden="true"></span>Aktif hedef: '+goal+' gün</div>':'')+'</div>'+
    retry+'<div class="pati-streak-goal-grid">'+cards+'</div>'+
    '<p class="pati-streak-rules">Ödüller her hedef için yalnızca bir kez verilir. Daha önce geçtiğin gün sayıları yerine yeni bir hedef seçebilirsin. Gün değişimi Türkiye saatine göre hesaplanır.</p></section></div>';
  if(!patiStreakGoalState.ready&&!patiStreakGoalState.loading&&!patiStreakGoalState.error&&!patiStreakState.loading)void patiStreakGoalLoad();
