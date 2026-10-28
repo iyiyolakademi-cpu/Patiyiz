@@ -129,9 +129,6 @@ async function checkAdmin(){if(!me||!sb){isAdmin=false;return}try{const {data,er
 function patiStreakToday(){
  return new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Istanbul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
 }
-function patiStreakMarkup(){
- return window.PatiyizDelight?.streakMarkup(patiStreakState)||'';
-}
 async function patiStreakCheckin(){
  if(!me?.id||!sb||document.hidden)return;
  const uid=me.id,today=patiStreakToday();
@@ -146,8 +143,7 @@ async function patiStreakCheckin(){
   if(!row||!Number.isFinite(Number(row.current_streak)))throw Error('Giriş serisi alınamadı');
   patiStreakState={owner:uid,count:Math.max(0,Number(row.current_streak)||0),
    best:Math.max(0,Number(row.longest_streak)||0),ready:true,loading:false,checkedOn:today};
-  const previous=document.querySelector('#main-content [data-pati-streak-card]');
-  if(view==='home'&&previous)previous.outerHTML=patiStreakMarkup();
+  window.PatiyizDelight?.showStreakOnce(patiStreakState,{userId:uid,day:today});
  }catch(e){
   console.warn('Günlük giriş serisi eşitlenemedi:',e?.message||e);
   if(me?.id===uid)patiStreakState.loading=false;
@@ -1655,7 +1651,7 @@ function homePage(){
  if(following&&typeof patiFollowingFetch==='function'&&!patiFollowingState.loading&&(!patiFollowingState.ready||patiFollowingState.owner!==me?.id))void patiFollowingFetch(false);
  main.innerHTML=selectedPostId
   ?header('Paylaşım','Bildirimin ilgili olduğu paylaşım.',button('← Ana sayfaya dön','post-back'))+(data.posts.some(p=>p.id===selectedPostId&&!blocked.has(p.author_id))?postCard(data.posts.find(p=>p.id===selectedPostId)):empty('Paylaşım bulunamadı'))
-  :'<div class="pati-home-feed-tabs" role="tablist" aria-label="Ana akış seçimi"><button type="button" role="tab" data-action="home-feed-tab" data-id="all" aria-selected="'+(!following)+'" class="'+(!following?'active':'')+'">Senin İçin</button><button type="button" role="tab" data-action="home-feed-tab" data-id="following" aria-selected="'+following+'" class="'+(following?'active':'')+'">Takip Edilenler</button></div>'+(typeof patiStreakMarkup==='function'?patiStreakMarkup():'')+storiesStrip()+'<div class="pati-feed-posts">'+(typeof patiCollabInvites==='function'?patiCollabInvites():'')+(following?(patiFollowingState.loading&&!patiFollowingState.ready?'<p class="pati-following-state">Takip edilenlerin gönderileri yükleniyor…</p>':visiblePosts.length?visiblePosts.map((p,i)=>(p._patiRepostActor?'<div class="pati-repost-context">↻ '+esc(profile(p._patiRepostActor).display_name||'Bir kullanıcı')+' yeniden paylaştı</div>':'')+postCard(p,i<5)).join(''):'<div class="pati-following-empty"><strong>Takip ettiklerin burada görünecek</strong><p>Henüz yeni gönderi yok. Keşfet’ten yeni hesaplar bulabilir veya akışı yenileyebilirsin.</p><button type="button" data-view="explore">Keşfet</button><button type="button" data-action="home-following-refresh">Yenile</button></div>'):(list.length?list.map((p,i)=>postCard(p,i<5)+(i===1?patiLeaderBoard():'')).join('')+(list.length===1?patiLeaderBoard():''):empty(patiyizLoadedTables.has('posts')?'Henüz paylaşım yok':'Gönderiler yükleniyor…',patiyizLoadedTables.has('posts')?'İlk gönderiyi sen paylaş!':'Paylaşımların yeniden getiriliyor.')))+((typeof patiHomeLoadError!=='undefined'&&patiHomeLoadError)?'<div class="pati-load-more" role="alert">'+
+  :'<div class="pati-home-feed-tabs" role="tablist" aria-label="Ana akış seçimi"><button type="button" role="tab" data-action="home-feed-tab" data-id="all" aria-selected="'+(!following)+'" class="'+(!following?'active':'')+'">Senin İçin</button><button type="button" role="tab" data-action="home-feed-tab" data-id="following" aria-selected="'+following+'" class="'+(following?'active':'')+'">Takip Edilenler</button></div>'+storiesStrip()+'<div class="pati-feed-posts">'+(typeof patiCollabInvites==='function'?patiCollabInvites():'')+(following?(patiFollowingState.loading&&!patiFollowingState.ready?'<p class="pati-following-state">Takip edilenlerin gönderileri yükleniyor…</p>':visiblePosts.length?visiblePosts.map((p,i)=>(p._patiRepostActor?'<div class="pati-repost-context">↻ '+esc(profile(p._patiRepostActor).display_name||'Bir kullanıcı')+' yeniden paylaştı</div>':'')+postCard(p,i<5)).join(''):'<div class="pati-following-empty"><strong>Takip ettiklerin burada görünecek</strong><p>Henüz yeni gönderi yok. Keşfet’ten yeni hesaplar bulabilir veya akışı yenileyebilirsin.</p><button type="button" data-view="explore">Keşfet</button><button type="button" data-action="home-following-refresh">Yenile</button></div>'):(list.length?list.map((p,i)=>postCard(p,i<5)+(i===1?patiLeaderBoard():'')).join('')+(list.length===1?patiLeaderBoard():''):empty(patiyizLoadedTables.has('posts')?'Henüz paylaşım yok':'Gönderiler yükleniyor…',patiyizLoadedTables.has('posts')?'İlk gönderiyi sen paylaş!':'Paylaşımların yeniden getiriliyor.')))+((typeof patiHomeLoadError!=='undefined'&&patiHomeLoadError)?'<div class="pati-load-more" role="alert">'+
   esc(patiHomeLoadError)+' '+button('Tekrar dene','home-retry')+'</div>':'')
  +(following&&patiFollowingState.error?'<div class="pati-following-error" role="alert">'+esc(patiFollowingState.error)+' '+button('Yeniden dene','home-following-refresh')+'</div>':'')
  +(following&&patiFollowingState.ready&&patiFollowingState.hasMore?'<div class="pati-load-more">'+button('Daha fazla paylaşım yükle','home-following-more')+'</div>':'')
@@ -5583,6 +5579,7 @@ function resetSessionState(){
  if(typeof patiDmLocalSeenCache!=='undefined'){patiDmLocalSeenOwner='';patiDmLocalSeenCache.clear()}
  patiDmPendingLatestPeer='';if(typeof patiDmHiddenConversations!=='undefined')patiDmHiddenConversations={owner:'',ready:false,busy:false,error:false,cutoffs:new Map()};if(typeof patiDmThreads!=='undefined')patiDmThreads.clear();if(typeof patiDmInbox!=='undefined')patiDmInbox={owner:'',rows:[],offset:0,hasMore:true,loading:false,ready:false,error:''};
 
+ if(typeof window!=='undefined')window.PatiyizDelight?.closeStreak();
  patiStreakState={owner:'',count:0,best:0,ready:false,loading:false,checkedOn:''};patiyizLoadToken++;patiyizLoadedTables.clear();patiyizDeferredLoading=null;
  if(typeof patiHomeFeedIds!=='undefined'){patiHomeFeedIds=null;patiHomeFeedCursor=null;patiHomeLoadError=''};if(typeof patiHomeCountCache!=='undefined'){patiHomeCountCache.clear();patiHomeCountsLoading.clear()};if(typeof patiPostCommentPages!=='undefined')patiPostCommentPages.clear();patiWellness={reminders:[],weights:[],loaded:false,loading:false,notified:new Set()};patiLeaderboard=[];patiInviteState={code:'',invited_count:0,already_used:false,coins_each:50,loading:false};patiDmReturnView='home';mobileChatOpen=false;patiCoinState={balance:0,earned:0,claims:[],items:[],orders:[],history:[],loading:false};patiFollowerRewardState={followers:null,claimed:[]};document.getElementById('paticoin-celebration')?.remove();
  if(typeof patiDmSharedPosts!=='undefined'){patiDmSharedPosts.clear();patiDmSharedFetched.clear();patiDmSharedReturnPeer='';patiDmSharedRetryAt=0}
