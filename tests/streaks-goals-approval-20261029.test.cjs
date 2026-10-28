@@ -68,8 +68,8 @@ test('Right-side Onayla button is the only pointer click selection trigger',()=>
  assert.match(css,/html\[data-pati-theme="dark"\] \.pati-collab-search-results \.pati-collab-approve/);
 });
 test('Cache invalidations and responsive dark/light styles remain intact',()=>{
- assert.match(html,/patiyiz-delight-20261029\.js\?v=3/);
- assert.match(html,/patiyiz-collab-picker-20261029\.js\?v=2/);
+ assert.match(html,/patiyiz-delight-20261029\.js\?v=4/);
+ assert.match(html,/patiyiz-collab-picker-20261029\.js\?v=3/);
  assert.match(html,/streak_menu_rewards_collab_approve=20261029/);
  assert.match(css,/html\[data-pati-theme="light"\]/);
  assert.match(css,/html\[data-pati-theme="dark"\]/);
