@@ -7,6 +7,7 @@ const app=fs.readFileSync('app.js','utf8');
 const system=fs.readFileSync('patiyiz-system-media.js','utf8');
 const html=fs.readFileSync('index.html','utf8');
 const css=fs.readFileSync('patiyiz-centered-logo-profile-story-dm-images-20261028.css','utf8');
+const photoCss=fs.readFileSync('patiyiz-profile-chat-photo-polish-20261028.css','utf8');
 const segment=(a,b)=>{const i=app.indexOf(a),j=app.indexOf(b,i+a.length);assert.ok(i>=0&&j>i,'Missing '+a);return app.slice(i,j)};
 
 test('Updated JavaScript parses and CSS is loaded last after previous desktop/mobile styling',()=>{
@@ -56,9 +57,11 @@ test('DM photo viewer requires current conversation and opens only already signe
  assert.match(src,/message\?\.attachment_type!=='image'/);
  assert.match(src,/message\.sender_id===owner&&message\.receiver_id===peer/);
  assert.match(src,/photo\.dataset\.privatePath!==message\.attachment_path/);
- assert.match(src,/modal\('Sohbet fotoğrafı'/);
+ assert.match(src,/document.createElement\('dialog'\)/);
+ assert.match(src,/dialog.showModal\(\)/);
  assert.match(src,/esc\(url\)/);
  assert.doesNotMatch(src,/createSignedUrl\(/);
- assert.match(src,/pati-dm-photo-modal/);
- assert.match(css,/#modal-root \.pati-dm-photo-modal \.pati-dm-photo-view img/);
+ assert.match(src,/pati-dm-lightbox-stage/);
+ assert.match(photoCss,/\.pati-dm-lightbox-stage>img/);
+ assert.match(photoCss,/object-fit:contain!important/);
 });

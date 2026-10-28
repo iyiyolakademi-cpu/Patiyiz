@@ -12,7 +12,8 @@ const files=[
 'academy-101-part1.js','academy-101-part2.js','follower-milestones.js',
 'instagram-share-clean.css','post-detail-twitter-text-stage16.css','patiyiz-upload.js','patiyiz-video-prepare.js','patiyiz-camera-draft.js','patiyiz-system-media.js','app.js','patiyiz-sw.js','patiyiz-camera-flow.js',
 'pati-coin.svg','profile-explore-coin-polish.css','patiyiz-mobile-rewards-shop-20261025.css','patiyiz-ux-hayvanim-20261025.css','patiyiz-shared-create-studio-20261025.css','patiyiz-selected-logo.svg','patiyiz-icon.svg','patiyiz-app-icon-192.png',
-'patiyiz-app-icon-512.png','patiyiz-apple-touch-icon.png','patiyiz-favicon-48.png'];
+'patiyiz-app-icon-512.png','patiyiz-apple-touch-icon.png','patiyiz-favicon-48.png',
+'patiyiz-profile-chat-photo-polish-20261028.css'];
 await rm(out,{recursive:true,force:true});await mkdir(path.join(out,'vendor'),{recursive:true});
 for(const name of files)await cp(path.join(root,name),path.join(out,name));
 await cp(path.join(native,'src/native-reels.css'),path.join(out,'native-reels.css'));
@@ -62,6 +63,7 @@ const nativeBack=[
 " const sheet=document.getElementById('pati-create-sheet');",
 " if(sheet&&!sheet.hidden){closePatiCreate();event.preventDefault();return}",
 " if(document.getElementById('story-overlay')){closeStory();event.preventDefault();return}",
+" if(document.getElementById('pati-dm-lightbox')?.open){document.getElementById('pati-dm-lightbox').close();event.preventDefault();return}",
 " if(document.querySelector('#modal-root .modal')){closeModal();event.preventDefault();return}",
 " if(view==='messages'&&mobileChatOpen){mobileChatOpen=false;render();event.preventDefault();return}",
 " if(view==='profile'&&lastDetailView&&allowed.includes(lastDetailView)){const dest=lastDetailView;lastDetailView='';navigate(dest);event.preventDefault();return}",
