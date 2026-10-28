@@ -61,8 +61,8 @@ test('PatiCoin menu is organized while private Health File has its own section',
  assert.doesNotMatch(nav,/\['shop'/);
  assert.match(nav,/\['my-pet','Hayvanım'/);
  const menu=piece('function openMobileFeaturesMenu()','const patiCoinTasks=[');
- assert.match(menu,/title:'PatiCoin Merkezi'/);
- assert.match(menu,/Görevler & PatiCoin/);
+ assert.match(menu,/title:'PatiCoin ve koleksiyonum'/);
+ assert.match(menu,/Pati Mağaza/);
  assert.match(menu,/Pati Mağaza/);
  assert.doesNotMatch(menu,/Dijital Sağlık Dosyası/);
  assert.match(html,/id="pati-header-coins"/);
@@ -70,7 +70,7 @@ test('PatiCoin menu is organized while private Health File has its own section',
  assert.match(html,/src="health-file\.js/);
  assert.match(app,/case 'saved-posts':navigate\('saved-posts'\)/);
  const profile=piece('function profilePage(){','function formField(');
- assert.doesNotMatch(profile,/Kaydettiklerim/);assert.match(app,/\['saved-posts','Kaydettiklerim','bookmark'\]/);
+ assert.doesNotMatch(profile,/Kaydettiklerim/);assert.match(app,/\['saved-posts','Kaydettiğim gönderiler','bookmark'\]/);
  assert.doesNotMatch(profile,/data-action="paticoin-shop"/);
 });
 test('There are 15 one-time, five daily and four weekly missions',()=>{
