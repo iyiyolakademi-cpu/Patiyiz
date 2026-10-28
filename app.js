@@ -1639,28 +1639,27 @@ function patiMyPetCenterPage(){
   const pets=(data.pets||[]).filter(p=>p.owner_id===me?.id);
   const featured=pets.find(p=>p.id===patiHubSelectedPetId)||pets[0];
   if(featured)patiHubSelectedPetId=featured.id;
-  const petName=featured?esc(featured.name||'Patili dostum'):'Patili dostunu ekle';
-  const petImage=featured?.photo_url||featured?.avatar_url||featured?.image_url||'';
-  const petPhoto=petImage?'<img src="'+esc(petImage)+'" alt="'+petName+'" loading="lazy" decoding="async">':'<span aria-hidden="true">🐾</span>';
-  const groups=[
-   {title:'Hayvanım ve Sağlık',items:[
-    ['care','Bakım','', 'heart','mint','tab'],
-    ['wellness','Sağlık','','heart','sky','tab'],
-    ['own-pets','Hayvanlarım','','paw','rose','tab']]},
-   {title:'Öğren ve Geliş',items:[
-    ['education','Eğitim','','library','sun','view'],
-    ['knowledge','Bilgi Merkezi','','info','blue','view']]},
-   {title:'Topluluk ve Yardımlaşma',items:[
-    ['lost','Kayıp İlanları','','search','lilac','view'],
-    ['adoption','Sahiplendirme','','heart','rose','view']
-    ]},
-  ];
-  const card=([destination,label,description,icon,tone,kind])=>'<button type="button" class="pati-hub-card pati-hub-'+tone+'" '+(kind==='tab'?'data-action="pati-my-pet-tab" data-id="'+destination+'"':'data-view="'+destination+'"')+' aria-label="'+label+'"><span class="pati-hub-icon">'+ico(icon)+'</span><strong>'+label+'</strong><small>'+description+'</small><span class="pati-hub-chevron" aria-hidden="true">›</span></button>';
-  const groupsMarkup=groups.map(g=>'<section class="pati-hub-category"><h2 class="pati-hub-section-title">'+g.title+'</h2><div class="pati-hub-grid">'+g.items.map(card).join('')+'</div></section>').join('');
-  const petsMarkup=pets.length>1?'<div class="pati-hub-other-pets" aria-label="Hayvan seç">'+pets.map(p=>'<button type="button" class="pati-hub-mini-pet '+(featured?.id===p.id?'active':'')+'" data-action="pati-hub-select-pet" data-id="'+esc(p.id)+'">'+esc(p.name||'Dostum')+'</button>').join('')+'</div>':'';
-  main.innerHTML='<section class="pati-pet-hub"><header class="pati-hub-hero"><div class="pati-hub-copy"><small>PATİYİZ · HAYVANIM MERKEZİ</small><h1>Her şey patili dostun için.</h1><p>Sağlık, bakım, eğitim ve hayvansever topluluğu bir arada.</p></div><div class="pati-hub-pet-photo">'+petPhoto+'</div></header>'+
-   '<div class="pati-hub-pet-strip"><span>'+petPhoto+'</span><div><strong>'+petName+'</strong><small>'+(featured?esc(featured.species||'Hayvanım'):'İlk hayvan profilini oluştur')+'</small></div><button type="button" data-action="'+(featured?'pati-my-pet-tab':'pet-add')+'" '+(featured?'data-id="wellness"':'')+'>'+(featured?'Sağlığını gör':'Hayvan ekle')+' →</button></div>'+petsMarkup+
-   '<div class="pati-hub-sections">'+groupsMarkup+'</div><p class="pati-hub-foot">Dostunun mutluluğu için küçük adımlar, büyük farklar. ♡</p></section>';
+  const petArt=p=>/kedi/i.test(String(p?.species||''))?'pati-illustration-cat.svg':'pati-illustration-dog.svg';
+  const photoFor=(p,alt)=>'<img src="'+esc(p?.photo_url||p?.avatar_url||petArt(p))+'" alt="'+esc(alt||p?.name||'Patili dost')+'" loading="lazy" decoding="async">';
+  const activeName=featured?esc(featured.name||'Patili dostum'):'Patili dostunu ekle';
+  const action=(destination,title,subtitle,emoji,tone,kind)=>'<button type="button" class="pati-ref-action pati-ref-'+tone+'" '+(kind==='tab'?'data-action="pati-my-pet-tab" data-id="'+destination+'"':'data-view="'+destination+'"')+'><span class="pati-ref-action-text"><span class="pati-ref-action-name">'+title+'</span><small>'+subtitle+'</small></span><span class="pati-ref-action-emoji" aria-hidden="true">'+emoji+'</span></button>';
+  const primary=action('care','Bakım Takvimi','Günlük rutinler','🥣','orange','tab')+
+   action('wellness','Hayvan Sağlığı','Aşı ve kontroller','💗','violet','tab')+
+   action('education','Eğitim','101 ders ve ipuçları','🎓','pink','view')+
+   action('knowledge','Bilgi Merkezi','Bakım rehberleri','📚','blue','view');
+  const other=action('lost','Kayıp İlanları','Birlikte bulalım','🔎','lavender','view')+
+   action('adoption','Sahiplendirme','Yeni bir yuva','🐶','green','view')+
+   action('own-pets','Hayvanlarım','Profilleri yönet','🐾','peach','tab')+
+   action('shop','Pati Mağaza','Ödüller ve bağış','🎁','teal','view');
+  const petTiles=pets.map(p=>'<button type="button" class="pati-ref-pet-tile '+(featured?.id===p.id?'selected':'')+'" data-action="pati-hub-select-pet" data-id="'+esc(p.id)+'"><span class="pati-ref-pet-tile-image">'+photoFor(p,p.name)+'</span><strong>'+esc(p.name||'Patili dost')+'</strong><small>'+esc(p.species||'Hayvan')+'</small></button>').join('');
+  main.innerHTML='<section class="pati-pet-hub pati-ref-hub">'+
+   '<div class="pati-ref-greeting"><div><small>MERHABA 🐾</small><h1>Hayvanım Merkezi</h1><p>Patili dostunun her şeyi burada.</p></div><span class="pati-ref-greeting-mark" aria-hidden="true">♡</span></div>'+
+   '<div class="pati-ref-pet-hero"><div class="pati-ref-hero-copy"><span>BENİM PATİLİ DOSTUM</span><h2>'+activeName+'</h2><p>'+(featured?esc(featured.species||'Dostum')+' · Onun için her şey bir arada.':'İlk hayvan profilini oluşturarak başla.')+'</p><button type="button" '+(featured?'data-action="pati-my-pet-tab" data-id="wellness"':'data-action="pet-add"')+'>'+(featured?'Sağlık bilgileri ↗':'Hayvan ekle +')+'</button></div><div class="pati-ref-hero-photo">'+photoFor(featured,featured?.name||'Patili dost')+'</div><span class="pati-ref-hero-paw" aria-hidden="true">✿</span></div>'+
+   '<div class="pati-ref-notice"><span class="pati-ref-notice-dot">●</span><div><strong>'+activeName+' için her şey hazır</strong><small>Bakım ve sağlık bilgilerini kolayca takip et.</small></div><button type="button" data-action="pati-my-pet-tab" data-id="care" aria-label="Bakım Takvimini aç">›</button></div>'+
+   '<div class="pati-ref-section-title"><h2>Hızlı İşlemler</h2></div><div class="pati-ref-actions">'+primary+'</div>'+
+   '<div class="pati-ref-section-title"><h2>Hayvanlarım</h2><button type="button" data-action="pati-my-pet-tab" data-id="own-pets">Tümünü gör →</button></div>'+
+   '<div class="pati-ref-pet-tiles">'+petTiles+'<button type="button" class="pati-ref-pet-tile add" data-action="pet-add"><span class="pati-ref-pet-tile-image add">+</span><strong>Hayvan ekle</strong><small>Yeni profil</small></button></div>'+
+   '<div class="pati-ref-section-title"><h2>Keşfet ve Yardımlaş</h2></div><div class="pati-ref-actions pati-ref-more-actions">'+other+'</div></section>';
   return;
  }
  if(patiMyPetTab==='own-pets'){
