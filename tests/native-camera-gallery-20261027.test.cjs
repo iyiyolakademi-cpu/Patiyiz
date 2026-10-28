@@ -14,8 +14,8 @@ test('Camera creation opens actual device capture and photo/video gallery, not w
  assert.doesNotMatch(system,/getUserMedia|MediaRecorder|captureStream|requestAnimationFrame/);
  assert.match(app,/mediaFlow\.open\(\{/);
  assert.match(app,/window\.PatiyizSystemMediaFlow/);
- assert.match(app,/portraitStoryCamera&&mode==='story'\?window\.PatiyizCameraFlow/);
- assert.match(system,/onStoryPhotoCamera/);
+ assert.match(app,/const mediaFlow=window\.PatiyizSystemMediaFlow/);
+ assert.doesNotMatch(system,/action==='camera-photo'&&state\.mode==='story'/);
 });
 test('Android native photo capture uses Capacitor real camera, video and gallery use file picker',()=>{
  assert.match(system,/window\.PatiyizNative\.pickPhotoForInput\(input,'camera',false\)/);

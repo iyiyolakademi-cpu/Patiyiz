@@ -69,15 +69,14 @@ test('Mobile profile stays Instagram-like with 3 equal tile columns and no added
  assert.match(css,/pati-profile-tile/);
  assert.match(css,/@media\(max-width:370px\)/);
 });
-test('Story photo option opens in-app portrait capture and saves native 9:16 image',()=>{
- assert.match(media,/onStoryPhotoCamera/);
- assert.match(media,/action==='camera-photo'&&state\.mode==='story'/);
- assert.match(media,/const callback=state\.onStoryPhotoCamera;close\(\);callback\(\)/);
- const mount=between(app,'function mountPatiyizCamera(mode,portraitStoryCamera=false){','function startPatiCameraPost(){');
- assert.match(mount,/window\.PatiyizCameraFlow/);
- assert.match(mount,/onStoryPhotoCamera\(\)\{mountPatiyizCamera\('story',true\)\}/);
+test('Story photo opens platform camera, not an embedded viewfinder',()=>{
+ const mount=between(app,'function mountPatiyizCamera(mode){','function startPatiCameraPost(){');
+ assert.match(mount,/const mediaFlow=window\.PatiyizSystemMediaFlow/);
  assert.match(mount,/mediaFlow\.open\(/);
- assert.match(camera,/const targetFrame=mode=>mode==='post'\?\{w:1080,h:1080\}:\{w:1080,h:1920\}/);
- assert.match(camera,/drawCameraFrame\(cv\.getContext\('2d'\),v,w,h,state\.facing==='user'\)/);
- assert.match(html,/portrait_story_20261028=1/);
+ assert.doesNotMatch(mount,/window\.PatiyizCameraFlow|onStoryPhotoCamera/);
+ assert.match(media,/capture="environment"/);
+ assert.match(media,/name==='camera-photo'/);
+ assert.match(media,/pickPhotoForInput\(input,'camera',false\)/);
+ assert.doesNotMatch(media,/action==='camera-photo'&&state\.mode==='story'/);
 });
+

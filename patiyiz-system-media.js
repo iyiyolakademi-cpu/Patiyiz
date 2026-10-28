@@ -193,9 +193,6 @@
     const next=btn.dataset.mode;if(next===state.mode)return;
     const cb=state.onSwitch;close();cb?.(next);return;
    }
-   if(action==='camera-photo'&&state.mode==='story'&&typeof state.onStoryPhotoCamera==='function'){
-    const callback=state.onStoryPhotoCamera;close();callback();return;
-   }
    if(['camera-photo','camera-video','gallery'].includes(action)){launchPicker(action);return}
    if(action==='rechoose'){
     if(state.publishing)return;
