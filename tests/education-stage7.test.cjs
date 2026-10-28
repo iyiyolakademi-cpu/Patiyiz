@@ -59,17 +59,17 @@ test('Kaldığın yerden devam et her hesaba ait son açılan eksik dersi seçer
  api.educationRemember('unknown-id');
  assert.equal(store.get('patiyiz-edu-recent-person-1'),'cat-food');
 });
-test('Akademi ana sayfası ilerlemeyi, ara ve filtrele kontrollerini gösterir',()=>{
+test('Academy first shows colorful categories, real progress and resume',()=>{
  const {api,main}=setup();
  api.educationPage();
- assert.match(main.innerHTML,/pati-edu-progressbar/);
- assert.match(main.innerHTML,/aria-valuenow="33"/);
+ assert.match(main.innerHTML,/pati-ref-academy-home/);
+ assert.match(main.innerHTML,/pati-ref-academy-topics/);
+ assert.match(main.innerHTML,/1 \/ 3 ders tamamlandı/);
  assert.match(main.innerHTML,/data-action="education-continue"/);
- assert.match(main.innerHTML,/data-action="education-status"/);
  assert.match(main.innerHTML,/data-action="education-filter"/);
- assert.match(main.innerHTML,/pati-academy-search/);
- assert.match(main.innerHTML,/3 ders/);
- assert.match(main.innerHTML,/✓ Tamamlandı/);
+ assert.match(main.innerHTML,/data-action="pati-academy-search-open"/);
+ assert.match(main.innerHTML,/Kedi/);
+ assert.match(main.innerHTML,/Köpek/);
 });
 test('Arama girerken arama alanı yeniden oluşturulmaz, sadece sonuçlar değişir',()=>{
  const {api,ctx,grid,count}=setup();
