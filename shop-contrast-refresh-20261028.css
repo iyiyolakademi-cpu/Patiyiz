@@ -1,0 +1,29 @@
+/* Accessible readable theme refresh; shop redesigned without changing coin transactions. */
+#main-content .pati-shop-v2{max-width:980px;margin-inline:auto;color:#20242e}
+#main-content .pati-shop-v2 .pati-shop-hero{background:linear-gradient(125deg,#e8f5ff 0%,#f1eaff 54%,#fff1e3 100%)!important;color:#202438!important;border:1px solid #e2e9f2!important;border-radius:24px!important;padding:22px!important;box-shadow:none!important}
+#main-content .pati-shop-v2 .pati-shop-hero h1{color:#1e293b!important;font-size:clamp(26px,5vw,35px)}
+#main-content .pati-shop-v2 .pati-shop-hero p{color:#475569!important;opacity:1!important}
+#main-content .pati-shop-v2 .pati-shop-eyebrow{color:#52679b!important}
+#main-content .pati-shop-v2 .pati-shop-wallet{background:#fff!important;color:#1f2937!important;border:1px solid #d8e2f4!important;border-radius:17px!important;box-shadow:0 5px 14px #33415510!important}
+#main-content .pati-shop-v2 .pati-shop-wallet :is(strong,span,small){color:#273e5e!important}
+#main-content .pati-shop-v2 .pati-shop-filter{display:flex!important;flex-wrap:nowrap!important;overflow-x:auto;gap:8px;padding:6px 1px 14px;scrollbar-width:none}
+#main-content .pati-shop-v2 .pati-shop-filter button{flex-shrink:0;border:1px solid #dce3ed!important;background:#f4f6fa!important;color:#394657!important;border-radius:999px!important;min-height:41px;padding:9px 16px!important;font-weight:700}
+#main-content .pati-shop-v2 .pati-shop-filter button.active{background:#202b40!important;color:#fff!important;border-color:#202b40!important}
+#main-content .pati-shop-v2 .pati-shop-card{background:#fff!important;color:#1f2937!important;border:1px solid #e4e9f1!important;border-radius:20px!important;box-shadow:0 8px 28px #17233a0c!important;overflow:hidden}
+#main-content .pati-shop-v2 .pati-shop-card:nth-of-type(4n+1) .pati-shop-card-top{background:#e9f6ed!important}
+#main-content .pati-shop-v2 .pati-shop-card:nth-of-type(4n+2) .pati-shop-card-top{background:#e8f3ff!important}
+#main-content .pati-shop-v2 .pati-shop-card:nth-of-type(4n+3) .pati-shop-card-top{background:#fff0e3!important}
+#main-content .pati-shop-v2 .pati-shop-card:nth-of-type(4n+4) .pati-shop-card-top{background:#f4ebff!important}
+#main-content .pati-shop-v2 .pati-shop-card h3{color:#1e293b!important;font-weight:800}
+#main-content .pati-shop-v2 .pati-shop-card p{color:#566174!important;opacity:1!important}
+#main-content .pati-shop-v2 .pati-shop-type{color:#334155!important;background:#ffffffd9!important;border-radius:999px!important}
+#main-content .pati-shop-v2 .pati-shop-stock-state{font-weight:700}
+#main-content .pati-shop-v2 .pati-shop-card-bottom strong{color:#1e293b!important}
+#main-content .pati-shop-v2 .pati-shop-card-bottom button:not(:disabled){background:#232a38!important;color:#fff!important;border-radius:11px!important;min-height:43px}
+#main-content .pati-shop-v2 .pati-shop-card-bottom button:disabled{background:#eef1f5!important;color:#606c7d!important;opacity:1!important}
+#main-content .pati-pet-hub .pati-hub-card strong{color:#1c2734!important}
+#main-content .pati-pet-hub .pati-hub-section-title{color:#212b3c!important}
+#main-content .pati-pet-hub .pati-hub-copy :is(h1,p){color:#263851!important}
+#main-content :is(.care-v2,.lost-v2,.adopt-v2,.pati-edu-v2,.kb-v2,.wellness-v2) :is(h1,h2,h3){color:#202936}
+#main-content :is(.care-v2,.lost-v2,.adopt-v2,.pati-edu-v2,.kb-v2,.wellness-v2) input{color:#263244!important;background:#fff!important}
+@media(max-width:740px){#main-content .pati-shop-v2 .pati-shop-hero{padding:17px!important}#main-content .pati-shop-v2 .pati-shop-wallet{min-height:64px}}
