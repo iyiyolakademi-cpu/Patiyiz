@@ -3403,17 +3403,19 @@ function draftRestore(){
  if(body)body.value=draft.body||'';
  notify('Taslak açıklaması yüklendi.');
 }
-function mountPatiyizCamera(mode){
+function mountPatiyizCamera(mode,portraitStoryCamera=false){
  const form=document.getElementById('post-form');if(!form)return;
- if(!window.PatiyizSystemMediaFlow){notify('Telefon kamerası ve galeri seçicisi yüklenemedi. Sayfayı yenile.',true);closeModal(true);return}
+ const mediaFlow=portraitStoryCamera&&mode==='story'?window.PatiyizCameraFlow:window.PatiyizSystemMediaFlow;
+ if(!mediaFlow){notify('Telefon kamerası ve galeri seçicisi yüklenemedi. Sayfayı yenile.',true);closeModal(true);return}
  form.dataset.cameraFirst='1';
  form.dataset.selfieMirror='false';
  const aspect=form.querySelector('input[name="aspect"]');
  if(aspect)aspect.value=mode==='post'?'1:1':'9:16';
  // The standard modal stays hidden; camera UI owns the caption and share button.
  // Retain the existing authenticated publication transaction, not an editor step.
- window.PatiyizSystemMediaFlow.open({
+ mediaFlow.open({
   mode,userId:me.id,
+  onStoryPhotoCamera(){mountPatiyizCamera('story',true)},
   onSwitch(nextMode){
    // Keep the bottom mode strip functional, not decorative.
    closeModal(true);
@@ -3442,13 +3444,13 @@ function mountPatiyizCamera(mode){
     const result=await createStoryPublication(form,f,str);
     void window.PatiyizCameraDraft?.clear(me.id);
     data.stories=[result,...data.stories.filter(x=>x.id!==result.id)];
-    window.PatiyizSystemMediaFlow?.close();closeModal(true);render();
+    mediaFlow?.close();closeModal(true);render();
     notify('Hikâyen 24 saat boyunca görüntülenecek.');
    }else{
     const result=await createPostPublication(form,f,str);
     void window.PatiyizCameraDraft?.clear(me.id);
     profileCountCache.delete(me.id);
-    window.PatiyizSystemMediaFlow?.close();closeModal(true);
+    mediaFlow?.close();closeModal(true);
     try{await refresh()}catch(error){console.warn('Paylaşım kaydedildi, akış yenilemesi başarısız:',error.message)}
     notify('Paylaşım yayınlandı.');
     try{localStorage.removeItem(patiDraftKey())}catch(_){}
