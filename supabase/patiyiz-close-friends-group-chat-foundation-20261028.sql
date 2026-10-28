@@ -30,6 +30,7 @@ returns boolean language sql stable security definer
 set search_path=public,pg_temp as $$
  select exists(select 1 from public.patiyiz_close_friends f
  where f.owner_id=p_owner and f.friend_id=p_viewer)
+ and (p_viewer=auth.uid() or p_owner=auth.uid())
 $$;
 revoke all on function public.patiyiz_is_close_friend(uuid,uuid) from public,anon;
 grant execute on function public.patiyiz_is_close_friend(uuid,uuid) to authenticated;
@@ -65,7 +66,8 @@ returns boolean language sql stable security definer
 set search_path=public,pg_temp as $$
  select exists(select 1 from public.patiyiz_group_members
  where group_id=p_group and user_id=p_user)
-$$;
+ and p_user=auth.uid()
+$;
 revoke all on function public.patiyiz_group_is_member(uuid,uuid) from public,anon;
 grant execute on function public.patiyiz_group_is_member(uuid,uuid) to authenticated;
 
