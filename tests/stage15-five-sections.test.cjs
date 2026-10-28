@@ -12,10 +12,12 @@ test('All five screenshot sidebar sections exist in desktop routes and view disp
  for(const name of ["['messages','Mesajlar'","['notifications','Bildirimler'","['profile','Profilim'","['settings','Ayarlar ve Gizlilik'"])assert.ok(app.includes(name),name);
  for(const text of ['messages:messagesPage','notifications:notificationsPage','profile:profilePage','settings:settingsPage'])assert.ok(app.includes(text),text);
 });
-test('Mobile all-features menu exposes all five sections and Health File',()=>{
- for(const n of ["['profile','Profilim','user']","['messages','Mesajlar','message']","['notifications','Bildirimler','bell']","['settings','Ayarlar ve Gizlilik','settings']","['my-pet','Hayvanım · Bakım ve Sağlık','heart']"])assert.ok(menu.includes(n),n);
- assert.match(menu,/menuBadge\(menuCounts\.notifications\)/);
- assert.match(menu,/menuBadge\(menuCounts\.messages\)/);
+test('Mobile menu is concise and Pet Center links to specialized modules',()=>{
+ for(const n of ["['community','Topluluk soruları','users']","['pets','Patileri keşfet','paw']","['my-pet','Hayvanım Merkezi · Tüm seçenekler','heart']","['settings','Ayarlar ve gizlilik','settings']","['shop','Pati Mağaza','grid']"])assert.ok(menu.includes(n),n);
+ assert.match(app,/data-action="pati-my-pet-tab"/);
+ assert.match(app,/p4-hub-grid/);
+ assert.match(app,/messages:messagesPage/);
+ assert.match(app,/notifications:notificationsPage/);
 });
 test('Sidebar and header notifications expose accessible unread labels',()=>{
  assert.match(app,/topBell\.setAttribute\?\.\('aria-label',counts\.notifications/);
