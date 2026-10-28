@@ -49,7 +49,7 @@ test('Mobil üst menü düğmesi tüm gerçek bölümlere erişim sağlar',()=>{
  assert.match(header,/data-action="tools"/);
  assert.match(header,/aria-label="Tüm Özellikler menüsünü aç"/);
  const fragment=excerpt('function openMobileFeaturesMenu(){','function side(){');
- const known=['community','pets','messages','notifications','education','knowledge','lost','adoption','my-pet','settings','blocked'];
+ const known=['community','pets','my-pet','shop','saved-posts','settings','blocked'];
  let rendered='';
  let type='',removed=false;
  const fn=vm.runInNewContext(fragment+'\nopenMobileFeaturesMenu',{
@@ -60,7 +60,7 @@ test('Mobil üst menü düğmesi tüm gerçek bölümlere erişim sağlar',()=>{
  });
  fn();
  assert.equal(type,'tools-form');
- assert.match(rendered,/Tüm Özellikler/);
+ assert.match(rendered,/Menü/);\n assert.match(app,/\['education','Eğitim'/);\n assert.match(app,/\['lost','Kayıp İlanları'/);
  for(const id of known)assert.match(rendered,new RegExp('data-view="'+id+'"'),'missing '+id);
  assert.equal(removed,true);
  assert.match(app,/case 'tools':openMobileFeaturesMenu\(\);break/);
