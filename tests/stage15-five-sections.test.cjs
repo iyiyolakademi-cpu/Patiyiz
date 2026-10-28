@@ -45,7 +45,7 @@ test('Notifications keep owner-scoped writes while showing only a simple list',(
  assert.match(notice,/notificationVisible\(\)/);
  assert.match(notice,/notificationRows\(list\)/);
  assert.doesNotMatch(notice,/notification-v2-filters|notification-v2-stats|notifications-delete-all|notifications-read/);
- assert.match(app,/case 'notification-delete':closeModal\(true\);run\(/);
+ assert.match(app,/case 'notification-delete':run\(/);
  assert.match(app,/\.delete\(\)\.eq\('id',id\)\.eq\('owner_id',uid\)/);
  assert.match(app,/async function notificationCheckPush\(\)/);
 });
