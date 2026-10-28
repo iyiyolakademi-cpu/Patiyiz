@@ -1290,11 +1290,12 @@ async function patiSyncHomePostCounts(posts){
   finally{for(const id of page)patiHomeCountsLoading.delete(id)}
  }
 }
-function patiHomeEmptyState(){
- if(!patiyizLoadedTables.has('posts'))return empty('Gönderiler yükleniyor…','Paylaşımların yeniden getiriliyor.');
- return '<section class="pati-home-empty" role="status"><span class="pati-home-empty-icon" aria-hidden="true">🐾</span><h2>Henüz paylaşım yok</h2><p>Topluluğun ilk fotoğrafını veya hikâyeni paylaşabilir, yeni patili dostları keşfedebilirsin.</p><div class="pati-home-empty-actions"><button type="button" class="primary-btn" data-action="pati-create-post">İlk gönderini paylaş</button><button type="button" data-action="pati-create-text">Yazı paylaş</button><button type="button" data-view="explore">Keşfet</button></div></section>';
-}
 function homePage(){
+ function patiHomeEmptyState(){
+  if(!patiyizLoadedTables.has('posts'))return empty('Gönderiler yükleniyor…','Paylaşımların yeniden getiriliyor.');
+  return '<section class="pati-home-empty" role="status"><span class="pati-home-empty-icon" aria-hidden="true">🐾</span><h2>Henüz paylaşım yok</h2><p>Topluluğun ilk fotoğrafını veya hikâyeni paylaşabilir, yeni patili dostları keşfedebilirsin.</p><div class="pati-home-empty-actions"><button type="button" class="primary-btn" data-action="pati-create-post">İlk gönderini paylaş</button><button type="button" data-action="pati-create-text">Yazı paylaş</button><button type="button" data-view="explore">Keşfet</button></div></section>';
+ }
+
  if(selectedPostId&&patiDetailState){patiDetailPage();return}
  const list=[...data.posts].filter(p=>!blocked.has(p.author_id)&&
   (typeof patiHomeFeedIds==='undefined'||!patiHomeFeedIds||patiHomeFeedIds.has(p.id)))
@@ -1437,7 +1438,7 @@ function explorePage(){
   const remote=typeof patiExploreUsers!=='undefined'&&patiExploreUsers.owner===me.id&&patiExploreUsers.query===String(search).trim().slice(0,50)?patiExploreUsers:null;
   const source=remote?.ready?[...remote.rows,...data.profiles]:data.profiles;
   const users=[...new Map(source.map(p=>[p.id,p])).values()].filter(p=>p.id!==me.id&&!blocked.has(p.id)&&(String(p.handle||'')+' '+String(p.display_name||'')+' '+String(p.city||'')).toLocaleLowerCase('tr-TR').includes(q))
-   .sort((a,b)=>Number(followed.has(a.id))-Number(followed.has(b.id))||String(a.handle||a.display_name||'').localeCompare(String(b.handle||b.display_name||''),'tr'));
+   .sort((a,b)=>Number(followed.has(b.id))-Number(followed.has(a.id))||String(a.handle||a.display_name||'').localeCompare(String(b.handle||b.display_name||''),'tr'));
   main.innerHTML='<section class="pati-search-screen" aria-label="Kullanıcı ara"><form class="pati-search-top" id="pati-explore-form"><label class="pati-search-field">'+ico('search')+'<input type="search" id="explore-search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Kullanıcı ara" value="'+esc(search)+'" aria-label="Kullanıcı ara" autofocus></label><button type="button" class="pati-search-cancel" data-action="pati-search-cancel">İptal</button></form>'+
    '<div class="pati-search-results" aria-live="polite">'+(remote?.loading?'<p class="pati-search-empty" role="status">Kullanıcılar aranıyor…</p>':'')+
    (remote?.error?'<p class="pati-search-empty" role="alert">'+esc(remote.error)+'</p>'+button('Tekrar dene','explore-search-retry'):'')+(users.length?users.slice(0,150).map(p=>'<button type="button" class="pati-search-user" data-action="view-user" data-id="'+esc(p.id)+'">'+avatar(p,'l')+'<span class="pati-search-user-info"><strong>'+esc(p.handle||p.display_name||'Patiyiz üyesi')+'</strong><small>'+esc(p.display_name||'Patiyiz üyesi')+(followed.has(p.id)?' · Takiptesin':'')+'</small></span></button>').join(''):'<p class="pati-search-empty">'+(q?'Bu isimle eşleşen profil yok.':'Henüz görüntülenebilen profil yok.')+'</p>')+'</div>'+
