@@ -6,7 +6,7 @@ const dmCss=fs.readFileSync('dm-fullscreen.css','utf8');
 const activityCss=fs.readFileSync('patiyiz-story-community-carousel-20261028.css','utf8');
 const index=fs.readFileSync('index.html','utf8');
 test('own story movement is at the bottom-left and opens a complete activity view',()=>{
- assert.match(app,/async function showStoryViewers\(\)/);
+ assert.match(app,/async function showStoryViewers\(options=\{\}\)/);
  assert.match(app,/data-action="story-viewers"/);
  assert.match(app,/class="pati-story-activity-list"/);
  assert.match(app,/patiyiz_story_views/);
