@@ -12,7 +12,7 @@ function excerpt(start,end){
  return app.slice(a,b);
 }
 
-test('Ekran görüntüsündeki sıralama ve ortadaki siyah artı düğmesi kullanılır',()=>{
+test('Alt menü beşli kalır, ortadaki Mesajlar ve üstte paylaşım artısı yer alır',()=>{
  let output='';
  const fab={hidden:false,style:{},dataset:{},setAttribute(){}};
  const dom={
@@ -30,16 +30,17 @@ test('Ekran görüntüsündeki sıralama ve ortadaki siyah artı düğmesi kulla
  });
  fn();
  assert.deepEqual([...output.matchAll(/<small>([^<]+)<\/small>/g)].map(m=>m[1]),
-  ['Akış','Keşfet','Paylaş','Reels','Profil']);
+  ['Akış','Keşfet','Mesajlar','Reels','Profil']);
  assert.equal((output.match(/class="mobile-nav-btn/g)||[]).length,5);
- assert.match(output,/data-action="pati-create-open"/);
- assert.match(output,/class="mobile-nav-btn pati-create-nav"/);
+ assert.match(output,/data-view="messages"/);
+ assert.match(output,/class="mobile-nav-btn pati-messages-nav/);
+ assert.match(html,/id="pati-header-share"[^>]*data-action="pati-create-open"/);
  assert.match(output,/svg>search<\/svg>/);
  assert.match(output,/svg>reels-tab<\/svg>/);
  assert.equal(fab.hidden,true);
  assert.equal(fab.style.display,'none');
  assert.match(html,/symbol id="i-reels-tab"/);
- assert.match(css,/#app-root:not\(\.hidden\)>\.mobile-bottom>\.mobile-nav-btn\.pati-create-nav\{/);
+ assert.match(fs.readFileSync('patiyiz-notification-delete-dm-verified-20261028.css','utf8'),/pati-messages-nav/);
  assert.match(css,/#app-root:not\(\.hidden\)>\.mobile-fab\[hidden\]/);
 });
 
