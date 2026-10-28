@@ -40,3 +40,48 @@ html[data-pati-theme="dark"] #modal-root .pati-group-tools button{background:#36
 html[data-pati-theme="dark"] #modal-root .pati-group-list-item{color:#f5f5f6}
 html[data-pati-theme="dark"] #modal-root .pati-group-bubble{background:#35353b;color:#f2f2f4}
 html[data-pati-theme="dark"] #modal-root .pati-group-bubble.mine{background:#494954}
+
+
+/* Group inbox: compact previews, legible unread badge, unobtrusive deletion */
+#modal-root .pati-group-list-item{gap:10px;text-align:left}
+#modal-root .pati-group-list-item .pati-group-icon{
+ display:grid;place-items:center;flex:none;width:40px;height:40px;
+ border-radius:13px;background:#f1f1f4;color:#25252a;
+}
+#modal-root .pati-group-list-item .pati-group-list-details{
+ display:flex;min-width:0;flex:1;flex-direction:column;gap:4px;
+}
+#modal-root .pati-group-list-item .pati-group-list-details strong,
+#modal-root .pati-group-list-item .pati-group-list-details small{
+ width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+#modal-root .pati-group-list-item .pati-group-list-details small{
+ color:#7c7f88;font-size:12px;
+}
+#modal-root .pati-group-list-meta{
+ display:flex;flex:none;flex-direction:column;align-items:flex-end;gap:5px;
+}
+#modal-root .pati-group-list-meta small{color:#868890;font-size:11px}
+#modal-root .pati-group-unread{
+ display:grid;place-items:center;min-width:23px;min-height:23px;padding:0 5px;
+ border-radius:20px;background:#191a1e;color:white;font-size:11px;box-sizing:border-box;
+}
+#modal-root .pati-group-unread-total{margin-left:auto;font-size:12px;color:#63666d}
+#modal-root .pati-group-message-meta{
+ display:flex;align-items:center;justify-content:flex-end;gap:9px;
+}
+#modal-root .pati-group-message-meta button{
+ font:600 11px system-ui,sans-serif;min-height:25px;padding:3px 8px;
+ background:transparent;border:0;border-radius:7px;color:#8d4242;
+ cursor:pointer;opacity:.75;
+}
+#modal-root .pati-group-message-meta button:hover,
+#modal-root .pati-group-message-meta button:focus-visible{
+ background:#fceced;opacity:1;
+}
+#modal-root .pati-group-history{overflow-anchor:auto}
+html[data-pati-theme="dark"] #modal-root .pati-group-list-item .pati-group-list-details small,
+html[data-pati-theme="dark"] #modal-root .pati-group-list-meta small{color:#bbbcc6}
+html[data-pati-theme="dark"] #modal-root .pati-group-unread-total{color:#c8c8ce}
+html[data-pati-theme="dark"] #modal-root .pati-group-list-item .pati-group-icon{background:#3b3b45;color:#fafafa}
+html[data-pati-theme="dark"] #modal-root .pati-group-message-meta button{color:#e9b2b2}
