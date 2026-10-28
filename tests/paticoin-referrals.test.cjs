@@ -35,7 +35,7 @@ test('Kazanılan gerçek PatiCoin kısa, engellemeyen animasyonla gösterilir',(
  const body=app.slice(a,b);
  const motion=fs.readFileSync('patiyiz-micro-motion-20261029.js','utf8');
  const styles=fs.readFileSync('patiyiz-micro-motion-20261029.css','utf8');
- assert.match(body,/PatiyizMotion\?\.coin\(amount,titles\)/);
+ assert.match(body,/if\(window\.PatiyizMotion\?\.coin\)window\.PatiyizMotion\.coin\(amount,titles\)/);
  assert.match(app,/await patiCoinSync\(false\);patiCoinAnimation\(50/);
  assert.match(app,/if\(withAnimation&&newly\.length\)patiCoinAnimation/);
  assert.match(motion,/pati-motion-coin-toast/);
