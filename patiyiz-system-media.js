@@ -88,6 +88,7 @@
    }
   }
   media.classList.toggle('multiple',files.length>1);
+  root.querySelector('#pati-system-photo-review').hidden=current.mode!=='post'||!files.every(isPhoto);
   const thumbs=root.querySelector('#pati-system-thumbnails');
   thumbs.hidden=current.mode!=='post'||!files.every(isPhoto);
   thumbs.replaceChildren();
@@ -200,7 +201,7 @@
    '<div class="pati-system-preview-wrap"><div id="pati-system-preview-media" class="pati-system-preview-media" tabindex="0" aria-label="Seçilen fotoğraflar, kaydırarak gezebilirsin"></div>'+ 
    '<div id="pati-system-carousel-controls" class="pati-system-carousel-controls" hidden><button type="button" data-system="preview-prev" aria-label="Önceki fotoğraf">‹</button><span id="pati-system-carousel-count" aria-live="polite">1 / 1</span><button type="button" data-system="preview-next" aria-label="Sonraki fotoğraf">›</button></div></div>'+ 
    '<div id="pati-system-carousel-dots" class="pati-system-carousel-dots" aria-hidden="true"></div>'+ 
-   '<div class="pati-system-photo-review"><strong>Fotoğraflarını kontrol et</strong><small>Her fotoğrafa dokunarak aç, × ile kaldır. Sırasını değiştirebilirsin.</small></div>'+ 
+   '<div id="pati-system-photo-review" class="pati-system-photo-review" hidden><strong>Fotoğraflarını kontrol et</strong><small>Her fotoğrafa dokunarak aç, × ile kaldır. Sırasını değiştirebilirsin.</small></div>'+ 
    '<div id="pati-system-thumbnails" class="pati-system-thumbnails" aria-label="Seçilen fotoğraflar" hidden></div>'+ 
    '<div id="pati-system-photo-actions" class="pati-system-photo-actions" hidden><button type="button" data-system="photo-move-prev">← Sola taşı</button><button type="button" data-system="photo-move-next">Sağa taşı →</button></div>'+
    '<p id="pati-system-summary" class="pati-system-summary"></p>'+ 
