@@ -912,8 +912,7 @@ async function patiSharePostToStory(postId){
  if(!image&&!post.video_url)throw Error('Şimdilik fotoğraf veya videolu gönderileri hikâyene ekleyebilirsin.');
  const owner=me.id,original=profile(post.author_id);
  const record={author_id:owner,image_url:image,video_url:post.video_url||null,
-  caption:'@'+(original.handle||'patiyiz')+' kullanıcısının gönderisi',shared_post_id:post.id,
-  expires_at:new Date(Date.now()+24*60*60*1000).toISOString()};
+  caption:'@'+(original.handle||'patiyiz')+' kullanıcısının gönderisi',shared_post_id:post.id};
  const result=await sb.from('patiyiz_stories').insert(record).select('*').single();
  if(result.error)throw result.error;
  if(me?.id!==owner)return;
