@@ -208,7 +208,7 @@
    '<label id="pati-system-mirror-option" class="pati-system-mirror-option" hidden><input id="pati-system-mirror" type="checkbox"><span><strong>Selfie gibi göster</strong><small>Ön kamerada ekranda gördüğün ayna yönünü paylaşımda koru. Arka kamerada kapat.</small></span></label>'+
    (mode==='story'?'<label class="pati-system-audience" for="pati-system-audience">Kimler görebilir?<select id="pati-system-audience"><option value="everyone">Herkes</option><option value="close_friends">Yakın Arkadaşlar</option></select></label>':'')+
    '<label class="pati-system-caption-label" for="pati-system-caption">Açıklama (isteğe bağlı)</label>'+
-   '<textarea id="pati-system-caption" maxlength="2000" rows="3" placeholder="Bir açıklama yaz…"></textarea>'+
+   '<textarea id="pati-system-caption" maxlength="'+(mode==='story'?'300':'1500')+'" rows="3" placeholder="İstersen açıklama yazabilirsin…"></textarea>'+
    '<div class="pati-system-publish-actions">'+
    (mode==='post'?'<button type="button" data-system="add-camera-photo">＋ Fotoğraf çek</button><button type="button" data-system="add-gallery">＋ Galeriden ekle</button>':'')+
    '<button type="button" data-system="rechoose">Başka seç</button><button type="button" id="pati-system-publish" data-system="publish">Paylaş</button></div>'+

@@ -13,7 +13,7 @@ test('App still parses and references the new stylesheet',()=>{
  assert.match(css,/pati-dm-story-trigger/);
 });
 test('Profile links accept safe external web destinations across all services',()=>{
- const helper=section('const PATI_PROFILE_LINK_LIMIT=12;','function patiProfileLinksHTML(');
+ const helper=section('const PATI_PROFILE_LINK_LIMIT=3;','function patiProfileLinksHTML(');
  const api=vm.runInNewContext(helper+'\n({patiNormalizeProfileUrl,patiProfileLinks})',{URL});
  const norm=api.patiNormalizeProfileUrl;
  assert.equal(norm('example.com'),'https://example.com/');
@@ -38,7 +38,7 @@ test('Profile links accept safe external web destinations across all services',(
  assert.match(app,/data-action="pati-profile-link-remove"/);
 });
 test('Multiple links are validated, deduplicated and bounded',()=>{
- const script=section('const PATI_PROFILE_LINK_LIMIT=12;','function patiProfileLinksHTML(')+
+ const script=section('const PATI_PROFILE_LINK_LIMIT=3;','function patiProfileLinksHTML(')+
    section('function patiCollectProfileLinks(','function patiBindProfileLinkEditor(');
  const collect=vm.runInNewContext(script+'\npatiCollectProfileLinks',{URL});
  const row=(title,url)=>({querySelector:(selector)=>({value:selector.includes('link_title')?title:url})});
@@ -46,7 +46,8 @@ test('Multiple links are validated, deduplicated and bounded',()=>{
   JSON.stringify([{title:'Web sitem',url:'https://example.com/'},{title:'Kanalım',url:'https://youtube.com/@test'}]));
  assert.equal(collect({querySelectorAll:()=>[row('','')]}).length,0);
  assert.throws(()=>collect({querySelectorAll:()=>[row('Biri','example.com'),row('İki','https://example.com/')]}),/Aynı bağlantıyı/);
- assert.throws(()=>collect({querySelectorAll:()=>Array.from({length:13},(_,i)=>row('Link '+i,'site'+i+'.com'))}),/En fazla 12/);
+ assert.equal(collect({querySelectorAll:()=>Array.from({length:3},(_,i)=>row('Link '+i,'site'+i+'.com'))}).length,3);
+ assert.throws(()=>collect({querySelectorAll:()=>Array.from({length:4},(_,i)=>row('Link '+i,'site'+i+'.com'))}),/En fazla 3/);
 });
 test('DM links decode only internal persisted post links (including legacy messages)',()=>{
  const extract=vm.runInNewContext(section('function patiDmSharedPostId(','function patiDmHasActiveStory(')+'\npatiDmSharedPostId');

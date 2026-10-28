@@ -3508,7 +3508,7 @@ function patiVerificationProfileAction(){
 
 /* One profile link, guaranteed to point only to a real Instagram profile URL. */
 /* Profile links accept regular web URLs, not a hard-coded social platform. */
-const PATI_PROFILE_LINK_LIMIT=12;
+const PATI_PROFILE_LINK_LIMIT=3;
 function patiNormalizeProfileUrl(value){
  const entry=String(value||'').trim();
  if(!entry||entry.length>1000)throw Error('Geçerli bir bağlantı adresi gir.');
@@ -4265,7 +4265,7 @@ function compose(post,mode='post',autoPick=true){
  const flow=!post&&!textOnly?'<div class="pati-composer-flow" aria-label="Paylaşım adımları"><span><b>1</b> Medya seç</span><i>›</i><span><b>2</b> Düzenle</span><i>›</i><span><b>3</b> Paylaş</span></div>':'';
  const invite=!post&&!story?'<div class="pati-field pati-collab-field"><label for="pati-collab-handle">Ortak gönderi (isteğe bağlı)</label><input type="search" id="pati-collab-handle" name="collab_handle" list="pati-collab-options" maxlength="40" placeholder="@kullaniciadi" autocomplete="off"><datalist id="pati-collab-options">'+(typeof data!=='undefined'&&Array.isArray(data.profiles)?data.profiles:[]).filter(p=>p.id!==(typeof me!=='undefined'?me?.id:null)&&!(typeof blocked!=='undefined'&&blocked.has(p.id))).slice(0,120).map(p=>'<option value="'+esc(p.handle)+'">'+esc(p.display_name)+'</option>').join('')+'</datalist><small>Paylaştıktan sonra davet gönderilir; kabul ederse gönderi iki profilde görünür.</small></div>':'';
  const storyAudienceSelect=story?'<div class="pati-field"><label>Kimler görebilir?<select name="story_audience"><option value="everyone">Herkes</option><option value="close_friends">Yakın Arkadaşlar</option></select></label></div>':'';
- const formBody=flow+(!post&&!textOnly?postMediaField(mode):'')+textField('body',textOnly?'Ne düşünüyorsun?':story?'Hikâyene bir açıklama ekle…':'Bir açıklama ekle…',post?.body||'',textOnly)+storyAudienceSelect+editor+invite;
+ const formBody=flow+(!post&&!textOnly?postMediaField(mode):'')+textField('body',textOnly?'Ne düşünüyorsun?':story?'Hikâye açıklaması (isteğe bağlı)':'Açıklama (isteğe bağlı)',post?.body||'',textOnly,story?300:1500)+storyAudienceSelect+editor+invite;
  modal(title,formBody,'post-form');
  const f=document.getElementById('post-form');const captionField=f.querySelector('textarea[name="body"]');if(captionField&&!textOnly)captionField.required=false;f.dataset.edit=post?.id||'';f.dataset.mode=story?'story':reel?'reels':textOnly?'text':'post';
  const submit=f.querySelector('.modal-footer button[type="submit"]');if(submit)submit.textContent=post?'Değişiklikleri kaydet':story?'Hikâyeyi paylaş':reel?'Reels paylaş':textOnly?'Yazıyı paylaş':'Paylaş';
