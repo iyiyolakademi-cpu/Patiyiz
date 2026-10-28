@@ -1,0 +1,97 @@
+/* Daily login: a single centered streak celebration, inspired by the supplied layout,
+   but with original Patiyiz flame, Turkish weekday labels and responsive positioning. */
+html{--pati-streak-card:#fff;--pati-streak-text:#17181e;--pati-streak-muted:#777a83;--pati-streak-border:#f0e8d4;--pati-streak-empty:#ededf1;--pati-streak-backdrop:rgba(20,17,13,.62)}
+html[data-pati-theme="dark"]{--pati-streak-card:#24252b;--pati-streak-text:#fafafd;--pati-streak-muted:#c7c9d3;--pati-streak-border:#414049;--pati-streak-empty:#454650;--pati-streak-backdrop:rgba(0,0,0,.82)}
+.pati-streak-overlay{
+ position:fixed;inset:0;z-index:214000;box-sizing:border-box;
+ display:grid;place-items:center;overflow-x:hidden;overflow-y:auto;
+ padding:max(12px,env(safe-area-inset-top,0px)) 14px max(12px,env(safe-area-inset-bottom,0px));
+ background:var(--pati-streak-backdrop);opacity:0;transition:opacity .24s ease;
+ -webkit-overflow-scrolling:touch;
+}
+.pati-streak-overlay.is-visible{opacity:1}
+.pati-streak-overlay.is-closing{pointer-events:none}
+.pati-streak-dialog{
+ position:relative;isolation:isolate;box-sizing:border-box;
+ display:flex;flex-direction:column;align-items:center;
+ width:min(420px,100%);max-width:100%;max-height:calc(100dvh - 26px);
+ overflow-y:auto;overflow-x:hidden;
+ margin:auto;padding:23px 22px 26px;
+ border-radius:28px;border:1px solid var(--pati-streak-border);
+ background:var(--pati-streak-card);color:var(--pati-streak-text);
+ box-shadow:0 24px 80px rgba(0,0,0,.24);
+ text-align:center;transform:translateY(12px) scale(.97);transition:transform .4s cubic-bezier(.15,.8,.2,1);
+}
+.pati-streak-overlay.is-visible .pati-streak-dialog{transform:translateY(0) scale(1)}
+.pati-streak-close{
+ position:absolute;top:9px;right:9px;display:grid;place-items:center;
+ width:40px;height:40px;padding:0;border:0;border-radius:50%;
+ background:transparent;color:var(--pati-streak-muted);
+ font-size:28px;line-height:1;cursor:pointer;
+}
+.pati-streak-close:hover,.pati-streak-close:focus-visible{
+ background:var(--pati-streak-empty);color:var(--pati-streak-text)
+}
+.pati-streak-close:focus-visible{outline:2px solid #fb981f;outline-offset:2px}
+.pati-streak-sparkles{display:grid;place-items:center;width:170px;height:174px;max-height:26vh;margin:4px 0 6px}
+.pati-streak-flame{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 6px 3px rgba(237,108,18,.12))}
+.pati-streak-overlay.is-visible .pati-streak-flame{animation:pati-streak-flame-welcome 1.1s cubic-bezier(.25,.72,.28,1) both}
+@keyframes pati-streak-flame-welcome{
+ 0%{opacity:.45;transform:translateY(10px) scale(.75) rotate(-7deg)}
+ 55%{opacity:1;transform:translateY(-3px) scale(1.08) rotate(4deg)}
+ 100%{transform:none;opacity:1}
+}
+.pati-streak-count{
+ font-size:clamp(66px,17vw,88px);font-weight:1000;
+ line-height:1.04;letter-spacing:-.08em;margin:7px 0 0;
+ color:var(--pati-streak-text);font-variant-numeric:tabular-nums;
+}
+.pati-streak-dialog h2{
+ margin:5px 0 0;color:var(--pati-streak-text);font-size:clamp(24px,6vw,31px);
+ font-weight:900;letter-spacing:-.035em;line-height:1.18;
+}
+.pati-streak-message{
+ color:var(--pati-streak-muted);font-size:13px;line-height:1.5;
+ margin:10px auto 20px;max-width:270px;
+}
+.pati-streak-week{
+ display:grid;grid-template-columns:repeat(7,minmax(0,1fr));
+ width:100%;max-width:340px;gap:4px;margin:0 0 17px;
+}
+.pati-streak-day{display:flex;align-items:center;flex-direction:column;gap:8px;min-width:0}
+.pati-streak-day-circle{
+ width:clamp(29px,7vw,38px);height:clamp(29px,7vw,38px);
+ border-radius:50%;display:grid;place-items:center;
+ box-sizing:border-box;background:var(--pati-streak-empty);
+ color:var(--pati-streak-muted);font-size:18px;line-height:1;font-weight:900;
+}
+.pati-streak-day.is-done .pati-streak-day-circle{
+ background:linear-gradient(135deg,#ffba3c,#fb8521);
+ color:#fff;box-shadow:0 3px 8px rgba(248,148,31,.2);
+}
+.pati-streak-day.is-today .pati-streak-day-circle{outline:2px solid #f9a521;outline-offset:2px}
+.pati-streak-day-name{font-size:11px;font-weight:700;line-height:1.3;color:var(--pati-streak-muted)}
+.pati-streak-day.is-done .pati-streak-day-name{color:var(--pati-streak-text)}
+.pati-streak-best{
+ color:var(--pati-streak-text);font-size:12px;font-weight:800;
+ padding:8px 13px;border-radius:100px;background:var(--pati-streak-empty)
+}
+.pati-streak-dismiss-note{color:var(--pati-streak-muted);font-size:10px;margin:11px 0 0}
+@media(max-width:360px){
+ .pati-streak-dialog{padding:13px 11px 17px;border-radius:20px}
+ .pati-streak-sparkles{width:125px;height:132px;margin:0}
+ .pati-streak-message{margin-bottom:12px}
+ .pati-streak-week{gap:2px}
+ .pati-streak-day-name{font-size:10px}
+}
+@media(max-height:590px){
+ .pati-streak-dialog{padding-top:12px;padding-bottom:13px}
+ .pati-streak-sparkles{height:100px;width:106px;margin:0}
+ .pati-streak-count{font-size:53px}
+ .pati-streak-message{margin:5px auto 11px}
+ .pati-streak-week{margin-bottom:9px}
+}
+@media(prefers-reduced-motion:reduce){
+ .pati-streak-overlay,.pati-streak-dialog{transition:none!important;transform:none!important}
+ .pati-streak-flame{animation:none!important}
+}

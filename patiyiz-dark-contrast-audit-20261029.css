@@ -1,0 +1,262 @@
+/* Late-load dark-mode contrast audit, Oct 29.
+   Several older Patiyiz page sheets hardcoded light backgrounds or dark text with !important.
+   Fix per-component surfaces instead of globally recoloring photographs, Reels, icons or hero media.
+   WCAG-inspired high contrast tokens cover titles, labels, muted text, buttons and forms. */
+html[data-pati-theme="dark"]{
+ --pati-audit-page:#101114;--pati-audit-card:#1d1f25;--pati-audit-raised:#262831;
+ --pati-audit-text:#f5f6f9;--pati-audit-sub:#c1c4d0;--pati-audit-border:#474954;
+ --pati-audit-control:#30323b;--pati-audit-link:#b5c4ff;
+}
+html[data-pati-theme="dark"] #main-content :is(
+ .p4-hub,.p4-health,.p4-shop,.pati-ref-hub,.pati-health-home,.pati-ref-care,
+ .pati-ref-kb-home,.pati-ref-academy-home,.pati-ref-academy-list,
+ .pati-shop-v2,.pati-care-simple,.pati-knowledge-home,.pati-pet-hub,
+ .pati-edu-v2,.kb-v2,.lost-v2,.adopt-v2,.care-v2,.wellness-v2,
+ .pati-own-pets,.pati-settings-list,.pati-saved-posts
+){
+ color:var(--pati-audit-text)!important;
+ background-color:var(--pati-audit-page)!important;
+}
+html[data-pati-theme="dark"] #main-content :is(
+ .p4-hub,.p4-health,.p4-shop,.pati-ref-hub,.pati-ref-care,.pati-ref-kb-home,
+ .pati-health-home,.pati-care-simple,.pati-pet-hub,.pati-shop-v2,.kb-v2,
+ .lost-v2,.adopt-v2,.care-v2,.wellness-v2,.pati-edu-v2
+) :is(h1,h2,h3,h4,small,p,label,span,strong){
+ text-shadow:none;
+}
+html[data-pati-theme="dark"] #main-content :is(
+ .p4-hub .p4-hub-user,.p4-hub .p4-section-label,.p4-hub .p4-pet-thumb,
+ .p4-health .p4-health-header,.p4-health .p4-health-subhead,
+ .p4-shop .pati-shop-section-title,.pati-ref-hub .pati-ref-greeting,
+ .pati-ref-hub .pati-ref-section-title,.pati-ref-care .pati-ref-subhead,
+ .pati-ref-care .pati-simple-list-head,.pati-ref-kb-home .p4-kb-rec-title,
+ .kb-v2 .kb-v2-results-head,.pati-edu-v2 .edu-v2-results-head
+) :is(h1,h2,h3,strong){
+ color:var(--pati-audit-text)!important;
+}
+html[data-pati-theme="dark"] #main-content :is(
+ .p4-hub .p4-hub-user,.p4-health .p4-health-header,
+ .p4-health .p4-health-profile,.p4-health .p4-health-overview,
+ .pati-ref-hub .pati-ref-greeting,.pati-ref-care .pati-ref-subhead,
+ .pati-ref-care .care-v2-item-main,.pati-ref-kb-home .p4-kb-rec,
+ .kb-v2 .kb-v2-card,.pati-health-home .pati-health-pet
+) :is(small,p){
+ color:var(--pati-audit-sub)!important;
+}
+html[data-pati-theme="dark"] #main-content :is(
+ .p4-hub .p4-hub-status,.p4-hub .p4-all-pets,.p4-hub .p4-hub-user,
+ .p4-health .p4-health-profile,.p4-health .p4-health-overview,
+ .p4-health .p4-health-history,.p4-health .p4-health-pets button,
+ .pati-ref-hub .pati-ref-notice,.pati-ref-hub .pati-ref-pet-tile,
+ .pati-health-home .pati-health-pet,.pati-health-home .pati-health-next,
+ .pati-ref-care .pati-ref-care-task,.pati-ref-weight-chart,
+ .pati-ref-kb-home .p4-kb-rec,.kb-v2 .kb-v2-card,
+ .kb-v2 .kb-v2-article,.kb-v2 .kb-v2-empty,.kb-v2 .kb-action-plan,
+ .kb-v2 .kb-v2-disclaimer,.kb-v2 .kb-v2-total,
+ .pati-edu-v2 .edu-v2-card,.pati-edu-v2 .pati-edu-step
+){
+ background:var(--pati-audit-card)!important;
+ color:var(--pati-audit-text)!important;
+ border-color:var(--pati-audit-border)!important;
+}
+html[data-pati-theme="dark"] #main-content :is(
+ .p4-hub .p4-hub-status,.p4-health .p4-health-profile,.p4-health .p4-health-overview,
+ .pati-health-home .pati-health-pet,.pati-ref-care .pati-ref-care-task,
+ .kb-v2 .kb-v2-card,.kb-v2 .kb-action-plan,.pati-ref-hub .pati-ref-notice,
+ .pati-ref-kb-home .p4-kb-rec
+) :is(h1,h2,h3,h4,strong){
+ color:var(--pati-audit-text)!important;
+}
+html[data-pati-theme="dark"] #main-content :is(
+ .p4-hub .p4-hub-status,.p4-health .p4-health-profile,.p4-health .p4-health-overview,
+ .pati-health-home .pati-health-pet,.pati-ref-care .pati-ref-care-task,
+ .kb-v2 .kb-v2-card,.kb-v2 .kb-action-plan,.pati-ref-hub .pati-ref-notice,
+ .pati-ref-kb-home .p4-kb-rec
+) :is(p,small,.kb-v2-card-excerpt,.pati-ref-weight-bar small){
+ color:var(--pati-audit-sub)!important;
+}
+/* The older eight-screen theme uses colorful pastel action tiles.
+   Turn each actual tile into a dark surface so inherited white text remains readable. */
+html[data-pati-theme="dark"] #main-content .p4-hub :is(
+ .p4-hub-tile,.p4-sky,.p4-pink,.p4-peach,.p4-violet,.p4-aqua,.p4-coral,.p4-rose,.p4-amber
+),
+html[data-pati-theme="dark"] #main-content .p4-health :is(
+ .p4-health-action,.p4-health-gold,.p4-health-blue,.p4-health-green,.p4-health-purple
+){
+ background:var(--pati-audit-raised)!important;
+ color:var(--pati-audit-text)!important;border:1px solid var(--pati-audit-border)!important;
+}
+html[data-pati-theme="dark"] #main-content :is(.p4-hub .p4-hub-tile,.p4-health .p4-health-action) :is(strong,small){
+ color:var(--pati-audit-text)!important;
+}
+html[data-pati-theme="dark"] #main-content .p4-hub .p4-hub-tile .p4-tile-ico{
+ background:#3a3c47!important;color:#fff!important;
+}
+html[data-pati-theme="dark"] #main-content .p4-hub :is(.p4-hub-user,.p4-pet-thumb,.p4-section-label h2){
+ color:var(--pati-audit-text)!important;
+}
+/* Preserve existing dark-to-violet illustration hero, but fix the other light-gradient banners. */
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-pet-hub .pati-hub-hero,.pati-ref-kb-home .pati-ref-kb-head,
+ .kb-v2:not(.kb-v2-detail) .kb-v2-title,.pati-edu-v2:not(.edu-v2-detail) .edu-v2-hero,
+ .lost-v2 .lost-v2-heading,.adopt-v2 .adopt-v2-heading,
+ .pati-health-home .pati-health-pet,.pati-ref-academy-intro,
+ .pati-shop-v2 .pati-shop-hero,.p4-shop .pati-shop-hero
+){
+ background:linear-gradient(125deg,#323340,#23252e)!important;
+ color:var(--pati-audit-text)!important;border-color:var(--pati-audit-border)!important;
+}
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-pet-hub .pati-hub-hero,.pati-ref-kb-home .pati-ref-kb-head,
+ .kb-v2:not(.kb-v2-detail) .kb-v2-title,.pati-edu-v2:not(.edu-v2-detail) .edu-v2-hero,
+ .lost-v2 .lost-v2-heading,.adopt-v2 .adopt-v2-heading,
+ .pati-shop-v2 .pati-shop-hero,.p4-shop .pati-shop-hero
+) :is(h1,h2,h3,strong,small,span,p){
+ color:var(--pati-audit-text)!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-shop-v2 :is(
+ .pati-shop-card,.pati-shop-wallet,.pati-shop-note,.pati-shop-no-orders,
+ .pati-shop-card.pati-shop-tree
+),html[data-pati-theme="dark"] #main-content .p4-shop :is(
+ .pati-shop-card,.pati-shop-wallet,.pati-shop-note,.pati-shop-no-orders
+){
+ background:var(--pati-audit-card)!important;color:var(--pati-audit-text)!important;
+ border-color:var(--pati-audit-border)!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-shop-v2 :is(
+ .pati-shop-card,.pati-shop-wallet,.pati-shop-section-title,.pati-shop-hero
+) :is(h1,h2,h3,strong,p,small,.pati-shop-eyebrow,.pati-shop-type,.pati-shop-card-bottom span){
+ color:var(--pati-audit-text)!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-shop-v2 .pati-shop-card p,
+html[data-pati-theme="dark"] #main-content .pati-shop-v2 .pati-shop-wallet small{
+ color:var(--pati-audit-sub)!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-shop-v2 .pati-shop-type{
+ background:var(--pati-audit-raised)!important;
+}
+html[data-pati-theme="dark"] #main-content :is(
+ .lost-v2 .lost-v2-card,.adopt-v2 .adopt-v2-card,
+ .pati-ref-hub .pati-ref-pet-tile,.pati-shop-v2 .pati-shop-card,
+ .care-v2 .care-v2-item,.wellness-v2 .wellness-v2-item,
+ .pati-health-home .pati-ref-weight-chart
+){
+ background:var(--pati-audit-card)!important;
+ border-color:var(--pati-audit-border)!important;color:var(--pati-audit-text)!important;
+}
+html[data-pati-theme="dark"] #main-content :is(
+ .lost-v2 .lost-v2-card,.adopt-v2 .adopt-v2-card,
+ .care-v2 .care-v2-item,.wellness-v2 .wellness-v2-item
+) :is(h2,h3,h4,strong,p,small){
+ color:var(--pati-audit-text)!important;
+}
+/* Knowledge Center: avoid dark-on-dark headings and pale inputs in dark mode. */
+html[data-pati-theme="dark"] #main-content .kb-v2 :is(
+ .kb-v2-title h1,.kb-v2-results-head h2,.kb-v2-card-open,
+ .kb-v2-card-open strong,.kb-v2-article-body h2,.kb-v2-empty h3,
+ .kb-v2-disclaimer strong,.kb-v2-source a,.kb-v2-read
+){color:var(--pati-audit-text)!important}
+html[data-pati-theme="dark"] #main-content .kb-v2 :is(
+ .kb-v2-subtitle,.kb-v2-card-excerpt,.kb-v2-card-type,.kb-v2-article-body p,
+ .kb-v2-article-body li,.kb-v2-list-note,.kb-v2-source,.kb-v2-read small
+){color:var(--pati-audit-sub)!important}
+html[data-pati-theme="dark"] #main-content .kb-v2 :is(
+ .kb-v2-shortcuts button,.kb-v2-chips button,.kb-v2-save,.kb-v2-search,.kb-v2-search button
+){
+ background:var(--pati-audit-control)!important;color:var(--pati-audit-text)!important;
+ border-color:var(--pati-audit-border)!important;
+}
+html[data-pati-theme="dark"] #main-content .kb-v2 .kb-v2-search input{
+ background:transparent!important;color:var(--pati-audit-text)!important;
+}
+html[data-pati-theme="dark"] #main-content .kb-v2 :is(
+ .kb-v2-chips button.is-active,.kb-v2-save.is-saved
+){
+ background:#e9eaf0!important;color:#18191e!important;border-color:#e9eaf0!important;
+}
+/* Generic text components in menus, settings, profile editors, notifications, messaging. */
+html[data-pati-theme="dark"] #tools-form :is(
+ .pati-alert-entry,.pati-alert-title,.pati-alert-meta,
+ .pati-menu-notifications-top,.pati-feature-intro,.pati-feature-group,
+ .pati-mobile-menu-item,.pati-mobile-menu-list,.pati-menu-notifications-list
+){color:var(--pati-audit-text)!important}
+html[data-pati-theme="dark"] #tools-form :is(.pati-alert-meta,.pati-menu-notifications-empty,.pati-mobile-menu-item small){
+ color:var(--pati-audit-sub)!important;
+}
+html[data-pati-theme="dark"] #tools-form :is(.pati-feature-notifications,.pati-menu-notifications-list){
+ background:var(--pati-audit-card)!important;
+}
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-own-pets-list article,.pati-settings-list section,.pati-ig-summary,
+ .pati-ig-highlights,.pati-ig-tabs,.pati-mobile-menu-list,.pati-feature-group,
+ .pati-question-list,.pati-community-card,.pati-notifications-simple
+){
+ background-color:var(--pati-audit-card)!important;border-color:var(--pati-audit-border)!important;
+ color:var(--pati-audit-text)!important;
+}
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-ig-summary,.pati-settings-list,.pati-feature-group,.pati-community-card,
+ .pati-own-pets-list article,.pati-notifications-simple
+) :is(p,small,label,.muted,.meta){
+ color:var(--pati-audit-sub)!important;
+}
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-ig-summary,.pati-settings-list,.pati-feature-group,.pati-community-card,
+ .pati-own-pets-list article,.pati-notifications-simple
+) :is(h1,h2,h3,strong){
+ color:var(--pati-audit-text)!important;
+}
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-theme-options button,.pati-dm-filters button,.pati-dm-top-actions button,
+ .pati-profile-edit button,.pati-list-filter button
+){
+ background:var(--pati-audit-control)!important;
+ color:var(--pati-audit-text)!important;border-color:var(--pati-audit-border)!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-theme-options button.active{
+ background:#e9eaf0!important;color:#15151a!important;border-color:#e9eaf0!important;
+}
+html[data-pati-theme="dark"] :is(#main-content,#tools-form,#modal-root,#auth-root) :is(
+ input:not([type="checkbox"]):not([type="radio"]),textarea,select
+){
+ color-scheme:dark!important;background-color:#292b32!important;
+ color:#f7f7fa!important;border-color:#545763!important;
+}
+html[data-pati-theme="dark"] :is(#main-content,#tools-form,#modal-root,#auth-root) :is(input,textarea)::placeholder{
+ color:#b5b8c5!important;opacity:1;
+}
+html[data-pati-theme="dark"] :is(#main-content,#tools-form,#modal-root,#auth-root) :is(
+ input:not([type="checkbox"]):not([type="radio"]),select,textarea,button,a
+):focus-visible{
+ outline:2px solid #ccd6ff!important;outline-offset:2px;
+}
+html[data-pati-theme="dark"] #modal-root :is(
+ .pati-pet-edit-modal,.pati-edit-avatar,.pati-pet-photo-select,
+ .pati-community-form-intro,.pati-question-fullscreen,
+ .pati-feature-editor,.pati-links-editor
+){
+ background:var(--pati-audit-card)!important;
+ color:var(--pati-audit-text)!important;
+ border-color:var(--pati-audit-border)!important;
+}
+html[data-pati-theme="dark"] #modal-root :is(
+ .pati-pet-edit-modal,.pati-community-form-intro,.pati-question-fullscreen
+) :is(label,span,small,p,strong,h1,h2,h3){
+ color:var(--pati-audit-text)!important;
+}
+html[data-pati-theme="dark"] #modal-root :is(
+ .pati-pet-edit-modal,.pati-community-form-intro,.pati-question-fullscreen
+) :is(small,.help,.muted){
+ color:var(--pati-audit-sub)!important;
+}
+/* Deliberate exceptions: media overlays stay bright against their existing black backdrop. */
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-reel-item,.pati-reel-author,.pati-reel-tool,.pati-post-video-overlay
+) :is(button,span,strong,small){
+ text-shadow:0 1px 4px #000b;
+}
+@media(prefers-contrast:more){
+ html[data-pati-theme="dark"] #main-content :is(
+  .pati-shop-card,.kb-v2-card,.p4-hub-tile,.p4-health-action,.pati-ref-care-task
+ ){border-width:2px!important}
+}
