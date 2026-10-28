@@ -5397,7 +5397,11 @@ case 'pet-form':{
  const image=await upload(f.get('photo'));if(image)o.photo_url=image;
  if(!editId)o.owner_id=owner;
  const savedPet=await save('pets',o,editId);
- if(!editId&&me?.id===owner)window.PatiyizMotion?.petAdded(savedPet?.id);
+ if(!editId&&me?.id===owner&&savedPet?.id){
+  patiHubSelectedPetId=savedPet.id;
+  if(view==='my-pet'&&patiMyPetTab==='hub')render();
+  window.PatiyizMotion?.petAdded(savedPet.id);
+ }
  if(me?.id===owner&&view==='pets'){void patiLoadOwnedPets();void patiLoadCommunityPets(true)}
  break}
 case 'reply-form':{
