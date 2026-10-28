@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-labelledby="title desc">
+<title id="title">Patiyiz'in sevimli patili maskotu</title>
+<desc id="desc">Göz kırpan, kuyruğunu ve patisini hareket ettiren siyah beyaz sevimli köpek</desc>
+<style>
+ .tail{transform-origin:184px 174px;animation:wag 1.7s ease-in-out infinite}
+ .wave{transform-origin:158px 160px;animation:wave 3.8s ease-in-out infinite}
+ .head{transform-origin:117px 103px;animation:tilt 5.5s ease-in-out infinite}
+ .eyes{transform-origin:center;transform-box:fill-box;animation:blink 5.8s infinite}
+ @keyframes wag{0%,100%{transform:rotate(-13deg)}50%{transform:rotate(17deg)}}
+ @keyframes wave{0%,68%,100%{transform:rotate(0)}75%,86%{transform:rotate(-23deg)}81%,92%{transform:rotate(8deg)}}
+ @keyframes tilt{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+ @keyframes blink{0%,43%,47%,100%{transform:scaleY(1)}45%{transform:scaleY(.10)}}
+ @media(prefers-reduced-motion:reduce){.tail,.wave,.head,.eyes{animation:none!important}}
+</style>
+<ellipse cx="120" cy="218" rx="82" ry="10" fill="#141414" opacity=".09"/>
+<g class="tail"><path d="M173 179 Q222 185 207 128" fill="none" stroke="#26272b" stroke-width="19" stroke-linecap="round"/></g>
+<path d="M73 171q0-43 47-43t48 44l8 39H65z" fill="#fff" stroke="#232428" stroke-width="8" stroke-linejoin="round"/>
+<path d="M92 161q26 9 51 0v48H92z" fill="#e6e7ed"/>
+<path d="M94 154q22 14 52 0" fill="none" stroke="#242428" stroke-width="7" stroke-linecap="round"/>
+<g class="wave"><path d="M159 171q28-12 35 7 4 14-10 24-17 10-27-3z" fill="#fff" stroke="#26272b" stroke-width="7"/><path d="M169 187l-1 6m10-7v7m9-6l-1 6" stroke="#26272b" stroke-width="3" stroke-linecap="round"/></g>
+<path d="M88 193q-15 22-28 15" fill="none" stroke="#242428" stroke-width="11" stroke-linecap="round"/>
+<g class="head">
+ <path d="M77 78Q35 57 42 116q4 20 20 19" fill="#25262b" stroke="#25262b" stroke-width="8" stroke-linejoin="round"/>
+ <path d="M155 78q42-23 36 39-3 20-20 19" fill="#25262b" stroke="#25262b" stroke-width="8" stroke-linejoin="round"/>
+ <path d="M58 107q1-62 61-64 64 0 64 66v23q-5 40-63 42-59 0-63-46z" fill="#fff" stroke="#232428" stroke-width="8"/>
+ <path d="M58 111q2-37 28-50l9 45q-18 3-37 5" fill="#f1f1f3"/>
+ <path d="M181 109q-3-37-29-51l-9 48q19 3 38 3" fill="#f1f1f3"/>
+ <g class="eyes"><ellipse cx="93" cy="113" rx="8.2" ry="10.5" fill="#191a1e"/><ellipse cx="146" cy="113" rx="8.2" ry="10.5" fill="#191a1e"/><circle cx="95" cy="109" r="2.5" fill="#fff"/><circle cx="148" cy="109" r="2.5" fill="#fff"/></g>
+ <path d="M102 143q17-14 34 0-3 13-17 13-15 0-17-13z" fill="#26272b"/>
+ <path d="M120 157v7m-17-2q17 16 34 0" stroke="#26272b" stroke-width="4" fill="none" stroke-linecap="round"/>
+ <ellipse cx="79" cy="141" rx="11" ry="5" fill="#d7d7de" opacity=".8"/>
+ <ellipse cx="160" cy="141" rx="11" ry="5" fill="#d7d7de" opacity=".8"/>
+</g>
+<path d="M90 182q29 9 59 0" stroke="#232428" stroke-width="5" stroke-linecap="round" fill="none"/>
+</svg>

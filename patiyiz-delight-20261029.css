@@ -1,0 +1,136 @@
+/* Patiyiz Delight: responsive monochrome mascot, streak, academy path and feedback.
+   Tokenized light/dark contrast; no global recoloring of user media. */
+html{
+ --pdel-bg:#fff;--pdel-surface:#f5f5f7;--pdel-ink:#17181c;--pdel-muted:#60646f;
+ --pdel-border:#e4e5ea;--pdel-strong:#202127;--pdel-soft:#eef0f4;
+}
+html[data-pati-theme="dark"]{
+ --pdel-bg:#191a1f;--pdel-surface:#25262c;--pdel-ink:#f6f6f8;--pdel-muted:#bdc0ca;
+ --pdel-border:#41424b;--pdel-strong:#f6f6f8;--pdel-soft:#303139;
+}
+#main-content .pati-delight-card{
+ display:flex;align-items:center;gap:15px;width:100%;min-width:0;max-width:100%;
+ padding:12px 17px;margin:10px 0 15px;box-sizing:border-box;
+ background:var(--pdel-bg);color:var(--pdel-ink);border:1px solid var(--pdel-border);
+ border-radius:19px;box-shadow:0 4px 18px #00000008;overflow:hidden;
+}
+#main-content .pati-delight-art{
+ flex:0 0 clamp(76px,19vw,106px);width:clamp(76px,19vw,106px);
+ height:clamp(76px,19vw,106px);display:grid;place-items:center;
+ border:1px solid var(--pdel-border);border-radius:20px;background:var(--pdel-soft);
+}
+.pati-delight-mascot{display:block;object-fit:contain;max-width:100%;width:100%;height:auto;aspect-ratio:1}
+#main-content .pati-delight-details{display:flex;flex-direction:column;min-width:0;flex:1;gap:4px}
+#main-content .pati-delight-eyebrow{font-size:10px!important;font-weight:800;letter-spacing:.08em;color:var(--pdel-muted)}
+#main-content .pati-delight-details>strong{font-size:clamp(17px,3vw,22px)!important;line-height:1.25;color:var(--pdel-ink)!important}
+#main-content .pati-delight-details>small{font-size:12px!important;color:var(--pdel-muted)!important;line-height:1.45}
+#main-content .pati-delight-streak-dots{display:flex;flex-wrap:wrap;gap:5px;margin:5px 0 2px}
+#main-content .pati-delight-streak-dots span{
+ display:grid;place-items:center;width:30px;height:30px;flex:0 0 30px;
+ border:1px solid var(--pdel-border);border-radius:50%;background:var(--pdel-surface);
+ color:var(--pdel-muted);font-size:11px;font-weight:800;
+}
+#main-content .pati-delight-streak-dots .is-done{
+ background:var(--pdel-strong);border-color:var(--pdel-strong);color:var(--pdel-bg);
+}
+#main-content .pati-delight-next{font-size:11px!important;color:var(--pdel-muted)!important;line-height:1.45}
+#main-content .pati-delight-academy{
+ display:flex;align-items:center;gap:13px;padding:10px 14px;margin:12px 0 15px;
+ border-radius:18px;border:1px solid var(--pdel-border);
+ background:var(--pdel-surface);color:var(--pdel-ink);min-width:0;
+}
+#main-content .pati-delight-academy .pati-delight-mascot{
+ width:66px!important;height:66px!important;flex:0 0 66px;border-radius:15px;
+ background:var(--pdel-soft);
+}
+#main-content .pati-delight-academy>div{display:flex;flex-direction:column;gap:4px;min-width:0}
+#main-content .pati-delight-academy strong{font-size:14px!important;color:var(--pdel-ink)!important;line-height:1.35}
+#main-content .pati-delight-academy span{font-size:12px!important;color:var(--pdel-muted)!important;line-height:1.5}
+#main-content .pati-edu-path-items{
+ --pdel-track-x:38px;position:relative;display:flex!important;flex-direction:column!important;gap:14px!important;
+ padding:9px 4px 12px!important;overflow:visible;
+}
+#main-content .pati-edu-path-items:before{
+ content:'';position:absolute;left:var(--pdel-track-x);top:24px;bottom:25px;
+ width:3px;border-radius:12px;z-index:0;
+ background:repeating-linear-gradient(to bottom,var(--pdel-border) 0,var(--pdel-border) 8px,transparent 8px,transparent 16px);
+ pointer-events:none;
+}
+#main-content .pati-edu-path-items>.pati-edu-path-item{
+ position:relative!important;z-index:1;display:flex!important;align-items:center!important;
+ min-height:76px!important;min-width:0!important;max-width:100%!important;
+ padding:13px 14px 13px 12px!important;box-sizing:border-box!important;
+ background:var(--pdel-bg)!important;border:1px solid var(--pdel-border)!important;
+ color:var(--pdel-ink)!important;border-radius:18px!important;
+ box-shadow:0 2px 10px #00000006;gap:12px!important;transition:transform .18s ease,box-shadow .18s ease;
+}
+#main-content .pati-edu-path-items>.pati-edu-path-item:focus-visible{outline:3px solid var(--pdel-muted)!important;outline-offset:2px}
+#main-content .pati-edu-path-items>.pati-edu-path-item.is-current{
+ border:2px solid var(--pdel-ink)!important;background:var(--pdel-surface)!important;
+ box-shadow:0 5px 18px #00000016;
+}
+#main-content .pati-edu-path-items>.pati-edu-path-item.is-locked{
+ opacity:1!important;background:var(--pdel-surface)!important;border-style:dashed!important;
+}
+#main-content .pati-edu-path-items .pati-edu-path-no{
+ display:grid!important;place-items:center!important;position:relative!important;
+ flex:0 0 45px!important;width:45px!important;height:45px!important;
+ border-radius:50%!important;background:var(--pdel-surface)!important;
+ color:var(--pdel-ink)!important;border:2px solid var(--pdel-border)!important;font-size:20px!important;
+}
+#main-content .pati-edu-path-items .is-done .pati-edu-path-no{
+ background:var(--pdel-ink)!important;border-color:var(--pdel-ink)!important;color:var(--pdel-bg)!important
+}
+#main-content .pati-edu-path-items .is-current .pati-edu-path-no{
+ background:var(--pdel-ink)!important;color:var(--pdel-bg)!important;border-color:var(--pdel-ink)!important;
+ animation:pdelCurrentStep 1.9s ease-in-out infinite;
+}
+#main-content .pati-edu-path-items .pati-edu-path-copy{min-width:0;flex:1}
+#main-content .pati-edu-path-items .pati-edu-path-copy strong,
+#main-content .pati-edu-path-items .pati-edu-path-step{
+ color:var(--pdel-ink)!important;
+}
+#main-content .pati-edu-path-items .pati-edu-path-copy small,
+#main-content .pati-edu-path-items .pati-edu-path-status{
+ color:var(--pdel-muted)!important;
+}
+#main-content .pati-edu-path-items .is-locked .pati-edu-path-copy strong{color:var(--pdel-muted)!important}
+#main-content .pati-edu-path-items .is-current .pati-edu-path-status{font-weight:900;color:var(--pdel-ink)!important}
+#main-content .pati-edu-path-items>.pati-edu-path-item:not(.is-locked):hover{transform:translateY(-2px);box-shadow:0 7px 20px #00000018}
+@keyframes pdelCurrentStep{0%,100%{box-shadow:0 0 0 0 var(--pdel-border)}50%{box-shadow:0 0 0 8px transparent}}
+.pati-delight-celebration{
+ position:fixed;left:50%;top:calc(68px + env(safe-area-inset-top,0px));
+ transform:translate(-50%,-12px) scale(.96);opacity:0;z-index:100120;
+ display:flex;align-items:center;gap:10px;box-sizing:border-box;
+ width:min(360px,calc(100vw - 24px));padding:10px 13px;
+ border-radius:18px;border:1px solid var(--pdel-border);
+ box-shadow:0 10px 36px #0003;background:var(--pdel-bg);color:var(--pdel-ink);
+ pointer-events:none;transition:opacity .22s ease,transform .22s ease;
+}
+.pati-delight-celebration.is-shown{opacity:1;transform:translate(-50%,0) scale(1)}
+.pati-delight-celebration img{width:56px;height:56px;flex:0 0 56px;border-radius:11px;background:var(--pdel-surface)}
+.pati-delight-celebration span{display:flex;flex-direction:column;gap:4px;min-width:0}
+.pati-delight-celebration strong{font-size:14px;color:var(--pdel-ink)}
+.pati-delight-celebration small{font-size:12px;color:var(--pdel-muted);line-height:1.3}
+.pati-delight-follow-pop{
+ position:fixed;z-index:100110;pointer-events:none;background:var(--pdel-ink);color:var(--pdel-bg);
+ border-radius:99px;padding:8px 11px;font-size:12px;font-weight:850;
+ white-space:nowrap;box-shadow:0 5px 17px #0003;
+ animation:pdelFollow .85s cubic-bezier(.18,.7,.2,1) both;
+}
+@keyframes pdelFollow{0%{opacity:0;transform:translateY(13px) scale(.85)}25%,65%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-9px) scale(1)}}
+#main-content .pati-delight-lesson-success{animation:pdelLesson .45s ease-out}
+@keyframes pdelLesson{from{transform:scale(.97);opacity:.4}to{transform:none;opacity:1}}
+@media(max-width:400px){
+ #main-content .pati-edu-path-items{--pdel-track-x:32px}
+ #main-content .pati-delight-card{gap:10px;padding:10px}
+ #main-content .pati-delight-art{flex-basis:74px;width:74px;height:74px}
+ #main-content .pati-delight-streak-dots span{width:27px;height:27px;flex-basis:27px}
+ #main-content .pati-edu-path-items>.pati-edu-path-item{padding:9px!important;gap:8px!important}
+ #main-content .pati-edu-path-items .pati-edu-path-no{flex-basis:38px!important;width:38px!important;height:38px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #main-content .pati-edu-path-items .is-current .pati-edu-path-no,
+ #main-content .pati-delight-lesson-success,.pati-delight-follow-pop{animation:none!important;transform:none!important}
+ .pati-delight-celebration{transition:none!important}
+}
