@@ -196,3 +196,14 @@
 }
 @media(max-width:330px){#main-content :is(.lost-v2,.adopt-v2) :is(.lost-v2-grid,.adopt-v2-grid){grid-template-columns:minmax(0,1fr)!important}#main-content .p4-shop .paticoin-items{gap:7px!important}#main-content .p4-shop .pati-shop-card-bottom strong{font-size:11px!important}}
 @media(prefers-reduced-motion:reduce){#main-content .p4-hub *,#main-content .p4-health *,#main-content .p4-shop *{transition:none!important;animation:none!important}}
+
+/* Clickable week selector matching the care schedule reference */
+#main-content .pati-ref-care .p4-care-week{margin:19px 0 16px;padding:4px 0 0}
+#main-content .pati-ref-care .p4-care-week-title{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:11px}
+#main-content .pati-ref-care .p4-care-week-title strong{font-size:17px;color:#42332b;font-weight:850}
+#main-content .pati-ref-care .p4-care-week-title button{border:0;background:transparent;color:#db7d32;font-size:12px;font-weight:800;min-height:38px}
+#main-content .pati-ref-care .p4-care-dates{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px}
+#main-content .pati-ref-care .p4-care-dates button{display:flex;flex-direction:column;gap:8px;align-items:center;justify-content:center;min-width:0;min-height:66px;padding:8px 2px!important;border:1px solid transparent!important;background:#fff8ef!important;color:#97795c!important;border-radius:13px!important}
+#main-content .pati-ref-care .p4-care-dates button.active{background:#ff963a!important;color:#fff!important;border-color:#ff963a!important;box-shadow:0 3px 9px #dd85342b}
+#main-content .pati-ref-care .p4-care-dates button span{font-size:10px;white-space:nowrap}
+#main-content .pati-ref-care .p4-care-dates button b{font-size:16px}
