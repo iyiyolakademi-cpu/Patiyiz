@@ -26,7 +26,7 @@ test('notifications are grouped by Turkish local date and reminder opens care ce
  assert.match(app, /function notificationRows\(list\)\{\s*let lastDay='';/);
  assert.match(app, /toLocaleDateString\('tr-TR',\{day:'numeric',month:'long',year:'numeric'\}\)/);
  assert.match(app, /return dayHeading\+'<article class="pati-alert-row /);
- assert.match(app, /n.kind==='pet_reminder'\)\{patiMyPetTab='care';/);
+ assert.match(app, /if\(n\.kind==='pet_reminder'\)\{navigate\('wellness'\);return\}/);
 });
 test('chat pinning is per-account device preference, not a fake server setting', () => {
  assert.match(app, /function patiDmPins\(\)/);
