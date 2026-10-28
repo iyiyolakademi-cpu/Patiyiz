@@ -29,11 +29,18 @@ test('PatiCoin görev ekranında kod, paylaşma ve kullanma sunulur',()=>{
  assert.match(app,/data-action="paticoin-invite-share"/);
  assert.match(html,/app\.js\?v=20261024-release-reliability-1/);
 });
-test('Kazanma ekranı Harika tuşu tıklanmadan kapanmaz',()=>{
+test('Kazanılan gerçek PatiCoin kısa, engellemeyen animasyonla gösterilir',()=>{
  const a=app.indexOf('function patiCoinAnimation(amount,titles){');
  const b=app.indexOf('function patiRewardsPage(){',a);
  const body=app.slice(a,b);
- assert.match(body,/addEventListener\('click',close\)/);
- assert.doesNotMatch(body,/setTimeout\(close/);
- assert.match(body,/Harika!/);
+ const motion=fs.readFileSync('patiyiz-micro-motion-20261029.js','utf8');
+ const styles=fs.readFileSync('patiyiz-micro-motion-20261029.css','utf8');
+ assert.match(body,/if\(window\.PatiyizMotion\?\.coin\)window\.PatiyizMotion\.coin\(amount,titles\)/);
+ assert.match(app,/await patiCoinSync\(false\);patiCoinAnimation\(50/);
+ assert.match(app,/if\(withAnimation&&newly\.length\)patiCoinAnimation/);
+ assert.match(motion,/pati-motion-coin-toast/);
+ assert.match(motion,/setTimeout\(\(\)=>toast\.remove\(\),2200\)/);
+ assert.match(motion,/getBoundingClientRect\(\)/);
+ assert.match(styles,/\.pati-motion-flying-coin/);
+ assert.doesNotMatch(body,/Harika!|document\.body\.appendChild\(el\)/);
 });

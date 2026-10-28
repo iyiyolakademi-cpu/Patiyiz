@@ -1,0 +1,73 @@
+/* Patiyiz micro-motion — isolated visual effects, no business logic.
+   Keeps the existing light/dark theme and native motion preference. */
+#main-content .pati-heart-burst{color:#f5254d!important;text-shadow:0 4px 20px rgba(0,0,0,.2)}
+#main-content .pati-reel-heart-burst,
+#main-content .pati-reel-heart-burst svg.icon{color:#f5254d!important;stroke:#f5254d!important;fill:#f5254d!important}
+#main-content [data-action="like"][aria-pressed="true"] svg.icon,
+#main-content [data-action="like"].active svg.icon{fill:#ef244c!important;stroke:#ef244c!important}
+#main-content [data-action="like"][aria-pressed="true"]{color:#ef244c}
+#main-content .pati-heart-burst.pop{animation:patiMotionHeart .62s cubic-bezier(.17,.8,.2,1) both}
+#main-content .pati-reel-heart-burst.pop{animation:patiMotionHeart .62s cubic-bezier(.17,.8,.2,1) both}
+@keyframes patiMotionHeart{
+ 0%{opacity:0;transform:translate(-50%,-50%) scale(.25)}
+ 32%{opacity:1;transform:translate(-50%,-50%) scale(1.18)}
+ 60%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+ 100%{opacity:0;transform:translate(-50%,-50%) scale(1.22)}
+}
+#main-content [data-action="like"].pati-like-pop svg.icon{animation:patiMotionButtonHeart .32s ease-out}
+@keyframes patiMotionButtonHeart{0%{transform:scale(.78)}58%{transform:scale(1.3)}100%{transform:scale(1)}}
+
+/* A compact, nonblocking coin notice appears only after actual server-awarded credit. */
+.pati-motion-coin-toast{
+ position:fixed;z-index:10020;top:calc(env(safe-area-inset-top,0px) + 72px);
+ right:12px;max-width:min(320px,calc(100vw - 24px));display:flex;align-items:center;gap:11px;
+ border-radius:18px;padding:11px 14px;background:#18191d;color:white;
+ box-shadow:0 10px 35px #0004;border:1px solid #ffffff25;pointer-events:none;
+ animation:patiMotionToastIn .22s ease-out both;
+}
+.pati-motion-coin-toast img{width:30px;height:30px;object-fit:contain;flex:none}
+.pati-motion-coin-toast strong{display:block;font-size:16px;line-height:1.3;color:#ffdd88}
+.pati-motion-coin-toast span{display:block;font-size:12px;line-height:1.4;color:#e6e6e8;max-width:240px}
+.pati-motion-flying-coin{position:fixed;z-index:10019;width:28px;height:28px;pointer-events:none;object-fit:contain;filter:drop-shadow(0 4px 7px #0003)}
+@keyframes patiMotionToastIn{from{opacity:0;transform:translateY(-9px) scale(.96)}to{opacity:1;transform:none}}
+
+/* Distinct paw steps are visible only while an actual loading element is shown. */
+.pati-motion-paws{display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap;vertical-align:middle}
+.pati-motion-paws span{display:inline-block;opacity:.25;font-size:16px;line-height:1;animation:patiMotionPawStep 1.1s ease-in-out infinite}
+.pati-motion-paws span:nth-child(2){animation-delay:.17s}
+.pati-motion-paws span:nth-child(3){animation-delay:.34s}
+@keyframes patiMotionPawStep{0%,70%,100%{opacity:.22;transform:translateY(0) scale(.88)}35%{opacity:1;transform:translateY(-4px) scale(1)}}
+#startup .pati-motion-splash-paws{position:absolute;top:calc(100% + 17px);left:50%;transform:translateX(-50%);color:#202126}
+#modal-root .pati-upload-status:not([hidden]) .pati-upload-spinner{display:none!important}
+#modal-root .pati-upload-status:not([hidden]) .pati-motion-paws{margin-right:8px}
+#modal-root .pati-upload-status[hidden] .pati-motion-paws{display:none}
+
+/* Animate only a newly confirmed outbound message, not every re-render. */
+#main-content .bubble-chat.mine.pati-motion-message-enter,
+#main-content .pati-group-bubble.mine.pati-motion-message-enter{
+ transform-origin:right bottom;animation:patiMotionMessage .24s cubic-bezier(.17,.78,.26,1) both
+}
+@keyframes patiMotionMessage{
+ from{opacity:.35;transform:translateY(12px) scale(.94)}
+ to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+/* A newly created pet appears without shifting neighboring cards. */
+#main-content .pati-motion-pet-enter{animation:patiMotionPet .4s cubic-bezier(.18,.83,.25,1) both;transform-origin:center bottom}
+@keyframes patiMotionPet{
+ from{opacity:.35;transform:translateY(14px) scale(.96)}
+ to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+@media(prefers-reduced-motion:reduce){
+ #main-content .pati-heart-burst.pop,#main-content .pati-reel-heart-burst.pop,
+ #main-content [data-action="like"].pati-like-pop svg.icon,
+ .pati-motion-paws span,.pati-motion-coin-toast,
+ #main-content .bubble-chat.mine.pati-motion-message-enter,
+ #main-content .pati-group-bubble.mine.pati-motion-message-enter,
+ #main-content .pati-motion-pet-enter{
+  animation:none!important;transform:none!important
+ }
+ #main-content .pati-heart-burst.pop,#main-content .pati-reel-heart-burst.pop{opacity:0!important}
+ .pati-motion-paws span{opacity:1}
+}
