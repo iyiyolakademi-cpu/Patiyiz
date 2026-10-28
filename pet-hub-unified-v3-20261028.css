@@ -1,0 +1,56 @@
+/* Patiyiz common pet experience v3: a calm, usable mobile-first system */
+#main-content .pati-own-pets,#main-content .pati-health-home{max-width:790px;margin:0 auto;padding:18px 14px 32px;color:#202c3a}
+#main-content .pati-own-pets h1{font-size:27px;margin:0 0 5px}
+#main-content .pati-own-pets>p{color:#657085;font-size:13px}
+#main-content .pati-own-pets-list{display:grid;gap:11px;margin:23px 0}
+#main-content .pati-own-pets-list article{display:flex;align-items:center;gap:13px;padding:12px;border:1px solid #e5eaf1;background:#fff;border-radius:17px}
+#main-content .pati-own-pets-image{width:60px;height:60px;flex-shrink:0;border-radius:16px;background:#f5ebff;display:grid;place-items:center;font-size:27px;overflow:hidden}
+#main-content .pati-own-pets-image img{width:100%;height:100%;object-fit:cover}
+#main-content .pati-own-pets-list article>div:nth-child(2){flex:1;display:flex;flex-direction:column;gap:5px}
+#main-content .pati-own-pets-list article small{color:#677486}
+#main-content .pati-own-pets-list article button,#main-content .pati-own-pets-add{padding:11px 15px;min-height:43px;border:0;background:#e8f4fe;color:#225781;border-radius:12px;font-weight:750}
+#main-content .pati-own-pets-add{background:#1f2937;color:#fff}
+#main-content .pati-hub-mini-pet{border:1px solid #e0d6f1!important;cursor:pointer}
+#main-content .pati-hub-mini-pet.active{background:#3e3477!important;color:#fff!important}
+#main-content .pati-health-pet{background:linear-gradient(110deg,#e8f8f0,#e9f3ff);padding:17px;border-radius:22px;display:flex;align-items:center;gap:16px}
+#main-content .pati-health-pet-image{height:86px;width:86px;flex-shrink:0;display:grid;place-items:center;background:#fff;border-radius:23px;overflow:hidden;font-size:41px}
+#main-content .pati-health-pet-image img{width:100%;height:100%;object-fit:cover}
+#main-content .pati-health-pet h1{font-size:25px;margin:6px 0}
+#main-content .pati-health-pet small{font-size:10px;color:#346e61;font-weight:800;letter-spacing:.07em}
+#main-content .pati-health-pet p{color:#587180;font-size:13px}
+#main-content .pati-health-next{display:flex;flex-direction:column;gap:7px;background:#fff7e8;border:1px solid #f3e4c6;border-radius:17px;padding:17px;margin:14px 0 23px}
+#main-content .pati-health-next span{color:#945e24;font-size:12px;font-weight:750}
+#main-content .pati-health-next strong{font-size:16px}
+#main-content .pati-health-next small{color:#796d60}
+#main-content .pati-health-home h2{font-size:18px;margin:0 0 13px}
+#main-content .pati-health-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+#main-content .pati-health-grid button{display:flex;flex-direction:column;align-items:flex-start;gap:15px;justify-content:space-between;min-height:122px;text-align:left;border:0;border-radius:18px;padding:16px;background:#e7f5ff;color:#1e2e45}
+#main-content .pati-health-grid button:nth-child(2){background:#e6f7ed}
+#main-content .pati-health-grid button:nth-child(3){background:#fff1e3}
+#main-content .pati-health-grid button:nth-child(4){background:#f1e8ff}
+#main-content .pati-health-grid button span{font-size:27px}
+#main-content .pati-health-grid button strong{font-size:15px}
+#main-content .pati-health-add{margin:17px 0;border:0;background:#25384d;color:#fff;border-radius:13px;min-height:45px;padding:12px 16px;font-weight:750}
+#main-content .pati-care-simple .pati-care-more{position:relative;display:inline-flex;align-items:center}
+#main-content .pati-care-simple .pati-care-more summary{list-style:none;cursor:pointer;min-width:36px;min-height:40px;display:grid;place-items:center;font-weight:900;color:#566579}
+#main-content .pati-care-simple .pati-care-more summary::-webkit-details-marker{display:none}
+#main-content .pati-care-simple .pati-care-more>div{position:absolute;right:0;top:100%;width:120px;background:#fff;border:1px solid #dae2ee;border-radius:12px;z-index:5;box-shadow:0 8px 25px #1a273a22;padding:5px;display:grid}
+#main-content .pati-care-simple .pati-care-more button{background:transparent;color:#263143;text-align:left;min-height:40px}
+#main-content .pati-edu-v2:not(.edu-v2-detail) .pati-edu-categories{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px!important;overflow:visible!important}
+#main-content .pati-edu-v2:not(.edu-v2-detail) .pati-edu-categories button{white-space:normal!important;text-align:left!important;min-height:64px!important;padding:13px!important;border:1px solid #e6e3ee!important;border-radius:16px!important;background:#f3ecff!important;color:#543c83!important;font-weight:750}
+#main-content .pati-edu-v2:not(.edu-v2-detail) .pati-edu-categories button:nth-child(4n+2){background:#e7f5ff!important;color:#2d658a!important}
+#main-content .pati-edu-v2:not(.edu-v2-detail) .pati-edu-categories button:nth-child(4n+3){background:#e9f8ed!important;color:#287448!important}
+#main-content .pati-edu-v2:not(.edu-v2-detail) .pati-edu-categories button:nth-child(4n+4){background:#fff2e2!important;color:#915c23!important}
+#main-content .pati-edu-v2:not(.edu-v2-detail) .pati-edu-categories button.active{outline:2px solid currentColor;outline-offset:-3px}
+#main-content .pati-edu-v2:not(.edu-v2-detail) .edu-v2-stats,#main-content .pati-edu-v2:not(.edu-v2-detail) .edu-v2-status-filters,#main-content .pati-edu-v2:not(.edu-v2-detail) .edu-v2-filter-title{display:none!important}
+#main-content .kb-v2:not(.kb-v2-detail) .kb-v2-categories{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px!important}
+#main-content .kb-v2:not(.kb-v2-detail) .kb-v2-categories button{border-radius:16px!important;min-height:61px!important;white-space:normal!important;text-align:left!important;background:#e8f4ff!important;color:#255c8c!important;padding:12px!important;font-weight:750}
+#main-content .kb-v2:not(.kb-v2-detail) .kb-v2-categories button:nth-child(3n+2){background:#f3edff!important;color:#7344a4!important}
+#main-content .kb-v2:not(.kb-v2-detail) .kb-v2-categories button:nth-child(3n+3){background:#e9f8ef!important;color:#29724e!important}
+#main-content .kb-v2:not(.kb-v2-detail) .kb-v2-categories button.is-active{outline:2px solid currentColor;outline-offset:-3px}
+#main-content .lost-v2 .lost-v2-grid img,#main-content .adopt-v2 .adopt-v2-grid img{width:100%;object-fit:cover}
+#main-content :is(.lost-v2,.adopt-v2) :is(.lost-v2-card,.adopt-v2-card){border:1px solid #e5eaf0!important;border-radius:19px!important;overflow:hidden;box-shadow:0 5px 19px #2834480c!important}
+#main-content .pati-shop-v2 .pati-shop-card-top{min-height:100px}
+#main-content .pati-shop-v2 .pati-shop-stock-state{font-size:12px}
+#main-content .pati-shop-v2 .pati-shop-card-bottom button{font-size:13px}
+@media(max-width:350px){#main-content .pati-health-pet-image{height:68px;width:68px}#main-content .pati-edu-v2:not(.edu-v2-detail) .pati-edu-categories button{font-size:12px}}
