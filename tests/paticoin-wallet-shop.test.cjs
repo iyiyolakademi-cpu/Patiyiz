@@ -42,11 +42,11 @@ test('Coin kazanma animasyonu ve profil/menü bağlantıları korunur',()=>{
  assert.match(app,/case 'paticoin-buy':patiCoinShowCheckout\(id\)/);
  assert.match(app,/case 'paticoin-confirm':patiCoinConfirm\(\)/);
  assert.match(app,/rewards:patiRewardsPage,shop:patiShopPage/);
- assert.match(app,/Görevler & PatiCoin/);
+ assert.match(app,/PatiCoin ve koleksiyonum/);
  assert.match(app,/Pati Mağaza/);
  const profile=app.slice(app.indexOf('function profilePage(){'),app.indexOf('function formField('));
  assert.doesNotMatch(profile,/paticoin-profile-link/);
- assert.match(app,/\['saved-posts','Kaydettiklerim','bookmark'\]/);
+ assert.match(app,/\['saved-posts','Kaydettiğim gönderiler','bookmark'\]/);
  assert.match(css,/@keyframes patiCoinBounce/);
  assert.match(html,/app\.js\?v=20261024-release-reliability-1/);
 });
