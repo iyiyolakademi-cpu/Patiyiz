@@ -129,7 +129,7 @@
    restore.hidden=true;
   };
  }
- function open({mode='post',userId,onMedia,onMirrorChange,onPublish,onCancel,onSwitch}={}){
+ function open({mode='post',userId,onMedia,onMirrorChange,onPublish,onCancel,onSwitch,onStoryPhotoCamera}={}){
   if(state)return;
   if(!['post','story','reels'].includes(mode))mode='post';
   if(typeof onMedia!=='function'||typeof onPublish!=='function')throw Error('Paylaşım bağlanamadı.');
@@ -166,7 +166,7 @@
    '<input id="pati-system-gallery" type="file" accept="'+(kind(mode)==='video'?'video/*,.mov,.mp4,.webm,.m4v':'image/*,video/*,.heic,.heif,.mov,.mp4,.webm,.m4v')+'"'+(mode==='post'?' multiple':'')+' hidden>';
   document.body.appendChild(root);
   document.body.classList.add('pati-system-media-active');
-  state={root,mode,userId,onMedia,onMirrorChange,onPublish,onCancel,onSwitch,publishing:false,files:[],urls:[],mirrorSelfie:false};
+  state={root,mode,userId,onMedia,onMirrorChange,onPublish,onCancel,onSwitch,onStoryPhotoCamera,publishing:false,files:[],urls:[],mirrorSelfie:false};
   const current=state;
   for(const n of ['camera-photo','camera-video','gallery']){
    root.querySelector('#pati-system-'+n).addEventListener('change',async event=>{
@@ -192,6 +192,9 @@
     if(state.publishing)return;
     const next=btn.dataset.mode;if(next===state.mode)return;
     const cb=state.onSwitch;close();cb?.(next);return;
+   }
+   if(action==='camera-photo'&&state.mode==='story'&&typeof state.onStoryPhotoCamera==='function'){
+    const callback=state.onStoryPhotoCamera;close();callback();return;
    }
    if(['camera-photo','camera-video','gallery'].includes(action)){launchPicker(action);return}
    if(action==='rechoose'){
