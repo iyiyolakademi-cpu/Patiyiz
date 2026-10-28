@@ -1631,10 +1631,13 @@ function healthFilePage(){
  if(!patiWellness.loaded&&!patiWellness.loading)void patiWellnessFetch();
 }
 let patiMyPetTab='hub';
+let patiHubSelectedPetId='';
+let patiHealthLanding=true;
 function patiMyPetCenterPage(){
  if(patiMyPetTab==='hub'){
   const pets=(data.pets||[]).filter(p=>p.owner_id===me?.id);
-  const featured=pets[0];
+  const featured=pets.find(p=>p.id===patiHubSelectedPetId)||pets[0];
+  if(featured)patiHubSelectedPetId=featured.id;
   const petName=featured?esc(featured.name||'Patili dostum'):'Patili dostunu ekle';
   const petImage=featured?.photo_url||featured?.avatar_url||featured?.image_url||'';
   const petPhoto=petImage?'<img src="'+esc(petImage)+'" alt="'+petName+'" loading="lazy" decoding="async">':'<span aria-hidden="true">🐾</span>';
@@ -1642,7 +1645,7 @@ function patiMyPetCenterPage(){
    {title:'Hayvanım ve Sağlık',items:[
     ['care','Bakım','', 'heart','mint','tab'],
     ['wellness','Sağlık','','heart','sky','tab'],
-    ['pets','Hayvanlarım','','paw','rose','view']]},
+    ['own-pets','Hayvanlarım','','paw','rose','tab']]},
    {title:'Öğren ve Geliş',items:[
     ['education','Eğitim','','library','sun','view'],
     ['knowledge','Bilgi Merkezi','','info','blue','view']]},
@@ -1653,14 +1656,19 @@ function patiMyPetCenterPage(){
   ];
   const card=([destination,label,description,icon,tone,kind])=>'<button type="button" class="pati-hub-card pati-hub-'+tone+'" '+(kind==='tab'?'data-action="pati-my-pet-tab" data-id="'+destination+'"':'data-view="'+destination+'"')+' aria-label="'+label+'"><span class="pati-hub-icon">'+ico(icon)+'</span><strong>'+label+'</strong><small>'+description+'</small><span class="pati-hub-chevron" aria-hidden="true">›</span></button>';
   const groupsMarkup=groups.map(g=>'<section class="pati-hub-category"><h2 class="pati-hub-section-title">'+g.title+'</h2><div class="pati-hub-grid">'+g.items.map(card).join('')+'</div></section>').join('');
-  const petsMarkup=pets.length>1?'<div class="pati-hub-other-pets" aria-label="Diğer hayvanlarım">'+pets.slice(1,5).map(p=>'<span class="pati-hub-mini-pet">'+esc(p.name||'Dostum')+'</span>').join('')+'</div>':'';
+  const petsMarkup=pets.length>1?'<div class="pati-hub-other-pets" aria-label="Hayvan seç">'+pets.map(p=>'<button type="button" class="pati-hub-mini-pet '+(featured?.id===p.id?'active':'')+'" data-action="pati-hub-select-pet" data-id="'+esc(p.id)+'">'+esc(p.name||'Dostum')+'</button>').join('')+'</div>':'';
   main.innerHTML='<section class="pati-pet-hub"><header class="pati-hub-hero"><div class="pati-hub-copy"><small>PATİYİZ · HAYVANIM MERKEZİ</small><h1>Her şey patili dostun için.</h1><p>Sağlık, bakım, eğitim ve hayvansever topluluğu bir arada.</p></div><div class="pati-hub-pet-photo">'+petPhoto+'</div></header>'+
    '<div class="pati-hub-pet-strip"><span>'+petPhoto+'</span><div><strong>'+petName+'</strong><small>'+(featured?esc(featured.species||'Hayvanım'):'İlk hayvan profilini oluştur')+'</small></div><button type="button" data-action="'+(featured?'pati-my-pet-tab':'pet-add')+'" '+(featured?'data-id="wellness"':'')+'>'+(featured?'Sağlığını gör':'Hayvan ekle')+' →</button></div>'+petsMarkup+
    '<div class="pati-hub-sections">'+groupsMarkup+'</div><p class="pati-hub-foot">Dostunun mutluluğu için küçük adımlar, büyük farklar. ♡</p></section>';
   return;
  }
- if(patiMyPetTab==='wellness')patiWellnessPage();
- else if(patiMyPetTab==='healthfile')healthFilePage();
+ if(patiMyPetTab==='own-pets'){
+  const own=(data.pets||[]).filter(p=>p.owner_id===me?.id);
+  main.innerHTML='<section class="pati-own-pets"><h1>Hayvanlarım</h1><p>Patili dostlarının profillerini yönet.</p><div class="pati-own-pets-list">'+own.map(p=>'<article><div class="pati-own-pets-image">'+(p.photo_url?'<img src="'+esc(p.photo_url)+'" alt="'+esc(p.name)+'">':petIcon(p.species))+'</div><div><strong>'+esc(p.name)+'</strong><small>'+esc(p.species||'Hayvan')+'</small></div><button type="button" data-action="pet-edit" data-id="'+esc(p.id)+'">Düzenle</button></article>').join('')+'</div><button type="button" class="pati-own-pets-add" data-action="pet-add">+ Hayvan ekle</button></section>';
+ } else if(patiMyPetTab==='wellness'){
+  if(patiHubSelectedPetId)patiWellnessPetId=patiHubSelectedPetId;
+  patiWellnessPage();
+ } else if(patiMyPetTab==='healthfile')healthFilePage();
  else carePage();
  const back=document.createElement('div');back.className='pati-hub-detail-back';
  back.innerHTML='<button type="button" data-action="pati-my-pet-tab" data-id="hub" aria-label="Hayvanım Merkezi\'ne dön">← Hayvanım Merkezi</button>';
@@ -3599,7 +3607,7 @@ case 'care-edit':{const item=data.care.find(x=>x.id===id&&x.owner_id===me.id);if
  run(async()=>{const r=await sb.from('adoption_listings').update({adopted}).eq('id',id).eq('owner_id',me.id).select('*');
  if(r.error)throw r.error;if(!r.data?.length)throw Error('İlan güncellenemedi veya yetkin yok.');
  data.adoption=data.adoption.map(x=>x.id===id?r.data[0]:x);if(view==='adoption')adoptionPage();
- },adopted?'İlan sahiplendirildi olarak işaretlendi.':'İlan yeniden yayına alındı.');break}case 'adoption-delete':remove('adoption_listings',id);break;case 'care-add':composeCare();break;case 'wellness-open':patiMyPetTab='wellness';navigate('my-pet');break;case 'pati-my-pet-tab':{if(['hub','care','wellness','healthfile'].includes(id)){patiMyPetTab=id;render()}break}case 'wellness-reminder-add':patiWellnessReminderDialog();break;case 'wellness-weight-add':patiWellnessWeightDialog();break;case 'wellness-pet':patiWellnessPetId=id;render();break;
+ },adopted?'İlan sahiplendirildi olarak işaretlendi.':'İlan yeniden yayına alındı.');break}case 'adoption-delete':remove('adoption_listings',id);break;case 'care-add':composeCare();break;case 'wellness-open':patiMyPetTab='wellness';navigate('my-pet');break;case 'pati-hub-select-pet':patiHubSelectedPetId=id;patiWellnessPetId=id;render();break;case 'pati-my-pet-tab':{if(['hub','care','wellness','healthfile','own-pets'].includes(id)){patiMyPetTab=id;if(id==='wellness')patiHealthLanding=true;render()}break}case 'wellness-reminder-add':patiWellnessReminderDialog();break;case 'wellness-weight-add':patiWellnessWeightDialog();break;case 'wellness-pet':patiWellnessPetId=id;render();break;
 case 'wellness-filter':patiWellnessTab=id;render();break;
 case 'wellness-refresh':patiWellness.error='';void patiWellnessFetch();break;
 case 'wellness-reminder-edit':{const item=patiWellness.reminders.find(x=>x.id===id&&!x.completed_at&&patiWellnessOwnedPets().some(p=>p.id===x.pet_id));if(item)patiWellnessReminderDialog(item);break;}
