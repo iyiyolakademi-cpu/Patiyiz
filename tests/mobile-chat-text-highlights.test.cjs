@@ -17,7 +17,8 @@ test('Üstte paylaşım artısı var, mesaj bağlantısı özellikler menüsünd
  const h=html.slice(html.indexOf('<header class="mobile-header">'),html.indexOf('</header>',html.indexOf('<header class="mobile-header">')));
  assert.match(h,/id="pati-header-share"[^>]*data-action="pati-create-open"/);
  assert.doesNotMatch(h,/id="pati-header-messages"/);
- assert.match(h,/id="pati-header-notifications"/);
+ assert.doesNotMatch(h,/id="pati-header-notifications"/);
+ assert.match(app,/pati-feature-notifications-content/);
  const menu=extract('function openMobileFeaturesMenu(){','const patiCoinTasks=');
  assert.match(menu,/\['messages','Mesajlar','message'\]/);
  const navSource=extract('function navRender(){','function side(){');
