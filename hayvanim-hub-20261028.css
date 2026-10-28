@@ -37,3 +37,13 @@
 @media(max-width:380px){#main-content .pati-hub-hero{padding:18px 14px}.pati-hub-pet-photo{width:85px!important;height:105px!important}#main-content .pati-hub-grid{gap:9px}#main-content .pati-hub-card{padding:12px;min-height:158px}#main-content .pati-hub-card strong{font-size:13px}}
 @media(hover:hover){#main-content .pati-hub-card:hover{filter:saturate(1.1) brightness(.985);transform:translateY(-2px)}}
 @media(prefers-reduced-motion:reduce){#main-content .pati-hub-card{transition:none;transform:none!important}}
+
+/* Hub navigation v2: all features grouped, no top tabs */
+#main-content .pati-hub-sections{display:grid;gap:25px}
+#main-content .pati-hub-category{min-width:0}
+#main-content .pati-hub-section-title{margin:0 0 13px;font-size:19px;font-weight:800;letter-spacing:-.03em}
+#main-content .pati-hub-other-pets{display:flex;gap:8px;overflow-x:auto;padding:0 0 14px}
+#main-content .pati-hub-mini-pet{flex:none;padding:7px 12px;border-radius:999px;background:#f4f2fc;color:#504685;font-size:12px;font-weight:700}
+#main-content .pati-hub-detail-back{padding:10px 14px 0;max-width:960px;margin:auto}
+#main-content .pati-hub-detail-back button{border:0;background:#edf3ff;color:#225d9d;border-radius:13px;min-height:43px;padding:10px 15px;font-weight:800}
+#main-content .pati-hub-hero .pati-hub-pet-photo{border:3px solid #ffffffab;box-shadow:0 12px 26px #1b24301c}
