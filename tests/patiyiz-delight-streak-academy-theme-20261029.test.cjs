@@ -86,7 +86,7 @@ test('Streak popup displays only once per user and local calendar day after serv
  assert.match(js,/window\.setTimeout\(closeStreak,5100\)/);
  assert.match(js,/function streakWeekdays\(state,day\)/);
  assert.match(js,/Pzt','Sal','Çar','Per','Cum','Cmt','Paz/);
- assert.match(js,/class="pati-streak-overlay"/);
+ assert.match(js,/el\.className='pati-streak-overlay'/);
  const style=fs.readFileSync('patiyiz-streak-popup-20261029.css','utf8');
  assert.match(style,/\.pati-streak-dialog\{/);
  assert.match(style,/\.pati-streak-flame/);
