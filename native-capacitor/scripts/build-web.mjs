@@ -14,7 +14,7 @@ const files=[
 'pati-coin.svg','profile-explore-coin-polish.css','patiyiz-mobile-rewards-shop-20261025.css','patiyiz-ux-hayvanim-20261025.css','patiyiz-shared-create-studio-20261025.css','patiyiz-selected-logo.svg','patiyiz-icon.svg','patiyiz-app-icon-192.png',
 'patiyiz-app-icon-512.png','patiyiz-apple-touch-icon.png','patiyiz-favicon-48.png',
 'patiyiz-profile-chat-photo-polish-20261028.css','patiyiz-social-phase1-20261028.css','patiyiz-social-private-groups-20261028.css',
-'patiyiz-desktop-responsive-story-20261029.css','patiyiz-delight-20261029.css','patiyiz-theme-contrast-20261029.css','patiyiz-delight-20261029.js','patiyiz-streak-popup-20261029.css','patiyiz-dark-contrast-audit-20261029.css','patiyiz-theme-unified-20261029.css','patiyiz-mascot.svg','patiyiz-micro-motion-20261029.css','patiyiz-micro-motion-20261029.js'];
+'patiyiz-desktop-responsive-story-20261029.css','patiyiz-delight-20261029.css','patiyiz-theme-contrast-20261029.css','patiyiz-delight-20261029.js','patiyiz-streak-popup-20261029.css','patiyiz-dark-contrast-audit-20261029.css','patiyiz-theme-unified-20261029.css','patiyiz-story-view-time-20261029.css','patiyiz-mascot.svg','patiyiz-micro-motion-20261029.css','patiyiz-micro-motion-20261029.js'];
 await rm(out,{recursive:true,force:true});await mkdir(path.join(out,'vendor'),{recursive:true});
 for(const name of files)await cp(path.join(root,name),path.join(out,name));
 await cp(path.join(native,'src/native-reels.css'),path.join(out,'native-reels.css'));
