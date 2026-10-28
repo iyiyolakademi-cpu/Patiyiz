@@ -1760,6 +1760,7 @@ function educationPage(){
  const topics=[...new Set(patiyizLessons.map(l=>l.cat))];
  if(educationCategory==='Tümü'&&!patiAcademyBrowseAll&&!educationSearch){
   const resume=educationResumeId(completed),accents=['coral','fuchsia','turquoise','gold','violet','sage'];
+  const topicCard=(topic,i)=>'<button type="button" class="pati-ref-academy-topic pati-ref-topic-'+accents[i%accents.length]+'" data-action="education-filter" data-id="'+esc(topic)+'"><span class="pati-ref-academy-topic-copy"><strong>'+esc(topic)+'</strong><small>'+patiyizLessons.filter(l=>l.cat===topic).length+' kısa ders · Başla →</small></span><img src="'+(i%3===1?'pati-illustration-cat.svg':'pati-illustration-dog.svg')+'" alt="" loading="lazy"></button>';
   main.innerHTML='<section class="pati-edu pati-edu-v2 pati-ref-academy-home">'+
    '<header class="pati-ref-academy-header"><div><span>🐾 PATİYİZ AKADEMİ</span><h1>Birlikte öğrenelim!</h1><p>Patili dostun için kısa ve yararlı dersler.</p></div><button type="button" data-action="pati-academy-search-open" aria-label="Ders ara">⌕</button></header>'+
    '<div class="pati-ref-academy-intro"><div><strong>'+completedCount+' / '+patiyizLessons.length+' ders tamamlandı</strong><small>Her ders yeni bir şey öğretir.</small></div>'+(resume?'<button type="button" data-action="education-continue" data-id="'+esc(resume)+'">▶ Devam et</button>':'<span>✓ Tamamlandı</span>')+'</div>'+
@@ -1768,7 +1769,7 @@ function educationPage(){
     '<button type="button" class="pati-recommended-lesson" data-action="education-continue" data-id="'+esc(l.id)+'"><span class="pati-recommended-lesson-icon">'+esc(l.icon||'🐾')+'</span><span><strong>'+esc(l.name)+'</strong><small>'+esc(l.cat)+' · '+Number(l.minutes||0)+' dk</small></span><span aria-hidden="true">›</span></button>'
    ).join('')+'</div></div>'+
    '<div class="pati-ref-academy-section"><h2>Eğitimleri Keşfet</h2><span>'+topics.length+' konu</span></div>'+
-   '<div class="pati-ref-academy-topics">'+topics.map((topic,i)=>'<button type="button" class="pati-ref-academy-topic pati-ref-topic-'+accents[i%accents.length]+'" data-action="education-filter" data-id="'+esc(topic)+'"><span class="pati-ref-academy-topic-copy"><strong>'+esc(topic)+'</strong><small>'+patiyizLessons.filter(l=>l.cat===topic).length+' kısa ders · Başla →</small></span><img src="'+(i%3===1?'pati-illustration-cat.svg':'pati-illustration-dog.svg')+'" alt="" loading="lazy"></button>').join('')+'</div>'+
+   '<div class="pati-ref-academy-topics">'+topics.slice(0,6).map(topicCard).join('')+(topics.length>6?'<details class="pati-academy-more"><summary>Diğer '+(topics.length-6)+' eğitim konusunu göster</summary><div class="pati-academy-hidden-topics">'+topics.slice(6).map((t,i)=>topicCard(t,i+6)).join('')+'</div></details>':'')+'</div>'+
    '<p class="pati-edu-notice">Eğitimler genel bilgi amaçlıdır; veteriner önerilerinin yerini almaz.</p></section>';
   return;
  }
