@@ -49,7 +49,7 @@ test('New CSS loads last; picker before app; native has both',()=>{
  const sheets=[...html.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map(x=>x[1]);
  assert.ok(sheets.at(-1).includes('patiyiz-polish-collab-dm-story-20261029.css?v=1'));
  assert.ok(sheets.some(x=>x.includes('patiyiz-theme-unified-20261029.css?v=2')));
- assert.ok(html.indexOf('patiyiz-collab-picker-20261029.js?v=1')<html.indexOf('<script src="app.js?'));
+ assert.ok(html.indexOf('patiyiz-collab-picker-20261029.js?v=2')<html.indexOf('<script src="app.js?'));
  assert.match(html,/collab_picker_theme_integrity=20261029/);
  assert.match(native,/'patiyiz-collab-picker-20261029\.js'/);
 });
