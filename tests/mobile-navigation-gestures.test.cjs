@@ -23,11 +23,11 @@ test('Mobil alt menüde beş erişilebilir sekme ve belirgin seçili sayfa bulun
  const fn=vm.runInNewContext(markup+'\nnavRender',ctx);
  fn();
  assert.equal((nav.match(/class="mobile-nav-btn/g)||[]).length,5);
- for(const label of ['Akış','Keşfet','Paylaş','Reels','Profil'])assert.ok(nav.includes(label),label);
+ for(const label of ['Akış','Keşfet','Mesajlar','Reels','Profil'])assert.ok(nav.includes(label),label);
  assert.match(nav,/data-view="home"[^>]*aria-current="page"/);
  assert.match(nav,/data-view="reels"[^>]*aria-current="false"/);
  assert.match(nav,/pati-mobile-nav-glyph/);
- assert.match(nav,/data-action="pati-create-open"/);assert.equal(dom['#app-root>.mobile-fab'].hidden,true);
+ assert.match(nav,/data-view="messages"/);assert.match(html,/id="pati-header-share"[^>]*data-action="pati-create-open"/);assert.equal(dom['#app-root>.mobile-fab'].hidden,true);
  ctx.view='reels';fn();
  assert.match(nav,/data-view="reels"[^>]*aria-current="page"/);
  assert.match(nav,/data-view="home"[^>]*aria-current="false"/);

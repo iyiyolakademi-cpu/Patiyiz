@@ -24,10 +24,11 @@ test('Alt menü eski isimlerin yerine gerçekten beş hedefi gösterir',()=>{
    unreadCounts:()=>({messages:0,notifications:0}),countBadge:()=>'',ico:i=>'<svg>'+i+'</svg>'});
  navRender();
  const labels=[...markup.matchAll(/<small>([^<]+)<\/small>/g)].map(x=>x[1]);
- assert.deepEqual(labels,['Akış','Keşfet','Paylaş','Reels','Profil']);
+ assert.deepEqual(labels,['Akış','Keşfet','Mesajlar','Reels','Profil']);
  assert.match(markup,/data-view="reels"/);
  assert.doesNotMatch(markup,/data-view="pets"/);
- assert.match(markup,/data-action="pati-create-open"/);
+ assert.match(markup,/data-view="messages"/);
+ assert.match(html,/id="pati-header-share"[^>]*data-action="pati-create-open"/);
  assert.match(desktop,/Patiler/);
  assert.equal(dom['#app-root>.mobile-fab'].hidden,true);
  assert.match(css,/#app-root:not\(\.hidden\)>\.mobile-fab\{/);

@@ -27,13 +27,13 @@ test('Notification page is only the notification list, without filters or widget
  assert.match(rows,/data-action="open-notification"/);
  assert.doesNotMatch(rows,/notification-toggle-read|pati-alert-remove|pati-alert-follow-back/);
 });
-test('Notifications only delete from a long-press or keyboard accessible context menu',()=>{
- assert.match(app,/function openNotificationDeleteOptions\(el\)/);
- assert.match(app,/notificationPressTimer=setTimeout\(/);
- assert.match(app,/pati-alert-simple\[data-notification-id\]/);
- assert.match(app,/e\.key==='ContextMenu'/);
- assert.match(app,/data-action="notification-delete"/);
- assert.match(app,/case 'notification-delete':closeModal\(true\);run\(/);
+test('Notification deletion is now a direct, account-scoped row action without long-press',()=>{
+ const rows=source('function notificationRows(list){','function notificationRenderResults(){');
+ assert.match(rows,/data-action="notification-delete"/);
+ assert.match(rows,/aria-label="Bildirimi sil"/);
+ assert.doesNotMatch(app,/notificationPressTimer|openNotificationDeleteOptions/);
+ assert.match(app,/case 'notification-delete':run\(/);
+ assert.match(app,/\.delete\(\)\.eq\('id',id\)\.eq\('owner_id',uid\)/);
 });
 test('Question categories include entrepreneurship and general life, legacy animal categories remain discoverable',()=>{
  assert.match(app,/PATI_QUESTION_CATEGORIES=\['Girişimcilik','Hayvanlar','Teknoloji','Eğitim ve Kariyer','Günlük Yaşam','Diğer'\]/);
