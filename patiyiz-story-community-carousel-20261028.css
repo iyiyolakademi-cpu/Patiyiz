@@ -133,3 +133,131 @@ html[data-pati-theme="dark"] #main-content .pati-page-back{color:#fff;background
  #patiyiz-system-media[data-mode="post"] .pati-system-publish-actions button{min-width:0!important;min-height:49px;font-size:12px;padding:9px 5px;line-height:1.35;white-space:normal}
  #patiyiz-system-media[data-mode="post"] #pati-system-publish{grid-column:1/-1;min-height:52px;font-size:15px}
 }
+
+
+/* 2026-10-29 — Full-height Instagram-like activity view for one's own story. */
+#story-overlay .story-viewers-button{
+ left:14px!important;bottom:calc(12px + env(safe-area-inset-bottom,0px))!important;
+ z-index:15!important;min-height:44px;padding:10px 16px!important;
+ background:#111b!important;border:1px solid #fff9!important;
+ color:white!important;
+}
+#story-overlay.pati-story-viewers-open .story-playing{animation-play-state:paused!important}
+#story-overlay .story-viewers-sheet{
+ position:absolute!important;inset:0!important;left:0!important;right:0!important;
+ bottom:0!important;top:0!important;width:100%!important;height:100%!important;
+ min-height:0!important;max-height:none!important;z-index:50!important;
+ box-sizing:border-box!important;display:flex!important;flex-direction:column!important;
+ overflow:hidden!important;overscroll-behavior:contain!important;
+ padding:0!important;background:#fff!important;color:#141414!important;
+ border-radius:0!important;box-shadow:none!important;
+}
+#story-overlay .story-viewers-sheet[hidden]{display:none!important}
+#story-overlay .pati-story-activity-top{
+ display:flex;flex:0 0 auto;align-items:center;justify-content:space-between;gap:10px;
+ min-height:calc(58px + env(safe-area-inset-top,0px));
+ padding:calc(12px + env(safe-area-inset-top,0px)) 16px 12px;
+ box-sizing:border-box;background:#f3f5f7;color:#111;
+}
+#story-overlay .pati-story-activity-top strong{
+ min-width:0;flex:1;text-align:center;font-size:16px;font-weight:850;
+}
+#story-overlay .pati-story-activity-top button{
+ display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;
+ color:#111;border:0;border-radius:50%;background:#fff;font-size:24px;
+ cursor:pointer;
+}
+#story-overlay .pati-story-activity-top>span{width:42px;flex:0 0 42px}
+#story-overlay .pati-story-activity-preview{
+ flex:0 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;
+ background:#eef1f4;min-height:190px;height:clamp(190px,29dvh,290px);
+ padding:14px 12px 12px;box-sizing:border-box;gap:11px;
+}
+#story-overlay .pati-story-activity-cover{
+ width:104px;height:156px;max-height:65%;border-radius:15px;
+ overflow:hidden;background:#161719;color:#fff;display:grid;place-items:center;
+ box-shadow:0 7px 22px #0b0b0b27;font-size:32px;
+}
+#story-overlay .pati-story-activity-cover>img,
+#story-overlay .pati-story-activity-cover>video{
+ display:block;width:100%;height:100%;object-fit:cover;
+}
+#story-overlay .pati-story-activity-hero-meta{
+ display:flex;align-items:center;justify-content:center;flex-wrap:wrap;
+ gap:15px;color:#292b30;font-size:13px;font-weight:800;
+}
+#story-overlay .pati-story-activity-hero-meta span{display:inline-flex;align-items:center;gap:5px}
+#story-overlay .pati-story-activity-hero-meta .icon{height:17px;width:17px}
+#story-overlay .pati-story-activity-heart{color:#ed284f}
+#story-overlay .pati-story-activity-section{
+ display:flex;align-items:center;gap:10px;flex:0 0 auto;
+ padding:21px 18px 15px;border-bottom:1px solid #f0f1f3;background:#fff;
+}
+#story-overlay .pati-story-activity-section strong{
+ font-size:16px;font-weight:850;line-height:1.35;flex:1;min-width:0;
+}
+#story-overlay .pati-story-activity-section>span{
+ color:#4d61ec;font-size:14px;font-weight:850;
+}
+#story-overlay .pati-story-activity-list{
+ flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;
+ -webkit-overflow-scrolling:touch;padding:0 14px max(16px,env(safe-area-inset-bottom,0px));
+ background:#fff;
+}
+#story-overlay .pati-story-activity-person{
+ display:flex;align-items:center;min-height:76px;gap:4px;border-bottom:1px solid #f4f4f5;
+}
+#story-overlay .pati-story-activity-person>.story-view-user{
+ flex:1 1 auto;display:flex;min-width:0;width:auto;min-height:76px;
+ border:0!important;padding:9px 4px!important;gap:13px!important;
+ background:transparent;color:#111;text-align:left;
+}
+#story-overlay .pati-story-activity-avatar{
+ position:relative;flex:0 0 50px;width:50px;height:50px;
+ display:grid;place-items:center;
+}
+#story-overlay .pati-story-activity-avatar>.avatar{
+ display:grid;place-items:center;width:50px!important;height:50px!important;
+ min-width:50px!important;overflow:hidden;border-radius:50%;
+}
+#story-overlay .pati-story-activity-avatar .avatar img{
+ display:block;width:100%;height:100%;object-fit:cover;border-radius:50%;
+}
+#story-overlay .pati-story-activity-avatar>.pati-story-view-like{
+ position:absolute;bottom:-2px;right:-2px;
+ width:23px;height:23px;display:grid;place-items:center;
+ border:3px solid #fff;border-radius:50%;background:#ff2852;color:#fff;
+ font-size:13px;line-height:1;margin:0!important;box-sizing:content-box;
+}
+#story-overlay .pati-story-view-person{display:flex!important;flex:1;flex-direction:column;gap:4px;min-width:0}
+#story-overlay .pati-story-view-person strong{
+ color:#151515;font-size:14px;font-weight:800;white-space:nowrap;
+ overflow:hidden;text-overflow:ellipsis;
+}
+#story-overlay .pati-story-view-person small{
+ font-size:12px;color:#868893;white-space:nowrap;
+ overflow:hidden;text-overflow:ellipsis;
+}
+#story-overlay .pati-story-activity-message{
+ flex:0 0 44px;width:44px;min-width:44px;height:44px;
+ display:grid;place-items:center;background:transparent;color:#111;
+ border:0;border-radius:12px;cursor:pointer;
+}
+#story-overlay .pati-story-activity-message .icon{width:25px;height:25px}
+#story-overlay .pati-story-activity-message:focus-visible,
+#story-overlay .story-view-user:focus-visible{
+ outline:2px solid #4d61ec!important;outline-offset:1px;
+}
+#story-overlay .pati-story-activity-empty,
+#story-overlay .pati-story-activity-loading{
+ margin:0;padding:30px 20px;text-align:center;line-height:1.5;
+ font-size:13px;color:#777a85;
+}
+@media(max-width:400px){
+ #story-overlay .pati-story-activity-section{padding:15px 12px;font-size:14px}
+ #story-overlay .pati-story-activity-list{padding-left:9px;padding-right:9px}
+ #story-overlay .pati-story-activity-preview{height:clamp(180px,26dvh,240px)}
+}
+@media(prefers-reduced-motion:reduce){
+ #story-overlay .pati-story-activity-person{scroll-behavior:auto}
+}
