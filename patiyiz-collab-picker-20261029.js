@@ -33,9 +33,10 @@
   const clearSelection=()=>{idField.value='';wrap.dataset.selectedHandle='';selected.hidden=true;selected.innerHTML=''};
   const reset=()=>{clearSelection();sequence++;if(timer)clearTimeout(timer);items=[];active=-1;results.innerHTML='';results.hidden=true;input.setAttribute('aria-expanded','false')};
   const resultMarkup=()=>{
-   results.innerHTML=items.map((p,i)=>'<button type="button" role="option" data-pati-user-id="'+escape(p.id)+'" aria-selected="'+(i===active?'true':'false')+'" class="pati-collab-option'+(i===active?' is-highlighted':'')+'">'+
+   results.innerHTML=items.map((p,i)=>'<div class="pati-collab-option'+(i===active?' is-highlighted':'')+'">'+
     '<span class="pati-collab-avatar">'+(options.avatar?options.avatar(p,'s'):'<span class="avatar">🐾</span>')+'</span>'+
-    '<span class="pati-collab-user"><strong>'+escape(p.display_name||p.handle)+'</strong><small>@'+escape(p.handle)+'</small></span><span class="pati-collab-select-icon" aria-hidden="true">✓</span></button>').join('');
+    '<span class="pati-collab-user"><strong>'+escape(p.display_name||p.handle)+'</strong><small>@'+escape(p.handle)+'</small></span>'+
+    '<button type="button" role="option" data-pati-approve-id="'+escape(p.id)+'" aria-selected="'+(i===active?'true':'false')+'" class="pati-collab-approve" aria-label="'+escape(p.handle)+' hesabını ortak olarak onayla">Onayla</button></div>').join('');
    if(!items.length)results.innerHTML='<p class="pati-collab-no-result" role="status">Bu aramaya uygun profil bulunamadı.</p>';
    results.hidden=false;input.setAttribute('aria-expanded','true');
   };
@@ -90,9 +91,9 @@
    if(event.key==='Enter'&&active>=0){event.preventDefault();choose(items[active])}
   });
   results.addEventListener('click',event=>{
-   const option=event.target.closest('[data-pati-user-id]');
-   if(!option)return;
-   const p=items.find(x=>x.id===option.dataset.patiUserId);
+   const approve=event.target.closest('button[data-pati-approve-id]');
+   if(!approve)return;
+   const p=items.find(x=>x.id===approve.dataset.patiApproveId);
    choose(p);
   });
   selected.addEventListener('click',event=>{

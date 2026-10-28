@@ -17,7 +17,7 @@ test('Animated original dog mascot has safe motion reduction and no external dep
  assert.match(mascot,/<svg [^>]*viewBox="0 0 240 240"/);
  for(const key of ['blink','wave','wag','tilt','prefers-reduced-motion'])assert.ok(mascot.includes(key),key);
  assert.doesNotMatch(mascot,/(?:href|src)=["']https?:\/\/|<script\b/i);
- assert.match(html,/patiyiz-delight-20261029\.js\?v=2/);
+ assert.match(html,/patiyiz-delight-20261029\.js\?v=3/);
  assert.match(native,/'patiyiz-mascot\.svg'/);
 });
 test('Streak is database-owned, private and synchronized between devices',()=>{
@@ -78,7 +78,8 @@ test('Web and Capacitor bundles both include every new asset',()=>{
 
 test('Streak popup displays only once per user and local calendar day after server check-in',()=>{
  assert.match(app,/sb\.rpc\('patiyiz_checkin_streak'\)/);
- assert.match(app,/showStreakOnce\(patiStreakState,\{userId:uid,day:today\}\)/);
+ assert.doesNotMatch(app,/showStreakOnce\(patiStreakState,\{userId:uid,day:today\}\)/);
+ assert.match(app,/streakPanel\(\{count:days,best\},patiStreakToday\(\)\)/);
  assert.doesNotMatch(app,/patiStreakMarkup\(\)/);
  assert.match(js,/seenInPage\.has\(key\)/);
  assert.match(js,/localStorage\.getItem\(key\)==='1'/);
