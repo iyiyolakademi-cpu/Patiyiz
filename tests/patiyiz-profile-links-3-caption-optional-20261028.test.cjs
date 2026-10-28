@@ -63,4 +63,5 @@ test('Story captions remain optional for public and close-friends stories',()=>{
  assert.match(app,/caption:shared\?str\('body'\)\.slice\(0,300\):str\('caption'\)/);
  assert.match(app,/caption:str\('body'\)\.slice\(0,300\)/);
  assert.match(app,/if\(!photo\?\.size&&!video\?\.size\)throw Error\('Hikâye için fotoğraf veya video seç\.'/);
+ assert.match(migration,/audience='close_friends' AND image_url='' AND private_image_path IS NOT NULL/);
 });
