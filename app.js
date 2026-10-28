@@ -3507,27 +3507,80 @@ function patiVerificationProfileAction(){
 
 
 /* One profile link, guaranteed to point only to a real Instagram profile URL. */
-function patiNormalizeInstagramUrl(input){
- const raw=String(input||'').trim();
- if(!raw)return '';
- let handle=raw.replace(/^@/,'');
- if(/^https?:\/\//i.test(raw)){
-  let url;try{url=new URL(raw)}catch(_){throw Error('Geçerli bir Instagram bağlantısı gir.')}
-  if(!['instagram.com','www.instagram.com'].includes(url.hostname.toLowerCase())||url.username||url.password||url.port)throw Error('Yalnızca instagram.com profil bağlantısı kullanabilirsin.');
-  const parts=url.pathname.split('/').filter(Boolean);
-  if(parts.length!==1)throw Error('Bir Instagram profili bağlantısı gir.');
-  handle=parts[0];
- }else if(/^((www\.)?instagram\.com)\//i.test(handle)){
-  handle=handle.replace(/^(www\.)?instagram\.com\//i,'').replace(/\/$/,'');
- }
- if(!/^[A-Za-z0-9._]{1,30}$/.test(handle)||/^(p|reel|reels|stories|explore|accounts|direct)$/i.test(handle))throw Error('Instagram kullanıcı adını veya profil bağlantısını kontrol et.');
- return 'https://www.instagram.com/'+handle+'/';
+/* Profile links accept regular web URLs, not a hard-coded social platform. */
+const PATI_PROFILE_LINK_LIMIT=12;
+function patiNormalizeProfileUrl(value){
+ const entry=String(value||'').trim();
+ if(!entry||entry.length>1000)throw Error('Geçerli bir bağlantı adresi gir.');
+ if(/[\u0000-\u001f\u007f]/.test(entry)||/^[a-z][a-z0-9+.-]*:/i.test(entry)&&!/^https?:\/\//i.test(entry))throw Error('Yalnızca güvenli web bağlantıları ekleyebilirsin.');
+ let url;
+ try{url=new URL(/^https?:\/\//i.test(entry)?entry:'https://'+entry)}
+ catch(_){throw Error('Bağlantı adresini kontrol et.')}
+ if(!['http:','https:'].includes(url.protocol)||!url.hostname||url.username||url.password||url.hostname.indexOf('.')<1||/\s/.test(entry)||url.href.length>1000)throw Error('Bağlantı adresini kontrol et.');
+ if(/^(localhost|127(?:\.\d+){3}|0\.0\.0\.0|169\.254\.\d+\.\d+|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.(?:1[6-9]|2\d|3[01])\.\d+\.\d+)$/i.test(url.hostname))throw Error('Yerel ağ adresleri profil bağlantısı olarak eklenemez.');
+ return url.href;
 }
-function patiInstagramProfileLink(profileRow){
- const input=profileRow?.instagram_url;
- if(!input)return '';
- let url;try{url=patiNormalizeInstagramUrl(input)}catch(_){return ''}
- return '<a class="pati-profile-instagram-link" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer" aria-label="Instagram profilini aç">'+'<span class="pati-instagram-external" aria-hidden="true">↗</span>'+' <span>Instagram</span> <b>@'+esc(url.split('/')[3])+'</b></a>';
+function patiProfileLinks(profileRow){
+ return Array.isArray(profileRow?.profile_links)?profileRow.profile_links.slice(0,PATI_PROFILE_LINK_LIMIT).flatMap(link=>{
+  if(!link||typeof link!=='object')return [];
+  let url;try{url=patiNormalizeProfileUrl(link.url)}catch(_){return []}
+  const title=String(link.title||'').trim().slice(0,60)||new URL(url).hostname.replace(/^www\./,'');
+  return [{title,url}];
+ }):[];
+}
+function patiProfileLinksHTML(profileRow){
+ const links=patiProfileLinks(profileRow);
+ if(!links.length)return '';
+ return '<section class="pati-profile-links" aria-label="Bağlantılar"><strong class="pati-profile-links-title">'+ico('up')+' Bağlantılar</strong>'+
+ '<div class="pati-profile-links-list">'+links.map(link=>'<a class="pati-profile-link" href="'+esc(link.url)+'" target="_blank" rel="noopener noreferrer" aria-label="'+esc(link.title)+' bağlantısını aç"><span class="pati-profile-link-label">'+esc(link.title)+'</span><span class="pati-profile-link-domain">'+esc(new URL(link.url).hostname.replace(/^www\./,''))+'</span><span class="pati-profile-link-arrow" aria-hidden="true">↗</span></a>').join('')+'</div></section>';
+}
+function patiProfileLinkEditorRow(link={}){
+ return '<div class="pati-profile-link-row">'+
+ '<div class="pati-profile-link-inputs"><label>Bağlantı adı<input type="text" name="link_title" maxlength="60" placeholder="Örn. Web sitem" value="'+esc(link.title||'')+'"></label>'+
+ '<label>Bağlantı adresi<input type="url" name="link_url" maxlength="1000" inputmode="url" placeholder="https://site.com" value="'+esc(link.url||'')+'"></label></div>'+
+ '<button type="button" class="pati-profile-link-remove" data-action="pati-profile-link-remove" aria-label="Bağlantıyı kaldır">'+ico('trash')+'</button></div>';
+}
+function patiUpdateProfileLinkEditor(form){
+ const rows=form?.querySelectorAll('.pati-profile-link-row')||[];
+ const count=form?.querySelector('#pati-profile-links-count');
+ if(count)count.textContent=rows.length+' / '+PATI_PROFILE_LINK_LIMIT;
+ const add=form?.querySelector('[data-action="pati-profile-link-add"]');
+ if(add)add.disabled=rows.length>=PATI_PROFILE_LINK_LIMIT;
+}
+function patiCollectProfileLinks(form){
+ const rows=[...form.querySelectorAll('.pati-profile-link-row')];
+ if(rows.length>PATI_PROFILE_LINK_LIMIT)throw Error('En fazla '+PATI_PROFILE_LINK_LIMIT+' bağlantı ekleyebilirsin.');
+ const links=[],seen=new Set();
+ for(const row of rows){
+  const title=String(row.querySelector('[name="link_title"]')?.value||'').trim();
+  const raw=String(row.querySelector('[name="link_url"]')?.value||'').trim();
+  if(!raw&&!title)continue;
+  if(!raw)throw Error('Her bağlantı için bir adres yaz.');
+  if(title.length>60)throw Error('Bağlantı adı en fazla 60 karakter olabilir.');
+  const url=patiNormalizeProfileUrl(raw);
+  if(seen.has(url))throw Error('Aynı bağlantıyı iki kez ekleyemezsin.');
+  seen.add(url);
+  links.push({title:title||new URL(url).hostname.replace(/^www\./,''),url});
+ }
+ return links;
+}
+function patiBindProfileLinkEditor(form){
+ if(!form)return;
+ patiUpdateProfileLinkEditor(form);
+ form.addEventListener('click',event=>{
+  const add=event.target.closest('[data-action="pati-profile-link-add"]');
+  if(add){
+   event.preventDefault();
+   const list=form.querySelector('#pati-profile-links-editor');
+   if(!list||list.querySelectorAll('.pati-profile-link-row').length>=PATI_PROFILE_LINK_LIMIT)return;
+   list.insertAdjacentHTML('beforeend',patiProfileLinkEditorRow());
+   patiUpdateProfileLinkEditor(form);
+   list.lastElementChild?.querySelector('[name="link_title"]')?.focus();
+   return;
+  }
+  const remove=event.target.closest('[data-action="pati-profile-link-remove"]');
+  if(remove){event.preventDefault();remove.closest('.pati-profile-link-row')?.remove();patiUpdateProfileLinkEditor(form)}
+ });
 }
 function profilePage(){
  const p=profile(profileId||me.id),own=p.id===me.id,pets=data.pets.filter(x=>x.owner_id===p.id);
@@ -3562,7 +3615,7 @@ function profilePage(){
  const profileContent=profilePostsTab==='text'?'<div class="pati-profile-text-feed" aria-label="Yazı paylaşımları">'+(active.length?active.map((x,i)=>postCard(x,i===0)).join(''):'<p class="pati-ig-empty">Henüz yazı paylaşımı yok.</p>')+'</div>':'<div class="pati-ig-grid">'+(grid||'<p class="pati-ig-empty">Bu bölümde henüz paylaşım yok.</p>')+'</div>';
  main.innerHTML=(own?patiyizProgressCard():'')+'<div class="pati-ig-profile">'+(!own?'<div class="pati-profile-back">'+button('← Geri','profile-back')+'</div>':'')+
  '<div class="pati-ig-summary"><div class="pati-ig-avatar">'+avatar(p,'l')+(own?'<button type="button" class="pati-profile-story-plus" data-action="story-create" aria-label="Profilinden hikâye paylaş" title="Hikâye ekle">'+ico('plus')+'</button>':'')+'</div><div class="pati-ig-info"><div class="pati-ig-handle-row"><strong class="pati-ig-handle">@'+esc(p.handle||'patiyiz')+'</strong>'+verifiedBadge(p)+'</div><strong class="pati-ig-name">'+esc(p.display_name||'Patiyiz üyesi')+'</strong><div class="pati-ig-stats"><span><b data-pati-count="posts">'+((cachedCounts?.posts??posts.filter(x=>x.author_id===p.id).length)+((typeof patiCollabs!=='undefined'?patiCollabs.rows:[]).filter(x=>x.user_id===p.id&&x.status==='accepted').length))+'</b><small>gönderi</small></span><button type="button" data-action="followers-list" data-id="'+esc(p.id)+'" data-mode="followers"><b data-pati-count="followers">'+followers+'</b><small>takipçi</small></button><button type="button" data-action="followers-list" data-id="'+esc(p.id)+'" data-mode="following"><b data-pati-count="following">'+following+'</b><small>takip edilen</small></button></div></div></div>'+
- (p.bio?'<div class="pati-ig-bio">'+esc(p.bio)+'</div>':'')+patiInstagramProfileLink(p)+mutualMarkup+
+ (p.bio?'<div class="pati-ig-bio">'+esc(p.bio)+'</div>':'')+patiProfileLinksHTML(p)+mutualMarkup+
  
  '<div class="pati-ig-actions">'+(own?button('Profili düzenle','edit-profile'):button(followed.has(p.id)?'Takiptesin':followBack?'Sen de takip et':'Takip et','follow','data-id="'+esc(p.id)+'"'+(followBack?' data-follow-back="true"':''))+button('Mesaj gönder','chat','data-id="'+esc(p.id)+'"')+button('Hesabı bildir','report','data-id="'+esc(p.id)+'" data-kind="profile"'))+'</div>'+(own?patiVerificationProfileAction():'')+
  '<div class="pati-ig-tabs" role="tablist" aria-label="Profil gönderileri">'+iconTabs.map(x=>'<button type="button" role="tab" aria-selected="'+(profilePostsTab===x[0])+'" class="'+(profilePostsTab===x[0]?'active':'')+'" data-action="profile-posts-tab" data-id="'+x[0]+'" aria-label="'+x[2]+'">'+x[1]+'</button>').join('')+'</div>'+
@@ -4532,11 +4585,12 @@ function editProfile(){
  formField('handle','Kullanıcı adı','text',p.handle,true)+
  textField('bio','Biyografi',p.bio||'',false,500)+
  formField('city','Şehir','text',p.city||'')+
- formField('instagram_url','Instagram bağlantısı veya @kullanıcıadı (isteğe bağlı)','text',p.instagram_url||'')+
+ '<section class="pati-edit-links-section"><div class="pati-edit-section-title">Bağlantılar</div><p class="pati-edit-hint">Web siteni, sosyal medya hesaplarını veya istediğin diğer web adreslerini ekleyebilirsin.</p><div id="pati-profile-links-editor">'+patiProfileLinks(p).map(patiProfileLinkEditorRow).join('')+'</div><div class="pati-profile-links-editor-foot"><span id="pati-profile-links-count"></span><button type="button" data-action="pati-profile-link-add">'+ico('plus')+' Bağlantı ekle</button></div></section>'+
  '<p class="pati-edit-hint">Kullanıcı adı 3–24 karakter olmalı. Kaydettiğin bilgiler profilinde görünür.</p></div>';
  modal('Profili düzenle',fields,'profile-form');
  const root=document.querySelector('#modal-root .modal');
  root?.classList.add('pati-profile-edit-modal');
+ patiBindProfileLinkEditor(document.getElementById('profile-form'));
  const submit=document.querySelector('#profile-form .modal-footer button[type="submit"]');
  if(submit)submit.textContent='Bitti';
 }
@@ -5313,7 +5367,7 @@ case 'wellness-reminder-form':await patiWellnessSaveReminder(form,str);break;cas
  const item=result.data[0];data.care=[item,...data.care.filter(x=>x.id!==item.id)];
  patiyizLoadedTables.add('care_tasks');closeModal(true);if(view==='care'||(view==='my-pet'&&patiMyPetTab==='care'))render();
  notify(editId?'Bakım görevi güncellendi.':'Bakım görevi eklendi.');break;}
-case 'profile-form':{let handle=str('handle').toLowerCase();if(!/^[a-z0-9_]{3,24}$/.test(handle))throw Error('Kullanıcı adı 3–24 karakter, küçük harf, rakam veya alt çizgi olmalı.');let o={display_name:str('display_name'),handle,city:str('city'),bio:str('bio'),instagram_url:patiNormalizeInstagramUrl(str('instagram_url'))},image=await upload(f.get('photo'));if(image)o.avatar_url=image;await save('profiles',o,me.id);break}
+case 'profile-form':{let handle=str('handle').toLowerCase();if(!/^[a-z0-9_]{3,24}$/.test(handle))throw Error('Kullanıcı adı 3–24 karakter, küçük harf, rakam veya alt çizgi olmalı.');let o={display_name:str('display_name'),handle,city:str('city'),bio:str('bio'),profile_links:patiCollectProfileLinks(form)},image=await upload(f.get('photo'));if(image)o.avatar_url=image;await save('profiles',o,me.id);break}
 case 'pet-form':{
  const owner=me.id,editId=form.dataset.edit||'',existing=editId?data.pets.find(p=>p.id===editId):null;
  if(editId&&(!existing||existing.owner_id!==owner))throw Error('Bu hayvanı düzenleme yetkin yok.');
