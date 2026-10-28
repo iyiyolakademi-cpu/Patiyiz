@@ -1,0 +1,296 @@
+/* Patiyiz — profile media grid and unobtrusive DM controls, 2026-10-28.
+   Keep the existing app features; override only presentation. */
+
+/* Chat deletion is kept in an optional three-dot menu instead of consuming
+   an always-visible large column beside every conversation. */
+#main-content .pati-dm-layout .pati-dm-list-row{
+  position:relative!important;
+  overflow:visible!important;
+  min-width:0!important;
+}
+#main-content .pati-dm-layout .pati-dm-list-row>.chat-person{
+  min-width:0!important;
+  flex:1 1 0%!important;
+}
+#main-content .pati-dm-layout .pati-dm-row-actions{
+  position:relative;
+  display:block;
+  flex:0 0 34px;
+  width:34px;
+  margin:0 4px 0 0;
+  align-self:center;
+  z-index:5;
+}
+#main-content .pati-dm-layout .pati-dm-row-actions[open]{z-index:60}
+#main-content .pati-dm-layout .pati-dm-row-actions>summary{
+  display:grid;
+  place-items:center;
+  list-style:none;
+  width:34px;
+  height:42px;
+  padding:0;
+  margin:0;
+  background:transparent;
+  border:0;
+  border-radius:11px;
+  color:#777982;
+  cursor:pointer;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+#main-content .pati-dm-layout .pati-dm-row-actions>summary::marker{content:""}
+#main-content .pati-dm-layout .pati-dm-row-actions>summary::-webkit-details-marker{display:none}
+#main-content .pati-dm-layout .pati-dm-row-actions>summary .icon{width:19px;height:19px}
+#main-content .pati-dm-layout .pati-dm-row-actions>summary:hover,
+#main-content .pati-dm-layout .pati-dm-row-actions[open]>summary{background:#f3f3f5;color:#222}
+#main-content .pati-dm-layout .pati-dm-row-actions>summary:focus-visible{outline:2px solid #50535b;outline-offset:2px}
+#main-content .pati-dm-layout .pati-dm-row-menu{
+  position:absolute;
+  z-index:100;
+  top:calc(100% + 4px);
+  right:0;
+  width:max-content;
+  min-width:178px;
+  padding:5px;
+  border:1px solid #ececf0;
+  border-radius:13px;
+  background:#fff;
+  box-shadow:0 12px 32px #0002;
+}
+#main-content .pati-dm-layout .pati-dm-row-actions:not([open]) .pati-dm-row-menu{display:none!important}
+#main-content .pati-dm-layout .pati-dm-row-actions .pati-dm-delete-thread{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:9px!important;
+  flex:none!important;
+  width:100%!important;
+  min-width:0!important;
+  height:auto!important;
+  min-height:40px!important;
+  margin:0!important;
+  padding:9px 12px!important;
+  background:transparent!important;
+  color:#ba3444!important;
+  border:0!important;
+  border-radius:8px!important;
+  font-size:13px!important;
+  font-weight:700!important;
+  line-height:1.25!important;
+  white-space:nowrap;
+}
+#main-content .pati-dm-layout .pati-dm-row-actions .pati-dm-delete-thread .icon{
+  width:17px!important;height:17px!important;flex:none;
+}
+#main-content .pati-dm-layout .pati-dm-row-actions .pati-dm-delete-thread:hover,
+#main-content .pati-dm-layout .pati-dm-row-actions .pati-dm-delete-thread:active{
+  background:#fff0f1!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-dm-layout .pati-dm-row-actions>summary{color:#d2d2d5}
+html[data-pati-theme="dark"] #main-content .pati-dm-layout .pati-dm-row-actions[open]>summary{background:#393940;color:#fff}
+html[data-pati-theme="dark"] #main-content .pati-dm-layout .pati-dm-row-menu{background:#29292e;border-color:#44444b}
+@media(max-width:470px){
+ #main-content .pati-dm-layout .pati-dm-row-actions{width:32px;flex-basis:32px;margin-right:2px}
+ #main-content .pati-dm-layout .pati-dm-row-actions>summary{width:32px}
+}
+
+/* Native dialog: no cropping, card borders, stretched portrait media or old
+   generic form footer. It closes with × or the Escape key. */
+dialog.pati-dm-lightbox{
+  position:fixed!important;
+  inset:0!important;
+  box-sizing:border-box!important;
+  display:grid;
+  grid-template-rows:auto minmax(0,1fr);
+  width:100vw!important;
+  height:100vh!important;
+  height:100dvh!important;
+  max-width:none!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  overflow:hidden!important;
+  background:#0c0c0f!important;
+  color:#fff!important;
+  z-index:2147483000;
+}
+dialog.pati-dm-lightbox:not([open]){display:none!important}
+dialog.pati-dm-lightbox::backdrop{background:#000d}
+.pati-dm-lightbox-toolbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  min-height:56px;
+  padding:calc(8px + env(safe-area-inset-top,0px)) 14px 8px;
+  box-sizing:border-box;
+  background:#151518;
+  color:#fff;
+  border-bottom:1px solid #303037;
+  font-size:14px;
+}
+.pati-dm-lightbox-close{
+  width:40px;
+  height:40px;
+  border:0;
+  border-radius:50%;
+  background:#303039;
+  color:#fff;
+  font-size:26px;
+  line-height:1;
+  cursor:pointer;
+}
+.pati-dm-lightbox-stage{
+  min-width:0;
+  min-height:0;
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px));
+  box-sizing:border-box;
+}
+.pati-dm-lightbox-stage>img{
+  display:block!important;
+  width:auto!important;
+  height:auto!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+#main-content .pati-dm-layout .pati-dm-image-open,
+#main-content .pati-dm-layout .pati-dm-image-open>.pati-dm-image{
+  background:transparent!important;
+  box-shadow:none!important;
+}
+
+/* The reference shows three full-bleed portrait thumbnails per row.
+   Cropping applies to thumbnails only, never to the opened photo. */
+#main-content .pati-ig-profile .pati-ig-grid{
+  display:grid!important;
+  width:100%!important;
+  max-width:100%!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:2px!important;
+  padding:0!important;
+  margin:0!important;
+  background:#fff!important;
+}
+#main-content .pati-ig-profile .pati-profile-tile{
+  position:relative!important;
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  min-width:0!important;
+  min-height:0!important;
+  aspect-ratio:3 / 4!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  border-radius:0!important;
+  overflow:hidden!important;
+  background:#e9eaec!important;
+  box-shadow:none!important;
+  cursor:pointer;
+}
+#main-content .pati-ig-profile .pati-profile-tile>img,
+#main-content .pati-ig-profile .pati-profile-tile>video{
+  position:absolute!important;
+  inset:0!important;
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:100%!important;
+  max-height:none!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  margin:0!important;
+  padding:0!important;
+  border-radius:0!important;
+}
+#main-content .pati-ig-profile .pati-profile-play,
+#main-content .pati-ig-profile .pati-profile-multi{
+  position:absolute!important;
+  z-index:3!important;
+  top:7px!important;
+  right:7px!important;
+  left:auto!important;
+  bottom:auto!important;
+  display:grid!important;
+  place-items:center!important;
+  width:29px!important;
+  height:29px!important;
+  margin:0!important;
+  padding:5px!important;
+  border:1px solid #ffffff80;
+  border-radius:9px!important;
+  background:#fffffff2!important;
+  color:#1e2024!important;
+  box-shadow:0 2px 10px #0002!important;
+  text-shadow:none!important;
+}
+#main-content .pati-ig-profile .pati-profile-play .icon,
+#main-content .pati-ig-profile .pati-profile-multi .icon{
+  display:block!important;
+  width:17px!important;
+  height:17px!important;
+  stroke-width:2;
+}
+#main-content .pati-ig-profile .pati-profile-view-count{
+  position:absolute!important;
+  z-index:2!important;
+  bottom:0!important;
+  left:0!important;
+  right:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:5px!important;
+  width:100%!important;
+  box-sizing:border-box!important;
+  padding:22px 7px 7px!important;
+  background:linear-gradient(0deg,#000b 0%,transparent 100%)!important;
+  color:#fff!important;
+  font-size:clamp(11px,2.5vw,15px)!important;
+  line-height:1.1!important;
+  font-weight:750!important;
+  text-shadow:0 1px 3px #0008!important;
+  pointer-events:none;
+}
+#main-content .pati-ig-profile .pati-profile-text-tile>span:not(.pati-profile-view-count){
+  display:block;
+  padding:10px;
+  font-size:12px;
+  overflow-wrap:anywhere;
+}
+/* The post detail may scroll vertically as before, but show the actual photo
+   proportions within the media frame instead of cropping faces. */
+#main-content .pati-detail-screen .pati-feed-card .pati-carousel-slide .pati-photo img,
+#main-content .pati-detail-screen .pati-feed-card .pati-video-frame .pati-post-video{
+  object-fit:contain!important;
+  object-position:center!important;
+  background:#111!important;
+}
+#main-content .pati-detail-screen .pati-feed-card .pati-carousel,
+#main-content .pati-detail-screen .pati-feed-card .pati-video-frame{
+  background:#111!important;
+}
+@media(max-width:740px){
+ #main-content .pati-ig-profile .pati-ig-grid{gap:2px!important}
+ #main-content .pati-ig-profile .pati-profile-play,
+ #main-content .pati-ig-profile .pati-profile-multi{
+  top:6px!important;right:6px!important;width:25px!important;height:25px!important;padding:4px!important;
+ }
+ #main-content .pati-ig-profile .pati-profile-view-count{padding:18px 6px 6px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #main-content .pati-ig-profile .pati-profile-tile,
+ #main-content .pati-dm-layout .pati-dm-row-actions>summary{transition:none!important}
+}
