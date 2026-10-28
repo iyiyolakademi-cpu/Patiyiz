@@ -3531,7 +3531,7 @@ function patiProfileLinks(profileRow){
 function patiProfileLinksHTML(profileRow){
  const links=patiProfileLinks(profileRow);
  if(!links.length)return '';
- return '<section class="pati-profile-links" aria-label="Bağlantılar"><strong class="pati-profile-links-title">'+ico('up')+' Bağlantılar</strong>'+
+ return '<section class="pati-profile-links" aria-label="Bağlantılar">'+
  '<div class="pati-profile-links-list">'+links.map(link=>'<a class="pati-profile-link" href="'+esc(link.url)+'" target="_blank" rel="noopener noreferrer" aria-label="'+esc(link.title)+' bağlantısını aç"><span class="pati-profile-link-label">'+esc(link.title)+'</span><span class="pati-profile-link-domain">'+esc(new URL(link.url).hostname.replace(/^www\./,''))+'</span><span class="pati-profile-link-arrow" aria-hidden="true">↗</span></a>').join('')+'</div></section>';
 }
 function patiProfileLinkEditorRow(link={}){

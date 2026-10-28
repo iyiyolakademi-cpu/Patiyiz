@@ -30,6 +30,11 @@ test('Profile links accept safe external web destinations across all services',(
  assert.equal(links[1].url,'https://youtube.com/@channel');
  assert.match(app,/profile_links:patiCollectProfileLinks\(form\)/);
  assert.match(app,/patiProfileLinksHTML\(p\)/);
+ const htmlMarkup=section('function patiProfileLinksHTML(','function patiProfileLinkEditorRow(');
+ assert.doesNotMatch(htmlMarkup,/pati-profile-links-title|ico\('up'\)/);
+ assert.match(htmlMarkup,/pati-profile-link-label/);
+ assert.match(htmlMarkup,/pati-profile-link-domain/);
+ assert.match(htmlMarkup,/rel="noopener noreferrer"/);
  assert.match(app,/patiBindProfileLinkEditor\(document.getElementById\('profile-form'\)\)/);
  assert.doesNotMatch(app,/Instagram bağlantısı veya @kullanıcıadı/);
  assert.match(app,/rel="noopener noreferrer"/);
