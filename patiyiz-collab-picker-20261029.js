@@ -25,14 +25,18 @@
   const input=wrap.querySelector('input[name="collab_handle"]');
   const idField=wrap.querySelector('input[name="collab_user_id"]');
   const results=wrap.querySelector('.pati-collab-search-results');
+  // On mobile iOS, a touch can blur the input before the click is dispatched.
+  // Capture the approval at pointer/touch start so the result cannot vanish first.
   const selected=wrap.querySelector('.pati-collab-selected');
-  let sequence=0,timer=null,items=[],active=-1;
+  let sequence=0,timer=null,items=[],active=-1,approving=false;
+  const knownProfiles=new Map();
   const escape=options.escape||((v)=>String(v));
   const filter=profiles=>[...new Map(profiles.filter(p=>p&&p.id&&p.id!==options.userId&&!options.blocked?.has(p.id)&&p.handle).map(p=>[p.id,p])).values()]
    .sort((a,b)=>Number(String(b.handle).toLocaleLowerCase('tr-TR').startsWith(safeQuery(input.value))) - Number(String(a.handle).toLocaleLowerCase('tr-TR').startsWith(safeQuery(input.value))) || String(a.handle).localeCompare(String(b.handle),'tr'));
   const clearSelection=()=>{idField.value='';wrap.dataset.selectedHandle='';selected.hidden=true;selected.innerHTML=''};
   const reset=()=>{clearSelection();sequence++;if(timer)clearTimeout(timer);items=[];active=-1;results.innerHTML='';results.hidden=true;input.setAttribute('aria-expanded','false')};
   const resultMarkup=()=>{
+   for(const p of items)knownProfiles.set(p.id,p);
    results.innerHTML=items.map((p,i)=>'<div class="pati-collab-option'+(i===active?' is-highlighted':'')+'">'+
     '<span class="pati-collab-avatar">'+(options.avatar?options.avatar(p,'s'):'<span class="avatar">🐾</span>')+'</span>'+
     '<span class="pati-collab-user"><strong>'+escape(p.display_name||p.handle)+'</strong><small>@'+escape(p.handle)+'</small></span>'+
@@ -41,7 +45,9 @@
    results.hidden=false;input.setAttribute('aria-expanded','true');
   };
   const choose=p=>{
-   if(!p?.id||p.id===options.userId||options.blocked?.has(p.id))return;
+   if(!p?.id||p.id===options.userId||options.blocked?.has(p.id))return false;
+   approving=true;
+   // The query can be just a fragment; the confirmed handle and UUID replace it.
    input.value='@'+String(p.handle||'');
    idField.value=p.id;wrap.dataset.selectedHandle=normal(p.handle);
    selected.hidden=false;
@@ -50,6 +56,9 @@
     '<button type="button" class="pati-collab-unselect" aria-label="Ortak kullanıcı seçimini kaldır">×</button>';
    results.hidden=true;results.innerHTML='';input.setAttribute('aria-expanded','false');
    items=[];active=-1;sequence++;
+   input.blur?.();
+   approving=false;
+   return true;
   };
   const search=async()=>{
    const q=safeQuery(input.value),seq=++sequence;
@@ -58,13 +67,16 @@
    items=local;active=-1;
    if(local.length)resultMarkup();
    else{results.innerHTML='<p class="pati-collab-searching" role="status">Profiller aranıyor…</p>';results.hidden=false;input.setAttribute('aria-expanded','true')}
-   if(q.length<2){if(!local.length){results.innerHTML='<p class="pati-collab-searching" role="status">En az 2 harf yazarak aramaya başlayabilirsin.</p>'}return}
+   if(q.length<2){if(!local.length){results.innerHTML='<p class="pati-collab-searching" role="status">Bir harf daha yazabilir veya aramaya devam edebilirsin.</p>'}return}
    try{
+    // Match fragments anywhere in the username/display name, not just prefixes.
+    // Escape LIKE wildcards in user input so underscores are treated literally.
+    const pattern='%'+q.replace(/[\\%_]/g,c=>'\\'+c)+'%';
     const [byHandle,byName]=await Promise.all([
-     options.sb.from('profiles').select('id,handle,display_name,avatar_url,is_verified').ilike('handle',q+'%').limit(HIGHLIGHT_MAX),
-     options.sb.from('profiles').select('id,handle,display_name,avatar_url,is_verified').ilike('display_name',q+'%').limit(HIGHLIGHT_MAX)
+     options.sb.from('profiles').select('id,handle,display_name,avatar_url,is_verified').ilike('handle',pattern).limit(HIGHLIGHT_MAX),
+     options.sb.from('profiles').select('id,handle,display_name,avatar_url,is_verified').ilike('display_name',pattern).limit(HIGHLIGHT_MAX)
     ]);
-    if(seq!==sequence||!wrap.isConnected||idField.value||normal(input.value)!==q)return;
+    if(seq!==sequence||!wrap.isConnected||idField.value||safeQuery(input.value)!==q)return;
     if(byHandle.error&&byName.error)throw byHandle.error;
     items=filter([...local,...(byHandle.data||[]),...(byName.data||[])]).slice(0,HIGHLIGHT_MAX);
     active=-1;resultMarkup();
@@ -90,18 +102,34 @@
    }
    if(event.key==='Enter'&&active>=0){event.preventDefault();choose(items[active])}
   });
-  results.addEventListener('click',event=>{
-   const approve=event.target.closest('button[data-pati-approve-id]');
-   if(!approve)return;
-   const p=items.find(x=>x.id===approve.dataset.patiApproveId);
+  const approveFromEvent=event=>{
+   const approve=event.target?.closest?.('button[data-pati-approve-id]');
+   if(!approve||!results.contains(approve))return false;
+   const p=knownProfiles.get(approve.dataset.patiApproveId);
+   if(!p)return false;
+   event.preventDefault?.();
+   event.stopPropagation?.();
    choose(p);
-  });
+   return true;
+  };
+  // pointerdown precedes focusout on modern iOS/Android and desktop.
+  // touchstart covers older iOS. Click/keyboard activation remains a fallback.
+  results.addEventListener('pointerdown',approveFromEvent);
+  results.addEventListener('touchstart',approveFromEvent,{passive:false});
+  results.addEventListener('click',approveFromEvent);
   selected.addEventListener('click',event=>{
    if(!event.target.closest('.pati-collab-unselect'))return;
    input.value='';reset();input.focus();
   });
   wrap.addEventListener('focusout',event=>{
-   if(!wrap.contains(event.relatedTarget)){results.hidden=true;input.setAttribute('aria-expanded','false')}
+   if(approving||results.contains(event.relatedTarget)||wrap.contains(event.relatedTarget))return;
+   // An iOS keyboard dismissal often reports relatedTarget=null during a tap.
+   // Don't remove clickable results until after the touch/click has completed.
+   window.setTimeout(()=>{
+    if(approving||selected.hidden===false)return;
+    if(wrap.contains(document.activeElement))return;
+    results.hidden=true;input.setAttribute('aria-expanded','false');
+   },280);
   });
   wrap.dataset.selectedHandle='';
  }
