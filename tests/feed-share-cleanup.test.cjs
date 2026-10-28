@@ -28,14 +28,18 @@ test('Ana sayfada hikâyelerden hemen sonra bütün gönderi türleri gelir, sek
  assert.match(main.innerHTML,/<div id="stories"><\/div><div class="pati-feed-posts"><article data-post="image1"><\/article><article data-post="video1"><\/article><section id="pati-active5"><\/section>/);
  assert.doesNotMatch(main.innerHTML,/pati-feed-switch|pati-feed-follow|Fotoğraf &amp; Video|Yazılar|Takip ettiklerim|Tüm gönderiler/);
  assert.deepEqual([...main.innerHTML.matchAll(/data-post="([^"]+)"/g)].map(x=>x[1]),['image1','video1','text1']);
- assert.doesNotMatch(block('function homePage(){','function explorePage()'),/data\.reposts|feedMediaMode|feedFilter/);
+ assert.doesNotMatch(block('function homePage(){','function explorePage()'),/feedMediaMode|feedFilter/);
+ assert.match(block('function homePage(){','function explorePage()'),/friendReposts/);
 });
 
-test('Gönderilerde yeniden paylaş ve başa sabitle düğmeleri kaldırıldı',()=>{
+test('Gönderi menüsünde yeni repost ve sabitleme bulunur; eski kaldırılan düğmeler geri gelmez',()=>{
  const src=block('function postCard(', 'function openPost(');
  const profileSrc=block('function profilePage(){','function formField(');
- assert.doesNotMatch(src,/post-repost|post-pin|Yeniden paylaş|Başa sabitle/);
- assert.doesNotMatch(profileSrc,/pati-pin-mark|data\.pins/);
+ assert.doesNotMatch(src,/post-repost|post-pin|Başa sabitle/);
+ assert.match(src,/data-action="pati-repost"/);
+ assert.match(profileSrc,/pati-profile-pin/);
+ assert.match(profileSrc,/data\.pins/);
+ assert.match(app,/case 'pati-repost'|case 'pati-pin'/);
  assert.doesNotMatch(app,/case 'post-repost'|case 'post-pin'/);
  assert.match(src,/data-action="share-post"/);
  assert.match(src,/data-action="save"/);
