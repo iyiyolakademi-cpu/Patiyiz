@@ -2079,7 +2079,7 @@ function petsPage(){
  '<div class="pati-pets-photo">'+(p.photo_url?'<img src="'+esc(p.photo_url)+'" alt="'+esc(p.name||'Patili dost')+'" loading="'+(i<6?'eager':'lazy')+'" decoding="async">':'<span>'+petIcon(p.species)+'</span>')+'</div>'+
  '<div class="pati-pets-info"><strong>'+esc(p.name||'Patili dost')+'</strong><small>'+esc(p.species||'Hayvan')+(p.breed?' · '+esc(p.breed):'')+'</small></div></button>'+
  (editable?'<button type="button" class="pati-pets-edit" data-action="pet-edit" data-id="'+esc(p.id)+'" aria-label="'+esc(p.name||'Patili dost')+' düzenle">'+ico('edit')+' Düzenle</button>':'')+'</div>';
- main.innerHTML='<section class="pati-pets-page"><div class="pati-pets-heading"><div><h1>Patiler</h1><p>Topluluğumuzdaki patili dostlarla tanış.</p></div><button type="button" class="pati-pets-add" data-action="pet-add" aria-label="Patili dost ekle">'+ico('plus')+' Hayvan ekle</button></div>'+
+ main.innerHTML='<section class="pati-pets-page"><div class="pati-pets-heading"><div><h1>Patiler</h1><p>Topluluğumuzdaki patili dostlarla tanış.</p></div></div>'+
  '<div class="pati-pets-own-shortcut"><span>Kendi dostlarının profilleri Hayvanım Merkezi içerisinde.</span><button type="button" data-view="my-pet">Hayvanlarım →</button></div>'+
  '<h2>Topluluktaki Patiler</h2><div class="pati-pets-grid">'+(others.length?others.map((p,i)=>petItem(p,i)).join(''):state?.loading?'<p class="pati-pets-empty" role="status">Patiler yükleniyor…</p>':'<p class="pati-pets-empty">Henüz başka patili dost bulunmuyor.</p>')+'</div>'+
  (state?.error?'<p role="alert" class="pati-pets-empty">'+esc(state.error)+'</p>':'')+
