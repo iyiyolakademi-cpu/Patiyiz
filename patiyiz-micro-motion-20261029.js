@@ -39,7 +39,7 @@
  }
  function loading(form){
   const status=form?.querySelector('.pati-upload-status');
-  if(status&&!status.querySelector('.pati-motion-paws'))status.insertAdjacentHTML('afterbegin',pawHTML);
+  if(status&&!status.querySelector('.pati-motion-paws'))status.insertAdjacentHTML('beforeend',pawHTML);
  }
  function messageSent(id,group=false){
   if(!id||reduce())return;
