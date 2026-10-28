@@ -2780,6 +2780,82 @@ function patiIndexDmHistory(rows,userId,hiddenIds,seenIds){
  }
  return {peers,unreadTotal};
 }
+// Each account can pin one message in each private conversation.
+// Pin records are validated server-side against actual message participants.
+let patiDmPinState={owner:'',byPeer:new Map(),loaded:new Set(),busy:new Set(),details:new Map()};
+function patiDmPinReset(){
+ const owner=typeof me!=='undefined'?me?.id||'':'';
+ if(patiDmPinState.owner!==owner)patiDmPinState={owner,byPeer:new Map(),loaded:new Set(),busy:new Set(),details:new Map()};
+}
+async function patiDmPinFetch(peer){
+ if(!me?.id||!sb||!peer||peer===me.id||blocked.has(peer))return;
+ patiDmPinReset();
+ const state=patiDmPinState,owner=me.id;
+ if(state.loaded.has(peer)||state.busy.has(peer))return;
+ state.busy.add(peer);
+ try{
+  const res=await sb.from('patiyiz_dm_message_pins').select('message_id').eq('viewer_id',owner).eq('peer_id',peer).maybeSingle();
+  if(res.error)throw res.error;
+  if(me?.id!==owner||patiDmPinState!==state)return;
+  if(res.data?.message_id){
+   const msgId=res.data.message_id;state.byPeer.set(peer,msgId);
+   let msg=patiDmFindMessage(msgId);
+   if(!msg){
+    const found=await sb.from('messages').select('id,sender_id,receiver_id,body,created_at,attachment_type').eq('id',msgId).maybeSingle();
+    if(found.error)throw found.error;
+    if(me?.id!==owner||patiDmPinState!==state)return;
+    msg=found.data;
+   }
+   if(msg&&((msg.sender_id===owner&&msg.receiver_id===peer)||(msg.sender_id===peer&&msg.receiver_id===owner)))
+    state.details.set(msgId,msg);
+   else state.byPeer.delete(peer);
+  }else state.byPeer.delete(peer);
+ }catch(error){console.warn('Sohbet sabiti yüklenemedi:',error?.message||error)}
+ finally{
+  if(patiDmPinState===state&&me?.id===owner){
+   state.busy.delete(peer);state.loaded.add(peer);
+   if(view==='messages'&&personId===peer)patiDmSafeRender();
+  }
+ }
+}
+function patiDmPinnedBanner(peer,conv){
+ if(!peer||!me?.id)return '';
+ patiDmPinReset();
+ const id=patiDmPinState.byPeer.get(peer);
+ if(!id)return '';
+ const msg=conv.find(m=>m.id===id)||patiDmPinState.details.get(id);
+ if(!msg)return '';
+ const label=msg.attachment_type==='image'?'📷 Fotoğraf':msg.attachment_type==='audio'?'🎙️ Sesli mesaj':cut(msg.body||'Mesaj',140);
+ return '<div class="pati-dm-pinned-banner" role="group" aria-label="Sohbette sabitlenen mesaj"><button type="button" data-action="dm-pin-jump" data-id="'+esc(id)+'" class="pati-dm-pinned-open"><span aria-hidden="true">📌</span><span><strong>Sabitlenen mesaj</strong><small>'+esc(label)+'</small></span></button><button type="button" data-action="dm-message-unpin" data-id="'+esc(id)+'" aria-label="Sabitlenen mesajı kaldır">Kaldır</button></div>';
+}
+async function patiDmPinSave(id){
+ if(!me||!personId||!id)throw Error('Önce bir sohbet ve mesaj seç.');
+ const uid=me.id,peer=personId,m=patiDmFindMessage(id);
+ if(!m||!((m.sender_id===uid&&m.receiver_id===peer)||(m.sender_id===peer&&m.receiver_id===uid)))throw Error('Bu mesaj bu sohbete ait değil.');
+ const result=await sb.from('patiyiz_dm_message_pins').upsert({viewer_id:uid,peer_id:peer,message_id:id,pinned_at:new Date().toISOString()},{onConflict:'viewer_id,peer_id'}).select('message_id').single();
+ if(result.error)throw result.error;
+ if(me?.id!==uid)return;
+ patiDmPinReset();patiDmPinState.byPeer.set(peer,id);patiDmPinState.details.set(id,m);patiDmPinState.loaded.add(peer);
+ closeModal(true);patiDmSafeRender();
+}
+async function patiDmPinRemove(id){
+ if(!me?.id||!personId)return;
+ const uid=me.id,peer=personId;
+ patiDmPinReset();
+ if(id&&patiDmPinState.byPeer.get(peer)!==id)throw Error('Sabitlenen mesaj değişmiş. Sohbeti yenile.');
+ const result=await sb.from('patiyiz_dm_message_pins').delete().eq('viewer_id',uid).eq('peer_id',peer).select('message_id');
+ if(result.error)throw result.error;
+ if(me?.id!==uid)return;
+ patiDmPinState.byPeer.delete(peer);patiDmPinState.loaded.add(peer);
+ closeModal(true);patiDmSafeRender();
+}
+function patiDmPinJump(id){
+ const nodes=[...document.querySelectorAll('#main-content .chat-history .bubble-chat[data-message-id]')];
+ const target=nodes.find(el=>el.dataset.messageId===id);
+ if(target){target.scrollIntoView({block:'center',behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});target.classList.add('pati-dm-pin-flash');setTimeout(()=>target.classList.remove('pati-dm-pin-flash'),1500)}
+ else notify('Mesaj eski sohbet geçmişinde. Yukarı kaydırıp önceki mesajları yükleyebilirsin.');
+}
+
 function messagesPage(){
  const oldHistory=main.querySelector('.pati-dm-layout .chat-history');
  const oldChatId=main.querySelector('.pati-dm-layout .chat-window')?.dataset?.chatPerson||'';
@@ -2797,6 +2873,8 @@ function messagesPage(){
  userIds.sort((a,b)=>new Date(summaries.get(b)?.last_created_at||peers.get(b)?.last?.created_at||0)-new Date(summaries.get(a)?.last_created_at||peers.get(a)?.last?.created_at||0));
  if(!personId&&userIds.length){personId=userIds[0];patiDmPendingLatestPeer=personId}
  let conv=[...(peers.get(personId)?.items||[])].sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+ if(personId&&typeof patiDmPinFetch==='function')void patiDmPinFetch(personId);
+ const pinBanner=typeof patiDmPinnedBanner==='function'?patiDmPinnedBanner(personId,conv):'';
  const unreadTotal=(inbox?.ready&&patiDmReadReceiptsEnabled()?inbox.rows.reduce((sum,row)=>sum+Number(row.unread_count||0),0):indexed.unreadTotal);
  const byMessageId=new Map([...merged.values()].map(m=>[m.id,m]));
  const showReadReceipts=patiDmReadReceiptsEnabled()&&(personId?profile(personId).read_receipts_enabled!==false:true);const replyText=x=>{const orig=byMessageId.get(x.reply_to);return orig?'↳ '+cut(orig.body||'Medya',65):'Yanıt bulunamadı'};
@@ -2805,7 +2883,7 @@ function messagesPage(){
 
  main.innerHTML='<div class="pati-dm-top"><button type="button" class="pati-dm-inbox-back" data-action="dm-exit" aria-label="Önceki ekrana dön">←</button><div class="pati-dm-title"><strong>Mesajlar</strong><small>Özel sohbetlerin</small></div><div class="pati-dm-top-actions"><span>'+unreadTotal+' okunmamış</span><button type="button" class="pati-dm-new" data-action="dm-new">'+ico('plus')+' Yeni sohbet</button></div></div>'+chatTabs+'<label class="pati-dm-searchbar">'+ico('search')+'<input type="search" id="pati-dm-search" placeholder="Sohbetlerde ara" aria-label="Sohbetlerde ara" autocomplete="off"></label>'+`<div class="chat-layout modern-chat pati-dm-layout ${mobileChatOpen&&personId?'mobile-chat-open':'mobile-chat-list'}"><div class="chat-people"><div class="chat-list-heading">Sohbetler <span>${filteredIds.length}</span></div>${filteredIds.map(id=>{const bucket=peers.get(id),summary=summaries.get(id);
  let last=summary?{body:summary.last_body,created_at:summary.last_created_at}:bucket?.last;
- let unread=summary&&patiDmReadReceiptsEnabled()?Number(summary.unread_count||0):bucket?.unread||0;return `<button class="chat-person ${personId===id?'active':''}" data-action="chat" data-id="${esc(id)}" data-search="${esc(profile(id).display_name+' '+(profile(id).handle||''))}">${avatar(profile(id),'s')}<span class="chat-person-info"><strong>${displayUser(id)}</strong><small>${last?esc(cut(last.body,80)):'Sohbete başla'}</small></span><span class="chat-person-meta"><small>${last?clock(last.created_at):''}</small>${unread?`<b class="chat-unread">${unread>99?'99+':unread}</b>`:''}</span></button>`}).join('')||`<p style="padding:17px;color:#809181">Keşfet'ten bir kullanıcıya mesaj gönderebilirsin.</p>`}</div><div class="chat-window" data-chat-person="${esc(personId||'')}"><header>${personId?`<button type="button" class="mobile-chat-back" data-action="chat-back" aria-label="Sohbetlere dön">←</button><span class="chat-head-avatar">${avatar(profile(personId),'s')}</span><span><strong>${displayUser(personId)}</strong><small>@${esc(profile(personId).handle||'patiyiz')}</small><span class="pati-dm-typing-indicator" hidden><i class="pati-dm-dots"><b></b><b></b><b></b></i> yazıyor...</span></span><button type="button" data-action="view-user" data-id="${esc(personId)}" class="soft-btn chat-view-profile">Profil</button>`:'Sohbet seç'}</header><div class="chat-history">${conv.map(x=>`<div class="bubble-chat ${x.sender_id===me.id?'mine':''}" data-message-id="${esc(x.id)}" title="Silmek için basılı tut veya sağ tıkla">${x.attachment_type==='image'?'<img class="pati-dm-image" data-private-path="'+esc(x.attachment_path)+'" alt="Özel fotoğraf">':x.attachment_type==='audio'?'<audio controls class="pati-dm-audio" data-private-path="'+esc(x.attachment_path)+'"></audio>':(x.reply_to?'<div class="pati-dm-reply-preview">'+esc(replyText(x))+'</div>':'')+esc(x.body)}<small>${x.edited_at?'Düzenlendi · ':''}${clock(x.created_at)} · ${x.sender_id===me.id?(x.read_at&&showReadReceipts?'✓✓ Okundu':'✓ Gönderildi'):day(x.created_at)}</small><span class="pati-dm-msg-tools"><button type="button" data-action="dm-reply" data-id="${esc(x.id)}">↳ Yanıtla</button>${x.sender_id===me.id&&!x.attachment_path&&!x.attachment_type&&Date.now()-new Date(x.created_at).getTime()<900000?`<button type="button" data-action="dm-edit" data-id="${esc(x.id)}">Düzenle</button>`:''}</span></div>`).join('')||'<p style="color:#95a299;text-align:center;margin:auto">Henüz mesaj yok. İlk mesajı gönder! 🐾</p>'}</div>${personId?`<form id="message-form" class="chat-form"><label class="pati-dm-camera" aria-label="Fotoğraf çek">${ico('camera')}<input type="file" name="dm_camera" accept="image/*" capture="environment" hidden></label><input name="body" placeholder="Mesaj yaz..." maxlength="1000" autocomplete="off"><button type="button" data-action="dm-record" class="pati-dm-mic" aria-label="Ses kaydet">${ico('mic')}</button><button type="button" class="pati-dm-gallery" data-action="pati-dm-gallery-open" aria-label="Fotoğraf galerisi">${ico('image')}</button><input type="file" name="dm_gallery" accept="image/*" multiple hidden><button type="submit" class="primary-btn" aria-label="Gönder">${ico('send')}</button><div class="pati-dm-rec-state" hidden>🎙️ Ses kaydediliyor <button type="button" data-action="dm-record-stop">Gönder</button><button type="button" data-action="dm-record-cancel">İptal</button></div></form>`:''}</div></div>`;
+ let unread=summary&&patiDmReadReceiptsEnabled()?Number(summary.unread_count||0):bucket?.unread||0;return `<button class="chat-person ${personId===id?'active':''}" data-action="chat" data-id="${esc(id)}" data-search="${esc(profile(id).display_name+' '+(profile(id).handle||''))}">${avatar(profile(id),'s')}<span class="chat-person-info"><strong>${displayUser(id)}</strong><small>${last?esc(cut(last.body,80)):'Sohbete başla'}</small></span><span class="chat-person-meta"><small>${last?clock(last.created_at):''}</small>${unread?`<b class="chat-unread">${unread>99?'99+':unread}</b>`:''}</span></button>`}).join('')||`<p style="padding:17px;color:#809181">Keşfet'ten bir kullanıcıya mesaj gönderebilirsin.</p>`}</div><div class="chat-window" data-chat-person="${esc(personId||'')}"><header>${personId?`<button type="button" class="mobile-chat-back" data-action="chat-back" aria-label="Sohbetlere dön">←</button><span class="chat-head-avatar">${avatar(profile(personId),'s')}</span><span><strong>${displayUser(personId)}</strong><small>@${esc(profile(personId).handle||'patiyiz')}</small><span class="pati-dm-typing-indicator" hidden><i class="pati-dm-dots"><b></b><b></b><b></b></i> yazıyor...</span></span><button type="button" data-action="view-user" data-id="${esc(personId)}" class="soft-btn chat-view-profile">Profil</button>`:'Sohbet seç'}</header>${pinBanner}<div class="chat-history">${conv.map(x=>`<div class="bubble-chat ${x.sender_id===me.id?'mine':''}" data-message-id="${esc(x.id)}" title="Silmek için basılı tut veya sağ tıkla">${x.attachment_type==='image'?'<img class="pati-dm-image" data-private-path="'+esc(x.attachment_path)+'" alt="Özel fotoğraf">':x.attachment_type==='audio'?'<audio controls class="pati-dm-audio" data-private-path="'+esc(x.attachment_path)+'"></audio>':(x.reply_to?'<div class="pati-dm-reply-preview">'+esc(replyText(x))+'</div>':'')+esc(x.body)}<small>${x.edited_at?'Düzenlendi · ':''}${clock(x.created_at)} · ${x.sender_id===me.id?(x.read_at&&showReadReceipts?'✓✓ Okundu':'✓ Gönderildi'):day(x.created_at)}</small><span class="pati-dm-msg-tools"><button type="button" data-action="dm-reply" data-id="${esc(x.id)}">↳ Yanıtla</button>${x.sender_id===me.id&&!x.attachment_path&&!x.attachment_type&&Date.now()-new Date(x.created_at).getTime()<900000?`<button type="button" data-action="dm-edit" data-id="${esc(x.id)}">Düzenle</button>`:''}</span></div>`).join('')||'<p style="color:#95a299;text-align:center;margin:auto">Henüz mesaj yok. İlk mesajı gönder! 🐾</p>'}</div>${personId?`<form id="message-form" class="chat-form"><label class="pati-dm-camera" aria-label="Fotoğraf çek">${ico('camera')}<input type="file" name="dm_camera" accept="image/*" capture="environment" hidden></label><input name="body" placeholder="Mesaj yaz..." maxlength="1000" autocomplete="off"><button type="button" data-action="dm-record" class="pati-dm-mic" aria-label="Ses kaydet">${ico('mic')}</button><button type="button" class="pati-dm-gallery" data-action="pati-dm-gallery-open" aria-label="Fotoğraf galerisi">${ico('image')}</button><input type="file" name="dm_gallery" accept="image/*" multiple hidden><button type="submit" class="primary-btn" aria-label="Gönder">${ico('send')}</button><div class="pati-dm-rec-state" hidden>🎙️ Ses kaydediliyor <button type="button" data-action="dm-record-stop">Gönder</button><button type="button" data-action="dm-record-cancel">İptal</button></div></form>`:''}</div></div>`;
  if(inbox?.hasMore||inbox?.error||inbox?.loading){
  const box=main.querySelector('.chat-people');
  if(box)box.insertAdjacentHTML('beforeend','<div class="pati-load-more">'+(inbox.loading?'Sohbetler yükleniyor…':button(inbox.error?'Yeniden dene':'Daha fazla sohbet','dm-inbox-more'))+'</div>');
@@ -3962,7 +4040,10 @@ case 'chat':if(!id||id===me.id)return notify('Kendine mesaj gönderemezsin.',tru
  v.muted=!patiyizFeedSoundEnabled;
  patiFeedSoundButton(v);
  if(!v.muted){document.querySelectorAll('#main-content .pati-post-video').forEach(other=>{if(other!==v)other.pause()});patiyizFeedActiveVideo=v;v.play().catch(err=>{v.muted=true;patiFeedSoundButton(v);console.warn('Akış sesi açılamadı:',err?.message||err)})}
- }break;}case 'dm-record':run(()=>startDmRecord());break;case 'dm-record-stop':if(dmRecorder?.state==='recording')dmRecorder.stop();break;case 'dm-record-cancel':dmCancel=true;if(dmRecorder?.state==='recording')dmRecorder.stop();break;case 'dm-exit':patiDmTypingInput('');mobileChatOpen=false;patiDmDisconnectTyping();navigate(patiDmReturnView&&patiDmReturnView!=='messages'?patiDmReturnView:'home');break;case 'chat-back':patiDmTypingInput('');mobileChatOpen=false;patiDmDisconnectTyping();render();break;case 'dm-reply':{const m=patiDmFindMessage(id);const f=document.getElementById('message-form');if(m&&f){f.dataset.reply=id;const input=f.querySelector('input[name="body"]');if(input){input.placeholder='↳ '+cut(m.body||'Medya',50);input.focus()}}break}case 'dm-edit':{const m=patiDmFindMessage(id);if(m?.sender_id!==me.id)break;if(!m||m.attachment_path)break;modal('Mesajı düzenle',textField('body','Mesaj',m.body,true,1000),'dm-edit-form');document.getElementById('dm-edit-form').dataset.message=id;break}case 'message-delete':{
+ }break;}case 'dm-record':run(()=>startDmRecord());break;case 'dm-record-stop':if(dmRecorder?.state==='recording')dmRecorder.stop();break;case 'dm-record-cancel':dmCancel=true;if(dmRecorder?.state==='recording')dmRecorder.stop();break;case 'dm-exit':patiDmTypingInput('');mobileChatOpen=false;patiDmDisconnectTyping();navigate(patiDmReturnView&&patiDmReturnView!=='messages'?patiDmReturnView:'home');break;case 'chat-back':patiDmTypingInput('');mobileChatOpen=false;patiDmDisconnectTyping();render();break;case 'dm-message-pin':run(()=>patiDmPinSave(id),'Mesaj sabitlendi.');break;
+case 'dm-message-unpin':run(()=>patiDmPinRemove(id),'Sabitlenen mesaj kaldırıldı.');break;
+case 'dm-pin-jump':patiDmPinJump(id);break;
+case 'dm-reply':{const m=patiDmFindMessage(id);const f=document.getElementById('message-form');if(m&&f){f.dataset.reply=id;const input=f.querySelector('input[name="body"]');if(input){input.placeholder='↳ '+cut(m.body||'Medya',50);input.focus()}}break}case 'dm-edit':{const m=patiDmFindMessage(id);if(m?.sender_id!==me.id)break;if(!m||m.attachment_path)break;modal('Mesajı düzenle',textField('body','Mesaj',m.body,true,1000),'dm-edit-form');document.getElementById('dm-edit-form').dataset.message=id;break}case 'message-delete':{
  const m=patiDmFindMessage(id);if(!m||(m.sender_id!==me.id&&m.receiver_id!==me.id))break;
  closeModal();
  if(!confirm('Bu mesaj her iki kullanıcıdan kalıcı olarak silinecek. Silinsin mi?'))break;
@@ -3973,6 +4054,7 @@ case 'chat':if(!id||id===me.id)return notify('Kendine mesaj gönderemezsin.',tru
   if(me?.id!==sender)return;
   data.messages=data.messages.filter(x=>x.id!==m.id);
   patiDmRemoveCached(m.id);
+  if(typeof patiDmPinState!=='undefined'){for(const [peer,pinned] of patiDmPinState.byPeer)if(pinned===m.id)patiDmPinState.byPeer.delete(peer);patiDmPinState.details.delete(m.id)}
   data.messageHidden=data.messageHidden.filter(x=>x.message_id!==m.id);
   render();
  },'Mesaj iki tarafın sohbetinden silindi.');
@@ -4049,7 +4131,7 @@ case 'blocked-list':navigate('blocked');break;case 'follow-load-more':void patiL
 case 'report':closeStory();modal('İçeriği bildir',textField('reason','Şikâyet nedeni (en az 5 karakter)','',true,500),'report-form');$('#report-form').dataset.kind=target.dataset.kind;$('#report-form').dataset.record=id;break;
 case 'tools':openMobileFeaturesMenu();break;default:break}}
 let messagePressTimer=null,messagePressOrigin=null,messageLongPressed=false;
-function openMessageOptions(el){if(!el||view!=='messages'||!me)return;const id=el.dataset.messageId;const msg=patiDmFindMessage(id);if(!msg||(msg.sender_id!==me.id&&msg.receiver_id!==me.id))return;modal('Mesaj seçenekleri',`<p class="small-note">Silinen mesaj her iki kullanıcı için de kalıcı olarak kaldırılır.</p><div class="pati-actionbar"><button type="button" class="outline-btn pati-msg-delete" data-action="message-delete" data-id="${esc(id)}">🗑️ Sil</button></div>`,'message-options-form');$('#message-options-form .modal-footer')?.remove();}
+function openMessageOptions(el){if(!el||view!=='messages'||!me)return;const id=el.dataset.messageId;const msg=patiDmFindMessage(id);if(!msg||(msg.sender_id!==me.id&&msg.receiver_id!==me.id))return;const pin=typeof patiDmPinState!=='undefined'&&patiDmPinState.byPeer.get(personId)===id;modal('Mesaj seçenekleri',`<div class="pati-actionbar pati-dm-message-actions"><button type="button" class="outline-btn" data-action="${pin?'dm-message-unpin':'dm-message-pin'}" data-id="${esc(id)}">${pin?'📌 Sabiti kaldır':'📌 Mesajı sabitle'}</button><button type="button" class="outline-btn pati-msg-delete" data-action="message-delete" data-id="${esc(id)}">🗑️ Sil</button></div><p class="small-note">Sabitlenen mesaj bu sohbetin üstünde görünür. Silinen mesaj iki taraftan da kaldırılır.</p>`,'message-options-form');$('#message-options-form .modal-footer')?.remove();}
 document.addEventListener('contextmenu',e=>{const bubble=e.target.closest('.bubble-chat[data-message-id]');if(bubble){e.preventDefault();openMessageOptions(bubble)}});
 document.addEventListener('pointerdown',e=>{const bubble=e.target.closest('.bubble-chat[data-message-id]');if(!bubble||e.pointerType==='mouse')return;clearTimeout(messagePressTimer);messagePressOrigin={x:e.clientX,y:e.clientY,id:bubble.dataset.messageId};messagePressTimer=setTimeout(()=>{messageLongPressed=true;openMessageOptions(bubble);messagePressTimer=null},520)});
 document.addEventListener('pointermove',e=>{if(messagePressOrigin&&(Math.abs(e.clientX-messagePressOrigin.x)>12||Math.abs(e.clientY-messagePressOrigin.y)>12)){clearTimeout(messagePressTimer);messagePressTimer=null;messagePressOrigin=null}});
