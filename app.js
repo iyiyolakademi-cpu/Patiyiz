@@ -3580,6 +3580,153 @@ const petOptions=()=>`<div class="pati-field"><label>Hayvan profili (isteğe ba�
 let patiMediaUrls=[];
 function clearPatiMediaUrls(){for(const url of patiMediaUrls)URL.revokeObjectURL(url);patiMediaUrls=[]}
 function makePatiMediaUrl(file){const url=URL.createObjectURL(file);patiMediaUrls.push(url);return url}
+
+/* Close friends: server decides who can read private stories and media. */
+let patiCloseFriendsIds=new Set();
+async function patiCloseFriendsDialog(){
+ if(!me)return;
+ const owner=me.id;
+ const res=await sb.from('patiyiz_close_friends').select('friend_id').eq('owner_id',owner);
+ if(res.error)throw res.error;
+ if(me?.id!==owner)return;
+ patiCloseFriendsIds=new Set((res.data||[]).map(x=>x.friend_id));
+ const people=data.profiles.filter(p=>p.id!==owner&&!blocked.has(p.id))
+  .sort((a,b)=>Number(patiCloseFriendsIds.has(b.id))-Number(patiCloseFriendsIds.has(a.id))||
+   String(a.display_name||'').localeCompare(String(b.display_name||''),'tr')).slice(0,200);
+ modal('Yakın Arkadaşlar','<div class="pati-private-note">Bu listedekiler yalnızca Yakın Arkadaşlar için paylaştığın hikâyeleri görebilir. Listeyi başkaları göremez.</div>'+
+ '<input type="search" class="pati-social-search" id="pati-close-friends-search" placeholder="Kullanıcı ara" aria-label="Yakın arkadaş ara">'+
+ '<div class="pati-social-people">'+people.map(p=>'<div class="pati-social-person" data-person-search="'+esc((p.display_name||'')+' '+(p.handle||''))+'">'+
+ avatar(p,'s')+'<span><strong>'+esc(p.display_name||'Patiyiz üyesi')+'</strong><small>@'+esc(p.handle||'patiyiz')+'</small></span>'+
+ '<button type="button" data-action="pati-close-friend-toggle" data-id="'+esc(p.id)+'" class="'+(patiCloseFriendsIds.has(p.id)?'active':'')+'">'+(patiCloseFriendsIds.has(p.id)?'✓ Eklendi':'+ Ekle')+'</button></div>').join('')+'</div>',
+ 'pati-close-friends-form');
+ document.querySelector('#pati-close-friends-form .modal-footer')?.remove();
+}
+async function patiCloseFriendToggle(friendId){
+ if(!me||!friendId||friendId===me.id||blocked.has(friendId))throw Error('Kullanıcı seçilemedi.');
+ const owner=me.id,already=patiCloseFriendsIds.has(friendId);
+ const q=sb.from('patiyiz_close_friends');
+ const res=already?await q.delete().eq('owner_id',owner).eq('friend_id',friendId):
+ await q.insert({owner_id:owner,friend_id:friendId});
+ if(res.error)throw res.error;
+ if(me?.id!==owner)return;
+ await patiCloseFriendsDialog();
+}
+async function patiHydrateCloseStories(){
+ if(!me||!Array.isArray(data.stories))return;
+ const owner=me.id;
+ const close=data.stories.filter(x=>x.audience==='close_friends'&&x.private_image_path);
+ await Promise.all(close.map(async story=>{
+  const image=await sb.storage.from('patiyiz-close-stories').createSignedUrl(story.private_image_path,300);
+  if(image.error){console.warn('Özel hikâye kapağı açılamadı:',image.error.message);return;}
+  const video=story.private_video_path?
+   await sb.storage.from('patiyiz-close-stories').createSignedUrl(story.private_video_path,300):null;
+  if(me?.id!==owner)return;
+  story.image_url=image.data.signedUrl;
+  if(video&&!video.error)story.video_url=video.data.signedUrl;
+  story.patiSignedAt=Date.now();
+ }));
+}
+async function patiCreateCloseFriendStory(form,f,str){
+ if(!me)throw Error('Önce giriş yap.');
+ const owner=me.id,photo=form.querySelector('input[name="photo"]')?.files?.[0];
+ const video=form.querySelector('input[name="video"]')?.files?.[0];
+ if(!photo?.size&&!video?.size)throw Error('Hikâye için fotoğraf veya video seç.');
+ if(photo?.size&&video?.size)throw Error('Hikâyede tek bir medya seç.');
+ const prefix=owner+'/'+crypto.randomUUID();
+ const paths=[],bucket=sb.storage.from('patiyiz-close-stories');
+ try{
+  let cover=photo?.size?await cropPostPhoto(photo,str('aspect')||'9:16'):
+   await patiGenerateVideoCover(video)||await patiFallbackStoryPoster();
+  if(!cover?.size)throw Error('Özel hikâye kapağı oluşturulamadı.');
+  const imagePath=prefix+'.jpg';
+  const up=await bucket.upload(imagePath,cover,{contentType:cover.type||'image/jpeg',upsert:false});
+  if(up.error)throw up.error;
+  paths.push(imagePath);
+  let videoPath=null;
+  if(video?.size){
+   videoPath=prefix+(String(video.type||'').includes('webm')?'.webm':String(video.type||'').includes('quicktime')?'.mov':'.mp4');
+   const v=await bucket.upload(videoPath,video,{contentType:video.type||'video/mp4',upsert:false});
+   if(v.error)throw v.error;
+   paths.push(videoPath);
+  }
+  const result=await sb.from('patiyiz_stories').insert({
+   author_id:owner,image_url:'',video_url:null,private_image_path:imagePath,
+   private_video_path:videoPath,audience:'close_friends',
+   caption:str('body').slice(0,300),is_highlight:false,
+   selfie_mirrored:!!videoPath&&form.dataset.selfieMirror==='true'
+  }).select('*').single();
+  if(result.error)throw result.error;
+  if(me?.id!==owner)return result.data;
+  const story=result.data;
+  data.stories=[story,...data.stories.filter(x=>x.id!==story.id)];
+  await patiHydrateCloseStories();
+  return story;
+ }catch(error){
+  if(paths.length){try{await bucket.remove(paths)}catch(e){console.warn('Özel medya temizliği:',e)}}
+  throw error;
+ }
+}
+/* Group conversations use separate tables and authorization from 1:1 DMs. */
+async function patiGroupList(){
+ if(!me)return;
+ const owner=me.id;
+ const r=await sb.from('patiyiz_group_chats').select('id,title,creator_id,created_at').order('created_at',{ascending:false}).limit(100);
+ if(r.error)throw r.error;
+ if(me?.id!==owner)return;
+ modal('Grup sohbetleri','<div class="pati-group-tools"><button type="button" data-action="pati-group-create-open">+ Yeni grup oluştur</button><button type="button" data-action="pati-group-list">↻ Yenile</button></div>'+
+ (r.data?.length?r.data.map(g=>'<button type="button" class="pati-group-list-item" data-action="pati-group-open" data-id="'+esc(g.id)+'"><span>◉</span><strong>'+esc(g.title)+'</strong><small>Sohbeti aç ›</small></button>').join(''):
+ '<p class="pati-private-note">Henüz grup sohbetin yok. Yeni bir grup oluşturabilirsin.</p>'),'pati-group-list-form');
+ document.querySelector('#pati-group-list-form .modal-footer')?.remove();
+}
+function patiGroupCreateDialog(){
+ const people=data.profiles.filter(p=>p.id!==me.id&&!blocked.has(p.id)).slice(0,150);
+ modal('Yeni grup oluştur','<label class="pati-field">Grubun adı<input name="group_title" maxlength="80" required placeholder="Örn. Kedi dostları"></label>'+
+ '<p class="pati-private-note">Grubuna eklemek istediğin kişileri seç. En fazla 19 kişi ekleyebilirsin.</p>'+
+ '<div class="pati-social-people pati-group-people">'+people.map(p=>'<label class="pati-social-person">'+avatar(p,'s')+'<span><strong>'+esc(p.display_name||'Patiyiz üyesi')+'</strong><small>@'+esc(p.handle||'patiyiz')+'</small></span><input type="checkbox" name="group_members" value="'+esc(p.id)+'"></label>').join('')+'</div>',
+ 'pati-group-create-form');
+ const submit=document.querySelector('#pati-group-create-form .modal-footer button[type="submit"]');
+ if(submit)submit.textContent='Grubu oluştur';
+}
+async function patiGroupOpen(id){
+ if(!me||!id)return;
+ const owner=me.id;
+ const [group,members,messages]=await Promise.all([
+  sb.from('patiyiz_group_chats').select('*').eq('id',id).single(),
+  sb.from('patiyiz_group_members').select('user_id,role').eq('group_id',id),
+  sb.from('patiyiz_group_messages').select('*').eq('group_id',id).order('created_at',{ascending:true}).limit(200)
+ ]);
+ if(group.error)throw group.error;
+ if(members.error)throw members.error;
+ if(messages.error)throw messages.error;
+ if(me?.id!==owner)return;
+ const membersList=members.data||[],admin=membersList.some(p=>p.user_id===owner&&p.role==='admin');
+ if(!membersList.some(p=>p.user_id===owner))throw Error('Artık bu gruba üye değilsin.');
+ modal(group.data.title,'<div class="pati-group-tools"><button type="button" data-action="pati-group-list">← Gruplarım</button><button type="button" data-action="pati-group-open" data-id="'+esc(id)+'">↻ Yenile</button><button type="button" data-action="pati-group-members" data-id="'+esc(id)+'">'+membersList.length+' üye</button></div>'+
+ '<div class="pati-group-history" aria-label="Grup mesajları">'+(messages.data?.length?messages.data.map(m=>'<div class="pati-group-bubble '+(m.sender_id===owner?'mine':'')+'"><strong>'+esc(profile(m.sender_id).display_name||'Patiyiz üyesi')+'</strong><p>'+esc(m.body)+'</p><small>'+clock(m.created_at)+'</small></div>').join(''):'<p class="pati-private-note">Henüz mesaj yok. İlk mesajı yaz.</p>')+'</div>'+
+ '<input type="hidden" name="group_id" value="'+esc(id)+'"><input name="group_body" maxlength="2000" required placeholder="Gruba mesaj yaz…" aria-label="Grup mesajı" autocomplete="off">',
+ 'pati-group-message-form');
+ const submit=document.querySelector('#pati-group-message-form .modal-footer button[type="submit"]');
+ if(submit)submit.textContent='Gönder';
+ const cancel=document.querySelector('#pati-group-message-form .modal-footer button[data-action="close"]');
+ if(cancel){cancel.textContent='Gruplarım';cancel.dataset.action='pati-group-list'}
+ document.querySelector('.pati-group-history')?.scrollTo(0,999999);
+}
+async function patiGroupMembersDialog(id){
+ const owner=me?.id;if(!owner)return;
+ const [members,group]=await Promise.all([
+ sb.from('patiyiz_group_members').select('user_id,role').eq('group_id',id),
+ sb.from('patiyiz_group_chats').select('*').eq('id',id).single()
+ ]);
+ if(members.error)throw members.error;if(group.error)throw group.error;
+ if(me?.id!==owner)return;
+ const admin=(members.data||[]).some(x=>x.user_id===owner&&x.role==='admin');
+ modal('Grup üyeleri','<div class="pati-group-tools"><button type="button" data-action="pati-group-open" data-id="'+esc(id)+'">← Sohbete dön</button></div>'+
+ (members.data||[]).map(x=>'<div class="pati-social-person">'+avatar(profile(x.user_id),'s')+'<span><strong>'+esc(profile(x.user_id).display_name||'Üye')+'</strong><small>'+(x.role==='admin'?'Yönetici':'Üye')+'</small></span>'+
+ ((admin||x.user_id===owner)&&x.user_id!==group.data.creator_id?'<button type="button" data-action="pati-group-remove" data-id="'+esc(id)+'" data-peer="'+esc(x.user_id)+'">'+(x.user_id===owner?'Ayrıl':'Çıkar')+'</button>':'')+'</div>').join(''),
+ 'pati-group-members-form');
+ document.querySelector('#pati-group-members-form .modal-footer')?.remove();
+}
+
 function postMediaField(mode){
  const reel=mode==='reels',story=mode==='story';
  const description=reel?'Kısa videonu galeriden seç veya kamerayla çek; 90 saniyeye kadar.':story?'Bir fotoğraf ya da kısa video seç.':'En fazla 10 fotoğraf veya 1 video paylaşabilirsin.';
