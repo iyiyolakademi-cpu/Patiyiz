@@ -1,0 +1,63 @@
+const test=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const vm=require('node:vm');
+const app=fs.readFileSync('app.js','utf8');
+const html=fs.readFileSync('index.html','utf8');
+const sql=fs.readFileSync('supabase/patiyiz-collaborative-posts-following-feed-20261028.sql','utf8');
+const css=fs.readFileSync('patiyiz-collab-following-20261028.css','utf8');
+test('shared posts and following feed preserve JavaScript syntax',()=>new vm.Script(app));
+test('collaborator invitation always needs recipient consent',()=>{
+ assert.match(sql,/status = 'pending'/);
+ assert.match(sql,/user_id\s*=\s*\(select auth\.uid\(\)\)/);
+ assert.match(sql,/status in \('accepted','declined'\)/);
+ assert.match(sql,/grant update\(status\)/);
+ assert.match(sql,/constraint patiyiz_post_collaborators_one_partner unique\(post_id\)/);
+ assert.match(sql,/enable row level security/);
+ assert.match(sql,/for insert to authenticated/);
+ assert.match(sql,/p\.author_id=invited_by/);
+ assert.doesNotMatch(sql,/security definer/i);
+});
+test('following feed is a real server-side query scoped to authenticated follows',()=>{
+ assert.match(sql,/security invoker/);
+ assert.match(sql,/f\.follower_id=auth\.uid\(\)/);
+ assert.match(sql,/p\.author_id = auth\.uid\(\)/);
+ assert.match(sql,/p_before is null/);
+ assert.match(sql,/c\.status='accepted'/);
+ assert.match(app,/sb\.rpc\('patiyiz_following_feed'/);
+ assert.match(app,/data-action="home-feed-tab"/);
+ assert.match(app,/Takip Edilenler/);
+ assert.match(app,/case 'home-following-more':void patiFollowingFetch\(true\)/);
+});
+test('collaborator form submits only after a real post is created',()=>{
+ assert.match(app,/name="collab_handle"/);
+ assert.match(app,/case 'collab-invite-form'/);
+ assert.match(app,/await createPostPublication\(form,f,str\)/);
+ assert.match(app,/await patiCollabInvite\(result\.id,str\('collab_handle'\)\)/);
+ assert.match(app,/data-action="collab-accept"/);
+ assert.match(app,/data-action="collab-decline"/);
+ assert.match(app,/patiCollabPartnerPosts\(p\.id\)/);
+ assert.match(app,/data-action="collab-invite-open"/);
+});
+test('CSS loaded and provides responsive tabs and invite buttons',()=>{
+ assert.match(html,/patiyiz-collab-following-20261028\.css\?v=1/);
+ assert.match(html,/collab_follow=20261028/);
+ assert.match(css,/\.pati-collab-requests/);
+ assert.match(css,/\.pati-home-feed-tabs/);
+ assert.match(css,/@media\(max-width:470px\)/);
+});
+test('following timeline loads from RPC, not the global explore list',async()=>{
+ const start=app.indexOf('async function patiFollowingFetch(more=false){');
+ const end=app.indexOf('function homePage(){',start);
+ assert.ok(start>0&&end>start);
+ const state={owner:'',rows:[],ready:false,loading:false,hasMore:true,cursor:null,error:''};
+ const data={posts:[]},calls=[];
+ const sb={rpc:async(name,params)=>{calls.push({name,params});return {data:[{id:'post-a',author_id:'friend',created_at:'2026-10-27T14:00:00Z'}],error:null}}};
+ const ctx={me:{id:'me'},sb,view:'home',patiHomeTab:'following',patiFollowingState:state,data,render(){},patiCollabRefresh(){},console,Set,Map};
+ const func=vm.runInNewContext(app.slice(start,end)+'\npatiFollowingFetch',ctx);
+ await func(false);
+ assert.equal(calls[0].name,'patiyiz_following_feed');
+ assert.equal(ctx.patiFollowingState.ready,true);
+ assert.equal(ctx.patiFollowingState.rows.length,1);
+ assert.equal(data.posts.length,1);
+});

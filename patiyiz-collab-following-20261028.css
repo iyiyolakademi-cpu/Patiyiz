@@ -1,0 +1,46 @@
+
+/* Only the two optional social features: collaboration and the following timeline. */
+#main-content .pati-home-feed-tabs{display:flex;align-items:center;gap:8px;margin:14px 10px 16px;border-bottom:1px solid #e5e5e5;padding-bottom:8px}
+#main-content .pati-home-feed-tabs button{font:inherit;flex:1;min-width:0;border:0;border-radius:10px;background:transparent;color:#777;padding:12px 10px;font-size:14px;font-weight:780;cursor:pointer}
+#main-content .pati-home-feed-tabs button.active,#main-content .pati-home-feed-tabs button[aria-selected="true"]{background:#181818;color:white}
+#main-content .pati-home-feed-tabs button:focus-visible,#main-content .pati-collab-requests button:focus-visible,#main-content .pati-following-empty button:focus-visible{outline:3px solid #888;outline-offset:3px}
+#main-content .pati-following-empty{margin:14px 10px 24px;padding:30px 18px;border:1px solid #e8e8e8;border-radius:18px;text-align:center;background:#fff}
+#main-content .pati-following-empty strong{display:block;font-size:16px;margin-bottom:9px}
+#main-content .pati-following-empty p{max-width:380px;margin:0 auto 16px;color:#686868;line-height:1.5;font-size:13px}
+#main-content .pati-following-empty button{border:1px solid #dedede;border-radius:10px;padding:10px 14px;background:#fff;font-weight:750;color:#222;margin:2px}
+#main-content .pati-following-empty button:first-of-type{background:#181818;color:#fff;border-color:#181818}
+#main-content .pati-following-state,#main-content .pati-following-error{padding:18px 12px;text-align:center;color:#646464;font-size:13px}
+#main-content .pati-collab-requests{margin:12px 10px 18px;border:1px solid #dedede;border-radius:18px;padding:15px;background:#fbfbfb}
+#main-content .pati-collab-requests h2{display:flex;justify-content:space-between;align-items:center;font-size:16px;margin:0 0 12px;color:#181818}
+#main-content .pati-collab-requests h2 span{font-size:12px;min-width:22px;height:22px;display:grid;place-items:center;border-radius:50%;background:#181818;color:#fff}
+#main-content .pati-collab-request{display:flex;gap:14px;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid #ebebeb}
+#main-content .pati-collab-request>div:first-child{min-width:0;flex:1}
+#main-content .pati-collab-request b{font-size:13px}
+#main-content .pati-collab-request small{font-size:12px;line-height:1.45;color:#666;display:block;margin-top:3px;overflow-wrap:anywhere}
+#main-content .pati-collab-request>div:last-child{display:flex;gap:6px}
+#main-content .pati-collab-request button{border:1px solid #d6d6d6;border-radius:9px;background:#fff;color:#222;padding:9px 10px;font-size:12px;font-weight:750}
+#main-content .pati-collab-request button:first-child{background:#181818;color:#fff;border-color:#181818}
+#main-content .pati-collab-refresh{border:0;background:transparent;color:#575757;font-size:12px;padding:8px 0 0;cursor:pointer}
+#main-content .pati-collab-byline{font-size:12px;color:#555;display:inline-flex;align-items:center;gap:3px;min-width:0}
+#main-content .pati-collab-byline button{color:inherit;border:0;background:transparent;font-size:12px;font-weight:800;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:3px;cursor:pointer}
+#main-content .pati-collab-field{margin:12px 0 4px}
+#main-content .pati-collab-field input{width:100%;min-height:44px}
+#main-content .pati-collab-field small{display:block;color:#686868;line-height:1.4;margin:6px 0}
+@media(max-width:470px){
+ #main-content .pati-home-feed-tabs{margin:10px 5px 12px}
+ #main-content .pati-home-feed-tabs button{padding:12px 7px}
+ #main-content .pati-collab-requests{margin-inline:5px;padding:12px}
+ #main-content .pati-collab-request{flex-direction:column;align-items:stretch}
+ #main-content .pati-collab-request>div:last-child{justify-content:flex-start}
+ #main-content .pati-collab-request button{min-height:39px}
+}
+html[data-pati-theme="dark"] #main-content .pati-collab-requests,
+html[data-pati-theme="dark"] #main-content .pati-following-empty{background:#1b1b1b;border-color:#3c3c3c}
+html[data-pati-theme="dark"] #main-content .pati-collab-requests h2,
+html[data-pati-theme="dark"] #main-content .pati-following-empty strong{color:#fafafa}
+html[data-pati-theme="dark"] #main-content .pati-collab-request{border-color:#444}
+html[data-pati-theme="dark"] #main-content .pati-home-feed-tabs{border-color:#444}
+html[data-pati-theme="dark"] #main-content .pati-home-feed-tabs button:not(.active){color:#ddd}
+@media(prefers-reduced-motion:reduce){
+ #main-content .pati-home-feed-tabs button,#main-content .pati-collab-request button{transition:none!important}
+}
