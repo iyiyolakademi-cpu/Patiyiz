@@ -9,7 +9,7 @@ create table if not exists public.patiyiz_dm_hidden_threads (
 );
 alter table public.patiyiz_dm_hidden_threads enable row level security;
 revoke all on public.patiyiz_dm_hidden_threads from public,anon,authenticated;
-grant select,insert(viewer_id,peer_id),update(hidden_at),delete on public.patiyiz_dm_hidden_threads to authenticated;
+grant select,insert(viewer_id,peer_id,hidden_at),update(hidden_at),delete on public.patiyiz_dm_hidden_threads to authenticated;
 drop policy if exists dm_hidden_select_own on public.patiyiz_dm_hidden_threads;
 create policy dm_hidden_select_own on public.patiyiz_dm_hidden_threads
  for select to authenticated using(viewer_id=(select auth.uid()));
