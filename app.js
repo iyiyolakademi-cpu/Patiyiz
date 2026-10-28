@@ -93,7 +93,13 @@ let likesChangeEpoch=0;const pendingPostLikes=new Set();
 const notify=(msg,bad=false)=>{const host=$('#toasts');const el=document.createElement('div');el.className='pati-toast'+(bad?' error':'');el.textContent=msg;host.append(el);setTimeout(()=>el.remove(),4000)};
 const friendly=e=>{const m=String(e?.message||e||'İşlem başarısız.');if(/Failed to fetch|NetworkError|network request failed|fetch failed/i.test(m))return 'Bağlantı kurulamadı. İnternetini kontrol edip tekrar dene.';if(/JWT expired|Invalid JWT|session expired/i.test(m))return 'Oturumun süresi doldu. Yeniden giriş yapmalısın.';if(/permission denied|row-level security policy/i.test(m))return 'Bu işlem için yetkin yok veya ilgili kayıt artık kullanılamıyor.';if(/Invalid login credentials/i.test(m))return 'E-posta veya şifre hatalı.';if(/Email not confirmed/i.test(m))return 'E-posta adresinizi gelen kutunuzdan doğrulayın.';if(/User already registered/i.test(m))return 'Bu e-posta zaten kayıtlı.';if(/Password should/i.test(m))return 'Şifreniz en az 6 karakter olmalı.';if(/questions_title_check/i.test(m))return 'Soru başlığı en az 5, en fazla 150 karakter olmalı.';if(/questions_body_check/i.test(m))return 'Soru açıklaması en az 5, en fazla 2000 karakter olmalı.';return m};
 const run=async(fn,success)=>{if(busy)return;busy=true;try{await fn();if(success)notify(success)}catch(e){console.error(e);notify(friendly(e),true)}finally{busy=false}};
-const profile=id=>data.profiles.find(p=>p.id===id)||{id,display_name:'Patiyiz üyesi',handle:'üye',bio:'',city:''};
+const patiAvatarCache=new Map();
+const profile=id=>{
+ const p=data.profiles.find(row=>row.id===id);
+ if(p?.avatar_url)patiAvatarCache.set(id,p.avatar_url);
+ if(p)return p.avatar_url?p:(patiAvatarCache.has(id)?{...p,avatar_url:patiAvatarCache.get(id)}:p);
+ return {id,display_name:'Patiyiz üyesi',handle:'üye',bio:'',city:'',avatar_url:patiAvatarCache.get(id)||''};
+};
 const current=()=>profile(me?.id);
 const verifiedBadge=p=>p?.is_verified?'<span class="pati-verified pati-verified-blue" role="img" aria-label="Doğrulanmış hesap" title="Doğrulanmış hesap"><svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 1.6 14.8 3l3.12-.13 1.04 2.94L21.7 7.5l-.67 3.05 1.07 2.93-2.5 1.96-.64 3.09-3.15.32L12 21.1l-2.81-2.25-3.15-.32-.64-3.09-2.5-1.96 1.07-2.93L3.3 7.5l2.74-1.69 1.04-2.94L10.2 3Z" fill="#2196f3"/><path d="m7.55 11.8 2.9 2.85 5.95-6.05" fill="none" stroke="#fff" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"/></svg></span>':'';
 const displayName=p=>esc(p?.display_name||'Patiyiz üyesi')+verifiedBadge(p);
@@ -1636,15 +1642,14 @@ function patiMyPetCenterPage(){
    {title:'Hayvanım ve Sağlık',items:[
     ['care','Bakım','', 'heart','mint','tab'],
     ['wellness','Sağlık','','heart','sky','tab'],
-    ['healthfile','Belgeler','','library','blue','tab'],
     ['pets','Hayvanlarım','','paw','rose','view']]},
    {title:'Öğren ve Geliş',items:[
     ['education','Eğitim','','library','sun','view'],
     ['knowledge','Bilgi Merkezi','','info','blue','view']]},
    {title:'Topluluk ve Yardımlaşma',items:[
     ['lost','Kayıp İlanları','','search','lilac','view'],
-    ['adoption','Sahiplendirme','','heart','rose','view'],
-    ['community','Topluluk','','users','mint','view']]},
+    ['adoption','Sahiplendirme','','heart','rose','view']
+    ]},
   ];
   const card=([destination,label,description,icon,tone,kind])=>'<button type="button" class="pati-hub-card pati-hub-'+tone+'" '+(kind==='tab'?'data-action="pati-my-pet-tab" data-id="'+destination+'"':'data-view="'+destination+'"')+' aria-label="'+label+'"><span class="pati-hub-icon">'+ico(icon)+'</span><strong>'+label+'</strong><small>'+description+'</small><span class="pati-hub-chevron" aria-hidden="true">›</span></button>';
   const groupsMarkup=groups.map(g=>'<section class="pati-hub-category"><h2 class="pati-hub-section-title">'+g.title+'</h2><div class="pati-hub-grid">'+g.items.map(card).join('')+'</div></section>').join('');
