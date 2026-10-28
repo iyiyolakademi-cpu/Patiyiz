@@ -3773,13 +3773,13 @@ function patiGroupMountInMessages(summaries,peers,chatFilter){
 
 /* Group inbox shows latest activity; active chats refresh only while visible.
    Delete is restricted by both the RLS policy and user-owned query filters. */
-let patiGroupLiveTimer=null,patiGroupLiveBusy=false;
+let patiGroupLiveTimer=null,patiGroupLiveBusy=false,patiGroupLiveGroupId='';
 function patiGroupLiveStop(){
- if(patiGroupLiveTimer!==null){clearInterval(patiGroupLiveTimer);patiGroupLiveTimer=null}
+ if(patiGroupLiveTimer!==null){clearInterval(patiGroupLiveTimer);patiGroupLiveTimer=null}patiGroupLiveGroupId='';
 }
 function patiGroupMessageMarkup(message,owner,groupId){
  const mine=message.sender_id===owner;
- return '<div class="pati-group-bubble '+(mine?'mine':'')+'" data-group-message-id="'+esc(message.id)+'">'+
+ return '<div class="bubble-chat pati-group-bubble '+(mine?'mine':'')+'" data-group-message-id="'+esc(message.id)+'">'+
   '<strong>'+esc(profile(message.sender_id).display_name||'Patiyiz üyesi')+'</strong>'+
   '<p>'+esc(message.body)+'</p>'+
   '<div class="pati-group-message-meta"><small>'+clock(message.created_at)+'</small>'+
@@ -3801,8 +3801,9 @@ async function patiGroupRefreshActive(groupId,force=false){
   if(r.error)throw r.error;
   const active=document.getElementById('pati-group-message-form');
   if(me?.id!==owner||active!==form)return;
-  const history=active.querySelector('.pati-group-history');if(!history)return;
+  const history=active.closest('.pati-group-chat-window')?.querySelector('.chat-history');if(!history)return;
   const ordered=(r.data||[]).slice().reverse();
+  if(patiGroupChatState.owner===owner&&patiGroupChatState.id===groupId)patiGroupChatState.rows=ordered;
   const signature=ordered.map(m=>m.id).join(',');
   if(history.dataset.patiSignature===signature)return;
   const nearBottom=history.scrollHeight-history.scrollTop-history.clientHeight<90;
@@ -3818,10 +3819,11 @@ async function patiGroupRefreshActive(groupId,force=false){
  }finally{patiGroupLiveBusy=false}
 }
 function patiGroupLiveStart(groupId){
- patiGroupLiveStop();
+ if(patiGroupLiveTimer!==null&&patiGroupLiveGroupId===groupId)return;
+ patiGroupLiveStop();patiGroupLiveGroupId=groupId;
  patiGroupLiveTimer=setInterval(()=>{
   const current=document.getElementById('pati-group-message-form');
-  if(!current||current.querySelector('[name="group_id"]')?.value!==groupId){patiGroupLiveStop();return}
+  if(!current||view!=='messages'||patiActiveGroupId!==groupId||current.querySelector('[name="group_id"]')?.value!==groupId){patiGroupLiveStop();return}
   void patiGroupRefreshActive(groupId);
  },6500);
 }
@@ -3867,8 +3869,7 @@ async function patiGroupOpen(id){
  render();
  const history=main.querySelector('.pati-group-chat-window .chat-history');
  if(history)history.scrollTop=history.scrollHeight;
- void patiGroupMarkRead(id);
- void patiGroupFetchInbox(true);
+ void patiGroupMarkRead(id).then(()=>patiGroupFetchInbox(true));
 }
 async function patiGroupMembersDialog(id){
  const owner=me?.id;if(!owner)return;
@@ -5224,6 +5225,9 @@ window.addEventListener('online',()=>{notify('İnternet bağlantısı yeniden ku
  }});document.addEventListener('visibilitychange',()=>{if(document.hidden)stopLive();else refreshOnReturn()});window.addEventListener('focus',refreshOnReturn);
 function resetSessionState(){
  if(typeof patiGroupLiveStop==='function')patiGroupLiveStop();
+ if(typeof patiGroupInboxStop==='function')patiGroupInboxStop();
+ patiActiveGroupId='';patiGroupInboxState={owner:'',rows:[],ready:false,loading:false,error:''};
+ patiGroupChatState={owner:'',id:'',group:null,members:[],rows:[],ready:false,error:''};
  if(typeof patiOwnPetsRequest!=='undefined')patiOwnPetsRequest++;
  if(typeof patiPetPhotoObjectUrl!=='undefined'&&patiPetPhotoObjectUrl){URL.revokeObjectURL(patiPetPhotoObjectUrl);patiPetPhotoObjectUrl=''}
  if(typeof patiCommunityPage!=='undefined'){patiCommunityPage={owner:'',category:'',rows:[],offset:0,hasMore:true,ready:false,loading:false,error:''};patiCommunityReplyPages.clear()}
