@@ -49,16 +49,19 @@ test('Only the owner can read, insert, change, or delete their own hide records'
  assert.match(sql,/for insert to authenticated with check\(viewer_id=\(select auth\.uid\(\)\)\)/);
  assert.match(sql,/for update to authenticated[\s\S]*with check\(viewer_id=\(select auth\.uid\(\)\)\)/);
 });
-test('Laptop displays mobile header, center column, five-tab nav, and hides desktop sidebars',()=>{
+test('Desktop parity styles remain as historical fallback, but the final override restores full navigation',()=>{
  assert.match(css,/@media\(min-width:741px\)/);
- assert.match(css,/#app-root:not\(\.hidden\)>.mobile-header/);
- assert.match(css,/#app-root:not\(\.hidden\)>.mobile-bottom/);
- assert.match(css,/#app-root:not\(\.hidden\)>.app-shell>.sidebar/);
- assert.match(css,/#app-root:not\(\.hidden\)>.app-shell>.right-rail/);
- assert.match(css,/display:none!important/);
- assert.match(css,/width:min\(100%,740px\)!important/);
- assert.match(css,/grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
- assert.match(css,/pati-dm-layout.mobile-chat-open/);
- assert.match(html,/patiyiz-desktop-mobile-parity-chat-delete-20261028\.css\?v=1/);
- assert.match(html,/chat_delete_laptop=20261028/);
+ assert.match(html,/patiyiz-desktop-responsive-story-20261029\.css\?v=1/);
+ const desktop=fs.readFileSync('patiyiz-desktop-responsive-story-20261029.css','utf8');
+ assert.match(desktop,/@media \(min-width:741px\)/);
+ assert.match(desktop,/#app-root:not\(\.hidden\):not\(:has\(#main-content \.pati-dm-layout\.mobile-chat-open\)\)>\.app-shell/);
+ assert.match(desktop,/display:grid!important;grid-template-columns:clamp/);
+ assert.match(desktop,/>.app-shell>.sidebar\{/);
+ assert.match(desktop,/>.app-shell>.right-rail\{/);
+ assert.match(desktop,/display:flex!important;grid-column:3!important/);
+ assert.match(desktop,/>.mobile-header,[\s\S]*?>.mobile-bottom,[\s\S]*?>.mobile-fab\{display:none!important\}/);
+ assert.match(html,/id="desktop-nav"/);
+ assert.match(html,/class="pati-desktop-action-button primary" data-action="pati-create-open"/);
+ assert.match(html,/data-action="tools" aria-label="Tüm özellikleri aç"/);
+ assert.match(html,/data-view="shop"/);
 });
