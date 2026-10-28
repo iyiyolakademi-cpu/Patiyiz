@@ -15,7 +15,7 @@ test('Story picker supports everyone and close friends; own private upload and s
  assert.match(media,/id="pati-system-audience"/);
  assert.match(media,/value="close_friends"/);
  assert.match(media,/state\.onPublish\(root\.querySelector\('#pati-system-caption'\)\.value\)/);
- assert.match(app,/form\.dataset\.storyAudience=audience/);
+ assert.match(app,/form\.dataset\.storyAudience=document\.getElementById\('pati-system-audience'\)/);
  assert.match(app,/async function patiCreateCloseFriendStory/);
  assert.match(app,/private_image_path:imagePath/);
  assert.match(app,/audience:'close_friends'/);
