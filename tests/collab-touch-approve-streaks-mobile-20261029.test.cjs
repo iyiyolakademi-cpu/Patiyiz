@@ -63,7 +63,7 @@ test('iPhone touch approval before input blur stays selected and cannot be undon
 test('Server search matches fragments anywhere, not only startsWith prefixes',async()=>{
  const p={id:'user-333',handle:'beyzasahin',display_name:'Beyza Şahin'};
  const m=mock([], [p]);m.input.value='yza';m.callbacks.input.input();m.timers.shift()();
- await Promise.resolve();await Promise.resolve();await Promise.resolve();
+ await new Promise(resolve=>setImmediate(resolve));
  assert.ok(m.queries.some(([field,pattern])=>field==='handle'&&pattern==='%yza%'),JSON.stringify(m.queries));
  assert.match(m.results.innerHTML,/beyzasahin/);
  m.approve(p.id);
