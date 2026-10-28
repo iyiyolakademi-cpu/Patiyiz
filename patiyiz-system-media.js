@@ -37,10 +37,23 @@
   current.root.remove();
   document.body.classList.remove('pati-system-media-active');
  }
+ function updateCarouselControls(current){
+  if(!current||state!==current)return;
+  const root=current.root,files=current.files;
+  const count=root.querySelector('#pati-system-carousel-count');
+  if(count)count.textContent=(current.previewIndex+1)+' / '+files.length;
+  for(const [name,edge] of [['prev',0],['next',files.length-1]]){
+   const button=root.querySelector('[data-system="preview-'+name+'"]');
+   if(button)button.disabled=files.length<2||current.previewIndex===edge;
+  }
+  const dots=root.querySelector('#pati-system-carousel-dots');
+  if(dots)dots.innerHTML=files.length>1?files.map((_,index)=>'<i class="'+(index===current.previewIndex?'active':'')+'" aria-hidden="true"></i>').join(''):'';
+ }
  function showPreview(){
   if(!state)return;
   const current=state,root=current.root;
   const files=current.files,first=files[0],chosen=!!files.length;
+  current.previewIndex=Math.max(0,Math.min(files.length-1,current.previewIndex||0));
   const chooser=root.querySelector('#pati-system-chooser'),preview=root.querySelector('#pati-system-preview');
   chooser.hidden=chosen;preview.hidden=!chosen;
   if(!chosen)return;
@@ -65,6 +78,10 @@
    }
   }
   media.classList.toggle('multiple',files.length>1);
+  const controls=root.querySelector('#pati-system-carousel-controls');
+  controls.hidden=files.length<2;
+  updateCarouselControls(current);
+  if(files.length>1)requestAnimationFrame(()=>{if(state===current)media.scrollLeft=media.clientWidth*current.previewIndex});
   const option=root.querySelector('#pati-system-mirror-option'),toggle=root.querySelector('#pati-system-mirror');
   option.hidden=!video;toggle.checked=video&&current.mirrorSelfie;
   const info=root.querySelector('#pati-system-summary');
@@ -95,6 +112,7 @@
    return;
   }
   if(state!==current)return;
+  current.previewIndex=append?Math.max(0,selected.length-incoming.length):0;
   current.files=selected;
   // Web capture does not reveal which physical lens was used. Start mirrored
   // for a camera recording and let people turn it off for rear-camera clips.
@@ -154,7 +172,9 @@
    '<button type="button" data-system="gallery"><span class="pati-system-option-icon pati-system-option-gallery" aria-hidden="true">'+optionIcons.gallery+'</span><span><strong>Galeriden seç</strong><small>'+(mode==='reels'?'Fotoğraf arşivinden video seç':'Fotoğraf veya video seç')+'</small></span></button>'+
    '</div><button id="pati-system-restore" class="pati-system-restore" type="button" hidden>Önceki seçimi geri getir</button></div>'+
    '<div id="pati-system-preview" hidden>'+
-   '<div id="pati-system-preview-media" class="pati-system-preview-media"></div>'+
+   '<div class="pati-system-preview-wrap"><div id="pati-system-preview-media" class="pati-system-preview-media" tabindex="0" aria-label="Seçilen fotoğraflar, kaydırarak gezebilirsin"></div>'+ 
+   '<div id="pati-system-carousel-controls" class="pati-system-carousel-controls" hidden><button type="button" data-system="preview-prev" aria-label="Önceki fotoğraf">‹</button><span id="pati-system-carousel-count" aria-live="polite">1 / 1</span><button type="button" data-system="preview-next" aria-label="Sonraki fotoğraf">›</button></div></div>'+ 
+   '<div id="pati-system-carousel-dots" class="pati-system-carousel-dots" aria-hidden="true"></div>'+
    '<p id="pati-system-summary" class="pati-system-summary"></p>'+ 
    '<label id="pati-system-mirror-option" class="pati-system-mirror-option" hidden><input id="pati-system-mirror" type="checkbox"><span><strong>Selfie gibi göster</strong><small>Ön kamerada ekranda gördüğün ayna yönünü paylaşımda koru. Arka kamerada kapat.</small></span></label>'+
    (mode==='story'?'<label class="pati-system-audience" for="pati-system-audience">Kimler görebilir?<select id="pati-system-audience"><option value="everyone">Herkes</option><option value="close_friends">Yakın Arkadaşlar</option></select></label>':'')+
@@ -172,7 +192,7 @@
    '<input id="pati-system-gallery" type="file" accept="'+(kind(mode)==='video'?'video/*,.mov,.mp4,.webm,.m4v':'image/*,video/*,.heic,.heif,.mov,.mp4,.webm,.m4v')+'"'+(mode==='post'?' multiple':'')+' hidden>';
   document.body.appendChild(root);
   document.body.classList.add('pati-system-media-active');
-  state={root,mode,userId,onMedia,onMirrorChange,onPublish,onCancel,onSwitch,onStoryPhotoCamera,publishing:false,files:[],urls:[],mirrorSelfie:false,appendMode:false};
+  state={root,mode,userId,onMedia,onMirrorChange,onPublish,onCancel,onSwitch,onStoryPhotoCamera,publishing:false,files:[],urls:[],previewIndex:0,mirrorSelfie:false,appendMode:false};
   const current=state;
   for(const n of ['camera-photo','camera-video','gallery']){
    root.querySelector('#pati-system-'+n).addEventListener('change',async event=>{
@@ -182,6 +202,12 @@
     await acceptFiles(selected,n);
    });
   }
+  root.querySelector('#pati-system-preview-media').addEventListener('scroll',()=>{
+   if(state!==current||current.files.length<2)return;
+   const media=current.root.querySelector('#pati-system-preview-media');
+   const index=Math.max(0,Math.min(current.files.length-1,Math.round(media.scrollLeft/Math.max(1,media.clientWidth))));
+   if(index!==current.previewIndex){current.previewIndex=index;updateCarouselControls(current)}
+  },{passive:true});
   root.querySelector('#pati-system-mirror').addEventListener('change',e=>{
    if(state!==current||state.publishing||!state.files.some(isVideo))return;
    state.mirrorSelfie=!!e.target.checked;
@@ -193,6 +219,15 @@
    const btn=e.target.closest('[data-system]');
    if(!btn)return;
    const action=btn.dataset.system;
+   if(action==='preview-prev'||action==='preview-next'){
+    if(state.publishing||state.files.length<2)return;
+    const direction=action==='preview-next'?1:-1;
+    state.previewIndex=Math.max(0,Math.min(state.files.length-1,state.previewIndex+direction));
+    updateCarouselControls(state);
+    const media=root.querySelector('#pati-system-preview-media');
+    media.scrollTo({left:state.previewIndex*media.clientWidth,behavior:'smooth'});
+    return;
+   }
    if(action==='close'){if(state.publishing)return;const cb=state.onCancel;close();cb?.();return}
    if(action==='switch'){
     if(state.publishing)return;
