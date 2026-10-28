@@ -75,7 +75,10 @@
  }
  async function acceptFiles(files,source='gallery'){
   if(!state)return;
-  const current=state,selected=[...files].filter(f=>f?.size);
+  const current=state,incoming=[...files].filter(f=>f?.size);
+  const append=current.mode==='post'&&current.appendMode&&current.files.length&&current.files.every(isPhoto)&&incoming.every(isPhoto);
+  const selected=append?[...current.files,...incoming]:incoming;
+  current.appendMode=false;
   if(!selected.length)return;
   if(selected.length>10){error('Bir gönderide en fazla 10 fotoğraf seçebilirsin.');return}
   const videos=selected.filter(isVideo),photos=selected.filter(isPhoto);
@@ -154,9 +157,11 @@
    '<div id="pati-system-preview-media" class="pati-system-preview-media"></div>'+
    '<p id="pati-system-summary" class="pati-system-summary"></p>'+ 
    '<label id="pati-system-mirror-option" class="pati-system-mirror-option" hidden><input id="pati-system-mirror" type="checkbox"><span><strong>Selfie gibi göster</strong><small>Ön kamerada ekranda gördüğün ayna yönünü paylaşımda koru. Arka kamerada kapat.</small></span></label>'+
-   '<label class="pati-system-caption-label" for="pati-system-caption">Açıklama</label>'+
+   '<label class="pati-system-caption-label" for="pati-system-caption">Açıklama (isteğe bağlı)</label>'+
    '<textarea id="pati-system-caption" maxlength="2000" rows="3" placeholder="Bir açıklama yaz…"></textarea>'+
-   '<div class="pati-system-publish-actions"><button type="button" data-system="rechoose">Başka seç</button><button type="button" id="pati-system-publish" data-system="publish">Paylaş</button></div>'+
+   '<div class="pati-system-publish-actions">'+
+   (mode==='post'?'<button type="button" data-system="add-camera-photo">＋ Fotoğraf çek</button><button type="button" data-system="add-gallery">＋ Galeriden ekle</button>':'')+
+   '<button type="button" data-system="rechoose">Başka seç</button><button type="button" id="pati-system-publish" data-system="publish">Paylaş</button></div>'+
    '</div>'+
    '<nav class="pati-system-modes" aria-label="İçerik türü">'+
    ['post','story','reels'].map(m=>'<button type="button" data-system="switch" data-mode="'+m+'"'+(m===mode?' aria-current="page" class="active"':'')+'>'+(m==='post'?'GÖNDERİ':m==='story'?'HİKÂYE':'REELS')+'</button>').join('')+'</nav>'+
@@ -166,7 +171,7 @@
    '<input id="pati-system-gallery" type="file" accept="'+(kind(mode)==='video'?'video/*,.mov,.mp4,.webm,.m4v':'image/*,video/*,.heic,.heif,.mov,.mp4,.webm,.m4v')+'"'+(mode==='post'?' multiple':'')+' hidden>';
   document.body.appendChild(root);
   document.body.classList.add('pati-system-media-active');
-  state={root,mode,userId,onMedia,onMirrorChange,onPublish,onCancel,onSwitch,onStoryPhotoCamera,publishing:false,files:[],urls:[],mirrorSelfie:false};
+  state={root,mode,userId,onMedia,onMirrorChange,onPublish,onCancel,onSwitch,onStoryPhotoCamera,publishing:false,files:[],urls:[],mirrorSelfie:false,appendMode:false};
   const current=state;
   for(const n of ['camera-photo','camera-video','gallery']){
    root.querySelector('#pati-system-'+n).addEventListener('change',async event=>{
@@ -193,10 +198,16 @@
     const next=btn.dataset.mode;if(next===state.mode)return;
     const cb=state.onSwitch;close();cb?.(next);return;
    }
-   if(['camera-photo','camera-video','gallery'].includes(action)){launchPicker(action);return}
+   if(action==='add-camera-photo'||action==='add-gallery'){
+    if(state.mode!=='post'||state.publishing)return;
+    if(state.files.some(isVideo)){error('Video paylaşımına fotoğraf eklenemez.');return}
+    if(state.files.length>=10){error('En fazla 10 fotoğraf ekleyebilirsin.');return}
+    state.appendMode=true;launchPicker(action==='add-camera-photo'?'camera-photo':'gallery');return;
+   }
+   if(['camera-photo','camera-video','gallery'].includes(action)){state.appendMode=false;launchPicker(action);return}
    if(action==='rechoose'){
     if(state.publishing)return;
-    freeURLs(state);state.files=[];state.mirrorSelfie=false;state.onMirrorChange?.(false);
+    freeURLs(state);state.files=[];state.appendMode=false;state.mirrorSelfie=false;state.onMirrorChange?.(false);
     root.querySelector('#pati-system-preview').hidden=true;
     root.querySelector('#pati-system-chooser').hidden=false;clearError();
     return;

@@ -807,7 +807,7 @@ async function patiToggleRepost(postId){
  closeModal(true);render();notify(already?'Yeniden paylaşım kaldırıldı.':'Gönderi yeniden paylaşıldı.');
 }
 async function patiTogglePin(postId){
- const post=data.posts.find(p=>p.id===postId);
+ const post=patiFindSocialPost(postId);
  if(!me||!post||post.author_id!==me.id)throw Error('Yalnızca kendi gönderini sabitleyebilirsin.');
  const owner=me.id,already=patiOwnPin(postId);
  if(!already&&data.pins.filter(x=>x.owner_id===owner).length>=3)throw Error('Profilinde en fazla 3 gönderi sabitleyebilirsin.');
@@ -816,8 +816,9 @@ async function patiTogglePin(postId){
  if(result.error)throw result.error;
  if(!result.data?.length)throw Error('Sabitleme kaydedilemedi.');
  if(me?.id!==owner)return;
- data.pins=already?data.pins.filter(x=>!(x.owner_id===owner&&x.post_id===postId)):
- [...data.pins.filter(x=>!(x.owner_id===owner&&x.post_id===postId)),result.data[0]];
+ const verified=await sb.from('patiyiz_post_pins').select('*').eq('owner_id',owner);
+ if(verified.error)throw verified.error;
+ data.pins=[...data.pins.filter(x=>x.owner_id!==owner),...(verified.data||[])];
  closeModal(true);render();notify(already?'Gönderinin sabiti kaldırıldı.':'Gönderi profilinde sabitlendi.');
 }
 
@@ -3445,7 +3446,7 @@ function profilePage(){
   const multiPhoto=!x.video_url&&Array.isArray(x.images)&&x.images.filter(Boolean).length>1;
   const thumbnail=cover?'<img class="'+(x.selfie_mirrored?'pati-selfie-mirrored':'')+'" loading="lazy" decoding="async" src="'+esc(cover)+'" alt="Paylaşım görseli">':x.video_url?'<video class="'+(x.selfie_mirrored?'pati-selfie-mirrored':'')+'" muted playsinline preload="metadata" src="'+esc(x.video_url)+'#t=0.1"></video>':'<span>'+esc(cut(x.body||'Yazılı gönderi',110))+'</span>';
   const mediaIcon=x.video_url?'<span class="pati-profile-play" aria-hidden="true">'+ico('reels-tab')+'</span>':multiPhoto?'<span class="pati-profile-multi" aria-hidden="true">'+ico('grid')+'</span>':'';
-  const pinBadge=profilePostsTab==='reposts'?'<span class="pati-profile-pin" aria-label="Yeniden paylaşıldı">↻</span>':data.pins.some(t=>t.owner_id===p.id&&t.post_id===x.id)?'<span class="pati-profile-pin" aria-label="Sabitlenmiş gönderi">◆</span>':'';
+  const pinBadge=profilePostsTab==='reposts'?'<span class="pati-profile-pin" aria-label="Yeniden paylaşıldı">↻</span>':data.pins.some(t=>t.owner_id===p.id&&t.post_id===x.id)?'<span class="pati-profile-pin" aria-label="Sabitlenmiş gönderi">↻</span>':'';
    const views=own?'<span class="pati-profile-view-count" aria-label="Görüntülenme sayısı">◉ <span data-pati-view-count="'+esc(x.id)+'">'+(patiPostViewCounts.has(x.id)?patiPostViewCounts.get(x.id).toLocaleString('tr-TR'):'—')+'</span></span>':'';
   return '<button type="button" class="pati-profile-tile '+(!cover&&!x.video_url?'pati-profile-text-tile':'')+'" data-action="profile-open-post" data-id="'+esc(x.id)+'" aria-label="Paylaşımı aç">'+thumbnail+mediaIcon+pinBadge+views+'</button>';
  }).join('');
@@ -4283,7 +4284,31 @@ async function deleteOwnedMedia(record){
   const out=await sb.storage.from(m[1]).remove([key]);if(out.error)console.warn('Medya dosyası silinemedi:',out.error.message);
  }catch(err){console.warn('Medya temizleme:',err.message)}
 }
-async function remove(table,id){if(table==='posts')profileCountCache.delete(me.id);if(!confirm('Bu kaydı silmek istediğine emin misin?'))return;await run(async()=>{const old=table==='posts'?data.posts.find(x=>x.id===id):null;let r=await sb.from(table).delete().eq('id',id).select('id');if(r.error)throw r.error;if(!r.data?.length)throw Error('Kayıt silinemedi veya izin yok.');await refresh();if(old)await deleteOwnedMedia(old)},'Silindi')}
+async function remove(table,id){
+ if(table==='posts'){
+  const old=patiFindSocialPost(id);
+  if(!me||!old||old.author_id!==me.id)return notify('Yalnızca kendi gönderini silebilirsin.',true);
+  await run(async()=>{
+   const owner=me.id;
+   const r=await sb.from('posts').delete().eq('id',id).eq('author_id',owner).select('id');
+   if(r.error)throw r.error;
+   if(!r.data?.length)throw Error('Gönderi silinemedi veya silme iznin yok.');
+   if(me?.id!==owner)return;
+   data.posts=data.posts.filter(p=>p.id!==id);
+   data.reposts=data.reposts.filter(p=>p.post_id!==id);
+   data.pins=data.pins.filter(p=>p.post_id!==id);
+   profileCountCache.delete(owner);
+   const fromDetail=selectedPostId===id;
+   if(fromDetail){selectedPostId='';patiDetailState=null;profileId=owner;view='profile'}
+   closeModal(true);render();
+   try{await deleteOwnedMedia(old)}catch(e){console.warn('Gönderi medya temizliği:',e)}
+   try{await refresh()}catch(e){console.warn('Silme sonrası yenileme:',e)}
+  },'Gönderi silindi.');
+  return;
+ }
+ if(!confirm('Bu kaydı silmek istediğine emin misin?'))return;
+ await run(async()=>{const r=await sb.from(table).delete().eq('id',id).select('id');if(r.error)throw r.error;if(!r.data?.length)throw Error('Kayıt silinemedi veya izin yok.');await refresh()},'Silindi');
+}
 async function save(table,record,id){if(table==='posts')profileCountCache.delete(me.id);let r=id?await sb.from(table).update(record).eq('id',id).select('*'):await sb.from(table).insert(record).select('*');if(r.error)throw r.error;if(!r.data?.length)throw Error('Kayıt doğrulanamadı. İşlemi yeniden dene veya hesap izinlerini kontrol et.');closeModal(true);try{await refresh()}catch(refreshError){console.warn('Kayıt oluşturuldu, yenileme başarısız:',refreshError.message)}notify(({posts:id?'Paylaşım güncellendi.':'Paylaşım yayınlandı.',lost_reports:'Kayıp ilanı oluşturuldu.',care_tasks:id?'Bakım görevi güncellendi.':'Bakım görevi eklendi.',profiles:'Profil güncellendi.',pets:id?'Hayvan profili güncellendi.':'Hayvan profili eklendi.',adoption_listings:id?'Sahiplendirme ilanı güncellendi.':'Sahiplendirme ilanı yayınlandı.',comments:'Yorum yayınlandı.',replies:'Cevap yayınlandı.'})[table]||'İşlem kaydedildi.')}
 function processClick(e){const video=e.target.closest('.pati-post-video');if(video&&!e.target.closest('button')){if(video.paused){delete video.dataset.userPaused;document.querySelectorAll('#main-content .pati-post-video').forEach(other=>{if(other!==video)other.pause()});patiyizFeedActiveVideo=video;video.play().catch(()=>{});}else{video.dataset.userPaused='1';video.pause();}return;}let target=e.target.closest('[data-view],[data-action]');if(!target)return;let v=target.dataset.view;if(v){closePatiCreate();profileId='';selectedPostId='';if(v==='messages')mobileChatOpen=false;closeModal();navigate(v);return}let act=target.dataset.action,id=target.dataset.id;switch(act){case 'theme-set':patiApplyTheme(id);break;
 case 'dm-receipts-toggle':run(async()=>{
@@ -4389,7 +4414,7 @@ case 'dm-reply':{const m=patiDmFindMessage(id);const f=document.getElementById('
   const state=patiPostCommentPages.get(post);
   if(state){state.rows=state.rows.filter(row=>row.id!==id);state.at=0}
   patiHomeCountCache.delete(post);showComments(post);
- },'Yorum silindi');break}case 'replies':questionReplies(id);void patiLoadQuestionReplies(id);break;case 'post-menu':{const post=patiFindSocialPost(id);if(!post)break;const own=post.author_id===me.id;modal('Gönderi seçenekleri','<div class="pati-post-menu-list"><button type="button" data-action="pati-share-story" data-id="'+esc(id)+'">'+ico('story-create')+' Hikâyemde paylaş</button>'+(own?'<button type="button" data-action="edit-post" data-id="'+esc(id)+'">'+ico('edit')+' Gönderiyi düzenle</button><button type="button" data-action="pati-pin" data-id="'+esc(id)+'">'+(patiOwnPin(id)?'◆ Sabiti kaldır':'◆ Profilde sabitle')+'</button><button type="button" data-action="collab-invite-open" data-id="'+esc(id)+'">Ortak davet et</button>'+(patiCollabs.rows.some(x=>x.post_id===id)?'<button type="button" data-action="collab-remove" data-id="'+esc(id)+'">Ortak davetini kaldır</button>':'')+'<button type="button" class="danger" data-action="delete-post" data-id="'+esc(id)+'">'+ico('trash')+' Gönderiyi sil</button>':'<button type="button" data-action="report" data-kind="post" data-id="'+esc(id)+'">'+ico('alert')+' Gönderiyi bildir</button>'+(patiCollabs.rows.some(x=>x.post_id===id&&x.user_id===me.id&&x.status==='accepted')?'<button type="button" data-action="collab-remove" data-id="'+esc(id)+'">Ortaklıktan ayrıl</button>':''))+'</div>','post-actions-form');break}case 'collab-invite-open':{const p=data.posts.find(x=>x.id===id&&x.author_id===me?.id);if(!p)break;closeModal(true);modal('Ortak gönderi daveti','<div class="pati-field"><label for="collab-handle">Kullanıcı adı</label><input id="collab-handle" name="collab_handle" placeholder="@kullaniciadi" required maxlength="40"><small>Ortak daveti kabul ettiğinde bu paylaşım iki profilde görünür.</small></div>','collab-invite-form');document.getElementById('collab-invite-form').dataset.post=id;break;}
+ },'Yorum silindi');break}case 'replies':questionReplies(id);void patiLoadQuestionReplies(id);break;case 'post-menu':{const post=patiFindSocialPost(id);if(!post)break;const own=post.author_id===me.id;modal('Gönderi seçenekleri','<div class="pati-post-menu-list"><button type="button" data-action="pati-share-story" data-id="'+esc(id)+'">'+ico('story-create')+' Hikâyemde paylaş</button>'+(own?'<button type="button" data-action="edit-post" data-id="'+esc(id)+'">'+ico('edit')+' Gönderiyi düzenle</button><button type="button" data-action="pati-pin" data-id="'+esc(id)+'">'+(patiOwnPin(id)?'↻ Sabiti kaldır':'↻ Profilde sabitle')+'</button><button type="button" data-action="collab-invite-open" data-id="'+esc(id)+'">Ortak davet et</button>'+(patiCollabs.rows.some(x=>x.post_id===id)?'<button type="button" data-action="collab-remove" data-id="'+esc(id)+'">Ortak davetini kaldır</button>':'')+'<button type="button" class="danger" data-action="delete-post" data-id="'+esc(id)+'">'+ico('trash')+' Gönderiyi sil</button>':'<button type="button" data-action="report" data-kind="post" data-id="'+esc(id)+'">'+ico('alert')+' Gönderiyi bildir</button>'+(patiCollabs.rows.some(x=>x.post_id===id&&x.user_id===me.id&&x.status==='accepted')?'<button type="button" data-action="collab-remove" data-id="'+esc(id)+'">Ortaklıktan ayrıl</button>':''))+'</div>','post-actions-form');break}case 'collab-invite-open':{const p=data.posts.find(x=>x.id===id&&x.author_id===me?.id);if(!p)break;closeModal(true);modal('Ortak gönderi daveti','<div class="pati-field"><label for="collab-handle">Kullanıcı adı</label><input id="collab-handle" name="collab_handle" placeholder="@kullaniciadi" required maxlength="40"><small>Ortak daveti kabul ettiğinde bu paylaşım iki profilde görünür.</small></div>','collab-invite-form');document.getElementById('collab-invite-form').dataset.post=id;break;}
 case 'pati-repost':run(()=>patiToggleRepost(id));break;
 case 'pati-pin':run(()=>patiTogglePin(id));break;
 case 'pati-share-story':if(confirm('Bu gönderi hikâyende 24 saat paylaşılsın mı?'))run(()=>patiSharePostToStory(id));break;
