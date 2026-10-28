@@ -2,6 +2,7 @@
 #patiyiz-system-media .pati-system-photo-review{
  display:flex;align-items:flex-start;flex-direction:column;gap:5px;margin:13px 0 9px;
 }
+#patiyiz-system-media .pati-system-photo-review[hidden]{display:none!important}
 #patiyiz-system-media .pati-system-photo-review strong{font-size:13px;font-weight:850}
 #patiyiz-system-media .pati-system-photo-review small{font-size:11px;line-height:1.5;color:#a7a9b2}
 #patiyiz-system-media .pati-system-thumbnails{
