@@ -1,0 +1,204 @@
+/* Patiyiz 29 October 2026 — independent responsive desktop and story activity layouts.
+   All desktop selectors start at 741px. The phone five-tab layout is untouched. */
+@media (min-width:741px){
+ body{background:#f7f7f8!important;overflow-x:clip}
+ #app-root:not(.hidden){width:100%!important;max-width:none!important;min-width:0!important;margin:0 auto!important;overflow-x:clip}
+ #app-root:not(.hidden)>.mobile-header,
+ #app-root:not(.hidden)>.mobile-bottom,
+ #app-root:not(.hidden)>.mobile-fab{display:none!important}
+ /* Do not interfere with fullscreen open private or group conversations. */
+ #app-root:not(.hidden):not(:has(#main-content .pati-dm-layout.mobile-chat-open))>.app-shell{
+  display:grid!important;grid-template-columns:clamp(192px,20vw,244px) minmax(0,1fr)!important;
+  grid-auto-flow:row!important;align-items:start!important;justify-content:stretch!important;
+  width:100%!important;max-width:1460px!important;min-width:0!important;height:auto!important;
+  min-height:100dvh!important;margin:0 auto!important;padding:20px clamp(12px,2vw,30px) 55px!important;
+  gap:clamp(14px,2vw,27px)!important;position:relative!important;
+  inset:auto!important;overflow:visible!important;box-sizing:border-box!important;transform:none!important;
+ }
+ #app-root:not(.hidden):not(:has(#main-content .pati-dm-layout.mobile-chat-open))>.app-shell>.sidebar{
+  display:flex!important;flex-direction:column!important;position:sticky!important;top:12px!important;
+  grid-column:1!important;min-width:0!important;width:100%!important;max-width:none!important;
+  height:calc(100dvh - 24px)!important;max-height:calc(100dvh - 24px)!important;min-height:0!important;
+  margin:0!important;padding:14px 9px!important;overflow-y:auto!important;
+  overscroll-behavior:contain!important;scrollbar-width:thin;scrollbar-color:#c8c9cf transparent;
+  border:1px solid #e9e9ed;border-radius:19px;background:#fff!important;
+  box-shadow:0 5px 23px #15151c09;box-sizing:border-box!important;
+ }
+ #app-root:not(.hidden)>.app-shell>.sidebar .brand{
+  display:flex!important;align-items:center!important;width:100%!important;max-width:100%!important;
+  min-width:0!important;margin:0 0 5px!important;padding:7px 5px!important;box-sizing:border-box!important;
+ }
+ #app-root:not(.hidden)>.app-shell>.sidebar .brand-icon{
+  width:36px!important;height:36px!important;flex:0 0 36px!important;transform:none!important;
+ }
+ #app-root:not(.hidden)>.app-shell>.sidebar .brand-word{
+  font-size:clamp(21px,2vw,26px)!important;white-space:nowrap;
+ }
+ #app-root:not(.hidden)>.app-shell>.sidebar .brand-caption{display:none!important}
+ #app-root:not(.hidden)>.app-shell>.sidebar .pati-desktop-coins{
+  flex:0 0 auto!important;width:auto;max-width:100%!important;margin:5px 2px 9px!important;
+ }
+ #app-root:not(.hidden)>.app-shell>.sidebar .nav-caption{
+  margin:14px 7px 7px!important;font-size:10px!important;letter-spacing:.08em;
+ }
+ #app-root:not(.hidden)>.app-shell>.sidebar #desktop-nav{
+  display:flex!important;flex:0 0 auto!important;flex-direction:column!important;
+  width:100%!important;min-width:0!important;gap:2px!important;padding:0 2px!important;
+ }
+ #app-root:not(.hidden)>.app-shell>.sidebar #desktop-nav .nav-link{
+  display:flex!important;align-items:center!important;flex:0 0 auto!important;
+  width:100%!important;max-width:none!important;min-width:0!important;
+  min-height:42px!important;padding:9px 10px!important;gap:9px!important;
+  border-radius:11px!important;font-size:12px!important;line-height:1.3!important;
+  white-space:normal!important;overflow-wrap:anywhere!important;
+ }
+ #app-root:not(.hidden)>.app-shell>.sidebar #desktop-nav .nav-link .icon{
+  width:20px!important;height:20px!important;min-width:20px!important;
+ }
+ #app-root:not(.hidden)>.app-shell>.sidebar #desktop-nav .nav-link.active{
+  background:#ededf0!important;color:#18191c!important;
+ }
+ #app-root:not(.hidden)>.app-shell>.sidebar .sidebar-bottom{
+  flex:0 0 auto;margin-top:auto!important;padding-top:9px!important;
+ }
+ #app-root:not(.hidden)>.app-shell>.sidebar .pati-desktop-actions,
+ #app-root:not(.hidden)>.app-shell>.sidebar .pati-desktop-shortcuts{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  flex:0 0 auto!important;gap:6px!important;margin:4px 2px!important;
+ }
+ #app-root:not(.hidden)>.app-shell>.sidebar .pati-desktop-action-button,
+ #app-root:not(.hidden)>.app-shell>.sidebar .pati-desktop-shortcuts button{
+  min-width:0!important;min-height:39px!important;padding:8px 5px!important;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  background:#f5f5f7;color:#23242a;border:1px solid #e2e3e8;border-radius:11px;
+  line-height:1.3;text-align:center;font-size:11px;font-weight:800;cursor:pointer;
+ }
+ #app-root:not(.hidden)>.app-shell>.sidebar .pati-desktop-action-button.primary{
+  background:#17181b!important;color:#fff!important;border-color:#17181b!important;
+ }
+ #app-root:not(.hidden)>.app-shell>.sidebar .pati-desktop-action-button .icon{
+  width:16px;height:16px;
+ }
+ #app-root:not(.hidden)>.app-shell>.sidebar .pati-desktop-action-button:hover,
+ #app-root:not(.hidden)>.app-shell>.sidebar .pati-desktop-shortcuts button:hover{
+  background:#e9e9ee;color:#111;border-color:#c4c5ce;
+ }
+ #app-root:not(.hidden)>.app-shell>.sidebar .pati-desktop-action-button.primary:hover{
+  background:#34353a!important;color:#fff!important;
+ }
+ #app-root:not(.hidden)>.app-shell>.sidebar :is(.pati-desktop-action-button,.pati-desktop-shortcuts button):focus-visible{
+  outline:2px solid #242428;outline-offset:2px;
+ }
+ #app-root:not(.hidden):not(:has(#main-content .pati-dm-layout.mobile-chat-open))>.app-shell>.main{
+  display:block!important;grid-column:2!important;position:relative!important;
+  width:100%!important;max-width:none!important;min-width:0!important;
+  height:auto!important;min-height:0!important;margin:0!important;padding:5px 0 24px!important;
+  overflow:visible!important;transform:none!important;box-sizing:border-box!important;
+ }
+ #app-root:not(.hidden):not(:has(#main-content .pati-dm-layout.mobile-chat-open))>.app-shell>.right-rail{
+  display:none!important;
+ }
+ #app-root:not(.hidden) #main-content{width:100%!important;max-width:100%!important;min-width:0!important}
+ #main-content .pati-ig-profile{width:100%!important;max-width:100%!important;min-width:0!important}
+ #main-content .pati-ig-profile .pati-ig-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ #main-content .pati-dm-layout.mobile-chat-list{width:100%!important;max-width:100%!important}
+ #main-content .pati-dm-layout.mobile-chat-list>.chat-people{
+  width:100%!important;max-width:100%!important;min-height:170px;
+  max-height:calc(100dvh - 250px)!important;overflow-y:auto!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-list>.chat-window{display:none!important}
+ #main-content>.pati-dm-top{display:flex;flex-wrap:wrap}
+ #main-content>.pati-dm-top .pati-dm-top-actions{flex-wrap:wrap}
+}
+@media(min-width:1180px){
+ #app-root:not(.hidden):not(:has(#main-content .pati-dm-layout.mobile-chat-open))>.app-shell{
+  grid-template-columns:clamp(215px,17vw,244px) minmax(0,1fr) clamp(220px,19vw,285px)!important;
+ }
+ #app-root:not(.hidden):not(:has(#main-content .pati-dm-layout.mobile-chat-open))>.app-shell>.right-rail{
+  display:flex!important;grid-column:3!important;flex-direction:column!important;
+  width:100%!important;max-width:none!important;min-width:0!important;
+  position:sticky!important;top:20px!important;height:auto!important;max-height:calc(100dvh - 30px)!important;
+  overflow-y:auto!important;overscroll-behavior:contain!important;
+  margin:0!important;padding:5px 0!important;box-sizing:border-box!important;
+ }
+}
+/* The old mobile-parity sheet set desktop chats to 100dvh minus 220px;
+   a selected message must instead occupy the complete available viewport. */
+@media(min-width:741px){
+ #app-root:not(.hidden):has(#main-content .pati-dm-layout.mobile-chat-open)>.app-shell{
+  display:block!important;position:fixed!important;inset:0!important;z-index:160!important;
+  width:100vw!important;max-width:none!important;height:100dvh!important;min-height:0!important;
+  padding:0!important;margin:0!important;overflow:hidden!important;background:#fff!important;
+ }
+ #app-root:not(.hidden):has(#main-content .pati-dm-layout.mobile-chat-open)>.app-shell>.sidebar,
+ #app-root:not(.hidden):has(#main-content .pati-dm-layout.mobile-chat-open)>.app-shell>.right-rail{
+  display:none!important;
+ }
+ #app-root:not(.hidden):has(#main-content .pati-dm-layout.mobile-chat-open)>.app-shell>.main{
+  display:flex!important;flex-direction:column!important;box-sizing:border-box!important;
+  width:100%!important;max-width:none!important;height:100%!important;min-height:0!important;
+  padding:0!important;margin:0!important;overflow:hidden!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-open{
+  display:flex!important;flex:1 1 auto!important;height:100%!important;min-height:0!important;
+  max-height:none!important;margin:0!important;padding:0!important;width:100%!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-open>.chat-people{display:none!important}
+ #main-content .pati-dm-layout.mobile-chat-open>.chat-window{
+  display:flex!important;flex-direction:column!important;flex:1 1 auto!important;
+  width:100%!important;height:100%!important;max-height:none!important;min-height:0!important;
+  border:0!important;border-radius:0!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-open .chat-history{
+  flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;
+ }
+ #main-content:has(.pati-dm-layout.mobile-chat-open)>.pati-dm-top,
+ #main-content:has(.pati-dm-layout.mobile-chat-open)>.pati-dm-filters,
+ #main-content:has(.pati-dm-layout.mobile-chat-open)>.pati-dm-searchbar{
+  display:none!important;
+ }
+ html[data-pati-theme="dark"] #app-root:not(.hidden):has(#main-content .pati-dm-layout.mobile-chat-open)>.app-shell{
+  background:#141519!important;
+ }
+}
+/* Story movement screen is the sole visible page: no owner picture/name in top-left.
+   The underlying story remains intact for the back action. */
+#story-overlay.pati-story-viewers-open .story-player-head,
+#story-overlay.pati-story-viewers-open .story-progress,
+#story-overlay.pati-story-viewers-open .story-hit,
+#story-overlay.pati-story-viewers-open .story-caption,
+#story-overlay.pati-story-viewers-open .story-delete,
+#story-overlay.pati-story-viewers-open .story-viewers-button,
+#story-overlay.pati-story-viewers-open .story-big-photo,
+#story-overlay.pati-story-viewers-open .story-big-video{
+ display:none!important;
+}
+#story-overlay.pati-story-viewers-open{background:#fff!important}
+#story-overlay .story-viewers-sheet:not([hidden]){
+ position:fixed!important;inset:0!important;top:0!important;left:0!important;
+ right:0!important;bottom:0!important;z-index:999999!important;
+ width:100vw!important;max-width:none!important;
+ height:100dvh!important;max-height:none!important;min-height:0!important;
+ border-radius:0!important;overflow:hidden!important;
+}
+#story-overlay .story-viewers-sheet:not([hidden])>.pati-story-activity-top{
+ width:100%!important;flex:0 0 auto!important;
+}
+#story-overlay .story-viewers-sheet:not([hidden])>.pati-story-activity-list{
+ width:100%!important;box-sizing:border-box!important;
+}
+@media(min-width:741px){
+ #story-overlay .story-viewers-sheet:not([hidden])>.pati-story-activity-preview,
+ #story-overlay .story-viewers-sheet:not([hidden])>.pati-story-activity-section,
+ #story-overlay .story-viewers-sheet:not([hidden])>.pati-story-activity-list{
+  padding-left:max(18px,calc((100vw - 740px)/2))!important;
+  padding-right:max(18px,calc((100vw - 740px)/2))!important;
+ }
+}
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.app-shell>.sidebar{
+ background:#18191d!important;border-color:#33343b!important;
+}
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.app-shell>.sidebar .pati-desktop-action-button,
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.app-shell>.sidebar .pati-desktop-shortcuts button{
+ background:#26272d;color:#f7f7f8;border-color:#414249;
+}
