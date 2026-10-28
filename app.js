@@ -385,7 +385,7 @@ async function patiCoinSync(withAnimation=false){
  finally{patiCoinState.loading=false}
 }
 function patiCoinAnimation(amount,titles){
- // Show the celebration only after Supabase confirmed a reward.
+ // Replaces the old blocking paticoin-celebration; only after Supabase confirmed a reward.
  if(window.PatiyizMotion?.coin)window.PatiyizMotion.coin(amount,titles);
  else notify('+'+Number(amount)+' PatiCoin kazandın!');
 }
@@ -1238,7 +1238,11 @@ function reelHandleTap(button){
   patiyizReelsTap={post:'',time:0,timer:null};
   const heart=item.querySelector('.pati-reel-heart-burst');
   if(liked.has(id))window.PatiyizMotion?.heart(heart);
-  else void togglePostLike(id,heart);
+  else{
+   togglePostLike.heartTargets||=new Map();
+   togglePostLike.heartTargets.set(id,heart);
+   if(!liked.has(id))void togglePostLike(id);
+  }
   return;
  }
  if(patiyizReelsTap.timer)clearTimeout(patiyizReelsTap.timer);
@@ -4644,7 +4648,7 @@ function questionReplies(id){
 }
 /* Never display a confirmed heart until Supabase has persisted and verified it.
  * One in-flight mutation per post; a concurrent bootstrap cannot overwrite the result. */
-async function togglePostLike(id,heartTarget=null){
+async function togglePostLike(id){
  if(!id||!me||!sb||pendingPostLikes.has(id))return;
  const owner=me.id,wasLiked=liked.has(id);
  pendingPostLikes.add(id);likesChangeEpoch++;
@@ -4676,7 +4680,7 @@ async function togglePostLike(id,heartTarget=null){
   });
   document.querySelectorAll('.pati-feed-card[data-post-id="'+id+'"] .pati-post-like-summary')
    .forEach(el=>el.textContent=count+' beğeni');
-  if(savedLike&&heartTarget)window.PatiyizMotion?.heart(heartTarget);
+  if(savedLike&&togglePostLike.heartTargets?.has(id))window.PatiyizMotion?.heart(togglePostLike.heartTargets.get(id));
  }catch(error){
   console.warn('Beğeni kalıcılık kontrolü:',error);
   notify('Beğeni kaydedilemedi: '+friendly(error),true);
@@ -4691,6 +4695,7 @@ async function togglePostLike(id,heartTarget=null){
  }finally{
   likesChangeEpoch++;
   pendingPostLikes.delete(id);
+  togglePostLike.heartTargets?.delete(id);
   buttons.forEach(btn=>{btn.disabled=false;btn.removeAttribute('aria-busy')});
  }
 }
@@ -5233,7 +5238,14 @@ document.addEventListener('change',e=>{
 });
 
 let lastPhotoTap={id:'',time:0},tapTimer=0;
-function heartOnPhoto(el){const id=el.dataset.postId;if(!id)return;if(liked.has(id))window.PatiyizMotion?.heart(el);else void togglePostLike(id,el)}
+function heartOnPhoto(el){const id=el.dataset.postId;if(!id)return;
+ if(liked.has(id))window.PatiyizMotion?.heart(el);
+ else{
+  togglePostLike.heartTargets||=new Map();
+  togglePostLike.heartTargets.set(id,el);
+  if(!liked.has(id))void togglePostLike(id);
+ }
+}
 document.addEventListener('click',e=>{const el=e.target.closest('.pati-doubletap-photo');if(!el)return;const now=Date.now();if(lastPhotoTap.id===el.dataset.postId&&now-lastPhotoTap.time<380){e.preventDefault();lastPhotoTap.time=0;heartOnPhoto(el)}else lastPhotoTap={id:el.dataset.postId,time:now}},true);
 /* Instagram-like mobile tab gestures: 4 destination tabs, excluding the Share action. */
 const patiSwipeTabs=['home','explore','reels','profile'];
