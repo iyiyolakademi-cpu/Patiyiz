@@ -1815,6 +1815,15 @@ function patiWellnessPage(){
  const diff=latest&&previous?Number(latest.weight_kg)-Number(previous.weight_kg):null;
  const viewItems=patiWellnessRemindersFor(selectedId);
  const icons={vaccine:'💉',vet:'🩺',food:'🥣',medicine:'💊'};
+ if(view==='my-pet'&&patiHealthLanding){
+  const selected=pets.find(p=>p.id===selectedId),photo=selected?.photo_url||'';
+  const soon=[...open].sort((a,b)=>new Date(a.due_at)-new Date(b.due_at))[0];
+  const sections=[['vaccine','Aşılar','💉'],['vet','Veteriner','🩺'],['medicine','İlaçlar','💊'],['weight','Kilo Takibi','⚖️']];
+  main.innerHTML='<section class="pati-health-home"><div class="pati-health-pet"><div class="pati-health-pet-image">'+(photo?'<img src="'+esc(photo)+'" alt="'+esc(selected?.name||'Hayvan')+'">':petIcon(selected?.species))+'</div><div><small>HAYVAN SAĞLIĞI</small><h1>'+esc(selected?.name||'Patili dostum')+'</h1><p>Sağlık ve bakım kayıtların</p></div></div>'+
+   '<div class="pati-health-next"><span>⏰ Yaklaşan hatırlatma</span><strong>'+(soon?esc(soon.title):'Henüz hatırlatma yok')+'</strong>'+(soon?'<small>'+esc(new Date(soon.due_at).toLocaleDateString('tr-TR'))+'</small>':'')+'</div>'+
+   '<h2>Ne yapmak istersin?</h2><div class="pati-health-grid">'+sections.map(([key,label,icon])=>'<button type="button" data-action="pati-health-action" data-id="'+key+'"><span>'+icon+'</span><strong>'+label+'</strong></button>').join('')+'</div><button type="button" class="pati-health-add" data-action="wellness-reminder-add">+ Hatırlatma ekle</button></section>';
+  return;
+ }
  const cards=viewItems.map(x=>{
   const past=Date.parse(x.due_at)<Date.now(),finished=!!x.completed_at;
   const when=Number.isFinite(Date.parse(x.due_at))?new Date(x.due_at).toLocaleString('tr-TR',{dateStyle:'medium',timeStyle:'short'}):'Tarih bilinmiyor';
@@ -2267,8 +2276,7 @@ function careCard(x){
   +'<p><span>📅 '+esc(day(x.due_date))+'</span>'+(p?'<span>🐾 '+esc(p.name)+'</span>':'<span>Genel görev</span>')+'</p>'
   +'</div><div class="care-v2-actions">'
   +'<button type="button" class="care-v2-complete" data-action="care-done" data-id="'+esc(x.id)+'">'+(x.done?'↶ Geri al':'✓ Tamamla')+'</button>'
-  +'<button type="button" data-action="care-edit" data-id="'+esc(x.id)+'">Düzenle</button>'
-  +'<button type="button" class="care-v2-delete" data-action="care-del" data-id="'+esc(x.id)+'">Sil</button></div></article>';
+  +'<details class="pati-care-more"><summary aria-label="Görev seçenekleri">•••</summary><div><button type="button" data-action="care-edit" data-id="'+esc(x.id)+'">Düzenle</button><button type="button" class="care-v2-delete" data-action="care-del" data-id="'+esc(x.id)+'">Sil</button></div></details></div></article>';
 }
 function careUpdateResults(){
  if(view!=='care'&&!(view==='my-pet'&&patiMyPetTab==='care'))return;
@@ -3607,7 +3615,7 @@ case 'care-edit':{const item=data.care.find(x=>x.id===id&&x.owner_id===me.id);if
  run(async()=>{const r=await sb.from('adoption_listings').update({adopted}).eq('id',id).eq('owner_id',me.id).select('*');
  if(r.error)throw r.error;if(!r.data?.length)throw Error('İlan güncellenemedi veya yetkin yok.');
  data.adoption=data.adoption.map(x=>x.id===id?r.data[0]:x);if(view==='adoption')adoptionPage();
- },adopted?'İlan sahiplendirildi olarak işaretlendi.':'İlan yeniden yayına alındı.');break}case 'adoption-delete':remove('adoption_listings',id);break;case 'care-add':composeCare();break;case 'wellness-open':patiMyPetTab='wellness';navigate('my-pet');break;case 'pati-hub-select-pet':patiHubSelectedPetId=id;patiWellnessPetId=id;render();break;case 'pati-my-pet-tab':{if(['hub','care','wellness','healthfile','own-pets'].includes(id)){patiMyPetTab=id;if(id==='wellness')patiHealthLanding=true;render()}break}case 'wellness-reminder-add':patiWellnessReminderDialog();break;case 'wellness-weight-add':patiWellnessWeightDialog();break;case 'wellness-pet':patiWellnessPetId=id;render();break;
+ },adopted?'İlan sahiplendirildi olarak işaretlendi.':'İlan yeniden yayına alındı.');break}case 'adoption-delete':remove('adoption_listings',id);break;case 'care-add':composeCare();break;case 'wellness-open':patiMyPetTab='wellness';navigate('my-pet');break;case 'pati-health-action':patiHealthLanding=false;patiWellnessTab='active';render();if(id==='weight')requestAnimationFrame(()=>document.querySelector('.pati-wellness-weights')?.scrollIntoView({block:'start'}));break;case 'pati-hub-select-pet':patiHubSelectedPetId=id;patiWellnessPetId=id;render();break;case 'pati-my-pet-tab':{if(['hub','care','wellness','healthfile','own-pets'].includes(id)){patiMyPetTab=id;if(id==='wellness')patiHealthLanding=true;render()}break}case 'wellness-reminder-add':patiWellnessReminderDialog();break;case 'wellness-weight-add':patiWellnessWeightDialog();break;case 'wellness-pet':patiWellnessPetId=id;render();break;
 case 'wellness-filter':patiWellnessTab=id;render();break;
 case 'wellness-refresh':patiWellness.error='';void patiWellnessFetch();break;
 case 'wellness-reminder-edit':{const item=patiWellness.reminders.find(x=>x.id===id&&!x.completed_at&&patiWellnessOwnedPets().some(p=>p.id===x.pet_id));if(item)patiWellnessReminderDialog(item);break;}
