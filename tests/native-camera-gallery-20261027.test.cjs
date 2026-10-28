@@ -12,9 +12,10 @@ test('Camera creation opens actual device capture and photo/video gallery, not w
  assert.match(system,/id="pati-system-camera-video" type="file" accept="video\/\*/);
  assert.match(system,/id="pati-system-gallery" type="file" accept="/);
  assert.doesNotMatch(system,/getUserMedia|MediaRecorder|captureStream|requestAnimationFrame/);
- assert.match(app,/window\.PatiyizSystemMediaFlow\.open\(\{/);
- assert.match(app,/if\(!window\.PatiyizSystemMediaFlow\)/);
- assert.doesNotMatch(app,/window\.PatiyizCameraFlow\.open\(\{/);
+ assert.match(app,/mediaFlow\.open\(\{/);
+ assert.match(app,/window\.PatiyizSystemMediaFlow/);
+ assert.match(app,/portraitStoryCamera&&mode==='story'\?window\.PatiyizCameraFlow/);
+ assert.match(system,/onStoryPhotoCamera/);
 });
 test('Android native photo capture uses Capacitor real camera, video and gallery use file picker',()=>{
  assert.match(system,/window\.PatiyizNative\.pickPhotoForInput\(input,'camera',false\)/);
@@ -48,8 +49,8 @@ test('No lost files on cancellation or failed upload, no cross-account drafts',(
  assert.match(system,/catch\(err\)\{[\s\S]*?publish\.disabled=false;publish\.textContent='Tekrar paylaş'/);
  assert.match(system,/PatiyizCameraDraft\?\.save\(current\.userId,current\.mode,selected/);
  assert.match(app,/mode,userId:me\.id/);
- assert.match(app,/window\.PatiyizSystemMediaFlow\?\.close\(\);closeModal\(true\)/);
- assert.match(app,/window\.PatiyizSystemMediaFlow\?\.close\?\.\(\)/);
+ assert.match(app,/mediaFlow\?\.close\(\);closeModal\(true\)/);
+ assert.match(app,/void window\.PatiyizCameraDraft\?\.clear\(me\.id\)/);
 });
 test('Share mode switch routes to existing composer without custom camera',()=>{
  assert.match(system,/data-system="switch"/);
