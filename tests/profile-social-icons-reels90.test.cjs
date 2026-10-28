@@ -42,11 +42,10 @@ test('Reels Studio allows 90-second clips and rejects longer exports',()=>{
  assert.match(html,/profile20261025=1/);
 });
 
-test('Incoming follower notifications include an actionable blue follow-back, never for non-follow alerts',()=>{
+test('Follower notification opens a profile without extra inline actions',()=>{
  const notifications=between('function notificationRows(list){','async function openNotification(');
- assert.match(notifications,/n\.kind==='follows'/);
- assert.match(notifications,/data\.follows\.some\(f=>f\.follower_id===actor\.id&&f\.followee_id===me\?\.id\)/);
- assert.match(notifications,/data-action="follow"/);
- assert.match(notifications,/pati-alert-follow-back/);
+ assert.match(notifications,/data-action="open-notification"/);
+ assert.doesNotMatch(notifications,/pati-alert-follow-back|data-action="follow"/);
+ assert.match(app,/if\(n\.actor_id&&!blocked\.has\(n\.actor_id\)\)/);
  assert.match(css,/\.pati-alert-row \.pati-alert-follow-back/);
 });
