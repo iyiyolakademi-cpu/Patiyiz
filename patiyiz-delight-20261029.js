@@ -77,6 +77,18 @@
   if(streakTimer)clearTimeout(streakTimer);
   if(streakActive)streakTimer=window.setTimeout(closeStreak,5100);
  }
+ function streakPanel(state={},day=''){
+  const days=safeNumber(state.count),best=safeNumber(state.best);
+  const iso=/^\d{4}-\d{2}-\d{2}$/.test(day)?day:new Date().toISOString().slice(0,10);
+  return '<section class="pati-streak-page-card" aria-label="Günlük giriş serin">'+
+   '<div class="pati-streak-sparkles">'+flameSVG+'</div>'+
+   '<strong class="pati-streak-count">'+days.toLocaleString('tr-TR')+'</strong>'+
+   '<h2>günlük seri!</h2>'+
+   '<p class="pati-streak-message">'+(days===0?'Yeni serin bugün başlasın. Her gün bir pati izi!':'Harika! Her yeni gün serini uzatır ve hedefine yaklaştırır.')+'</p>'+
+   '<div class="pati-streak-week" role="group" aria-label="Bu haftaki giriş günleri">'+streakWeekdays({count:days},iso)+'</div>'+
+   '<div class="pati-streak-best">🏆 En uzun seri: '+best+' gün</div>'+
+   '</section>';
+ }
  function academyIntro(count=0,total=101){
   return '<div class="pati-delight-academy" role="note">'+mascotImage()+
   '<div><strong>Her ders, yeni bir pati izi!</strong><span>'+(safeNumber(count))+' / '+(safeNumber(total))+' ders tamamlandı. Sonraki adımı açmak için mini sınavı bitir.</span></div></div>';
@@ -109,5 +121,5 @@
   el.addEventListener('animationend',()=>el.remove(),{once:true});
   window.setTimeout(()=>el.remove(),1200);
  }
- window.PatiyizDelight=Object.freeze({showStreakOnce,closeStreak,academyIntro,lessonCompleted,followConfirmed,mascotImage});
+ window.PatiyizDelight=Object.freeze({showStreakOnce,closeStreak,streakPanel,academyIntro,lessonCompleted,followConfirmed,mascotImage});
 })();
