@@ -7,6 +7,7 @@ const media=fs.readFileSync('patiyiz-system-media.js','utf8');
 const sql=fs.readFileSync('supabase/patiyiz-close-friends-group-chats-20261028.sql','utf8');
 const css=fs.readFileSync('patiyiz-social-private-groups-20261028.css','utf8');
 const html=fs.readFileSync('index.html','utf8');
+const addMemberSql=fs.readFileSync('supabase/patiyiz-group-member-add-20261028.sql','utf8');
 test('The social expansion parses without replacing existing DM/story machinery',()=>{
  new vm.Script(app);new vm.Script(media);
  for(const marker of ["function messagesPage()","function createPostPublication(","function patiTogglePin(","function patiToggleRepost(","function patiDmSetReaction(","function patiSharePostToStory("])assert.ok(app.includes(marker),marker);
@@ -49,4 +50,13 @@ test('Group and friend screens integrate without replacing 1:1 chat',()=>{
  assert.match(css,/\.pati-social-person/);
  assert.match(html,/patiyiz-social-private-groups-20261028\.css/);
  assert.match(html,/close_groups=20261028/);
+});
+
+test('Only group administrators can add members after creation',()=>{
+ assert.match(app,/pati-group-add-open/);
+ assert.match(app,/pati-group-add-member/);
+ assert.match(app,/patiyiz_group_add_member/);
+ assert.match(addMemberSql,/role='admin'/);
+ assert.match(addMemberSql,/Maximum 20 participants/);
+ assert.match(addMemberSql,/patiyiz_users_blocked/);
 });
