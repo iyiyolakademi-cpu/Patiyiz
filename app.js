@@ -3692,9 +3692,9 @@ async function patiGroupMarkRead(groupId){
  const result=await sb.rpc('patiyiz_group_mark_read',{p_group:groupId});
  if(result.error)console.warn('Grup okunma durumu güncellenemedi:',result.error.message);
 }
-async function patiGroupRefreshActive(groupId){
+async function patiGroupRefreshActive(groupId,force=false){
  const form=document.getElementById('pati-group-message-form');
- if(!me||!form||form.querySelector('[name="group_id"]')?.value!==groupId||document.hidden||patiGroupLiveBusy||busy)return;
+ if(!me||!form||form.querySelector('[name="group_id"]')?.value!==groupId||document.hidden||patiGroupLiveBusy||(busy&&!force))return;
  patiGroupLiveBusy=true;
  const owner=me.id;
  try{
@@ -4627,7 +4627,7 @@ case 'pati-group-delete-message':run(async()=>{
  const out=await sb.from('patiyiz_group_messages').delete().eq('id',id).eq('group_id',group).eq('sender_id',owner).select('id');
  if(out.error)throw out.error;
  if(!out.data?.length)throw Error('Bu mesaj silinemedi.');
- await patiGroupRefreshActive(group);
+ await patiGroupRefreshActive(group,true);
 },'Mesaj silindi.');break;
 case 'pati-group-add-open':void patiGroupAddDialog(id).catch(e=>notify(friendly(e),true));break;
 case 'pati-group-add-member':run(async()=>{const out=await sb.rpc('patiyiz_group_add_member',{p_group:id,p_user:target.dataset.peer});if(out.error)throw out.error;await patiGroupMembersDialog(id)});break;
