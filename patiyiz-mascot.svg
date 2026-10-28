@@ -1,35 +1,78 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-labelledby="title desc">
-<title id="title">Patiyiz'in sevimli patili maskotu</title>
-<desc id="desc">Göz kırpan, kuyruğunu ve patisini hareket ettiren siyah beyaz sevimli köpek</desc>
+<title id="title">Patiyiz - Patili dost</title>
+<desc id="desc">Parlak gözlü, kulaklarını ve patisini oynatan, özgün siyah-beyaz köpek maskotu.</desc>
+<defs>
+ <linearGradient id="fur" x1=".15" y1="0" x2=".82" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".7" stop-color="#f6f7fa"/><stop offset="1" stop-color="#dcdfe7"/></linearGradient>
+ <linearGradient id="ear" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4a4d59"/><stop offset=".55" stop-color="#24252d"/><stop offset="1" stop-color="#101116"/></linearGradient>
+ <linearGradient id="chest" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#e7eaf0"/></linearGradient>
+ <linearGradient id="collar" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#626b84"/><stop offset="1" stop-color="#363b50"/></linearGradient>
+ <radialGradient id="blush"><stop stop-color="#f1b6ad" stop-opacity=".63"/><stop offset="1" stop-color="#f1b6ad" stop-opacity="0"/></radialGradient>
+ <filter id="shade" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="4"/></filter>
+</defs>
 <style>
- .tail{transform-origin:184px 174px;animation:wag 1.7s ease-in-out infinite}
- .wave{transform-origin:158px 160px;animation:wave 3.8s ease-in-out infinite}
- .head{transform-origin:117px 103px;animation:tilt 5.5s ease-in-out infinite}
- .eyes{transform-origin:center;transform-box:fill-box;animation:blink 5.8s infinite}
- @keyframes wag{0%,100%{transform:rotate(-13deg)}50%{transform:rotate(17deg)}}
- @keyframes wave{0%,68%,100%{transform:rotate(0)}75%,86%{transform:rotate(-23deg)}81%,92%{transform:rotate(8deg)}}
+ .tail{transform-origin:184px 169px;animation:wag 1.7s ease-in-out infinite}
+ .wave{transform-origin:163px 166px;animation:wave 4.3s ease-in-out infinite}
+ .head{transform-origin:116px 125px;animation:tilt 5.6s ease-in-out infinite}
+ .eyes{transform-origin:center;transform-box:fill-box;animation:blink 5.6s infinite}
+ .spark{animation:spark 3.4s ease-in-out infinite}
+ .spark.b{animation-delay:1s}
+ @keyframes wag{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(17deg)}}
+ @keyframes wave{0%,68%,100%{transform:rotate(0)}76%,91%{transform:rotate(-19deg)}84%{transform:rotate(5deg)}}
  @keyframes tilt{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
- @keyframes blink{0%,43%,47%,100%{transform:scaleY(1)}45%{transform:scaleY(.10)}}
- @media(prefers-reduced-motion:reduce){.tail,.wave,.head,.eyes{animation:none!important}}
+ @keyframes blink{0%,40%,44%,100%{transform:scaleY(1)}42%{transform:scaleY(.12)}}
+ @keyframes spark{0%,100%{opacity:.32;transform:scale(.88)}50%{opacity:.86;transform:scale(1.08)}}
+ @media(prefers-reduced-motion:reduce){.tail,.wave,.head,.eyes,.spark{animation:none!important}}
 </style>
-<ellipse cx="120" cy="218" rx="82" ry="10" fill="#141414" opacity=".09"/>
-<g class="tail"><path d="M173 179 Q222 185 207 128" fill="none" stroke="#26272b" stroke-width="19" stroke-linecap="round"/></g>
-<path d="M73 171q0-43 47-43t48 44l8 39H65z" fill="#fff" stroke="#232428" stroke-width="8" stroke-linejoin="round"/>
-<path d="M92 161q26 9 51 0v48H92z" fill="#e6e7ed"/>
-<path d="M94 154q22 14 52 0" fill="none" stroke="#242428" stroke-width="7" stroke-linecap="round"/>
-<g class="wave"><path d="M159 171q28-12 35 7 4 14-10 24-17 10-27-3z" fill="#fff" stroke="#26272b" stroke-width="7"/><path d="M169 187l-1 6m10-7v7m9-6l-1 6" stroke="#26272b" stroke-width="3" stroke-linecap="round"/></g>
-<path d="M88 193q-15 22-28 15" fill="none" stroke="#242428" stroke-width="11" stroke-linecap="round"/>
-<g class="head">
- <path d="M77 78Q35 57 42 116q4 20 20 19" fill="#25262b" stroke="#25262b" stroke-width="8" stroke-linejoin="round"/>
- <path d="M155 78q42-23 36 39-3 20-20 19" fill="#25262b" stroke="#25262b" stroke-width="8" stroke-linejoin="round"/>
- <path d="M58 107q1-62 61-64 64 0 64 66v23q-5 40-63 42-59 0-63-46z" fill="#fff" stroke="#232428" stroke-width="8"/>
- <path d="M58 111q2-37 28-50l9 45q-18 3-37 5" fill="#f1f1f3"/>
- <path d="M181 109q-3-37-29-51l-9 48q19 3 38 3" fill="#f1f1f3"/>
- <g class="eyes"><ellipse cx="93" cy="113" rx="8.2" ry="10.5" fill="#191a1e"/><ellipse cx="146" cy="113" rx="8.2" ry="10.5" fill="#191a1e"/><circle cx="95" cy="109" r="2.5" fill="#fff"/><circle cx="148" cy="109" r="2.5" fill="#fff"/></g>
- <path d="M102 143q17-14 34 0-3 13-17 13-15 0-17-13z" fill="#26272b"/>
- <path d="M120 157v7m-17-2q17 16 34 0" stroke="#26272b" stroke-width="4" fill="none" stroke-linecap="round"/>
- <ellipse cx="79" cy="141" rx="11" ry="5" fill="#d7d7de" opacity=".8"/>
- <ellipse cx="160" cy="141" rx="11" ry="5" fill="#d7d7de" opacity=".8"/>
+<!-- Soft character shadow gives the tiny icon depth without overwhelming the face. -->
+<ellipse cx="121" cy="223" rx="69" ry="9" fill="#171821" opacity=".12" filter="url(#shade)"/>
+<g class="spark a"><path d="M206 72v12m-6-6h12" stroke="#a4a8b7" stroke-width="3" stroke-linecap="round"/></g>
+<g class="spark b"><path d="M28 119v9m-4.5-4.5h9" stroke="#a4a8b7" stroke-width="2.6" stroke-linecap="round"/></g>
+<!-- Curved tail -->
+<g class="tail"><path d="M172 168q34 14 30-29" fill="none" stroke="#21232b" stroke-width="18" stroke-linecap="round"/><path d="M195 148q3 8-2 17" fill="none" stroke="#4c4f5b" stroke-width="4" stroke-linecap="round"/></g>
+<!-- Plump torso with dimensional chest panel -->
+<path d="M69 174q2-46 47-48 54-2 61 45l7 34q-25 17-63 18-36 0-61-17z" fill="url(#fur)" stroke="#282a34" stroke-width="5.3" stroke-linejoin="round"/>
+<path d="M93 148q22-9 45 1 22 13 17 49-12 12-35 12-24 0-35-13-3-28 8-49z" fill="url(#chest)" opacity=".94"/>
+<path d="M93 203q-10 12-31 9" stroke="#292c34" stroke-width="6.5" fill="none" stroke-linecap="round"/>
+<!-- Feet with cute toe grooves -->
+<path d="M66 199q-19 0-19 14-1 11 20 11h26q14-2 10-14-4-12-19-11z" fill="url(#fur)" stroke="#292b34" stroke-width="5" stroke-linejoin="round"/>
+<path d="M140 202q-17 0-18 13 0 11 20 11h28q17-1 14-14-3-12-25-11z" fill="url(#fur)" stroke="#292b34" stroke-width="5" stroke-linejoin="round"/>
+<path d="M67 210v8m14-9v8m59-7v8m14-8v8" fill="none" stroke="#b9bdc9" stroke-width="3.2" stroke-linecap="round"/>
+<!-- Waving forepaw (fully isolated for animation) -->
+<g class="wave">
+ <path d="M159 157q14-16 30-4 11 8 8 24-3 11-16 15-17 4-24-11z" fill="url(#fur)" stroke="#282a34" stroke-width="5.5"/>
+ <path d="M168 168l1 7m10-9 2 8m8-9 2 7" stroke="#b0b5c1" stroke-width="3" stroke-linecap="round"/>
+ <path d="M159 182q9 11 23 4" fill="none" stroke="#d4d6df" stroke-width="3" stroke-linecap="round"/>
 </g>
-<path d="M90 182q29 9 59 0" stroke="#232428" stroke-width="5" stroke-linecap="round" fill="none"/>
+<!-- Head bobs very subtly; ears, cheeks and face move together -->
+<g class="head">
+ <!-- Friendly floppy ears -->
+ <path d="M77 63q-30-20-44 16-11 27 3 59 10 18 27 8 20-18 19-50z" fill="url(#ear)" stroke="#242630" stroke-width="5" stroke-linejoin="round"/>
+ <path d="M159 62q33-16 44 24 11 31-2 55-12 18-28 1-16-17-17-51z" fill="url(#ear)" stroke="#242630" stroke-width="5" stroke-linejoin="round"/>
+ <path d="M48 91q-7 23 0 35m141-35q9 25 1 37" fill="none" stroke="#737581" opacity=".55" stroke-width="3.8" stroke-linecap="round"/>
+ <!-- Main face: round and soft rather than a flat rectangular head -->
+ <path d="M57 101q0-64 61-65 67-1 67 65v24q-3 44-65 49-60-4-63-49z" fill="url(#fur)" stroke="#292b34" stroke-width="5.5" stroke-linejoin="round"/>
+ <!-- Characteristic black eye patch -->
+ <path d="M75 84q10-18 31-11 16 10 13 30-3 29-24 34-28 1-31-20-4-18 11-33z" fill="#33353e" opacity=".96"/>
+ <path d="M152 63q-10-16-27-16 11 9 11 25" stroke="#fff" stroke-opacity=".72" stroke-width="5" fill="none" stroke-linecap="round"/>
+ <!-- Smiling brows add expression -->
+ <path d="M78 83q9-7 18-3m37-3q11-7 22-1" stroke="#24262c" stroke-width="4" stroke-linecap="round" fill="none"/>
+ <g class="eyes">
+  <ellipse cx="94" cy="107" rx="7" ry="9" fill="#fff"/>
+  <ellipse cx="147" cy="107" rx="7.5" ry="9.5" fill="#242630"/>
+  <ellipse cx="95.5" cy="105" rx="2.7" ry="3.4" fill="#fff"/>
+  <ellipse cx="149" cy="104.2" rx="2.7" ry="3.4" fill="#fff"/>
+ </g>
+ <ellipse cx="73" cy="134" rx="18" ry="11" fill="url(#blush)"/>
+ <ellipse cx="169" cy="134" rx="18" ry="11" fill="url(#blush)"/>
+ <!-- Round snout, shiny triangular nose, smiling mouth -->
+ <path d="M85 137q6-22 35-21 28-1 35 21 4 22-34 29-36-7-36-29z" fill="#fff" stroke="#d6d9e1" stroke-width="2.6"/>
+ <path d="M108 133q13-7 25 0-1 11-12 12-11-1-13-12z" fill="#2b2d36"/>
+ <ellipse cx="115" cy="135" rx="3.8" ry="2.4" fill="#858994" opacity=".75"/>
+ <path d="M121 145v6m-15-1q14 16 30 0" fill="none" stroke="#2b2d36" stroke-width="3.8" stroke-linecap="round"/>
+ <path d="M113 155q7 15 15 0" fill="#efa1a2" stroke="#b95d73" stroke-width="1.4"/>
+ <ellipse cx="102" cy="158" rx="3" ry="2" fill="#d9dce3" opacity=".8"/>
+</g>
+<!-- A cool neutral collar ties the mascot to a black-and-white brand. -->
+<path d="M93 169q27 12 55-1" fill="none" stroke="url(#collar)" stroke-width="8" stroke-linecap="round"/>
+<path d="M116 171l5 11 6-11" fill="#dfe5f2" stroke="#414759" stroke-width="2.7" stroke-linejoin="round"/>
 </svg>
