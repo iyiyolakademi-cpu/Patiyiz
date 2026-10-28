@@ -1,0 +1,62 @@
+const test=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const vm=require('node:vm');
+const app=fs.readFileSync('app.js','utf8');
+const html=fs.readFileSync('index.html','utf8');
+const css=fs.readFileSync('patiyiz-desktop-mobile-parity-chat-delete-20261028.css','utf8');
+const sql=fs.readFileSync('supabase/patiyiz-dm-hidden-threads-20261028.sql','utf8');
+const source=(a,b)=>{const i=app.indexOf(a),j=app.indexOf(b,i+a.length);assert.ok(i>=0&&j>i,a);return app.slice(i,j)};
+test('The full app script is still valid JavaScript',()=>new vm.Script(app));
+test('Chat inbox shows a separate delete button adjacent to each thread',()=>{
+ const markup=source('function messagesPage(){','function pushKeyBytes(');
+ assert.match(markup,/class="pati-dm-list-row"/);
+ assert.match(markup,/class="pati-dm-delete-thread"/);
+ assert.match(markup,/data-action="dm-delete-thread"/);
+ assert.match(markup,/data-action="chat"/);
+ assert.match(markup,/aria-label=".{0,150}sohbetini sil"/);
+ assert.match(app,/case 'dm-delete-thread':run\(\(\)=>patiDmDeleteConversation\(id\)\)/);
+ assert.match(markup,/pati-dm-list-row'\)\.forEach/);
+});
+test('Chat deletion stores an account-only cutoff and preserves messages for the other person',()=>{
+ const src=source('let patiDmHiddenConversations=','function patiDmThreadKey(peer){');
+ assert.match(src,/from\('patiyiz_dm_hidden_threads'\)/);
+ assert.match(src,/\.eq\('viewer_id',owner\)\.eq\('peer_id',peer\)/);
+ assert.match(src,/\.insert\(\{viewer_id:owner,peer_id:peer,hidden_at:hiddenAt\}\)/);
+ assert.doesNotMatch(src,/from\('messages'\)\.delete\(/);
+ assert.match(src,/Yeni mesaj gelirse sohbet yeniden görünür/);
+ assert.match(src,/state\.cutoffs\.set\(peer,res\.data\[0\]\.hidden_at\)/);
+ assert.match(src,/if\(personId===peer\)\{personId='';mobileChatOpen=false/);
+});
+test('Cutoff hides old history and new messages revive the conversation',()=>{
+ const src=source('let patiDmHiddenConversations=','function patiDmThreadKey(peer){');
+ const ctx={me:{id:'self'}};
+ const api=vm.runInNewContext(src+'\npatiDmHiddenConversations={owner:"self",ready:true,busy:false,error:false,cutoffs:new Map([["p1","2026-10-28T16:00:00.000Z"]])};\n({patiDmLastVisible,patiDmCutoff})',ctx);
+ assert.equal(api.patiDmLastVisible('p1','2026-10-28T15:59:59.000Z'),false);
+ assert.equal(api.patiDmLastVisible('p1','2026-10-28T16:00:01.000Z'),true);
+ assert.equal(api.patiDmLastVisible('p2','2026-10-28T15:59:59.000Z'),true);
+ assert.match(app,/query=query\.gt\('created_at',new Date\(patiDmCutoff\(peer\)\)\.toISOString\(\)\)/);
+ assert.match(app,/!patiDmLastVisible\(peer,message\.created_at\)/);
+});
+test('Only the owner can read, insert, change, or delete their own hide records',()=>{
+ assert.match(sql,/enable row level security/);
+ assert.match(sql,/primary key\(viewer_id,peer_id\)/);
+ assert.match(sql,/revoke all on public\.patiyiz_dm_hidden_threads from public,anon,authenticated/);
+ assert.match(sql,/grant select,insert\(viewer_id,peer_id,hidden_at\),update\(hidden_at\),delete/);
+ assert.match(sql,/for select to authenticated using\(viewer_id=\(select auth\.uid\(\)\)\)/);
+ assert.match(sql,/for insert to authenticated with check\(viewer_id=\(select auth\.uid\(\)\)\)/);
+ assert.match(sql,/for update to authenticated[\s\S]*with check\(viewer_id=\(select auth\.uid\(\)\)\)/);
+});
+test('Laptop displays mobile header, center column, five-tab nav, and hides desktop sidebars',()=>{
+ assert.match(css,/@media\(min-width:741px\)/);
+ assert.match(css,/#app-root:not\(\.hidden\)>.mobile-header/);
+ assert.match(css,/#app-root:not\(\.hidden\)>.mobile-bottom/);
+ assert.match(css,/#app-root:not\(\.hidden\)>.app-shell>.sidebar/);
+ assert.match(css,/#app-root:not\(\.hidden\)>.app-shell>.right-rail/);
+ assert.match(css,/display:none!important/);
+ assert.match(css,/width:min\(100%,740px\)!important/);
+ assert.match(css,/grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
+ assert.match(css,/pati-dm-layout.mobile-chat-open/);
+ assert.match(html,/patiyiz-desktop-mobile-parity-chat-delete-20261028\.css\?v=1/);
+ assert.match(html,/chat_delete_laptop=20261028/);
+});

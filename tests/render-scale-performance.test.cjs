@@ -28,7 +28,7 @@ test('Feed/Reels counters use one index per render with blocked authors excluded
 
 test('Conversation index traverses messages once and preserves incoming/read counts',()=>{
  const source=part('function patiIndexDmHistory(','function messagesPage(){');
- const fn=vm.runInNewContext(source+'\npatiIndexDmHistory',{Map,Date});
+ const fn=vm.runInNewContext(source+'\npatiIndexDmHistory',{Map,Date,patiDmLastVisible:()=>true});
  const rows=[
  {id:'m1',sender_id:'self',receiver_id:'alice',created_at:'2026-10-25T10:00:00Z',body:'hello'},
  {id:'m2',sender_id:'alice',receiver_id:'self',created_at:'2026-10-25T10:02:00Z',body:'hi'},
@@ -50,7 +50,7 @@ test('Conversation index traverses messages once and preserves incoming/read cou
 
 test('Thousands of messages with hundreds of conversations are indexed without per-peer scans',()=>{
  const source=part('function patiIndexDmHistory(','function messagesPage(){');
- const fn=vm.runInNewContext(source+'\npatiIndexDmHistory',{Map,Date});
+ const fn=vm.runInNewContext(source+'\npatiIndexDmHistory',{Map,Date,patiDmLastVisible:()=>true});
  const rows=Array.from({length:12000},(_,i)=>({id:'m'+i,sender_id:i%2?'self':'u'+(i%500),receiver_id:i%2?'u'+(i%500):'self',created_at:'2026-10-25T10:00:00Z',read_at:null}));
  const out=fn(rows,'self',new Set(),new Set());
  assert.equal(out.peers.size,500);
