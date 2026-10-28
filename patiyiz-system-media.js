@@ -218,7 +218,7 @@
     state.publishing=true;
     const publish=root.querySelector('#pati-system-publish');
     publish.disabled=true;publish.textContent='Paylaşılıyor…';clearError();
-    try{await state.onPublish(root.querySelector('#pati-system-caption').value,root.querySelector('#pati-system-audience')?.value||'everyone')}
+    try{await state.onPublish(root.querySelector('#pati-system-caption').value)}
     catch(err){
      if(state===current){
       error(err?.message||'Paylaşım yüklenemedi. Tekrar dene.');
