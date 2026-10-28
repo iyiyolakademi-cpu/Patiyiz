@@ -1,0 +1,31 @@
+/* A design: direct actions, short labels, colorful but quiet. */
+#main-content .pati-pet-hub .pati-hub-card{min-height:108px!important;gap:10px!important;padding:14px!important;border-radius:18px!important;justify-content:space-between}
+#main-content .pati-pet-hub .pati-hub-card small{display:none!important}
+#main-content .pati-pet-hub .pati-hub-icon{width:38px!important;height:38px!important;border-radius:12px!important}
+#main-content .pati-pet-hub .pati-hub-card strong{font-size:14px!important;line-height:1.25}
+#main-content .pati-pet-hub .pati-hub-chevron{top:14px!important;font-size:21px!important}
+#main-content .pati-pet-hub .pati-hub-grid{gap:10px!important}
+#main-content .pati-care-simple{max-width:780px;margin:auto;padding:12px 15px 35px!important}
+#main-content .pati-care-simple .pati-simple-head{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap;margin:8px 0 20px}
+#main-content .pati-care-simple .pati-simple-head small{font-size:10px;letter-spacing:.09em;font-weight:800;color:#21855c}
+#main-content .pati-care-simple .pati-simple-head h1{font-size:clamp(24px,5vw,29px);margin:4px 0;letter-spacing:-.035em}
+#main-content .pati-care-simple .pati-simple-head p{font-size:13px;color:#687381}
+#main-content .pati-care-simple .pati-simple-add{background:#24865d;color:white;border:0;border-radius:12px;padding:12px 14px;min-height:44px;font-weight:750}
+#main-content .pati-care-simple .pati-simple-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:14px 0 24px}
+#main-content .pati-care-simple .pati-simple-filter{min-width:0;min-height:86px;background:#e9f6ff;border:1px solid #d3e9fa;border-radius:17px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:5px;padding:12px 4px;color:#2b5b85}
+#main-content .pati-care-simple .pati-simple-filter:nth-child(2){background:#fff3df;border-color:#f7e5c7;color:#9d6825}
+#main-content .pati-care-simple .pati-simple-filter:nth-child(3){background:#e5f8ed;border-color:#cbeedb;color:#22794f}
+#main-content .pati-care-simple .pati-simple-filter.active{outline:2px solid currentColor;outline-offset:-3px}
+#main-content .pati-care-simple .pati-simple-filter b{font-size:23px;font-variant-numeric:tabular-nums}
+#main-content .pati-care-simple .pati-simple-filter span{font-size:12px;font-weight:650}
+#main-content .pati-care-simple .pati-simple-list-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 12px}
+#main-content .pati-care-simple .pati-simple-list-head h2{margin:0;font-size:19px}
+#main-content .pati-care-simple .pati-simple-list-head button{border:0;background:transparent;color:#4773a1;font-size:13px;font-weight:750;min-height:40px}
+#main-content .pati-care-simple .care-v2-list{display:grid;gap:10px}
+#main-content .pati-care-simple .care-v2-card{border-radius:16px!important}
+#main-content .pati-care-simple .pati-simple-empty{background:#f8f9fb;border:1px dashed #d8dde6;border-radius:18px;padding:30px 18px;display:grid;justify-items:center;gap:9px;text-align:center}
+#main-content .pati-care-simple .pati-simple-empty span{font-size:28px}
+#main-content .pati-care-simple .pati-simple-empty p{font-size:13px;color:#777f8a}
+#main-content .pati-care-simple .pati-simple-empty button{padding:10px 15px;background:#24865d;color:white;border-radius:10px}
+#main-content .pati-care-simple .pati-simple-disclaimer{margin-top:22px;font-size:11px;color:#7b8492;line-height:1.5}
+@media(max-width:370px){#main-content .pati-care-simple .pati-simple-filter span{font-size:11px}#main-content .pati-pet-hub .pati-hub-card{min-height:104px!important}}
