@@ -13,7 +13,7 @@ const files=[
 'instagram-share-clean.css','post-detail-twitter-text-stage16.css','patiyiz-upload.js','patiyiz-video-prepare.js','patiyiz-camera-draft.js','patiyiz-system-media.js','app.js','patiyiz-sw.js','patiyiz-camera-flow.js',
 'pati-coin.svg','profile-explore-coin-polish.css','patiyiz-mobile-rewards-shop-20261025.css','patiyiz-ux-hayvanim-20261025.css','patiyiz-shared-create-studio-20261025.css','patiyiz-selected-logo.svg','patiyiz-icon.svg','patiyiz-app-icon-192.png',
 'patiyiz-app-icon-512.png','patiyiz-apple-touch-icon.png','patiyiz-favicon-48.png',
-'patiyiz-profile-chat-photo-polish-20261028.css'];
+'patiyiz-profile-chat-photo-polish-20261028.css','patiyiz-social-phase1-20261028.css'];
 await rm(out,{recursive:true,force:true});await mkdir(path.join(out,'vendor'),{recursive:true});
 for(const name of files)await cp(path.join(root,name),path.join(out,name));
 await cp(path.join(native,'src/native-reels.css'),path.join(out,'native-reels.css'));
