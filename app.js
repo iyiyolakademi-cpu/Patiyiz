@@ -3537,7 +3537,7 @@ function patiProfileLinksHTML(profileRow){
 function patiProfileLinkEditorRow(link={}){
  return '<div class="pati-profile-link-row">'+
  '<div class="pati-profile-link-inputs"><label>Bağlantı adı<input type="text" name="link_title" maxlength="60" placeholder="Örn. Web sitem" value="'+esc(link.title||'')+'"></label>'+
- '<label>Bağlantı adresi<input type="url" name="link_url" maxlength="1000" inputmode="url" placeholder="https://site.com" value="'+esc(link.url||'')+'"></label></div>'+
+ '<label>Bağlantı adresi<input type="text" name="link_url" maxlength="1000" inputmode="url" placeholder="https://site.com" value="'+esc(link.url||'')+'"></label></div>'+
  '<button type="button" class="pati-profile-link-remove" data-action="pati-profile-link-remove" aria-label="Bağlantıyı kaldır">'+ico('trash')+'</button></div>';
 }
 function patiUpdateProfileLinkEditor(form){
