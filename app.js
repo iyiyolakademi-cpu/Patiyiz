@@ -2228,7 +2228,7 @@ async function routePendingLost(){
 }
 let lostPhotoObjectUrl='';
 function lostPage(){
- const detail=data.lost.find(x=>x.id===patiLostDetailId&&!blocked.has(x.owner_id));
+ const detail=data.lost.find(x=>x.id===(typeof patiLostDetailId==='string'?patiLostDetailId:'')&&!blocked.has(x.owner_id));
  if(detail){patiListingDetail('lost',detail);return}
  const safe=data.lost.filter(x=>!blocked.has(x.owner_id));
  const counts={missing:safe.filter(x=>!x.found).length,found:safe.filter(x=>x.found).length,mine:safe.filter(x=>x.owner_id===me?.id).length};
@@ -2303,7 +2303,7 @@ async function routePendingAdoption(){
  else notify('İlan bulunamadı veya artık görüntülenemiyor.',true);
 }
 function adoptionPage(){
- const detail=data.adoption.find(x=>x.id===patiAdoptionDetailId&&!blocked.has(x.owner_id));
+ const detail=data.adoption.find(x=>x.id===(typeof patiAdoptionDetailId==='string'?patiAdoptionDetailId:'')&&!blocked.has(x.owner_id));
  if(detail){patiListingDetail('adoption',detail);return}
  const visible=data.adoption.filter(x=>!blocked.has(x.owner_id));
  const counts={open:visible.filter(x=>!x.adopted).length,adopted:visible.filter(x=>x.adopted).length,mine:visible.filter(x=>x.owner_id===me?.id).length};
@@ -2380,7 +2380,7 @@ function carePage(){
  const all=careOwnItems(),today=careToday();
  const counts={today:all.filter(x=>!x.done&&x.due_date===today).length,upcoming:all.filter(x=>!x.done&&x.due_date>today).length,done:all.filter(x=>x.done).length};
  const list=careVisibleItems();
- const active=data.pets.find(p=>p.id===patiHubSelectedPetId&&p.owner_id===me?.id)||data.pets.find(p=>p.owner_id===me?.id);
+ const active=data.pets.find(p=>p.id===(typeof patiHubSelectedPetId==='string'?patiHubSelectedPetId:'')&&p.owner_id===me?.id)||data.pets.find(p=>p.owner_id===me?.id);
  const image=active?.photo_url||(/kedi/i.test(active?.species||'')?'pati-illustration-cat.svg':'pati-illustration-dog.svg');
  const next=all.filter(x=>!x.done).sort((x,y)=>String(x.due_date).localeCompare(String(y.due_date)))[0];
  const filter=(k,title,value)=>'<button type="button" data-action="care-filter" data-id="'+k+'" class="pati-simple-filter '+(careFilter===k?'active':'')+'" aria-pressed="'+(careFilter===k)+'"><b>'+value+'</b><span>'+title+'</span></button>';
