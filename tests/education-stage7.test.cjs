@@ -59,15 +59,16 @@ test('Kaldığın yerden devam et her hesaba ait son açılan eksik dersi seçer
  api.educationRemember('unknown-id');
  assert.equal(store.get('patiyiz-edu-recent-person-1'),'cat-food');
 });
-test('Academy first shows colorful categories, real progress and resume',()=>{
+test('Academy first shows category selection and real progress before lesson access',()=>{
  const {api,main}=setup();
  api.educationPage();
  assert.match(main.innerHTML,/pati-ref-academy-home/);
  assert.match(main.innerHTML,/pati-ref-academy-topics/);
  assert.match(main.innerHTML,/1 \/ 3 ders tamamlandı/);
- assert.match(main.innerHTML,/data-action="education-continue"/);
+ assert.doesNotMatch(main.innerHTML,/data-action="education-continue"/);
+ assert.match(main.innerHTML,/Eğitimleri Keşfet/);
  assert.match(main.innerHTML,/data-action="education-filter"/);
- assert.match(main.innerHTML,/data-action="pati-academy-search-open"/);
+ assert.doesNotMatch(main.innerHTML,/pati-recommended-lessons/);
  assert.match(main.innerHTML,/Kedi/);
  assert.match(main.innerHTML,/Köpek/);
 });
@@ -84,9 +85,9 @@ test('Ders ekranı konumu, gezinme, doğru yanıt ve sınav kilidini gösterir',
  ctx.educationLesson='dog-care';
  ctx.educationAnswer['dog-care']=2;
  api.educationPage();
- assert.match(main.innerHTML,/Ders 2 \/ 3/);
- assert.match(main.innerHTML,/education-previous/);
- assert.match(main.innerHTML,/education-next/);
+ assert.match(main.innerHTML,/Ders 1 \/ 1/);
+ assert.match(main.innerHTML,/Köpek derslerine dön/);
+ assert.doesNotMatch(main.innerHTML,/data-action="education-next"/);
  assert.match(main.innerHTML,/Yeniden deneyebilirsin/);
  ctx.educationAnswer['dog-care']=1;
  api.educationPage();
