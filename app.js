@@ -394,20 +394,22 @@ function patiRewardsPage(){
  const done=new Set(patiCoinState.claims);
  const missionList=(group,completed=false)=>{
   const tasks=patiCoinTasks.filter(x=>(x[4]||'once')===group&&done.has(patiCoinMissionKey(x[0],x[4]||'once'))===completed);
-  return '<div class="paticoin-tasks">'+tasks.map(([code,title,coins,info,period])=>{
+  const rows=tasks.map(([code,title,coins,info,period])=>{
    const key=patiCoinMissionKey(code,period||'once');
    const claimed=done.has(key);
    return '<article class="paticoin-task '+(claimed?'pati-mission-claimed':'')+'"><div class="paticoin-task-icon">'+(claimed?'✓':'🐾')+'</div><div><strong>'+esc(title)+'</strong><small>'+esc(info)+'</small></div><b class="'+(claimed?'earned':'')+'">'+(claimed?'✓ Tamamlandı':'+'+coins+' <img class="pati-coin-icon" src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true">')+'</b></article>';
-  }).join('')+'</div>';
+  });
+  const visible=completed?rows.length:(group==='once'?5:group==='daily'?3:2);
+  return '<div class="paticoin-tasks">'+rows.slice(0,visible).join('')+(rows.length>visible?'<details class="pati-missions-more"><summary>Diğer '+(rows.length-visible)+' görevi göster</summary><div class="pati-missions-more-list">'+rows.slice(visible).join('')+'</div></details>':'')+'</div>';
  };
  const milestones=window.PatiyizFollowerMilestones?.renderPanel(patiFollowerRewardState.followers,patiFollowerRewardState.claimed)||'';
  const invite='<section class="paticoin-invite"><h2>🎁 Arkadaşını davet et</h2><p>Sen ve davet ettiğin kişi <b>50’şer PatiCoin</b> kazanırsınız. Her hesap yalnızca bir davet kodu kullanabilir.</p><div class="paticoin-invite-code"><strong>'+esc(patiInviteState.code||'Kod hazırlanıyor…')+'</strong><button data-action="paticoin-invite-share">Paylaş</button></div><small>Davet ettiğin kişi: '+(patiInviteState.invited_count||0)+'</small>'+(patiInviteState.already_used?'<p>✓ Davet kodu kullanma hakkını tamamladın.</p>':'<label class="paticoin-invite-entry">Arkadaşının kodu<input id="pati-invite-code" maxlength="9" autocomplete="off" placeholder="P1234ABCD"></label><button class="paticoin-invite-redeem" data-action="paticoin-invite-redeem">Kodu kullan · +50 <img class="pati-coin-icon" src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true"></button>')+'</section>';
  main.innerHTML='<section class="paticoin-page"><div class="paticoin-hero"><span>🐾 PATİYİZ GÖREV MERKEZİ</span><h1>PatiCoin</h1><strong><img class="pati-coin-icon" src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true"> '+Number(patiCoinState.balance).toLocaleString('tr-TR')+' <small>PatiCoin</small></strong><p>Toplam kazanılan: '+Number(patiCoinState.earned).toLocaleString('tr-TR')+' coin</p><div class="paticoin-actions"><button data-action="paticoin-claim">Görevlerimi kontrol et</button><button data-action="paticoin-shop">Pati Mağaza →</button></div></div>'+
- milestones+'<div class="paticoin-mission-heading"><div><h2>🎯 Tek Seferlik Görevler</h2><p>Her hesapta yalnız bir kez puan kazandırır.</p></div><span>'+patiCoinTasks.filter(x=>!x[4]).length+' görev</span></div>'+missionList('once')+
+ (milestones?'<details class="pati-follower-more"><summary>🏅 Takipçi hedeflerim</summary>'+milestones+'</details>':'')+'<div class="paticoin-mission-heading"><div><h2>🎯 Tek Seferlik Görevler</h2><p>Her hesapta yalnız bir kez puan kazandırır.</p></div><span>'+patiCoinTasks.filter(x=>!x[4]).length+' görev</span></div>'+missionList('once')+
  '<div class="paticoin-mission-heading"><div><h2>☀️ Günlük Görevler</h2><p>Her yeni gün yeniden yapılabilir. Aynı görevden günde bir kez puan kazanılır.</p></div><span>5 görev</span></div>'+missionList('daily')+
  '<div class="paticoin-mission-heading"><div><h2>🗓️ Haftalık Görevler</h2><p>Her pazartesi yeniden başlar. Aynı görevden haftada en fazla bir kez puan kazanılır.</p></div><span>4 görev</span></div>'+missionList('weekly')+
- invite+'<section class="paticoin-done-zone" aria-label="Tamamlanan görevler"><div class="paticoin-mission-heading"><div><h2>✓ Tamamlanan görevler</h2><p>Kazanılan ödüllerin geçmişi</p></div></div>'+
-  ['once','daily','weekly'].map(group=>missionList(group,true)).join('')+'</section><p class="paticoin-disclaimer"><b>Ödül kuralları:</b> Hesabın en az 7 günlük olmalı, son 30 günde 3 farklı gün aktif olmalısın. 14 günde en fazla 1 ödül talebi oluşturabilirsin. Puanlar yalnızca sunucunun doğruladığı işlemler için verilir; eski kazançlar korunur.</p></section>';
+ invite+'<details class="paticoin-done-zone" aria-label="Tamamlanan görevler"><summary>✓ Tamamlanan görevler ve puan geçmişi</summary>'+
+  ['once','daily','weekly'].map(group=>missionList(group,true)).join('')+'</details><p class="paticoin-disclaimer"><b>Ödül kuralları:</b> Hesabın en az 7 günlük olmalı, son 30 günde 3 farklı gün aktif olmalısın. 14 günde en fazla 1 ödül talebi oluşturabilirsin. Puanlar yalnızca sunucunun doğruladığı işlemler için verilir; eski kazançlar korunur.</p></section>';
 }
 let patiShopFilter='all';
 function patiShopPage(){
@@ -432,7 +434,7 @@ function patiShopPage(){
   const destination=o.destination==='environment'?'🌱 Doğa için':o.destination==='street_animals'?'Sokak hayvanları için':'Kendi hayvanım için';
   return '<article class="paticoin-order"><b>'+esc(patiCoinState.items.find(p=>p.id===o.item_id)?.name||'Ürün')+'</b><span>'+destination+' · '+coin+Number(o.coins_spent).toLocaleString('tr-TR')+'</span><strong class="paticoin-order-status paticoin-order-'+esc(o.status)+'">'+esc(label[o.status]||'Beklemede')+'</strong>'+note+proof+timeline+'</article>';
  }).join('');
- main.innerHTML='<section class="paticoin-page pati-shop-v2 p4-shop"><header class="pati-shop-hero"><div><span class="pati-shop-eyebrow">PATIYIZ · ÖDÜL MAĞAZASI</span><h1>Pati Mağaza</h1><p>Katılımını iyiliğe dönüştür. Ödülleri incele, PatiCoin ile güvenli talep oluştur.</p></div><button class="pati-shop-wallet" type="button" data-action="paticoin-rewards"><span>BAKİYEN</span><strong>'+coin+Number(patiCoinState.balance||0).toLocaleString('tr-TR')+'</strong><small>Görevleri gör →</small></button></header>'+
+ main.innerHTML='<section class="paticoin-page pati-shop-v2 p4-shop"><header class="pati-shop-hero"><div><span class="pati-shop-eyebrow">PATIYIZ · ÖDÜL MAĞAZASI</span><h1>Pati Mağaza</h1><p>Ödüller için talep oluştur. Stok, onay ve teslimat durumunu talep geçmişinden takip et.</p></div><button class="pati-shop-wallet" type="button" data-action="paticoin-rewards"><span>BAKİYEN</span><strong>'+coin+Number(patiCoinState.balance||0).toLocaleString('tr-TR')+'</strong><small>Görevleri gör →</small></button></header>'+
   '<div class="pati-shop-section-title"><div><span>ÖDÜL KOLEKSİYONU</span><h2>Bir iyilik seç</h2></div><small>'+patiCoinState.items.length+' seçenek</small></div>'+
   '<div class="pati-shop-filter" role="group" aria-label="Mağaza kategorileri">'+filters.map(([key,name])=>'<button type="button" data-action="paticoin-shop-filter" data-id="'+key+'" aria-pressed="'+(activeFilter===key)+'" class="'+(activeFilter===key?'active':'')+'">'+name+'</button>').join('')+'</div>'+
   '<div class="paticoin-items">'+(cards||'<p class="pati-shop-empty">Bu kategoride henüz ürün bulunmuyor.</p>')+'</div>'+
