@@ -3549,6 +3549,7 @@ function patiCollectProfileLinks(form){
  })));
 }
 function patiProfileLinkMarkup(row,index){
+ if(!row||typeof row!=='object')return '';
  let url;try{url=patiNormalizeProfileUrl(row.url)}catch(_){return ''}
  if(!url)return '';
  const hostname=new URL(url).hostname.replace(/^www\./,'');
@@ -3561,6 +3562,7 @@ function patiProfileLinksMarkup(person){
  return rows.length?'<div class="pati-general-links" aria-label="Bağlantılar">'+rows.join('')+'</div>':'';
 }
 function patiProfileLinkRowHTML(row={}){
+ if(!row||typeof row!=='object')row={};
  const title=String(row.title||''),url=String(row.url||'');
  return '<div class="pati-profile-link-row">'+
   '<div class="pati-profile-link-inputs"><label>Bağlantı adı (isteğe bağlı)<input type="text" name="link_title" maxlength="50" placeholder="Örn. Kişisel web sitem" value="'+esc(title)+'"></label>'+
