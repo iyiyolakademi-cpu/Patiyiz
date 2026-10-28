@@ -1,0 +1,112 @@
+/* Patiyiz: one-click private conversation removal + consistent phone/desktop layout. */
+#main-content .pati-dm-layout .pati-dm-list-row{
+ display:flex;align-items:stretch;width:100%;min-width:0;box-sizing:border-box;
+ background:#fff;border-bottom:1px solid #f0f0f2;
+}
+#main-content .pati-dm-layout .pati-dm-list-row[hidden]{display:none!important}
+#main-content .pati-dm-layout .pati-dm-list-row>.chat-person{
+ display:flex!important;flex:1 1 auto!important;min-width:0!important;max-width:none!important;
+ width:auto!important;border:0!important;border-radius:0!important;padding-right:2px!important;
+}
+#main-content .pati-dm-layout .pati-dm-list-row>.chat-person .chat-person-info{
+ display:flex;flex:1 1 auto;flex-direction:column;min-width:0;overflow:hidden;
+}
+#main-content .pati-dm-layout .pati-dm-list-row>.chat-person .chat-person-info strong,
+#main-content .pati-dm-layout .pati-dm-list-row>.chat-person .chat-person-info small{
+ max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+#main-content .pati-dm-layout .pati-dm-list-row>.chat-person .chat-person-meta{
+ flex:0 0 auto;min-width:0;margin-left:auto;
+}
+#main-content .pati-dm-layout .pati-dm-delete-thread{
+ display:grid;place-items:center;flex:0 0 42px;width:42px;min-width:42px;
+ margin:9px 6px 9px 0;padding:9px;border:0;border-radius:11px;
+ background:#f6f6f8;color:#686970;cursor:pointer;touch-action:manipulation;
+}
+#main-content .pati-dm-layout .pati-dm-delete-thread .icon{width:19px;height:19px;pointer-events:none}
+#main-content .pati-dm-layout .pati-dm-delete-thread:hover,
+#main-content .pati-dm-layout .pati-dm-delete-thread:active{background:#fff0f1;color:#b32440}
+#main-content .pati-dm-layout .pati-dm-delete-thread:focus-visible{outline:3px solid #b32440;outline-offset:1px}
+html[data-pati-theme="dark"] #main-content .pati-dm-layout .pati-dm-list-row{background:#222;border-color:#444}
+html[data-pati-theme="dark"] #main-content .pati-dm-layout .pati-dm-delete-thread{background:#36363a;color:#e2dfe4}
+
+/* Laptop / desktop: same navigation, vertical content order, and phone-like proportions. */
+@media(min-width:741px){
+ body{background:#f7f7f8!important}
+ #app-root:not(.hidden){width:100%;max-width:none!important;margin:0 auto;min-height:100vh;overflow-x:clip}
+ #app-root:not(.hidden)>.mobile-header{
+  display:flex!important;position:sticky!important;top:0;left:auto;right:auto;
+  width:min(100%,740px)!important;max-width:740px!important;min-width:0!important;
+  margin:0 auto!important;z-index:90!important;
+  align-items:center;justify-content:space-between;gap:9px;
+  min-height:66px!important;height:auto!important;box-sizing:border-box!important;
+  padding:10px 14px!important;border-bottom:1px solid #e8e8eb!important;
+  background:rgba(255,255,255,.98)!important;box-shadow:0 2px 11px #1818180a!important;
+ }
+ #app-root:not(.hidden)>.mobile-header>.brand{display:flex!important;min-width:0;flex:1 1 auto;margin:0 0 0 3px!important;padding:0!important;gap:7px!important;width:auto!important}
+ #app-root:not(.hidden)>.mobile-header .brand-icon{width:36px;height:36px;min-width:36px;transform:none!important;border-radius:10px}
+ #app-root:not(.hidden)>.mobile-header .brand-word{font-size:clamp(22px,2vw,27px);line-height:1.2}
+ #app-root:not(.hidden)>.mobile-header .brand-caption{display:none}
+ #app-root:not(.hidden)>.mobile-header>.pati-header-share{width:37px!important;height:37px!important;min-width:37px!important;display:grid!important;place-items:center}
+ #app-root:not(.hidden)>.mobile-header>.pati-header-actions{display:flex!important;align-items:center!important;flex:0 0 auto!important;gap:7px!important}
+ #app-root:not(.hidden)>.app-shell{
+  display:block!important;grid-template-columns:none!important;
+  width:min(100%,740px)!important;max-width:740px!important;min-width:0!important;
+  margin:0 auto!important;padding:8px 9px 106px!important;box-sizing:border-box!important;
+ }
+ #app-root:not(.hidden)>.app-shell>.sidebar,
+ #app-root:not(.hidden)>.app-shell>.right-rail{display:none!important}
+ #app-root:not(.hidden)>.app-shell>.main{
+  display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;
+  margin:0!important;padding:0!important;box-sizing:border-box!important;
+ }
+ #app-root:not(.hidden)>.mobile-bottom{
+  display:flex!important;position:fixed!important;z-index:80!important;
+  bottom:0!important;left:50%!important;right:auto!important;
+  transform:translateX(-50%)!important;
+  width:min(100%,740px)!important;max-width:740px!important;min-width:0!important;
+  justify-content:space-around;align-items:center;gap:3px;
+  min-height:69px;box-sizing:border-box;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px))!important;
+  border-top:1px solid #e7e7ea!important;background:rgba(255,255,255,.97)!important;
+  box-shadow:0 -4px 15px #1818180b;backdrop-filter:blur(12px);
+ }
+ #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn{
+  flex:1 1 20%!important;display:flex!important;flex-direction:column!important;
+  align-items:center;justify-content:center;gap:4px;
+  min-width:0!important;min-height:49px!important;margin:0!important;padding:4px 2px!important;
+  background:transparent;border:0;border-radius:12px;
+  color:#85858b;font-size:12px;font-weight:750;cursor:pointer;
+ }
+ #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn.active{color:#18191d!important;background:#f0f0f2!important}
+ #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn .pati-mobile-nav-glyph{display:grid;place-items:center;position:relative;min-height:26px}
+ #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn .icon{width:24px;height:24px}
+ #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn small{display:block;font-size:11px;font-weight:750;white-space:nowrap}
+ #app-root:not(.hidden)>.mobile-fab{display:none!important}
+ #main-content .pati-ig-profile{width:100%!important;max-width:100%!important;box-sizing:border-box!important}
+ #main-content .pati-ig-profile .pati-ig-summary{padding:19px 16px 10px!important;gap:20px!important}
+ #main-content .pati-ig-profile .pati-ig-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:2px!important}
+ #main-content .pati-ig-profile .pati-profile-tile{aspect-ratio:1/1!important}
+ #main-content .pati-dm-layout{display:block!important;width:100%!important;max-width:100%!important}
+ #main-content .pati-dm-layout.mobile-chat-list .chat-people{
+  display:block!important;width:100%!important;max-height:calc(100dvh - 250px);
+  min-height:160px;overflow-y:auto!important;border-radius:0!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-list .chat-window{display:none!important}
+ #main-content .pati-dm-layout.mobile-chat-open .chat-people{display:none!important}
+ #main-content .pati-dm-layout.mobile-chat-open .chat-window{
+  display:flex!important;flex-direction:column!important;width:100%!important;
+  height:calc(100dvh - 220px)!important;min-height:270px;max-height:none!important;
+  border-radius:0!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-open .chat-history{flex:1 1 auto;min-height:0;overflow-y:auto}
+ #main-content .pati-dm-layout .mobile-chat-back{display:inline-flex!important;align-items:center;justify-content:center}
+ #main-content:has(.pati-dm-layout.mobile-chat-open) .pati-dm-top,
+ #main-content:has(.pati-dm-layout.mobile-chat-open) .pati-dm-filters,
+ #main-content:has(.pati-dm-layout.mobile-chat-open) .pati-dm-searchbar{display:none!important}
+}
+@media(max-width:470px){
+ #main-content .pati-dm-layout .pati-dm-delete-thread{width:42px;min-width:42px;flex-basis:42px;margin-right:3px}
+ #main-content .pati-dm-layout .pati-dm-list-row>.chat-person{padding-left:8px!important;gap:8px!important}
+ #main-content .pati-dm-layout .pati-dm-list-row>.chat-person .chat-person-meta{max-width:48px}
+}
+@media(prefers-reduced-motion:reduce){#main-content .pati-dm-delete-thread{transition:none!important}}
