@@ -60,7 +60,9 @@ test('Mobil üst menü düğmesi tüm gerçek bölümlere erişim sağlar',()=>{
  });
  fn();
  assert.equal(type,'tools-form');
- assert.match(rendered,/Menü/);\n assert.match(app,/\['education','Eğitim'/);\n assert.match(app,/\['lost','Kayıp İlanları'/);
+ assert.match(rendered,/Menü/);
+ assert.match(app,/\['education','Eğitim'/);
+ assert.match(app,/\['lost','Kayıp İlanları'/);
  for(const id of known)assert.match(rendered,new RegExp('data-view="'+id+'"'),'missing '+id);
  assert.equal(removed,true);
  assert.match(app,/case 'tools':openMobileFeaturesMenu\(\);break/);
