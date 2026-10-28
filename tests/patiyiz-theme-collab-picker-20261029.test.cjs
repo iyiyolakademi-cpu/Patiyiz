@@ -16,8 +16,8 @@ function fakeForm(typed,id,selectedHandle){
 }
 test('Live profile suggestions and accessible account selection',()=>{
  assert.match(picker,/from\('profiles'\)\.select\('id,handle,display_name,avatar_url,is_verified'\)/);
- assert.match(picker,/\.ilike\('handle',q\+'%'\)/);
- assert.match(picker,/\.ilike\('display_name',q\+'%'\)/);
+ assert.match(picker,/\.ilike\('handle',pattern\)/);
+ assert.match(picker,/\.ilike\('display_name',pattern\)/);
  for(const t of ['role="combobox"','role="listbox"','role="option"',"event.key==='ArrowDown'","event.key==='Enter'","results.addEventListener('click'","idField.value=p.id"])assert.ok(picker.includes(t),t);
  assert.match(api.makeMarkup('pati-collab-handle'),/name="collab_user_id"/);
 });
