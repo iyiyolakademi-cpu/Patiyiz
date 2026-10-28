@@ -10,7 +10,7 @@ test('Kaydettiklerim is only in menu, not a large profile link',()=>{
  const profile=between('function profilePage(){','function formField(');
  const menu=between('function openMobileFeaturesMenu(){','const patiCoinTasks=');
  assert.doesNotMatch(profile,/paticoin-profile-link|Kaydettiklerim/);
- assert.match(menu,/\['saved-posts','Kaydettiklerim','bookmark'\]/);
+ assert.match(menu,/\['saved-posts','Kaydettiğim gönderiler','bookmark'\]/);
  assert.match(app,/function savedPostsPage\(\)/);
 });
 test('Profile edit keeps existing FormData keys and custom photo',()=>{
