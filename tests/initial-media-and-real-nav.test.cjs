@@ -45,7 +45,8 @@ test('Patiler bölümü profil kayıtlarını gerçekten listeler ve sahibinin p
  assert.match(markup,/Hayvanlarım/);assert.match(markup,/Topluluktaki Patiler/);
  assert.doesNotMatch(markup,/Pamuk/);assert.match(markup,/Max/);
  assert.match(markup,/data-action="view-user" data-id="another"/);
- assert.match(markup,/data-action="pet-add"/);
+ assert.match(markup,/data-view="my-pet"/);
+ assert.doesNotMatch(markup,/data-action="pet-add"/);
  assert.match(markup,/loading="eager"/);
  assert.match(app,/pets:petsPage/);
 });
