@@ -140,10 +140,10 @@ function showApp(){starter();if(me)window.setTimeout(()=>patiInviteLoad(),1700);
   patiyizDeferredLoading=new Promise(resolve=>setTimeout(resolve,250)).then(async()=>{
    if(me?.id!==userId)return;
    const initial=signature();
-   await load('feed');redraw(initial,true);void patiCollabRefresh();
+   await load('feed');redraw(initial,true);if(typeof patiCollabRefresh==='function')void patiCollabRefresh();
    if(me?.id!==userId)return;
    const later=signature();
-   await load('deferred');redraw(later);
+   await load('deferred');redraw(later);if(typeof patiCollabRefresh==='function')void patiCollabRefresh();
   }).catch(e=>console.warn('Akış yeniden yüklenemedi:',e))
    .finally(()=>{if(me?.id===userId)patiyizDeferredLoading=null});
  }
@@ -590,7 +590,7 @@ function navigate(to){
  else if(!hubScreens.has(to))patiPetHubOrigin=false;
  const previous=view,primary=['home','explore','reels'],reselect=previous===to&&primary.includes(to);
  if(to==='messages'&&previous!=='messages')patiDmReturnView=previous;
- if(to==='home'&&me?.id)void patiCollabRefresh();
+ if(to==='home'&&typeof me!=='undefined'&&me?.id&&typeof patiCollabRefresh==='function')void patiCollabRefresh();
  if(to==='messages'&&previous!=='messages'&&personId)patiDmPendingLatestPeer=personId;
  if(reselect){
   if(to==='explore'&&exploreTab!=='media'){exploreTab='media';search='';render()}
@@ -1313,7 +1313,7 @@ function patiCollabAccepted(postId){
 function patiCollabPartnerPosts(ownerId){
  patiCollabEnsure();
  const ids=new Set(patiCollabs.rows.filter(x=>x.user_id===ownerId&&x.status==='accepted').map(x=>x.post_id));
- return data.posts.filter(p=>p.author_id===ownerId||ids.has(p.id)&&!blocked.has(p.author_id));
+ return data.posts.filter(p=>(p.author_id===ownerId||ids.has(p.id))&&!blocked.has(p.author_id));
 }
 async function patiCollabHydrate(rows){
  const uid=me?.id,ids=[...new Set((rows||[]).filter(x=>x.status==='accepted').map(x=>x.post_id))]
@@ -1447,9 +1447,10 @@ function homePage(){
   .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)||String(b.id).localeCompare(String(a.id)));
  const following=typeof patiHomeTab!=='undefined'&&patiHomeTab==='following',followingItems=typeof patiFollowingState!=='undefined'&&patiFollowingState.owner===me?.id?patiFollowingState.rows:[];
  const visiblePosts=following?followingItems.filter(p=>!blocked.has(p.author_id)):list;
+ if(following&&typeof patiFollowingFetch==='function'&&!patiFollowingState.loading&&(!patiFollowingState.ready||patiFollowingState.owner!==me?.id))void patiFollowingFetch(false);
  main.innerHTML=selectedPostId
-  ?header('Paylaşım','Bildirimin ilgili olduğu paylaşım.',button('← Ana sayfaya dön','post-back'))+(list.find(p=>p.id===selectedPostId)?postCard(list.find(p=>p.id===selectedPostId)):empty('Paylaşım bulunamadı'))
-  :storiesStrip()+'<div class="pati-feed-posts">'+'<div class="pati-home-feed-tabs" role="tablist" aria-label="Ana akış seçimi"><button type="button" role="tab" data-action="home-feed-tab" data-id="all" aria-selected="'+(!following)+'" class="'+(!following?'active':'')+'">Senin İçin</button><button type="button" role="tab" data-action="home-feed-tab" data-id="following" aria-selected="'+following+'" class="'+(following?'active':'')+'">Takip Edilenler</button></div>'+(typeof patiCollabInvites==='function'?patiCollabInvites():'')+(following&&patiFollowingState.loading&&!patiFollowingState.ready?'<p class="pati-following-state">Takip edilenlerin gönderileri yükleniyor…</p>':visiblePosts.length?visiblePosts.map((p,i)=>postCard(p,i<5)+(!following&&i===1?patiLeaderBoard():'')).join('')+(!following&&visiblePosts.length===1?patiLeaderBoard():''):following?'<div class="pati-following-empty"><strong>Takip ettiklerin burada görünecek</strong><p>Henüz yeni gönderi yok. Keşfet’ten yeni hesaplar bulabilir veya akışı yenileyebilirsin.</p><button type="button" data-view="explore">Keşfet</button><button type="button" data-action="home-following-refresh">Yenile</button></div>':empty(patiyizLoadedTables.has('posts')?'Henüz paylaşım yok':'Gönderiler yükleniyor…',patiyizLoadedTables.has('posts')?'İlk gönderiyi sen paylaş!':'Paylaşımların yeniden getiriliyor.'))+((typeof patiHomeLoadError!=='undefined'&&patiHomeLoadError)?'<div class="pati-load-more" role="alert">'+
+  ?header('Paylaşım','Bildirimin ilgili olduğu paylaşım.',button('← Ana sayfaya dön','post-back'))+(data.posts.some(p=>p.id===selectedPostId&&!blocked.has(p.author_id))?postCard(data.posts.find(p=>p.id===selectedPostId)):empty('Paylaşım bulunamadı'))
+  :'<div class="pati-home-feed-tabs" role="tablist" aria-label="Ana akış seçimi"><button type="button" role="tab" data-action="home-feed-tab" data-id="all" aria-selected="'+(!following)+'" class="'+(!following?'active':'')+'">Senin İçin</button><button type="button" role="tab" data-action="home-feed-tab" data-id="following" aria-selected="'+following+'" class="'+(following?'active':'')+'">Takip Edilenler</button></div>'+storiesStrip()+'<div class="pati-feed-posts">'+(typeof patiCollabInvites==='function'?patiCollabInvites():'')+(following?(patiFollowingState.loading&&!patiFollowingState.ready?'<p class="pati-following-state">Takip edilenlerin gönderileri yükleniyor…</p>':visiblePosts.length?visiblePosts.map((p,i)=>postCard(p,i<5)).join(''):'<div class="pati-following-empty"><strong>Takip ettiklerin burada görünecek</strong><p>Henüz yeni gönderi yok. Keşfet’ten yeni hesaplar bulabilir veya akışı yenileyebilirsin.</p><button type="button" data-view="explore">Keşfet</button><button type="button" data-action="home-following-refresh">Yenile</button></div>'):(list.length?list.map((p,i)=>postCard(p,i<5)+(i===1?patiLeaderBoard():'')).join('')+(list.length===1?patiLeaderBoard():''):empty(patiyizLoadedTables.has('posts')?'Henüz paylaşım yok':'Gönderiler yükleniyor…',patiyizLoadedTables.has('posts')?'İlk gönderiyi sen paylaş!':'Paylaşımların yeniden getiriliyor.')))+((typeof patiHomeLoadError!=='undefined'&&patiHomeLoadError)?'<div class="pati-load-more" role="alert">'+
   esc(patiHomeLoadError)+' '+button('Tekrar dene','home-retry')+'</div>':'')
  +(following&&patiFollowingState.error?'<div class="pati-following-error" role="alert">'+esc(patiFollowingState.error)+' '+button('Yeniden dene','home-following-refresh')+'</div>':'')
  +(following&&patiFollowingState.ready&&patiFollowingState.hasMore?'<div class="pati-load-more">'+button('Daha fazla paylaşım yükle','home-following-more')+'</div>':'')
@@ -3327,7 +3328,7 @@ function compose(post,mode='post',autoPick=true){
  const sizes=story?[['9:16','▯ Dikey'],['1:1','□ Kare'],['1.91:1','▭ Yatay']]:[['4:5','▯ Dikey'],['1.91:1','▭ Yatay'],['1:1','□ Kare']];
  const editor=!post&&!textOnly?'<div class="pati-media-controls" hidden><label>Fotoğrafın kadrajını düzenle</label><div class="pati-ratio-options">'+sizes.map(([key,label],i)=>'<button type="button" class="'+(i===0?'active':'')+'" data-action="post-ratio" data-id="'+key+'">'+label+'</button>').join('')+'</div><input type="hidden" name="aspect" value="'+(story?'9:16':'4:5')+'"><button type="button" class="pati-inline-crop-toggle" data-action="post-crop-open">Kadrajı ayarla</button><div class="pati-crop-preview" hidden><div class="pati-crop-pages"><button type="button" data-action="post-crop-prev" aria-label="Önceki fotoğraf">‹</button><strong id="pati-crop-index">1 / 1</strong><button type="button" data-action="post-crop-next" aria-label="Sonraki fotoğraf">›</button></div><canvas id="pati-crop-canvas" width="320" height="400" aria-label="Fotoğraf kırpma önizlemesi"></canvas><p>Fotoğrafı sürükleyerek istediğin kadrajı seç.</p><label>Yakınlaştır <input type="range" name="crop_zoom" min="1" max="2.5" value="1" step="0.05"></label></div></div>':textOnly?'':'<p class="small-note">Düzenleme sırasında mevcut medya korunur.</p>';
  const flow=!post&&!textOnly?'<div class="pati-composer-flow" aria-label="Paylaşım adımları"><span><b>1</b> Medya seç</span><i>›</i><span><b>2</b> Düzenle</span><i>›</i><span><b>3</b> Paylaş</span></div>':'';
- const invite=!post&&!story?'<div class="pati-field pati-collab-field"><label for="pati-collab-handle">Ortak gönderi (isteğe bağlı)</label><input type="search" id="pati-collab-handle" name="collab_handle" list="pati-collab-options" maxlength="40" placeholder="@kullaniciadi" autocomplete="off"><datalist id="pati-collab-options">'+data.profiles.filter(p=>p.id!==me.id&&!blocked.has(p.id)).slice(0,120).map(p=>'<option value="'+esc(p.handle)+'">'+esc(p.display_name)+'</option>').join('')+'</datalist><small>Paylaştıktan sonra davet gönderilir; kabul ederse gönderi iki profilde görünür.</small></div>':'';
+ const invite=!post&&!story?'<div class="pati-field pati-collab-field"><label for="pati-collab-handle">Ortak gönderi (isteğe bağlı)</label><input type="search" id="pati-collab-handle" name="collab_handle" list="pati-collab-options" maxlength="40" placeholder="@kullaniciadi" autocomplete="off"><datalist id="pati-collab-options">'+(typeof data!=='undefined'&&Array.isArray(data.profiles)?data.profiles:[]).filter(p=>p.id!==(typeof me!=='undefined'?me?.id:null)&&!(typeof blocked!=='undefined'&&blocked.has(p.id))).slice(0,120).map(p=>'<option value="'+esc(p.handle)+'">'+esc(p.display_name)+'</option>').join('')+'</datalist><small>Paylaştıktan sonra davet gönderilir; kabul ederse gönderi iki profilde görünür.</small></div>':'';
  const formBody=flow+(!post&&!textOnly?postMediaField(mode):'')+textField('body',textOnly?'Ne düşünüyorsun?':story?'Hikâyene bir açıklama ekle…':'Bir açıklama ekle…',post?.body||'',textOnly)+editor+invite;
  modal(title,formBody,'post-form');
  const f=document.getElementById('post-form');f.dataset.edit=post?.id||'';f.dataset.mode=story?'story':reel?'reels':textOnly?'text':'post';
