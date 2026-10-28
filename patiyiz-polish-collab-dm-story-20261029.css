@@ -243,3 +243,153 @@ html[data-pati-theme="dark"]{
   transition:none!important;
  }
 }
+
+
+/* Seriler — permanent goal dashboard based on the one-time flame card.
+   Original animation, daily weekday row, four goals and PatiCoin rewards. */
+#main-content .pati-streaks-page{
+ --streak-line:var(--pui-border,#e1e3e8);
+ --streak-ink:var(--pui-text,#1c1e23);
+ --streak-muted:var(--pui-secondary,#545864);
+ --streak-paper:var(--pui-paper,#fff);
+ box-sizing:border-box;min-width:0;width:min(780px,100%);
+ margin-inline:auto;padding:clamp(10px,2vw,22px);
+ color:var(--streak-ink);background:transparent;
+}
+#main-content .pati-streaks-top{
+ display:flex;align-items:center;gap:12px;padding:5px 0 16px;
+ color:var(--streak-ink);
+}
+#main-content .pati-streaks-back{
+ flex:0 0 43px;display:grid;place-items:center;width:43px;height:43px;
+ border-radius:13px;border:1px solid var(--streak-line);
+ background:var(--streak-paper);color:var(--streak-ink);
+ font-size:28px;cursor:pointer;
+}
+#main-content .pati-streaks-top h1{font-size:clamp(23px,5vw,30px)!important;margin:0!important;color:var(--streak-ink)!important}
+#main-content .pati-streaks-top p{font-size:12px!important;margin:3px 0 0!important;color:var(--streak-muted)!important}
+#main-content .pati-streak-page-card{
+ display:flex;flex-direction:column;align-items:center;gap:0;
+ border:1px solid var(--streak-line);
+ border-radius:25px;padding:22px 20px 23px;
+ background:var(--pati-streak-card,var(--streak-paper));color:var(--pati-streak-text,var(--streak-ink));
+ box-shadow:0 6px 23px #00000008;
+ box-sizing:border-box;width:100%;max-width:100%;overflow:hidden;text-align:center;
+}
+#main-content .pati-streak-page-card .pati-streak-sparkles{
+ height:138px;width:142px;margin:0 0 9px;max-height:none;
+}
+#main-content .pati-streak-page-card .pati-streak-flame{animation:pati-streak-flame-welcome 1s ease-out both}
+#main-content .pati-streak-page-card .pati-streak-count{
+ font-size:clamp(54px,12vw,78px);font-weight:950;color:var(--pati-streak-text,var(--streak-ink));
+}
+#main-content .pati-streak-page-card h2{
+ margin:2px 0 5px!important;font-size:clamp(23px,5vw,30px)!important;
+ color:var(--pati-streak-text,var(--streak-ink))!important;
+}
+#main-content .pati-streak-page-card .pati-streak-message{
+ max-width:400px;margin:9px 0 18px;color:var(--pati-streak-muted,var(--streak-muted))!important;
+}
+#main-content .pati-streak-page-card .pati-streak-week{
+ width:100%;max-width:350px;margin-bottom:14px;
+}
+#main-content .pati-streak-page-card .pati-streak-best{max-width:100%;color:var(--pati-streak-text,var(--streak-ink))}
+#main-content .pati-streak-goal-section{
+ margin-top:16px;padding:18px;border:1px solid var(--streak-line);border-radius:23px;
+ background:var(--streak-paper);color:var(--streak-ink);
+}
+#main-content .pati-streak-goals-header h2{color:var(--streak-ink)!important;font-size:20px!important;margin:0 0 4px!important}
+#main-content .pati-streak-goals-header p{color:var(--streak-muted)!important;font-size:12px!important;margin:0 0 16px!important;line-height:1.5}
+#main-content .pati-streak-goal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#main-content .pati-streak-goal-card{
+ display:flex;flex-direction:column;min-width:0;gap:7px;
+ background:var(--pui-raised,#f3f4f6);border:1px solid var(--streak-line);
+ border-radius:18px;padding:14px;box-sizing:border-box;color:var(--streak-ink);
+}
+#main-content .pati-streak-goal-card.is-selected{
+ border:2px solid var(--streak-ink);padding:13px;
+ background:var(--streak-paper);
+}
+#main-content .pati-streak-goal-top{
+ display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
+}
+#main-content .pati-streak-goal-days{
+ font-size:clamp(22px,5vw,28px);font-weight:950;line-height:1.2;color:var(--streak-ink);
+ font-variant-numeric:tabular-nums;
+}
+#main-content .pati-streak-goal-days small{font-size:12px;color:var(--streak-muted);font-weight:700}
+#main-content .pati-streak-goal-coins{
+ display:inline-flex;gap:4px;align-items:center;padding:5px 8px;
+ color:#915300;background:#fff0c9;border-radius:999px;font-size:12px;font-weight:900;
+}
+#main-content .pati-streak-goal-coins .pati-coin-icon{width:16px!important;height:16px!important;object-fit:contain}
+#main-content .pati-streak-goal-card>strong{font-size:14px!important;color:var(--streak-ink)!important}
+#main-content .pati-streak-goal-card>small{font-size:11px!important;color:var(--streak-muted)!important;line-height:1.5}
+#main-content .pati-streak-progress{
+ margin:6px 0 2px;height:7px;border-radius:9px;overflow:hidden;
+ background:var(--streak-line);
+}
+#main-content .pati-streak-progress>span{
+ display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#ffbd36,#ff8128);
+ transition:width .36s ease;
+}
+#main-content .pati-streak-goal-footer{
+ margin-top:auto;padding-top:5px;display:flex;flex-direction:column;align-items:stretch;gap:9px;
+}
+#main-content .pati-streak-goal-footer span{
+ color:var(--streak-muted)!important;font-size:11px;line-height:1.4;
+}
+#main-content .pati-streak-goal-footer button{
+ width:100%;min-height:40px;border:0;border-radius:11px;cursor:pointer;
+ background:var(--pui-active,#1b1c21)!important;
+ color:var(--pui-active-text,#fff)!important;font-size:12px;font-weight:850;
+}
+#main-content .pati-streak-goal-footer button:disabled{
+ cursor:default;opacity:1;background:var(--streak-line)!important;color:var(--streak-muted)!important;
+}
+#main-content .pati-streak-goal-card.is-earned .pati-streak-goal-footer button{
+ color:#176544!important;background:#e0f5e9!important;
+}
+#main-content .pati-streak-rules{
+ margin:16px 0 0!important;font-size:11px!important;color:var(--streak-muted)!important;line-height:1.55!important;
+}
+#main-content .pati-streaks-page button:focus-visible{
+ outline:3px solid var(--pui-focus,#526de0)!important;outline-offset:2px;
+}
+@media(max-width:540px){
+ #main-content .pati-streaks-page{padding:8px}
+ #main-content .pati-streak-goal-section{padding:13px;border-radius:18px}
+ #main-content .pati-streak-goal-grid{gap:9px}
+ #main-content .pati-streak-goal-card{padding:11px;border-radius:15px}
+ #main-content .pati-streak-goal-card.is-selected{padding:10px}
+ #main-content .pati-streak-page-card{padding:13px 10px 19px}
+ #main-content .pati-streak-page-card .pati-streak-sparkles{width:112px;height:118px}
+}
+/* An explicit Onayla action beside each suggestion. Tapping the name does not approve. */
+.pati-collab-search-results .pati-collab-option{
+ box-sizing:border-box;cursor:default;gap:8px;
+}
+.pati-collab-search-results .pati-collab-user{flex:1 1 auto;min-width:0}
+.pati-collab-search-results .pati-collab-approve{
+ flex:0 0 auto;min-width:66px;min-height:39px;
+ padding:8px 11px!important;border:1px solid var(--pui-active,#222)!important;
+ border-radius:10px!important;color:var(--pui-active-text,#fff)!important;
+ background:var(--pui-active,#222)!important;font-size:12px!important;
+ font-weight:850!important;text-align:center!important;cursor:pointer;
+}
+.pati-collab-search-results .pati-collab-approve:hover{
+ opacity:.88;
+}
+.pati-collab-search-results .pati-collab-approve:focus-visible{
+ outline:3px solid var(--pui-focus,#5d6ce6)!important;outline-offset:2px!important;
+}
+html[data-pati-theme="dark"] .pati-collab-search-results .pati-collab-approve{
+ background:#f2f3f6!important;color:#191a20!important;border-color:#f2f3f6!important;
+}
+@media(max-width:360px){
+ .pati-collab-search-results .pati-collab-approve{min-width:59px;padding:6px 7px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #main-content .pati-streak-page-card .pati-streak-flame{animation:none!important}
+ #main-content .pati-streak-progress>span{transition:none!important}
+}
