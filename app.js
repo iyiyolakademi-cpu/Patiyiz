@@ -3793,17 +3793,21 @@ function editPet(p){
  if(typeof patiPetPhotoObjectUrl!=='undefined'&&patiPetPhotoObjectUrl){URL.revokeObjectURL(patiPetPhotoObjectUrl);patiPetPhotoObjectUrl=''}
  if(p&&p.owner_id!==me.id)return notify('Yalnızca kendi hayvanını düzenleyebilirsin.',true);
  const photo=p?.photo_url?'<img src="'+esc(p.photo_url)+'" alt="Mevcut hayvan fotoğrafı" loading="eager">':'<span class="pati-pet-placeholder">'+petIcon(p?.species||'Kedi')+'</span>';
- const fields='<div class="pati-pet-edit-cover"><div class="pati-pet-edit-photo">'+photo+'</div><div><strong>'+(p?'Fotoğrafını güncelle':'Bir fotoğraf seç')+'</strong><label class="pati-pet-photo-select" for="pati-pet-photo">Galeriden fotoğraf seç</label><input id="pati-pet-photo" name="photo" type="file" accept="image/*,.heic,.heif" aria-label="Hayvan fotoğrafı seç"><small>JPG, PNG veya HEIC. Fotoğraf eklemek isteğe bağlıdır.</small></div></div>'+
-  formField('name','Hayvanın adı','text',p?.name||'',true)+
-  selectField('species','Tür',species,p?.species||'Kedi')+
-  selectField('gender','Cinsiyet',petGenders,p?.gender||'Belirtilmedi')+
-  formField('age','Yaş','text',p?.age||'')+
-  formField('breed','Irk','text',p?.breed||'')+
-  formField('personality','Karakter','text',p?.personality||'')+
-  textField('notes','Notlar',p?.notes||'',false,500);
+ const fields='<section class="pati-edit-cover pati-pet-edit-cover"><div class="pati-edit-avatar pati-pet-edit-photo">'+photo+'</div><div class="pati-edit-photo-tools pati-pet-edit-photo-tools"><strong>Hayvanının fotoğrafı</strong><label class="pati-edit-photo-select pati-pet-photo-select" for="pati-pet-photo">Fotoğrafı '+(p?'değiştir':'ekle')+'</label><input id="pati-pet-photo" name="photo" type="file" accept="image/*,.heic,.heif" aria-label="Hayvan fotoğrafı seç"><small>JPG, PNG veya HEIC · Fotoğraf eklemek isteğe bağlı</small></div><div class="pati-upload-preview" hidden></div></section>'+
+ '<div class="pati-edit-sections pati-pet-edit-sections"><div class="pati-edit-section-title">Hayvan bilgileri</div>'+
+ formField('name','Hayvanın adı','text',p?.name||'',true)+
+ selectField('species','Tür',species,p?.species||'Kedi')+
+ selectField('gender','Cinsiyet',petGenders,p?.gender||'Belirtilmedi')+
+ '<div class="pati-pet-edit-fields-row">'+formField('age','Yaş','text',p?.age||'')+formField('breed','Irk','text',p?.breed||'')+'</div>'+
+ '<div class="pati-edit-section-title pati-pet-edit-secondary-heading">Ek bilgiler</div>'+
+ formField('personality','Karakter','text',p?.personality||'')+
+ textField('notes','Notlar',p?.notes||'',false,500)+
+ '<p class="pati-edit-hint">Bilgileri daha sonra Hayvanım Merkezi üzerinden değiştirebilirsin.</p></div>';
  modal(p?'Hayvan profilini düzenle':'Yeni hayvan ekle',fields,'pet-form');
  const form=$('#pet-form');form.dataset.edit=p?.id||'';
- document.querySelector('#modal-root .modal')?.classList.add('pati-pet-edit-modal');
+ document.querySelector('#modal-root .modal')?.classList.add('pati-profile-edit-modal','pati-pet-edit-modal');
+ const submit=form.querySelector('.modal-footer button[type="submit"]');
+ if(submit)submit.textContent='Bitti';
  if(p){
   const footer=form.querySelector('.modal-footer');
   if(footer)footer.insertAdjacentHTML('afterbegin','<button class="pati-pet-delete" type="button" data-action="pet-delete" data-id="'+esc(p.id)+'">Hayvan profilini sil</button>');
