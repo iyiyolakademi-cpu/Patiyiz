@@ -81,6 +81,7 @@
   const days=safeNumber(state.count),best=safeNumber(state.best);
   const iso=/^\d{4}-\d{2}-\d{2}$/.test(day)?day:new Date().toISOString().slice(0,10);
   return '<section class="pati-streak-page-card" aria-label="Günlük giriş serin">'+
+   '<span class="pati-streak-hero-eyebrow">🔥 Patili başarı yolculuğun</span>'+
    '<div class="pati-streak-sparkles">'+flameSVG+'</div>'+
    '<strong class="pati-streak-count">'+days.toLocaleString('tr-TR')+'</strong>'+
    '<h2>günlük seri!</h2>'+
