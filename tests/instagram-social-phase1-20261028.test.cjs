@@ -65,6 +65,7 @@ test('Story share attributes original, retains source link and original media',(
  assert.match(story,/data.posts.push\(post\)/);
  assert.match(story,/closeStory\(false\);openPost\(postId\)/);
  assert.match(storySql,/add column if not exists shared_post_id uuid references public.posts\(id\) on delete set null/);
+ assert.match(app,/if\(original&&!original\.shared_post_id\)await deleteOwnedMedia\(original\)/);
  assert.match(app,/data-action="pati-story-open-post"/);
  assert.match(app,/case 'pati-share-story':if\(confirm/);
  assert.match(css,/pati-story-shared-source/);
