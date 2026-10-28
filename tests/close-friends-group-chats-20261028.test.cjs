@@ -14,7 +14,7 @@ test('The social expansion parses without replacing existing DM/story machinery'
 test('Story picker supports everyone and close friends; own private upload and short lived URLs',()=>{
  assert.match(media,/id="pati-system-audience"/);
  assert.match(media,/value="close_friends"/);
- assert.match(media,/state\.onPublish\(root\.querySelector\('#pati-system-caption'\)\.value,/);
+ assert.match(media,/state\.onPublish\(root\.querySelector\('#pati-system-caption'\)\.value\)/);
  assert.match(app,/form\.dataset\.storyAudience=audience/);
  assert.match(app,/async function patiCreateCloseFriendStory/);
  assert.match(app,/private_image_path:imagePath/);
