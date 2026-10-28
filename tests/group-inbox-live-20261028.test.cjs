@@ -52,7 +52,7 @@ test('Server-only read marker and own group-message deletion are authorized',()=
  assert.match(sql,/patiyiz_group_mark_read/);
  assert.match(sql,/group_message_delete_self/);
  assert.match(sql,/sender_id=\(select auth\.uid\(\)\)/);
- const actions=between("case 'pati-group-delete-message':","case 'pati-group-members':");
+ const actions=between("case 'pati-group-delete-message':","case 'pati-group-add-open':");
  assert.match(actions,/\.eq\('sender_id',owner\)/);
  assert.match(actions,/patiGroupRefreshActive\(group,true\)/);
  assert.match(app,/data-action="pati-group-delete-message"/);
