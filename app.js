@@ -2367,7 +2367,7 @@ function careCard(x){
   +'<button type="button" class="care-v2-complete" data-action="care-done" data-id="'+esc(x.id)+'">'+(x.done?'↶ Geri al':'✓ Tamamla')+'</button>'
   +'<details class="pati-care-more"><summary aria-label="Görev seçenekleri">•••</summary><div><button type="button" data-action="care-edit" data-id="'+esc(x.id)+'">Düzenle</button><button type="button" class="care-v2-delete" data-action="care-del" data-id="'+esc(x.id)+'">Sil</button></div></details></div></article>';
 }
-function patiUnifiedCareReminders(){
+function patiUnifiedCareReminders(ignoreFilters=false){
  if(typeof patiWellness==='undefined'||!patiWellness.loaded||!Array.isArray(patiWellness.reminders))return [];
  const own=new Set((data.pets||[]).filter(p=>p.owner_id===me?.id).map(p=>p.id));
  const careNames=new Set(careOwnItems().map(x=>[x.pet_id||'',String(x.due_date||''),careFold(x.title)].join('|')));
@@ -2378,11 +2378,11 @@ function patiUnifiedCareReminders(){
   if(careNames.has([x.pet_id,date,careFold(x.title)].join('|')))return false;
   const state=x.completed_at?'done':date<today?'late':date===today?'today':'upcoming';
   const pet=data.pets.find(p=>p.id===x.pet_id);
-  return (careFilter==='all'||careFilter===state)
+  return ignoreFilters||((careFilter==='all'||careFilter===state)
    &&(!patiCareSelectedDate||date===patiCareSelectedDate)
    &&(carePetFilter==='all'||x.pet_id===carePetFilter)
    &&(careCategoryFilter==='Tümü'||({vaccine:'Aşı',vet:'Veteriner',medicine:'İlaç',food:'Mama'}[x.kind]||'Bakım')===careCategoryFilter)
-   &&(!q||careFold([x.title,x.kind,pet?.name||''].join(' ')).includes(q));
+   &&(!q||careFold([x.title,x.kind,pet?.name||''].join(' ')).includes(q)));
  }).sort((a,b)=>String(a.due_at).localeCompare(String(b.due_at)));
 }
 function patiUnifiedCareReminderCard(x){
@@ -2420,8 +2420,12 @@ async function careRefresh(){
  finally{careLoading=false;if(me?.id===uid&&(view==='care'||(view==='my-pet'&&patiMyPetTab==='care')))render()}
 }
 function carePage(){
- const all=careOwnItems(),today=careToday();
- const counts={today:all.filter(x=>!x.done&&x.due_date===today).length,upcoming:all.filter(x=>!x.done&&x.due_date>today).length,done:all.filter(x=>x.done).length};
+ const all=careOwnItems(),today=careToday(),healthReminders=patiUnifiedCareReminders(true);
+ const counts={
+  today:all.filter(x=>!x.done&&x.due_date===today).length+healthReminders.filter(x=>!x.completed_at&&String(x.due_at).slice(0,10)===today).length,
+  upcoming:all.filter(x=>!x.done&&x.due_date>today).length+healthReminders.filter(x=>!x.completed_at&&String(x.due_at).slice(0,10)>today).length,
+  done:all.filter(x=>x.done).length+healthReminders.filter(x=>!!x.completed_at).length
+ };
  const list=patiUnifiedCareCards();
  if(typeof patiWellnessFetch==='function'&&typeof patiWellness!=='undefined'&&!patiWellness.loaded&&!patiWellness.loading&&!patiWellness.error)void patiWellnessFetch(true);
  const active=data.pets.find(p=>p.id===(typeof patiHubSelectedPetId==='string'?patiHubSelectedPetId:'')&&p.owner_id===me?.id)||data.pets.find(p=>p.owner_id===me?.id);
