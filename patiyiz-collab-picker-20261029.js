@@ -29,7 +29,7 @@
   let sequence=0,timer=null,items=[],active=-1;
   const escape=options.escape||((v)=>String(v));
   const filter=profiles=>[...new Map(profiles.filter(p=>p&&p.id&&p.id!==options.userId&&!options.blocked?.has(p.id)&&p.handle).map(p=>[p.id,p])).values()]
-   .sort((a,b)=>Number(String(a.handle).toLocaleLowerCase('tr-TR').startsWith(safeQuery(input.value))) - Number(String(b.handle).toLocaleLowerCase('tr-TR').startsWith(safeQuery(input.value))) || String(a.handle).localeCompare(String(b.handle),'tr'));
+   .sort((a,b)=>Number(String(b.handle).toLocaleLowerCase('tr-TR').startsWith(safeQuery(input.value))) - Number(String(a.handle).toLocaleLowerCase('tr-TR').startsWith(safeQuery(input.value))) || String(a.handle).localeCompare(String(b.handle),'tr'));
   const clearSelection=()=>{idField.value='';wrap.dataset.selectedHandle='';selected.hidden=true;selected.innerHTML=''};
   const reset=()=>{clearSelection();sequence++;if(timer)clearTimeout(timer);items=[];active=-1;results.innerHTML='';results.hidden=true;input.setAttribute('aria-expanded','false')};
   const resultMarkup=()=>{
