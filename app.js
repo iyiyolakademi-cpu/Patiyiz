@@ -4130,6 +4130,48 @@ case 'notifications-delete-all':if(confirm('Tüm bildirimlerin kalıcı olarak s
 case 'blocked-list':navigate('blocked');break;case 'follow-load-more':void patiLoadFollowPage();break;case 'followers-list':followReturnList=false;followListId=id;followListMode=target.dataset.mode==='following'?'following':'followers';navigate('follows-list');break;case 'followers-back':profileId=followListId;followReturnList=false;navigate('profile');break;case 'return-follow-list':followReturnList=false;navigate('follows-list');break;case 'delete-account-open':modal('Hesabımı kalıcı olarak sil',`<div class="pati-delete-warning"><strong>⚠️ Bu işlem geri alınamaz.</strong><p>Profilin, gönderilerin, hikâyelerin, mesajların, sesli yorumların ve yüklediğin dosyalar silinir. Başka kullanıcıların seninle yazışmalarındaki mesajlar da etkilenebilir. Yönetici hesapları buradan silinemez.</p></div><div class="pati-field"><label>Mevcut şifren</label><input type="password" name="delete_password" autocomplete="current-password" required></div><div class="pati-field"><label>Onaylamak için HESABIMI SIL yaz</label><input name="delete_confirm" autocomplete="off" required placeholder="HESABIMI SIL"></div>`,'delete-account-form');break;case 'settings-password':modal('Şifremi değiştir',formField('new_password','Yeni şifre (en az 8 karakter)','password','',true),'settings-password-form');break;case 'push-disable':run(async()=>{await disablePhonePush();if(view==='notifications')void notificationCheckPush()},'Bu cihazda telefon bildirimleri kapatıldı.');break;case 'block':{const isBlocked=blocked.has(id);const question=isBlocked?'Bu kişinin engelini kaldırmak istiyor musun?':'Bu kullanıcıyı engellemek istiyor musun?';if(confirm(question))run(async()=>{await doToggle('user_blocks',{blocker_id:me.id,blocked_id:id},isBlocked);if($('#blocked-form'))closeModal();notify(isBlocked?'Engel kaldırıldı.':'Kullanıcı engellendi.');},null);break}
 case 'report':closeStory();modal('İçeriği bildir',textField('reason','Şikâyet nedeni (en az 5 karakter)','',true,500),'report-form');$('#report-form').dataset.kind=target.dataset.kind;$('#report-form').dataset.record=id;break;
 case 'tools':openMobileFeaturesMenu();break;default:break}}
+// Notifications have no visible delete buttons: a long press or context-menu key opens delete.
+let notificationPressTimer=null,notificationPressOrigin=null,notificationLongPressed=false;
+function openNotificationDeleteOptions(el){
+ if(!el||view!=='notifications'||!me?.id)return;
+ const id=el.dataset.notificationId;
+ const item=data.notifications.find(n=>n.id===id&&n.owner_id===me.id);
+ if(!item)return;
+ modal('Bildirimi sil','<p class="pati-notification-delete-explain">Bu bildirimi kaldırmak istiyor musun?</p><button type="button" class="pati-notification-delete-confirm" data-action="notification-delete" data-id="'+esc(id)+'">Bildirimi sil</button>','notification-options-form');
+ document.querySelector('#notification-options-form .modal-footer')?.remove();
+}
+document.addEventListener('contextmenu',e=>{
+ const row=e.target.closest?.('.pati-alert-simple[data-notification-id]');
+ if(!row)return;
+ e.preventDefault();openNotificationDeleteOptions(row);
+});
+document.addEventListener('pointerdown',e=>{
+ const row=e.target.closest?.('.pati-alert-simple[data-notification-id]');
+ if(!row||e.pointerType==='mouse')return;
+ clearTimeout(notificationPressTimer);
+ notificationLongPressed=false;
+ notificationPressOrigin={x:e.clientX,y:e.clientY};
+ notificationPressTimer=setTimeout(()=>{notificationLongPressed=true;openNotificationDeleteOptions(row);notificationPressTimer=null},550);
+});
+document.addEventListener('pointermove',e=>{
+ if(notificationPressOrigin&&(Math.abs(e.clientX-notificationPressOrigin.x)>12||Math.abs(e.clientY-notificationPressOrigin.y)>12)){
+  clearTimeout(notificationPressTimer);notificationPressTimer=null;notificationPressOrigin=null;
+ }
+});
+for(const type of ['pointerup','pointercancel','scroll']){
+ document.addEventListener(type,()=>{clearTimeout(notificationPressTimer);notificationPressTimer=null;notificationPressOrigin=null},true);
+}
+document.addEventListener('keydown',e=>{
+ if((e.key==='ContextMenu'||e.key==='F10'&&e.shiftKey)&&e.target?.closest?.('.pati-alert-simple[data-notification-id]')){
+  e.preventDefault();openNotificationDeleteOptions(e.target.closest('.pati-alert-simple[data-notification-id]'));
+ }
+});
+document.addEventListener('click',e=>{
+ if(notificationLongPressed&&e.target?.closest?.('.pati-alert-simple[data-notification-id]')){
+  e.preventDefault();e.stopImmediatePropagation();notificationLongPressed=false;
+ }
+},true);
+
 let messagePressTimer=null,messagePressOrigin=null,messageLongPressed=false;
 function openMessageOptions(el){if(!el||view!=='messages'||!me)return;const id=el.dataset.messageId;const msg=patiDmFindMessage(id);if(!msg||(msg.sender_id!==me.id&&msg.receiver_id!==me.id))return;const pin=typeof patiDmPinState!=='undefined'&&patiDmPinState.byPeer.get(personId)===id;modal('Mesaj seçenekleri',`<div class="pati-actionbar pati-dm-message-actions"><button type="button" class="outline-btn" data-action="${pin?'dm-message-unpin':'dm-message-pin'}" data-id="${esc(id)}">${pin?'📌 Sabiti kaldır':'📌 Mesajı sabitle'}</button><button type="button" class="outline-btn pati-msg-delete" data-action="message-delete" data-id="${esc(id)}">🗑️ Sil</button></div><p class="small-note">Sabitlenen mesaj bu sohbetin üstünde görünür. Silinen mesaj iki taraftan da kaldırılır.</p>`,'message-options-form');$('#message-options-form .modal-footer')?.remove();}
 document.addEventListener('contextmenu',e=>{const bubble=e.target.closest('.bubble-chat[data-message-id]');if(bubble){e.preventDefault();openMessageOptions(bubble)}});
