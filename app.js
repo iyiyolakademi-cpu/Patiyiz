@@ -223,7 +223,7 @@ function patiStreaksPage(){
    '<section class="pati-streak-goal-section"><div class="pati-streak-goals-header"><h2>Seri hedefini belirle</h2><p>'+esc(label)+'</p></div>'+
    '<div class="pati-streak-goal-grid">'+cards+'</div>'+
    '<p class="pati-streak-rules">Ödüller her hedef için yalnızca bir kez verilir. Daha önce geçtiğin gün sayıları yerine yeni bir hedef seçebilirsin. Gün değişimi Türkiye saatine göre hesaplanır.</p></section></div>';
- if(!patiStreakGoalState.ready&&!patiStreakGoalState.loading)void patiStreakGoalLoad();
+ if(!patiStreakGoalState.ready&&!patiStreakGoalState.loading&&!patiStreakGoalState.error)void patiStreakGoalLoad();
 }
 
 function showApp(){starter();if(me)window.setTimeout(()=>patiStreakCheckin(),550);if(me)window.setTimeout(()=>patiInviteLoad(),1700);if(me){window.setTimeout(()=>patiPublicActivityInit(),750);window.setTimeout(()=>patiWellnessFetch(true),1300)}if(me)window.setTimeout(()=>patiCoinSync(true),1600);if(me)window.setTimeout(()=>educationCloudLoad(),1200);authRoot.classList.add('hidden');appRoot.classList.remove('hidden');navigate(view);startLive();routePendingNotification();if(typeof routePendingLost==='function')void routePendingLost();if(typeof routePendingAdoption==='function')void routePendingAdoption();checkAdmin();
@@ -702,7 +702,7 @@ function navigate(to){
  const previous=view;if(previous!==to)patiPreviousView=previous;const primary=['home','explore','reels'],reselect=previous===to&&primary.includes(to);
  if(to==='education'&&previous!=='education'){educationCategory='Tümü';educationLesson='';educationSearch='';educationStatus='Tümü';patiAcademyBrowseAll=false}
  if(to==='messages'&&previous!=='messages')patiDmReturnView=previous;
- if(to==='streaks'){void patiStreakCheckin();void patiStreakGoalLoad()}
+ if(to==='streaks'){if(patiStreakState.checkedOn===patiStreakToday())void patiStreakGoalLoad();else void patiStreakCheckin()}
  if(to==='home'&&typeof me!=='undefined'&&me?.id&&typeof patiCollabRefresh==='function')void patiCollabRefresh();
  if(to==='messages'&&previous!=='messages'&&personId)patiDmPendingLatestPeer=personId;
  if(reselect){
