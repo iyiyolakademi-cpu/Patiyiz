@@ -568,8 +568,11 @@ const patiMobileTabScroll=new Map();
 let patiSwipeNavDirection=0;
 let patiNavAnimationId=0;
 function navigate(to){
+ if(view==='my-pet'&&patiMyPetTab==='hub'&&patiPetHubScreens.has(to))patiPetHubOrigin=true;
  if(['care','wellness','healthfile'].includes(to)){patiMyPetTab=to;to='my-pet'} else if(to==='my-pet'){patiMyPetTab='hub'}
  if(!allowed.includes(to))to='home';
+ if(to==='my-pet')patiPetHubOrigin=false;
+ else if(!patiPetHubScreens.has(to))patiPetHubOrigin=false;
  const previous=view,primary=['home','explore','reels'],reselect=previous===to&&primary.includes(to);
  if(to==='messages'&&previous!=='messages')patiDmReturnView=previous;
  if(to==='messages'&&previous!=='messages'&&personId)patiDmPendingLatestPeer=personId;
@@ -645,7 +648,17 @@ function patiBuildPostStats(likes,comments,hiddenAuthors){
  }
  return stats;
 }
-function render(){try{patiPostRenderStats=['home','reels','profile','explore','saved-posts'].includes(view)?patiBuildPostStats(data.likes,data.comments,blocked):null;({home:homePage,explore:explorePage,reels:reelsPage,pets:petsPage,wellness:patiWellnessPage,healthfile:healthFilePage,'saved-posts':savedPostsPage,rewards:patiRewardsPage,shop:patiShopPage,community:communityPage,knowledge:knowledgePage,education:educationPage,lost:lostPage,adoption:adoptionPage,care:carePage,'my-pet':patiMyPetCenterPage,messages:messagesPage,notifications:notificationsPage,profile:profilePage,blocked:blockedPage,settings:settingsPage,'follows-list':followListPage}[view]||homePage)();setupFeedMediaRatios();setupFeedVideos();setupReelsViewer();patiWatchPostViews()}catch(e){console.error(e);main.innerHTML=header('Bir hata oldu')+empty('Ekran açılamadı','Sayfayı yenile veya daha sonra tekrar dene.')}}
+let patiPetHubOrigin=false;
+const patiPetHubScreens=new Set(['pets','education','knowledge','lost','adoption','community']);
+function patiPetHubBackButton(){
+ if(!patiPetHubOrigin||!patiPetHubScreens.has(view))return;
+ const root=main.querySelector('section');if(!root)return;
+ const nav=document.createElement('div');nav.className='pati-pet-hub-return';
+ nav.innerHTML='<button type="button" data-view="my-pet" aria-label="Hayvanım Merkezi geri dön">← Hayvanım Merkezi</button>';
+ root.prepend(nav);
+ root.classList.add('pati-pet-hub-linked');
+}
+function render(){try{patiPostRenderStats=['home','reels','profile','explore','saved-posts'].includes(view)?patiBuildPostStats(data.likes,data.comments,blocked):null;({home:homePage,explore:explorePage,reels:reelsPage,pets:petsPage,wellness:patiWellnessPage,healthfile:healthFilePage,'saved-posts':savedPostsPage,rewards:patiRewardsPage,shop:patiShopPage,community:communityPage,knowledge:knowledgePage,education:educationPage,lost:lostPage,adoption:adoptionPage,care:carePage,'my-pet':patiMyPetCenterPage,messages:messagesPage,notifications:notificationsPage,profile:profilePage,blocked:blockedPage,settings:settingsPage,'follows-list':followListPage}[view]||homePage)();patiPetHubBackButton();setupFeedMediaRatios();setupFeedVideos();setupReelsViewer();patiWatchPostViews()}catch(e){console.error(e);main.innerHTML=header('Bir hata oldu')+empty('Ekran açılamadı','Sayfayı yenile veya daha sonra tekrar dene.')}}
 async function load(mode='all'){if(!me)return;const userId=me.id,loadToken=patiyizLoadToken,likesEpoch=(typeof likesChangeEpoch==='number'?likesChangeEpoch:0),savesEpoch=(typeof savesChangeEpoch==='number'?savesChangeEpoch:0);let specs=[['profiles','profiles',800],['pets','pets',600],['posts','posts',200],['post_likes','likes',2000],['post_saves','saves',2000],['comments','comments',1500],['comment_likes','commentLikes',3000],['follows','follows',2000],['questions','questions',150],['replies','replies',1500],['question_votes','votes',2000],['lost_reports','lost',300],['adoption_listings','adoption',300],['patiyiz_stories','stories',250],['patiyiz_story_responses','storyResponses',1000],['patiyiz_reposts','reposts',600],['patiyiz_post_pins','pins',500],['patiyiz_highlight_albums','highlightAlbums',250],['patiyiz_highlight_items','highlightItems',500],['care_tasks','care',500],['messages','messages',1000],['message_hidden','messageHidden',1000],['notifications','notifications',500],['kb_bookmarks','bookmarks',300],['user_blocks','blocks',500]];if(mode==='initial')specs=specs.filter(([table])=>['profiles','pets','posts','post_likes','post_saves','patiyiz_stories','patiyiz_highlight_albums','patiyiz_highlight_items','user_blocks'].includes(table));else if(mode==='feed')specs=specs.filter(([table])=>['profiles','posts','post_likes','post_saves','patiyiz_stories','patiyiz_highlight_albums','patiyiz_highlight_items'].includes(table));else if(mode==='deferred')specs=specs.filter(([table])=>!patiyizLoadedTables.has(table));
 const fetchSpec=async([table,key,limit])=>{const chunks=[];const size=250,cap=Math.max(1,Math.min(5000,pageLimits[key]||limit));try{for(let start=0;start<cap;start+=size){let req=sb.from(table).select('*').range(start,Math.min(start+size-1,cap-1));if(table==='kb_bookmarks')req=req.eq('user_id',userId);if(['messages','notifications','comments','posts','replies','questions','lost_reports','patiyiz_stories','patiyiz_story_responses','adoption_listings'].includes(table))req=req.order('created_at',{ascending:false});if(table==='posts')req=req.order('id',{ascending:false});const r=await req;if(r.error)throw r.error;chunks.push(...(r.data||[]));if((r.data||[]).length<size)break;}if(pageLimits[key])pageMore[key]=chunks.length>=cap;return[key,chunks,true]}catch(e){console.warn(table,'yüklenemedi:',e.message);if(table==='posts'&&typeof patiHomeLoadError!=='undefined')patiHomeLoadError='Gönderiler yüklenemedi.';return[key,data[key]||[],false]}};const results=[];if(mode==='deferred'){for(let i=0;i<specs.length;i+=4){if(me?.id!==userId||patiyizLoadToken!==loadToken)return;results.push(...await Promise.all(specs.slice(i,i+4).map(fetchSpec)))}}else results.push(...await Promise.all(specs.map(fetchSpec)));if(me?.id!==userId||patiyizLoadToken!==loadToken)return;for(const [k,val,ok]of results){
  if(k==='posts'&&ok&&typeof patiHomeFeedIds!=='undefined'){
