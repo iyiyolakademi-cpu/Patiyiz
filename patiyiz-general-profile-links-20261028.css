@@ -1,0 +1,93 @@
+/* Optional public links on Patiyiz member profiles. */
+#main-content .pati-general-links{
+ display:flex;flex-direction:column;gap:7px;min-width:0;
+ margin:5px 13px 15px;max-width:100%;box-sizing:border-box
+}
+#main-content .pati-general-link{
+ display:flex;align-items:center;gap:10px;width:100%;max-width:100%;
+ min-height:51px;padding:10px 13px;border-radius:14px;
+ background:#f5f6f8;color:#17191d;border:1px solid #e8e9ec;
+ text-decoration:none;box-sizing:border-box;min-width:0;transition:background .15s
+}
+#main-content .pati-general-link:hover{background:#ebecf0}
+#main-content .pati-general-link:focus-visible{
+ outline:3px solid #6d7485;outline-offset:2px
+}
+#main-content .pati-general-link-icon{
+ display:grid;place-items:center;flex:0 0 33px;height:33px;
+ background:#e6e8ed;border-radius:11px;font-size:20px
+}
+#main-content .pati-general-link-copy{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+#main-content .pati-general-link-copy strong{
+ display:block;font-size:13px;font-weight:850;white-space:nowrap;
+ text-overflow:ellipsis;overflow:hidden
+}
+#main-content .pati-general-link-copy small{
+ display:block;color:#787b84;font-size:11px;overflow:hidden;
+ white-space:nowrap;text-overflow:ellipsis
+}
+#modal-root .pati-profile-links-editor{
+ display:flex;flex-direction:column;gap:11px;min-width:0;
+ margin-top:15px;border-top:1px solid #e9e9eb;padding-top:18px
+}
+#modal-root .pati-link-help{font-size:12px;line-height:1.5;color:#737681;margin:0}
+#modal-root .pati-profile-link-rows{
+ display:flex;flex-direction:column;gap:12px;min-width:0
+}
+#modal-root .pati-profile-link-row{
+ display:flex;align-items:flex-start;gap:8px;min-width:0;
+ border:1px solid #e5e7eb;background:#f9f9fb;
+ padding:11px;border-radius:15px;box-sizing:border-box
+}
+#modal-root .pati-profile-link-inputs{
+ display:flex;flex:1;flex-direction:column;gap:10px;min-width:0
+}
+#modal-root .pati-profile-link-inputs label{
+ display:flex;flex-direction:column;gap:6px;min-width:0;
+ font-size:12px;font-weight:750;color:#242631
+}
+#modal-root .pati-profile-link-inputs input{
+ display:block;width:100%;max-width:100%;min-width:0;
+ min-height:44px;border:1px solid #d7d9df;border-radius:11px;
+ background:#fff;color:#17191d;font-size:16px;
+ padding:10px 11px;box-sizing:border-box;outline-offset:2px
+}
+#modal-root .pati-profile-link-inputs input:focus-visible{
+ outline:2px solid #757b87;border-color:#757b87
+}
+#modal-root .pati-profile-link-remove{
+ display:grid;place-items:center;flex:0 0 38px;height:38px;
+ padding:0;border:1px solid #e8c9cc;border-radius:12px;
+ color:#aa3541;background:#fff;cursor:pointer;font-size:24px
+}
+#modal-root .pati-profile-link-add{
+ width:100%;min-height:47px;border:1px dashed #94969f;border-radius:13px;
+ background:#fff;color:#1a1b21;font-size:13px;font-weight:850;
+ padding:12px;cursor:pointer
+}
+#modal-root .pati-profile-link-add:disabled{display:none}
+#modal-root .pati-profile-link-add:focus-visible,
+#modal-root .pati-profile-link-remove:focus-visible{
+ outline:3px solid #8a8c94;outline-offset:2px
+}
+@media(max-width:740px){
+ #main-content .pati-general-links{margin:5px 11px 14px}
+ #main-content .pati-general-link{min-height:51px;padding:9px 12px}
+ #modal-root .pati-profile-link-row{padding:9px;gap:7px}
+ #modal-root .pati-profile-link-remove{flex-basis:42px;height:42px}
+ #modal-root .pati-profile-links-editor{padding-bottom:16px}
+}
+@media(max-width:360px){
+ #modal-root .pati-profile-link-inputs input{font-size:16px}
+ #modal-root .pati-profile-link-remove{flex:0 0 37px}
+}
+html[data-pati-theme="dark"] #main-content .pati-general-link{
+ background:#292a31;border-color:#42434c;color:#fff
+}
+html[data-pati-theme="dark"] #main-content .pati-general-link-icon{background:#383a43}
+html[data-pati-theme="dark"] #main-content .pati-general-link-copy small{color:#c3c5cb}
+html[data-pati-theme="dark"] #modal-root .pati-profile-link-row{
+ background:#26272e;border-color:#454650
+}
+html[data-pati-theme="dark"] #modal-root .pati-profile-link-inputs label{color:#fff}
+html[data-pati-theme="dark"] #modal-root .pati-link-help{color:#c8c9d2}
