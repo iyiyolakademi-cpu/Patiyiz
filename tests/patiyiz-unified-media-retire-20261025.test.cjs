@@ -35,6 +35,7 @@ test('Follower milestones remain available only from menu and PatiCoin rewards',
  const profile=source('function profilePage(){','function formField(');
  const menu=source('function openMobileFeaturesMenu(){','const patiCoinTasks=');
  assert.doesNotMatch(profile,/pati-follower-hint/);
- assert.match(menu,/Pati Mağaza/);\n assert.match(source('function patiShopPage(){','function patiCoinShowCheckout('),/paticoin-rewards/);
+ assert.match(menu,/Pati Mağaza/);
+ assert.match(source('function patiShopPage(){','function patiCoinShowCheckout('),/paticoin-rewards/);
  assert.match(source('function patiRewardsPage(){','let patiShopFilter='),/renderPanel\(patiFollowerRewardState/);
 });
