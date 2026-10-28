@@ -13,8 +13,8 @@
 #main-content .pati-profile-instagram-link:focus-visible{outline:3px solid #7b7b85;outline-offset:2px}
 
 /* The story button is a separate sibling of the conversation button; both are keyboard accessible. */
-#main-content .pati-dm-layout .pati-dm-list-row.pati-dm-has-story{position:relative;align-items:center;min-height:71px}
-#main-content .pati-dm-layout .pati-dm-list-row.pati-dm-has-story>.chat-person{
+#main-content .pati-dm-layout .pati-dm-list-row[data-has-story="true"]{position:relative;align-items:center;min-height:71px}
+#main-content .pati-dm-layout .pati-dm-list-row[data-has-story="true"]>.chat-person{
  min-width:0;min-height:71px;flex:1 1 0%!important;
  padding-left:67px!important;gap:7px!important;
 }
@@ -122,7 +122,7 @@ html[data-pati-theme="dark"] #main-content .pati-dm-layout .pati-dm-shared-card{
 html[data-pati-theme="dark"] #main-content .pati-dm-layout .pati-dm-shared-by small,
 html[data-pati-theme="dark"] #main-content .pati-dm-layout .pati-dm-shared-caption{color:#d1d2d8}
 @media(max-width:480px){
- #main-content .pati-dm-layout .pati-dm-list-row.pati-dm-has-story>.chat-person{
+ #main-content .pati-dm-layout .pati-dm-list-row[data-has-story="true"]>.chat-person{
   padding-left:65px!important
  }
  #main-content .pati-dm-layout .pati-dm-shared-card{width:min(100%,275px)}
