@@ -46,6 +46,16 @@
    const button=root.querySelector('[data-system="preview-'+name+'"]');
    if(button)button.disabled=files.length<2||current.previewIndex===edge;
   }
+  for(const thumb of root.querySelectorAll('[data-system="photo-select"]')){
+   const selected=Number(thumb.dataset.index)===current.previewIndex;
+   thumb.classList.toggle('active',selected);thumb.setAttribute('aria-pressed',String(selected));
+  }
+  const actions=root.querySelector('#pati-system-photo-actions');
+  if(actions){actions.hidden=current.mode!=='post'||!files.length||!files.every(isPhoto);
+   const previous=actions.querySelector('[data-system="photo-move-prev"]'),next=actions.querySelector('[data-system="photo-move-next"]');
+   if(previous)previous.disabled=current.previewIndex===0;
+   if(next)next.disabled=current.previewIndex>=files.length-1;
+  }
   const dots=root.querySelector('#pati-system-carousel-dots');
   if(dots)dots.innerHTML=files.length>1?files.map((_,index)=>'<i class="'+(index===current.previewIndex?'active':'')+'" aria-hidden="true"></i>').join(''):'';
  }
@@ -56,7 +66,7 @@
   current.previewIndex=Math.max(0,Math.min(files.length-1,current.previewIndex||0));
   const chooser=root.querySelector('#pati-system-chooser'),preview=root.querySelector('#pati-system-preview');
   chooser.hidden=chosen;preview.hidden=!chosen;
-  if(!chosen)return;
+  if(!chosen){freeURLs(current);root.querySelector('#pati-system-thumbnails').replaceChildren();return}
   const media=root.querySelector('#pati-system-preview-media');
   media.replaceChildren();
   freeURLs(current);
@@ -78,6 +88,21 @@
    }
   }
   media.classList.toggle('multiple',files.length>1);
+  const thumbs=root.querySelector('#pati-system-thumbnails');
+  thumbs.hidden=current.mode!=='post'||!files.every(isPhoto);
+  thumbs.replaceChildren();
+  if(!thumbs.hidden){
+   files.forEach((file,i)=>{
+    const wrap=document.createElement('div');wrap.className='pati-system-thumb-item';
+    const select=document.createElement('button');select.type='button';select.dataset.system='photo-select';select.dataset.index=String(i);
+    select.className='pati-system-thumb-select';select.setAttribute('aria-label','Fotoğraf '+(i+1)+' seç');
+    const img=document.createElement('img');img.src=current.urls[i];img.alt='Fotoğraf '+(i+1);select.appendChild(img);
+    const label=document.createElement('span');label.textContent=String(i+1);select.appendChild(label);
+    const remove=document.createElement('button');remove.type='button';remove.dataset.system='photo-remove';remove.dataset.index=String(i);
+    remove.className='pati-system-thumb-remove';remove.setAttribute('aria-label','Fotoğraf '+(i+1)+' kaldır');remove.textContent='×';
+    wrap.append(select,remove);thumbs.appendChild(wrap);
+   });
+  }
   const controls=root.querySelector('#pati-system-carousel-controls');
   controls.hidden=files.length<2;
   updateCarouselControls(current);
@@ -174,7 +199,10 @@
    '<div id="pati-system-preview" hidden>'+
    '<div class="pati-system-preview-wrap"><div id="pati-system-preview-media" class="pati-system-preview-media" tabindex="0" aria-label="Seçilen fotoğraflar, kaydırarak gezebilirsin"></div>'+ 
    '<div id="pati-system-carousel-controls" class="pati-system-carousel-controls" hidden><button type="button" data-system="preview-prev" aria-label="Önceki fotoğraf">‹</button><span id="pati-system-carousel-count" aria-live="polite">1 / 1</span><button type="button" data-system="preview-next" aria-label="Sonraki fotoğraf">›</button></div></div>'+ 
-   '<div id="pati-system-carousel-dots" class="pati-system-carousel-dots" aria-hidden="true"></div>'+
+   '<div id="pati-system-carousel-dots" class="pati-system-carousel-dots" aria-hidden="true"></div>'+ 
+   '<div class="pati-system-photo-review"><strong>Fotoğraflarını kontrol et</strong><small>Her fotoğrafa dokunarak aç, × ile kaldır. Sırasını değiştirebilirsin.</small></div>'+ 
+   '<div id="pati-system-thumbnails" class="pati-system-thumbnails" aria-label="Seçilen fotoğraflar" hidden></div>'+ 
+   '<div id="pati-system-photo-actions" class="pati-system-photo-actions" hidden><button type="button" data-system="photo-move-prev">← Sola taşı</button><button type="button" data-system="photo-move-next">Sağa taşı →</button></div>'+
    '<p id="pati-system-summary" class="pati-system-summary"></p>'+ 
    '<label id="pati-system-mirror-option" class="pati-system-mirror-option" hidden><input id="pati-system-mirror" type="checkbox"><span><strong>Selfie gibi göster</strong><small>Ön kamerada ekranda gördüğün ayna yönünü paylaşımda koru. Arka kamerada kapat.</small></span></label>'+
    (mode==='story'?'<label class="pati-system-audience" for="pati-system-audience">Kimler görebilir?<select id="pati-system-audience"><option value="everyone">Herkes</option><option value="close_friends">Yakın Arkadaşlar</option></select></label>':'')+
@@ -192,7 +220,7 @@
    '<input id="pati-system-gallery" type="file" accept="'+(kind(mode)==='video'?'video/*,.mov,.mp4,.webm,.m4v':'image/*,video/*,.heic,.heif,.mov,.mp4,.webm,.m4v')+'"'+(mode==='post'?' multiple':'')+' hidden>';
   document.body.appendChild(root);
   document.body.classList.add('pati-system-media-active');
-  state={root,mode,userId,onMedia,onMirrorChange,onPublish,onCancel,onSwitch,onStoryPhotoCamera,publishing:false,files:[],urls:[],previewIndex:0,mirrorSelfie:false,appendMode:false};
+  state={root,mode,userId,onMedia,onMirrorChange,onPublish,onCancel,onSwitch,onStoryPhotoCamera,publishing:false,editing:false,files:[],urls:[],previewIndex:0,mirrorSelfie:false,appendMode:false};
   const current=state;
   for(const n of ['camera-photo','camera-video','gallery']){
    root.querySelector('#pati-system-'+n).addEventListener('change',async event=>{
@@ -220,12 +248,50 @@
    if(!btn)return;
    const action=btn.dataset.system;
    if(action==='preview-prev'||action==='preview-next'){
-    if(state.publishing||state.files.length<2)return;
+    if(state.publishing||state.editing||state.files.length<2)return;
     const direction=action==='preview-next'?1:-1;
     state.previewIndex=Math.max(0,Math.min(state.files.length-1,state.previewIndex+direction));
     updateCarouselControls(state);
     const media=root.querySelector('#pati-system-preview-media');
     media.scrollTo({left:state.previewIndex*media.clientWidth,behavior:'smooth'});
+    return;
+   }
+   if(action==='photo-select'){
+    const index=Number(btn.dataset.index);
+    if(!Number.isInteger(index)||index<0||index>=state.files.length||state.publishing||state.editing)return;
+    state.previewIndex=index;updateCarouselControls(state);
+    const viewport=root.querySelector('#pati-system-preview-media');
+    viewport.scrollTo({left:index*viewport.clientWidth,behavior:'smooth'});
+    return;
+   }
+   if(['photo-remove','photo-move-prev','photo-move-next'].includes(action)){
+    if(state.publishing||state.editing||state.mode!=='post'||!state.files.every(isPhoto))return;
+    const oldIndex=state.previewIndex,at=action==='photo-remove'?Number(btn.dataset.index):oldIndex;
+    if(!Number.isInteger(at)||at<0||at>=state.files.length)return;
+    const next=state.files.slice();let nextIndex=oldIndex;
+    if(action==='photo-remove'){
+     next.splice(at,1);
+     if(at<oldIndex)nextIndex=oldIndex-1;
+     else if(at===oldIndex)nextIndex=Math.min(oldIndex,next.length-1);
+    }else{
+     const to=at+(action==='photo-move-prev'?-1:1);
+     if(to<0||to>=next.length)return;
+     [next[at],next[to]]=[next[to],next[at]];
+     nextIndex=to;
+    }
+    state.editing=true;clearError();
+    try{
+     await state.onMedia(next,'photo');
+     if(state!==current)return;
+     state.files=next;state.previewIndex=Math.max(0,nextIndex);state.appendMode=false;
+     if(next.length){
+      void window.PatiyizCameraDraft?.save(state.userId,state.mode,next,root.querySelector('#pati-system-caption')?.value||'');
+     }else{
+      void window.PatiyizCameraDraft?.clear(state.userId);
+     }
+     showPreview();
+    }catch(err){if(state===current)error(err?.message||'Fotoğraf güncellenemedi. Tekrar dene.')}
+    finally{if(state===current)state.editing=false}
     return;
    }
    if(action==='close'){if(state.publishing)return;const cb=state.onCancel;close();cb?.();return}
@@ -249,7 +315,7 @@
     return;
    }
    if(action==='publish'){
-    if(state.publishing||!state.files.length)return;
+    if(state.publishing||state.editing||!state.files.length)return;
     state.publishing=true;
     const publish=root.querySelector('#pati-system-publish');
     publish.disabled=true;publish.textContent='Paylaşılıyor…';clearError();
