@@ -54,3 +54,12 @@
 #main-content .pati-shop-v2 .pati-shop-stock-state{font-size:12px}
 #main-content .pati-shop-v2 .pati-shop-card-bottom button{font-size:13px}
 @media(max-width:350px){#main-content .pati-health-pet-image{height:68px;width:68px}#main-content .pati-edu-v2:not(.edu-v2-detail) .pati-edu-categories button{font-size:12px}}
+
+/* Health drilldown shows only information relevant to selected tile */
+#main-content .pati-health-detail.pati-health-topic-weight :is(.wellness-v2-heading-row:first-of-type,.wellness-v2-filters,.pati-wellness-events){display:none!important}
+#main-content .pati-health-detail:not(.pati-health-topic-weight) :is(.pati-wellness-weights){display:none!important}
+#main-content .pati-health-detail .pati-wellness-summary{display:none!important}
+#main-content .pati-health-detail .pati-wellness-heading{padding:15px!important}
+#main-content .pati-health-detail .pati-wellness-heading p{font-size:12px}
+#main-content .pati-health-detail .pati-wellness-event{background:white!important}
+#main-content .pati-health-detail.pati-health-topic-weight .wellness-v2-filters{display:none!important}
