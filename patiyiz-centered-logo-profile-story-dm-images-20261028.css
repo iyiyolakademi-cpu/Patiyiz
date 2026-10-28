@@ -19,6 +19,8 @@
  #app-root:not(.hidden)>.mobile-header>.brand .brand-word{font-size:19px!important}
  #app-root:not(.hidden)>.mobile-header>.pati-header-share{flex-basis:34px!important;width:34px!important;min-width:34px!important}
 }
+@media(max-width:740px){#app-root:not(.hidden)>.mobile-header{position:fixed!important;top:0!important;left:0!important;right:0!important}}
+@media(min-width:741px){#app-root:not(.hidden)>.mobile-header{position:sticky!important;top:0!important}}
 /* One circular profile avatar, no protruding inner image or odd ring; only the story + overlaps intentionally. */
 #main-content .pati-ig-profile .pati-ig-summary .pati-ig-avatar{
  position:relative!important;isolation:isolate;display:block!important;
