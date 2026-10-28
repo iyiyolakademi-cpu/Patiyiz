@@ -31,3 +31,20 @@
  #main-content .pati-home-empty-actions button,#main-content .pati-community-empty button,#main-content .pati-dm-pin{transition:none!important}
  #main-content .pati-reel-item{scroll-behavior:auto}
 }
+
+
+#main-content .pati-listing-city-links{display:flex;align-items:center;gap:8px;overflow-x:auto;padding:11px 1px 15px;scrollbar-width:thin}
+#main-content .pati-listing-city-links>span{flex:0 0 auto;font-size:12px;font-weight:800;color:#686868}
+#main-content .pati-listing-city-links>button{flex:0 0 auto;min-height:37px;border-radius:999px;background:#fff;color:#303030;border:1px solid #dedede;padding:7px 13px;font-size:12px;font-weight:750}
+#main-content .pati-listing-city-links>button.active{background:#181818;color:#fff;border-color:#181818}
+#main-content .pati-ig-empty button{margin:10px 0 0;display:inline-flex;min-height:39px;align-items:center;justify-content:center;padding:8px 13px;border-radius:11px;border:1px solid #ddd;background:#181818;color:#fff;font-weight:750}
+#main-content .pati-settings-safety{margin:10px 0;padding:10px 12px;border:1px solid #e7e7e7;border-radius:13px;background:#fafafa}
+#main-content .pati-settings-safety summary{cursor:pointer;font-weight:750;font-size:12px}
+#main-content .pati-settings-safety p{margin:10px 0 0;line-height:1.6;font-size:12px}
+html[data-pati-theme="dark"] #main-content :is(.pati-home-empty,.pati-community-empty){background:#1c1c1c;border-color:#3b3b3b}
+html[data-pati-theme="dark"] #main-content :is(.pati-home-empty h2,.pati-community-empty h3){color:#fafafa}
+html[data-pati-theme="dark"] #main-content :is(.pati-home-empty p,.pati-community-empty p){color:#d5d5d5}
+html[data-pati-theme="dark"] #main-content .pati-home-empty-icon{background:#323232}
+html[data-pati-theme="dark"] #main-content .pati-settings-safety{background:#242424;border-color:#454545}
+html[data-pati-theme="dark"] #main-content .pati-listing-city-links>button:not(.active){background:#272727;color:#f4f4f4;border-color:#555}
+@media(max-width:390px){#main-content .pati-listing-city-links{margin-inline:-4px}#main-content .pati-listing-city-links>button{min-height:40px}}
