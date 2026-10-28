@@ -73,18 +73,19 @@ test('Search renders only matching result cards without replacing input',()=>{
  assert.doesNotMatch(result.innerHTML,/Karma aşı kontrolü/);
  assert.equal(count.textContent,'1 görev');
 });
-test('Dashboard shows counters and a truthful alarm disclaimer',()=>{
+test('Care dashboard shows timeline, live counts and an accurate disclaimer',()=>{
  const {ctx,api}=harness();
  api.carePage();
  const page=ctx.main.innerHTML;
  assert.match(page,/Bakım Takvimi/);
- assert.match(page,/Görev ekle/);
- assert.match(page,/Sağlık hatırlatmaları/);
- assert.match(page,/tek başına telefon bildirimi, SMS veya e-posta göndermez/);
- assert.match(page,/Bugün \(1\)/);
- assert.match(page,/Geciken \(1\)/);
- assert.match(page,/Tamamlanan \(1\)/);
- assert.match(page,/data-action="care-pet-filter"/);
+ assert.match(page,/pati-ref-care-timeline/);
+ assert.match(page,/p4-care-dates/);
+ assert.match(page,/data-action="pati-care-day"/);
+ assert.match(page,/data-action="care-add"/);
+ assert.match(page,/data-action="care-filter"/);
+ assert.match(page,/pati-simple-disclaimer/);
+ assert.match(page,/cihaz bildirimi göndermez/);
+ assert.match(page,/Tamamlanan/);
 });
 test('Card controls include edit, completion and owner delete',()=>{
  const {api}=harness();
