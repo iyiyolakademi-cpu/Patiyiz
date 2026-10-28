@@ -17,7 +17,7 @@ test('Animated original dog mascot has safe motion reduction and no external dep
  assert.match(mascot,/<svg [^>]*viewBox="0 0 240 240"/);
  for(const key of ['blink','wave','wag','tilt','prefers-reduced-motion'])assert.ok(mascot.includes(key),key);
  assert.doesNotMatch(mascot,/(?:href|src)=["']https?:\/\/|<script\b/i);
- assert.match(html,/patiyiz-delight-20261029\.js\?v=1/);
+ assert.match(html,/patiyiz-delight-20261029\.js\?v=2/);
  assert.match(native,/'patiyiz-mascot\.svg'/);
 });
 test('Streak is database-owned, private and synchronized between devices',()=>{
@@ -41,7 +41,7 @@ test('Streak is database-owned, private and synchronized between devices',()=>{
 });
 test('Home and Academy include mascot progress without replacing content',()=>{
  assert.match(app,/function homePage\(\)/);
- assert.match(app,/\(typeof patiStreakMarkup==='function'\?patiStreakMarkup\(\):''\)\+storiesStrip\(\)/);
+ assert.match(app,/storiesStrip\(\)\+'<div class="pati-feed-posts">/);
  assert.match(app,/patiyizLessons\.length\)\|\|''/);
  assert.match(app,/academyIntro\(topicDone,topic\.length\)/);
  assert.match(app,/function educationPathCards\(topic,done\)/);
@@ -74,4 +74,42 @@ test('Web and Capacitor bundles both include every new asset',()=>{
   'patiyiz-delight-20261029.js','patiyiz-mascot.svg']) {
   assert.ok(native.includes("'"+path+"'"),path);
  }
+});
+
+test('Streak popup displays only once per user and local calendar day after server check-in',()=>{
+ assert.match(app,/sb\.rpc\('patiyiz_checkin_streak'\)/);
+ assert.match(app,/showStreakOnce\(patiStreakState,\{userId:uid,day:today\}\)/);
+ assert.doesNotMatch(app,/patiStreakMarkup\(\)/);
+ assert.match(js,/seenInPage\.has\(key\)/);
+ assert.match(js,/localStorage\.getItem\(key\)==='1'/);
+ assert.match(js,/localStorage\.setItem\(key,'1'\)/);
+ assert.match(js,/window\.setTimeout\(closeStreak,5100\)/);
+ assert.match(js,/function streakWeekdays\(state,day\)/);
+ assert.match(js,/Pzt','Sal','Çar','Per','Cum','Cmt','Paz/);
+ assert.match(js,/class="pati-streak-overlay"/);
+ const style=fs.readFileSync('patiyiz-streak-popup-20261029.css','utf8');
+ assert.match(style,/\.pati-streak-dialog\{/);
+ assert.match(style,/\.pati-streak-flame/);
+ assert.match(style,/prefers-reduced-motion:reduce/);
+ assert.match(html,/patiyiz-streak-popup-20261029\.css\?v=2/);
+});
+test('Upgraded mascot includes premium gradients, blush, waving paw and reduced-motion fallback',()=>{
+ assert.match(mascot,/<linearGradient id="fur"/);
+ assert.match(mascot,/<linearGradient id="ear"/);
+ assert.match(mascot,/<radialGradient id="blush"/);
+ assert.match(mascot,/class="eyes"/);
+ assert.match(mascot,/class="wave"/);
+ assert.match(mascot,/prefers-reduced-motion:reduce/);
+ assert.match(js,/patiyiz-mascot\.svg\?v=20261029-2/);
+});
+test('Final dark-mode audit corrects text and surfaces in every core section',()=>{
+ const audit=fs.readFileSync('patiyiz-dark-contrast-audit-20261029.css','utf8');
+ for(const key of ['.p4-hub','.p4-health','.pati-ref-care','.pati-ref-kb-home','.pati-shop-v2','.pati-edu-v2','.kb-v2','.lost-v2','.adopt-v2','.care-v2','.wellness-v2','.pati-ig-summary','.pati-settings-list','.pati-feature-group','.pati-dm-layout']){
+  assert.ok(audit.includes(key)||theme.includes(key),key);
+ }
+ assert.match(audit,/data-pati-theme="dark"/);
+ assert.match(audit,/input:not\(\[type="checkbox"\]\)/);
+ assert.match(html,/patiyiz-dark-contrast-audit-20261029\.css\?v=1/);
+ assert.match(native,/'patiyiz-dark-contrast-audit-20261029\.css'/);
+ assert.match(native,/'patiyiz-streak-popup-20261029\.css'/);
 });
