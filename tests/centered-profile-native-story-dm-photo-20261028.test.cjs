@@ -15,18 +15,18 @@ test('Updated JavaScript parses and CSS is loaded last after previous desktop/mo
  assert.match(html,/patiyiz-centered-logo-profile-story-dm-images-20261028\.css\?v=1/);
  assert.match(html,/center_profile_dm_native=20261028/);
  assert.match(html,/story_native_20261028=1/);
- assert.match(css,/\\.mobile-header>\\.brand/);
+ assert.match(css,/\.mobile-header>\.brand/);
  assert.match(css,/left:50%!important/);
  assert.match(css,/transform:translate\(-50%,-50%\)!important/);
 });
 test('Only own profile avatar has a plus button that opens existing story create action',()=>{
  const src=segment('function profilePage(){','function formField(');
  assert.match(src,/pati-profile-story-plus/);
- assert.match(src,/own\\?'<button type="button" class="pati-profile-story-plus"/);
+ assert.match(src,/own\?'<button type="button" class="pati-profile-story-plus"/);
  assert.match(src,/data-action="story-create"/);
  assert.match(app,/case 'story-create':startPatiCameraStory\(\)/);
- assert.match(css,/\\.pati-ig-profile \\.pati-ig-summary \\.pati-ig-avatar/);
- assert.match(css,/\\.pati-ig-avatar>\\.avatar\\.l/);
+ assert.match(css,/\.pati-ig-profile \.pati-ig-summary \.pati-ig-avatar/);
+ assert.match(css,/\.pati-ig-avatar>\.avatar\.l/);
  assert.match(css,/object-fit:cover!important/);
  assert.match(css,/overflow:visible!important/);
 });
