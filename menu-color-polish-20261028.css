@@ -1,0 +1,20 @@
+/* Patiyiz menu v2 — colorful categories without changing global branding */
+.pati-color-menu{display:grid;gap:14px;padding:2px 0 12px}
+.pati-color-menu .pati-feature-intro{margin:0 0 2px;color:#687080;font-size:13px}
+.pati-color-menu .pati-feature-group{--menu-accent:#6757cf;--menu-bg:#f1efff;background:var(--menu-bg);border:1px solid color-mix(in srgb,var(--menu-accent) 13%,white);border-radius:18px;padding:14px 12px;min-width:0}
+.pati-color-menu .pati-menu-tone-green{--menu-accent:#23805d;--menu-bg:#eaf8f1}
+.pati-color-menu .pati-menu-tone-orange{--menu-accent:#bd6a21;--menu-bg:#fff2e5}
+.pati-color-menu .pati-menu-tone-blue{--menu-accent:#3475ad;--menu-bg:#eaf4ff}
+.pati-color-menu .pati-feature-group h3{margin:0 0 10px;padding:0 4px;font-size:14px;font-weight:800;color:var(--menu-accent);letter-spacing:.01em}
+.pati-color-menu .pati-mobile-menu-list{display:grid;gap:7px}
+.pati-color-menu .pati-mobile-menu-item{display:flex!important;align-items:center;gap:11px;min-height:52px;width:100%;border-radius:12px!important;padding:8px 11px!important;background:#fff!important;border:1px solid rgba(25,30,42,.055)!important;color:#20242c!important;text-align:left;font-weight:650;font-size:14px;box-shadow:0 2px 6px rgba(15,20,30,.025);min-width:0}
+.pati-color-menu .pati-mobile-menu-item>span:nth-child(2){flex:1;min-width:0}
+.pati-color-menu .pati-menu-icon{flex:0 0 34px;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:var(--menu-accent);background:var(--menu-bg)}
+.pati-color-menu .pati-menu-icon svg{width:19px;height:19px}
+.pati-color-menu .pati-menu-arrow{color:#9ba2ae;display:grid;place-items:center}
+.pati-color-menu .pati-menu-arrow svg{width:15px;height:15px}
+.pati-color-menu .pati-feature-add-pet{--menu-accent:#23805d;--menu-bg:#eaf8f1}
+.pati-color-menu .pati-feature-add-pet .pati-mobile-menu-item{border:1px dashed #80bda1!important;background:#f2fbf6!important}
+@media(hover:hover){.pati-color-menu .pati-mobile-menu-item:hover{filter:brightness(.975);transform:translateY(-1px)}}
+@media(max-width:740px){.pati-color-menu{gap:11px}.pati-color-menu .pati-feature-group{padding:12px 10px}.pati-color-menu .pati-mobile-menu-item{min-height:54px}}
+@media(prefers-reduced-motion:reduce){.pati-color-menu .pati-mobile-menu-item{transition:none!important;transform:none!important}}
