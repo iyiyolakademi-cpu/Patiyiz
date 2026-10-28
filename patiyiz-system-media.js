@@ -81,7 +81,7 @@
   const controls=root.querySelector('#pati-system-carousel-controls');
   controls.hidden=files.length<2;
   updateCarouselControls(current);
-  if(files.length>1)requestAnimationFrame(()=>{if(state===current)media.scrollLeft=media.clientWidth*current.previewIndex});
+  if(files.length>1)queueMicrotask(()=>{if(state===current)media.scrollLeft=media.clientWidth*current.previewIndex});
   const option=root.querySelector('#pati-system-mirror-option'),toggle=root.querySelector('#pati-system-mirror');
   option.hidden=!video;toggle.checked=video&&current.mirrorSelfie;
   const info=root.querySelector('#pati-system-summary');
