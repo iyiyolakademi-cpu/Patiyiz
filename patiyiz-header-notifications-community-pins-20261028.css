@@ -1,0 +1,59 @@
+/* Focused 28 Oct improvements: header, pinned private message, minimal notifications, broader questions */
+#app-root:not(.hidden)>.mobile-header{display:flex;align-items:center;gap:8px;min-width:0}
+#app-root:not(.hidden)>.mobile-header>.pati-header-share{display:flex;align-items:center;justify-content:center;flex:none;width:37px;height:37px;min-width:37px;border-radius:11px;background:#171717;color:#fff;border:1px solid #171717;padding:8px;cursor:pointer;margin-left:1px}
+#app-root:not(.hidden)>.mobile-header>.pati-header-share .icon{width:23px;height:23px;stroke:currentColor;stroke-width:2.4}
+#app-root:not(.hidden)>.mobile-header>.brand{display:flex;align-items:center;min-width:0;flex:1 1 auto;margin-left:3px;gap:6px}
+#app-root:not(.hidden)>.mobile-header>.brand .brand-word{white-space:nowrap}
+#app-root:not(.hidden)>.mobile-header>.pati-header-actions{flex:0 0 auto;min-width:0;display:flex;align-items:center;gap:4px}
+#app-root:not(.hidden)>.mobile-header>.pati-header-actions #pati-header-notifications{flex:0 0 auto}
+#app-root:not(.hidden)>.mobile-header>.pati-header-share:focus-visible{outline:3px solid #777;outline-offset:3px}
+#main-content .pati-notifications-simple{max-width:720px;margin:0 auto;padding:12px 10px 26px;min-height:50vh}
+#main-content .pati-notifications-simple-head{padding:10px 5px 18px;border-bottom:1px solid #ececec;margin-bottom:0}
+#main-content .pati-notifications-simple-head h1{font-size:23px;font-weight:800;letter-spacing:-.45px;color:#171717;margin:0;display:flex;align-items:center;gap:9px}
+#main-content .pati-notifications-simple-head .pati-alert-count{font-size:12px;font-weight:750;min-width:24px;height:24px;line-height:24px;border-radius:50%;background:#171717;color:#fff;text-align:center}
+#main-content .pati-notifications-simple .notification-v2-list{display:flex;flex-direction:column;gap:0}
+#main-content .pati-notifications-simple .pati-alert-simple{display:block;border:0;border-bottom:1px solid #eee;border-radius:0;background:transparent;margin:0;padding:0;box-shadow:none;touch-action:pan-y}
+#main-content .pati-notifications-simple .pati-alert-simple .pati-alert-entry{display:flex;align-items:center;text-align:left;gap:11px;width:100%;padding:14px 8px;background:transparent;border:0;min-height:70px;cursor:pointer}
+#main-content .pati-notifications-simple .pati-alert-simple .pati-alert-content{min-width:0;flex:1}
+#main-content .pati-notifications-simple .pati-alert-simple .pati-alert-title{display:block;font-size:13px;font-weight:650;line-height:1.45;overflow-wrap:anywhere;color:#1d1d1d}
+#main-content .pati-notifications-simple .pati-alert-simple.is-read .pati-alert-title{font-weight:500;color:#555}
+#main-content .pati-notifications-simple .pati-alert-simple .pati-alert-meta{display:block;margin-top:5px;font-size:11px;color:#888}
+#main-content .pati-notifications-simple .pati-alert-simple .pati-alert-unread{flex:0 0 auto;min-width:7px;height:7px;border-radius:50%;background:#151515}
+#main-content .pati-notifications-simple .pati-alert-simple:focus-visible{outline:2px solid #888;outline-offset:-2px}
+#main-content .pati-notification-delete-explain{margin:0 0 12px;color:#555;line-height:1.6}
+#modal-root .pati-notification-delete-confirm{min-height:44px;width:100%;border-radius:12px;border:1px solid #a92323;background:#b83232;color:#fff;font-weight:800;cursor:pointer}
+#main-content .pati-dm-pinned-banner{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid #e6e6e6;border-left:3px solid #1e1e1e;background:#fafafa;min-height:62px;max-width:100%;flex:0 0 auto}
+#main-content .pati-dm-pinned-banner .pati-dm-pinned-open{display:flex;flex:1;min-width:0;align-items:center;gap:8px;text-align:left;border:0;background:transparent;padding:3px 2px;color:#222;cursor:pointer}
+#main-content .pati-dm-pinned-banner .pati-dm-pinned-open>span:last-child{flex:1;min-width:0}
+#main-content .pati-dm-pinned-banner .pati-dm-pinned-open strong{display:block;font-size:12px;color:#222}
+#main-content .pati-dm-pinned-banner .pati-dm-pinned-open small{display:block;color:#666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px;margin-top:3px}
+#main-content .pati-dm-pinned-banner>button:last-child{flex:0 0 auto;background:#fff;border:1px solid #dedede;border-radius:9px;padding:8px;color:#444;font-weight:700;font-size:11px;cursor:pointer}
+#main-content .pati-dm-message-actions{display:flex;flex-wrap:wrap;gap:8px}
+#main-content .pati-dm-message-actions button{min-height:43px;flex:1 1 130px}
+#main-content .pati-dm-pin-flash{outline:2px solid #5e5e5e;outline-offset:3px}
+#main-content .pati-filter-tabs{scrollbar-width:thin;overflow-x:auto}
+#main-content .pati-filter-tabs button{flex:0 0 auto;white-space:nowrap;min-height:39px}
+@media(max-width:480px){
+ #app-root:not(.hidden)>.mobile-header{padding-inline:9px;gap:6px}
+ #app-root:not(.hidden)>.mobile-header>.pati-header-share{width:35px;height:35px;min-width:35px;padding:7px}
+ #app-root:not(.hidden)>.mobile-header>.brand{margin-left:3px;gap:5px}
+ #app-root:not(.hidden)>.mobile-header>.brand .brand-icon{flex:0 0 auto}
+ #app-root:not(.hidden)>.mobile-header>.pati-header-actions{gap:3px}
+ #main-content .pati-notifications-simple{padding-inline:5px}
+ #main-content .pati-dm-pinned-banner{padding:8px 10px}
+}
+@media(max-width:370px){
+ #app-root:not(.hidden)>.mobile-header>.brand .brand-caption{display:none}
+ #app-root:not(.hidden)>.mobile-header>.pati-header-actions{gap:2px}
+ #app-root:not(.hidden)>.mobile-header>.brand{margin-left:2px}
+}
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.mobile-header>.pati-header-share{background:#f4f4f4;color:#151515;border-color:#f4f4f4}
+html[data-pati-theme="dark"] #main-content .pati-notifications-simple-head{border-color:#383838}
+html[data-pati-theme="dark"] #main-content .pati-notifications-simple-head h1{color:#f7f7f7}
+html[data-pati-theme="dark"] #main-content .pati-notifications-simple .pati-alert-simple{border-color:#353535}
+html[data-pati-theme="dark"] #main-content .pati-notifications-simple .pati-alert-simple .pati-alert-title{color:#f1f1f1}
+html[data-pati-theme="dark"] #main-content .pati-notifications-simple .pati-alert-simple.is-read .pati-alert-title{color:#bbb}
+html[data-pati-theme="dark"] #main-content .pati-dm-pinned-banner{background:#262626;border-color:#484848}
+html[data-pati-theme="dark"] #main-content .pati-dm-pinned-banner .pati-dm-pinned-open strong{color:#fafafa}
+html[data-pati-theme="dark"] #main-content .pati-dm-pinned-banner .pati-dm-pinned-open small{color:#c9c9c9}
+@media(prefers-reduced-motion:reduce){#main-content .pati-dm-pin-flash{animation:none!important}}
