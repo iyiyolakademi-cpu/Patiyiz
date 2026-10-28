@@ -54,6 +54,7 @@ test('Mobil üst menü düğmesi tüm gerçek bölümlere erişim sağlar',()=>{
  let rendered='';
  let type='',removed=false;
  const fn=vm.runInNewContext(fragment+'\nopenMobileFeaturesMenu',{
+  patiMenuNotificationsHTML:()=>'<div data-view="notifications" data-action="notification-delete">Bildirimler</div>',
   isAdmin:false,
   esc:s=>String(s),ico:i=>'<svg>'+i+'</svg>',
   modal:(title,body,kind)=>{rendered=title+' '+body;type=kind},
@@ -76,7 +77,7 @@ test('Menüdeki yönetim bağlantısı yalnız doğrulanmış adminler için gö
  const make=isAdmin=>{
   let rendered='';
   vm.runInNewContext(fragment+'\nopenMobileFeaturesMenu',{
-   isAdmin,esc:String,ico:i=>i,
+   isAdmin,esc:String,ico:i=>i,patiMenuNotificationsHTML:()=>'<section aria-label="Bildirimler"></section>',
    modal:(_title,body)=>{rendered=body},$:()=>null
   })();
   return rendered;
