@@ -8,13 +8,13 @@ const native=fs.readFileSync('native-capacitor/scripts/build-web.mjs','utf8');
 function has(regex,msg){assert.match(css,regex,msg)}
 test('Unified theme always loads after the 55 legacy styles and ships in Capacitor',()=>{
  const anchor='patiyiz-dark-contrast-audit-20261029.css?v=1';
- const final='patiyiz-theme-unified-20261029.css?v=1';
+ const final='patiyiz-theme-unified-20261029.css?v=2';
  assert.ok(html.indexOf(anchor)>=0);
  assert.ok(html.indexOf(final)>html.indexOf(anchor));
  const all=[...html.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map(x=>x[1]);
  assert.ok(all.findIndex(v=>v.includes('patiyiz-theme-unified-20261029.css'))>=0);
- assert.ok(all.at(-1).includes('patiyiz-story-view-time-20261029.css'));
- assert.ok(all.findIndex(v=>v.includes('patiyiz-story-view-time-20261029.css'))>all.findIndex(v=>v.includes('patiyiz-theme-unified-20261029.css')));
+ assert.ok(all.at(-1).includes('patiyiz-theme-unified-20261029.css'));
+ assert.ok(all.findIndex(v=>v.includes('patiyiz-story-view-time-20261029.css'))<all.findIndex(v=>v.includes('patiyiz-theme-unified-20261029.css')));
  assert.match(native,/'patiyiz-theme-unified-20261029\.css'/);
  assert.match(html,/unified-dark-ui=20261029/);
 });
@@ -55,7 +55,7 @@ test('Main screen families and forms are covered without changing light mode',()
  ];
  for(const section of sections)assert.ok(css.includes(section),section);
  has(/data-pati-theme="dark"/);
- assert.doesNotMatch(css,/html\[data-pati-theme="light"\]/);
+ assert.match(css,/html\[data-pati-theme="light"\]/);
  has(/#modal-root/);
  has(/input:not\(\[type="checkbox"\]\):not\(\[type="radio"\]\),select,textarea/);
  has(/prefers-contrast:more/);

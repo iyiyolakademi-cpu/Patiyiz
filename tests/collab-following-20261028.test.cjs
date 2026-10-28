@@ -30,10 +30,10 @@ test('following feed is a real server-side query scoped to authenticated follows
  assert.match(app,/case 'home-following-more':void patiFollowingFetch\(true\)/);
 });
 test('collaborator form submits only after a real post is created',()=>{
- assert.match(app,/name="collab_handle"/);
+ assert.match(fs.readFileSync('patiyiz-collab-picker-20261029.js','utf8'),/name="collab_handle"/);
  assert.match(app,/case 'collab-invite-form'/);
  assert.match(app,/await createPostPublication\(form,f,str\)/);
- assert.match(app,/await patiCollabInvite\(result\.id,str\('collab_handle'\)\)/);
+ assert.match(app,/await patiCollabInvite\(result\.id,str\('collab_handle'\),selectedCollab\)/);
  assert.match(app,/data-action="collab-accept"/);
  assert.match(app,/data-action="collab-decline"/);
  assert.match(app,/patiCollabPartnerPosts\(p\.id\)/);

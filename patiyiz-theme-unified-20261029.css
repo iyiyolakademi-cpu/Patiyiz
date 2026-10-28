@@ -313,3 +313,303 @@ html[data-pati-theme="dark"] #main-content :is(
   border-width:2px!important;
  }
 }
+
+
+/* 2026-10-29 full-page theme integrity pass. Shared tokens, predictable surfaces
+   and readable typography for each content family. Light/dark are always paired.
+   Do not recolor photographs, video, emoji, cover art, reaction colors or reward assets. */
+html[data-pati-theme="light"]{
+ --pui-page:#f8f9fb;--pui-paper:#fff;--pui-raised:#f1f2f5;
+ --pui-input:#f2f3f6;--pui-text:#1c1e23;--pui-secondary:#545864;
+ --pui-border:#e1e3e8;--pui-active:#202126;--pui-active-text:#fff;
+ --pui-focus:#424dd4;--pui-shadow:0 5px 18px #00000008;
+ color-scheme:light;
+}
+html[data-pati-theme="dark"]{
+ --pui-page:#101114;--pui-paper:#1c1e24;--pui-raised:#272930;
+ --pui-input:#292c35;--pui-text:#f6f7fa;--pui-secondary:#c4c7d2;
+ --pui-border:#42454f;--pui-active:#f2f3f6;--pui-active-text:#191a20;
+ --pui-focus:#bcc9ff;--pui-shadow:0 6px 22px #00000035;
+ color-scheme:dark;
+}
+html[data-pati-theme="light"] body,
+html[data-pati-theme="light"] #app-root:not(.hidden),
+html[data-pati-theme="light"] #app-root:not(.hidden)>.app-shell,
+html[data-pati-theme="light"] #app-root:not(.hidden)>.app-shell>.main{
+ background:var(--pui-page)!important;color:var(--pui-text)!important;
+}
+html[data-pati-theme="dark"] body,
+html[data-pati-theme="dark"] #app-root:not(.hidden),
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.app-shell,
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.app-shell>.main{
+ background:var(--pui-page)!important;color:var(--pui-text)!important;
+}
+/* Screen canvases — all routes that paint their own page background. */
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-explore-media-screen,.pati-search-screen,.pati-edu-path-home,
+ .pati-edu-path-list,.pati-ref-academy-home,.pati-ref-academy-list,
+ .pati-ig-profile,.pati-pets-page,.pati-own-pets,.pati-pet-hub,.pati-care-simple,
+ .pati-health-home,.p4-hub,.p4-health,.p4-shop,.pati-shop-v2,
+ .pati-ref-hub,.pati-ref-care,.pati-ref-kb-home,.kb-v2,.pati-edu-v2,
+ .care-v2,.wellness-v2,.lost-v2,.adopt-v2,
+ .pati-settings-list,.pati-saved-posts,.pati-community-head,
+ .pati-question-list,.pati-notifications-simple,.pati-feature-group,
+ .pati-dm-top,.pati-dm-searchbar,.pati-dm-filters,.pati-dm-layout
+){
+ background-color:var(--pui-page)!important;color:var(--pui-text)!important;
+ border-color:var(--pui-border)!important;
+}
+/* Cards, previews, statistics, menus, progress and list surfaces. */
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-feed-card,.pati-feed-card-header,.post,.card,.composer,.stories-section,
+ .pati-ig-summary,.pati-ig-highlights,.pati-ig-tabs,.pati-ig-actions,
+ .pati-ig-grid,.pati-ig-bio,.pati-ig-stats,.pati-profile-text-feed,
+ .pati-post-details,.pati-post-comments,.pati-collab-requests,.pati-collab-request,
+ .pati-explore-sort,.pati-explore-search,.pati-search-top,.pati-search-results,
+ .pati-search-user,.empty,.empty-state,.pati-ig-empty,.pati-search-empty,
+ .pati-community-card,.pati-community-subhead,.pati-community-question-description,
+ .pati-ref-academy-topic,.pati-ref-academy-section,.pati-academy-total-progress,
+ .pati-edu-path-progress,.pati-edu-path-topic-head,.pati-edu-path-complete,
+ .pati-edu-lesson-body,.pati-edu-step,.edu-v2-detail,.edu-v2-card,
+ .pati-pets-tile,.pati-pets-own-shortcut,.pati-pets-empty,
+ .p4-hub-status,.p4-pet-thumb,.p4-hub-tile,.p4-all-pets,
+ .p4-health-profile,.p4-health-overview,.p4-health-history,.p4-health-action,
+ .pati-ref-care-task,.pati-ref-care-summary,.pati-ref-care-timeline,
+ .care-v2-item,.wellness-v2-item,.pati-health-pet,.pati-health-next,
+ .pati-shop-card,.pati-shop-wallet,.pati-shop-note,.pati-shop-empty,
+ .pati-shop-no-orders,.pati-shop-filter,
+ .p4-kb-rec,.kb-v2-card,.kb-v2-article,.kb-v2-empty,.kb-action-plan,
+ .kb-v2-disclaimer,.lost-v2-card,.adopt-v2-card,
+ .pati-settings-list section,.pati-notifications-simple-head,.pati-feature-group,
+ .pati-dm-layout .chat-people,.pati-dm-layout .chat-window,
+ .pati-dm-list-row,.pati-dm-pinned-banner,.pati-group-thread-row,
+ .pati-group-chat-header,.pati-group-history,.pati-group-tools,.pati-group-empty,
+ .pati-following-empty,.pati-saved-heading,.pati-story-activity-section
+){
+ background-color:var(--pui-paper)!important;color:var(--pui-text)!important;
+ border-color:var(--pui-border)!important;
+}
+/* Controls that used to remain white, grey or dark with illegible label pairs. */
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-explore-search-launch,.pati-search-field,.pati-search-discover,
+ .pati-search-cancel,.pati-explore-sort button:not(.active),
+ .pati-ref-academy-topic,.pati-ref-kb-category,.pati-ref-kb-rec,
+ .pati-shop-filter button:not(.active),.pati-edu-path-start,
+ .pati-profile-edit,.pati-ig-actions button:not(.primary-btn),
+ .pati-pets-edit,.pati-pet-add,.pati-settings-list button:not(.primary-btn),
+ .pati-dm-filters button:not(.active),.pati-dm-top-actions button,
+ .pati-theme-options button:not(.active),.pati-community-mobile-ask,
+ .pati-feature-group button,.pati-notifications-simple button
+){
+ background:var(--pui-raised)!important;color:var(--pui-text)!important;
+ border-color:var(--pui-border)!important;
+}
+/* Pair foreground color with active background, never white on white. */
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-explore-sort button.active,.pati-explore-sort button[aria-pressed="true"],
+ .pati-ig-tabs button.active,.pati-ig-tabs button[aria-selected="true"],
+ .pati-dm-filters button.active,.pati-theme-options button.active,
+ .pati-shop-filter button.active
+){
+ background:var(--pui-active)!important;color:var(--pui-active-text)!important;
+ border-color:var(--pui-active)!important;
+}
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-explore-sort button.active,.pati-explore-sort button[aria-pressed="true"],
+ .pati-ig-tabs button.active,.pati-ig-tabs button[aria-selected="true"],
+ .pati-dm-filters button.active,.pati-theme-options button.active,
+ .pati-shop-filter button.active
+) :is(svg,.icon,strong,small,span){
+ color:var(--pui-active-text)!important;stroke:currentColor!important;
+}
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-explore-sort button.active,.pati-explore-sort button[aria-pressed="true"]
+){font-weight:850!important}
+/* Non-decorative text on all core screens. Avoid touching media overlays or photos. */
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-ig-profile,.pati-pets-page,.pati-ref-academy-home,.pati-ref-academy-list,
+ .pati-edu-path-home,.pati-edu-path-list,.pati-community-card,.pati-settings-list,
+ .pati-pet-hub,.pati-care-simple,.p4-hub,.p4-health,.pati-shop-v2,.p4-shop,
+ .pati-ref-kb-home,.kb-v2,.care-v2,.wellness-v2,.lost-v2,.adopt-v2,
+ .pati-notifications-simple,.pati-explore-media-screen,.pati-search-screen,
+ .pati-dm-layout
+) :is(h1,h2,h3,h4,h5,strong,label){
+ color:var(--pui-text)!important;
+}
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-ig-profile,.pati-pets-page,.pati-ref-academy-home,.pati-ref-academy-list,
+ .pati-edu-path-home,.pati-edu-path-list,.pati-community-card,.pati-settings-list,
+ .pati-pet-hub,.pati-care-simple,.p4-hub,.p4-health,.pati-shop-v2,.p4-shop,
+ .pati-ref-kb-home,.kb-v2,.care-v2,.wellness-v2,.lost-v2,.adopt-v2,
+ .pati-notifications-simple,.pati-explore-media-screen,.pati-search-screen,
+ .pati-dm-layout
+) :is(p,small,.meta,.muted,.pati-edu-path-status,.pati-shop-eyebrow){
+ color:var(--pui-secondary)!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-explore-media-screen>.empty :is(strong,p),
+html[data-pati-theme="dark"] #main-content .pati-explore-media-screen>.empty-state :is(strong,p){
+ color:var(--pui-text)!important;text-shadow:none!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-explore-media-screen>.empty-state p,
+html[data-pati-theme="dark"] #main-content .pati-explore-media-screen>.empty p{
+ color:var(--pui-secondary)!important;
+}
+/* Heading and metadata contrast in chat bubbles and cards. */
+html[data-pati-theme="dark"] #main-content .pati-dm-layout :is(
+ .pati-dm-list-row,.chat-person,.chat-person-info,.pati-dm-pinned-banner,
+ .pati-group-chat-header
+) :is(h2,h3,strong,b){color:var(--pui-text)!important}
+html[data-pati-theme="dark"] #main-content .pati-dm-layout :is(
+ .pati-dm-list-row,.chat-person,.chat-person-info,.pati-dm-pinned-banner,
+ .pati-group-chat-header
+) :is(small,p,.meta){color:var(--pui-secondary)!important}
+html[data-pati-theme="dark"] #main-content .pati-dm-layout .bubble-chat{
+ background:#2b2f39!important;color:var(--pui-text)!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-dm-layout .bubble-chat.mine{
+ background:#484f60!important;color:#fff!important;
+}
+/* Modal and editor consistency: labels, help text, action buttons, search suggestions. */
+html[data-pati-theme="dark"] :is(#modal-root,#tools-form) :is(
+ .modal,.modal-content,.modal-header,.modal-footer,.pati-field,
+ .pati-feature-group,.pati-mobile-menu-item,.pati-menu-notifications-list
+){
+ background-color:var(--pui-paper)!important;color:var(--pui-text)!important;
+ border-color:var(--pui-border)!important;
+}
+html[data-pati-theme="dark"] :is(#modal-root,#tools-form) :is(
+ .modal,.modal-content,.modal-header,.pati-field,.pati-feature-group
+) :is(h1,h2,h3,h4,strong,label){color:var(--pui-text)!important}
+html[data-pati-theme="dark"] :is(#modal-root,#tools-form) :is(
+ .modal,.modal-content,.modal-header,.pati-field,.pati-feature-group
+) :is(p,small,.help,.muted){color:var(--pui-secondary)!important}
+html[data-pati-theme="dark"] :is(#main-content,#modal-root,#tools-form) :is(
+ input:not([type="radio"]):not([type="checkbox"]),select,textarea
+){
+ background:var(--pui-input)!important;color:var(--pui-text)!important;
+ border-color:#596071!important;
+}
+html[data-pati-theme="dark"] :is(#main-content,#modal-root,#tools-form) :is(input,textarea)::placeholder{
+ color:#c0c4d1!important;opacity:1!important;
+}
+/* Shared light surfaces to repair any stale overrides across theme switching. */
+html[data-pati-theme="light"] #main-content :is(
+ .pati-ig-profile,.pati-settings-list,.pati-explore-media-screen,.pati-search-screen,
+ .pati-edu-path-home,.pati-edu-path-list,.pati-ref-academy-home,.pati-ref-academy-list,
+ .pati-pets-page,.pati-pet-hub,.p4-hub,.p4-health,.p4-shop,.pati-shop-v2,
+ .pati-ref-kb-home,.kb-v2,.care-v2,.wellness-v2,.lost-v2,.adopt-v2
+){color:var(--pui-text)!important}
+html[data-pati-theme="light"] #main-content :is(
+ .empty,.empty-state,.pati-search-empty,.pati-ig-empty,.pati-feed-card,
+ .pati-community-card,.pati-shop-card,.pati-edu-path-item,.pati-ig-summary
+){
+ background-color:var(--pui-paper)!important;color:var(--pui-text)!important;
+ border-color:var(--pui-border)!important;
+}
+html[data-pati-theme="light"] #main-content :is(
+ .pati-ig-profile,.pati-settings-list,.pati-explore-media-screen,.pati-search-screen,
+ .pati-edu-path-home,.pati-edu-path-list,.pati-ref-academy-home,.pati-ref-academy-list,
+ .pati-pets-page,.pati-pet-hub,.p4-hub,.p4-health,.p4-shop,.pati-shop-v2,
+ .pati-ref-kb-home,.kb-v2,.care-v2,.wellness-v2,.lost-v2,.adopt-v2
+) :is(h1,h2,h3,h4,strong,label){color:var(--pui-text)!important}
+html[data-pati-theme="light"] #main-content :is(
+ .pati-ig-profile,.pati-settings-list,.pati-explore-media-screen,.pati-search-screen,
+ .pati-edu-path-home,.pati-edu-path-list,.pati-ref-academy-home,.pati-ref-academy-list,
+ .pati-pets-page,.pati-pet-hub,.p4-hub,.p4-health,.p4-shop,.pati-shop-v2,
+ .pati-ref-kb-home,.kb-v2,.care-v2,.wellness-v2,.lost-v2,.adopt-v2
+) :is(p,small,.muted,.meta){color:var(--pui-secondary)!important}
+html[data-pati-theme="light"] :is(#modal-root,#tools-form) :is(
+ .modal,.modal-content,.modal-header,.modal-footer,.pati-field,.pati-feature-group
+){
+ background-color:var(--pui-paper)!important;color:var(--pui-text)!important;
+ border-color:var(--pui-border)!important;
+}
+html[data-pati-theme="light"] :is(#main-content,#modal-root,#tools-form) :is(
+ input:not([type="radio"]):not([type="checkbox"]),select,textarea
+){
+ background:var(--pui-input)!important;color:var(--pui-text)!important;
+ border-color:var(--pui-border)!important;
+}
+html[data-pati-theme="light"] :is(#main-content,#modal-root,#tools-form) :is(input,textarea)::placeholder{
+ color:#696d77!important;opacity:1!important;
+}
+/* Collab account picker — identical layout and contrast at every screen size. */
+.pati-collab-picker{display:flex;flex-direction:column;min-width:0;gap:9px;position:relative}
+.pati-collab-picker>label{display:block;font-size:13px;font-weight:850}
+.pati-collab-picker input[name="collab_handle"]{width:100%;min-width:0;min-height:45px;box-sizing:border-box;border-radius:12px;padding:10px 12px;font-size:14px}
+.pati-collab-search-results{
+ display:flex;flex-direction:column;gap:3px;max-height:min(254px,39dvh);
+ overflow-y:auto;-webkit-overflow-scrolling:touch;
+ padding:6px;border:1px solid var(--pui-border,#ddd);
+ border-radius:14px;background:var(--pui-paper,#fff);
+ box-shadow:var(--pui-shadow,0 5px 18px #0001);
+}
+.pati-collab-search-results[hidden],.pati-collab-selected[hidden]{display:none!important}
+.pati-collab-search-results .pati-collab-option{
+ display:flex;align-items:center;gap:11px;min-height:55px;
+ width:100%;min-width:0;text-align:left;padding:7px 9px;
+ border:1px solid transparent;border-radius:10px;
+ background:transparent;color:var(--pui-text,#222);cursor:pointer;
+}
+.pati-collab-search-results .pati-collab-option:hover,
+.pati-collab-search-results .pati-collab-option.is-highlighted{
+ background:var(--pui-raised,#f2f3f5)!important;color:var(--pui-text,#222)!important;
+ border-color:var(--pui-border,#ddd)!important;
+}
+.pati-collab-avatar,.pati-collab-picked-avatar{flex:0 0 42px;width:42px;height:42px;display:grid;place-items:center;overflow:hidden;border-radius:50%}
+.pati-collab-avatar>.avatar,.pati-collab-picked-avatar>.avatar{width:42px!important;height:42px!important;min-width:42px!important}
+.pati-collab-avatar img,.pati-collab-picked-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.pati-collab-user,.pati-collab-picked-text{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1;line-height:1.3}
+.pati-collab-user strong,.pati-collab-picked-text strong{font-size:13px;font-weight:850;color:var(--pui-text,#222)!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pati-collab-user small,.pati-collab-picked-text small{font-size:12px;color:var(--pui-secondary,#666)!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pati-collab-select-icon{flex:0 0 25px;width:25px;text-align:center;color:var(--pui-secondary,#777);font-size:17px}
+.pati-collab-searching,.pati-collab-no-result{margin:0;padding:13px 10px;font-size:12px;line-height:1.45;color:var(--pui-secondary,#666)}
+.pati-collab-selected{display:flex;align-items:center;gap:11px;min-height:58px;padding:8px 10px;background:var(--pui-raised,#eee);border:1px solid var(--pui-border,#ddd);border-radius:13px}
+.pati-collab-unselect{width:40px;height:40px;flex:0 0 40px;display:grid;place-items:center;font-size:24px;border:0;border-radius:50%;background:transparent;color:var(--pui-text,#222);cursor:pointer}
+.pati-collab-hint{color:var(--pui-secondary,#666)!important;font-size:12px;line-height:1.45}
+html[data-pati-theme="dark"] .pati-collab-picker .pati-collab-search-results,
+html[data-pati-theme="dark"] .pati-collab-picker .pati-collab-selected{
+ background:var(--pui-paper)!important;border-color:var(--pui-border)!important;
+}
+html[data-pati-theme="dark"] .pati-collab-picker .pati-collab-option{
+ color:var(--pui-text)!important;
+}
+/* Preserve deliberate visual designs: do not invert avatar, video, stories or Reel art. */
+@media(max-width:400px){
+ .pati-collab-avatar,.pati-collab-picked-avatar{width:37px;height:37px;flex-basis:37px}
+ .pati-collab-avatar>.avatar,.pati-collab-picked-avatar>.avatar{width:37px!important;height:37px!important;min-width:37px!important}
+ .pati-collab-search-results{max-height:33dvh}
+}
+@media(prefers-contrast:more){
+ .pati-collab-search-results .pati-collab-option:focus-visible{outline:3px solid var(--pui-focus)}
+}
+
+
+/* Active-button descendants inherit the matching foreground, not the generic heading
+   or small-text color. This block must stay after the general typography rules. */
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-explore-sort button.active,.pati-explore-sort button[aria-pressed="true"],
+ .pati-dm-filters button.active,.pati-ig-tabs button.active,
+ .pati-theme-options button.active,.pati-shop-filter button.active
+) :is(strong,small,span,svg,.icon){
+ color:var(--pui-active-text)!important;
+ stroke:currentColor!important;
+}
+html[data-pati-theme="light"] #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn.active,
+html[data-pati-theme="light"] #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn[aria-current="page"]{
+ background:#eeeff3!important;color:#17191e!important;
+}
+html[data-pati-theme="light"] #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn.active :is(.icon,small,svg),
+html[data-pati-theme="light"] #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn[aria-current="page"] :is(.icon,small,svg){
+ color:#17191e!important;stroke:currentColor!important;
+}
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn.active :is(.icon,small,svg),
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn[aria-current="page"] :is(.icon,small,svg){
+ color:#fff!important;stroke:currentColor!important;
+}
+html[data-pati-theme="dark"] #modal-root .pati-collab-search-results .pati-collab-option :is(strong,small,.pati-collab-select-icon){
+ color:var(--pui-text)!important;
+}
+html[data-pati-theme="light"] #modal-root .pati-collab-search-results .pati-collab-option :is(strong,small,.pati-collab-select-icon){
+ color:var(--pui-text)!important;
+}
