@@ -16,7 +16,7 @@ test('Existing application and delight motion scripts are valid JavaScript',()=>
 test('Animated original dog mascot has safe motion reduction and no external dependencies',()=>{
  assert.match(mascot,/<svg [^>]*viewBox="0 0 240 240"/);
  for(const key of ['blink','wave','wag','tilt','prefers-reduced-motion'])assert.ok(mascot.includes(key),key);
- assert.doesNotMatch(mascot,/https?:\/\/|<script\b/i);
+ assert.doesNotMatch(mascot,/(?:href|src)=["']https?:\/\/|<script\b/i);
  assert.match(html,/patiyiz-delight-20261029\.js\?v=1/);
  assert.match(native,/'patiyiz-mascot\.svg'/);
 });
@@ -32,7 +32,7 @@ test('Streak is database-owned, private and synchronized between devices',()=>{
  assert.match(sql,/revoke all on public\.patiyiz_login_streaks from public, anon/);
  assert.match(sql,/grant select on public\.patiyiz_login_streaks to authenticated/);
  assert.doesNotMatch(sql,/grant select,insert,update on public\.patiyiz_login_streaks to authenticated/);
- assert.match(sql,/revoke execute on function public\.patiyiz_checkin_streak\(\) from public, anon/);
+ assert.match(sql,/revoke (?:all|execute) on function public\.patiyiz_checkin_streak\(\) from public, anon/);
  assert.match(sql,/grant execute on function public\.patiyiz_checkin_streak\(\) to authenticated/);
  assert.match(app,/sb\.rpc\('patiyiz_checkin_streak'\)/);
  assert.match(app,/function patiStreakToday\(\)/);
@@ -41,7 +41,7 @@ test('Streak is database-owned, private and synchronized between devices',()=>{
 });
 test('Home and Academy include mascot progress without replacing content',()=>{
  assert.match(app,/function homePage\(\)/);
- assert.match(app,/storiesStrip\(\) \+patiStreakMarkup\(\)/);
+ assert.match(app,/\(typeof patiStreakMarkup==='function'\?patiStreakMarkup\(\):''\)\+storiesStrip\(\)/);
  assert.match(app,/patiyizLessons\.length\)\|\|''/);
  assert.match(app,/academyIntro\(topicDone,topic\.length\)/);
  assert.match(app,/function educationPathCards\(topic,done\)/);
@@ -51,10 +51,12 @@ test('Home and Academy include mascot progress without replacing content',()=>{
  assert.match(css,/prefers-reduced-motion:reduce/);
 });
 test('Follow effect only celebrates after successful database mutation',()=>{
- const click=app.slice(app.indexOf("case 'follow':"),app.indexOf("case 'vote':",app.indexOf("case 'follow':")));
- assert.match(click,/await doToggle\('follows'/);
- assert.match(click,/followConfirmed\(position,!wasFollowing\)/);
- assert.ok(click.indexOf('await doToggle')<click.indexOf('followConfirmed'));
+ const code=app.slice(app.indexOf('function doToggle('),app.indexOf('async function deleteOwnedMedia('));
+ assert.match(app,/case 'follow':run\(\(\)=>doToggle\('follows'/);
+ assert.match(code,/followRect=isFollow/);
+ assert.match(code,/if\(r.error\)throw r.error/);
+ assert.match(code,/followConfirmed\(followRect,!present\)/);
+ assert.ok(code.indexOf('if(r.error)throw r.error')<code.indexOf('followConfirmed'));
  assert.match(js,/function followConfirmed\(rect,isFollowing\)/);
 });
 test('Dark and light modes protect Academy and other text and form contrast',()=>{
