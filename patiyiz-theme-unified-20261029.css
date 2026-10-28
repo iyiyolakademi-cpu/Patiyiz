@@ -1,0 +1,315 @@
+/* Patiyiz — final theme surface layer / 2026-10-29.
+   Intent: one consistent set of surfaces across CSS from all previous screens.
+   Dark-mode overrides are intentionally scoped: NEVER alter user photos/videos,
+   full-screen Reels, camera preview, image masks or the story viewer video.
+   Keep light mode's existing colors unchanged. */
+html[data-pati-theme="dark"]{
+ --patix-page:#101114;
+ --patix-panel:#1c1d22;
+ --patix-panel-raised:#25262d;
+ --patix-field:#2a2b32;
+ --patix-line:#383a44;
+ --patix-strong:#f5f5f8;
+ --patix-muted:#bec0cc;
+ --patix-faint:#a9adba;
+ --patix-selection:#eeeef2;
+ --patix-selection-ink:#17181d;
+}
+/* Fixed navigation — the missing Explore symbol in the supplied screenshot was
+   caused by a late .mobile-nav-btn.active {color:#15161a!important} rule. */
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.mobile-bottom{
+ background:#1c1d23!important;
+ background-color:#1c1d23!important;
+ border-color:#373942!important;
+ box-shadow:0 -6px 22px #0005!important;
+ color:var(--patix-strong)!important;
+}
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn{
+ color:#b9bbca!important;background:transparent!important;border-color:transparent!important;
+}
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn.active,
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn[aria-current="page"]{
+ color:#ffffff!important;background:#373943!important;border-radius:13px!important;
+}
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn .pati-mobile-nav-glyph{
+ color:inherit!important;opacity:1!important;filter:none!important;
+}
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn .pati-mobile-nav-glyph svg,
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn .pati-mobile-nav-glyph .icon{
+ color:inherit!important;stroke:currentColor!important;opacity:1!important;
+}
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn>small{
+ color:inherit!important;opacity:1!important;
+}
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn:focus-visible{
+ outline:2px solid #d5ddff!important;outline-offset:-2px!important;
+}
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn.active::before{
+ background:#fff!important;opacity:1!important;
+}
+/* Explore / content search — exact classes rendered by explorePage(). */
+html[data-pati-theme="dark"] #main-content .pati-explore-media-screen,
+html[data-pati-theme="dark"] #main-content .pati-search-screen{
+ background:var(--patix-page)!important;
+ color:var(--patix-strong)!important;
+ border-color:var(--patix-line)!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-explore-media-screen>.pati-explore-search-launch,
+html[data-pati-theme="dark"] #main-content .pati-search-top,
+html[data-pati-theme="dark"] #main-content .pati-search-field{
+ background:var(--patix-field)!important;
+ color:var(--patix-strong)!important;
+ border-color:var(--patix-line)!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-explore-media-screen>.pati-explore-search-launch{
+ border:1px solid #4a4c57!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-explore-media-screen>.pati-explore-search-launch>span{
+ color:#d3d5e0!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-explore-media-screen>.pati-explore-search-launch .icon,
+html[data-pati-theme="dark"] #main-content .pati-search-field>.icon{
+ stroke:#e4e6ee!important;color:#e4e6ee!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-search-field input{
+ background:transparent!important;color:#fff!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-search-field input::placeholder{
+ color:#c3c6d0!important;opacity:1!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-explore-media-screen .pati-explore-sort,
+html[data-pati-theme="dark"] #main-content .pati-explore-sort{
+ background:var(--patix-panel)!important;
+ border:1px solid var(--patix-line)!important;
+ border-radius:16px!important;
+ color:var(--patix-strong)!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-explore-sort button{
+ background:var(--patix-field)!important;
+ color:#d6d8e2!important;
+ border:1px solid #484a56!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-explore-sort button.active,
+html[data-pati-theme="dark"] #main-content .pati-explore-sort button[aria-pressed="true"]{
+ background:var(--patix-selection)!important;
+ color:var(--patix-selection-ink)!important;
+ border-color:var(--patix-selection)!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-explore-sort button:focus-visible{
+ outline:2px solid #d9e0ff!important;outline-offset:2px;
+}
+html[data-pati-theme="dark"] #main-content .pati-explore-media-screen .pati-explore-gallery{
+ background:var(--patix-page)!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-explore-media-screen .pati-explore-media{
+ background:#282a33!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-explore-media-screen .pati-explore-video-icon{
+ color:#fff!important;background:#0009!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-search-results{
+ background:var(--patix-page)!important;color:var(--patix-strong)!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-search-user{
+ background:var(--patix-panel)!important;
+ color:var(--patix-strong)!important;
+ border-color:var(--patix-line)!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-search-user:active,
+html[data-pati-theme="dark"] #main-content .pati-search-user:focus-visible{
+ background:var(--patix-panel-raised)!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-search-user-info strong{
+ color:var(--patix-strong)!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-search-user-info small{
+ color:var(--patix-muted)!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-search-cancel{
+ background:transparent!important;color:var(--patix-strong)!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-search-discover{
+ background:var(--patix-panel-raised)!important;
+ color:var(--patix-strong)!important;
+ border-color:var(--patix-line)!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-search-discover .icon{
+ stroke:var(--patix-strong)!important;color:var(--patix-strong)!important;
+}
+/* Empty views — common reusable helper empty() + legacy empty-state helper.
+   Every part must invert together; it is not enough to recolor <strong>. */
+html[data-pati-theme="dark"] #main-content .pati-explore-media-screen>.empty,
+html[data-pati-theme="dark"] #main-content :is(.empty,.empty-state,.pati-search-empty,.pati-ig-empty,.pati-following-empty),
+html[data-pati-theme="dark"] #main-content .pati-explore-load-more{
+ background:var(--patix-panel)!important;
+ color:var(--patix-muted)!important;
+ border:1px dashed #484a56!important;
+}
+html[data-pati-theme="dark"] #main-content :is(.empty,.empty-state,.pati-search-empty,.pati-ig-empty,.pati-following-empty) :is(strong,h1,h2,h3){
+ color:var(--patix-strong)!important;
+}
+html[data-pati-theme="dark"] #main-content :is(.empty,.empty-state,.pati-search-empty,.pati-ig-empty,.pati-following-empty) :is(p,small,span){
+ color:var(--patix-muted)!important;
+}
+html[data-pati-theme="dark"] #main-content :is(.empty,.empty-state,.pati-search-empty,.pati-ig-empty) .icon{
+ color:var(--patix-muted)!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-explore-load-more :is(button,.soft-btn){
+ background:var(--patix-panel-raised)!important;
+ color:var(--patix-strong)!important;border-color:var(--patix-line)!important;
+}
+/* Social feed + profile. Avoid changing media overlays and user content brightness. */
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-feed-card,.pati-feed-posts .post,.post,.card,.composer,
+ .pati-ig-profile,.pati-ig-summary,.pati-ig-tabs,
+ .pati-community-card,.pati-repost-context,.pati-post-details,
+ .pati-profile-text-feed,.pati-collab-requests,
+ .pati-following-empty,.pati-ig-highlights
+){
+ background-color:var(--patix-panel)!important;
+ color:var(--patix-strong)!important;
+ border-color:var(--patix-line)!important;
+}
+html[data-pati-theme="dark"] #main-content :is(.pati-feed-card,.post,.card,.composer,.pati-ig-summary,.pati-community-card) :is(
+ .post-author,.post-content,.pati-post-caption,.pati-post-head,.pati-ig-bio,.pati-ig-handle-row,.pati-ig-info,.pati-profile-text-tile
+){
+ color:var(--patix-strong)!important;
+}
+html[data-pati-theme="dark"] #main-content :is(.pati-feed-card,.post,.card,.composer,.pati-ig-summary,.pati-community-card) :is(
+ .muted,.meta,.post-comments,.post-author>span,.post-content .tags,small
+){
+ color:var(--patix-muted)!important;
+}
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-ig-profile,.pati-ig-summary,.pati-ig-highlights,.pati-ig-tabs
+) :is(strong,.pati-ig-name,.pati-ig-handle,.pati-ig-stats b){
+ color:var(--patix-strong)!important;
+}
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-ig-profile,.pati-ig-summary,.pati-ig-highlights,.pati-ig-tabs
+) :is(p,small,.pati-ig-bio){
+ color:var(--patix-muted)!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-tabs button:not(.active){
+ color:var(--patix-muted)!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-tabs button.active,
+html[data-pati-theme="dark"] #main-content .pati-ig-tabs button[aria-selected="true"]{
+ color:var(--patix-strong)!important;border-color:var(--patix-strong)!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-profile-text-tile{
+ background:var(--patix-panel-raised)!important;
+ color:var(--patix-strong)!important;
+}
+/* Cards from other major sections contain both hard-coded #fff and dark text.
+   Keep accents on illustrations but normalize the actual reading surfaces. */
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-settings-list section,.pati-feature-group,.pati-pet-hub .pati-hub-card,
+ .pati-health-profile,.pati-care-simple .care-v2-item,
+ .pati-shop-v2 .pati-shop-card,.p4-shop .pati-shop-card,
+ .pati-edu-path-item,.pati-ref-academy-section,
+ .pati-ref-kb-home .p4-kb-rec,.kb-v2 .kb-v2-card,
+ .pati-own-pets-list article,.pati-notifications-simple,
+ .lost-v2 .lost-v2-card,.adopt-v2 .adopt-v2-card,
+ .pati-dm-layout .chat-people,.pati-dm-layout .chat-window
+){
+ background-color:var(--patix-panel)!important;
+ color:var(--patix-strong)!important;
+ border-color:var(--patix-line)!important;
+}
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-edu-path-item,.pati-settings-list section,.pati-pet-hub .pati-hub-card,
+ .pati-care-simple .care-v2-item,.pati-shop-v2 .pati-shop-card,
+ .p4-shop .pati-shop-card,.pati-own-pets-list article,.pati-dm-layout
+) :is(h1,h2,h3,h4,strong,.pati-edu-path-step){
+ color:var(--patix-strong)!important;
+}
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-edu-path-item,.pati-settings-list section,.pati-pet-hub .pati-hub-card,
+ .pati-care-simple .care-v2-item,.pati-shop-v2 .pati-shop-card,
+ .p4-shop .pati-shop-card,.pati-own-pets-list article,.pati-dm-layout
+) :is(p,small,.muted,.meta,.pati-edu-path-status){
+ color:var(--patix-muted)!important;
+}
+/* Floating Menus, notification lists and editable forms. */
+html[data-pati-theme="dark"] #tools-form :is(
+ .pati-feature-group,.pati-feature-notifications,.pati-menu-notifications-list,
+ .pati-mobile-menu-list,.pati-mobile-menu-item,.pati-menu-notifications-top,
+ .pati-alert-entry,.pati-alert-simple
+){
+ background:var(--patix-panel)!important;
+ color:var(--patix-strong)!important;
+ border-color:var(--patix-line)!important;
+}
+html[data-pati-theme="dark"] #tools-form :is(
+ .pati-menu-notifications-empty,.pati-alert-meta,.pati-mobile-menu-item small,
+ .pati-feature-intro,.pati-alert-simple.is-read .pati-alert-title
+){
+ color:var(--patix-muted)!important;
+}
+html[data-pati-theme="dark"] :is(#main-content,#tools-form,#modal-root) :is(
+ input:not([type="checkbox"]):not([type="radio"]),select,textarea
+){
+ background:var(--patix-field)!important;
+ color:var(--patix-strong)!important;
+ border-color:#51535e!important;
+}
+html[data-pati-theme="dark"] :is(#main-content,#tools-form,#modal-root) :is(input,textarea)::placeholder{
+ color:var(--patix-muted)!important;opacity:1!important;
+}
+html[data-pati-theme="dark"] #modal-root :is(
+ .modal,.modal-content,.modal-header,.modal-footer,
+ .pati-pet-edit-modal,.pati-community-form-intro,.pati-question-fullscreen
+){
+ background-color:var(--patix-panel)!important;
+ color:var(--patix-strong)!important;
+ border-color:var(--patix-line)!important;
+}
+html[data-pati-theme="dark"] #modal-root :is(
+ .pati-pet-edit-modal,.pati-question-fullscreen,.pati-community-form-intro
+) :is(h1,h2,h3,strong,label){
+ color:var(--patix-strong)!important;
+}
+html[data-pati-theme="dark"] #modal-root :is(
+ .pati-pet-edit-modal,.pati-question-fullscreen,.pati-community-form-intro
+) :is(p,small,.muted,.help){
+ color:var(--patix-muted)!important;
+}
+/* Account settings, labels, and side navigation, desktop and mobile. */
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.mobile-header,
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.app-shell>.sidebar,
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.app-shell>.right-rail{
+ background:var(--patix-panel)!important;
+ color:var(--patix-strong)!important;
+ border-color:var(--patix-line)!important;
+}
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.app-shell>.sidebar .nav-link{
+ color:var(--patix-muted)!important;
+}
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.app-shell>.sidebar .nav-link.active,
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.app-shell>.sidebar .nav-link[aria-current="page"]{
+ color:var(--patix-strong)!important;
+ background:var(--patix-panel-raised)!important;
+}
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.mobile-header :is(
+ .brand-word,.pati-header-menu,.pati-header-actions
+){
+ color:var(--patix-strong)!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-theme-options button.active{
+ background:var(--patix-selection)!important;
+ color:var(--patix-selection-ink)!important;
+ border-color:var(--patix-selection)!important;
+}
+/* Utility accessible focus states */
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-search-user,.pati-search-discover,.pati-explore-media,.pati-explore-sort button,
+ .pati-explore-search-launch,.pati-ig-tabs button
+):focus-visible{
+ outline:2px solid #c6d2ff!important;outline-offset:2px!important;
+}
+@media(prefers-contrast:more){
+ html[data-pati-theme="dark"] #main-content :is(.empty,.empty-state,.pati-search-user,.pati-explore-sort button){
+  border-width:2px!important;
+ }
+}
