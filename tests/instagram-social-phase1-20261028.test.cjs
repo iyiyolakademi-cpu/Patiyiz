@@ -61,7 +61,7 @@ test('DM reaction table only exposes authorized message participants',()=>{
 test('Story share attributes original, retains source link and original media',()=>{
  const story=between('/* Share an existing public post to a story','function showStoryFrame(){');
  assert.match(story,/shared_post_id:post.id/);
- assert.match(story,/expires_at:new Date\(Date.now\(\)\+24\*60\*60\*1000\)/);
+ assert.doesNotMatch(story,/expires_at:new Date/); // database default controls the 24-hour expiry
  assert.match(story,/data.posts.push\(post\)/);
  assert.match(story,/closeStory\(false\);openPost\(postId\)/);
  assert.match(storySql,/add column if not exists shared_post_id uuid references public.posts\(id\) on delete set null/);
