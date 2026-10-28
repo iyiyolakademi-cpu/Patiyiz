@@ -15,7 +15,8 @@ test('Header puts add before branded logo and removes its message icon',()=>{
  assert.ok(header.indexOf('id="pati-header-share"')<header.indexOf('<div class="brand">'));
  assert.match(header,/data-action="pati-create-open"/);
  assert.doesNotMatch(header,/id="pati-header-messages"/);
- assert.match(header,/id="pati-header-notifications"/);
+ assert.doesNotMatch(header,/id="pati-header-notifications"/);
+ assert.match(app,/pati-feature-notifications-content/);
  assert.match(css,/\.pati-header-share/);
 });
 test('Notification page is only the notification list, without filters or widgets',()=>{
