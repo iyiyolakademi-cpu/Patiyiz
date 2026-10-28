@@ -8,13 +8,15 @@ const css=fs.readFileSync('patiyiz-desktop-mobile-parity-chat-delete-20261028.cs
 const sql=fs.readFileSync('supabase/patiyiz-dm-hidden-threads-20261028.sql','utf8');
 const source=(a,b)=>{const i=app.indexOf(a),j=app.indexOf(b,i+a.length);assert.ok(i>=0&&j>i,a);return app.slice(i,j)};
 test('The full app script is still valid JavaScript',()=>new vm.Script(app));
-test('Chat inbox shows a separate delete button adjacent to each thread',()=>{
+test('Chat inbox keeps the delete button in a compact three-dot options menu',()=>{
  const markup=source('function messagesPage(){','function pushKeyBytes(');
  assert.match(markup,/class="pati-dm-list-row"/);
  assert.match(markup,/class="pati-dm-delete-thread"/);
  assert.match(markup,/data-action="dm-delete-thread"/);
  assert.match(markup,/data-action="chat"/);
- assert.match(markup,/aria-label=".{0,150}sohbetini sil"/);
+ assert.match(markup,/aria-label=".{0,150}sohbetini listemden kaldır"/);
+ assert.match(markup,/<details class="pati-dm-row-actions">/);
+ assert.match(markup,/<summary aria-label="Sohbet seçenekleri"/);
  assert.match(app,/case 'dm-delete-thread':run\(\(\)=>patiDmDeleteConversation\(id\)\)/);
  assert.match(markup,/pati-dm-list-row'\)\.forEach/);
 });
