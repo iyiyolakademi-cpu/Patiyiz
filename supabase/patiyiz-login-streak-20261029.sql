@@ -9,7 +9,7 @@ create table if not exists public.patiyiz_login_streaks (
 );
 alter table public.patiyiz_login_streaks enable row level security;
 revoke all on public.patiyiz_login_streaks from public, anon;
-grant select,insert,update on public.patiyiz_login_streaks to authenticated;
+grant select on public.patiyiz_login_streaks to authenticated;
 
 drop policy if exists "streak read own" on public.patiyiz_login_streaks;
 create policy "streak read own" on public.patiyiz_login_streaks
@@ -23,11 +23,13 @@ create policy "streak update own" on public.patiyiz_login_streaks
  using (user_id = (select auth.uid()))
  with check (user_id = (select auth.uid()));
 
+-- Parameterless SECURITY DEFINER only advances the requesting auth.uid() for today's database date.
+-- The table is SELECT-only to authenticated clients; no direct client updates are permitted.
 -- Atomic and idempotent under two devices opening simultaneously.
 -- Real days are determined by the database, not by user-provided dates.
 create or replace function public.patiyiz_checkin_streak()
 returns table(current_streak integer, longest_streak integer, last_visit_on date)
-language plpgsql security invoker
+language plpgsql security definer
 set search_path = ''
 as $$
 declare v_user uuid := (select auth.uid());
