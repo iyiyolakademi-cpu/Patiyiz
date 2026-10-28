@@ -85,3 +85,85 @@ html[data-pati-theme="dark"] #modal-root .pati-group-list-meta small{color:#bbbc
 html[data-pati-theme="dark"] #modal-root .pati-group-unread-total{color:#c8c8ce}
 html[data-pati-theme="dark"] #modal-root .pati-group-list-item .pati-group-icon{background:#3b3b45;color:#fafafa}
 html[data-pati-theme="dark"] #modal-root .pati-group-message-meta button{color:#e9b2b2}
+
+
+/* One messaging inbox for people and groups, including narrow phones. */
+#main-content .pati-group-thread-row .pati-group-inbox-avatar,
+#main-content .pati-group-chat-window .pati-group-avatar{
+ display:grid;place-items:center;flex:0 0 44px;
+ width:44px;height:44px;border-radius:50%;
+ background:#e9eaef;color:#292b31;
+}
+#main-content .pati-group-thread-row .pati-group-inbox-avatar .icon,
+#main-content .pati-group-chat-window .pati-group-avatar .icon{
+ width:21px;height:21px;stroke-width:2;
+}
+#main-content .pati-group-thread-row.selected{background:#f4f4f6}
+#main-content .pati-group-thread-row .chat-person{min-width:0;flex:1 1 0}
+#main-content .pati-group-thread-row .pati-dm-row-menu button{
+ display:flex;align-items:center;gap:9px;width:100%;
+ padding:10px 12px;min-height:40px;
+ background:none;color:inherit;border:none;border-radius:8px;
+ text-align:left;font-size:13px;font-weight:650;
+}
+#main-content .pati-group-chat-window{
+ display:flex;flex-direction:column;min-width:0;min-height:0;
+}
+#main-content .pati-group-chat-header{
+ display:flex;align-items:center;gap:10px;
+}
+#main-content .pati-group-chat-header .pati-group-chat-title{
+ display:flex;flex:1;flex-direction:column;min-width:0;gap:3px;
+}
+#main-content .pati-group-chat-header .pati-group-chat-title strong{
+ overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+#main-content .pati-group-chat-header .pati-group-chat-title small{font-size:11px;opacity:.67}
+#main-content .pati-group-chat-window .chat-history{
+ display:flex;flex:1;flex-direction:column;gap:12px;
+ min-height:0;overflow:auto;overscroll-behavior:contain;
+}
+#main-content .pati-group-chat-window .pati-group-bubble{
+ width:max-content;max-width:82%;min-width:0;
+ display:flex;flex-direction:column;align-self:flex-start;
+ padding:10px 13px;border-radius:15px;
+ overflow-wrap:anywhere;background:#f1f1f4;color:#202027;
+}
+#main-content .pati-group-chat-window .pati-group-bubble.mine{
+ align-self:flex-end;background:#e8e8ee;color:#202027;
+}
+#main-content .pati-group-chat-window .pati-group-bubble>strong{
+ font-size:11px;font-weight:800;line-height:1.2;
+}
+#main-content .pati-group-chat-window .pati-group-bubble>p{
+ margin:5px 0;font-size:14px;line-height:1.45;white-space:pre-wrap;
+}
+#main-content .pati-group-chat-window .pati-group-chat-form{
+ display:flex;align-items:center;flex:0 0 auto;min-height:60px;gap:8px;
+}
+#main-content .pati-group-chat-window .pati-group-chat-form input[name="group_body"]{
+ flex:1;min-width:0;width:100%;min-height:42px;
+ border-radius:22px;padding:10px 13px;font-size:16px;
+}
+#main-content .pati-group-chat-window .pati-group-chat-form .primary-btn{
+ flex:none;display:grid;place-items:center;min-width:42px;min-height:42px;
+}
+#main-content .pati-group-chat-window .pati-group-empty{
+ text-align:center;color:#898b93;margin:auto;font-size:13px;
+}
+html[data-pati-theme="dark"] #main-content .pati-group-thread-row .pati-group-inbox-avatar,
+html[data-pati-theme="dark"] #main-content .pati-group-chat-window .pati-group-avatar{
+ background:#393943;color:#f3f3f7;
+}
+html[data-pati-theme="dark"] #main-content .pati-group-thread-row.selected{background:#303036}
+html[data-pati-theme="dark"] #main-content .pati-group-chat-window .pati-group-bubble{
+ background:#35353d;color:#f5f5f8;
+}
+html[data-pati-theme="dark"] #main-content .pati-group-chat-window .pati-group-bubble.mine{
+ background:#484852;color:#fff;
+}
+@media(max-width:740px){
+ #main-content .pati-group-chat-window .pati-group-bubble{max-width:88%}
+ #main-content .pati-group-chat-window .pati-group-chat-form{padding-bottom:max(8px,env(safe-area-inset-bottom,0px))}
+ #main-content .pati-dm-top-actions .pati-dm-new[data-action="pati-group-create-open"]{white-space:nowrap;font-size:11px}
+}
