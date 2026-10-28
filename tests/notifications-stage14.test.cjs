@@ -56,30 +56,28 @@ test('Turkish content search works without replacing the search field',()=>{
  assert.doesNotMatch(element.innerHTML,/Yeni mesaj aldınız/);
  assert.equal(counter.textContent,'1 / 3 bildirim');
 });
-test('Row layout includes open, read-unread toggle, delete, and labels',()=>{
+test('Row layout opens notifications; deletion is available only on long-press',()=>{
  const {api,context}=setup();
- const html1=api.notificationRows([context.data.notifications[0]]);
- const html2=api.notificationRows([context.data.notifications[1]]);
- assert.match(html1,/data-action="open-notification"/);
- assert.match(html1,/data-action="notification-toggle-read"/);
- assert.match(html1,/data-action="notification-delete"/);
- assert.match(html1,/✓ Okundu/);
- assert.match(html2,/Okunmadı/);
- assert.match(api.notificationRows([context.data.notifications[2]]),/Pati bakımı/);
+ const a=api.notificationRows([context.data.notifications[0]]);
+ const b=api.notificationRows([context.data.notifications[1]]);
+ assert.match(a,/data-action="open-notification"/);
+ assert.match(a,/data-notification-id="n1"/);
+ assert.match(a,/Okunmadı/);
+ assert.match(b,/is-read/);
+ assert.doesNotMatch(a,/notification-toggle-read|data-action="notification-delete"|pati-alert-follow-back/);
+ assert.match(app,/function openNotificationDeleteOptions\(el\)/);
+ assert.match(app,/data-action="notification-delete"/);
 });
-test('Dashboard shows counts and push settings honestly, without hiding existing notifications',()=>{
+test('Notification screen contains only the list with no dashboard tools',()=>{
  const {api,context}=setup();
  api.notificationsPage();
  const ui=context.main.innerHTML;
  assert.match(ui,/Bildirimler/);
- assert.match(ui,/3<\/b><small>Toplam/);
- assert.match(ui,/2<\/b><small>Okunmamış/);
- assert.match(ui,/Telefon bildirimleri/);
- assert.match(ui,/Durum kontrol ediliyor/);
- assert.match(ui,/teslimatı garanti etmez/);
- assert.match(ui,/data-action="notifications-refresh"/);
- assert.match(ui,/data-action="notifications-delete-all"/);
- assert.match(ui,/data-action="notifications-read"/);
+ assert.match(ui,/Yeni mesaj aldınız/);
+ assert.match(ui,/Fotoğrafını beğendi/);
+ assert.match(ui,/Karma aşı hatırlatması/);
+ assert.doesNotMatch(ui,/notification-v2-stats|notification-v2-filters|notification-v2-push|notification-v2-search/);
+ assert.doesNotMatch(ui,/data-action="notifications-refresh"|data-action="notifications-delete-all"|data-action="notifications-read"/);
 });
 test('Push detection checks granted permission, active device subscription and current account',async()=>{
  const {api,context}=setup();
@@ -87,13 +85,13 @@ test('Push detection checks granted permission, active device subscription and c
  context.sb={from(table){assert.equal(table,'push_subscriptions');return{select(){return this},eq(field,v){if(field==='user_id')assert.equal(v,'self');if(field==='endpoint')received=v;return this},limit:async()=>({data:[{id:'saved'}],error:null})}}};
  await api.notificationCheckPush();
  assert.equal(received,'https://device.example/unique');
- assert.match(context.main.innerHTML,/Bu cihazda açık/);
+ assert.equal(vm.runInContext('notificationPushStatus',context),'on');
 });
 test('Push with permission blocked is not reported as active',async()=>{
  const {api,context}=setup();
  context.window.Notification.permission='denied';
  await api.notificationCheckPush();
- assert.match(context.main.innerHTML,/Tarayıcı izni engellenmiş/);
+ assert.equal(vm.runInContext('notificationPushStatus',context),'blocked');
 });
 test('Open notification and all write actions constrain mutation to owner and inspect rows',()=>{
  assert.match(app,/function notificationVisible\(\)/);
