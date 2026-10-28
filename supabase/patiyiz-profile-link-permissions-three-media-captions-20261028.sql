@@ -23,3 +23,11 @@ ALTER TABLE public.posts ADD CONSTRAINT posts_body_check CHECK (
  )
 );
 -- Story captions already have an empty-string default and require no change.
+
+-- Private story media is stored in an authorized private bucket. Public URL must be
+-- blank for close friends, so image_url validation must allow that representation.
+ALTER TABLE public.patiyiz_stories DROP CONSTRAINT IF EXISTS patiyiz_stories_image_url_check;
+ALTER TABLE public.patiyiz_stories ADD CONSTRAINT patiyiz_stories_image_url_check CHECK (
+ (audience='close_friends' AND image_url='' AND private_image_path IS NOT NULL)
+ OR (audience='everyone' AND char_length(image_url) BETWEEN 10 AND 2000)
+);
