@@ -12,18 +12,41 @@ test('App still parses and references the new stylesheet',()=>{
  assert.match(html,/patiyiz-instagram-reels-dm-story-ring-20261028\.css/);
  assert.match(css,/pati-dm-story-trigger/);
 });
-test('Instagram user names and links normalize safely without open redirect',()=>{
- const norm=vm.runInNewContext(section('function patiNormalizeInstagramUrl(','function patiInstagramProfileLink(')+'\npatiNormalizeInstagramUrl',{URL});
- assert.equal(norm('@berke_yuksekdag'),'https://www.instagram.com/berke_yuksekdag/');
- assert.equal(norm('https://instagram.com/merhaba.test/?igsh=123'),'https://www.instagram.com/merhaba.test/');
- assert.equal(norm(''),'');
- for(const unsafe of ['https://evil.com/foo','https://instagram.com.evil.com/abc','https://instagram.com/reel/abc','javascript:alert(1)','some/path','https://instagram.com/@bad']){
+test('Profile links accept safe external web destinations across all services',()=>{
+ const helper=section('const PATI_PROFILE_LINK_LIMIT=12;','function patiProfileLinksHTML(');
+ const api=vm.runInNewContext(helper+'\n({patiNormalizeProfileUrl,patiProfileLinks})',{URL});
+ const norm=api.patiNormalizeProfileUrl;
+ assert.equal(norm('example.com'),'https://example.com/');
+ assert.equal(norm('https://www.youtube.com/watch?v=abc'),'https://www.youtube.com/watch?v=abc');
+ assert.equal(norm('tiktok.com/@example'),'https://tiktok.com/@example');
+ assert.equal(norm('https://instagram.com/merhaba.test/?igsh=123'),'https://instagram.com/merhaba.test/?igsh=123');
+ assert.equal(norm('https://patiyiz.com'),'https://patiyiz.com/');
+ for(const unsafe of ['javascript:alert(1)','file:///etc/passwd','data:text/html,x','https://evil.com@localhost','https://localhost/path','http://127.0.0.1/','https://10.0.0.5/','some/path','https://user:password@example.com/']){
   assert.throws(()=>norm(unsafe),unsafe);
  }
- assert.match(app,/instagram_url:patiNormalizeInstagramUrl\(str\('instagram_url'\)\)/);
- assert.match(app,/patiInstagramProfileLink\(p\)/);
+ const links=api.patiProfileLinks({profile_links:[{title:'Mağazam',url:'shop.example.org'},{title:'Kanal',url:'https://youtube.com/@channel'}]});
+ assert.equal(links.length,2);
+ assert.equal(links[0].title,'Mağazam');
+ assert.equal(links[1].url,'https://youtube.com/@channel');
+ assert.match(app,/profile_links:patiCollectProfileLinks\(form\)/);
+ assert.match(app,/patiProfileLinksHTML\(p\)/);
+ assert.match(app,/patiBindProfileLinkEditor\(document.getElementById\('profile-form'\)\)/);
+ assert.doesNotMatch(app,/Instagram bağlantısı veya @kullanıcıadı/);
  assert.match(app,/rel="noopener noreferrer"/);
- assert.match(sql,/ADD COLUMN IF NOT EXISTS instagram_url/);
+ assert.match(html,/patiyiz-profile-links-general-20261028\.css/);
+ assert.match(app,/data-action="pati-profile-link-add"/);
+ assert.match(app,/data-action="pati-profile-link-remove"/);
+});
+test('Multiple links are validated, deduplicated and bounded',()=>{
+ const script=section('const PATI_PROFILE_LINK_LIMIT=12;','function patiProfileLinksHTML(')+
+   section('function patiCollectProfileLinks(','function patiBindProfileLinkEditor(');
+ const collect=vm.runInNewContext(script+'\npatiCollectProfileLinks',{URL});
+ const row=(title,url)=>({querySelector:(selector)=>({value:selector.includes('link_title')?title:url})});
+ assert.equal(JSON.stringify(collect({querySelectorAll:()=>[row('Web sitem','example.com'),row('Kanalım','youtube.com/@test')]})),
+  JSON.stringify([{title:'Web sitem',url:'https://example.com/'},{title:'Kanalım',url:'https://youtube.com/@test'}]));
+ assert.equal(collect({querySelectorAll:()=>[row('','')]}).length,0);
+ assert.throws(()=>collect({querySelectorAll:()=>[row('Biri','example.com'),row('İki','https://example.com/')]}),/Aynı bağlantıyı/);
+ assert.throws(()=>collect({querySelectorAll:()=>Array.from({length:13},(_,i)=>row('Link '+i,'site'+i+'.com'))}),/En fazla 12/);
 });
 test('DM links decode only internal persisted post links (including legacy messages)',()=>{
  const extract=vm.runInNewContext(section('function patiDmSharedPostId(','function patiDmHasActiveStory(')+'\npatiDmSharedPostId');
