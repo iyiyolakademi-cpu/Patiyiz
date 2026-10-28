@@ -1,0 +1,27 @@
+/* Patiyiz simple screens — retain all actions, forms and saved data. */
+#main-content :is(.care-v2,.lost-v2,.adopt-v2,.pati-edu-v2,.kb-v2,.wellness-v2){max-width:960px;margin-inline:auto;overflow-wrap:anywhere}
+#main-content :is(.care-v2,.lost-v2,.adopt-v2) :is(.care-v2-hero,.lost-v2-hero,.adopt-v2-hero){display:none!important}
+#main-content :is(.care-v2,.lost-v2,.adopt-v2) :is(.care-v2-heading,.lost-v2-heading,.adopt-v2-heading){background:#fff!important;border:0!important;border-radius:0!important;padding:15px 6px 16px!important;display:flex!important;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+#main-content :is(.care-v2,.lost-v2,.adopt-v2) :is(.care-v2-heading,.lost-v2-heading,.adopt-v2-heading) h1{font-size:clamp(23px,5vw,30px)!important;letter-spacing:-.04em}
+#main-content :is(.care-v2,.lost-v2,.adopt-v2) :is(.care-v2-heading,.lost-v2-heading,.adopt-v2-heading) p{font-size:13px!important;color:#697281}
+#main-content .care-v2 .care-v2-metrics>div:nth-child(1),#main-content .care-v2 .care-v2-metrics>div:nth-child(3){display:none!important}
+#main-content .care-v2 .care-v2-metrics,#main-content .lost-v2 .lost-v2-stats,#main-content .adopt-v2 .adopt-v2-stats{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px!important;margin:8px 0 18px!important}
+#main-content .care-v2 .care-v2-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+#main-content :is(.care-v2,.lost-v2,.adopt-v2) :is(.care-v2-metrics,.lost-v2-stats,.adopt-v2-stats)>div{padding:14px 8px!important;border-radius:17px!important;min-width:0;text-align:center}
+#main-content :is(.care-v2,.lost-v2,.adopt-v2) :is(.care-v2-metrics,.lost-v2-stats,.adopt-v2-stats) span{font-size:12px!important;overflow-wrap:anywhere}
+#main-content .care-v2 .care-v2-shortcut{border-radius:16px;padding:12px!important;margin:8px 0!important}
+#main-content .care-v2 .care-v2-shortcut p{display:none}
+#main-content .care-v2 .care-v2-filter-title,#main-content .lost-v2 .lost-v2-row,#main-content .adopt-v2 .adopt-v2-row{display:none!important}
+#main-content .care-v2 .care-v2-filters,#main-content .lost-v2 .lost-v2-filters,#main-content .adopt-v2 .adopt-v2-filters{display:flex!important;flex-wrap:nowrap!important;gap:8px!important;overflow-x:auto;scrollbar-width:none;padding:4px 1px 12px!important}
+#main-content :is(.care-v2,.lost-v2,.adopt-v2) :is(.care-v2-filters,.lost-v2-filters,.adopt-v2-filters) button{flex-shrink:0;min-height:41px!important;border-radius:999px!important;padding:9px 13px!important}
+#main-content :is(.care-v2,.lost-v2,.adopt-v2) :is(.care-v2-search,.lost-v2-search,.adopt-v2-search){border-radius:13px!important;margin-bottom:12px!important}
+#main-content :is(.care-v2,.lost-v2,.adopt-v2) :is(.care-v2-grid,.lost-v2-grid,.adopt-v2-grid){gap:12px!important}
+#main-content :is(.care-v2,.lost-v2,.adopt-v2) :is(.care-v2-notice,.lost-v2-privacy,.adopt-v2-safety){font-size:12px;line-height:1.5;border-radius:12px;padding:10px 12px}
+#main-content .pati-edu-v2:not(.edu-v2-detail) .edu-v2-hero{padding:18px!important;border-radius:20px!important}
+#main-content .pati-edu-v2:not(.edu-v2-detail) :is(.edu-v2-metrics,.edu-v2-statistics){display:none!important}
+#main-content .kb-v2:not(.kb-v2-detail) .kb-v2-hero{display:none!important}
+#main-content .kb-v2:not(.kb-v2-detail) .kb-v2-title{padding:15px 0!important}
+#main-content .wellness-v2 .pati-wellness-heading{border-radius:20px!important;padding:17px!important;background:linear-gradient(125deg,#e6f9ee,#e8f3ff)!important}
+#main-content .wellness-v2 :is(.wellness-v2-event,.pati-wellness-event){border-radius:16px!important;box-shadow:none!important}
+#main-content :is(.care-v2,.lost-v2,.adopt-v2,.pati-edu-v2,.kb-v2,.wellness-v2) button:focus-visible{outline:3px solid #5685b8!important;outline-offset:2px}
+@media(max-width:740px){#main-content :is(.care-v2,.lost-v2,.adopt-v2,.pati-edu-v2,.kb-v2,.wellness-v2){padding-inline:12px!important}#main-content :is(.care-v2,.lost-v2,.adopt-v2) :is(.care-v2-heading,.lost-v2-heading,.adopt-v2-heading) button{min-height:44px}}
