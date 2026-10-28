@@ -13,7 +13,8 @@ test('Unified theme always loads after the 55 legacy styles and ships in Capacit
  assert.ok(html.indexOf(final)>html.indexOf(anchor));
  const all=[...html.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map(x=>x[1]);
  assert.ok(all.findIndex(v=>v.includes('patiyiz-theme-unified-20261029.css'))>=0);
- assert.ok(all.at(-1).includes('patiyiz-theme-unified-20261029.css'));
+ assert.ok(all.some(x=>x.includes('patiyiz-theme-unified-20261029.css')));
+ assert.ok(all.at(-1).includes('patiyiz-polish-collab-dm-story-20261029.css'));
  assert.ok(all.findIndex(v=>v.includes('patiyiz-story-view-time-20261029.css'))<all.findIndex(v=>v.includes('patiyiz-theme-unified-20261029.css')));
  assert.match(native,/'patiyiz-theme-unified-20261029\.css'/);
  assert.match(html,/unified-dark-ui=20261029/);
