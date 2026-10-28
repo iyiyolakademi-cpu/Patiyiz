@@ -1849,12 +1849,21 @@ function patiWellnessPage(){
  const viewItems=patiWellnessRemindersFor(selectedId).filter(x=>view!=='my-pet'||patiHealthTopic==='all'||patiHealthTopic==='weight'||x.kind===patiHealthTopic);
  const icons={vaccine:'💉',vet:'🩺',food:'🥣',medicine:'💊'};
  if(view==='my-pet'&&patiHealthLanding){
-  const selected=pets.find(p=>p.id===selectedId),photo=selected?.photo_url||'';
-  const soon=[...open].sort((a,b)=>new Date(a.due_at)-new Date(b.due_at))[0];
-  const sections=[['vaccine','Aşılar','💉'],['vet','Veteriner','🩺'],['medicine','İlaçlar','💊'],['weight','Kilo Takibi','⚖️']];
-  main.innerHTML='<section class="pati-health-home"><div class="pati-health-pet"><div class="pati-health-pet-image">'+(photo?'<img src="'+esc(photo)+'" alt="'+esc(selected?.name||'Hayvan')+'">':petIcon(selected?.species))+'</div><div><small>HAYVAN SAĞLIĞI</small><h1>'+esc(selected?.name||'Patili dostum')+'</h1><p>Sağlık ve bakım kayıtların</p></div></div>'+
-   '<div class="pati-health-next"><span>⏰ Yaklaşan hatırlatma</span><strong>'+(soon?esc(soon.title):'Henüz hatırlatma yok')+'</strong>'+(soon?'<small>'+esc(new Date(soon.due_at).toLocaleDateString('tr-TR'))+'</small>':'')+'</div>'+
-   '<h2>Ne yapmak istersin?</h2><div class="pati-health-grid">'+sections.map(([key,label,icon])=>'<button type="button" data-action="pati-health-action" data-id="'+key+'"><span>'+icon+'</span><strong>'+label+'</strong></button>').join('')+'</div><button type="button" class="pati-health-add" data-action="wellness-reminder-add">+ Hatırlatma ekle</button></section>';
+  const selected=pets.find(p=>p.id===selectedId);
+  const img=selected?.photo_url||(/kedi/i.test(selected?.species||'')?'pati-illustration-cat.svg':'pati-illustration-dog.svg');
+  const next=[...open].sort((x,y)=>new Date(x.due_at)-new Date(y.due_at))[0];
+  const actions=[['vaccine','Aşılar','💉','gold'],['vet','Veteriner','🩺','blue'],['medicine','İlaçlar','💊','green'],['weight','Kilo Takibi','⚖️','purple']];
+  const petsPicker=pets.length>1?'<div class="p4-health-pets" role="group" aria-label="Hayvan seç">'+pets.map(p=>'<button type="button" data-action="wellness-pet" data-id="'+esc(p.id)+'" class="'+(p.id===selectedId?'active':'')+'" aria-pressed="'+(p.id===selectedId?'true':'false')+'">'+esc(p.name)+'</button>').join('')+'</div>':'';
+  main.innerHTML='<section class="pati-health-home p4-health">'+
+   '<header class="p4-health-header"><span>HAYVAN SAĞLIĞI</span><h1>'+esc(selected?.name||'Patili dostun')+'</h1><p>Sağlık kayıtları ve hatırlatmalar</p></header>'+
+   petsPicker+
+   '<div class="p4-health-profile"><div class="p4-health-portrait"><img src="'+esc(img)+'" alt="'+esc(selected?.name||'Hayvan fotoğrafı')+'"></div><div><strong>'+esc(selected?.name||'Hayvanını ekle')+'</strong><small>'+esc([selected?.breed,selected?.species].filter(Boolean).join(' · ')||'İlk hayvanını ekle')+'</small><span class="p4-health-lastweight">⚖️ Son kilo: '+(latest?Number(latest.weight_kg).toLocaleString('tr-TR')+' kg':'Henüz kayıt yok')+'</span></div></div>'+
+   '<div class="p4-health-overview"><span>⏰ YAKLAŞAN HATIRLATMA</span><div><strong>'+(next?esc(next.title):'Yaklaşan hatırlatma bulunmuyor')+'</strong><small>'+(next?esc(new Date(next.due_at).toLocaleString('tr-TR',{dateStyle:'medium',timeStyle:'short'})):'Yeni bir aşı veya kontrol hatırlatması ekle.')+'</small></div><button type="button" data-action="wellness-reminder-add">+ Ekle</button></div>'+
+   '<div class="p4-health-subhead"><h2>Hızlı İşlemler</h2></div>'+
+   '<div class="p4-health-actions">'+actions.map(([id,title,icon,tone])=>'<button type="button" class="p4-health-action p4-health-'+tone+'" data-action="pati-health-action" data-id="'+id+'"><span aria-hidden="true">'+icon+'</span><strong>'+title+'</strong></button>').join('')+'</div>'+
+   '<div class="p4-health-subhead"><h2>Sağlık geçmişi</h2></div><button type="button" class="p4-health-history" data-action="pati-health-action" data-id="all"><span>🗓️ Tüm sağlık kayıtlarını incele</span><span>›</span></button>'+
+   (!pets.length?'<button type="button" class="p4-add-pet" data-action="pet-add">+ Hayvan profili oluştur</button>':'')+
+   '<p class="p4-health-disclaimer">Sağlık kayıtları veteriner muayenesinin yerini almaz.</p></section>';
   return;
  }
  const cards=viewItems.map(x=>{
