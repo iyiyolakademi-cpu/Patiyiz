@@ -13,33 +13,22 @@ const extract=(first,last)=>{
  return app.slice(i,j);
 };
 
-test('Üst başlıkta mesajlara doğrudan ulaşım bulunur',()=>{
- assert.match(html,/id="pati-header-messages"[^>]*data-view="messages"/);
- assert.match(html,/<use href="#i-message"><\/use>/);
+test('Üstte paylaşım artısı var, mesaj bağlantısı özellikler menüsünde korunur',()=>{
+ const h=html.slice(html.indexOf('<header class="mobile-header">'),html.indexOf('</header>',html.indexOf('<header class="mobile-header">')));
+ assert.match(h,/id="pati-header-share"[^>]*data-action="pati-create-open"/);
+ assert.doesNotMatch(h,/id="pati-header-messages"/);
+ assert.match(h,/id="pati-header-notifications"/);
+ const menu=extract('function openMobileFeaturesMenu(){','const patiCoinTasks=');
+ assert.match(menu,/\['messages','Mesajlar','message'\]/);
  const navSource=extract('function navRender(){','function side(){');
- const dom={
-  '#pati-header-messages':{innerHTML:'',attrs:{},classList:{toggle(){}},setAttribute(a,v){this.attrs[a]=v}},
-  '#pati-header-notifications':{innerHTML:'',classList:{toggle(){}}},
-  '#desktop-nav':{innerHTML:''},
-  '#mobile-nav':{innerHTML:''}
- };
- const context={
-  $:selector=>dom[selector]||null,
-  view:'home',isAdmin:false,me:{id:'me'},
-  unreadCounts:()=>({messages:3,notifications:2}),
-  ico:n=>'<svg>'+n+'</svg>',countBadge:n=>'<b>'+n+'</b>',
-  nav:[['home','Ana sayfa','home'],['messages','Mesajlar','message']],
-  avatar:()=>'<span class="avatar"></span>',current:()=>({id:'me'}),
-  data:{},console
- };
- const navRender=vm.runInNewContext(navSource+'\nnavRender',context);
- navRender();
- assert.match(dom['#pati-header-messages'].innerHTML,/message/);
- assert.match(dom['#pati-header-messages'].innerHTML,/>3</);
- assert.equal(dom['#pati-header-messages'].attrs['aria-label'],'Mesajlar, 3 okunmamış mesaj');
+ const dom={'#desktop-nav':{innerHTML:''},'#mobile-nav':{innerHTML:''},'#pati-header-notifications':{classList:{toggle(){}},setAttribute(){}}};
+ const ctx={$:s=>dom[s]||null,view:'home',isAdmin:false,me:{id:'me'},
+  unreadCounts:()=>({messages:3,notifications:2}),ico:n=>'<svg>'+n+'</svg>',
+  countBadge:n=>'<b>'+n+'</b>',nav:[['home','Ana sayfa','home'],['messages','Mesajlar','message']],
+  avatar:()=>'<span class="avatar"></span>',current:()=>({id:'me'}),data:{},console};
+ const navRender=vm.runInNewContext(navSource+'\nnavRender',ctx);navRender();
  assert.match(dom['#desktop-nav'].innerHTML,/data-view="messages"/);
 });
-
 test('Mesaj kutusundan yeni sohbet açılabilir ve diğer kullanıcıya geçilebilir',()=>{
  const msg=extract('function messagesPage(){','function notificationsPage(){');
  assert.match(msg,/data-action="dm-new"/);

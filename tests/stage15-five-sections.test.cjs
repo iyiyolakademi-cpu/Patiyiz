@@ -13,7 +13,7 @@ test('All five screenshot sidebar sections exist in desktop routes and view disp
  for(const text of ['messages:messagesPage','notifications:notificationsPage','profile:profilePage','settings:settingsPage'])assert.ok(app.includes(text),text);
 });
 test('Mobile menu is concise and Pet Center links to specialized modules',()=>{
- for(const n of ["['community','Topluluk soruları','users']","['pets','Patileri keşfet','paw']","['my-pet','Hayvanım Merkezi · Tüm seçenekler','heart']","['settings','Ayarlar ve gizlilik','settings']","['shop','Pati Mağaza','grid']"])assert.ok(menu.includes(n),n);
+ for(const n of ["['community','Soru & Cevap','users']","['pets','Patileri keşfet','paw']","['my-pet','Hayvanım Merkezi · Tüm seçenekler','heart']","['settings','Ayarlar ve gizlilik','settings']","['shop','Pati Mağaza','grid']"])assert.ok(menu.includes(n),n);
  assert.match(app,/data-action="pati-my-pet-tab"/);
  assert.match(app,/p4-hub-grid/);
  assert.match(app,/messages:messagesPage/);
@@ -41,10 +41,12 @@ test('Settings expose legal/security and use actual Notification Center for devi
  for(const item of ['Ayarlar ve Gizlilik','theme-set','dm-receipts-toggle','settings-password','delete-account-open','privacy.html','terms.html','data-view="notifications"'])assert.ok(settings.includes(item),item);
  assert.doesNotMatch(settings,/button\('Bildirimleri aç','push-enable'\)/);
 });
-test('Notifications retain filters, count and protected write actions',()=>{
- for(const item of ['notificationMatches()','notifications-read','notifications-delete-all','notifications-refresh'])assert.ok(notice.includes(item),item);
- assert.match(app,/case 'notification-toggle-read':/);
- assert.match(app,/\.update\(\{read:next\}\)\.eq\('id',id\)\.eq\('owner_id',me\.id\)/);
+test('Notifications keep owner-scoped writes while showing only a simple list',()=>{
+ assert.match(notice,/notificationVisible\(\)/);
+ assert.match(notice,/notificationRows\(list\)/);
+ assert.doesNotMatch(notice,/notification-v2-filters|notification-v2-stats|notifications-delete-all|notifications-read/);
+ assert.match(app,/case 'notification-delete':closeModal\(true\);run\(/);
+ assert.match(app,/\.delete\(\)\.eq\('id',id\)\.eq\('owner_id',uid\)/);
  assert.match(app,/async function notificationCheckPush\(\)/);
 });
 test('Retired badge and certificate screen cannot be opened',()=>{
