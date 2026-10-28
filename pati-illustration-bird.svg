@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="290" viewBox="0 0 360 290" role="img" aria-labelledby="title">
+<title id="title">Yeşil ve mavi sevimli kuş illüstrasyonu</title><defs><linearGradient id="b" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#87e6d4"/><stop offset="1" stop-color="#45aeb9"/></linearGradient><linearGradient id="w" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#85dcf8"/><stop offset="1" stop-color="#4799d5"/></linearGradient></defs>
+<ellipse cx="188" cy="264" rx="108" ry="13" fill="#123e4c" opacity=".09"/>
+<path d="M230 186q34 12 72-22-8 63-78 80z" fill="#42aebf"/><path d="M210 176q49-22 95 4-35 39-79 29z" fill="#68c7d0"/>
+<path d="M88 149q0-67 77-87 61-17 103 40 33 43 6 98-29 55-92 54-86-1-94-105z" fill="url(#b)"/>
+<ellipse cx="163" cy="190" rx="55" ry="43" fill="url(#w)" transform="rotate(-20 163 190)"/>
+<path d="M140 197q35 23 72-12" fill="none" stroke="#297c9f" opacity=".3" stroke-width="4" stroke-linecap="round"/>
+<circle cx="229" cy="124" r="16" fill="#fff"/><circle cx="232" cy="125" r="8" fill="#273948"/><circle cx="235" cy="121" r="3" fill="#fff"/>
+<path d="m262 149 41 9-35 18-14-12z" fill="#f6b64e"/><path d="m264 153 39 5-27 3" fill="#e6972d"/>
+<circle cx="246" cy="147" r="9" fill="#f29caa" opacity=".55"/>
+<path d="M149 239q-3 22-13 29m54-28q-1 21-10 27" stroke="#e18b48" stroke-width="7" stroke-linecap="round" fill="none"/>
+<path d="M136 268q-12-4-18 2m18-2 9 6m35-7q-14-4-18 2m18-2 9 6" stroke="#e18b48" stroke-width="5" stroke-linecap="round"/>
+<path d="M87 89q-24-18-17-42m38 22q-12-21-2-40" stroke="#b7ece3" stroke-width="9" stroke-linecap="round" fill="none" opacity=".8"/>
+</svg>
