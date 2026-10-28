@@ -1,0 +1,179 @@
+/* Patiyiz mobile QA: photo review, group actions, question composer and pet breeds */
+#patiyiz-system-media .pati-system-photo-review{
+ display:flex;align-items:flex-start;flex-direction:column;gap:5px;margin:13px 0 9px;
+}
+#patiyiz-system-media .pati-system-photo-review[hidden]{display:none!important}
+#patiyiz-system-media .pati-system-photo-review strong{font-size:13px;font-weight:850}
+#patiyiz-system-media .pati-system-photo-review small{font-size:11px;line-height:1.5;color:#a7a9b2}
+#patiyiz-system-media .pati-system-thumbnails{
+ display:flex;overflow-x:auto;overflow-y:visible;gap:10px;padding:7px 3px 11px;
+ scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
+ scrollbar-width:thin;max-width:100%;min-width:0;
+}
+#patiyiz-system-media .pati-system-thumbnails[hidden],
+#patiyiz-system-media .pati-system-photo-actions[hidden]{display:none!important}
+#patiyiz-system-media .pati-system-thumb-item{
+ position:relative;flex:0 0 auto;width:77px;height:89px;scroll-snap-align:start;
+}
+#patiyiz-system-media .pati-system-thumb-select{
+ position:relative;width:76px;height:76px;border-radius:14px;overflow:hidden;
+ padding:0;background:#25262c;border:2px solid #52545b;color:#fff;cursor:pointer;
+}
+#patiyiz-system-media .pati-system-thumb-select.active{
+ border:3px solid #fff;box-shadow:0 0 0 2px #838892
+}
+#patiyiz-system-media .pati-system-thumb-select>img{
+ display:block;width:100%;height:100%;object-fit:cover
+}
+#patiyiz-system-media .pati-system-thumb-select>span{
+ position:absolute;left:5px;bottom:5px;display:grid;place-items:center;
+ min-width:20px;height:20px;padding:0 4px;border-radius:7px;font-size:11px;
+ font-weight:800;background:#0d0d0dbb;box-sizing:border-box
+}
+#patiyiz-system-media .pati-system-thumb-remove{
+ position:absolute;right:-5px;top:-8px;z-index:3;display:grid;place-items:center;
+ width:31px;height:31px;border:1px solid #ffffff99;border-radius:50%;
+ padding:0;background:#1f2027;color:#fff;font-size:23px;font-weight:500;
+ line-height:1;cursor:pointer;box-shadow:0 3px 12px #0008
+}
+#patiyiz-system-media .pati-system-photo-actions{
+ display:flex;gap:9px;flex-wrap:wrap;margin:2px 0 13px
+}
+#patiyiz-system-media .pati-system-photo-actions button{
+ min-height:43px;flex:1 1 110px;min-width:0;border:1px solid #565961;
+ border-radius:12px;padding:8px 10px;background:#22242a;color:#fff;
+ font-size:12px;font-weight:800;cursor:pointer
+}
+#patiyiz-system-media .pati-system-photo-actions button:disabled{opacity:.33;cursor:default}
+#patiyiz-system-media .pati-system-thumb-select:focus-visible,
+#patiyiz-system-media .pati-system-thumb-remove:focus-visible,
+#patiyiz-system-media .pati-system-photo-actions button:focus-visible{outline:3px solid #fff;outline-offset:3px}
+#main-content .pati-group-delete-top{
+ display:grid;place-items:center;flex:0 0 44px;min-width:44px;height:44px;
+ border-radius:13px;border:1px solid #ead0d1;background:#fff3f3;color:#a3313c;cursor:pointer
+}
+#main-content .pati-group-delete-top .icon{width:19px;height:19px}
+#modal-root .pati-group-danger-zone{
+ border:1px solid #f0c4c6;border-radius:17px;padding:14px;margin:12px 0 17px;
+ background:#fff7f7;display:grid;gap:8px;color:#512d31
+}
+#modal-root .pati-group-danger-zone strong{font-size:14px;font-weight:850}
+#modal-root .pati-group-danger-zone p{margin:0;font-size:12px;line-height:1.55}
+#modal-root .pati-group-danger-zone button{
+ display:flex;justify-content:center;align-items:center;gap:8px;min-height:45px;
+ border-radius:12px;border:0;background:#b33241;color:#fff;font-size:13px;font-weight:800
+}
+#modal-root .pati-pet-breed-picker{min-width:0;width:100%}
+#modal-root .pati-pet-breed-picker>label{display:block;margin-bottom:6px;font-size:13px;font-weight:700}
+#modal-root .pati-pet-breed-picker select{
+ display:block;width:100%;max-width:100%;min-height:47px;
+ border-radius:12px;border:1px solid #d9dadd;background:#fff;color:#17191d;
+ padding:10px 34px 10px 12px;font-size:16px;box-sizing:border-box
+}
+#modal-root .pati-pet-breed-area,
+#modal-root .pati-pet-free-breed{width:100%;min-width:0}
+#modal-root .pati-pet-breed-picker[hidden],
+#modal-root .pati-pet-free-breed[hidden]{display:none!important}
+#main-content .pati-community-mobile-ask{display:none}
+/* Ensure flexible children are allowed to shrink instead of causing device-width overflow. */
+#main-content{min-width:0;max-width:100%;box-sizing:border-box}
+#main-content .pati-community-card,
+#main-content .pati-community-head,
+#main-content .pati-dm-layout,
+#main-content .pati-group-chat-title,
+#main-content .pati-group-chat-header,
+#main-content .pati-card{min-width:0;max-width:100%;box-sizing:border-box}
+#main-content .pati-community-card p,
+#main-content .pati-group-chat-title strong{overflow-wrap:anywhere}
+#modal-root .modal-content .pati-field input,
+#modal-root .modal-content .pati-field textarea,
+#modal-root .modal-content .pati-field select{max-width:100%;min-width:0;box-sizing:border-box}
+@media(max-width:740px){
+ #patiyiz-system-media .pati-system-panel{
+  max-height:100dvh;min-height:0;overflow-y:auto;
+  padding-bottom:max(12px,env(safe-area-inset-bottom,0px));
+  -webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;
+ }
+ #patiyiz-system-media .pati-system-preview-media{max-height:min(45dvh,410px)}
+ #patiyiz-system-media .pati-system-thumbnails{gap:9px}
+ #main-content .pati-group-chat-header{display:flex;align-items:center;gap:6px}
+ #main-content .pati-group-chat-header .pati-group-chat-title{flex:1;min-width:0}
+ #main-content .pati-group-chat-header .chat-view-profile{flex:0 0 auto;padding:8px}
+ #main-content .pati-group-delete-top{flex-basis:40px;min-width:40px;height:40px}
+ #modal-root .pati-pet-edit-fields-row{display:grid;grid-template-columns:1fr;gap:11px}
+ #modal-root .pati-pet-breed-area{max-width:100%}
+ #main-content .pati-community-head{margin:0 0 11px!important}
+ #main-content .pati-community-head .page-intro{
+  display:flex;flex-wrap:wrap;align-items:center;gap:10px
+ }
+ #main-content .pati-community-head button[data-action="question"]{
+  display:inline-flex!important;min-height:44px!important;background:#111!important;color:#fff!important
+ }
+ #main-content .pati-community-mobile-ask{
+  display:flex;align-items:center;justify-content:center;position:fixed;
+  right:17px;bottom:calc(82px + env(safe-area-inset-bottom,0px));z-index:58;
+  min-height:49px;padding:12px 19px;border:1px solid #111;border-radius:999px;
+  color:#fff;background:#111;font-size:14px;font-weight:850;cursor:pointer;
+  box-shadow:0 6px 24px #0004;
+ }
+ #main-content .pati-community-mobile-ask:focus-visible{outline:3px solid #777;outline-offset:3px}
+ #main-content:has(.pati-community-head){padding-bottom:95px!important}
+ #modal-root .pati-question-backdrop{
+  position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;
+  max-height:100dvh!important;padding:0!important;overflow:hidden!important;
+  display:block!important;z-index:400!important;background:#fff!important;
+ }
+ #modal-root .pati-question-fullscreen{
+  position:absolute!important;top:0!important;right:0!important;bottom:0!important;left:0!important;
+  margin:0!important;width:100%!important;max-width:100%!important;
+  min-height:0!important;height:100%!important;max-height:100%!important;
+  border-radius:0!important;display:flex!important;flex-direction:column!important;
+  overflow:hidden!important;box-sizing:border-box!important;
+  padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)!important;
+  background:#fff!important;z-index:401!important;
+ }
+ #modal-root .pati-question-fullscreen .modal-header{
+  flex:0 0 auto!important;min-height:62px;display:flex;align-items:center;
+  padding:11px 16px!important;border-bottom:1px solid #eeeff2
+ }
+ #modal-root .pati-question-fullscreen .modal-header h2{
+  margin:0;min-width:0;flex:1;font-size:18px;line-height:1.3;overflow-wrap:anywhere
+ }
+ #modal-root .pati-question-fullscreen form{
+  flex:1 1 auto!important;min-height:0!important;max-height:none!important;overflow:hidden!important;
+  display:flex!important;flex-direction:column!important;margin:0!important
+ }
+ #modal-root .pati-question-fullscreen .modal-content{
+  flex:1 1 auto!important;min-height:0!important;max-height:none!important;
+  padding:18px 17px!important;overflow-y:auto!important;overflow-x:hidden!important;
+  -webkit-overflow-scrolling:touch;overscroll-behavior:contain
+ }
+ #modal-root .pati-question-fullscreen .modal-footer{
+  flex:0 0 auto!important;display:flex!important;gap:10px!important;
+  padding:10px 16px max(14px,env(safe-area-inset-bottom,0px))!important;
+  position:relative!important;bottom:auto!important;
+  background:#fff!important;border-top:1px solid #e5e6e9!important;
+ }
+ #modal-root .pati-question-fullscreen .modal-footer button{
+  display:inline-flex!important;align-items:center;justify-content:center;flex:1;min-width:0;
+  min-height:49px!important;margin:0!important;white-space:normal;
+  padding:10px!important;border-radius:13px!important;font-size:14px!important
+ }
+ #modal-root .pati-question-fullscreen input,
+ #modal-root .pati-question-fullscreen select,
+ #modal-root .pati-question-fullscreen textarea{width:100%;max-width:100%;font-size:16px!important}
+ #modal-root .pati-question-fullscreen textarea{min-height:110px;resize:vertical}
+ #modal-root .pati-community-form-intro{padding:15px}
+ #modal-root .pati-question-fullscreen .pati-upload-status{flex:0 0 auto}
+}
+@media(max-width:370px){
+ #main-content .pati-community-head .page-intro{gap:6px}
+ #main-content .pati-community-head .page-title{font-size:21px}
+ #main-content .pati-community-card .pati-actionbar{gap:6px}
+ #main-content .pati-community-card .pati-actionbar button{max-width:100%;font-size:11px}
+ #patiyiz-system-media .pati-system-thumb-item{width:67px;height:82px}
+ #patiyiz-system-media .pati-system-thumb-select{width:65px;height:65px}
+}
+@media(prefers-reduced-motion:reduce){
+ #main-content .pati-community-mobile-ask{transition:none}
+}
