@@ -30,8 +30,8 @@ test('Chat deletion stores an account-only cutoff and preserves messages for the
 });
 test('Cutoff hides old history and new messages revive the conversation',()=>{
  const src=source('let patiDmHiddenConversations=','function patiDmThreadKey(peer){');
- const ctx={me:{id:'self'},patiDmHiddenConversations:{owner:'self',ready:true,busy:false,error:false,cutoffs:new Map([['p1','2026-10-28T16:00:00.000Z']])}};
- const api=vm.runInNewContext(src+'\nglobalThis.api={patiDmLastVisible,patiDmCutoff}',ctx).api;
+ const ctx={me:{id:'self'}};
+ const api=vm.runInNewContext(src+'\npatiDmHiddenConversations={owner:"self",ready:true,busy:false,error:false,cutoffs:new Map([["p1","2026-10-28T16:00:00.000Z"]])};\n({patiDmLastVisible,patiDmCutoff})',ctx);
  assert.equal(api.patiDmLastVisible('p1','2026-10-28T15:59:59.000Z'),false);
  assert.equal(api.patiDmLastVisible('p1','2026-10-28T16:00:01.000Z'),true);
  assert.equal(api.patiDmLastVisible('p2','2026-10-28T15:59:59.000Z'),true);
