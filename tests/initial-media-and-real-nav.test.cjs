@@ -42,8 +42,8 @@ test('Patiler bölümü profil kayıtlarını gerçekten listeler ve sahibinin p
   esc:s=>String(s),petIcon:s=>s==='Kedi'?'🐱':'🐶',ico:()=>'<svg></svg>'
  });
  f();
- assert.match(markup,/Benim Patilerim/);assert.match(markup,/Topluluktaki Patiler/);
- assert.match(markup,/Pamuk/);assert.match(markup,/Max/);
+ assert.match(markup,/Hayvanlarım/);assert.match(markup,/Topluluktaki Patiler/);
+ assert.doesNotMatch(markup,/Pamuk/);assert.match(markup,/Max/);
  assert.match(markup,/data-action="view-user" data-id="another"/);
  assert.match(markup,/data-action="pet-add"/);
  assert.match(markup,/loading="eager"/);
