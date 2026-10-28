@@ -63,7 +63,7 @@ test('Right-side Onayla button is the only pointer click selection trigger',()=>
  assert.match(picker,/const approve=event\.target\?\.closest\?\.\('button\[data-pati-approve-id\]'\)/);
  assert.match(picker,/results\.addEventListener\('pointerdown',approveFromEvent\)/);
  assert.match(picker,/results\.addEventListener\('touchstart',approveFromEvent/);
- assert.match(picker,/if\(!approve\)return/);
+ assert.match(picker,/if\(!approve\|\|!results\.contains\(approve\)\)return false/);
  assert.match(picker,/choose\(p\)/);
  assert.doesNotMatch(picker,/event\.target\.closest\('\[data-pati-user-id\]'\)/);
  assert.match(css,/\.pati-collab-search-results \.pati-collab-approve/);
