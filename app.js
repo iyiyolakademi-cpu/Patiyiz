@@ -3834,8 +3834,8 @@ function mountPatiyizCamera(mode){
    input.dispatchEvent(new Event('change',{bubbles:true}));
   },
   onCancel(){closeModal(true)},
-  async onPublish(caption,audience='everyone'){
-    form.dataset.storyAudience=audience;
+  async onPublish(caption){
+    form.dataset.storyAudience=document.getElementById('pati-system-audience')?.value||'everyone';
    if(!form.isConnected)throw Error('Paylaşım ekranı kapandı.');
    const body=form.querySelector('textarea[name="body"]');if(body)body.value=caption;
    const f=new FormData(form),str=k=>String(f.get(k)||'').trim();
