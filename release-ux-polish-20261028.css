@@ -1,0 +1,36 @@
+/* Patiyiz release UX polish — additive, preserves existing layout and features. */
+:root{--pati-tap-size:44px}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{overscroll-behavior-y:contain}
+button,input,textarea,select{font:inherit}
+button,[role="button"],a{-webkit-tap-highlight-color:transparent}
+button:not(:disabled),[role="button"]{touch-action:manipulation}
+button:disabled,[aria-disabled="true"]{cursor:not-allowed;opacity:.55}
+:where(button,a,input,textarea,select,[role="button"],[tabindex]):focus-visible{outline:3px solid #737b8c!important;outline-offset:3px!important}
+:where(input,textarea,select){max-width:100%}
+:where(textarea){resize:vertical}
+:where(img,video){max-width:100%}
+#main-content,#modal-root,.pati-create-modal{min-width:0}
+#main-content .empty-state{max-width:100%;padding:clamp(22px,5vw,42px) 18px;line-height:1.55}
+#main-content .empty-state h3{font-size:clamp(16px,4vw,20px);line-height:1.3}
+.toast-stack{pointer-events:none}
+.toast-stack .toast{pointer-events:auto;line-height:1.45;overflow-wrap:anywhere;max-width:min(440px,calc(100vw - 24px))}
+#pati-create-sheet:not([hidden]){overscroll-behavior:contain}
+#pati-create-sheet .pati-create-choice{transition:background-color .16s ease,border-color .16s ease,transform .16s ease}
+#pati-create-sheet .pati-create-choice:active{transform:scale(.985)}
+#pati-create-sheet .pati-create-choice:focus-visible{outline-color:#b8c4de!important}
+@media(hover:hover){#pati-create-sheet .pati-create-choice:hover{border-color:#a5a9b3}}
+@media(max-width:740px){
+  #app-root>.mobile-bottom{padding-bottom:max(env(safe-area-inset-bottom,0px),5px)!important}
+  #app-root>.mobile-bottom button,#app-root>.mobile-bottom a{min-height:44px;min-width:44px}
+  #main-content{overflow-wrap:break-word}
+  #main-content>.page-intro .top-actions button{min-height:44px}
+  #pati-create-sheet .pati-create-choice{min-height:68px}
+  #modal-root :where(input:not([type="checkbox"]),textarea,select){font-size:16px!important}
+  .toast-stack{left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+}
+@media(prefers-reduced-motion:reduce){
+  html:focus-within{scroll-behavior:auto!important}
+  #pati-create-sheet .pati-create-choice{transition:none!important}
+  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
