@@ -583,3 +583,33 @@ html[data-pati-theme="dark"] .pati-collab-picker .pati-collab-option{
 @media(prefers-contrast:more){
  .pati-collab-search-results .pati-collab-option:focus-visible{outline:3px solid var(--pui-focus)}
 }
+
+
+/* Active-button descendants inherit the matching foreground, not the generic heading
+   or small-text color. This block must stay after the general typography rules. */
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-explore-sort button.active,.pati-explore-sort button[aria-pressed="true"],
+ .pati-dm-filters button.active,.pati-ig-tabs button.active,
+ .pati-theme-options button.active,.pati-shop-filter button.active
+) :is(strong,small,span,svg,.icon){
+ color:var(--pui-active-text)!important;
+ stroke:currentColor!important;
+}
+html[data-pati-theme="light"] #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn.active,
+html[data-pati-theme="light"] #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn[aria-current="page"]{
+ background:#eeeff3!important;color:#17191e!important;
+}
+html[data-pati-theme="light"] #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn.active :is(.icon,small,svg),
+html[data-pati-theme="light"] #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn[aria-current="page"] :is(.icon,small,svg){
+ color:#17191e!important;stroke:currentColor!important;
+}
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn.active :is(.icon,small,svg),
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn[aria-current="page"] :is(.icon,small,svg){
+ color:#fff!important;stroke:currentColor!important;
+}
+html[data-pati-theme="dark"] #modal-root .pati-collab-search-results .pati-collab-option :is(strong,small,.pati-collab-select-icon){
+ color:var(--pui-text)!important;
+}
+html[data-pati-theme="light"] #modal-root .pati-collab-search-results .pati-collab-option :is(strong,small,.pati-collab-select-icon){
+ color:var(--pui-text)!important;
+}
