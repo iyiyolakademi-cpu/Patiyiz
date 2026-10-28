@@ -3673,6 +3673,101 @@ async function patiCreateCloseFriendStory(form,f,str){
   throw error;
  }
 }
+/* Unified inbox: groups share the same people list, chat pane and responsive
+   navigation as direct messages, while authorization stays in separate RLS tables. */
+let patiActiveGroupId='';
+let patiGroupInboxState={owner:'',rows:[],ready:false,loading:false,error:''};
+let patiGroupChatState={owner:'',id:'',group:null,members:[],rows:[],ready:false,error:''};
+let patiGroupInboxTimer=null;
+function patiGroupInboxStop(){
+ if(patiGroupInboxTimer!==null){clearInterval(patiGroupInboxTimer);patiGroupInboxTimer=null}
+}
+function patiGroupInboxStart(){
+ if(patiGroupInboxTimer!==null)return;
+ patiGroupInboxTimer=setInterval(()=>{
+  if(!me||view!=='messages'){patiGroupInboxStop();return}
+  if(!document.hidden)void patiGroupFetchInbox(true);
+ },15000);
+}
+async function patiGroupFetchInbox(force=false){
+ if(!me||!sb)return;
+ const owner=me.id,token=patiyizLoadToken;
+ if(patiGroupInboxState.owner!==owner)patiGroupInboxState={owner,rows:[],ready:false,loading:false,error:''};
+ const state=patiGroupInboxState;
+ if(state.loading||(state.ready&&!force))return;
+ state.loading=true;state.error='';
+ try{
+  const res=await sb.from('patiyiz_group_inbox')
+   .select('group_id,title,activity_at,last_body,last_sender_id,unread_count')
+   .eq('user_id',owner).order('activity_at',{ascending:false}).limit(100);
+  if(res.error)throw res.error;
+  if(me?.id!==owner||patiyizLoadToken!==token||patiGroupInboxState!==state)return;
+  const rows=res.data||[];
+  const changed=!state.ready||JSON.stringify(rows)!==JSON.stringify(state.rows);
+  state.rows=rows;state.ready=true;
+  if(changed&&view==='messages')patiDmSafeRender();
+ }catch(error){
+  if(me?.id===owner&&patiGroupInboxState===state){
+   state.error='Grup sohbetleri yüklenemedi.';
+   console.warn('Grup gelen kutusu:',error?.message||error);
+  }
+ }finally{state.loading=false}
+}
+function patiGroupChatPaneHTML(){
+ const state=patiGroupChatState,id=patiActiveGroupId;
+ const ready=state.ready&&state.owner===me.id&&state.id===id;
+ const title=ready?state.group?.title||'Grup sohbeti':
+  patiGroupInboxState.rows.find(g=>g.group_id===id)?.title||'Grup sohbeti';
+ const members=ready?state.members.length:0;
+ const messages=ready?state.rows.slice():[];
+ return '<header class="pati-group-chat-header">'+
+  '<button type="button" class="mobile-chat-back" data-action="chat-back" aria-label="Sohbetlere dön">←</button>'+
+  '<span class="chat-head-avatar pati-group-avatar" aria-hidden="true">'+ico('users')+'</span>'+
+  '<span class="pati-group-chat-title"><strong>'+esc(title)+'</strong><small>'+ (ready?members+' üye':'Grup yükleniyor…')+'</small></span>'+
+  '<button type="button" class="soft-btn chat-view-profile" data-action="pati-group-members" data-id="'+esc(id)+'">Üyeler</button>'+
+  '</header>'+
+  '<div class="chat-history pati-group-history" aria-label="Grup mesajları" data-pati-signature="'+esc(messages.map(m=>m.id).join(','))+'">'+
+  (messages.length?messages.map(m=>patiGroupMessageMarkup(m,me.id,id)).join(''):
+   '<p class="pati-group-empty">'+(ready?'Henüz mesaj yok. İlk mesajı gönder!':'Grup mesajları yükleniyor…')+'</p>')+
+  '</div>'+
+  '<form id="pati-group-message-form" class="chat-form pati-group-chat-form">'+
+  '<input type="hidden" name="group_id" value="'+esc(id)+'">'+
+  '<input name="group_body" maxlength="2000" placeholder="Gruba mesaj yaz…" autocomplete="off" aria-label="Grup mesajı" '+(!ready?'disabled':'')+'>'+
+  '<button type="submit" class="primary-btn" aria-label="Gruba mesaj gönder" '+(!ready?'disabled':'')+'>'+ico('send')+'</button>'+
+  '</form>';
+}
+function patiGroupMountInMessages(summaries,peers,chatFilter){
+ const people=main.querySelector('.pati-dm-layout .chat-people');
+ if(!people)return;
+ const groups=patiGroupInboxState.owner===me.id&&patiGroupInboxState.ready&&chatFilter==='primary'?
+  patiGroupInboxState.rows:[];
+ const direct=[...people.querySelectorAll('.pati-dm-list-row[data-chat-peer]')];
+ for(const row of direct){
+  const peer=row.dataset.chatPeer;
+  row.dataset.activity=summaries.get(peer)?.last_created_at||peers.get(peer)?.last?.created_at||'';
+ }
+ const groupHtml=groups.map(g=>'<div class="pati-dm-list-row pati-group-thread-row'+(patiActiveGroupId===g.group_id?' selected':'')+'" data-chat-group="'+esc(g.group_id)+'" data-activity="'+esc(g.activity_at||'')+'">'+
+  '<button type="button" class="chat-person'+(patiActiveGroupId===g.group_id?' active':'')+'" data-action="pati-group-open" data-id="'+esc(g.group_id)+'" data-search="'+esc(g.title)+'">'+
+  '<span class="pati-group-inbox-avatar" aria-hidden="true">'+ico('users')+'</span>'+
+  '<span class="chat-person-info"><strong>'+esc(g.title)+'</strong><small>'+esc(cut(g.last_body||'Grup sohbeti',80))+'</small></span>'+
+  '<span class="chat-person-meta"><small>'+clock(g.activity_at)+'</small>'+(g.unread_count?'<b class="chat-unread">'+(g.unread_count>99?'99+':g.unread_count)+'</b>':'')+'</span></button>'+
+  '<details class="pati-dm-row-actions"><summary aria-label="Grup seçenekleri">'+ico('more')+'</summary><div class="pati-dm-row-menu">'+
+  '<button type="button" data-action="pati-group-members" data-id="'+esc(g.group_id)+'">'+ico('users')+'<span>Grup üyeleri</span></button></div></details></div>').join('');
+ people.insertAdjacentHTML('beforeend',groupHtml);
+ const all=[...people.querySelectorAll('.pati-dm-list-row')];
+ all.sort((a,b)=>new Date(b.dataset.activity||0)-new Date(a.dataset.activity||0));
+ const footer=people.querySelector('.pati-load-more');
+ for(const row of all)people.insertBefore(row,footer||null);
+ if(all.length)people.querySelector(':scope > p')?.remove();
+ const counter=people.querySelector('.chat-list-heading span');if(counter)counter.textContent=String(all.length);
+ if(!patiActiveGroupId)return;
+ const pane=main.querySelector('.pati-dm-layout .chat-window');if(!pane)return;
+ pane.classList.add('pati-group-chat-window');
+ pane.dataset.chatPerson='group:'+patiActiveGroupId;
+ pane.innerHTML=patiGroupChatPaneHTML();
+ patiGroupLiveStart(patiActiveGroupId);
+}
+
 /* Group inbox shows latest activity; active chats refresh only while visible.
    Delete is restricted by both the RLS policy and user-owned query filters. */
 let patiGroupLiveTimer=null,patiGroupLiveBusy=false;
