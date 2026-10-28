@@ -1,0 +1,27 @@
+/* Hikâye hareketleri: latest view time remains readable under every viewer.
+   Works in the same full-screen panel on iPhone, Android and desktop. */
+#story-overlay .pati-story-activity-person>.story-view-user{
+ min-height:80px!important;
+}
+#story-overlay .pati-story-view-person{
+ display:flex!important;flex-direction:column!important;
+ align-items:flex-start!important;gap:3px!important;
+}
+#story-overlay .pati-story-view-person>.pati-story-view-last{
+ display:block!important;max-width:100%!important;
+ font-size:11px!important;line-height:1.45!important;
+ font-weight:700!important;white-space:nowrap!important;
+ overflow:hidden!important;text-overflow:ellipsis!important;
+ letter-spacing:.005em;
+ color:#59616c!important;
+}
+#story-overlay .pati-story-view-person>.pati-story-view-last time{
+ color:inherit!important;font:inherit!important;white-space:inherit!important;
+}
+html[data-pati-theme="dark"] #story-overlay .pati-story-view-person>.pati-story-view-last{
+ color:#c3c7d3!important;
+}
+@media(max-width:370px){
+ #story-overlay .pati-story-activity-person>.story-view-user{gap:9px!important;}
+ #story-overlay .pati-story-view-person>.pati-story-view-last{font-size:10.5px!important}
+}
