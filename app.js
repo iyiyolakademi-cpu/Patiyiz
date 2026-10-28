@@ -1657,7 +1657,9 @@ async function patiLoadCommunity(reset=false){
  state.loading=true;state.error='';
  try{
   let query=sb.from('questions').select('*');
-  if(category!=='Tümü')query=query.eq('category',category);
+  if(category==='Hayvanlar')query=query.in('category',['Hayvanlar',...PATI_LEGACY_PET_QUESTION_CATEGORIES]);
+  else if(category==='Diğer')query=query.in('category',['Diğer','Genel']);
+  else if(category!=='Tümü')query=query.eq('category',category);
   const result=await query.order('created_at',{ascending:false}).order('id',{ascending:false})
    .range(state.offset,state.offset+PATI_COMMUNITY_PAGE-1);
   if(result.error)throw result.error;
@@ -1707,13 +1709,19 @@ async function patiLoadQuestionReplies(questionId,more=false){
   if(me?.id===uid&&patiCommunityReplyPages.get(key)===state&&document.querySelector('#reply-form')?.dataset.question===questionId)questionReplies(questionId);
  }
 }
+const PATI_QUESTION_CATEGORIES=['Girişimcilik','Hayvanlar','Teknoloji','Eğitim ve Kariyer','Günlük Yaşam','Diğer'];
+const PATI_LEGACY_PET_QUESTION_CATEGORIES=['Sağlık','Beslenme','Eğitim','Davranış','Bakım'];
+function patiQuestionCategoryGroup(cat){
+ if(PATI_LEGACY_PET_QUESTION_CATEGORIES.includes(cat))return 'Hayvanlar';
+ return cat==='Genel'?'Diğer':cat;
+}
 function communityPage(){
- const categories=['Tümü','Genel','Sağlık','Beslenme','Eğitim','Davranış','Bakım','Diğer'];
+ const categories=['Tümü',...PATI_QUESTION_CATEGORIES];
  const page=typeof patiCommunityPage!=='undefined'&&patiCommunityPage.owner===me.id&&patiCommunityPage.category===communityCategory?patiCommunityPage:null;
  const source=page?.ready?page.rows:data.questions;
- const qs=[...source].filter(q=>!blocked.has(q.author_id)&&(communityCategory==='Tümü'||q.category===communityCategory))
+ const qs=[...source].filter(q=>!blocked.has(q.author_id)&&(communityCategory==='Tümü'||patiQuestionCategoryGroup(q.category)===communityCategory))
   .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)||String(b.id).localeCompare(String(a.id)));
- main.innerHTML=header('Topluluk','Sorular, yanıtlar ve hayvansever deneyimleri.',button('+ Soru sor','question'))+
+ main.innerHTML=header('Soru & Cevap','Girişimcilikten hayvanlara, teknolojiden günlük yaşama her konuda konuş.',button('+ Soru sor','question'))+
  '<div class="pati-filter-tabs">'+categories.map(cat=>'<button type="button" data-action="community-filter" data-id="'+esc(cat)+'" class="'+(communityCategory===cat?'active':'')+'" aria-pressed="'+(communityCategory===cat)+'">'+esc(cat)+'</button>').join('')+'</div>'+
  '<div class="pati-list">'+qs.map(q=>{
   const rs=patiCommunityReplyPages.get(me.id+':'+q.id);
@@ -2871,13 +2879,10 @@ function notificationRows(list){
  return list.map(n=>{
   const [symbol,label]=notificationKinds[n.kind]||['bell','Etkinlik'];
   const actor=n.actor_id?data.profiles.find(p=>p.id===n.actor_id):null;
-  const followBack=n.kind==='follows'&&actor&&actor.id!==me?.id&&!followed.has(actor.id)&&data.follows.some(f=>f.follower_id===actor.id&&f.followee_id===me?.id);
-  return '<article class="pati-alert-row '+(n.read?'is-read':'is-new')+'" data-notification-id="'+esc(n.id)+'">'
-  +'<button type="button" class="pati-alert-entry" data-action="open-notification" data-id="'+esc(n.id)+'"><span class="pati-alert-avatar">'+(actor?avatar(actor,'s'):ico(symbol))+'</span><span class="pati-alert-content"><strong class="pati-alert-title">'+esc(n.text)+'</strong><small class="pati-alert-meta">'+esc(label)+' · '+esc(day(n.created_at))+(n.read?'':' · Yeni')+'</small></span>'+(n.read?'':'<span class="pati-alert-unread" aria-label="Okunmadı"></span>')+'</button>'
-  +'<div class="pati-alert-row-actions">'
-  +(followBack?'<button type="button" class="pati-alert-follow-back" data-action="follow" data-id="'+esc(actor.id)+'" data-follow-back="true">Sen de takip et</button>':'')
-  +'<button type="button" class="notification-v2-read" data-action="notification-toggle-read" data-id="'+esc(n.id)+'" aria-label="'+(n.read?'Okunmadı olarak işaretle':'Okundu olarak işaretle')+'">'+(n.read?'Okunmadı':'✓ Okundu')+'</button>'
-  +'<button type="button" class="pati-alert-remove" data-action="notification-delete" data-id="'+esc(n.id)+'" aria-label="Bildirimi sil">'+ico('trash')+'</button></div></article>';
+  return '<article class="pati-alert-row pati-alert-simple '+(n.read?'is-read':'is-new')+'" data-notification-id="'+esc(n.id)+'" tabindex="0" aria-label="Bildirim. Silmek için basılı tut veya bağlam menüsünü aç.">'
+   +'<button type="button" class="pati-alert-entry" data-action="open-notification" data-id="'+esc(n.id)+'"><span class="pati-alert-avatar">'+(actor?avatar(actor,'s'):ico(symbol))+'</span>'
+   +'<span class="pati-alert-content"><strong class="pati-alert-title">'+esc(n.text)+'</strong><small class="pati-alert-meta">'+esc(day(n.created_at))+'</small></span>'
+   +(n.read?'':'<span class="pati-alert-unread" aria-label="Okunmadı"></span>')+'</button></article>';
  }).join('');
 }
 function notificationRenderResults(){
@@ -2915,23 +2920,16 @@ async function notificationFetch(){
  finally{notificationBusy=false;if(me?.id===uid&&view==='notifications')notificationsPage()}
 }
 function notificationsPage(){
- const list=notificationMatches(),all=notificationVisible(),unread=all.filter(n=>!n.read).length;
- const counts={messages:all.filter(x=>x.kind==='messages').length,care:all.filter(x=>x.kind==='pet_reminder').length,social:all.filter(x=>x.kind!=='messages'&&x.kind!=='pet_reminder').length};
- const statusText={checking:'Durum kontrol ediliyor…',on:'Bu cihazda açık',off:'Bu cihazda kapalı',blocked:'Tarayıcı izni engellenmiş',unsupported:'Bu cihaz desteklemiyor',error:'Durum doğrulanamadı'}[notificationPushStatus];
- main.innerHTML='<section class="pati-alerts notification-v2"><div class="pati-alert-head"><div><span class="pati-alert-eyebrow">PATİYİZ · HESAP HAREKETLERİ</span><h1>Bildirimler'+(unread?'<span class="pati-alert-count">'+unread+'</span>':'')+'</h1><p>Mesajları, takipleri, etkileşimleri ve bakım hatırlatmalarını burada takip et.</p></div><span class="pati-alert-head-icon">'+ico('bell')+'</span></div>'
-  +'<div class="notification-v2-stats"><div><b>'+all.length+'</b><small>Toplam</small></div><div><b>'+unread+'</b><small>Okunmamış</small></div><div><b>'+counts.messages+'</b><small>Mesaj</small></div><div><b>'+counts.care+'</b><small>Bakım</small></div></div>'
-  +'<div class="pati-alert-tools"><button type="button" data-action="notifications-read" '+(!unread||notificationBusy?'disabled':'')+'>'+ico('check-check')+' Tümünü okundu yap</button><button type="button" data-action="notifications-delete-all" '+(!all.length||notificationBusy?'disabled':'')+'>'+ico('trash-2')+' Tümünü temizle</button><button type="button" data-action="notifications-refresh" '+(notificationBusy?'disabled':'')+'>↻ '+(notificationBusy?'Yenileniyor…':'Yenile')+'</button></div>'
-  +'<div class="pati-alert-push notification-v2-push"><span class="pati-alert-push-icon">'+ico('smartphone')+'</span><div><strong>Telefon bildirimleri</strong><p role="status">'+esc(statusText)+'</p><small>Bu cihazdaki bildirim iznini ve Patiyiz aboneliğini kontrol et.</small></div><div class="notification-v2-push-actions">'
-  +(notificationPushStatus==='on'?'<button type="button" data-action="push-disable">Bu cihazda kapat</button>':notificationPushStatus==='unsupported'?'<span>Desteklenmiyor</span>':'<button type="button" data-action="push-enable" '+(notificationPushLoading?'disabled':'')+'>Etkinleştir</button>')
-  +'<button type="button" data-action="notifications-check-push" '+(notificationPushLoading?'disabled':'')+'>Durumu kontrol et</button></div></div>'
-  +'<p class="notification-v2-info">Telefon bildirimleri cihaz ve tarayıcı izinlerine bağlıdır. İzin vermek teslimatı garanti etmez. Uygulama içindeki kayıtlı bildirimlerin görülmesi için telefon bildirimlerinin açık olması gerekmez.</p>'
-  +'<div class="notification-v2-search"><label for="notification-v2-search">Bildirimlerde ara</label><input id="notification-v2-search" type="search" value="'+esc(notificationSearch)+'" placeholder="Bildirim içeriği veya türü…" autocomplete="off" aria-controls="notification-v2-results"></div>'
-  +'<div class="notification-v2-filters" role="group" aria-label="Bildirim filtreleri">'
-  +[['all','Tümü ('+all.length+')'],['unread','Okunmamış ('+unread+')'],['messages','Mesajlar ('+counts.messages+')'],['social','Etkileşimler ('+counts.social+')'],['care','Bakım ('+counts.care+')']].map(([k,label])=>'<button type="button" data-action="notifications-filter" data-id="'+k+'" class="'+(notificationFilter===k?'active':'')+'" aria-pressed="'+String(notificationFilter===k)+'">'+label+'</button>').join('')+'</div>'
+ const list=notificationVisible(),unread=list.filter(n=>!n.read).length;
+ main.innerHTML='<section class="pati-alerts notification-v2 pati-notifications-simple">'
+  +'<header class="pati-notifications-simple-head"><h1>Bildirimler'+(unread?' <span class="pati-alert-count">'+unread+'</span>':'')+'</h1></header>'
   +(notificationLoadError?'<p class="notification-v2-error" role="alert">'+esc(notificationLoadError)+'</p>':'')
-  +'<div class="notification-v2-list-head"><h2>Bildirim geçmişi</h2><span role="status" aria-live="polite" id="notification-v2-result-count">'+list.length+' / '+all.length+' bildirim</span></div>'
-  +'<div id="notification-v2-results" class="notification-v2-list">'+(notificationBusy?'<p role="status" class="notification-v2-loading">Bildirimler yenileniyor…</p>':list.length?notificationRows(list):'<div class="notification-v2-empty" role="status"><span aria-hidden="true">🔔</span><h3>Bu filtrelerde bildirim bulunamadı</h3><p>Başka bir kategori seçebilir veya filtreleri temizleyebilirsin.</p><button type="button" data-action="notifications-clear">Filtreleri temizle</button></div>')+'</div>'
-  +(pageMore.notifications?'<div class="pati-load-more">'+button('Eski bildirimleri yükle','load-more','data-id="notifications"')+'</div>':'')+'</section>';
+  +'<div id="notification-v2-results" class="notification-v2-list" aria-label="Bildirimlerin">'+
+    (notificationBusy&&!list.length?'<p role="status" class="notification-v2-loading">Bildirimler yükleniyor…</p>':
+      list.length?notificationRows(list):'<div class="notification-v2-empty" role="status"><span aria-hidden="true">🔔</span><h3>Henüz bildirim yok</h3><p>Yeni bildirimlerin burada görünecek.</p></div>')+
+   '</div>'
+   +(pageMore.notifications&&list.length?'<div class="pati-load-more">'+button('Daha eski bildirimler','load-more','data-id="notifications"')+'</div>':'')
+  +'</section>';
 }
 async function openNotification(id){const n=data.notifications.find(x=>x.id===id&&x.owner_id===me.id);if(!n){navigate('notifications');return}
  if(!n.read){const result=await sb.from('notifications').update({read:true}).eq('id',n.id).eq('owner_id',me.id).select('id');if(!result.error&&result.data?.length){n.read=true;navRender()}}
@@ -3541,7 +3539,7 @@ async function createStoryPublication(form,f,str){
    poll_question:null,poll_options:null,question_prompt:null};
  });
 }
-function composeQuestion(){modal('Topluluğa soru sor',formField('title','Soru başlığı (5–150 karakter)','text','',true)+selectField('category','Kategori',['Genel','Sağlık','Beslenme','Eğitim','Davranış','Bakım','Diğer'])+textField('body','Sorunun ayrıntıları (en az 5 karakter)','',true,2000),'question-form');const f=$('#question-form');if(f){f.querySelector('[name="title"]').minLength=5;f.querySelector('[name="title"]').maxLength=150;f.querySelector('[name="body"]').minLength=5;f.querySelector('.modal-footer .primary-btn').textContent='Soruyu yayınla'}}
+function composeQuestion(){modal('Topluluğa soru sor',formField('title','Soru başlığı (5–150 karakter)','text','',true)+selectField('category','Kategori',PATI_QUESTION_CATEGORIES)+textField('body','Sorunun ayrıntıları (en az 5 karakter)','',true,2000),'question-form');const f=$('#question-form');if(f){f.querySelector('[name="title"]').minLength=5;f.querySelector('[name="title"]').maxLength=150;f.querySelector('[name="body"]').minLength=5;f.querySelector('.modal-footer .primary-btn').textContent='Soruyu yayınla'}}
 function composeLost(a){
  if(a&&a.owner_id!==me?.id)return notify('Bu ilanı düzenleme yetkin yok.',true);
  const today=new Date().toLocaleDateString('en-CA');
@@ -4033,7 +4031,7 @@ case 'notifications-read':run(async()=>{
  data.notifications.forEach(x=>{if(ids.has(x.id))x.read=true});
  navRender();if(view==='notifications')notificationsPage();
 },'Tüm bildirimler okundu olarak işaretlendi.');break;
-case 'notification-delete':if(confirm('Bu bildirim silinsin mi?'))run(async()=>{
+case 'notification-delete':closeModal(true);run(async()=>{
  const uid=me.id;const record=data.notifications.find(x=>x.id===id&&x.owner_id===uid);if(!record)return;
  const r=await sb.from('notifications').delete().eq('id',id).eq('owner_id',uid).select('id');
  if(r.error)throw r.error;if(!r.data?.length)throw Error('Bildirim silinemedi veya yetkin yok.');
