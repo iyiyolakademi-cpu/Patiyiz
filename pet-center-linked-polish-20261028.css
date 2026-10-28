@@ -1,0 +1,14 @@
+/* Pet Center connected pages — restrained premium accents */
+#main-content .pati-pet-hub-return{position:relative;margin:0 0 15px;display:flex;align-items:center;padding:6px 0 9px}
+#main-content .pati-pet-hub-return button{min-height:44px;padding:11px 16px;border:1px solid #dce7f4;border-radius:14px;background:linear-gradient(115deg,#e8f5ff,#f5ecff);font-size:13px;font-weight:800;color:#294d73;box-shadow:0 2px 10px #7da5cd13}
+#main-content .pati-pet-hub-linked{padding-top:10px}
+#main-content .pati-pet-hub-linked :is(.lost-v2-heading,.adopt-v2-heading,.kb-v2-title,.pati-edu-hero){border-radius:20px!important;padding:16px!important;background:linear-gradient(120deg,#f1f7ff,#f6f0ff)!important}
+#main-content .pati-pet-hub-linked.lost-v2 .lost-v2-heading{background:linear-gradient(120deg,#fff0f3,#f4edff)!important}
+#main-content .pati-pet-hub-linked.adopt-v2 .adopt-v2-heading{background:linear-gradient(120deg,#fff5e9,#ffebf2)!important}
+#main-content .pati-pet-hub-linked.kb-v2 .kb-v2-title{background:linear-gradient(120deg,#ecf7ff,#f2eeff)!important}
+#main-content .pati-pet-hub-linked.pati-edu-v2 .pati-edu-hero{background:linear-gradient(120deg,#fff1d9,#f6eeff)!important}
+#main-content .pati-pet-hub-linked :is(.lost-v2-filters,.adopt-v2-filters){max-width:100%;scrollbar-width:none}
+#main-content .pati-pet-hub .pati-hub-card{min-height:146px!important;box-shadow:0 5px 16px rgba(30,44,65,.045)!important}
+#main-content .pati-pet-hub .pati-hub-section-title{margin-top:4px}
+#main-content .pati-pet-hub .pati-hub-category{padding-top:2px}
+@media(max-width:740px){#main-content .pati-pet-hub-return{margin:0 0 10px}#main-content .pati-pet-hub-linked{padding-top:4px}#main-content .pati-pet-hub .pati-hub-card{min-height:145px!important}}
