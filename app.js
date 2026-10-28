@@ -4556,9 +4556,11 @@ function editPet(p){
  '<p class="pati-edit-hint">Bilgileri daha sonra Hayvanım Merkezi üzerinden değiştirebilirsin.</p></div>';
  modal(p?'Hayvan profilini düzenle':'Yeni hayvan ekle',fields,'pet-form');
  const form=$('#pet-form');form.dataset.edit=p?.id||'';
- patiSyncPetBreedSelect(form,p?.breed||'');
- form.querySelector('[name="species"]')?.addEventListener('change',()=>patiSyncPetBreedSelect(form));
- form.querySelector('[name="breed_choice"]')?.addEventListener('change',()=>patiSyncPetBreedSelect(form,form.querySelector('[name="breed_choice"]').value));
+ if(typeof patiSyncPetBreedSelect==='function'){
+  patiSyncPetBreedSelect(form,p?.breed||'');
+  form.querySelector('[name="species"]')?.addEventListener?.('change',()=>patiSyncPetBreedSelect(form));
+  form.querySelector('[name="breed_choice"]')?.addEventListener?.('change',()=>patiSyncPetBreedSelect(form,form.querySelector('[name="breed_choice"]').value));
+ }
  document.querySelector('#modal-root .modal')?.classList.add('pati-profile-edit-modal','pati-pet-edit-modal');
  const submit=form.querySelector('.modal-footer button[type="submit"]');
  if(submit)submit.textContent='Bitti';
