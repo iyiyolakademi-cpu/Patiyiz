@@ -690,7 +690,7 @@ function patiCollabHeader(post,accepted){
  if(!accepted?.user_id)return userRow(post.author_id,'');
  const first=profile(post.author_id),second=profile(accepted.user_id);
  const person=(p,id)=>'<button type="button" class="pati-collab-author" data-action="view-user" data-id="'+esc(id)+'" aria-label="'+esc(p.display_name||p.handle||'Kullanıcı')+' profilini aç">'+
-   '<span class="pati-collab-author-photo">'+avatar(p,'s')+'</span>'+
+   
    '<span class="pati-collab-author-name">'+esc(p.handle||p.display_name||'Patiyiz üyesi')+(p.is_verified?' <span class="pati-collab-verified" aria-label="Doğrulanmış hesap">✓</span>':'')+'</span></button>';
  return '<div class="pati-collab-dual-header" aria-label="Ortak gönderi">'+
    '<div class="pati-collab-dual-avatars" aria-hidden="true"><span>'+avatar(first,'s')+'</span><span>'+avatar(second,'s')+'</span></div>'+
