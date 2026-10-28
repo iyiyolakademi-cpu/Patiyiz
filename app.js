@@ -421,7 +421,7 @@ function patiShopPage(){
  const cards=shown.map(p=>{
   const donation=p.kind==='donation',stock=Math.max(0,Number(p.stock_available)||0),soldOut=stock===0,affordable=Number(patiCoinState.balance)>=Number(p.coins);
   const pending=patiCoinState.orders.some(o=>o.item_id===p.id&&['pending','approved','preparing'].includes(o.status));
-  const stateText=pending?'Talebin beklemede':soldOut?'Stokta yok':!affordable?'Eksik: '+Math.max(0,Number(p.coins)-Number(patiCoinState.balance)).toLocaleString('tr-TR')+' PatiCoin':'Stok: '+stock+' adet';
+  const stateText=pending?'Talebin beklemede':soldOut?'Stokta yok':!affordable?'Yetersiz PatiCoin · Eksik: '+Math.max(0,Number(p.coins)-Number(patiCoinState.balance)).toLocaleString('tr-TR')+' PatiCoin':'Stok: '+stock+' adet';
   const actionText=pending?'Talep beklemede':soldOut?'Stokta yok':!affordable?'PatiCoin kazan':'Talep oluştur';
   return '<article class="paticoin-item pati-shop-card '+(donation?'pati-shop-tree':'')+'"><div class="pati-shop-card-top"><span class="paticoin-item-icon" aria-hidden="true">'+esc(p.emoji)+'</span><span class="pati-shop-type">'+(donation?'Doğa için':p.kind==='food'?'Destek':'Ürün')+'</span></div>'+
    '<div class="pati-shop-card-copy"><h3>'+esc(p.name)+'</h3><p>'+esc(p.description)+'</p></div>'+
