@@ -2121,6 +2121,22 @@ function knowledgePage(){
   +'<p class="kb-v2-list-note">Rehberlerdeki bilgiler genel bilgilendirme amaçlıdır; veteriner hekimin önerisinin yerini almaz.</p></section>';
 }
 
+let patiLostDetailId='',patiAdoptionDetailId='';
+function patiListingDetail(type,x){
+ const lost=type==='lost',own=x.owner_id===me?.id,closed=lost?!!x.found:!!x.adopted;
+ const label=lost?'Kayıp İlanları':'Sahiplendirme';
+ const status=lost?(closed?'✓ Bulundu':'● Aranıyor'):(closed?'✓ Sahiplendirildi':'♡ Yuva arıyor');
+ const back=lost?'pati-lost-back':'pati-adoption-back';
+ const actions=own?(lost?'<button type="button" data-action="lost-edit" data-id="'+esc(x.id)+'">Düzenle</button><button type="button" data-action="toggle-found" data-id="'+esc(x.id)+'">'+(closed?'Yeniden kayıp':'✓ Bulundu')+'</button><button type="button" data-action="delete-lost" data-id="'+esc(x.id)+'">Sil</button>':'<button type="button" data-action="adoption-edit" data-id="'+esc(x.id)+'">Düzenle</button><button type="button" data-action="adoption-toggle" data-id="'+esc(x.id)+'">'+(closed?'Yeniden yayına al':'✓ Sahiplendirildi')+'</button><button type="button" data-action="adoption-delete" data-id="'+esc(x.id)+'">Sil</button>'):
+  (!closed?'<button type="button" class="pati-ref-contact" data-action="chat" data-id="'+esc(x.owner_id)+'">✉ Sahibine mesaj gönder</button>':'')+'<button type="button" data-action="report" data-id="'+esc(x.id)+'" data-kind="'+type+'">Bildir</button>';
+ const image=x.photo_url?'<img src="'+esc(x.photo_url)+'" alt="'+esc(x.name||'Hayvan')+' fotoğrafı">':'<div class="pati-ref-listing-no-photo">'+petIcon(x.species)+'</div>';
+ main.innerHTML='<section class="pati-ref-listing-detail"><button type="button" class="pati-ref-listing-back" data-action="'+back+'">← '+label+'</button><div class="pati-ref-listing-photo">'+image+'</div>'+
+ '<div class="pati-ref-listing-info"><span class="pati-ref-listing-status">'+status+'</span><h1>'+esc(x.name||'Patili dost')+'</h1><p>'+esc([x.species,x.age,x.gender].filter(Boolean).join(' · '))+'</p>'+
+ '<div class="pati-ref-listing-city">📍 '+esc(x.city||'Şehir belirtilmedi')+(x.district?' / '+esc(x.district):'')+'</div>'+
+ '<h2>'+(lost?'Kayıp bilgileri':'Hakkında')+'</h2><p class="pati-ref-listing-description">'+esc(x.description||'Açıklama eklenmemiş.')+'</p>'+
+ '<div class="pati-ref-listing-controls">'+actions+'<button type="button" data-action="'+(lost?'lost-share':'adoption-share')+'" data-id="'+esc(x.id)+'">Paylaş ↗</button></div>'+
+ '<p class="pati-ref-listing-safety">🔒 Güvenliğin için açık adres veya telefon paylaşma. İletişimi uygulama içindeki mesajlarla sürdür.</p></div></section>';
+}
 let lostStatus='missing',lostSpecies='Tümü',lostSearch='',lostLoading=false,lostError='';
 function lostFold(v){return String(v||'').toLocaleLowerCase('tr-TR').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i').trim()}
 function lostMatches(){
@@ -2140,7 +2156,7 @@ function lostCards(list){
   +'<span class="lost-v2-badge '+(found?'is-found':'')+'">'+(found?'✓ Bulundu':'● Kayıp')+'</span></div>'
   +'<div class="lost-v2-card-info"><div class="lost-v2-meta"><span>'+esc(x.species)+'</span><time>'+esc(day(x.last_seen))+'</time></div>'
   +'<h3>'+esc(x.name)+'</h3><p class="lost-v2-city">📍 '+esc(x.city)+(x.district?' / '+esc(x.district):'')+'</p>'
-  +'<p class="lost-v2-description">'+esc(x.description)+'</p><div class="lost-v2-actions">'
+  +'<p class="lost-v2-description">'+esc(x.description)+'</p><button type="button" class="pati-ref-listing-view" data-action="pati-lost-open" data-id="'+esc(x.id)+'">Detayları gör →</button><div class="lost-v2-actions">'
   +(own?'<button type="button" data-action="lost-edit" data-id="'+esc(x.id)+'">Düzenle</button><button type="button" data-action="toggle-found" data-id="'+esc(x.id)+'">'+(found?'Yeniden kayıp':'✓ Bulundu')+'</button><button type="button" data-action="delete-lost" data-id="'+esc(x.id)+'" class="lost-v2-danger">Sil</button>'
   :(!found?'<button type="button" data-action="chat" data-id="'+esc(x.owner_id)+'" class="lost-v2-primary">Sahibine mesaj</button>':'')+'<button type="button" data-action="report" data-id="'+esc(x.id)+'" data-kind="lost">Bildir</button>')
   +'<button type="button" data-action="lost-share" data-id="'+esc(x.id)+'">Paylaş</button></div></div></article>';
@@ -2179,6 +2195,8 @@ async function routePendingLost(){
 }
 let lostPhotoObjectUrl='';
 function lostPage(){
+ const detail=data.lost.find(x=>x.id===patiLostDetailId&&!blocked.has(x.owner_id));
+ if(detail){patiListingDetail('lost',detail);return}
  const safe=data.lost.filter(x=>!blocked.has(x.owner_id));
  const counts={missing:safe.filter(x=>!x.found).length,found:safe.filter(x=>x.found).length,mine:safe.filter(x=>x.owner_id===me?.id).length};
  const kinds=['Tümü',...new Set(safe.map(x=>x.species).filter(Boolean))];
@@ -2187,10 +2205,11 @@ function lostPage(){
  +'<div class="lost-v2-hero"><div><small>TOPLULUK DESTEĞİ</small><h2>Bir paylaşım, bir kavuşma olabilir.</h2><p>Kayıp hayvanları bulmak için birlikte hareket edelim.</p></div><span>🐾</span></div>'
  +'<div class="lost-v2-stats"><div><b>'+counts.missing+'</b><span>Aranıyor</span></div><div><b>'+counts.found+'</b><span>Bulundu</span></div><div><b>'+counts.mine+'</b><span>İlanlarım</span></div></div>'
  +'<p class="lost-v2-privacy">🔒 Açık adres veya telefon numarası paylaşma. Yalnızca şehir / ilçe belirt; iletişim uygulama içi mesajlarla yapılsın.</p>'
- +'<label for="lost-search">İlanlarda ara</label><div class="lost-v2-search"><input id="lost-search" type="search" value="'+esc(lostSearch)+'" placeholder="Hayvan adı, tür, şehir veya ilçe..." autocomplete="off" aria-controls="lost-results"><button type="button" data-action="lost-clear">Temizle</button></div>'
+ +'<details class="pati-ref-listing-filters"><summary>⌕ Ara ve filtrele</summary><label for="lost-search">İlanlarda ara</label><div class="lost-v2-search"><input id="lost-search" type="search" value="'+esc(lostSearch)+'" placeholder="Hayvan adı, tür, şehir veya ilçe..." autocomplete="off" aria-controls="lost-results"><button type="button" data-action="lost-clear">Temizle</button></div>'
  +'<div class="lost-v2-row"><strong>Durum</strong><button type="button" data-action="lost-refresh"'+(lostLoading?' disabled':'')+'>'+(lostLoading?'Yenileniyor…':'↻ Yenile')+'</button></div>'
  +'<div class="lost-v2-filters" role="group" aria-label="İlan durumu">'+[['missing','Kayıp ('+counts.missing+')'],['found','Bulundu ('+counts.found+')'],['mine','İlanlarım ('+counts.mine+')'],['all','Tümü']].map(([key,title])=>'<button type="button" data-action="lost-status" data-id="'+key+'" class="'+(lostStatus===key?'active':'')+'" aria-pressed="'+(lostStatus===key)+'">'+title+'</button>').join('')+'</div>'
  +'<div class="lost-v2-row"><strong>Hayvan türü</strong></div><div class="lost-v2-filters" role="group" aria-label="Hayvan türü">'+kinds.map(x=>'<button type="button" data-action="lost-species" data-id="'+esc(x)+'" class="'+(lostSpecies===x?'active':'')+'" aria-pressed="'+(lostSpecies===x)+'">'+esc(x)+'</button>').join('')+'</div>'
+ +'</details>'
  +(lostError?'<div class="lost-v2-error" role="alert">'+esc(lostError)+'</div>':'')
  +'<div class="lost-v2-results-head"><h2>İlanları keşfet</h2><span role="status" aria-live="polite" id="lost-results-count">'+list.length+' ilan</span></div>'
  +'<div class="lost-v2-grid" id="lost-results">'+(lostLoading?'<p role="status" class="lost-v2-loading">İlanlar yükleniyor…</p>':lostCards(list))+'</div></section>';
@@ -2214,7 +2233,7 @@ function adoptionCards(list){
    +'<span class="adopt-v2-badge'+(adopted?' is-adopted':'')+'">'+(adopted?'✓ Sahiplendirildi':'♡ Yuva arıyor')+'</span></div>'
    +'<div class="adopt-v2-info"><div class="adopt-v2-meta"><span>'+esc(x.species)+' · '+esc(x.gender||'Belirtilmedi')+'</span><small>'+esc(day(x.created_at))+'</small></div>'
    +'<h3>'+esc(x.name)+'</h3><p class="adopt-v2-location">📍 '+esc(x.city)+(x.district?' / '+esc(x.district):'')+(x.age?' · '+esc(x.age):'')+'</p>'
-   +'<p class="adopt-v2-description">'+esc(x.description)+'</p>'
+   +'<p class="adopt-v2-description">'+esc(x.description)+'</p><button type="button" class="pati-ref-listing-view" data-action="pati-adoption-open" data-id="'+esc(x.id)+'">Detayları gör →</button>'
    +'<div class="adopt-v2-actions">'
    +(own?'<button type="button" data-action="adoption-edit" data-id="'+esc(x.id)+'">Düzenle</button><button type="button" data-action="adoption-toggle" data-id="'+esc(x.id)+'">'+(adopted?'Yeniden yayına al':'✓ Sahiplendirildi')+'</button><button type="button" data-action="adoption-delete" data-id="'+esc(x.id)+'" class="adopt-v2-danger">Sil</button>'
    :(!adopted?'<button type="button" data-action="chat" data-id="'+esc(x.owner_id)+'" class="adopt-v2-contact">Sahibine mesaj gönder</button>':'')+'<button type="button" data-action="report" data-id="'+esc(x.id)+'" data-kind="adoption">Bildir</button>')
@@ -2251,6 +2270,8 @@ async function routePendingAdoption(){
  else notify('İlan bulunamadı veya artık görüntülenemiyor.',true);
 }
 function adoptionPage(){
+ const detail=data.adoption.find(x=>x.id===patiAdoptionDetailId&&!blocked.has(x.owner_id));
+ if(detail){patiListingDetail('adoption',detail);return}
  const visible=data.adoption.filter(x=>!blocked.has(x.owner_id));
  const counts={open:visible.filter(x=>!x.adopted).length,adopted:visible.filter(x=>x.adopted).length,mine:visible.filter(x=>x.owner_id===me?.id).length};
  const kinds=['Tümü',...new Set(visible.map(x=>x.species).filter(Boolean))];
@@ -2260,11 +2281,12 @@ function adoptionPage(){
   +'<div class="adopt-v2-hero"><div><small>SORUMLU SAHİPLENME</small><h2>Bir dost, ömür boyu sorumluluk.</h2><p>İlanları keşfet, sorularını mesajla sor ve doğru yuva için güvenle iletişime geç.</p></div><span aria-hidden="true">🐾</span></div>'
   +'<div class="adopt-v2-stats"><div><b>'+counts.open+'</b><span>Yuva arıyor</span></div><div><b>'+counts.adopted+'</b><span>Sahiplendirildi</span></div><div><b>'+counts.mine+'</b><span>İlanlarım</span></div></div>'
   +'<p class="adopt-v2-safety">🔒 Sahiplendirme ilanları ücretsizdir. Açık adresini ve telefon numaranı yazma. İletişimi uygulama içi mesajlardan yap; sağlık, bakım koşulları ve sorumlulukları görüş.</p>'
-  +'<label for="adoption-search">İlanlarda ara</label><div class="adopt-v2-search"><input id="adoption-search" type="search" value="'+esc(adoptionSearch)+'" autocomplete="off" aria-controls="adoption-results" placeholder="Hayvan adı, şehir, ilçe, tür…"><button type="button" data-action="adoption-clear">Temizle</button></div>'
+  +'<details class="pati-ref-listing-filters"><summary>⌕ Ara ve filtrele</summary><label for="adoption-search">İlanlarda ara</label><div class="adopt-v2-search"><input id="adoption-search" type="search" value="'+esc(adoptionSearch)+'" autocomplete="off" aria-controls="adoption-results" placeholder="Hayvan adı, şehir, ilçe, tür…"><button type="button" data-action="adoption-clear">Temizle</button></div>'
   +'<div class="adopt-v2-row"><strong>İlan durumu</strong><button type="button" data-action="adoption-refresh"'+(adoptionLoading?' disabled':'')+'>'+(adoptionLoading?'Yenileniyor…':'↻ Yenile')+'</button></div>'
   +'<div class="adopt-v2-filters" role="group" aria-label="İlan durumu">'+[['open','Yuva arıyor ('+counts.open+')'],['adopted','Sahiplendirildi ('+counts.adopted+')'],['mine','İlanlarım ('+counts.mine+')'],['all','Tümü']].map(([key,label])=>'<button type="button" data-action="adoption-status" data-id="'+key+'" class="'+(adoptionStatus===key?'active':'')+'" aria-pressed="'+String(adoptionStatus===key)+'">'+label+'</button>').join('')+'</div>'
   +'<div class="adopt-v2-row"><strong>Hayvan türü</strong></div><div class="adopt-v2-filters" role="group" aria-label="Hayvan türü">'+kinds.map(x=>'<button type="button" data-action="adoption-species" data-id="'+esc(x)+'" class="'+(adoptionSpecies===x?'active':'')+'" aria-pressed="'+String(adoptionSpecies===x)+'">'+esc(x)+'</button>').join('')+'</div>'
-  +(adoptionLoadError?'<p role="alert" class="adopt-v2-error">'+esc(adoptionLoadError)+'</p>':'')
+  +'</details>'
+ +(adoptionLoadError?'<p role="alert" class="adopt-v2-error">'+esc(adoptionLoadError)+'</p>':'')
   +'<div class="adopt-v2-results-head"><h2>Yuva arayan dostlar</h2><span id="adoption-results-count" role="status" aria-live="polite">'+list.length+' ilan</span></div>'
   +'<div class="adopt-v2-grid" id="adoption-results">'+(adoptionLoading?'<p role="status" class="adopt-v2-loading">İlanlar yükleniyor…</p>':adoptionCards(list))+'</div></section>';
 }
@@ -3677,7 +3699,7 @@ case 'my-profile':profileId='';lastDetailView='';navigate('profile');break;case 
  if(detail)requestAnimationFrame(()=>window.scrollTo({top:detail.returnScroll||0,behavior:'instant'}));
  break}case 'open-knowledge':navigate('knowledge');break;case 'health-add-pet':navigate('pets');break;
 case 'education-open':educationBackScroll=window.scrollY||0;educationLesson=id;educationRemember(id);render();window.scrollTo(0,0);break;case 'education-back':educationLesson='';render();requestAnimationFrame(()=>window.scrollTo(0,educationBackScroll));break;case 'education-next':case 'education-previous':educationLesson=id;educationRemember(id);window.scrollTo(0,0);render();break;case 'education-continue':educationBackScroll=window.scrollY||0;educationLesson=id;educationRemember(id);window.scrollTo(0,0);render();break;case 'education-status':educationStatus=id;render();break;case 'pati-academy-home':educationCategory='Tümü';educationSearch='';educationStatus='Tümü';patiAcademyBrowseAll=false;render();break;case 'pati-academy-search-open':patiAcademyBrowseAll=true;render();document.getElementById('pati-academy-search')?.focus();break;case 'education-filter':educationCategory=id;educationLesson='';render();break;case 'education-clear':educationSearch='';educationUpdateResults();document.getElementById('pati-academy-search')?.focus();break;case 'education-reset':educationSearch='';educationCategory='Tümü';educationStatus='Tümü';render();break;case 'education-answer':{const l=patiyizLessons.find(x=>x.id===id);if(l&&!educationDone().has(id)){educationAnswer[id]=Number(target.dataset.choice);if(educationAnswer[id]===l.answer)educationMark(id);render()}break;}case 'kb-read':kbListScroll=window.scrollY||0;articleId=id;render();window.scrollTo(0,0);break;case 'knowledge-back':articleId='';render();requestAnimationFrame(()=>window.scrollTo(0,kbListScroll));break;case 'pati-kb-home':kbCategory='Tümü';kbFilter='Tümü';kbSearch='';patiKbBrowseAll=false;render();break;case 'pati-kb-search-open':patiKbBrowseAll=true;render();document.getElementById('kb-search')?.focus();break;case 'kb-filter':kbFilter=id;render();break;case 'kb-category':kbCategory=id;render();break;case 'kb-clear':kbSearch='';render();document.getElementById('kb-search')?.focus();break;case 'kb-reset':kbFilter='Tümü';kbCategory='Tümü';kbSearch='';render();break;case 'kb-search':kbSearch=$('#kb-search')?.value||'';kbUpdateResults();break;case 'explore-more':void patiExploreLoadMedia();break;case 'explore-sort':{if(['popular','views','likes','recent'].includes(id)&&patiExploreSort!==id){patiExploreSort=id;explorePage();void patiExploreLoadMedia(true)}break}case 'explore-search-retry':void patiExploreLookup(search);break;case 'explore-open-post':openPost(id);break;case 'pati-search-open':search='';exploreTab='users';explorePage();requestAnimationFrame(()=>document.getElementById('explore-search')?.focus());void patiExploreLookup('');break;case 'pati-search-cancel':search='';exploreTab='media';explorePage();break;case 'pati-search-discover':exploreTab='media';search='';explorePage();break;case 'explore-tab':exploreTab=id;render();break;case 'explore-animal':exploreAnimal=id;render();break;case 'explore-sort':exploreSort=exploreSort==='latest'?'popular':exploreSort==='popular'?'recommended':'latest';render();break;case 'explore-search':search=$('#explore-search')?.value||'';render();break;case 'lost-search':lostSearch=$('#lost-search')?.value||'';lostUpdateResults();break;
-case 'lost-status':lostStatus=id;lostPage();break;
+case 'pati-lost-open':patiLostDetailId=id;lostPage();window.scrollTo(0,0);break;case 'pati-lost-back':patiLostDetailId='';lostPage();break;case 'pati-adoption-open':patiAdoptionDetailId=id;adoptionPage();window.scrollTo(0,0);break;case 'pati-adoption-back':patiAdoptionDetailId='';adoptionPage();break;case 'lost-status':lostStatus=id;lostPage();break;
 case 'lost-species':lostSpecies=id;lostPage();break;
 case 'lost-clear':lostSearch='';lostPage();document.getElementById('lost-search')?.focus();break;
 case 'lost-reset':lostSearch='';lostStatus='missing';lostSpecies='Tümü';lostPage();break;
