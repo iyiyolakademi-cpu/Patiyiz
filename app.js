@@ -1295,7 +1295,7 @@ function homePage(){
   .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)||String(b.id).localeCompare(String(a.id)));
  main.innerHTML=selectedPostId
   ?header('Paylaşım','Bildirimin ilgili olduğu paylaşım.',button('← Ana sayfaya dön','post-back'))+(list.find(p=>p.id===selectedPostId)?postCard(list.find(p=>p.id===selectedPostId)):empty('Paylaşım bulunamadı'))
-  :storiesStrip()+'<div class="pati-feed-posts">'+(list.length?list.map((p,i)=>postCard(p,i<5)+(i===1?patiLeaderBoard():'' )).join('')+(list.length===1?patiLeaderBoard():''):empty(patiyizLoadedTables.has('posts')?'Henüz paylaşım yok':'Gönderiler yükleniyor…',patiyizLoadedTables.has('posts')?'İlk gönderiyi sen paylaş!':'Paylaşımların yeniden getiriliyor.'))+((typeof patiHomeLoadError!=='undefined'&&patiHomeLoadError)?'<div class="pati-load-more" role="alert">'+
+  :storiesStrip()+'<div class="pati-feed-posts">'+(list.length?list.map((p,i)=>postCard(p,i<5)).join(''):empty(patiyizLoadedTables.has('posts')?'Henüz paylaşım yok':'Gönderiler yükleniyor…',patiyizLoadedTables.has('posts')?'İlk gönderiyi sen paylaş!':'Paylaşımların yeniden getiriliyor.'))+((typeof patiHomeLoadError!=='undefined'&&patiHomeLoadError)?'<div class="pati-load-more" role="alert">'+
   esc(patiHomeLoadError)+' '+button('Tekrar dene','home-retry')+'</div>':'')
  +(pageMore.posts&&!((typeof patiHomeLoadError!=='undefined'&&patiHomeLoadError))&&
   patiyizLoadedTables.has('posts')?'<div class="pati-load-more">'+button('Daha fazla paylaşım yükle','load-more','data-id="posts"')+'</div>':'')+'</div>';
@@ -1791,7 +1791,7 @@ function educationPage(){
 /* Private pet wellness and public verified activity ranking */
 let patiWellness={reminders:[],weights:[],loaded:false,loading:false,notified:new Set(),error:''};
 let patiWellnessTab='active';
-let patiLeaderboard=[];
+
 let patiWellnessHeartbeat=false;
 const patiReminderNames={vaccine:'Aşı takvimi',vet:'Veteriner randevusu',food:'Mama / öğün',medicine:'İlaç hatırlatması'};
 function patiWellnessOwnedPets(){return data.pets.filter(p=>p.owner_id===me?.id)}
@@ -1816,7 +1816,7 @@ async function patiWellnessFetch(silent=false){
   ]);
   if(a.error)throw a.error;if(b.error)throw b.error;if(me?.id!==uid)return;
   patiWellness={...patiWellness,reminders:a.data||[],weights:b.data||[],loaded:true,error:''};
-  if(view==='wellness'||(view==='my-pet'&&patiMyPetTab==='wellness'))render();
+  if(view==='wellness'||(view==='my-pet'&&['wellness','care'].includes(patiMyPetTab))||view==='care')render();
   patiWellnessAlerts();
   // Avoid recurring due-reminder toast popups; health data remains available.
  }catch(e){console.warn('Bakım takvimi yüklenemedi:',e);if(me?.id===uid){patiWellness.error='Sağlık kayıtları yüklenemedi. İnternet bağlantını kontrol edip tekrar dene.';if(view==='wellness'||(view==='my-pet'&&patiMyPetTab==='wellness'))render()}if(!silent)notify('Sağlık takvimi yüklenemedi: '+friendly(e),true)}
@@ -1990,24 +1990,9 @@ async function patiWellnessDelete(table,id){
 }
 let patiWellnessPetId='';
 async function patiPublicActivityInit(){
- if(!me||!sb)return;const uid=me.id;
- try{
-  const [track,leaders]=await Promise.all([sb.rpc('patiyiz_track_daily_active'),sb.rpc('patiyiz_active_top_five')]);
-  if(track.error)console.warn('Günlük aktivite ölçümü:',track.error.message);
-  if(leaders.error)throw leaders.error;
-  if(me?.id!==uid)return;
-  patiLeaderboard=Array.isArray(leaders.data)?leaders.data:[];
-  const container=document.querySelector('#pati-active5');
-  if(container)container.outerHTML=patiLeaderBoard();
- }catch(e){console.warn('En aktif üyeler:',e)}
-}
-function patiLeaderBoard(){
- const users=patiLeaderboard.filter(p=>p.user_id&&!blocked.has(p.user_id)).slice(0,5);
- return '<section class="pati-active-leaderboard" id="pati-active5"><div class="pati-active-heading"><div><strong>🏆 En Aktif 5 Pati</strong><small>Son 7 gün · herkese açık etkileşimler</small></div></div>'+
- '<div class="pati-active-users">'+(users.length?users.map((p,i)=>
- '<button class="pati-active-person" data-action="view-user" data-id="'+esc(p.user_id)+'"><span class="pati-active-rank">'+(i+1)+'</span>'+
- (p.avatar_url?'<img src="'+esc(p.avatar_url)+'" alt="" loading="lazy">':'<span class="pati-active-placeholder">🐾</span>')+
- '<strong>'+esc(p.display_name||p.handle||'Patiyiz üyesi')+'</strong><small>'+Number(p.score||0)+' puan</small></button>').join(''):'<p>Bu hafta henüz sıralama oluşmadı.</p>')+'</div></section>';
+ if(!me||!sb)return;
+ try{const result=await sb.rpc('patiyiz_track_daily_active');if(result.error)console.warn('Günlük aktivite kaydı:',result.error.message)}
+ catch(e){console.warn('Günlük aktivite kaydı:',e)}
 }
 async function patiShareMetric(kind,uuid,status){
  if(!me||!sb||!uuid)return;
@@ -2062,7 +2047,6 @@ async function patiLoadOwnedPets(){
  }catch(error){if(me?.id===uid)console.warn('Hayvanlarım yüklenemedi:',error?.message||error)}
 }
 function petsPage(){
- const own=data.pets.filter(p=>p.owner_id===me.id);
  const state=typeof patiPetsState!=='undefined'&&patiPetsState.owner===me.id?patiPetsState:null;
  const source=state?.ready?[...state.rows,...data.pets]:data.pets;
  const others=[...new Map(source.map(p=>[p.id,p])).values()]
@@ -2073,8 +2057,8 @@ function petsPage(){
  '<div class="pati-pets-info"><strong>'+esc(p.name||'Patili dost')+'</strong><small>'+esc(p.species||'Hayvan')+(p.breed?' · '+esc(p.breed):'')+'</small></div></button>'+
  (editable?'<button type="button" class="pati-pets-edit" data-action="pet-edit" data-id="'+esc(p.id)+'" aria-label="'+esc(p.name||'Patili dost')+' düzenle">'+ico('edit')+' Düzenle</button>':'')+'</div>';
  main.innerHTML='<section class="pati-pets-page"><div class="pati-pets-heading"><div><h1>Patiler</h1><p>Topluluğumuzdaki patili dostlarla tanış.</p></div><button type="button" class="pati-pets-add" data-action="pet-add" aria-label="Patili dost ekle">'+ico('plus')+' Hayvan ekle</button></div>'+
- '<h2>Benim Patilerim</h2><div class="pati-pets-grid">'+(own.length?own.map((p,i)=>petItem(p,i,true)).join(''):'<p class="pati-pets-empty">Henüz hayvan profili eklemedin.</p>')+'</div>'+
- '<h2>Topluluktaki Patiler</h2><div class="pati-pets-grid">'+(others.length?others.map((p,i)=>petItem(p,i+own.length)).join(''):state?.loading?'<p class="pati-pets-empty" role="status">Patiler yükleniyor…</p>':'<p class="pati-pets-empty">Henüz başka patili dost bulunmuyor.</p>')+'</div>'+
+ '<div class="pati-pets-own-shortcut"><span>Kendi dostlarının profilleri Hayvanım Merkezi içerisinde.</span><button type="button" data-view="my-pet">Hayvanlarım →</button></div>'+
+ '<h2>Topluluktaki Patiler</h2><div class="pati-pets-grid">'+(others.length?others.map((p,i)=>petItem(p,i)).join(''):state?.loading?'<p class="pati-pets-empty" role="status">Patiler yükleniyor…</p>':'<p class="pati-pets-empty">Henüz başka patili dost bulunmuyor.</p>')+'</div>'+
  (state?.error?'<p role="alert" class="pati-pets-empty">'+esc(state.error)+'</p>':'')+
  (state?.loading?'<p class="pati-pets-empty" role="status">Yeni patiler getiriliyor…</p>':state?.hasMore||state?.error?'<div class="pati-load-more">'+button(state.error?'Yeniden dene':'Daha fazla pati yükle','pets-more')+'</div>':'')+'</section>';
 }
@@ -2360,10 +2344,45 @@ function careCard(x){
   +'<button type="button" class="care-v2-complete" data-action="care-done" data-id="'+esc(x.id)+'">'+(x.done?'↶ Geri al':'✓ Tamamla')+'</button>'
   +'<details class="pati-care-more"><summary aria-label="Görev seçenekleri">•••</summary><div><button type="button" data-action="care-edit" data-id="'+esc(x.id)+'">Düzenle</button><button type="button" class="care-v2-delete" data-action="care-del" data-id="'+esc(x.id)+'">Sil</button></div></details></div></article>';
 }
+function patiUnifiedCareReminders(){
+ if(typeof patiWellness==='undefined'||!patiWellness.loaded||!Array.isArray(patiWellness.reminders))return [];
+ const own=new Set((data.pets||[]).filter(p=>p.owner_id===me?.id).map(p=>p.id));
+ const careNames=new Set(careOwnItems().map(x=>[x.pet_id||'',String(x.due_date||''),careFold(x.title)].join('|')));
+ const today=careToday(),q=careFold(careSearch);
+ return patiWellness.reminders.filter(x=>{
+  if(!own.has(x.pet_id))return false;
+  const date=String(x.due_at||'').slice(0,10);
+  if(careNames.has([x.pet_id,date,careFold(x.title)].join('|')))return false;
+  const state=x.completed_at?'done':date<today?'late':date===today?'today':'upcoming';
+  const pet=data.pets.find(p=>p.id===x.pet_id);
+  return (careFilter==='all'||careFilter===state)
+   &&(!patiCareSelectedDate||date===patiCareSelectedDate)
+   &&(carePetFilter==='all'||x.pet_id===carePetFilter)
+   &&(careCategoryFilter==='Tümü'||({vaccine:'Aşı',vet:'Veteriner',medicine:'İlaç',food:'Mama'}[x.kind]||'Bakım')===careCategoryFilter)
+   &&(!q||careFold([x.title,x.kind,pet?.name||''].join(' ')).includes(q));
+ }).sort((a,b)=>String(a.due_at).localeCompare(String(b.due_at)));
+}
+function patiUnifiedCareReminderCard(x){
+ const pet=data.pets.find(p=>p.id===x.pet_id&&p.owner_id===me?.id);
+ const date=String(x.due_at||'').slice(0,10);
+ const icon={vaccine:'💉',vet:'🩺',medicine:'💊',food:'🥣'}[x.kind]||'🐾';
+ return '<article class="care-v2-item pati-ref-care-task pati-unified-reminder">'
+ +'<div class="care-v2-item-icon" aria-hidden="true">'+icon+'</div>'
+ +'<div class="care-v2-item-main"><h3>'+esc(x.title)+'</h3><p>📅 '+esc(day(date))+(pet?' · 🐾 '+esc(pet.name):'')+'</p></div>'
+ +'<div class="care-v2-actions">'+(!x.completed_at?'<button type="button" class="care-v2-complete" data-action="wellness-reminder-done" data-id="'+esc(x.id)+'">✓ Tamamla</button>':'<span class="pati-unified-done">✓ Tamamlandı</span>')
+ +'<details class="pati-care-more"><summary aria-label="Hatırlatma seçenekleri">•••</summary><div>'
+ +(!x.completed_at?'<button type="button" data-action="wellness-reminder-edit" data-id="'+esc(x.id)+'">Düzenle</button>':'')
+ +'<button type="button" data-action="wellness-reminder-delete" data-id="'+esc(x.id)+'">Sil</button></div></details></div></article>';
+}
+function patiUnifiedCareCards(){
+ const tasks=careVisibleItems().map(x=>({date:String(x.due_date),html:careCard(x)}));
+ const reminders=patiUnifiedCareReminders().map(x=>({date:String(x.due_at).slice(0,10),html:patiUnifiedCareReminderCard(x)}));
+ return [...tasks,...reminders].sort((a,b)=>a.date.localeCompare(b.date)).map(x=>x.html);
+}
 function careUpdateResults(){
  if(view!=='care'&&!(view==='my-pet'&&patiMyPetTab==='care'))return;
- const list=careVisibleItems(),result=document.getElementById('care-results'),count=document.getElementById('care-result-count');
- if(result)result.innerHTML=list.length?list.map(careCard).join(''):'<div class="care-v2-empty" role="status"><span>🐾</span><h3>Bu filtrelerde görev yok</h3><p>Başka bir tarih, kategori veya hayvan seçebilirsin.</p><button type="button" data-action="care-reset">Filtreleri temizle</button></div>';
+ const list=patiUnifiedCareCards(),result=document.getElementById('care-results'),count=document.getElementById('care-result-count');
+ if(result)result.innerHTML=list.length?list.join(''):'<div class="care-v2-empty" role="status"><span>🐾</span><h3>Bu filtrelerde görev yok</h3><p>Başka bir tarih, kategori veya hayvan seçebilirsin.</p><button type="button" data-action="care-reset">Filtreleri temizle</button></div>';
  if(count)count.textContent=list.length+' görev';
 }
 async function careRefresh(){
@@ -2380,7 +2399,8 @@ async function careRefresh(){
 function carePage(){
  const all=careOwnItems(),today=careToday();
  const counts={today:all.filter(x=>!x.done&&x.due_date===today).length,upcoming:all.filter(x=>!x.done&&x.due_date>today).length,done:all.filter(x=>x.done).length};
- const list=careVisibleItems();
+ const list=patiUnifiedCareCards();
+ if(typeof patiWellnessFetch==='function'&&typeof patiWellness!=='undefined'&&!patiWellness.loaded&&!patiWellness.loading&&!patiWellness.error)void patiWellnessFetch(true);
  const active=data.pets.find(p=>p.id===(typeof patiHubSelectedPetId==='string'?patiHubSelectedPetId:'')&&p.owner_id===me?.id)||data.pets.find(p=>p.owner_id===me?.id);
  const image=active?.photo_url||(/kedi/i.test(active?.species||'')?'pati-illustration-cat.svg':'pati-illustration-dog.svg');
  const next=all.filter(x=>!x.done).sort((x,y)=>String(x.due_date).localeCompare(String(y.due_date)))[0];
@@ -2391,7 +2411,7 @@ function carePage(){
   '<div class="pati-ref-care-summary"><strong>Bakım durumun</strong><small>Bir bölümü seçerek görevlerini görüntüle.</small></div><div class="pati-simple-filters" role="group" aria-label="Görev durumu">'+filter('today','Bugün',counts.today)+filter('upcoming','Yaklaşan',counts.upcoming)+filter('done','Tamamlanan',counts.done)+'</div>'+
   '<div class="pati-simple-list-head"><h2>Bakım Listesi</h2><button type="button" data-action="care-filter" data-id="all" aria-pressed="'+(careFilter==='all')+'">Tüm görevler →</button></div>'+
   (careLoadError?'<p class="care-v2-error" role="alert">'+esc(careLoadError)+'</p>':'')+
-  '<div class="care-v2-list pati-ref-care-timeline" id="care-results">'+(careLoading?'<p role="status">Görevler yükleniyor…</p>':list.length?list.map(careCard).join(''):'<div class="pati-simple-empty" role="status"><span>🐾</span><strong>Bu bölümde görev yok.</strong><p>Dilersen yeni bir görev ekleyebilirsin.</p><button type="button" data-action="care-add">+ Görev ekle</button></div>')+'</div>'+
+  '<div class="care-v2-list pati-ref-care-timeline" id="care-results">'+(careLoading?'<p role="status">Görevler yükleniyor…</p>':list.length?list.join(''):'<div class="pati-simple-empty" role="status"><span>🐾</span><strong>Bu bölümde görev yok.</strong><p>Dilersen yeni bir görev ekleyebilirsin.</p><button type="button" data-action="care-add">+ Görev ekle</button></div>')+'</div>'+
   '<p class="pati-simple-disclaimer">Takvim, veteriner önerilerinin yerini almaz; görev kaydı tek başına cihaz bildirimi göndermez.</p></section>';
 }
 let dmRecorder=null,dmParts=[],dmStream=null,dmCancel=false,dmRecipient=null;
@@ -4214,7 +4234,7 @@ function resetSessionState(){
  patiDmPendingLatestPeer='';if(typeof patiDmThreads!=='undefined')patiDmThreads.clear();if(typeof patiDmInbox!=='undefined')patiDmInbox={owner:'',rows:[],offset:0,hasMore:true,loading:false,ready:false,error:''};
 
  patiyizLoadToken++;patiyizLoadedTables.clear();patiyizDeferredLoading=null;
- if(typeof patiHomeFeedIds!=='undefined'){patiHomeFeedIds=null;patiHomeFeedCursor=null;patiHomeLoadError=''};if(typeof patiHomeCountCache!=='undefined'){patiHomeCountCache.clear();patiHomeCountsLoading.clear()};if(typeof patiPostCommentPages!=='undefined')patiPostCommentPages.clear();patiWellness={reminders:[],weights:[],loaded:false,loading:false,notified:new Set()};patiLeaderboard=[];patiInviteState={code:'',invited_count:0,already_used:false,coins_each:50,loading:false};patiDmReturnView='home';mobileChatOpen=false;patiCoinState={balance:0,earned:0,claims:[],items:[],orders:[],history:[],loading:false};patiFollowerRewardState={followers:null,claimed:[]};document.getElementById('paticoin-celebration')?.remove();
+ if(typeof patiHomeFeedIds!=='undefined'){patiHomeFeedIds=null;patiHomeFeedCursor=null;patiHomeLoadError=''};if(typeof patiHomeCountCache!=='undefined'){patiHomeCountCache.clear();patiHomeCountsLoading.clear()};if(typeof patiPostCommentPages!=='undefined')patiPostCommentPages.clear();patiWellness={reminders:[],weights:[],loaded:false,loading:false,notified:new Set()};patiInviteState={code:'',invited_count:0,already_used:false,coins_each:50,loading:false};patiDmReturnView='home';mobileChatOpen=false;patiCoinState={balance:0,earned:0,claims:[],items:[],orders:[],history:[],loading:false};patiFollowerRewardState={followers:null,claimed:[]};document.getElementById('paticoin-celebration')?.remove();
  data=Object.fromEntries(Object.keys(data).map(key=>[key,[]]));
  for(const group of [favorites,followed,liked,saved,voted,blocked])group.clear();
  blockedProfiles=[];patiDmSignedCache.clear();profileCountCache.clear();profileCountInFlight.clear();
