@@ -1,0 +1,23 @@
+/* Patiyiz section accent refresh: restrained colors, original interaction intact */
+#main-content .lost-v2{--sec-accent:#b94b57;--sec-soft:#fff0f1;--sec-border:#f3c9ce}
+#main-content .adopt-v2{--sec-accent:#ba6a34;--sec-soft:#fff4e8;--sec-border:#f2d5b6}
+#main-content .care-v2{--sec-accent:#278566;--sec-soft:#eaf8f2;--sec-border:#c8eadc}
+#main-content .pati-edu-v2{--sec-accent:#7755bb;--sec-soft:#f3effe;--sec-border:#dcd0f8}
+#main-content .kb-v2{--sec-accent:#3179a9;--sec-soft:#edf7ff;--sec-border:#c9e4f8}
+#main-content :is(.lost-v2,.adopt-v2,.care-v2,.pati-edu-v2,.kb-v2) :is(.lost-v2-heading,.adopt-v2-heading,.care-v2-heading) small{color:var(--sec-accent);font-weight:800;letter-spacing:.075em}
+#main-content .lost-v2 .lost-v2-hero{background:linear-gradient(120deg,#fff1f2,#ffe5e7)!important;border:1px solid #f3c9ce!important;color:#682e37!important}
+#main-content .adopt-v2 .adopt-v2-hero{background:linear-gradient(120deg,#fff4e8,#ffe7cf)!important;border:1px solid #f2d5b6!important;color:#75451e!important}
+#main-content .care-v2 .care-v2-hero{background:linear-gradient(120deg,#ecfbf2,#d9f4e8)!important;border:1px solid #c8eadc!important;color:#175943!important}
+#main-content :is(.lost-v2,.adopt-v2,.care-v2) :is(.lost-v2-hero,.adopt-v2-hero,.care-v2-hero) h2{color:inherit!important}
+#main-content :is(.lost-v2,.adopt-v2,.care-v2) :is(.lost-v2-hero,.adopt-v2-hero,.care-v2-hero) p{color:inherit!important;opacity:.9}
+#main-content .lost-v2 .lost-v2-stats>div{background:#fff4f5!important;border-color:#f3c9ce!important}
+#main-content .adopt-v2 .adopt-v2-stats>div{background:#fff7ed!important;border-color:#f2d5b6!important}
+#main-content .care-v2 .care-v2-metrics>div{background:#f0faf5!important;border-color:#c8eadc!important}
+#main-content :is(.lost-v2,.adopt-v2,.care-v2) :is(.lost-v2-stats,.adopt-v2-stats,.care-v2-metrics) b{color:var(--sec-accent)!important}
+#main-content :is(.lost-v2,.adopt-v2,.care-v2) :is(.lost-v2-create,.adopt-v2-create,.care-v2-add){background:var(--sec-accent)!important;border-color:var(--sec-accent)!important;color:#fff!important;min-height:44px}
+#main-content .pati-edu-v2 :is(.edu-v2-hero,.edu-v2-progress,.edu-v2-lesson-meta){border-color:#dcd0f8}
+#main-content .pati-edu-v2 :is(.edu-v2-hero,.edu-v2-progress){background:linear-gradient(135deg,#f8f5ff,#f0eafe)}
+#main-content .pati-edu-v2 :is(.edu-v2-complete,.edu-v2-lesson-track span){color:#7755bb}
+#main-content .kb-v2 :is(.kb-v2-article-head,.kb-v2-hero){background:linear-gradient(130deg,#f4faff,#eaf5ff);border-color:#c9e4f8}
+#main-content .kb-v2 :is(.kb-v2-eyebrow,.kb-v2-detail-save.is-saved){color:#3179a9}
+@media(max-width:740px){#main-content :is(.lost-v2,.adopt-v2,.care-v2,.pati-edu-v2,.kb-v2){overflow-wrap:anywhere}}
