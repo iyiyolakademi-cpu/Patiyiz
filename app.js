@@ -1613,32 +1613,40 @@ function healthFilePage(){
 }
 let patiMyPetTab='hub';
 function patiMyPetCenterPage(){
- const tabs=[['hub','Tüm bölümler'],['care','Bakım'],['wellness','Sağlık'],['healthfile','Belgeler']];
  if(patiMyPetTab==='hub'){
   const pets=(data.pets||[]).filter(p=>p.owner_id===me?.id);
   const featured=pets[0];
   const petName=featured?esc(featured.name||'Patili dostum'):'Patili dostunu ekle';
-  const petImage=featured?.photo_url||featured?.avatar_url||'';
+  const petImage=featured?.photo_url||featured?.avatar_url||featured?.image_url||'';
   const petPhoto=petImage?'<img src="'+esc(petImage)+'" alt="'+petName+'" loading="lazy" decoding="async">':'<span aria-hidden="true">🐾</span>';
-  const options=[
-   ['care','Bakım ve Sağlık','Aşı, bakım ve görev takvimi','heart','mint','tab'],
-   ['healthfile','Belgeler','Sağlık dosyası ve kayıtlar','library','sky','tab'],
-   ['education','Eğitim ve Akademi','Dersler ve ilerlemen','library','sun','view'],
-   ['adoption','Sahiplendirme','Yeni yuvalar, yeni başlangıçlar','heart','rose','view'],
-   ['lost','Kayıp İlanları','Kayıp dostları birlikte bulalım','search','lilac','view'],
-   ['knowledge','Bilgi Merkezi','Güvenilir bakım rehberleri','info','blue','view']
+  const groups=[
+   {title:'Hayvanım ve Sağlık',items:[
+    ['care','Bakım Takvimi','Aşı, bakım ve günlük görevler','heart','mint','tab'],
+    ['wellness','Hayvan Sağlığı','Kilo, hatırlatmalar ve takip','heart','sky','tab'],
+    ['healthfile','Belgelerim','Sağlık dosyaları ve kayıtlar','library','blue','tab'],
+    ['pets','Hayvan Profilleri','Tüm patili dostlarını keşfet','paw','rose','view']]},
+   {title:'Öğren ve Geliş',items:[
+    ['education','Eğitim ve Akademi','Derslerini öğren, ilerlemeni gör','library','sun','view'],
+    ['knowledge','Bilgi Merkezi','Bakım, beslenme ve rehberler','info','blue','view']]},
+   {title:'Topluluk ve Yardımlaşma',items:[
+    ['lost','Kayıp İlanları','Kayıp dostlarımızı bulalım','search','lilac','view'],
+    ['adoption','Sahiplendirme','Yeni yuvalar, yeni başlangıçlar','heart','rose','view'],
+    ['community','Topluluk Soruları','Diğer hayvanseverlere danış','users','mint','view']]},
   ];
-  const cards=options.map(([destination,label,description,icon,tone,kind])=>'<button type="button" class="pati-hub-card pati-hub-'+tone+'" '+(kind==='tab'?'data-action="pati-my-pet-tab" data-id="'+destination+'"':'data-view="'+destination+'"')+' aria-label="'+label+'"><span class="pati-hub-icon">'+ico(icon)+'</span><strong>'+label+'</strong><small>'+description+'</small><span class="pati-hub-chevron" aria-hidden="true">›</span></button>').join('');
-  main.innerHTML='<section class="pati-pet-hub"><header class="pati-hub-hero"><div class="pati-hub-copy"><small>PATİYİZ · HAYVANIM MERKEZİ</small><h1>Her şey patili dostun için.</h1><p>Bakım, sağlık, eğitim ve topluluğun tüm seçenekleri tek yerde.</p></div><div class="pati-hub-pet-photo">'+petPhoto+'</div></header>'+
-   '<div class="pati-hub-pet-strip"><span>'+petPhoto+'</span><div><strong>'+petName+'</strong><small>'+(featured?esc(featured.species||'Hayvanım'):'İlk hayvan profilini oluştur')+'</small></div><button type="button" data-action="'+(featured?'pati-my-pet-tab':'pet-add')+'" '+(featured?'data-id="wellness"':'')+'>'+(featured?'Sağlığını gör':'Hayvan ekle')+' →</button></div>'+
-   '<h2 class="pati-hub-section-title">Nereye gitmek istersin?</h2><div class="pati-hub-grid">'+cards+'</div>'+
-   '<p class="pati-hub-foot">Dostunun mutluluğu için küçük adımlar, büyük farklar. ♡</p></section>';
- }else if(patiMyPetTab==='wellness')patiWellnessPage();
+  const card=([destination,label,description,icon,tone,kind])=>'<button type="button" class="pati-hub-card pati-hub-'+tone+'" '+(kind==='tab'?'data-action="pati-my-pet-tab" data-id="'+destination+'"':'data-view="'+destination+'"')+' aria-label="'+label+'"><span class="pati-hub-icon">'+ico(icon)+'</span><strong>'+label+'</strong><small>'+description+'</small><span class="pati-hub-chevron" aria-hidden="true">›</span></button>';
+  const groupsMarkup=groups.map(g=>'<section class="pati-hub-category"><h2 class="pati-hub-section-title">'+g.title+'</h2><div class="pati-hub-grid">'+g.items.map(card).join('')+'</div></section>').join('');
+  const petsMarkup=pets.length>1?'<div class="pati-hub-other-pets" aria-label="Diğer hayvanlarım">'+pets.slice(1,5).map(p=>'<span class="pati-hub-mini-pet">'+esc(p.name||'Dostum')+'</span>').join('')+'</div>':'';
+  main.innerHTML='<section class="pati-pet-hub"><header class="pati-hub-hero"><div class="pati-hub-copy"><small>PATİYİZ · HAYVANIM MERKEZİ</small><h1>Her şey patili dostun için.</h1><p>Sağlık, bakım, eğitim ve hayvansever topluluğu bir arada.</p></div><div class="pati-hub-pet-photo">'+petPhoto+'</div></header>'+
+   '<div class="pati-hub-pet-strip"><span>'+petPhoto+'</span><div><strong>'+petName+'</strong><small>'+(featured?esc(featured.species||'Hayvanım'):'İlk hayvan profilini oluştur')+'</small></div><button type="button" data-action="'+(featured?'pati-my-pet-tab':'pet-add')+'" '+(featured?'data-id="wellness"':'')+'>'+(featured?'Sağlığını gör':'Hayvan ekle')+' →</button></div>'+petsMarkup+
+   '<div class="pati-hub-sections">'+groupsMarkup+'</div><p class="pati-hub-foot">Dostunun mutluluğu için küçük adımlar, büyük farklar. ♡</p></section>';
+  return;
+ }
+ if(patiMyPetTab==='wellness')patiWellnessPage();
  else if(patiMyPetTab==='healthfile')healthFilePage();
  else carePage();
- const shell=document.createElement('section');shell.className='pati-pet-center-head';
- shell.innerHTML='<nav class="pati-pet-center-tabs" aria-label="Hayvanım merkezi bölümleri">'+tabs.map(([key,title])=>'<button type="button" data-action="pati-my-pet-tab" data-id="'+key+'" aria-current="'+(patiMyPetTab===key?'page':'false')+'" class="'+(patiMyPetTab===key?'active':'')+'">'+title+'</button>').join('')+'</nav>';
- main.prepend(shell);
+ const back=document.createElement('div');back.className='pati-hub-detail-back';
+ back.innerHTML='<button type="button" data-action="pati-my-pet-tab" data-id="hub" aria-label="Hayvanım Merkezi\'ne dön">← Hayvanım Merkezi</button>';
+ main.prepend(back);
 }
 let educationStatus='Tümü',educationBackScroll=0;
 function educationRecentKey(){return 'patiyiz-edu-recent-'+(me?.id||'guest')}
