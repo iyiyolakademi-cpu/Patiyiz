@@ -1846,6 +1846,7 @@ function communityPage(){
  const qs=[...source].filter(q=>!blocked.has(q.author_id)&&(communityCategory==='Tümü'||patiQuestionCategoryGroup(q.category)===communityCategory))
   .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)||String(b.id).localeCompare(String(a.id)));
  main.innerHTML='<section class="pati-community-head">'+header('Soru & Cevap','Bir soruyla yeni fikirler keşfet. Toplulukla konuş, farklı görüşler al.',button('+ Soru sor','question'))+'<p class="pati-community-subhead">Sorular sor, deneyimlerini paylaş, yanıtları birlikte değerlendir.</p></section>'+
+ '<button type="button" class="pati-community-mobile-ask" data-action="question" aria-label="Topluluğa soru sor">+ Soru sor</button>'+ 
  '<div class="pati-filter-tabs">'+categories.map(cat=>'<button type="button" data-action="community-filter" data-id="'+esc(cat)+'" class="'+(communityCategory===cat?'active':'')+'" aria-pressed="'+(communityCategory===cat)+'">'+esc(cat)+'</button>').join('')+'</div>'+
  '<div class="pati-list">'+qs.map(q=>{
   const rs=patiCommunityReplyPages.get(me.id+':'+q.id);
@@ -3681,7 +3682,29 @@ function showComments(postId){
 }
 function modal(title,form,id='entry-form'){if(id!=='pati-group-message-form'&&typeof patiGroupLiveStop==='function')patiGroupLiveStop();let root=$('#modal-root');root.innerHTML=`<div class="modal-backdrop" data-action="close"><section class="modal" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="modal-header"><h2>${esc(title)}</h2><button type="button" class="close-modal" data-action="close" aria-label="Pencereyi kapat">×</button></div><form id="${id}"><div class="modal-content">${form}</div><div class="pati-upload-status" role="status" aria-live="polite" hidden><i class="pati-upload-spinner"></i><span>Yükleniyor…</span></div><div class="modal-footer"><button class="outline-btn" type="button" data-action="close">İptal</button><button class="primary-btn" type="submit">Kaydet</button></div></form></section></div>`}
 function closeModal(force=false){if(!force&&busy&&document.querySelector('#modal-root .pati-upload-status:not([hidden])')){notify('İşlem sürüyor. Tamamlanmasını bekle.',true);return}if(typeof patiGroupLiveStop==='function')patiGroupLiveStop();window.PatiyizSystemMediaFlow?.close?.();if(typeof patiPetPhotoObjectUrl!=='undefined'&&patiPetPhotoObjectUrl){URL.revokeObjectURL(patiPetPhotoObjectUrl);patiPetPhotoObjectUrl=''}window.PatiyizReelsEditor?.dispose();clearPatiMediaUrls();if(typeof lostPhotoObjectUrl!=='undefined'&&lostPhotoObjectUrl){URL.revokeObjectURL(lostPhotoObjectUrl);lostPhotoObjectUrl=''}$('#modal-root').innerHTML='';if(view==='messages'&&patiActiveGroupId&&document.getElementById('pati-group-message-form'))patiGroupLiveStart(patiActiveGroupId);if(document.getElementById('story-overlay')&&!storyTimer&&storyItems.length)storyTimer=setTimeout(()=>stepStory(1),6000)}
-const species=['Kedi','Köpek','Muhabbet kuşu','Papağan','Kanarya','Kuş','Tavşan','Hamster','Ginepig','Fare','Sıçan','Gerbil','Çinçilla','Kemirgen','Balık','Japon balığı','Beta balığı','Akvaryum balığı','Kaplumbağa','Su kaplumbağası','Kara kaplumbağası','Kertenkele','Geko','İguana','Bukalemun','Yılan','Sürüngen','Kurbağa','Semender','Amfibi','Kirpi','Gelincik','At','Midilli','Eşek','Keçi','Koyun','İnek','Tavuk','Ördek','Kaz','Güvercin','Arı','Omurgasız','Diğer'];
+const species=['Kedi','Köpek','Muhabbet kuşu','Papağan','Kanarya','Tavşan','Hamster','Ginepig','Balık','Kaplumbağa','Kuş','Diğer'];
+const PATI_POPULAR_BREEDS={
+ Kedi:['Tekir','British Shorthair','Scottish Fold','Siyam','Ankara Kedisi','Van Kedisi','İran Kedisi','Maine Coon','Ragdoll','Bengal','Sfenks (Sphynx)','Russian Blue','Norveç Orman Kedisi','Sibirya Kedisi','Melez','Bilmiyorum','Diğer'],
+ Köpek:['Golden Retriever','Labrador Retriever','Alman Çoban Köpeği','Kangal','Poodle (Kaniş)','Pomeranian','Maltese Terrier','Chihuahua','French Bulldog','Pug','Beagle','Border Collie','Rottweiler','Doberman','Sibirya Kurdu (Husky)','Samoyed','Jack Russell Terrier','Yorkshire Terrier','Cocker Spaniel','Shih Tzu','Melez','Bilmiyorum','Diğer']
+};
+function patiPetBreedOptions(type){return PATI_POPULAR_BREEDS[type]||[]}
+function patiSyncPetBreedSelect(form,preferred=''){
+ const type=form.querySelector('[name="species"]')?.value||'';
+ const list=patiPetBreedOptions(type),box=form.querySelector('.pati-pet-breed-picker'),choose=form.querySelector('[name="breed_choice"]'),other=form.querySelector('.pati-pet-free-breed'),input=form.querySelector('[name="breed"]');
+ if(!box||!choose||!other||!input)return;
+ box.hidden=!list.length;
+ choose.replaceChildren();
+ for(const name of list){const opt=document.createElement('option');opt.value=name;opt.textContent=name;choose.appendChild(opt)}
+ if(list.length){
+  choose.value=list.includes(preferred)?preferred:(preferred?'Diğer':'Bilmiyorum');
+ }
+ const manual=!list.length||choose.value==='Diğer';
+ other.hidden=!manual;
+ input.disabled=!manual;
+ if(!manual)input.value='';
+ if(manual&&preferred&&preferred!=='Diğer')input.value=preferred;
+}
+
 const petGenders=['Belirtilmedi','Erkek','Dişi','Bilinmiyor','İnterseks'];
 const ownPets=()=>data.pets.filter(p=>p.owner_id===me.id);
 const petOptions=()=>`<div class="pati-field"><label>Hayvan profili (isteğe bağlı)</label><select name="pet_id"><option value="">Seçilmedi</option>${ownPets().map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')}</select></div>`;
@@ -3829,7 +3852,8 @@ function patiGroupChatPaneHTML(){
   '<button type="button" class="mobile-chat-back" data-action="chat-back" aria-label="Sohbetlere dön">←</button>'+
   '<span class="chat-head-avatar pati-group-avatar" aria-hidden="true">'+ico('users')+'</span>'+
   '<span class="pati-group-chat-title"><strong>'+esc(title)+'</strong><small>'+ (ready?members+' üye':'Grup yükleniyor…')+'</small></span>'+
-  '<button type="button" class="soft-btn chat-view-profile" data-action="pati-group-members" data-id="'+esc(id)+'">Üyeler</button>'+
+  '<button type="button" class="soft-btn chat-view-profile" data-action="pati-group-members" data-id="'+esc(id)+'">Üyeler</button>'+ 
+  (ready&&state.group?.creator_id===me.id?'<button type="button" class="pati-group-delete-top" data-action="pati-group-delete" data-id="'+esc(id)+'" aria-label="Grubu kalıcı sil">'+ico('trash')+'</button>':'')+
   '</header>'+
   '<div class="chat-history pati-group-history" aria-label="Grup mesajları" data-pati-signature="'+esc(messages.map(m=>m.id).join(','))+'">'+
   (messages.length?messages.map(m=>patiGroupMessageMarkup(m,me.id,id)).join(''):
@@ -3857,7 +3881,8 @@ function patiGroupMountInMessages(summaries,peers,chatFilter){
   '<span class="chat-person-info"><strong>'+esc(g.title)+'</strong><small>'+esc(cut(g.last_body||'Grup sohbeti',80))+'</small></span>'+
   '<span class="chat-person-meta"><small>'+clock(g.activity_at)+'</small>'+(g.unread_count?'<b class="chat-unread">'+(g.unread_count>99?'99+':g.unread_count)+'</b>':'')+'</span></button>'+
   '<details class="pati-dm-row-actions"><summary aria-label="Grup seçenekleri">'+ico('more')+'</summary><div class="pati-dm-row-menu">'+
-  '<button type="button" data-action="pati-group-members" data-id="'+esc(g.group_id)+'">'+ico('users')+'<span>Grup üyeleri</span></button></div></details></div>').join('');
+  '<button type="button" data-action="pati-group-members" data-id="'+esc(g.group_id)+'">'+ico('users')+'<span>Grup üyeleri</span></button>'+ 
+  '<button type="button" data-action="pati-group-delete-check" data-id="'+esc(g.group_id)+'">'+ico('trash')+'<span>Grubu sil</span></button></div></details></div>').join('');
  people.insertAdjacentHTML('beforeend',groupHtml);
  const all=[...people.querySelectorAll('.pati-dm-list-row')];
  all.sort((a,b)=>new Date(b.dataset.activity||0)-new Date(a.dataset.activity||0));
@@ -3974,6 +3999,30 @@ async function patiGroupOpen(id){
  if(history)history.scrollTop=history.scrollHeight;
  void patiGroupMarkRead(id).then(()=>patiGroupFetchInbox(true));
 }
+async function patiGroupDeletePermanent(groupId){
+ if(!me?.id||!groupId)throw Error('Grup seçilemedi.');
+ const owner=me.id;
+ const check=await sb.from('patiyiz_group_chats').select('id,title,creator_id').eq('id',groupId).maybeSingle();
+ if(check.error)throw check.error;
+ if(!check.data)throw Error('Bu gruba erişilemiyor.');
+ if(check.data.creator_id!==owner)throw Error('Grubu yalnızca kurucusu tamamen silebilir. İstersen gruptan ayrılabilirsin.');
+ const name=check.data.title||'Grup';
+ if(!confirm('“'+name+'” grubunu ve tüm mesajlarını HERKES için kalıcı olarak silmek istiyor musun? Bu işlem geri alınamaz.'))return;
+ const result=await sb.from('patiyiz_group_chats').delete().eq('id',groupId).eq('creator_id',owner).select('id');
+ if(result.error)throw result.error;
+ if(!result.data?.length)throw Error('Grup silinemedi. Silme yetkisini kontrol et.');
+ if(me?.id!==owner)return;
+ patiGroupLiveStop();
+ if(patiActiveGroupId===groupId){
+  patiActiveGroupId='';patiGroupChatState={owner:'',id:'',group:null,members:[],rows:[],ready:false,error:''};
+  personId='';mobileChatOpen=false;
+ }
+ patiGroupInboxState.rows=patiGroupInboxState.rows.filter(x=>x.group_id!==groupId);
+ closeModal(true);
+ await patiGroupFetchInbox(true);
+ if(view==='messages')render();
+ notify('Grup ve tüm mesajları kalıcı olarak silindi.');
+}
 async function patiGroupMembersDialog(id){
  const owner=me?.id;if(!owner)return;
  const [members,group]=await Promise.all([
@@ -3983,7 +4032,9 @@ async function patiGroupMembersDialog(id){
  if(members.error)throw members.error;if(group.error)throw group.error;
  if(me?.id!==owner)return;
  const admin=(members.data||[]).some(x=>x.user_id===owner&&x.role==='admin');
+ const creator=group.data.creator_id===owner;
  modal('Grup üyeleri','<div class="pati-group-tools"><button type="button" data-action="pati-group-open" data-id="'+esc(id)+'">← Sohbete dön</button>'+(admin?'<button type="button" data-action="pati-group-add-open" data-id="'+esc(id)+'">+ Üye ekle</button>':'')+'</div>'+
+ (creator?'<div class="pati-group-danger-zone"><strong>Grubu tamamen sil</strong><p>Grup ve tüm mesajları bütün üyeler için kalıcı olarak silinir.</p><button type="button" data-action="pati-group-delete" data-id="'+esc(id)+'">'+ico('trash')+' Grubu kalıcı sil</button></div>':'')+
  (members.data||[]).map(x=>'<div class="pati-social-person">'+avatar(profile(x.user_id),'s')+'<span><strong>'+esc(profile(x.user_id).display_name||'Üye')+'</strong><small>'+(x.role==='admin'?'Yönetici':'Üye')+'</small></span>'+
  ((admin||x.user_id===owner)&&x.user_id!==group.data.creator_id?'<button type="button" data-action="pati-group-remove" data-id="'+esc(id)+'" data-peer="'+esc(x.user_id)+'">'+(x.user_id===owner?'Ayrıl':'Çıkar')+'</button>':'')+'</div>').join(''),
  'pati-group-members-form');
@@ -4388,7 +4439,7 @@ async function patiRateQuestion(questionId,helpful){
  if(view==='community')communityPage();
  notify(same?'Değerlendirmen geri alındı.':'Değerlendirmen kaydedildi.');
 }
-function composeQuestion(){modal('Topluluğa soru sor','<div class="pati-community-form-intro"><strong>Merak ettiğin konuyu paylaş.</strong><p>Bir soru sor; topluluk sana farklı bakış açıları ve yanıtlar sunsun.</p></div>'+formField('title','Soru başlığı (5–150 karakter)','text','',true)+selectField('category','Kategori',PATI_QUESTION_CATEGORIES)+textField('body','Sorunu biraz daha açıkla (en az 5 karakter)','',true,2000)+'<p class="pati-community-form-note">Sorulara Faydalı veya Faydalı değil değerlendirmesi yapılabilir.</p>','question-form');const f=$('#question-form');if(f){f.querySelector('[name="title"]').minLength=5;f.querySelector('[name="title"]').maxLength=150;f.querySelector('[name="body"]').minLength=5;f.querySelector('.modal-footer .primary-btn').textContent='Soruyu paylaş';document.querySelector('#modal-root .modal')?.classList.add('pati-question-fullscreen')}}
+function composeQuestion(){modal('Topluluğa soru sor','<div class="pati-community-form-intro"><strong>Merak ettiğin konuyu paylaş.</strong><p>Bir soru sor; topluluk sana farklı bakış açıları ve yanıtlar sunsun.</p></div>'+formField('title','Soru başlığı (5–150 karakter)','text','',true)+selectField('category','Kategori',PATI_QUESTION_CATEGORIES)+textField('body','Sorunu biraz daha açıkla (en az 5 karakter)','',true,2000)+'<p class="pati-community-form-note">Sorulara Faydalı veya Faydalı değil değerlendirmesi yapılabilir.</p>','question-form');const f=$('#question-form');if(f){f.querySelector('[name="title"]').minLength=5;f.querySelector('[name="title"]').maxLength=150;f.querySelector('[name="body"]').minLength=5;f.querySelector('.modal-footer .primary-btn').textContent='Soruyu paylaş';document.querySelector('#modal-root .modal')?.classList.add('pati-question-fullscreen');document.querySelector('#modal-root .modal-backdrop')?.classList.add('pati-question-backdrop');f.querySelector('[name="title"]')?.focus({preventScroll:true})}}
 function composeLost(a){
  if(a&&a.owner_id!==me?.id)return notify('Bu ilanı düzenleme yetkin yok.',true);
  const today=new Date().toLocaleDateString('en-CA');
@@ -4496,15 +4547,18 @@ function editPet(p){
  const fields='<section class="pati-edit-cover pati-pet-edit-cover"><div class="pati-edit-avatar pati-pet-edit-photo">'+photo+'</div><div class="pati-edit-photo-tools pati-pet-edit-photo-tools"><strong>Hayvanının fotoğrafı</strong><label class="pati-edit-photo-select pati-pet-photo-select" for="pati-pet-photo">Fotoğrafı '+(p?'değiştir':'ekle')+'</label><input id="pati-pet-photo" name="photo" type="file" accept="image/*,.heic,.heif" aria-label="Hayvan fotoğrafı seç"><small>JPG, PNG veya HEIC · Fotoğraf eklemek isteğe bağlı</small></div><div class="pati-upload-preview" hidden></div></section>'+
  '<div class="pati-edit-sections pati-pet-edit-sections"><div class="pati-edit-section-title">Hayvan bilgileri</div>'+
  formField('name','Hayvanın adı','text',p?.name||'',true)+
- selectField('species','Tür',species,p?.species||'Kedi')+
+ selectField('species','Tür',p?.species&&!species.includes(p.species)?[p.species,...species]:species,p?.species||'Kedi')+
  selectField('gender','Cinsiyet',petGenders,p?.gender||'Belirtilmedi')+
- '<div class="pati-pet-edit-fields-row">'+formField('age','Yaş','text',p?.age||'')+formField('breed','Irk','text',p?.breed||'')+'</div>'+
+ '<div class="pati-pet-edit-fields-row">'+formField('age','Yaş','text',p?.age||'')+'<div class="pati-pet-breed-area"><div class="pati-pet-breed-picker" hidden><label for="pati-pet-breed-choice">Irk</label><select name="breed_choice" id="pati-pet-breed-choice" aria-label="Hayvanın ırkı"></select></div><div class="pati-pet-free-breed">'+formField('breed','Irk / diğer ırk','text',p?.breed||'')+'</div></div></div>'+
  '<div class="pati-edit-section-title pati-pet-edit-secondary-heading">Ek bilgiler</div>'+
  formField('personality','Karakter','text',p?.personality||'')+
  textField('notes','Notlar',p?.notes||'',false,500)+
  '<p class="pati-edit-hint">Bilgileri daha sonra Hayvanım Merkezi üzerinden değiştirebilirsin.</p></div>';
  modal(p?'Hayvan profilini düzenle':'Yeni hayvan ekle',fields,'pet-form');
  const form=$('#pet-form');form.dataset.edit=p?.id||'';
+ patiSyncPetBreedSelect(form,p?.breed||'');
+ form.querySelector('[name="species"]')?.addEventListener('change',()=>patiSyncPetBreedSelect(form));
+ form.querySelector('[name="breed_choice"]')?.addEventListener('change',()=>patiSyncPetBreedSelect(form,form.querySelector('[name="breed_choice"]').value));
  document.querySelector('#modal-root .modal')?.classList.add('pati-profile-edit-modal','pati-pet-edit-modal');
  const submit=form.querySelector('.modal-footer button[type="submit"]');
  if(submit)submit.textContent='Bitti';
@@ -4851,6 +4905,7 @@ case 'pati-group-delete-message':run(async()=>{
 },'Mesaj silindi.');break;
 case 'pati-group-add-open':void patiGroupAddDialog(id).catch(e=>notify(friendly(e),true));break;
 case 'pati-group-add-member':run(async()=>{const out=await sb.rpc('patiyiz_group_add_member',{p_group:id,p_user:target.dataset.peer});if(out.error)throw out.error;await patiGroupMembersDialog(id)});break;
+case 'pati-group-delete-check':case 'pati-group-delete':run(async()=>{await patiGroupDeletePermanent(id)});break;
 case 'pati-group-remove':run(async()=>{
  const peer=target.dataset.peer;
  const out=await sb.rpc('patiyiz_group_remove_member',{p_group:id,p_user:peer});
@@ -5262,7 +5317,9 @@ case 'pet-form':{
  if(editId&&(!existing||existing.owner_id!==owner))throw Error('Bu hayvanı düzenleme yetkin yok.');
  const name=str('name').trim();
  if(name.length<2||name.length>70)throw Error('Hayvanın adı 2–70 karakter arasında olmalı.');
- const o={name,species:str('species'),gender:str('gender')||'Belirtilmedi',age:str('age').slice(0,60),breed:str('breed').slice(0,90),personality:str('personality').slice(0,180),notes:str('notes').slice(0,500)};
+ const type=str('species'),choice=str('breed_choice');const customBreed=str('breed');
+ const chosenBreed=patiPetBreedOptions(type).length&&choice&&choice!=='Diğer'?choice:customBreed;
+ const o={name,species:type,gender:str('gender')||'Belirtilmedi',age:str('age').slice(0,60),breed:chosenBreed.slice(0,90),personality:str('personality').slice(0,180),notes:str('notes').slice(0,500)};
  const image=await upload(f.get('photo'));if(image)o.photo_url=image;
  if(!editId)o.owner_id=owner;
  await save('pets',o,editId);
