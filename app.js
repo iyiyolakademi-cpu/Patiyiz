@@ -3727,11 +3727,29 @@ async function patiGroupMembersDialog(id){
  if(members.error)throw members.error;if(group.error)throw group.error;
  if(me?.id!==owner)return;
  const admin=(members.data||[]).some(x=>x.user_id===owner&&x.role==='admin');
- modal('Grup üyeleri','<div class="pati-group-tools"><button type="button" data-action="pati-group-open" data-id="'+esc(id)+'">← Sohbete dön</button></div>'+
+ modal('Grup üyeleri','<div class="pati-group-tools"><button type="button" data-action="pati-group-open" data-id="'+esc(id)+'">← Sohbete dön</button>'+(admin?'<button type="button" data-action="pati-group-add-open" data-id="'+esc(id)+'">+ Üye ekle</button>':'')+'</div>'+
  (members.data||[]).map(x=>'<div class="pati-social-person">'+avatar(profile(x.user_id),'s')+'<span><strong>'+esc(profile(x.user_id).display_name||'Üye')+'</strong><small>'+(x.role==='admin'?'Yönetici':'Üye')+'</small></span>'+
  ((admin||x.user_id===owner)&&x.user_id!==group.data.creator_id?'<button type="button" data-action="pati-group-remove" data-id="'+esc(id)+'" data-peer="'+esc(x.user_id)+'">'+(x.user_id===owner?'Ayrıl':'Çıkar')+'</button>':'')+'</div>').join(''),
  'pati-group-members-form');
  document.querySelector('#pati-group-members-form .modal-footer')?.remove();
+}
+
+
+async function patiGroupAddDialog(id){
+ if(!me||!id)return;
+ const owner=me.id,rows=await sb.from('patiyiz_group_members').select('user_id,role').eq('group_id',id);
+ if(rows.error)throw rows.error;
+ if(me?.id!==owner)return;
+ if(!rows.data?.some(x=>x.user_id===owner&&x.role==='admin'))throw Error('Üye ekleme yetkin yok.');
+ const existing=new Set(rows.data.map(x=>x.user_id));
+ const people=data.profiles.filter(p=>p.id!==owner&&!existing.has(p.id)&&!blocked.has(p.id)).slice(0,150);
+ modal('Gruba üye ekle','<div class="pati-group-tools"><button type="button" data-action="pati-group-members" data-id="'+esc(id)+'">← Grup üyeleri</button></div>'+
+ (people.length?'<div class="pati-social-people">'+people.map(p=>'<div class="pati-social-person">'+avatar(p,'s')+
+ '<span><strong>'+esc(p.display_name||'Patiyiz üyesi')+'</strong><small>@'+esc(p.handle||'patiyiz')+'</small></span>'+
+ '<button type="button" data-action="pati-group-add-member" data-id="'+esc(id)+'" data-peer="'+esc(p.id)+'">+ Ekle</button></div>').join('')+'</div>':
+ '<p class="pati-private-note">Ekleyebileceğin yeni kullanıcı bulunmuyor.</p>'),
+ 'pati-group-add-form');
+ document.querySelector('#pati-group-add-form .modal-footer')?.remove();
 }
 
 function postMediaField(mode){
@@ -4545,6 +4563,8 @@ case 'pati-group-list':void patiGroupList().catch(e=>notify(friendly(e),true));b
 case 'pati-group-create-open':patiGroupCreateDialog();break;
 case 'pati-group-open':void patiGroupOpen(id).catch(e=>notify(friendly(e),true));break;
 case 'pati-group-members':void patiGroupMembersDialog(id).catch(e=>notify(friendly(e),true));break;
+case 'pati-group-add-open':void patiGroupAddDialog(id).catch(e=>notify(friendly(e),true));break;
+case 'pati-group-add-member':run(async()=>{const out=await sb.rpc('patiyiz_group_add_member',{p_group:id,p_user:target.dataset.peer});if(out.error)throw out.error;await patiGroupMembersDialog(id)});break;
 case 'pati-group-remove':run(async()=>{
  const peer=target.dataset.peer;
  const out=await sb.rpc('patiyiz_group_remove_member',{p_group:id,p_user:peer});
