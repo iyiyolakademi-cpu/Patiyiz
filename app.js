@@ -276,7 +276,7 @@ function navRender(){const fab=$('#app-root>.mobile-fab');if(fab){fab.hidden=tru
 }
 function openMobileFeaturesMenu(){
  const groups=[
-  {title:'Topluluk',tone:'purple',items:[['community','Topluluk soruları','users'],['pets','Patileri keşfet','paw']]},
+  {title:'Topluluk',tone:'purple',items:[['messages','Mesajlar','message'],['community','Soru & Cevap','users'],['pets','Patileri keşfet','paw']]},
   {title:'Hayvanım',tone:'green',items:[['my-pet','Hayvanım Merkezi · Tüm seçenekler','heart']]},
   {title:'PatiCoin ve koleksiyonum',tone:'orange',items:[['shop','Pati Mağaza','grid'],['saved-posts','Kaydettiğim gönderiler','bookmark']]},
   {title:'Hesabım',tone:'blue',items:[['settings','Ayarlar ve gizlilik','settings'],['blocked','Engellediğim kişiler','shield']]}
