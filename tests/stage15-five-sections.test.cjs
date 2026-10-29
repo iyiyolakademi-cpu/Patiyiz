@@ -33,7 +33,7 @@ test('Messages keep original conversations, unread, read receipts and requests',
 test('My profile is distinct from visited-user profiles when navigating sidebar',()=>{
  assert.match(profile,/profile\(profileId\|\|me\.id\)/);
  assert.match(profile,/profilePostsTab/);
- assert.match(app,/let v=target\.dataset\.view;if\(v\)\{closePatiCreate\(\);profileId='';selectedPostId=''/);
+ assert.match(app,/let v=target\.dataset\.view;if\(v\)\{patiInsightsClose\(\);closePatiCreate\(\);profileId='';selectedPostId=''/);
  assert.match(app,/case 'view-user':/);
  assert.match(app,/case 'profile-back':/);
 });
