@@ -4220,7 +4220,8 @@ async function patiCreatorInsights(days=30){
   dialog.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();patiInsightsClose()}});
  }
  const owner=me.id;
- patiCreatorStats={owner,days,main:null,audience:null,content:null,visitors:null,tab:'overview',detail:''};
+ const previous=patiCreatorStats.owner===owner?patiCreatorStats:null;
+ patiCreatorStats={owner,days,main:null,audience:null,content:null,visitors:null,tab:previous?.tab||'overview',detail:''};
  dialog.dataset.owner=owner;dialog.dataset.days=String(days);
  dialog.innerHTML='<header class="pati-creator-head"><button type="button" data-action="pati-insights-close" aria-label="İstatistikleri kapat">←</button><strong>İstatistikler</strong></header>'+
   '<div class="pati-creator-loading" role="status">İstatistikler yükleniyor…</div>';
@@ -4248,7 +4249,7 @@ async function patiCreatorInsights(days=30){
  patiCreatorStats.main=a.data;
  patiCreatorStats.audience=!b.error&&b.data&&typeof b.data==='object'?b.data:{};
  patiCreatorStats.content=!c.error&&c.data&&typeof c.data==='object'?c.data:{};
- if(days===30)patiCreatorPreview={owner,value:a.data,fetched:Date.now(),pending:false};
+ if(days===30){patiCreatorPreview={owner,value:a.data,fetched:Date.now(),pending:false};const preview=document.getElementById('pati-profile-insights-value');if(preview?.isConnected){preview.textContent=patiInsightsMetric(a.data.profile_visits);const arrow=document.getElementById('pati-profile-insights-arrow');if(arrow){const change=(Number(a.data.profile_visits)||0)-(Number(a.data.profile_visits_previous)||0);arrow.textContent=change>0?'↗':change<0?'↘':'→';arrow.className='pati-profile-insights-arrow '+(change>0?'increase':change<0?'decrease':'neutral')}}}
  patiCreatorInsightsRender();
 }
 function patiRecordProfileVisit(id){
