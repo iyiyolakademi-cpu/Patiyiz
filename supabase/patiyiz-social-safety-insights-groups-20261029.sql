@@ -291,12 +291,12 @@ begin
   'reposts',(select count(*) from public.patiyiz_reposts x join public.posts p on p.id=x.post_id where p.author_id=v_user and x.created_at>=v_cutoff),
   'reel_watch_seconds',(select coalesce(sum(w.seconds),0) from public.patiyiz_reel_watch_daily w join public.posts p on p.id=w.post_id where p.author_id=v_user and w.watch_day>=v_cutoff::date),
   'daily',(select coalesce(jsonb_agg(jsonb_build_object(
-   'day',d.day,'followers',(select count(*) from public.follows f where f.followee_id=v_user and f.created_at::date=d.day),
-   'likes',(select count(*) from public.post_likes l join public.posts p on p.id=l.post_id where p.author_id=v_user and l.created_at::date=d.day),
-   'visits',(select count(*) from public.patiyiz_profile_visit_daily q where q.profile_id=v_user and q.visit_day=d.day)
-  ) order by d.day),'[]'::jsonb)
+   'day',d.metric_date,'followers',(select count(*) from public.follows f where f.followee_id=v_user and f.created_at::date=d.metric_date),
+   'likes',(select count(*) from public.post_likes l join public.posts p on p.id=l.post_id where p.author_id=v_user and l.created_at::date=d.metric_date),
+   'visits',(select count(*) from public.patiyiz_profile_visit_daily q where q.profile_id=v_user and q.visit_day=d.metric_date)
+  ) order by d.metric_date),'[]'::jsonb)
   from (select generate_series((now() at time zone 'UTC')::date-(v_days-1),
-     (now() at time zone 'UTC')::date,'1 day'::interval)::date day) d)
+     (now() at time zone 'UTC')::date,'1 day'::interval)::date AS metric_date) d)
  ) into v_out;
  return v_out;
 end
