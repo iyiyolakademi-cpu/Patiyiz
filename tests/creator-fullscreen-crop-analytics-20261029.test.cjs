@@ -47,7 +47,7 @@ test('Crop orientation, zoom and pan are independent of the file the user select
  assert.notDeepEqual(a.calls.find(x=>x[0]==='translate').slice(1),b.calls.find(x=>x[0]==='translate').slice(1));
 });
 test('Editor commits only on Bitti, is fully accessible and applies actual export on story and post',()=>{
- const source=between('async function patiCropOpen(){','async function drawPostCrop()');
+ const source=between('async function patiCropOpen(options={}){','async function drawPostCrop()');
  for(const cmd of ['Vazgeç','Bitti','Ayna','Döndür','Orijinal','4:5','9:16','Yakınlaştır','patiCropEdits.set(files[i]','if(action===\'cancel\')','patiCropPaint(canvas,img,state)'])
   assert.ok(source.includes(cmd),'Missing control '+cmd);
  assert.match(js,/const file=\(typeof patiCropEdits!=='undefined'&&patiCropEdits\.has\(photoFiles\[i\]\)\)/);
@@ -73,7 +73,7 @@ test('Dashboard is scoped to own profile and uses real backend events, never gue
 });
 test('New stylesheet is last, viewport-safe and packaged with Capacitor',()=>{
  const styles=[...html.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map(x=>x[1]);
- assert.ok(styles.at(-1).includes('patiyiz-creator-crop-20261029.css'));
+ assert.ok(styles.at(-1).includes('patiyiz-compose-stability-20261029.css'));
  assert.match(native,/'patiyiz-creator-crop-20261029\.css'/);
  assert.match(css,/grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
  assert.match(css,/grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
