@@ -5316,7 +5316,7 @@ function compose(post,mode='post',autoPick=true){
  const reel=!post&&mode==='reels',story=!post&&mode==='story',textOnly=!post&&mode==='text';
  const title=post?'Paylaşımı düzenle':story?'Yeni hikâye':reel?'Yeni Reels':textOnly?'Yeni yazı':'Yeni gönderi';
  const sizes=story?[['9:16','▯ Dikey'],['1:1','□ Kare'],['1.91:1','▭ Yatay']]:[['original','⬚ Orijinal'],['4:5','▯ Dikey'],['1.91:1','▭ Yatay'],['1:1','□ Kare']];
- const editor=!post&&!textOnly?'<div class="pati-media-controls" hidden><label>Fotoğrafın kadrajını düzenle</label><div class="pati-ratio-options">'+sizes.map(([key,label],i)=>'<button type="button" class="'+(i===0?'active':'')+'" data-action="post-ratio" data-id="'+key+'">'+label+'</button>').join('')+'</div><input type="hidden" name="aspect" value="'+(story?'9:16':'original')+'"><button type="button" class="pati-inline-crop-toggle" data-action="post-crop-open">Kadrajı ayarla</button><div class="pati-crop-preview" hidden><div class="pati-crop-pages"><button type="button" data-action="post-crop-prev" aria-label="Önceki fotoğraf">‹</button><strong id="pati-crop-index">1 / 1</strong><button type="button" data-action="post-crop-next" aria-label="Sonraki fotoğraf">›</button></div><canvas id="pati-crop-canvas" width="320" height="400" aria-label="Fotoğraf kırpma önizlemesi"></canvas><p>Fotoğrafı sürükleyerek istediğin kadrajı seç.</p><label>Yakınlaştır <input type="range" name="crop_zoom" min="1" max="2.5" value="1" step="0.05"></label></div></div>':textOnly?'':'<p class="small-note">Düzenleme sırasında mevcut medya korunur.</p>';
+ const editor=!post&&!textOnly?'<div class="pati-media-controls" hidden><label>Fotoğrafın kadrajını düzenle</label><div class="pati-ratio-options">'+sizes.map(([key,label],i)=>'<button type="button" class="'+(i===0?'active':'')+'" data-action="post-ratio" data-id="'+key+'">'+label+'</button>').join('')+'</div><input type="hidden" name="aspect" value="'+(story?'9:16':'original')+'"><button type="button" class="pati-inline-crop-toggle" data-action="post-crop-open">Fotoğrafı kırp</button><div class="pati-crop-preview" hidden><div class="pati-crop-pages"><button type="button" data-action="post-crop-prev" aria-label="Önceki fotoğraf">‹</button><strong id="pati-crop-index">1 / 1</strong><button type="button" data-action="post-crop-next" aria-label="Sonraki fotoğraf">›</button></div><canvas id="pati-crop-canvas" width="320" height="400" aria-label="Fotoğraf kırpma önizlemesi"></canvas><p>Fotoğrafı sürükleyerek istediğin kadrajı seç.</p><label>Yakınlaştır <input type="range" name="crop_zoom" min="1" max="2.5" value="1" step="0.05"></label></div></div>':textOnly?'':'<p class="small-note">Düzenleme sırasında mevcut medya korunur.</p>';
  const flow=!post&&!textOnly?'<div class="pati-composer-flow" aria-label="Paylaşım adımları"><span><b>1</b> Medya seç</span><i>›</i><span><b>2</b> Düzenle</span><i>›</i><span><b>3</b> Paylaş</span></div>':'';
  const invite=!post&&!story?(window.PatiyizCollabPicker?.makeMarkup('pati-collab-handle')||''):'';
  const tagButton=!story&&!post?'<button type="button" class="pati-mention-open" data-action="pati-mention-open" data-id="post">@ Kişi etiketle</button>':'';
@@ -5332,8 +5332,138 @@ function compose(post,mode='post',autoPick=true){
 }
 function uploadStatus(message){const form=document.querySelector('#modal-root form');const status=form?.querySelector('.pati-upload-status');if(status){status.hidden=false;status.querySelector('span').textContent=message}const label=form?.querySelector('.modal-footer .primary-btn');if(label){label.dataset.originalText||=label.textContent;label.textContent='⏳ '+message}const camera=document.querySelector('#patiyiz-camera-screen');if(camera){const stage=camera.querySelector('#pati-camera-selected-count');if(stage)stage.textContent=message;const publish=camera.querySelector('#pati-camera-publish');if(publish?.disabled)publish.textContent='Yükleniyor…'}}
 async function preparePhoto(file){if(!file||!file.size)return null;if(!file.type.startsWith('image/')&&!/\.(jpe?g|png|webp|heic|heif)$/i.test(file.name))throw Error('Lütfen bir fotoğraf dosyası seç.');const accepted=['image/jpeg','image/png','image/webp'];if(accepted.includes(file.type)&&file.size<=3*1024*1024)return file;uploadStatus('Fotoğraf hazırlanıyor…');let url=URL.createObjectURL(file);try{const img=new Image();img.src=url;await new Promise((resolve,reject)=>{const timer=setTimeout(()=>{img.onload=null;img.onerror=null;reject(new Error('Fotoğraf hazırlanırken zaman aşımına uğradı. Daha küçük bir fotoğraf dene.'))},18000);img.onload=()=>{clearTimeout(timer);resolve()};img.onerror=()=>{clearTimeout(timer);reject(new Error('Fotoğraf açılamadı. HEIC dosyası kullanıyorsan galeride JPG olarak dışa aktar.'))}});const max=2048,ratio=Math.min(1,max/Math.max(img.naturalWidth,img.naturalHeight));const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(img.naturalWidth*ratio));canvas.height=Math.max(1,Math.round(img.naturalHeight*ratio));canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',.84));if(!blob)throw Error('Fotoğraf işlenemedi.');if(blob.size>6291456)throw Error('Fotoğraf boyutu çok büyük.');return new File([blob],'patiyiz-'+Date.now()+'.jpg',{type:'image/jpeg'})}finally{URL.revokeObjectURL(url)}}
-async function drawPostCrop(){if(postCropRatio==='original'){const box=document.querySelector('.pati-crop-preview');if(box)box.hidden=true;return}const input=document.querySelector('#post-form input[name="photo"]'),file=input?.files?.[postCropIndex],box=document.querySelector('.pati-crop-preview'),canvas=document.getElementById('pati-crop-canvas');if(!file||!box||!canvas)return;box.hidden=false;const counter=document.getElementById('pati-crop-index');if(counter)counter.textContent=(postCropIndex+1)+' / '+input.files.length;const dims={'9:16':[320,568],'4:5':[320,400],'1:1':[320,320],'1.91:1':[320,168]},[w,h]=dims[postCropRatio];canvas.width=w;canvas.height=h;const url=URL.createObjectURL(file),img=new Image();try{img.src=url;await img.decode();const ctx=canvas.getContext('2d'),scale=Math.max(w/img.naturalWidth,h/img.naturalHeight)*postCropZoom;ctx.clearRect(0,0,w,h);ctx.drawImage(img,(w-img.naturalWidth*scale)*postCropX,(h-img.naturalHeight*scale)*postCropY,img.naturalWidth*scale,img.naturalHeight*scale)}catch(e){console.warn(e)}finally{URL.revokeObjectURL(url)}}
-async function cropPostPhoto(file,aspect){if(!file?.size)return file;const dims={'9:16':[1080,1920],'4:5':[1080,1350],'1:1':[1080,1080],'1.91:1':[1080,566]};const [w,h]=dims[aspect]||dims['4:5'];const url=URL.createObjectURL(file);try{const img=new Image();img.src=url;await img.decode();const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');const scale=Math.max(w/img.naturalWidth,h/img.naturalHeight)*postCropZoom;const dw=img.naturalWidth*scale,dh=img.naturalHeight*scale;ctx.drawImage(img,(w-dw)*postCropX,(h-dh)*postCropY,dw,dh);const blob=await new Promise(resolve=>c.toBlob(resolve,'image/jpeg',.86));if(!blob)throw Error('Görsel kırpılamadı.');return new File([blob],'patiyiz-post-'+Date.now()+'.jpg',{type:'image/jpeg'})}finally{URL.revokeObjectURL(url)}}
+/* Full-screen, photo-by-photo crop editor. Drafts are applied only on Bitti,
+   so cancel never changes the media that will be uploaded. */
+const patiCropEdits=new WeakMap();
+function patiCropDefault(file,ratio){
+ return {ratio:ratio||'original',zoom:1,x:.5,y:.5,rotation:0,flip:false};
+}
+function patiCropSize(ratio,img){
+ const sizes={'9:16':[720,1280],'4:5':[720,900],'1:1':[720,720],'1.91:1':[720,377]};
+ if(sizes[ratio])return sizes[ratio];
+ const max=2048,scale=Math.min(1,max/Math.max(img.naturalWidth,img.naturalHeight));
+ return [Math.max(1,Math.round(img.naturalWidth*scale)),Math.max(1,Math.round(img.naturalHeight*scale))];
+}
+function patiCropPaint(canvas,img,state){
+ const [w,h]=patiCropSize(state.ratio,img);
+ if(canvas.width!==w)canvas.width=w;
+ if(canvas.height!==h)canvas.height=h;
+ const ctx=canvas.getContext('2d');if(!ctx)throw Error('Fotoğraf düzenleyici açılamadı.');
+ ctx.clearRect(0,0,w,h);
+ const rotated=(state.rotation%180)!==0,rw=rotated?img.naturalHeight:img.naturalWidth,rh=rotated?img.naturalWidth:img.naturalHeight;
+ const scale=Math.max(w/rw,h/rh)*state.zoom;
+ const extraX=rw*scale-w,extraY=rh*scale-h;
+ const cx=w/2+extraX*(.5-state.x),cy=h/2+extraY*(.5-state.y);
+ ctx.save();ctx.translate(cx,cy);ctx.rotate(state.rotation*Math.PI/180);
+ if(state.flip)ctx.scale(-1,1);
+ ctx.drawImage(img,-img.naturalWidth*scale/2,-img.naturalHeight*scale/2,img.naturalWidth*scale,img.naturalHeight*scale);
+ ctx.restore();
+ return {extraX:Math.max(0,extraX),extraY:Math.max(0,extraY)};
+}
+async function patiCropOpen(){
+ const form=document.getElementById('post-form'),files=[...(form?.querySelector('input[name="photo"]')?.files||[])];
+ if(!files.length)return notify('Kırpmak için bir fotoğraf seç.',true);
+ document.getElementById('pati-full-crop-dialog')?.close();
+ const popup=document.createElement('dialog');popup.id='pati-full-crop-dialog';popup.className='pati-full-crop-dialog';
+ const drafts=new Map(),imageCache=new Map(),urls=[];
+ let index=Math.min(postCropIndex,files.length-1),busy=false,drawToken=0,drag=null;
+ const getState=i=>{
+  if(!drafts.has(i)){
+   const saved=patiCropEdits.get(files[i]);
+   drafts.set(i,saved?{...saved}:patiCropDefault(files[i],form.dataset.mode==='story'?'9:16':'original'));
+  }
+  return drafts.get(i);
+ };
+ popup.innerHTML='<div class="pati-full-crop-shell">'+
+  '<header class="pati-full-crop-head"><button type="button" data-crop-action="cancel">Vazgeç</button><strong>Fotoğrafı Düzenle</strong><button class="pati-crop-done" type="button" data-crop-action="done">Bitti</button></header>'+
+  '<div class="pati-full-crop-stage"><canvas id="pati-full-crop-canvas" aria-label="Kırpma önizlemesi"></canvas><span class="pati-full-crop-guide" aria-hidden="true"></span></div>'+
+  '<div class="pati-full-crop-controls"><div class="pati-crop-top-controls">'+
+  '<button type="button" data-crop-action="flip" aria-label="Yatay çevir">⇋ <small>Ayna</small></button>'+
+  '<button type="button" data-crop-action="rotate" aria-label="90 derece döndür">↻ <small>Döndür</small></button>'+
+  '<span class="pati-full-crop-counter" id="pati-full-crop-counter"></span>'+
+  '</div><div class="pati-crop-ratios" role="group" aria-label="Kırpma oranı">'+
+  [['original','Orijinal'],['1:1','Kare'],['4:5','4:5'],['9:16','9:16'],['1.91:1','Yatay']].map(([ratio,label])=>
+  '<button type="button" data-crop-action="ratio" data-ratio="'+ratio+'">'+label+'</button>').join('')+'</div>'+
+  '<label class="pati-full-crop-zoom">Yakınlaştır <input type="range" min="1" max="3" step=".01" value="1" id="pati-full-crop-zoom"></label>'+
+  (files.length>1?'<div class="pati-crop-pagination"><button type="button" data-crop-action="prev">‹ Önceki</button><button type="button" data-crop-action="next">Sonraki ›</button></div>':'')+
+  '<p>Fotoğrafı sürükleyerek kadrajı ayarla. İstersen oranını değiştir.</p><p class="pati-crop-status" role="status" aria-live="polite"></p></div></div>';
+ document.body.appendChild(popup);const canvas=popup.querySelector('#pati-full-crop-canvas'),status=popup.querySelector('.pati-crop-status');
+ popup.addEventListener('close',()=>{drawToken++;urls.forEach(x=>URL.revokeObjectURL(x));popup.remove()},{once:true});
+ popup.addEventListener('cancel',e=>{if(busy)e.preventDefault()});
+ async function loadImage(i){
+  if(imageCache.has(i))return imageCache.get(i);
+  const url=URL.createObjectURL(files[i]);urls.push(url);
+  const img=new Image();img.src=url;await img.decode();imageCache.set(i,img);
+  return img;
+ }
+ async function draw(){
+  const token=++drawToken,state=getState(index);
+  status.textContent='Fotoğraf hazırlanıyor…';
+  try{
+   const img=await loadImage(index);
+   if(token!==drawToken||!popup.isConnected)return;
+   const extras=patiCropPaint(canvas,img,state);
+   canvas.dataset.extraX=String(extras.extraX);canvas.dataset.extraY=String(extras.extraY);
+   popup.querySelector('.pati-full-crop-stage').style.setProperty('--pati-crop-aspect',canvas.width+' / '+canvas.height);
+   popup.querySelector('#pati-full-crop-counter').textContent=files.length>1?(index+1)+' / '+files.length:'Fotoğraf';
+   popup.querySelector('#pati-full-crop-zoom').value=String(state.zoom);
+   popup.querySelectorAll('[data-crop-action="ratio"]').forEach(b=>{b.classList.toggle('active',b.dataset.ratio===state.ratio);b.setAttribute('aria-pressed',String(b.dataset.ratio===state.ratio))});
+   status.textContent='';
+  }catch(e){status.textContent='Fotoğraf açılamadı. Galeriden JPG olarak yeniden deneyebilirsin.';console.warn('Kırpma önizlemesi:',e)}
+ }
+ popup.addEventListener('click',async e=>{
+  const btn=e.target.closest('[data-crop-action]');if(!btn||busy)return;
+  const action=btn.dataset.cropAction,state=getState(index);
+  if(action==='cancel'){popup.close();return}
+  if(action==='done'){
+   busy=true;btn.disabled=true;
+   for(const [i,edit] of drafts)patiCropEdits.set(files[i],{...edit});
+   postCropIndex=index;popup.close();updatePostMediaPreview();return;
+  }
+  if(action==='prev'||action==='next'){index=(index+(action==='next'?1:-1)+files.length)%files.length;await draw();return}
+  if(action==='flip')state.flip=!state.flip;
+  if(action==='rotate'){state.rotation=(state.rotation+90)%360;state.x=.5;state.y=.5}
+  if(action==='ratio'){state.ratio=btn.dataset.ratio;state.x=.5;state.y=.5;state.zoom=1}
+  await draw();
+ });
+ popup.querySelector('#pati-full-crop-zoom').addEventListener('input',event=>{
+  getState(index).zoom=Number(event.target.value)||1;void draw();
+ });
+ const endDrag=()=>{drag=null};
+ canvas.addEventListener('pointerdown',event=>{
+  if(event.button!==0)return;event.preventDefault();
+  drag={id:event.pointerId,x:event.clientX,y:event.clientY};
+  canvas.setPointerCapture(event.pointerId);
+ });
+ canvas.addEventListener('pointermove',event=>{
+  if(!drag||drag.id!==event.pointerId)return;
+  event.preventDefault();
+  const rect=canvas.getBoundingClientRect(),state=getState(index),ex=Number(canvas.dataset.extraX)||0,ey=Number(canvas.dataset.extraY)||0;
+  if(ex>0)state.x=Math.max(0,Math.min(1,state.x-(event.clientX-drag.x)*canvas.width/Math.max(1,rect.width)/ex));
+  if(ey>0)state.y=Math.max(0,Math.min(1,state.y-(event.clientY-drag.y)*canvas.height/Math.max(1,rect.height)/ey));
+  drag.x=event.clientX;drag.y=event.clientY;void draw();
+ });
+ canvas.addEventListener('pointerup',endDrag);canvas.addEventListener('pointercancel',endDrag);
+ popup.showModal();await draw();
+}
+async function drawPostCrop(){
+ // Legacy inline editor is replaced by the full-screen media editor.
+ const inline=document.querySelector('#post-form .pati-crop-preview');
+ if(inline)inline.hidden=true;
+}
+async function cropPostPhoto(file,aspect){
+ if(!file?.size)return file;
+ const state=patiCropEdits.get(file)||patiCropDefault(file,aspect);
+ const url=URL.createObjectURL(file);
+ try{
+  const img=new Image();img.src=url;await img.decode();
+  const canvas=document.createElement('canvas');
+  patiCropPaint(canvas,img,state);
+  const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',.87));
+  if(!blob)throw Error('Fotoğraf kırpılamadı.');
+  return new File([blob],'patiyiz-post-'+Date.now()+'.jpg',{type:'image/jpeg'});
+ }finally{URL.revokeObjectURL(url)}
+}
 async function uploadVideo(file){
  if(!file||!file.size)return null;
  const max=50*1024*1024;
@@ -5474,7 +5604,7 @@ async function createPostPublication(form,f,str){
   if(form.dataset.sourcePost){if(!hasVideo)throw Error('Tepki Reels için video seç.');record.source_post_id=form.dataset.sourcePost;}
   for(let i=0;i<photoFiles.length;i++){
    uploadStatus('Fotoğraf '+(i+1)+' / '+photoFiles.length+' hazırlanıyor…');
-   const file=str('aspect')==='original'?await preparePhoto(photoFiles[i]):await cropPostPhoto(photoFiles[i],str('aspect'));
+   const file=patiCropEdits.has(photoFiles[i])?await cropPostPhoto(photoFiles[i],str('aspect')):str('aspect')==='original'?await preparePhoto(photoFiles[i]):await cropPostPhoto(photoFiles[i],str('aspect'));
    const url=await send(file,'image');
    if(url)record.images.push(url);
   }
@@ -6082,7 +6212,7 @@ case 'dm-sticker-send':run(async()=>{
  closeModal(true);if(view==='messages')render();
 },'Çıkartma gönderildi.');break;
 case 'dm-thread-older':void patiDmLoadThread(personId,true);break;
-case 'chat':if(!id||id===me.id)return notify('Kendine mesaj gönderemezsin.',true);patiActiveGroupId='';patiGroupLiveStop();closeModal(true);patiDmPendingLatestPeer=id;personId=id;mobileChatOpen=true;navigate('messages');break;case 'open-unread-chat':{patiActiveGroupId='';patiGroupLiveStop();const source=unreadMessageSources().find(x=>x.id===id)||unreadMessageSources()[0];if(!source)break;closeModal();patiDmPendingLatestPeer=source.id;personId=source.id;mobileChatOpen=true;navigate('messages');break}case 'dm-tab':chatFilter=id;if(id!=='primary'){patiActiveGroupId='';patiGroupLiveStop()}mobileChatOpen=false;render();break;case 'post-crop-next':case 'post-crop-prev':{const files=document.querySelector('#post-form input[name="photo"]')?.files;if(files?.length){postCropIndex=(postCropIndex+(act==='post-crop-next'?1:-1)+files.length)%files.length;drawPostCrop()}break}case 'post-ratio':{postCropRatio=id;postCropX=.5;postCropY=.5;document.querySelectorAll('.pati-ratio-options button').forEach(b=>b.classList.toggle('active',b.dataset.id===id));const f=document.querySelector('#post-form input[name="aspect"]');if(f)f.value=id;updatePostMediaPreview();if(id==='original'){const crop=document.querySelector('.pati-crop-preview');if(crop)crop.hidden=true}else if(!document.querySelector('.pati-crop-preview')?.hidden)void drawPostCrop();break}case 'post-crop-open':{const crop=document.querySelector('#post-form .pati-crop-preview');const photos=document.querySelector('#post-form input[name="photo"]')?.files;if(crop&&photos?.length){if(postCropRatio==='original')return notify('Orijinal oran seçiliyken kırpma yapılmaz.');crop.hidden=!crop.hidden;if(!crop.hidden)void drawPostCrop()}break}case 'carousel-prev':case 'carousel-next':{const root=target.closest('.pati-carousel'),track=root?.querySelector('.pati-carousel-track');if(track){const delta=track.clientWidth*(act==='carousel-next'?1:-1);track.scrollBy({left:delta,behavior:'smooth'})}break}case 'video-sound':{const v=target.parentElement?.querySelector('video');if(v){
+case 'chat':if(!id||id===me.id)return notify('Kendine mesaj gönderemezsin.',true);patiActiveGroupId='';patiGroupLiveStop();closeModal(true);patiDmPendingLatestPeer=id;personId=id;mobileChatOpen=true;navigate('messages');break;case 'open-unread-chat':{patiActiveGroupId='';patiGroupLiveStop();const source=unreadMessageSources().find(x=>x.id===id)||unreadMessageSources()[0];if(!source)break;closeModal();patiDmPendingLatestPeer=source.id;personId=source.id;mobileChatOpen=true;navigate('messages');break}case 'dm-tab':chatFilter=id;if(id!=='primary'){patiActiveGroupId='';patiGroupLiveStop()}mobileChatOpen=false;render();break;case 'post-crop-next':case 'post-crop-prev':{const files=document.querySelector('#post-form input[name="photo"]')?.files;if(files?.length){postCropIndex=(postCropIndex+(act==='post-crop-next'?1:-1)+files.length)%files.length;drawPostCrop()}break}case 'post-ratio':{postCropRatio=id;postCropX=.5;postCropY=.5;document.querySelectorAll('.pati-ratio-options button').forEach(b=>b.classList.toggle('active',b.dataset.id===id));const f=document.querySelector('#post-form input[name="aspect"]');if(f)f.value=id;updatePostMediaPreview();if(id==='original'){const crop=document.querySelector('.pati-crop-preview');if(crop)crop.hidden=true}else if(!document.querySelector('.pati-crop-preview')?.hidden)void drawPostCrop();break}case 'post-crop-open':void patiCropOpen();breakcase 'carousel-prev':case 'carousel-next':{const root=target.closest('.pati-carousel'),track=root?.querySelector('.pati-carousel-track');if(track){const delta=track.clientWidth*(act==='carousel-next'?1:-1);track.scrollBy({left:delta,behavior:'smooth'})}break}case 'video-sound':{const v=target.parentElement?.querySelector('video');if(v){
  patiyizFeedSoundEnabled=v.muted;
  v.muted=!patiyizFeedSoundEnabled;
  patiFeedSoundButton(v);
