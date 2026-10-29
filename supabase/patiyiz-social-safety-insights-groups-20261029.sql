@@ -144,7 +144,7 @@ grant execute on function public.patiyiz_record_post_view(uuid) to authenticated
 -- including for SECURITY DEFINER calls made with a guessed story id.
 create or replace function public.patiyiz_record_story_view(p_story_id uuid)
 returns void language plpgsql security definer set search_path=''
-as $
+as $$
 declare v_viewer uuid := auth.uid(); v_owner uuid;
 begin
  if v_viewer is null then raise exception 'Oturum gerekli' using errcode='42501'; end if;
@@ -163,7 +163,7 @@ begin
  on conflict(story_id,viewer_id) do update
  set last_viewed_at=greatest(public.patiyiz_story_views.last_viewed_at,excluded.last_viewed_at);
 end
-$;
+$$;
 revoke all on function public.patiyiz_record_story_view(uuid) from public,anon;
 grant execute on function public.patiyiz_record_story_view(uuid) to authenticated;
 
@@ -327,14 +327,14 @@ create policy patiyiz_restriction_owner_delete_20261029 on public.patiyiz_restri
 
 create or replace function public.patiyiz_dm_allowed_20261029(p_sender uuid,p_receiver uuid)
 returns boolean language sql stable security definer set search_path=''
-as $
+as $$
  select p_sender=(select auth.uid()) and exists(select 1 from public.profiles p where p.id=p_receiver
    and not exists(select 1 from public.patiyiz_restricted_accounts r
        where r.owner_id=p_receiver and r.restricted_id=p_sender)
    and (p.dm_policy='everyone' or
        (p.dm_policy='following' and exists(select 1 from public.follows f
         where f.follower_id=p_receiver and f.followee_id=p_sender))))
-$;
+$$;
 revoke all on function public.patiyiz_dm_allowed_20261029(uuid,uuid) from public,anon;
 grant execute on function public.patiyiz_dm_allowed_20261029(uuid,uuid) to authenticated;
 drop policy if exists messages_insert on public.messages;
@@ -347,7 +347,7 @@ with check (
 -- Prevent unauthorized source attribution on a fake/hidden video reaction.
 create or replace function public.patiyiz_guard_reaction_20261029()
 returns trigger language plpgsql security definer set search_path=''
-as $
+as $$
 begin
  if new.source_post_id is null then return new; end if;
  if new.source_post_id=new.id or new.video_url is null then raise exception 'Tepki Reels için video gereklidir'; end if;
@@ -360,7 +360,7 @@ begin
  ) then raise exception 'Bu gönderiye tepki verilemiyor' using errcode='42501'; end if;
  return new;
 end
-$;
+$$;
 drop trigger if exists patiyiz_guard_reaction_insert_20261029 on public.posts;
 create trigger patiyiz_guard_reaction_insert_20261029 before insert or update of source_post_id
  on public.posts for each row execute function public.patiyiz_guard_reaction_20261029();
@@ -377,7 +377,7 @@ alter table public.patiyiz_client_error_daily enable row level security;
 revoke all on public.patiyiz_client_error_daily from public,anon,authenticated;
 create or replace function public.patiyiz_track_client_error(p_kind text)
 returns void language plpgsql security definer set search_path=''
-as $
+as $$
 declare v_user uuid := auth.uid();
 begin
  if v_user is null or p_kind not in ('script','promise','asset') then return; end if;
@@ -386,7 +386,7 @@ begin
  on conflict(user_id,error_day,kind) do update
  set occurrences=least(20,public.patiyiz_client_error_daily.occurrences+1);
 end
-$;
+$$;
 revoke all on function public.patiyiz_track_client_error(text) from public,anon;
 grant execute on function public.patiyiz_track_client_error(text) to authenticated;
 
