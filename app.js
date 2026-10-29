@@ -3739,6 +3739,110 @@ function followListPage(){
  (scoped&&state.error?'<p class="pati-note" role="alert">'+esc(state.error)+'</p>':'')+
  `<div class="pati-load-more">${!scoped||state.loading?'<p role="status">Takip listesi yükleniyor…</p>':state.hasMore||state.error?button(state.error?'Yeniden dene':'Daha fazla kullanıcı yükle','follow-load-more'):' '}</div></div>`;
 }
+
+/* 2026-10-29: social safety, private follows, creator statistics and visit tracking.
+   DB permissions are authoritative; client-side flags are only for presentation. */
+let patiSafetyState={owner:'',busy:false,loaded:false,followRequests:[],restrictions:new Set()};
+const patiProfileVisitRecorded=new Set();
+function patiIsFollowRequested(id){
+ return patiSafetyState.followRequests.some(r=>r.requester_id===me?.id&&r.target_id===id);
+}
+async function patiSafetyRefresh(force=false){
+ if(!me?.id||!sb)return;
+ const uid=me.id;
+ if(patiSafetyState.owner!==uid)patiSafetyState={owner:uid,busy:false,loaded:false,followRequests:[],restrictions:new Set()};
+ if(patiSafetyState.busy||(!force&&patiSafetyState.loaded))return;
+ patiSafetyState.busy=true;
+ try{
+  const [requests,restrictions]=await Promise.all([
+   sb.from('patiyiz_follow_requests').select('requester_id,target_id,created_at').or('requester_id.eq.'+uid+',target_id.eq.'+uid).limit(150),
+   sb.from('patiyiz_restricted_accounts').select('restricted_id').eq('owner_id',uid).limit(150)
+  ]);
+  if(requests.error)throw requests.error;
+  if(restrictions.error)throw restrictions.error;
+  if(me?.id!==uid)return;
+  patiSafetyState.followRequests=requests.data||[];
+  patiSafetyState.restrictions=new Set((restrictions.data||[]).map(x=>x.restricted_id));
+  patiSafetyState.loaded=true;
+  if(['profile','settings'].includes(view))render();
+ }catch(error){console.warn('Gizlilik bilgileri yüklenemedi:',error?.message||error)}
+ finally{patiSafetyState.busy=false}
+}
+async function patiSocialFollow(id){
+ if(!me||!id||id===me.id)return;
+ const owner=me.id;
+ const r=await sb.rpc('patiyiz_follow_action',{p_target:id});
+ if(r.error)throw r.error;
+ if(me?.id!==owner)return;
+ if(r.data==='following')followed.add(id);else followed.delete(id);
+ await patiSafetyRefresh(true);
+ try{await load('feed')}catch(e){console.warn('Takip akışı yenilenemedi:',e.message)}
+ if(me?.id!==owner)return;
+ profileCountCache.delete(id);profileCountCache.delete(owner);render();
+ notify(({following:'Takip ediliyor.',unfollowed:'Takipten çıkıldı.',requested:'Takip isteği gönderildi.',cancelled:'Takip isteği iptal edildi.'})[r.data]||'Takip tercihi güncellendi.');
+}
+async function patiFollowDecision(id,accept){
+ const r=await sb.rpc('patiyiz_follow_decide',{p_requester:id,p_accept:accept});
+ if(r.error)throw r.error;
+ await patiSafetyRefresh(true);profileCountCache.delete(me.id);
+ render();notify(accept?'Takip isteği onaylandı.':'Takip isteği reddedildi.');
+}
+async function patiRestrictToggle(id){
+ if(!me||id===me.id)return;
+ const restricted=patiSafetyState.restrictions.has(id);
+ const q=restricted?sb.from('patiyiz_restricted_accounts').delete().eq('owner_id',me.id).eq('restricted_id',id):
+ sb.from('patiyiz_restricted_accounts').insert({owner_id:me.id,restricted_id:id});
+ const r=await q;if(r.error)throw r.error;
+ await patiSafetyRefresh(true);
+ render();notify(restricted?'Kısıtlama kaldırıldı.':'Kullanıcı kısıtlandı; sana yeni mesaj gönderemez.');
+}
+function patiFollowRequestsMarkup(){
+ if(!patiSafetyState.loaded)return '<p class="small-note">Takip istekleri yükleniyor…</p>';
+ const rows=patiSafetyState.followRequests.filter(x=>x.target_id===me?.id);
+ return rows.length?rows.map(x=>'<div class="pati-social-person"><span><strong>'+esc(profile(x.requester_id).display_name||'Kullanıcı')+'</strong><small>Takip isteği</small></span><button type="button" data-action="pati-follow-accept" data-id="'+esc(x.requester_id)+'">Onayla</button><button type="button" data-action="pati-follow-decline" data-id="'+esc(x.requester_id)+'">Reddet</button></div>').join(''):'<p class="small-note">Bekleyen istek yok.</p>';
+}
+const patiMetric=v=>Number(v||0).toLocaleString('tr-TR');
+async function patiCreatorInsights(){
+ if(!me?.id)return;
+ modal('İçerik üretici istatistikleri','<div role="status">İstatistikler yükleniyor…</div>','pati-insights-panel');
+ document.querySelector('#pati-insights-panel .modal-footer')?.remove();
+ const uid=me.id,r=await sb.rpc('patiyiz_creator_insights',{p_days:30});
+ if(me?.id!==uid||!document.querySelector('#pati-insights-panel'))return;
+ if(r.error)throw r.error;
+ const v=r.data||{},cards=[['Profil ziyareti',v.profile_visits],['Yeni takipçi',v.followers_gained],['Gönderi erişimi',v.views],['Beğeni',v.likes],['Kaydetme',v.saves],['Yeniden paylaşım',v.reposts],['Reels izlenme (sn)',v.reel_watch_seconds]];
+ const daily=Array.isArray(v.daily)?v.daily.slice(-30):[];
+ const max=Math.max(1,...daily.map(x=>Number(x.visits||0)+Number(x.likes||0)));
+ const chart=daily.map(x=>'<div class="pati-insights-bar" title="'+esc(x.day)+': '+patiMetric(Number(x.visits||0)+Number(x.likes||0))+' etkileşim"><span style="height:'+Math.max(3,Math.round((Number(x.visits||0)+Number(x.likes||0))*100/max))+'%"></span></div>').join('');
+ const interactions=Number(v.likes||0)+Number(v.saves||0)+Number(v.reposts||0);
+ const engagement=Number(v.views||0)?(100*interactions/Number(v.views)).toFixed(1)+'%':'—';
+ document.querySelector('#pati-insights-panel .modal-content').innerHTML='<div class="pati-insights-grid">'+cards.map(([label,n])=>'<div class="pati-insights-card"><strong>'+patiMetric(n)+'</strong><small>'+esc(label)+'</small></div>').join('')+'<div class="pati-insights-card"><strong>'+engagement+'</strong><small>Etkileşim / erişim</small></div></div><h3>Son 30 gün · profil ziyaretleri ve beğeniler</h3><div class="pati-insights-chart" role="img" aria-label="Son 30 gün">'+chart+'</div><p class="small-note">Görüntüleme tekil hesapları sayar. Reels izlenme süresi bu sürümle ölçülmeye başlar; geçmişte ölçülmeyen veriler sıfır olabilir. Yeniden paylaşımlar yalnızca Patiyiz içidir.</p>';
+}
+function patiRecordProfileVisit(id){
+ if(!me?.id||!id||id===me.id||document.hidden)return;
+ const key=me.id+':'+id;if(patiProfileVisitRecorded.has(key))return;
+ patiProfileVisitRecorded.add(key);
+ void sb.rpc('patiyiz_record_profile_visit',{p_profile:id}).then(({error})=>{if(error)patiProfileVisitRecorded.delete(key)}).catch(()=>patiProfileVisitRecorded.delete(key));
+}
+function patiWatchReelAttach(video){
+ if(!video||video.dataset.patiWatchTracked)return;
+ video.dataset.patiWatchTracked='1';
+ const id=video.closest?.('.pati-reel-item')?.dataset?.post;if(!id)return;
+ let started=0,seconds=0,working=false;
+ const flush=()=>{
+  if(!me?.id||!sb||!seconds||working)return;
+  const qty=Math.min(30,Math.floor(seconds));if(!qty)return;
+  seconds-=qty;working=true;
+  void sb.rpc('patiyiz_record_reel_watch',{p_post:id,p_seconds:qty}).then(({error})=>{
+   if(error)console.warn('Reels izlenme istatistiği gönderilemedi.');
+  }).catch(()=>{}).finally(()=>{working=false});
+ };
+ const stop=()=>{if(started){seconds+=Math.min(30,(performance.now()-started)/1000);started=0;if(seconds>=3)flush()}};
+ video.addEventListener('playing',()=>{if(!document.hidden&&!started)started=performance.now()});
+ video.addEventListener('pause',stop);video.addEventListener('ended',stop);
+ video.addEventListener('timeupdate',()=>{if(started&&performance.now()-started>=12000){stop();flush();if(!video.paused&&!document.hidden)started=performance.now()}});
+ document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();else if(!video.paused)started=performance.now()});
+}
+
 function settingsPage(){main.innerHTML=header('Ayarlar ve Gizlilik','Hesap, güvenlik ve bildirim tercihlerini yönet.')+`<div class="pati-settings-list"><section class="pati-card pati-theme-card"><h3>◑ Görünüm</h3><p>Uygulamanın açık veya koyu görünümünü seç. Seçimin bu cihazda saklanır.</p><div class="pati-theme-options"><button type="button" data-action="theme-set" data-id="light" aria-pressed="${patiyizCurrentTheme()==='light'}" class="${patiyizCurrentTheme()==='light'?'active':''}">☀️ Açık</button><button type="button" data-action="theme-set" data-id="dark" aria-pressed="${patiyizCurrentTheme()==='dark'}" class="${patiyizCurrentTheme()==='dark'?'active':''}">☾ Koyu</button></div></section>${isAdmin?`<section class="pati-card"><h3>🛡️ Yönetim Paneli</h3><p>Patiyiz kullanıcılarını, içerikleri ve şikâyetleri yönet.</p>${button('Yönetim Panelini Aç','open-admin')}</section>`:''}<section class="pati-card pati-dm-receipts-setting"><h3>✓✓ Mesajlarda görüldü bilgisi</h3><p>Kapatırsan bundan sonra okuduğun mesajlar karşı tarafa görüldü olarak bildirilmez. Bu cihazda okundu işareti tutulur.</p><button type="button" data-action="dm-receipts-toggle" role="switch" aria-checked="${patiDmReadReceiptsEnabled()}">${patiDmReadReceiptsEnabled()?'Açık · Kapat':'Kapalı · Aç'}</button></section><section class="pati-card"><h3>🔒 Hesap güvenliği</h3><p>Şifreni güncellemek için yeni şifreni belirle.</p>${button('Şifremi değiştir','settings-password')}</section><section class="pati-card pati-settings-notifications"><h3>🔔 Bildirim tercihleri</h3><p>Mesaj, etkileşim ve bakım bildirimlerini Bildirim Merkezi'nden takip et. Telefonunun izin ve abonelik durumunu orada kontrol edip bildirimleri bu cihaz için açabilir veya kapatabilirsin.</p><div class="pati-actionbar"><button type="button" class="soft-btn" data-view="notifications">Bildirim Merkezi ve cihaz ayarları</button></div></section><section class="pati-card"><h3>🛡️ Gizlilik ve engellenenler</h3><p>Engellediğin kullanıcıları görüntüle ve engellerini yönet.</p>${button('Engellenenler ('+blocked.size+')','blocked-list')}</section><section class="pati-card"><h3>📄 Gizlilik ve kullanım şartları</h3><p>Kişisel verilerin işlenmesini ve topluluk kurallarını incele.</p><div class="pati-actionbar"><a href="privacy.html" target="_blank" rel="noopener">Gizlilik Politikası</a><a href="terms.html" target="_blank" rel="noopener">Kullanım Şartları</a></div></section><section class="pati-card"><h3>Hesabım</h3><p>Oturumunu kapatabilir veya hesabını ve bağlı kişisel verilerini kalıcı olarak silebilirsin.</p><div class="pati-actionbar">${button('Çıkış yap','logout','','outline-btn')}${!isAdmin?button('Hesabımı kalıcı olarak sil','delete-account-open','','danger'):''}</div></section></div>`}
 const profileCountCache=new Map(),profileCountInFlight=new Set(),profileCountRevision=new Map();
 const pendingProfileFollows=new Set();
