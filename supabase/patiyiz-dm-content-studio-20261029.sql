@@ -86,6 +86,30 @@ revoke all on function patiyiz_private.dispatch_scheduled_messages() from public
 select cron.schedule('patiyiz-scheduled-dms','* * * * *',
   'select patiyiz_private.dispatch_scheduled_messages();');
 
+-- 1b. Each participant can set their own visual theme for a DM.
+create table if not exists public.patiyiz_dm_themes(
+ viewer_id uuid not null references public.profiles(id) on delete cascade,
+ peer_id uuid not null references public.profiles(id) on delete cascade,
+ theme text not null default 'classic'
+   check(theme in ('classic','midnight','lavender','ocean','rose')),
+ updated_at timestamptz not null default now(),
+ primary key(viewer_id,peer_id),
+ constraint patiyiz_dm_themes_no_self check(viewer_id<>peer_id)
+);
+alter table public.patiyiz_dm_themes enable row level security;
+revoke all on public.patiyiz_dm_themes from public,anon,authenticated;
+grant select,insert,update,delete on public.patiyiz_dm_themes to authenticated;
+drop policy if exists patiyiz_dm_theme_select_20261029 on public.patiyiz_dm_themes;
+create policy patiyiz_dm_theme_select_20261029 on public.patiyiz_dm_themes
+ for select to authenticated using(viewer_id=(select auth.uid()));
+drop policy if exists patiyiz_dm_theme_insert_20261029 on public.patiyiz_dm_themes;
+create policy patiyiz_dm_theme_insert_20261029 on public.patiyiz_dm_themes
+ for insert to authenticated with check(viewer_id=(select auth.uid()));
+drop policy if exists patiyiz_dm_theme_update_20261029 on public.patiyiz_dm_themes;
+create policy patiyiz_dm_theme_update_20261029 on public.patiyiz_dm_themes
+ for update to authenticated using(viewer_id=(select auth.uid()))
+ with check(viewer_id=(select auth.uid()));
+
 -- 2. Comment pinning: one pinned comment per post, chosen by post owner.
 create table if not exists public.patiyiz_comment_pins (
  post_id uuid primary key references public.posts(id) on delete cascade,
