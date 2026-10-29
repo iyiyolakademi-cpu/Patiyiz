@@ -31,7 +31,7 @@ test('Profile pin icon and server recheck do not duplicate existing pin rows',()
  assert.match(pin,/\.eq\('owner_id',owner\)/);
  assert.match(pin,/data\.pins=\[\.\.\.data\.pins\.filter/);
  assert.match(app,/↻ Profilde sabitle/);
- assert.match(app,/aria-label="Sabitlenmiş gönderi">↻/);
+ assert.match(app,/aria-label="Sabitlenmiş gönderi">📌/);
 });
 test('Deleting an owned post goes directly through RLS delete, then removes UI row',()=>{
  const rm=part('async function remove(table,id){','async function save(');
