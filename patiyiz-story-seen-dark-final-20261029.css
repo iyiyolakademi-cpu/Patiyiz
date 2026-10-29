@@ -236,3 +236,31 @@ html[data-pati-theme="dark"] .story-player{background:#08090b!important;color:#f
   border-color:#30333b!important;
  }
 }
+
+
+/* Higher-specificity repairs for old hardcoded white profile and feed layouts. */
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-grid,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-summary,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-highlights,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-tabs,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-text-feed,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-text-item,
+html[data-pati-theme="dark"] #main-content .pati-feed-posts>.pati-feed-card,
+html[data-pati-theme="dark"] #main-content .stories-section .stories-strip,
+html[data-pati-theme="dark"] #main-content .pati-pets-page .pati-pets-grid,
+html[data-pati-theme="dark"] #main-content .pati-saved-posts .pati-ig-grid{
+ background:#1a1c21!important;color:#f7f8fb!important;border-color:#454853!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-tile:not(:has(img,video)){
+ background:#292b33!important;color:#f7f8fb!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-grid .pati-ig-empty{
+ background:#1a1c21!important;color:#d0d2dd!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-summary :is(strong,span,small,p){
+ color:#f7f8fb!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-stats small,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-bio{
+ color:#d0d2dd!important;
+}
