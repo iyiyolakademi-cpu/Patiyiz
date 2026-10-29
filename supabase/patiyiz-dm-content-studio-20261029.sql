@@ -146,6 +146,9 @@ create policy patiyiz_comment_pin_delete_20261029 on public.patiyiz_comment_pins
 
 -- 3. A post can contain several videos, while preserving the original
 -- single video_url column and old readers. Max 4 video URLs/post.
+alter table public.posts add column if not exists post_format text not null default 'post';
+alter table public.posts drop constraint if exists patiyiz_post_format_check_20261029;
+alter table public.posts add constraint patiyiz_post_format_check_20261029 check(post_format in ('post','reels'));
 alter table public.posts add column if not exists media_videos text[] not null default '{}';
 alter table public.posts drop constraint if exists patiyiz_media_videos_limit_20261029;
 alter table public.posts add constraint patiyiz_media_videos_limit_20261029
