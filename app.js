@@ -1361,12 +1361,12 @@ function patiBuildLiveStorySequence(selectedAuthor){
  if(!grouped.has(selectedAuthor))return null;
  for(const entries of grouped.values())entries.sort((a,b)=>new Date(a.created_at)-new Date(b.created_at)||String(a.id).localeCompare(String(b.id)));
  const authors=[...grouped.keys()].sort((a,b)=>{
-  const aUnseen=grouped.get(a).some(x=>!patiStoryIsSeen(x)),bUnseen=grouped.get(b).some(x=>!patiStoryIsSeen(x));
+  const aUnseen=grouped.get(a).some(x=>typeof patiStoryIsSeen!=='function'||!patiStoryIsSeen(x)),bUnseen=grouped.get(b).some(x=>typeof patiStoryIsSeen!=='function'||!patiStoryIsSeen(x));
   if(aUnseen!==bUnseen)return aUnseen?-1:1;
   return new Date(grouped.get(b).at(-1).created_at)-new Date(grouped.get(a).at(-1).created_at)||String(a).localeCompare(String(b));
  });
  const items=authors.flatMap(id=>grouped.get(id));
- const firstUnseen=items.findIndex(x=>x.author_id===selectedAuthor&&!patiStoryIsSeen(x));
+ const firstUnseen=items.findIndex(x=>x.author_id===selectedAuthor&&(typeof patiStoryIsSeen!=='function'||!patiStoryIsSeen(x)));
  return {items,index:firstUnseen>=0?firstUnseen:items.findIndex(x=>x.author_id===selectedAuthor)};
 }
 function openStory(id){
@@ -1721,7 +1721,7 @@ function reelsPage(){
   '<div class="pati-reel-author"><button type="button" class="pati-reel-avatar-link" data-action="view-user" data-id="'+esc(author.id)+'" aria-label="'+esc(author.display_name)+' profiline git">'+avatar(author,'s')+'</button><span><strong>'+displayName(author)+'</strong><small>@'+esc(author.handle||'patiyiz')+'</small></span>'+(p.author_id!==selfId?'<button type="button" class="pati-reel-follow" data-action="follow" data-id="'+esc(author.id)+'" aria-pressed="'+isFollowing(author.id)+'"'+(!isFollowing(author.id)&&followsMe(author.id)?' data-follow-back="true"':'')+'>'+(isFollowing(author.id)?'Takiptesin':followsMe(author.id)?'Sen de takip et':'Takip et')+'</button>':'')+'</div>'+
   '<div class="pati-reel-caption">'+esc(cut(p.video_subtitle||p.body||'',220))+(p.source_post_id?'<button type="button" class="pati-reel-source-credit" data-action="profile-open-post" data-id="'+esc(p.source_post_id)+'">↪ Orijinal gönderiyi gör</button>':'')+'</div>'+
   '<div class="pati-reel-progress"><input type="range" min="0" max="1000" value="0" step="1" data-action="reel-seek" aria-label="Videoyu ileri veya geri sar" style="--pati-reel-progress:0%"></div>'+ 
-  '<div class="pati-reel-rail"><button type="button" class="pati-reel-action '+(likedPost?'active':'')+'" data-action="like" data-id="'+esc(p.id)+'" aria-label="'+(p.author_id===me.id?'Kendi Reels içeriğine tepki veremezsin':'Beğen')+'" '+(p.author_id===me.id?'disabled':'')+' aria-pressed="'+likedPost+'">'+ico('heart')+'<span class="pati-reel-count">'+count+'</span></button>'+
+  '<div class="pati-reel-rail"><button type="button" class="pati-reel-action '+(likedPost?'active':'')+'" data-action="like" data-id="'+esc(p.id)+'" aria-label="'+(p.author_id===me.id?'Kendi Reels içeriğine tepki veremezsin':'Beğen')+'" '+((typeof me!=='undefined'&&p.author_id===me.id)?'disabled':'')+' aria-pressed="'+likedPost+'">'+ico('heart')+'<span class="pati-reel-count">'+count+'</span></button>'+
   '<button type="button" class="pati-reel-action" data-action="comment" data-id="'+esc(p.id)+'" aria-label="Yorum yap">'+ico('message-circle')+'<span class="pati-reel-count">'+commentCount+'</span></button>'+
   (p.author_id!==selfId?'<button type="button" class="pati-reel-action pati-reel-repost '+((typeof patiOwnRepost==='function'&&patiOwnRepost(p.id))?'active':'')+'" data-action="pati-repost" data-id="'+esc(p.id)+'" aria-pressed="'+(typeof patiOwnRepost==='function'&&patiOwnRepost(p.id))+'" aria-label="'+((typeof patiOwnRepost==='function'&&patiOwnRepost(p.id))?'Yeniden paylaşımı kaldır':'Yeniden paylaş')+'">'+(typeof PATI_REPOST_ICON==='string'?PATI_REPOST_ICON:'↻')+'<span class="pati-reel-action-label">Yeniden paylaş</span></button>':'')+
   '<button type="button" class="pati-reel-action" data-action="share-post" data-id="'+esc(p.id)+'" aria-label="Paylaş">'+ico('send')+'<span class="pati-reel-action-label">Paylaş</span></button>'+
@@ -4296,8 +4296,8 @@ function profilePage(){
  const cachedCounts=profileCountCache.get(p.id)?.value;const followers=cachedCounts?.followers??data.follows.filter(f=>f.followee_id===p.id).length,following=cachedCounts?.following??data.follows.filter(f=>f.follower_id===p.id).length;
  const stories=data.stories.filter(x=>x.author_id===p.id&&new Date(x.expires_at).getTime()>Date.now());const assignedIds=new Set(data.highlightItems.filter(x=>data.highlightAlbums.some(a=>a.id===x.album_id&&a.owner_id===p.id)).map(x=>x.story_id));const highlights=data.stories.filter(x=>x.author_id===p.id&&x.is_highlight&&!assignedIds.has(x.id)).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));const albums=data.highlightAlbums.filter(x=>x.owner_id===p.id).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
  const liveProfileStory=stories.some(x=>!x.pati_pet_highlight&&!blocked.has(x.author_id));
- void patiStorySeenSync();
- const unseenProfileStory=liveProfileStory&&patiHasUnseenStory(p.id);
+ if(typeof patiStorySeenSync==='function')void patiStorySeenSync();
+ const unseenProfileStory=liveProfileStory&&(typeof patiHasUnseenStory!=='function'||patiHasUnseenStory(p.id));
  if(!['media','reels','videos','text','reposts'].includes(profilePostsTab))profilePostsTab='media';
  const active=privateLocked?[]:profilePostsTab==='reposts'?patiRepostedPosts(p.id):
   profilePostsTab==='reels'?posts.filter(x=>x.post_format==='reels'&&!!(x.video_url||x.media_videos?.length)):
@@ -5579,7 +5579,7 @@ function questionReplies(id){
  * One in-flight mutation per post; a concurrent bootstrap cannot overwrite the result. */
 async function togglePostLike(id){
  if(!id||!me||!sb||pendingPostLikes.has(id))return;
- const post=patiFindSocialPost(id);
+ const post=(typeof patiFindSocialPost==='function'?patiFindSocialPost(id):data.posts?.find(x=>x.id===id));
  if(post?.author_id===me.id){notify('Kendi paylaşımına tepki veremezsin.',true);return;}
  const owner=me.id,wasLiked=liked.has(id);
  pendingPostLikes.add(id);likesChangeEpoch++;
