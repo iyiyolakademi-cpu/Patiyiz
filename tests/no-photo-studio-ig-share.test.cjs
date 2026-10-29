@@ -67,7 +67,8 @@ test('Instagram-like ratios and optional crop controls remain in the same compos
  assert.match(comp,/pati-crop-preview" hidden/);
  assert.match(comp,/pati-media-controls" hidden/);
  assert.match(app,/case 'post-crop-open':/);
- assert.match(app,/crop\.hidden=!crop\.hidden/);
+ assert.match(app,/case 'post-crop-open':void patiCropOpen\(\)/);
+ assert.match(app,/function patiCropOpen\(\)/);
  assert.match(newCss,/#post-form \.pati-media-gallery/);
  assert.match(newCss,/aspect-ratio:4\/5/);
 });
