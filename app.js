@@ -891,7 +891,8 @@ const patiOwnPin=postId=>data.pins.some(r=>r.owner_id===me?.id&&r.post_id===post
 function patiFindSocialPost(postId){
  return data.posts.find(x=>x.id===postId)||
   (typeof patiExploreMedia!=='undefined'&&patiExploreMedia.rows||[]).find(x=>x.id===postId)||
-  (typeof patiFollowingState!=='undefined'&&patiFollowingState.rows||[]).find(x=>x.id===postId);
+  (typeof patiFollowingState!=='undefined'&&patiFollowingState.rows||[]).find(x=>x.id===postId)||
+  (typeof patiReelsFeed!=='undefined'&&patiReelsFeed.rows||[]).find(x=>x.id===postId);
 }
 const patiRepostMissingAttempted=new Set(),patiRepostSourcesBusy=new Set();
 async function patiEnsureRepostSources(ownerId){
@@ -931,7 +932,14 @@ async function patiToggleRepost(postId){
  if(!data.posts.some(p=>p.id===post.id))data.posts.push(post);
  data.reposts=already?data.reposts.filter(r=>!(r.user_id===owner&&r.post_id===postId)):
  [...data.reposts.filter(r=>!(r.user_id===owner&&r.post_id===postId)),result.data[0]];
- closeModal(true);render();notify(already?'Yeniden paylaşım kaldırıldı.':'Gönderi yeniden paylaşıldı.');
+ closeModal(true);
+ if(view==='reels')document.querySelectorAll('[data-action="pati-repost"][data-id="'+postId+'"]').forEach(button=>{
+  button.classList.toggle('active',!already);
+  button.setAttribute('aria-pressed',String(!already));
+  button.setAttribute('aria-label',already?'Yeniden paylaş':'Yeniden paylaşımı kaldır');
+ });
+ else render();
+ notify(already?'Yeniden paylaşım kaldırıldı.':'Gönderi yeniden paylaşıldı.');
 }
 async function patiTogglePin(postId){
  const post=patiFindSocialPost(postId);
@@ -962,7 +970,7 @@ function postCard(p,priority=false){
  const media=multiVideos.length>1?'<div class="pati-carousel pati-video-carousel" data-post-id="'+esc(p.id)+'"><div class="pati-carousel-track">'+
  multiVideos.map((url,i)=>'<div class="pati-carousel-slide pati-video-slide" data-post-id="'+esc(p.id)+'"><div class="pati-video-frame"><video class="pati-post-video" playsinline webkit-playsinline muted loop preload="none"'+(i===0&&p.video_cover_url?' poster="'+esc(p.video_cover_url)+'"':'')+' data-pati-video-src="'+esc(url)+'" aria-label="Video '+(i+1)+' / '+multiVideos.length+'"></video><button type="button" class="pati-video-sound" data-action="video-sound" aria-label="Sesi aç">'+ico('volume-x')+'</button></div></div>').join('')+
  '</div><span class="pati-carousel-count">1 / '+multiVideos.length+'</span><button type="button" data-action="carousel-prev" class="pati-carousel-arrow prev" aria-label="Önceki video">‹</button><button type="button" data-action="carousel-next" class="pati-carousel-arrow next" aria-label="Sonraki video">›</button></div>':defaultMedia;
- const controls='<div class="pati-actionbar pati-social-actions"><button type="button" data-action="like" aria-label="Beğen" aria-pressed="'+liked.has(p.id)+'" data-id="'+esc(p.id)+'" class="'+(liked.has(p.id)?'active':'')+'">'+ico('heart')+' <span>'+count+'</span></button><button type="button" data-action="comment" aria-label="Yorum yap" data-id="'+esc(p.id)+'">'+ico('message-circle')+' <span>'+commentCount+'</span></button><button type="button" data-action="share-post" aria-label="Paylaş" data-id="'+esc(p.id)+'">'+ico('send')+'</button>'+(own?'':'<button type="button" class="pati-repost-btn '+(patiOwnRepost(p.id)?'active':'')+'" data-action="pati-repost" data-id="'+esc(p.id)+'" aria-pressed="'+patiOwnRepost(p.id)+'" aria-label="'+(patiOwnRepost(p.id)?'Yeniden paylaşımı kaldır':'Yeniden paylaş')+'">↻</button>')+'<button type="button" data-action="save" aria-label="Kaydet" aria-pressed="'+saved.has(p.id)+'" data-id="'+esc(p.id)+'" class="pati-save-action '+(saved.has(p.id)?'active':'')+'">'+ico('bookmark')+'</button></div>';
+ const controls='<div class="pati-actionbar pati-social-actions"><button type="button" data-action="like" aria-label="Beğen" aria-pressed="'+liked.has(p.id)+'" data-id="'+esc(p.id)+'" class="'+(liked.has(p.id)?'active':'')+'">'+ico('heart')+' <span>'+count+'</span></button><button type="button" data-action="comment" aria-label="Yorum yap" data-id="'+esc(p.id)+'">'+ico('message-circle')+' <span>'+commentCount+'</span></button>'+(own?'':'<button type="button" class="pati-repost-btn '+(patiOwnRepost(p.id)?'active':'')+'" data-action="pati-repost" data-id="'+esc(p.id)+'" aria-pressed="'+patiOwnRepost(p.id)+'" aria-label="'+(patiOwnRepost(p.id)?'Yeniden paylaşımı kaldır':'Yeniden paylaş')+'">'+ico('repeat')+'</button>')+'<button type="button" data-action="share-post" aria-label="Paylaş" data-id="'+esc(p.id)+'">'+ico('send')+'</button>'+'<button type="button" data-action="save" aria-label="Kaydet" aria-pressed="'+saved.has(p.id)+'" data-id="'+esc(p.id)+'" class="pati-save-action '+(saved.has(p.id)?'active':'')+'">'+ico('bookmark')+'</button></div>';
  const sourcePost=p.source_post_id?data.posts.find(x=>x.id===p.source_post_id):null;
  const sourceCredit=sourcePost?'<button type="button" class="pati-source-credit" data-action="profile-open-post" data-id="'+esc(sourcePost.id)+'">↪ @'+esc(profile(sourcePost.author_id).handle||'patiyiz')+' paylaşımına tepki · Orijinal gönderiyi aç</button>':'';
  const caption=body?'<p class="pati-post-caption">'+(hasMedia?'<strong>'+displayName(profile(p.author_id))+'</strong> ':'')+formatPatiPostBody(body)+'</p>':'';
@@ -1632,6 +1640,7 @@ function reelsPage(){
   '<div class="pati-reel-progress"><input type="range" min="0" max="1000" value="0" step="1" data-action="reel-seek" aria-label="Videoyu ileri veya geri sar" style="--pati-reel-progress:0%"></div>'+ 
   '<div class="pati-reel-rail"><button type="button" class="pati-reel-action '+(likedPost?'active':'')+'" data-action="like" data-id="'+esc(p.id)+'" aria-label="Beğen" aria-pressed="'+likedPost+'">'+ico('heart')+'<span class="pati-reel-count">'+count+'</span></button>'+
   '<button type="button" class="pati-reel-action" data-action="comment" data-id="'+esc(p.id)+'" aria-label="Yorum yap">'+ico('message-circle')+'<span class="pati-reel-count">'+commentCount+'</span></button>'+
+  (p.author_id!==selfId?'<button type="button" class="pati-reel-action pati-reel-repost '+(patiOwnRepost(p.id)?'active':'')+'" data-action="pati-repost" data-id="'+esc(p.id)+'" aria-pressed="'+patiOwnRepost(p.id)+'" aria-label="'+(patiOwnRepost(p.id)?'Yeniden paylaşımı kaldır':'Yeniden paylaş')+'">'+ico('repeat')+'<span class="pati-reel-action-label">Yeniden paylaş</span></button>':'')+
   '<button type="button" class="pati-reel-action" data-action="share-post" data-id="'+esc(p.id)+'" aria-label="Paylaş">'+ico('send')+'<span class="pati-reel-action-label">Paylaş</span></button>'+
   '<button type="button" class="pati-reel-action '+(savedPost?'active':'')+'" data-action="save" data-id="'+esc(p.id)+'" aria-label="Kaydet" aria-pressed="'+savedPost+'">'+ico('bookmark')+'<span class="pati-reel-action-label">Kaydet</span></button>'+
   '<button type="button" data-action="reel-speed" class="pati-reel-tool" aria-label="Oynatma hızı 1×">'+ico('gauge')+'<span class="pati-reel-tool-label">1×</span></button>'+
