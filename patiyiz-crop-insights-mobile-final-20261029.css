@@ -1,0 +1,73 @@
+/* 2026-10-29 • Final photo editor / private insights mobile repairs.
+   Deliberately uses existing secure Supabase metrics; no fabricated profile activity. */
+.pati-full-crop-dialog{overscroll-behavior:contain;overflow:hidden!important}
+.pati-full-crop-shell{min-height:0;height:100dvh;display:grid!important;grid-template-rows:auto minmax(0,1fr) auto}
+.pati-full-crop-head{padding-top:max(12px,env(safe-area-inset-top));padding-bottom:12px;background:var(--pui-paper,#f9f9fa);z-index:1;min-width:0}
+.pati-full-crop-head>strong{overflow:hidden;text-overflow:ellipsis}
+.pati-full-crop-stage{min-height:0;width:100%;padding:clamp(8px,2vw,18px);overflow:hidden;aspect-ratio:auto!important;background:#242528!important}
+.pati-full-crop-stage canvas{
+ width:auto!important;height:auto!important;
+ max-width:min(100%,720px)!important;max-height:100%!important;
+ object-fit:contain!important;touch-action:none!important;
+ box-sizing:border-box!important;user-select:none;
+ box-shadow:0 0 0 3px #fff9,0 8px 35px #0006!important
+}
+.pati-full-crop-guide{border:0!important}
+.pati-full-crop-controls{
+ background:var(--pui-paper,#fafafa);
+ min-height:0;max-height:min(43dvh,390px);
+ overscroll-behavior:contain;
+ gap:10px;padding-bottom:max(15px,env(safe-area-inset-bottom));
+}
+.pati-crop-top-controls button{flex:0 1 110px;min-width:64px;max-width:110px}
+.pati-crop-ratios{scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.pati-crop-ratios button{scroll-snap-align:center}
+.pati-full-crop-zoom input{min-width:0}
+.pati-crop-status:not(:empty){color:#a13631;font-weight:750;text-align:center}
+.pati-creator-dashboard{isolation:isolate;overscroll-behavior:contain}
+.pati-creator-dashboard .pati-creator-scroll{scrollbar-gutter:stable;touch-action:pan-y}
+.pati-creator-dashboard .pati-creator-container{max-width:760px}
+.pati-creator-dashboard .pati-creator-ranges button,
+.pati-creator-dashboard .pati-creator-tabs button{cursor:pointer}
+.pati-creator-dashboard .pati-creator-stat,
+.pati-creator-dashboard .pati-creator-profile-moves button{transition:background .15s ease}
+.pati-creator-dashboard .pati-creator-stat:hover,
+.pati-creator-dashboard .pati-creator-profile-moves button:hover{background:var(--pui-raised,#f2f3f5)}
+.pati-creator-dashboard .pati-creator-stat:focus-visible,
+.pati-creator-dashboard .pati-creator-visitor:focus-visible{outline:3px solid #6486cb;outline-offset:2px}
+.pati-creator-dashboard .pati-creator-visitor{min-width:0;flex-wrap:wrap}
+.pati-creator-dashboard .pati-creator-visitor time{white-space:nowrap}
+.pati-profile-insights-preview{width:calc(100% - 24px)!important;margin:13px 12px!important;min-width:0!important}
+.pati-profile-insights-preview .pati-profile-insights-value{white-space:nowrap}
+.pati-profile-insights-preview .pati-profile-insights-arrow.increase{color:#15945b!important}
+.pati-profile-insights-preview .pati-profile-insights-arrow.decrease{color:#d33e48!important}
+html[data-pati-theme="dark"] .pati-full-crop-head,
+html[data-pati-theme="dark"] .pati-full-crop-controls{background:#17181e!important;color:#f8f8fa!important}
+html[data-pati-theme="dark"] .pati-full-crop-stage{background:#090a0d!important}
+html[data-pati-theme="dark"] .pati-creator-dashboard .pati-creator-scroll,
+html[data-pati-theme="dark"] .pati-creator-dashboard .pati-creator-head,
+html[data-pati-theme="dark"] .pati-creator-dashboard{background:#17181e!important;color:#f8f8fa!important}
+html[data-pati-theme="dark"] .pati-creator-dashboard :is(.pati-creator-stat,.pati-creator-detail-grid article,.pati-creator-audience-count,.pati-creator-breakdown){
+ background:#252730!important;color:#f8f8fa!important;border-color:#444752!important}
+html[data-pati-theme="dark"] .pati-creator-dashboard :is(h2,h3,strong,.pati-creator-detail-head button){
+ color:#f8f8fa!important}
+html[data-pati-theme="dark"] .pati-creator-dashboard :is(p,small,.pati-creator-footnote,.pati-creator-private){
+ color:#c7c9d4!important}
+@media(max-width:600px){
+ .pati-full-crop-dialog{width:100vw!important;max-width:100vw!important}
+ .pati-full-crop-head{min-height:58px;gap:7px;padding-inline:12px}
+ .pati-full-crop-head button{padding:8px 11px;min-height:40px;flex-shrink:0}
+ .pati-full-crop-stage{padding:7px}
+ .pati-full-crop-controls{max-height:44dvh;padding:10px 13px max(14px,env(safe-area-inset-bottom));gap:8px}
+ .pati-crop-top-controls{gap:7px}
+ .pati-crop-top-controls button{min-height:48px}
+ .pati-creator-dashboard .pati-creator-container{padding:12px 12px max(48px,env(safe-area-inset-bottom))}
+ .pati-creator-dashboard .pati-creator-kpis,.pati-creator-dashboard .pati-creator-detail-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .pati-creator-dashboard .pati-creator-stat{min-width:0}
+}
+@media(max-height:610px) and (orientation:landscape){
+ .pati-full-crop-controls{max-height:39dvh;gap:5px;padding-block:6px}
+ .pati-crop-top-controls button{min-height:35px;font-size:17px}
+ .pati-crop-ratios button{min-height:34px;padding:6px 12px}
+ .pati-full-crop-controls>p:not(.pati-crop-status){display:none}
+}
