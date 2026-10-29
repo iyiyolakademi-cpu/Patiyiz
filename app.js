@@ -4301,6 +4301,16 @@ async function patiGroupFetchInbox(force=false){
   if(res.error)throw res.error;
   if(me?.id!==owner||patiyizLoadToken!==token||patiGroupInboxState!==state)return;
   const rows=res.data||[];
+  // Group inbox is an existing view; resolve photos in a separate scoped query.
+  const ids=rows.map(g=>g.group_id).filter(Boolean);
+  if(ids.length){
+   const photos=await sb.from('patiyiz_group_chats').select('id,avatar_path').in('id',ids);
+   if(!photos.error){
+    const byId=new Map((photos.data||[]).map(g=>[g.id,g.avatar_path]));
+    for(const g of rows)g.avatar_path=byId.get(g.group_id)||null;
+   }
+  }
+  if(me?.id!==owner||patiyizLoadToken!==token||patiGroupInboxState!==state)return;
   const changed=!state.ready||JSON.stringify(rows)!==JSON.stringify(state.rows);
   state.rows=rows;state.ready=true;
   if(changed&&view==='messages'){patiDmSafeRender();navRender()}
@@ -4347,7 +4357,7 @@ function patiGroupMountInMessages(summaries,peers,chatFilter){
  }
  const groupHtml=groups.map(g=>'<div class="pati-dm-list-row pati-group-thread-row'+(patiActiveGroupId===g.group_id?' selected':'')+'" data-chat-group="'+esc(g.group_id)+'" data-activity="'+esc(g.activity_at||'')+'">'+
   '<button type="button" class="chat-person'+(patiActiveGroupId===g.group_id?' active':'')+'" data-action="pati-group-open" data-id="'+esc(g.group_id)+'" data-search="'+esc(g.title)+'">'+
-  '<span class="pati-group-inbox-avatar" aria-hidden="true">'+ico('users')+'</span>'+
+  '<span class="pati-group-inbox-avatar" aria-hidden="true">'+(patiGroupPhotoUrl(g.avatar_path)?'<img src="'+esc(patiGroupPhotoUrl(g.avatar_path))+'" alt="" loading="lazy">':ico('users'))+'</span>'+
   '<span class="chat-person-info"><strong>'+esc(g.title)+'</strong><small>'+esc(cut(g.last_body||'Grup sohbeti',80))+'</small></span>'+
   '<span class="chat-person-meta"><small>'+clock(g.activity_at)+'</small>'+(g.unread_count?'<b class="chat-unread">'+(g.unread_count>99?'99+':g.unread_count)+'</b>':'')+'</span></button>'+
   '<details class="pati-dm-row-actions"><summary aria-label="Grup seçenekleri">'+ico('more')+'</summary><div class="pati-dm-row-menu">'+
