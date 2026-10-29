@@ -298,17 +298,71 @@ drop policy if exists patiyiz_restriction_owner_delete_20261029 on public.patiyi
 create policy patiyiz_restriction_owner_delete_20261029 on public.patiyiz_restricted_accounts
  for delete to authenticated using(owner_id=(select auth.uid()));
 
+create or replace function public.patiyiz_dm_allowed_20261029(p_sender uuid,p_receiver uuid)
+returns boolean language sql stable security definer set search_path=''
+as $
+ select p_sender=(select auth.uid()) and exists(select 1 from public.profiles p where p.id=p_receiver
+   and not exists(select 1 from public.patiyiz_restricted_accounts r
+       where r.owner_id=p_receiver and r.restricted_id=p_sender)
+   and (p.dm_policy='everyone' or
+       (p.dm_policy='following' and exists(select 1 from public.follows f
+        where f.follower_id=p_receiver and f.followee_id=p_sender))))
+$;
+revoke all on function public.patiyiz_dm_allowed_20261029(uuid,uuid) from public,anon;
+grant execute on function public.patiyiz_dm_allowed_20261029(uuid,uuid) to authenticated;
 drop policy if exists messages_insert on public.messages;
 create policy messages_insert on public.messages for insert to authenticated
 with check (
  sender_id=(select auth.uid()) and not public.patiyiz_users_blocked(sender_id,receiver_id)
- and not exists(select 1 from public.patiyiz_restricted_accounts
-                where owner_id=receiver_id and restricted_id=sender_id)
- and exists(select 1 from public.profiles p where p.id=receiver_id
-   and (p.dm_policy='everyone'
-     or (p.dm_policy='following' and exists(select 1 from public.follows f
-          where f.follower_id=receiver_id and f.followee_id=sender_id))))
+
+ and public.patiyiz_dm_allowed_20261029(sender_id,receiver_id)
 );
+-- Prevent unauthorized source attribution on a fake/hidden video reaction.
+create or replace function public.patiyiz_guard_reaction_20261029()
+returns trigger language plpgsql security definer set search_path=''
+as $
+begin
+ if new.source_post_id is null then return new; end if;
+ if new.source_post_id=new.id or new.video_url is null then raise exception 'Tepki Reels için video gereklidir'; end if;
+ if not exists(
+   select 1 from public.posts p join public.profiles pr on pr.id=p.author_id
+   where p.id=new.source_post_id and p.author_id<>new.author_id
+   and not public.patiyiz_users_blocked(new.author_id,p.author_id)
+   and (not pr.is_private or exists(select 1 from public.follows f
+              where f.followee_id=p.author_id and f.follower_id=new.author_id))
+ ) then raise exception 'Bu gönderiye tepki verilemiyor' using errcode='42501'; end if;
+ return new;
+end
+$;
+drop trigger if exists patiyiz_guard_reaction_insert_20261029 on public.posts;
+create trigger patiyiz_guard_reaction_insert_20261029 before insert or update of source_post_id
+ on public.posts for each row execute function public.patiyiz_guard_reaction_20261029();
+
+-- Diagnostic counters are intentionally aggregate: no user text, URL, stack, email or IP.
+create table if not exists public.patiyiz_client_error_daily(
+ user_id uuid not null references auth.users(id) on delete cascade,
+ error_day date not null default (now() at time zone 'UTC')::date,
+ kind text not null check(kind in ('script','promise','asset')),
+ occurrences int not null default 0 check(occurrences between 0 and 20),
+ primary key(user_id,error_day,kind)
+);
+alter table public.patiyiz_client_error_daily enable row level security;
+revoke all on public.patiyiz_client_error_daily from public,anon,authenticated;
+create or replace function public.patiyiz_track_client_error(p_kind text)
+returns void language plpgsql security definer set search_path=''
+as $
+declare v_user uuid := auth.uid();
+begin
+ if v_user is null or p_kind not in ('script','promise','asset') then return; end if;
+ insert into public.patiyiz_client_error_daily(user_id,error_day,kind,occurrences)
+ values(v_user,(now() at time zone 'UTC')::date,p_kind,1)
+ on conflict(user_id,error_day,kind) do update
+ set occurrences=least(20,public.patiyiz_client_error_daily.occurrences+1);
+end
+$;
+revoke all on function public.patiyiz_track_client_error(text) from public,anon;
+grant execute on function public.patiyiz_track_client_error(text) to authenticated;
+
 -- Server-enforced moderation of abusive comment bursts and chosen keywords.
 create or replace function public.patiyiz_guard_comment_20261029()
 returns trigger language plpgsql security definer set search_path=''
