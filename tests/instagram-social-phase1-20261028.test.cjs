@@ -30,12 +30,12 @@ test('Repost keeps original ownership, prevents own reposts and supports undo',(
 test('Profile pins own posts only and caps pinned count to three',()=>{
  const social=between('/* Social features: repost and pinned profile posts. */','function postCard(');
  assert.match(social,/post.author_id!==me.id/);
- assert.match(social,/data.pins.filter\(x=>x.owner_id===owner\).length>=3/);
+ assert.match(social,/\(current\.data\|\|\[\]\)\.length>=3/);
  assert.match(social,/\.from\('patiyiz_post_pins'\)/);
  const profile=between('function profilePage(){','function formField(');
  assert.match(profile,/data.pins.find\(x=>x.owner_id===p.id/);
  assert.match(profile,/pati-profile-pin/);
- assert.match(profile,/\['reposts','↻','Yeniden paylaşılanlar'\]/);
+ assert.match(profile,/\['reposts',repostTabIcon,'Yeniden paylaşılanlar'\]/);
  assert.match(app,/case 'pati-pin':run\(\(\)=>patiTogglePin\(id\)\)/);
 });
 test('Following feed includes reposts by followed, non-blocked accounts',()=>{
