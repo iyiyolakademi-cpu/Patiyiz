@@ -81,6 +81,7 @@
     current.previewError=true;
     const button=current.root.querySelector('#pati-system-publish');
     if(button)button.disabled=true;
+    const headerButton=current.root.querySelector('.pati-system-head-publish');if(headerButton)headerButton.disabled=true;
     console.warn('Kırpma önizleme hatası:',err);
     return;
    }
@@ -93,6 +94,9 @@
   current.previewIndex=Math.max(0,Math.min(files.length-1,current.previewIndex||0));
   const chooser=root.querySelector('#pati-system-chooser'),preview=root.querySelector('#pati-system-preview');
   chooser.hidden=chosen;preview.hidden=!chosen;
+  const headPublish=root.querySelector('.pati-system-head-publish');
+  if(headPublish){headPublish.hidden=!chosen;headPublish.disabled=false;headPublish.textContent='Paylaş';}
+  const brand=root.querySelector('.pati-system-brand');if(brand)brand.hidden=chosen;
   if(!chosen){freeURLs(current);root.querySelector('#pati-system-thumbnails').replaceChildren();return}
   const media=root.querySelector('#pati-system-preview-media');
   media.replaceChildren();
@@ -220,7 +224,7 @@
   root.dataset.mode=mode;
   root.innerHTML=
    '<div class="pati-system-panel">'+
-   '<header class="pati-system-head"><button type="button" data-system="close" aria-label="Vazgeç">×</button><strong>'+title(mode)+'</strong><span>patiyiz</span></header>'+
+   '<header class="pati-system-head"><button type="button" data-system="close" aria-label="Vazgeç">×</button><strong>'+title(mode)+'</strong><span class="pati-system-brand">patiyiz</span><button type="button" class="pati-system-head-publish" data-system="publish" hidden>Paylaş</button></header>'+
    '<div id="pati-system-error" class="pati-system-error" role="alert" hidden></div>'+
    '<div id="pati-system-chooser">'+
    '<div class="pati-system-intro"><div class="pati-system-intro-symbol">＋</div><h2>Nasıl paylaşmak istersin?</h2><p>Telefonunun kamerasını veya galerisini kullan.</p></div>'+
@@ -368,12 +372,15 @@
     if(state.publishing||state.editing||state.previewError||!state.files.length)return;
     state.publishing=true;
     const publish=root.querySelector('#pati-system-publish');
-    publish.disabled=true;publish.textContent='Paylaşılıyor…';clearError();
+    publish.disabled=true;publish.textContent='Paylaşılıyor…';
+    const headerPublish=root.querySelector('.pati-system-head-publish');if(headerPublish){headerPublish.disabled=true;headerPublish.textContent='Yükleniyor…';}
+    clearError();
     try{await state.onPublish(root.querySelector('#pati-system-caption').value)}
     catch(err){
      if(state===current){
       error(err?.message||'Paylaşım yüklenemedi. Tekrar dene.');
       state.publishing=false;publish.disabled=false;publish.textContent='Tekrar paylaş';
+      const headerPublish=root.querySelector('.pati-system-head-publish');if(headerPublish){headerPublish.disabled=false;headerPublish.textContent='Yeniden dene';}
      }
     }
    }
