@@ -5193,7 +5193,7 @@ async function togglePostSave(id){
 async function doToggle(table,keys,present){
  // Only private accounts need an approval RPC; public follows keep the
  // stable optimistic Reels behavior and existing zero-reflow animations.
- if(table==='follows'&&(profile(keys.followee_id).is_private||patiIsFollowRequested(keys.followee_id)))
+ if(table==='follows'&&((typeof profile==='function'&&profile(keys.followee_id)?.is_private)||(typeof patiIsFollowRequested==='function'&&patiIsFollowRequested(keys.followee_id))))
   return patiSocialFollow(keys.followee_id);
  const config={post_likes:['likes','post_id',liked],post_saves:['saves','post_id',saved],follows:['follows','followee_id',followed],question_votes:['votes','question_id',voted],kb_bookmarks:['bookmarks','article_id',favorites]};
  const item=config[table],rowKey=item&&keys[item[1]];
