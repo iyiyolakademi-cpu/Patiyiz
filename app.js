@@ -4742,7 +4742,7 @@ function postMediaField(mode){
  '<div class="pati-media-picker-actions"><button type="button" class="pati-media-pick-primary" data-action="pati-media-gallery">▧ Galeriyi aç</button><button type="button" class="pati-media-pick-secondary" data-action="pati-media-camera">◎ '+(reel?'Video çek':'Fotoğraf çek')+'</button>'+(!reel?'<button type="button" class="pati-media-pick-secondary" data-action="pati-media-video">▷ Video seç</button>':'')+'</div>'+
  (reel?'<div class="pati-reels-editor"><label>Video kapak fotoğrafı <input type="file" name="cover_photo" accept="image/*" aria-label="Video kapağı seç"></label><label>Video altyazısı <input name="video_subtitle" maxlength="220" placeholder="Video için altyazı"></label></div>':story?'<div class="pati-reels-editor"><label>Video kapağı (isteğe bağlı) <input type="file" name="cover_photo" accept="image/*" aria-label="Hikâye video kapağı seç"></label></div>':'<div class="pati-reels-editor"><label>Gönderi video kapağı (isteğe bağlı) <input type="file" name="cover_photo" accept="image/*" aria-label="Gönderi video kapağı seç"></label></div>')+
  '<p class="pati-media-help">'+(reel?'MP4, WebM veya MOV · 50 MB altı; büyük klipler uygun cihazlarda sıkıştırılır.':story?'Fotoğraf ya da 50 MB altı video · 24 saatlik hikâye.':'JPG, PNG, HEIC ve desteklenen videolar.')+'</p>'+
- '<input type="file" name="photo" accept="image/*,.heic,.heif" '+(!story&&!reel?'multiple':'')+' class="pati-native-input" aria-label="Fotoğraf seç"><input type="file" name="video" accept="video/mp4,video/webm,video/quicktime,.mov"'+(!story?' multiple':'')+' class="pati-native-input" aria-label="Video seç"></section>';
+ '<input type="file" name="photo" accept="image/*,.heic,.heif" '+(!story&&!reel?'multiple':'')+' class="pati-native-input" aria-label="Fotoğraf seç"><input type="file" name="video" accept="video/mp4,video/webm,video/quicktime,.mov"'+(reel?' multiple':!story?' multiple':'')+' class="pati-native-input" aria-label="Video seç"></section>';
 }
 function openComposerMediaPicker(kind){
  const form=document.getElementById('post-form');if(!form)return;
@@ -4823,7 +4823,7 @@ function mountPatiyizCamera(mode){
  form.dataset.cameraFirst='1';
  form.dataset.selfieMirror='false';
  const aspect=form.querySelector('input[name="aspect"]');
- if(aspect)aspect.value=mode==='post'?'original':'9:16';
+ if(aspect)aspect.value=mode==='post'?'1:1':'9:16';
  // The standard modal stays hidden; camera UI owns the caption and share button.
  // Retain the existing authenticated publication transaction, not an editor step.
  mediaFlow.open({
