@@ -68,7 +68,7 @@ test('Insights stays inside dedicated dashboard and can recover from backend err
  };
  const ctx={
   document:dom,
-  me:{id:'test-user'},
+  me:{id:'test-user'},view:'profile',profileId:'',
   sb:{rpc:async(name)=>name==='patiyiz_creator_insights'?
     {data:{views:10,likes:3,saves:1,reposts:0,daily:[]}}:{error:new Error('Demographics currently unavailable')}},
   console:{warn(){},error(){}},
@@ -82,8 +82,8 @@ test('Insights stays inside dedicated dashboard and can recover from backend err
  vm.createContext(ctx);
  vm.runInContext(section+'\nglobalThis.testDashboard=patiCreatorInsights;globalThis.testClose=patiInsightsClose;',ctx);
  await ctx.testDashboard(30);
- assert.match(state.dialog.innerHTML,/Genel Bakış/);
- assert.match(state.dialog.innerHTML,/Performans/);
+ assert.match(state.dialog.innerHTML,/Genel bakış/);
+ assert.match(state.dialog.innerHTML,/Profil ziyaretleri/);
  assert.doesNotMatch(state.dialog.innerHTML,/İstatistikler yüklenemedi/);
  ctx.sb.rpc=async()=>({error:new Error('Temporarily offline')});
  await ctx.testDashboard(30);
@@ -98,6 +98,6 @@ test('Final styles ship after preceding layers in web and Android',()=>{
  assert.match(html,/patiyiz-profile-chat-repair-20261029\.css\?v=1/);
  assert.match(native,/'patiyiz-profile-chat-repair-20261029\.css'/);
  const styles=[...html.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map(m=>m[1]);
- assert.ok(styles.at(-1).includes('patiyiz-story-seen-dark-final-20261029.css'));
+ assert.ok(styles.at(-1).includes('patiyiz-creator-crop-20261029.css'));
  assert.match(html,/profile_chat_repair=20261029/);
 });
