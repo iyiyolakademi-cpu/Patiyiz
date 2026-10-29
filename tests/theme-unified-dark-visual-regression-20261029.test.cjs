@@ -14,7 +14,7 @@ test('Unified theme always loads after the 55 legacy styles and ships in Capacit
  const all=[...html.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map(x=>x[1]);
  assert.ok(all.findIndex(v=>v.includes('patiyiz-theme-unified-20261029.css'))>=0);
  assert.ok(all.some(x=>x.includes('patiyiz-theme-unified-20261029.css')));
- assert.ok(all.at(-1).includes('patiyiz-neutral-chat-profile-20261029.css'), 'neutral design sheet should load last');
+ assert.ok(all.at(-1).includes('patiyiz-profile-chat-repair-20261029.css'), 'final profile and chat fixes should load last');
  assert.ok(all.findIndex(x=>x.includes('patiyiz-polish-collab-dm-story-20261029.css'))<all.findIndex(x=>x.includes('patiyiz-dm-content-studio-20261029.css')), 'new design follows and preserves existing theme');
  assert.ok(all.findIndex(v=>v.includes('patiyiz-story-view-time-20261029.css'))<all.findIndex(v=>v.includes('patiyiz-theme-unified-20261029.css')));
  assert.match(native,/'patiyiz-theme-unified-20261029\.css'/);
