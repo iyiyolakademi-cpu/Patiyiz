@@ -39,3 +39,5 @@ html.pati-low-data .pati-micro-motion,html.pati-low-data .pati-feed-card{animati
 @media(prefers-reduced-motion:reduce){
  .pati-insights-bar,.pati-source-credit{transition:none!important}
 }
+.pati-reel-caption .pati-reel-source-credit{display:block;margin-top:7px;padding:5px 8px;border:1px solid #ffffff66;border-radius:10px;background:#0009;color:#fff;font-size:12px;line-height:1.35;text-align:left;cursor:pointer;max-width:100%}
+.pati-reel-caption .pati-reel-source-credit:focus-visible{outline:2px solid #fff;outline-offset:2px}
