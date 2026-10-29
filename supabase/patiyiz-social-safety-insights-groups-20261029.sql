@@ -258,7 +258,7 @@ begin
   'followers_now',(select count(*) from public.follows where followee_id=v_user),
   'followers_gained',(select count(*) from public.follows where followee_id=v_user and created_at>=v_cutoff),
   'posts',(select count(*) from public.posts where author_id=v_user and created_at>=v_cutoff),
-  'views',(select coalesce(sum(v.view_count),0) from public.posts p join public.patiyiz_post_view_totals v on v.post_id=p.id where p.author_id=v_user),
+  'views',(select count(*) from public.patiyiz_post_view_events e join public.posts p on p.id=e.post_id where p.author_id=v_user and e.first_seen_at>=v_cutoff),
   'likes',(select count(*) from public.post_likes l join public.posts p on p.id=l.post_id where p.author_id=v_user and l.created_at>=v_cutoff),
   'saves',(select count(*) from public.post_saves x join public.posts p on p.id=x.post_id where p.author_id=v_user and x.created_at>=v_cutoff),
   'reposts',(select count(*) from public.patiyiz_reposts x join public.posts p on p.id=x.post_id where p.author_id=v_user and x.created_at>=v_cutoff),
