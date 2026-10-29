@@ -1,0 +1,294 @@
+/* Patiyiz — five original profile sections + story ring + compact DM corrections.
+   Loaded last so fixes cannot be overwritten by older chat themes. */
+#main-content .pati-ig-profile .pati-ig-tabs{
+ display:grid!important;
+ grid-template-columns:repeat(5,minmax(0,1fr))!important;
+ gap:0!important;
+ overflow:hidden!important;
+ width:100%!important;
+ border-top:1px solid var(--p3-chat-border,#e1e4e6)!important;
+ border-bottom:1px solid var(--p3-chat-border,#e1e4e6)!important;
+}
+#main-content .pati-ig-profile .pati-ig-tabs>button{
+ display:grid!important;
+ place-items:center!important;
+ flex:1 1 20%!important;
+ min-width:0!important;
+ min-height:56px!important;
+ padding:10px 0!important;
+ color:#737a80!important;
+ border:0!important;
+ border-radius:0!important;
+ background:transparent!important;
+}
+#main-content .pati-ig-profile .pati-ig-tabs>button.active,
+#main-content .pati-ig-profile .pati-ig-tabs>button[aria-selected="true"]{
+ color:#202428!important;
+}
+#main-content .pati-ig-profile .pati-ig-tabs>button.active::before{
+ top:auto!important;bottom:0!important;left:23%!important;
+ width:54%!important;height:3px!important;
+ border-radius:4px 4px 0 0;
+ background:currentColor!important;
+}
+#main-content .pati-ig-profile .pati-ig-tabs>button .pati-profile-tab-icon{
+ display:block!important;
+ width:27px!important;
+ height:27px!important;
+ stroke-linecap:round;
+ stroke-linejoin:round;
+ flex:0 0 auto!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-tabs>button{
+ color:#9ca4aa!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-tabs>button.active{
+ color:#fff!important;
+}
+/* Match the home timeline story: a real ring only when a live story exists. */
+#main-content .pati-ig-profile .pati-ig-summary .pati-ig-avatar.pati-profile-has-story{
+ padding:3px!important;
+ border:0!important;
+ background:linear-gradient(35deg,#ffb831 0%,#ff5a3d 35%,#fa225f 72%,#cc10b4 100%)!important;
+}
+#main-content .pati-ig-profile .pati-ig-avatar .pati-profile-story-view{
+ display:grid!important;
+ place-items:center!important;
+ width:100%!important;
+ height:100%!important;
+ min-width:0!important;
+ padding:0!important;
+ margin:0!important;
+ border:2px solid var(--p3-chat-background,#fff)!important;
+ background:var(--p3-chat-background,#fff)!important;
+ color:inherit!important;
+ border-radius:50%!important;
+ overflow:hidden!important;
+ cursor:pointer!important;
+ -webkit-tap-highlight-color:transparent;
+}
+#main-content .pati-ig-profile .pati-ig-avatar .pati-profile-story-view>.avatar{
+ display:grid!important;
+ place-items:center!important;
+ width:100%!important;
+ height:100%!important;
+ min-width:0!important;
+ border:0!important;
+ border-radius:50%!important;
+ overflow:hidden!important;
+ position:relative!important;
+ background:#e8e8ec;
+}
+#main-content .pati-ig-profile .pati-ig-avatar .pati-profile-story-view>.avatar img{
+ display:block!important;
+ width:100%!important;height:100%!important;
+ max-width:100%!important;
+ object-fit:cover!important;
+ object-position:center!important;
+ border-radius:50%!important;
+}
+#main-content .pati-ig-profile .pati-ig-avatar .pati-profile-story-view:focus-visible{
+ outline:3px solid #b84a77!important;outline-offset:3px!important;
+}
+/* The header uses separate fixed photo and flexible text columns.
+   No overlapping avatars, handles, names or profile action on narrow phones. */
+#main-content .pati-dm-layout .chat-window>header{
+ display:grid!important;
+ grid-template-columns:40px 46px minmax(0,1fr) auto!important;
+ grid-auto-flow:column!important;
+ gap:8px!important;
+ align-items:center!important;
+ flex-wrap:nowrap!important;
+ width:100%!important;
+ min-width:0!important;
+ padding:9px 10px!important;
+ box-sizing:border-box!important;
+}
+#main-content .pati-dm-layout .chat-window>header>.mobile-chat-back{
+ grid-column:1!important;
+ grid-row:1!important;
+ width:38px!important;
+ min-width:38px!important;
+ padding:0!important;
+ margin:0!important;
+ justify-self:center!important;
+ align-self:center!important;
+}
+#main-content .pati-dm-layout .chat-window>header>.chat-head-avatar{
+ grid-column:2!important;
+ grid-row:1!important;
+ width:44px!important;min-width:44px!important;max-width:44px!important;
+ height:44px!important;
+ display:grid!important;place-items:center!important;
+ padding:0!important;margin:0!important;
+ overflow:visible!important;
+ justify-self:center!important;
+}
+#main-content .pati-dm-layout .chat-window>header>.chat-head-avatar>.pati-dm-story-trigger{
+ width:44px!important;min-width:44px!important;height:44px!important;
+ box-sizing:border-box!important;
+}
+#main-content .pati-dm-layout .chat-window>header>.chat-head-avatar>.avatar{
+ display:grid!important;place-items:center!important;
+ width:42px!important;height:42px!important;
+ min-width:42px!important;max-width:42px!important;
+ border-radius:50%!important;
+ overflow:hidden!important;
+}
+#main-content .pati-dm-layout .chat-window>header>span:not(.chat-head-avatar){
+ grid-column:3!important;
+ grid-row:1!important;
+ min-width:0!important;
+ max-width:100%!important;
+ width:auto!important;
+ display:flex!important;
+ flex-direction:column!important;
+ gap:2px!important;
+ justify-content:center!important;
+ overflow:hidden!important;
+ margin:0!important;
+ padding:0!important;
+}
+#main-content .pati-dm-layout .chat-window>header>span:not(.chat-head-avatar)>strong,
+#main-content .pati-dm-layout .chat-window>header>span:not(.chat-head-avatar)>small{
+ display:block!important;
+ max-width:100%!important;
+ overflow:hidden!important;
+ white-space:nowrap!important;
+ text-overflow:ellipsis!important;
+ margin:0!important;
+}
+#main-content .pati-dm-layout .chat-window>header>.chat-view-profile{
+ grid-column:4!important;
+ grid-row:1!important;
+ justify-self:end!important;
+ width:auto!important;
+ min-width:0!important;
+ max-width:64px!important;
+ border:1px solid var(--p3-chat-border)!important;
+ border-radius:10px!important;
+ padding:8px 9px!important;
+ box-sizing:border-box!important;
+ white-space:nowrap!important;
+ font-size:12px!important;
+}
+#main-content .pati-dm-layout .pati-dm-attach-menu{
+ grid-template-columns:repeat(2,44px)!important;
+}
+#main-content .pati-dm-layout .pati-dm-attach-menu button,
+#main-content .pati-dm-layout .pati-dm-attach-menu label{
+ border-radius:12px!important;
+}
+/* Voice notes: sender's actual avatar, clear native playback controls and timestamps. */
+#main-content .pati-dm-layout .chat-history .bubble-chat:has(.pati-dm-voice-card),
+#main-content .pati-dm-layout .chat-history .bubble-chat.mine:has(.pati-dm-voice-card){
+ width:min(86%,370px)!important;
+ max-width:min(86%,370px)!important;
+ padding:2px 0!important;
+ border:0!important;
+ background:transparent!important;
+ box-shadow:none!important;
+}
+#main-content .pati-dm-layout .pati-dm-voice-card{
+ display:flex;
+ align-items:center;
+ gap:11px;
+ min-width:0;
+ padding:11px 12px;
+ border-radius:16px;
+ border:1px solid var(--p3-chat-border);
+ background:var(--p3-chat-other);
+ box-sizing:border-box;
+}
+#main-content .pati-dm-layout .bubble-chat.mine .pati-dm-voice-card{
+ background:var(--p3-chat-mine);
+ border-color:transparent;
+}
+#main-content .pati-dm-layout .pati-dm-voice-avatar{
+ display:grid!important;
+ place-items:center!important;
+ flex:0 0 42px!important;
+ width:42px!important;height:42px!important;
+ min-width:42px!important;
+ border-radius:50%;
+ overflow:hidden;
+ background:color-mix(in srgb,var(--p3-chat-border) 75%,transparent);
+}
+#main-content .pati-dm-layout .pati-dm-voice-avatar .avatar{
+ width:100%!important;height:100%!important;
+ min-width:0!important;
+ border-radius:50%!important;
+ overflow:hidden;
+}
+#main-content .pati-dm-layout .pati-dm-voice-avatar .avatar img{
+ width:100%!important;height:100%!important;
+ object-fit:cover!important;border-radius:50%!important;
+}
+#main-content .pati-dm-layout .pati-dm-voice-main{
+ display:flex;flex:1 1 auto;min-width:0;flex-direction:column;gap:5px;
+}
+#main-content .pati-dm-layout .pati-dm-voice-label{
+ display:block;min-width:0;
+ overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+ font-size:11px;font-weight:700;opacity:.8;
+}
+#main-content .pati-dm-layout .pati-dm-voice-main .pati-dm-audio{
+ display:block!important;
+ filter:none!important;
+ width:100%!important;
+ min-width:0!important;
+ max-width:100%!important;
+ height:38px!important;
+ background:transparent!important;
+}
+/* RPC errors should leave an obvious way out instead of a stuck spinner. */
+.pati-creator-dashboard .pati-creator-failure{
+ display:flex;flex-direction:column;gap:12px;
+ align-items:center;justify-content:center;text-align:center;
+ padding:25px 20px;margin:auto;max-width:420px;
+}
+.pati-creator-dashboard .pati-creator-failure strong{
+ font-size:20px;font-weight:800;color:var(--pui-text,#222);
+}
+.pati-creator-dashboard .pati-creator-failure p{
+ font-size:14px;line-height:1.55;color:var(--pui-secondary,#777);margin:0;
+}
+.pati-creator-dashboard .pati-creator-failure button{
+ padding:11px 20px;border-radius:11px;
+ background:var(--pui-text,#222);color:var(--pui-paper,#fff);
+ border:0;cursor:pointer;font-weight:750;
+}
+@media(max-width:740px){
+ #main-content .pati-dm-layout .chat-window>header{
+  grid-template-columns:31px 41px minmax(0,1fr) auto!important;
+  gap:6px!important;
+  padding:8px!important;
+ }
+ #main-content .pati-dm-layout .chat-window>header>.mobile-chat-back{
+  width:30px!important;min-width:30px!important;
+ }
+ #main-content .pati-dm-layout .chat-window>header>.chat-head-avatar,
+ #main-content .pati-dm-layout .chat-window>header>.chat-head-avatar>.pati-dm-story-trigger{
+  width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;
+ }
+ #main-content .pati-dm-layout .chat-window>header>.chat-view-profile{
+  max-width:56px!important;padding:7px 6px!important;font-size:11px!important;
+ }
+ #main-content .pati-ig-profile .pati-ig-tabs>button{min-height:54px!important}
+ #main-content .pati-ig-profile .pati-ig-tabs>button .pati-profile-tab-icon{
+  width:24px!important;height:24px!important;
+ }
+}
+@media(max-width:355px){
+ #main-content .pati-dm-layout .chat-window>header{
+  grid-template-columns:27px 36px minmax(0,1fr) auto!important;
+  gap:4px!important;padding-inline:5px!important;
+ }
+ #main-content .pati-dm-layout .chat-window>header>.chat-head-avatar,
+ #main-content .pati-dm-layout .chat-window>header>.chat-head-avatar>.pati-dm-story-trigger{
+  width:36px!important;min-width:36px!important;max-width:36px!important;height:36px!important;
+ }
+ #main-content .pati-dm-layout .chat-window>header>.chat-view-profile{
+  font-size:10px!important;padding:6px 4px!important;max-width:47px!important;
+ }
+}
