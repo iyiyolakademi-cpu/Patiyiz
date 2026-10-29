@@ -55,7 +55,8 @@ test('DM reaction table only exposes authorized message participants',()=>{
  const dm=between('const patiDmEmojis=','function messagesPage(){');
  assert.match(dm,/patiDmReactionMarkup/);
  assert.match(dm,/patiDmSetReaction/);
- assert.match(dm,/onConflict:'message_id,user_id'/);
+ assert.match(dm,/update\(\{emoji\}\)/);
+ assert.doesNotMatch(dm,/\.upsert\(\{message_id:messageId,user_id:owner,emoji\}/);
  assert.match(app,/case 'dm-react-set':run\(\(\)=>patiDmSetReaction/);
 });
 test('Story share attributes original, retains source link and original media',()=>{
