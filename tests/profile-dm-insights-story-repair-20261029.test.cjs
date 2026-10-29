@@ -32,7 +32,7 @@ test('Profile story ring appears only for an active story and opens the real sto
  assert.match(profile,/pati-profile-has-story/);
  assert.match(profile,/pati-profile-story-view/);
  assert.match(profile,/data-action="story-view"/);
- assert.match(profile,/data-id="'+esc\(p\.id\)/);
+ assert.match(profile,/data-action="story-view" data-id=/);
  assert.match(profile,/data-action="story-create"/);
  assert.match(css,/linear-gradient\(35deg,#ffb831/);
  assert.match(css,/pati-profile-story-view:focus-visible/);
