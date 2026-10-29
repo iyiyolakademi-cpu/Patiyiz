@@ -22,10 +22,15 @@ self.addEventListener('notificationclick',event=>{
 /* Small same-origin static cache: faster return visits without storing API/user data.
    Bump the cache version whenever this worker changes. URLs keep their release
    query parameters, so updated CSS/JS assets are distinct cache entries. */
-const PATIYIZ_STATIC_CACHE='patiyiz-static-v20261029';
+const PATIYIZ_STATIC_CACHE='patiyiz-static-v20261029-social2';
 const PATIYIZ_STATIC_PREFIX='patiyiz-static-v';
 self.addEventListener('install',event=>{
- event.waitUntil(self.skipWaiting());
+ event.waitUntil((async()=>{
+  // Only the anonymous offline shell is cached for navigation fallback.
+  const cache=await caches.open(PATIYIZ_STATIC_CACHE);
+  try{await cache.add('./offline.html')}catch(_){}
+  await self.skipWaiting();
+ })());
 });
 self.addEventListener('activate',event=>{
  event.waitUntil((async()=>{
@@ -36,7 +41,15 @@ self.addEventListener('activate',event=>{
 });
 self.addEventListener('fetch',event=>{
  const request=event.request;
- if(request.method!=='GET'||request.mode==='navigate'||request.cache==='no-store')return;
+ if(request.method!=='GET'||request.cache==='no-store')return;
+ if(request.mode==='navigate'){
+  // User-specific app HTML is never cached. Offline fallback contains no data.
+  event.respondWith(fetch(request).catch(async()=>{
+   const cache=await caches.open(PATIYIZ_STATIC_CACHE);
+   return await cache.match('./offline.html')||Response.error();
+  }));
+  return;
+ }
  const url=new URL(request.url);
  if(url.origin!==self.location.origin)return;
  // Never cache HTML, private data, credentials, API requests or media uploads.

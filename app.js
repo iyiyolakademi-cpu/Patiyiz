@@ -662,6 +662,7 @@ function setupFeedVideos(){
   playVideo(selected);
  };
  if(!('IntersectionObserver' in window)){
+  videos.forEach(v=>patiWatchReelAttach(v));
   videos.forEach((video,i)=>{if(i)video.pause()});
   if(permitted())playVideo(videos[0]);
   return;
@@ -957,8 +958,11 @@ function postCard(p,priority=false){
  const media=p.video_url?'<div class="pati-video-frame"><video class="pati-post-video'+(p.selfie_mirrored?' pati-selfie-mirrored':'')+'" playsinline webkit-playsinline'+(feedAudible?'':' muted')+' loop preload="none"'+(p.video_cover_url?' poster="'+esc(p.video_cover_url)+'"':'')+' data-pati-video-src="'+esc(p.video_url)+'" aria-label="Paylaşım videosu"></video><button type="button" class="pati-video-sound" data-action="video-sound" aria-label="'+(feedAudible?'Sesi kapat':'Sesi aç')+'" aria-pressed="'+feedAudible+'">'+ico(feedAudible?'volume':'volume-x')+'</button></div>':
  images.length?'<div class="pati-carousel" data-post-id="'+esc(p.id)+'"><div class="pati-carousel-track">'+images.map((url,i)=>'<div class="pati-carousel-slide pati-doubletap-photo" data-post-id="'+esc(p.id)+'">'+photo(url,'🐾',isPriority&&i===0)+'<span class="pati-heart-burst" aria-hidden="true">♥</span></div>').join('')+'</div>'+(images.length>1?'<span class="pati-carousel-count">1 / '+images.length+'</span><button type="button" data-action="carousel-prev" class="pati-carousel-arrow prev" aria-label="Önceki fotoğraf">‹</button><button type="button" data-action="carousel-next" class="pati-carousel-arrow next" aria-label="Sonraki fotoğraf">›</button>':'')+'</div>':'';
  const controls='<div class="pati-actionbar pati-social-actions"><button type="button" data-action="like" aria-label="Beğen" aria-pressed="'+liked.has(p.id)+'" data-id="'+esc(p.id)+'" class="'+(liked.has(p.id)?'active':'')+'">'+ico('heart')+' <span>'+count+'</span></button><button type="button" data-action="comment" aria-label="Yorum yap" data-id="'+esc(p.id)+'">'+ico('message-circle')+' <span>'+commentCount+'</span></button><button type="button" data-action="share-post" aria-label="Paylaş" data-id="'+esc(p.id)+'">'+ico('send')+'</button>'+(own?'':'<button type="button" class="pati-repost-btn '+(patiOwnRepost(p.id)?'active':'')+'" data-action="pati-repost" data-id="'+esc(p.id)+'" aria-pressed="'+patiOwnRepost(p.id)+'" aria-label="'+(patiOwnRepost(p.id)?'Yeniden paylaşımı kaldır':'Yeniden paylaş')+'">↻</button>')+'<button type="button" data-action="save" aria-label="Kaydet" aria-pressed="'+saved.has(p.id)+'" data-id="'+esc(p.id)+'" class="pati-save-action '+(saved.has(p.id)?'active':'')+'">'+ico('bookmark')+'</button></div>';
+ const sourcePost=p.source_post_id?data.posts.find(x=>x.id===p.source_post_id):null;
+ const sourceCredit=sourcePost?'<button type="button" class="pati-source-credit" data-action="profile-open-post" data-id="'+esc(sourcePost.id)+'">↪ @'+esc(profile(sourcePost.author_id).handle||'patiyiz')+' paylaşımına tepki · Orijinal gönderiyi aç</button>':'';
  const caption=body?'<p class="pati-post-caption">'+(hasMedia?'<strong>'+displayName(profile(p.author_id))+'</strong> ':'')+formatPatiPostBody(body)+'</p>':'';
  return '<article class="pati-card pati-feed-card '+(hasMedia?'pati-feed-has-media':'pati-feed-text-only')+'" data-post-id="'+esc(p.id)+'"><div class="pati-feed-card-header">'+(collaborator&&typeof patiCollabHeader==='function'?patiCollabHeader(p,collaborator):userRow(p.author_id,''))+'<button type="button" class="pati-post-more" data-action="post-menu" data-id="'+esc(p.id)+'" aria-label="Gönderi seçenekleri">⋯</button></div>'+
+ sourceCredit+
  (pet?'<p class="pati-feed-pet">'+petIcon(pet.species)+' '+esc(pet.name)+' · '+esc(pet.species)+'</p>':'')+
  (hasMedia?media:'<div class="pati-feed-text-content">'+(caption||'<p class="pati-post-caption">🐾</p>')+'</div>')+
  controls+'<div class="pati-post-details"><strong class="pati-post-like-summary">'+count+' beğeni</strong>'+(hasMedia?caption:'')+'<time class="pati-post-time">'+esc(day(p.created_at))+'</time></div></article>';
@@ -1458,6 +1462,7 @@ function setupReelsViewer(){
   }else if(activeVideo){activeVideo.pause();activeVideo=null}
  },{root:viewport,rootMargin:'70% 0px 70% 0px',threshold:[0,.25,.65,.9]});
  videos.forEach(v=>{
+  if(typeof patiWatchReelAttach==='function')patiWatchReelAttach(v);
   patiyizReelsObserver.observe(v);
   const range=v.closest?.('.pati-reel-item')?.querySelector?.('[data-action="reel-seek"]');
   if(!range)return;
@@ -1618,7 +1623,7 @@ function reelsPage(){
   return '<article class="pati-reel-item" data-post="'+esc(p.id)+'"><video class="pati-reel-video'+(p.selfie_mirrored?' pati-selfie-mirrored':'')+'" '+(index===0?'src="':'data-pati-video-src="')+esc(p.video_url)+'"'+(p.video_cover_url?' poster="'+esc(p.video_cover_url)+'"':'')+' playsinline webkit-playsinline'+(nativeReels?'':' muted')+' loop preload="'+(index===0?'auto':index===1?'metadata':'none')+'" aria-label="'+esc(author.display_name)+' videosu"></video>'+
   '<button type="button" class="pati-reel-tap" data-action="reel-play" aria-label="Videoyu oynat veya durdur, çift dokunarak beğen"><span class="pati-reel-heart-burst" aria-hidden="true">'+ico('heart')+'</span></button>'+
   '<div class="pati-reel-author"><button type="button" class="pati-reel-avatar-link" data-action="view-user" data-id="'+esc(author.id)+'" aria-label="'+esc(author.display_name)+' profiline git">'+avatar(author,'s')+'</button><span><strong>'+displayName(author)+'</strong><small>@'+esc(author.handle||'patiyiz')+'</small></span>'+(p.author_id!==selfId?'<button type="button" class="pati-reel-follow" data-action="follow" data-id="'+esc(author.id)+'" aria-pressed="'+isFollowing(author.id)+'"'+(!isFollowing(author.id)&&followsMe(author.id)?' data-follow-back="true"':'')+'>'+(isFollowing(author.id)?'Takiptesin':followsMe(author.id)?'Sen de takip et':'Takip et')+'</button>':'')+'</div>'+
-  '<div class="pati-reel-caption">'+esc(cut(p.video_subtitle||p.body||'',220))+'</div>'+
+  '<div class="pati-reel-caption">'+esc(cut(p.video_subtitle||p.body||'',220))+(p.source_post_id?'<button type="button" class="pati-reel-source-credit" data-action="profile-open-post" data-id="'+esc(p.source_post_id)+'">↪ Orijinal gönderiyi gör</button>':'')+'</div>'+
   '<div class="pati-reel-progress"><input type="range" min="0" max="1000" value="0" step="1" data-action="reel-seek" aria-label="Videoyu ileri veya geri sar" style="--pati-reel-progress:0%"></div>'+ 
   '<div class="pati-reel-rail"><button type="button" class="pati-reel-action '+(likedPost?'active':'')+'" data-action="like" data-id="'+esc(p.id)+'" aria-label="Beğen" aria-pressed="'+likedPost+'">'+ico('heart')+'<span class="pati-reel-count">'+count+'</span></button>'+
   '<button type="button" class="pati-reel-action" data-action="comment" data-id="'+esc(p.id)+'" aria-label="Yorum yap">'+ico('message-circle')+'<span class="pati-reel-count">'+commentCount+'</span></button>'+
@@ -1640,9 +1645,10 @@ function openPatiShareModal(postId){
  const people=data.profiles.filter(p=>p.id!==me.id&&!blocked.has(p.id)).sort((a,b)=>Number(followed.has(b.id))-Number(followed.has(a.id))||String(a.display_name||'').localeCompare(String(b.display_name||''),'tr'));
  const author=profile(post.author_id),cover=post.image_url||(post.images||[])[0]||post.video_cover_url||'',summary=cut(post.body||'Paylaşım',95);
  const preview='<div class="pati-share-preview">'+(cover?'<img src="'+esc(cover)+'" alt="Gönderi önizlemesi" loading="lazy">':'<span class="pati-share-preview-icon">'+ico(post.video_url?'up':'image')+'</span>')+'<span><b>'+displayName(author)+'</b><small>'+esc(summary)+'</small></span></div>';
+ const reaction='<div class="pati-reaction-choice"><button type="button" class="soft-btn" data-action="pati-reaction-reel" data-id="'+esc(postId)+'">🎬 Bu gönderiye tepki Reels çek</button><small>Orijinal içerik sahibi otomatik belirtilecek.</small></div>';
  const search='<label class="pati-share-search"><span class="sr-only">Kişi ara</span>'+ico('search')+'<input id="pati-share-search" type="search" placeholder="Kişi ara" autocomplete="off" aria-label="Paylaşılacak kişiyi ara"></label>';
  const recipients=people.map(p=>'<button type="button" class="pati-share-person" data-action="send-post-dm" data-id="'+esc(p.id)+'" data-post="'+esc(postId)+'" data-name="'+esc((p.display_name||'')+' '+(p.handle||''))+'" aria-label="'+esc(p.display_name||'Patiyiz üyesi')+' kullanıcısına gönder"><span class="pati-share-avatar">'+avatar(p,'l')+'</span><span class="pati-share-person-name">'+esc(p.display_name||'Patiyiz üyesi')+'</span><small>@'+esc(p.handle||'patiyiz')+'</small></button>').join('');
- modal('Paylaş',preview+search+'<div class="pati-share-recipient-title">Kişilere gönder</div><div class="pati-share-people-grid">'+(recipients||'<p class="pati-share-empty">Henüz paylaşabileceğin kullanıcı yok.</p>')+'</div><p class="pati-share-no-match" hidden>Bu isimle kullanıcı bulunamadı.</p><div class="pati-share-quick"><button type="button" data-action="pati-copy-post" data-id="'+esc(postId)+'">'+ico('bookmark')+' Bağlantıyı kopyala</button><button type="button" data-action="pati-share-system" data-id="'+esc(postId)+'">'+ico('send')+' Diğer uygulamalarda paylaş</button></div>','share-post-form');
+ modal('Paylaş',preview+reaction+search+'<div class="pati-share-recipient-title">Kişilere gönder</div><div class="pati-share-people-grid">'+(recipients||'<p class="pati-share-empty">Henüz paylaşabileceğin kullanıcı yok.</p>')+'</div><p class="pati-share-no-match" hidden>Bu isimle kullanıcı bulunamadı.</p><div class="pati-share-quick"><button type="button" data-action="pati-copy-post" data-id="'+esc(postId)+'">'+ico('bookmark')+' Bağlantıyı kopyala</button><button type="button" data-action="pati-share-system" data-id="'+esc(postId)+'">'+ico('send')+' Diğer uygulamalarda paylaş</button></div>','share-post-form');
  const searchField=document.getElementById('pati-share-search');
  searchField?.addEventListener('input',()=>{
   const q=searchField.value.trim().toLocaleLowerCase('tr-TR');
@@ -3739,7 +3745,111 @@ function followListPage(){
  (scoped&&state.error?'<p class="pati-note" role="alert">'+esc(state.error)+'</p>':'')+
  `<div class="pati-load-more">${!scoped||state.loading?'<p role="status">Takip listesi yükleniyor…</p>':state.hasMore||state.error?button(state.error?'Yeniden dene':'Daha fazla kullanıcı yükle','follow-load-more'):' '}</div></div>`;
 }
-function settingsPage(){main.innerHTML=header('Ayarlar ve Gizlilik','Hesap, güvenlik ve bildirim tercihlerini yönet.')+`<div class="pati-settings-list"><section class="pati-card pati-theme-card"><h3>◑ Görünüm</h3><p>Uygulamanın açık veya koyu görünümünü seç. Seçimin bu cihazda saklanır.</p><div class="pati-theme-options"><button type="button" data-action="theme-set" data-id="light" aria-pressed="${patiyizCurrentTheme()==='light'}" class="${patiyizCurrentTheme()==='light'?'active':''}">☀️ Açık</button><button type="button" data-action="theme-set" data-id="dark" aria-pressed="${patiyizCurrentTheme()==='dark'}" class="${patiyizCurrentTheme()==='dark'?'active':''}">☾ Koyu</button></div></section>${isAdmin?`<section class="pati-card"><h3>🛡️ Yönetim Paneli</h3><p>Patiyiz kullanıcılarını, içerikleri ve şikâyetleri yönet.</p>${button('Yönetim Panelini Aç','open-admin')}</section>`:''}<section class="pati-card pati-dm-receipts-setting"><h3>✓✓ Mesajlarda görüldü bilgisi</h3><p>Kapatırsan bundan sonra okuduğun mesajlar karşı tarafa görüldü olarak bildirilmez. Bu cihazda okundu işareti tutulur.</p><button type="button" data-action="dm-receipts-toggle" role="switch" aria-checked="${patiDmReadReceiptsEnabled()}">${patiDmReadReceiptsEnabled()?'Açık · Kapat':'Kapalı · Aç'}</button></section><section class="pati-card"><h3>🔒 Hesap güvenliği</h3><p>Şifreni güncellemek için yeni şifreni belirle.</p>${button('Şifremi değiştir','settings-password')}</section><section class="pati-card pati-settings-notifications"><h3>🔔 Bildirim tercihleri</h3><p>Mesaj, etkileşim ve bakım bildirimlerini Bildirim Merkezi'nden takip et. Telefonunun izin ve abonelik durumunu orada kontrol edip bildirimleri bu cihaz için açabilir veya kapatabilirsin.</p><div class="pati-actionbar"><button type="button" class="soft-btn" data-view="notifications">Bildirim Merkezi ve cihaz ayarları</button></div></section><section class="pati-card"><h3>🛡️ Gizlilik ve engellenenler</h3><p>Engellediğin kullanıcıları görüntüle ve engellerini yönet.</p>${button('Engellenenler ('+blocked.size+')','blocked-list')}</section><section class="pati-card"><h3>📄 Gizlilik ve kullanım şartları</h3><p>Kişisel verilerin işlenmesini ve topluluk kurallarını incele.</p><div class="pati-actionbar"><a href="privacy.html" target="_blank" rel="noopener">Gizlilik Politikası</a><a href="terms.html" target="_blank" rel="noopener">Kullanım Şartları</a></div></section><section class="pati-card"><h3>Hesabım</h3><p>Oturumunu kapatabilir veya hesabını ve bağlı kişisel verilerini kalıcı olarak silebilirsin.</p><div class="pati-actionbar">${button('Çıkış yap','logout','','outline-btn')}${!isAdmin?button('Hesabımı kalıcı olarak sil','delete-account-open','','danger'):''}</div></section></div>`}
+
+/* 2026-10-29: social safety, private follows, creator statistics and visit tracking.
+   DB permissions are authoritative; client-side flags are only for presentation. */
+let patiSafetyState={owner:'',busy:false,loaded:false,followRequests:[],restrictions:new Set()};
+const patiProfileVisitRecorded=new Set();
+function patiIsFollowRequested(id){
+ return patiSafetyState.followRequests.some(r=>r.requester_id===me?.id&&r.target_id===id);
+}
+async function patiSafetyRefresh(force=false){
+ if(!me?.id||!sb)return;
+ const uid=me.id;
+ if(patiSafetyState.owner!==uid)patiSafetyState={owner:uid,busy:false,loaded:false,followRequests:[],restrictions:new Set()};
+ if(patiSafetyState.busy||(!force&&patiSafetyState.loaded))return;
+ patiSafetyState.busy=true;
+ try{
+  const [requests,restrictions]=await Promise.all([
+   sb.from('patiyiz_follow_requests').select('requester_id,target_id,created_at').or('requester_id.eq.'+uid+',target_id.eq.'+uid).limit(150),
+   sb.from('patiyiz_restricted_accounts').select('restricted_id').eq('owner_id',uid).limit(150)
+  ]);
+  if(requests.error)throw requests.error;
+  if(restrictions.error)throw restrictions.error;
+  if(me?.id!==uid)return;
+  patiSafetyState.followRequests=requests.data||[];
+  patiSafetyState.restrictions=new Set((restrictions.data||[]).map(x=>x.restricted_id));
+  patiSafetyState.loaded=true;
+  if(['profile','settings'].includes(view))render();
+ }catch(error){console.warn('Gizlilik bilgileri yüklenemedi:',error?.message||error)}
+ finally{patiSafetyState.busy=false}
+}
+async function patiSocialFollow(id){
+ if(!me||!id||id===me.id)return;
+ const owner=me.id;
+ const r=await sb.rpc('patiyiz_follow_action',{p_target:id});
+ if(r.error)throw r.error;
+ if(me?.id!==owner)return;
+ if(r.data==='following')followed.add(id);else followed.delete(id);
+ await patiSafetyRefresh(true);
+ try{await load('feed')}catch(e){console.warn('Takip akışı yenilenemedi:',e.message)}
+ if(me?.id!==owner)return;
+ profileCountCache.delete(id);profileCountCache.delete(owner);render();
+ notify(({following:'Takip ediliyor.',unfollowed:'Takipten çıkıldı.',requested:'Takip isteği gönderildi.',cancelled:'Takip isteği iptal edildi.'})[r.data]||'Takip tercihi güncellendi.');
+}
+async function patiFollowDecision(id,accept){
+ const r=await sb.rpc('patiyiz_follow_decide',{p_requester:id,p_accept:accept});
+ if(r.error)throw r.error;
+ await patiSafetyRefresh(true);profileCountCache.delete(me.id);
+ render();notify(accept?'Takip isteği onaylandı.':'Takip isteği reddedildi.');
+}
+async function patiRestrictToggle(id){
+ if(!me||id===me.id)return;
+ const restricted=patiSafetyState.restrictions.has(id);
+ const q=restricted?sb.from('patiyiz_restricted_accounts').delete().eq('owner_id',me.id).eq('restricted_id',id):
+ sb.from('patiyiz_restricted_accounts').insert({owner_id:me.id,restricted_id:id});
+ const r=await q;if(r.error)throw r.error;
+ await patiSafetyRefresh(true);
+ render();notify(restricted?'Kısıtlama kaldırıldı.':'Kullanıcı kısıtlandı; sana yeni mesaj gönderemez.');
+}
+function patiFollowRequestsMarkup(){
+ if(!patiSafetyState.loaded)return '<p class="small-note">Takip istekleri yükleniyor…</p>';
+ const rows=patiSafetyState.followRequests.filter(x=>x.target_id===me?.id);
+ return rows.length?rows.map(x=>'<div class="pati-social-person"><span><strong>'+esc(profile(x.requester_id).display_name||'Kullanıcı')+'</strong><small>Takip isteği</small></span><button type="button" data-action="pati-follow-accept" data-id="'+esc(x.requester_id)+'">Onayla</button><button type="button" data-action="pati-follow-decline" data-id="'+esc(x.requester_id)+'">Reddet</button></div>').join(''):'<p class="small-note">Bekleyen istek yok.</p>';
+}
+const patiMetric=v=>Number(v||0).toLocaleString('tr-TR');
+async function patiCreatorInsights(){
+ if(!me?.id)return;
+ modal('İçerik üretici istatistikleri','<div role="status">İstatistikler yükleniyor…</div>','pati-insights-panel');
+ document.querySelector('#pati-insights-panel .modal-footer')?.remove();
+ const uid=me.id,r=await sb.rpc('patiyiz_creator_insights',{p_days:30});
+ if(me?.id!==uid||!document.querySelector('#pati-insights-panel'))return;
+ if(r.error)throw r.error;
+ const v=r.data||{},cards=[['Profil ziyareti',v.profile_visits],['Yeni takipçi',v.followers_gained],['Gönderi erişimi',v.views],['Beğeni',v.likes],['Kaydetme',v.saves],['Yeniden paylaşım',v.reposts],['Reels izlenme (sn)',v.reel_watch_seconds]];
+ const daily=Array.isArray(v.daily)?v.daily.slice(-30):[];
+ const max=Math.max(1,...daily.map(x=>Number(x.visits||0)+Number(x.likes||0)));
+ const chart=daily.map(x=>'<div class="pati-insights-bar" title="'+esc(x.day)+': '+patiMetric(Number(x.visits||0)+Number(x.likes||0))+' etkileşim"><span style="height:'+Math.max(3,Math.round((Number(x.visits||0)+Number(x.likes||0))*100/max))+'%"></span></div>').join('');
+ const interactions=Number(v.likes||0)+Number(v.saves||0)+Number(v.reposts||0);
+ const engagement=Number(v.views||0)?(100*interactions/Number(v.views)).toFixed(1)+'%':'—';
+ document.querySelector('#pati-insights-panel .modal-content').innerHTML='<div class="pati-insights-grid">'+cards.map(([label,n])=>'<div class="pati-insights-card"><strong>'+patiMetric(n)+'</strong><small>'+esc(label)+'</small></div>').join('')+'<div class="pati-insights-card"><strong>'+engagement+'</strong><small>Etkileşim / erişim</small></div></div><h3>Son 30 gün · profil ziyaretleri ve beğeniler</h3><div class="pati-insights-chart" role="img" aria-label="Son 30 gün">'+chart+'</div><p class="small-note">Görüntüleme tekil hesapları sayar. Reels izlenme süresi bu sürümle ölçülmeye başlar; geçmişte ölçülmeyen veriler sıfır olabilir. Yeniden paylaşımlar yalnızca Patiyiz içidir.</p>';
+}
+function patiRecordProfileVisit(id){
+ if(!me?.id||!id||id===me.id||document.hidden)return;
+ const key=me.id+':'+id+':'+new Date().toISOString().slice(0,10);if(patiProfileVisitRecorded.has(key))return;
+ patiProfileVisitRecorded.add(key);
+ void sb.rpc('patiyiz_record_profile_visit',{p_profile:id}).then(({error})=>{if(error)patiProfileVisitRecorded.delete(key)}).catch(()=>patiProfileVisitRecorded.delete(key));
+}
+function patiWatchReelAttach(video){
+ if(!video||video.dataset.patiWatchTracked)return;
+ video.dataset.patiWatchTracked='1';
+ const id=video.closest?.('.pati-reel-item')?.dataset?.post;if(!id)return;
+ let started=0,seconds=0,working=false;
+ const flush=()=>{
+  if(!me?.id||!sb||!seconds||working)return;
+  const qty=Math.min(30,Math.floor(seconds));if(!qty)return;
+  seconds-=qty;working=true;
+  void sb.rpc('patiyiz_record_reel_watch',{p_post:id,p_seconds:qty}).then(({error})=>{
+   if(error)console.warn('Reels izlenme istatistiği gönderilemedi.');
+  }).catch(()=>{}).finally(()=>{working=false});
+ };
+ const stop=()=>{if(started){seconds+=Math.min(30,(performance.now()-started)/1000);started=0;if(seconds>=3)flush()}};
+ video.addEventListener('playing',()=>{if(!document.hidden&&!started)started=performance.now()});
+ video.addEventListener('pause',stop);video.addEventListener('ended',stop);
+ video.addEventListener('timeupdate',()=>{if(started&&performance.now()-started>=12000){stop();flush();if(!video.paused&&!document.hidden)started=performance.now()}});
+ document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();else if(!video.paused)started=performance.now()});
+}
+
+function settingsPage(){void patiSafetyRefresh();main.innerHTML=header('Ayarlar ve Gizlilik','Hesap, güvenlik ve bildirim tercihlerini yönet.')+`<div class="pati-settings-list"><section class="pati-card pati-theme-card"><h3>◑ Görünüm</h3><p>Uygulamanın açık veya koyu görünümünü seç. Seçimin bu cihazda saklanır.</p><div class="pati-theme-options"><button type="button" data-action="theme-set" data-id="light" aria-pressed="${patiyizCurrentTheme()==='light'}" class="${patiyizCurrentTheme()==='light'?'active':''}">☀️ Açık</button><button type="button" data-action="theme-set" data-id="dark" aria-pressed="${patiyizCurrentTheme()==='dark'}" class="${patiyizCurrentTheme()==='dark'?'active':''}">☾ Koyu</button></div></section>${isAdmin?`<section class="pati-card"><h3>🛡️ Yönetim Paneli</h3><p>Patiyiz kullanıcılarını, içerikleri ve şikâyetleri yönet.</p>${button('Yönetim Panelini Aç','open-admin')}</section>`:''}<section class="pati-card pati-dm-receipts-setting"><h3>✓✓ Mesajlarda görüldü bilgisi</h3><p>Kapatırsan bundan sonra okuduğun mesajlar karşı tarafa görüldü olarak bildirilmez. Bu cihazda okundu işareti tutulur.</p><button type="button" data-action="dm-receipts-toggle" role="switch" aria-checked="${patiDmReadReceiptsEnabled()}">${patiDmReadReceiptsEnabled()?'Açık · Kapat':'Kapalı · Aç'}</button></section><section class="pati-card"><h3>🔒 Hesap güvenliği</h3><p>Şifreni güncellemek için yeni şifreni belirle.</p>${button('Şifremi değiştir','settings-password')}</section><section class="pati-card pati-settings-notifications"><h3>🔔 Bildirim tercihleri</h3><p>Mesaj, etkileşim ve bakım bildirimlerini Bildirim Merkezi'nden takip et. Telefonunun izin ve abonelik durumunu orada kontrol edip bildirimleri bu cihaz için açabilir veya kapatabilirsin.</p><div class="pati-actionbar"><button type="button" class="soft-btn" data-view="notifications">Bildirim Merkezi ve cihaz ayarları</button></div></section><section class="pati-card pati-safety-controls"><h3>🔐 Hesap ve mesaj gizliliği</h3><p>Gizli hesabın yeni takipçileri yalnızca onayla kabul edilir.</p><button type="button" data-action="pati-private-toggle" role="switch" aria-checked="'+(current().is_private===true)+'">'+(current().is_private?'Gizli hesap · Kapat':'Hesabı gizliye al')+'</button><p class="small-note">Önceden paylaşılmış herkese açık medya bağlantıları geri alınamaz; hassas dosyalar için özel depolama gerekir.</p><h4>Mesaj gönderebilecek kişiler</h4><div class="pati-safety-buttons"><button type="button" data-action="pati-dm-policy" data-id="everyone" aria-pressed="'+(current().dm_policy==='everyone')+'">Herkes</button><button type="button" data-action="pati-dm-policy" data-id="following" aria-pressed="'+(current().dm_policy==='following')+'">Takip ettiklerim</button><button type="button" data-action="pati-dm-policy" data-id="none" aria-pressed="'+(current().dm_policy==='none')+'">Hiç kimse</button></div><button type="button" data-action="pati-comment-filter">Yorum kelime filtreleri</button><h4>Bekleyen takip istekleri</h4>'+patiFollowRequestsMarkup()+'</section><section class="pati-card"><h3>🛡️ Gizlilik ve engellenenler</h3><p>Engellediğin kullanıcıları görüntüle ve engellerini yönet.</p>${button('Engellenenler ('+blocked.size+')','blocked-list')}</section><section class="pati-card"><h3>📄 Gizlilik ve kullanım şartları</h3><p>Kişisel verilerin işlenmesini ve topluluk kurallarını incele.</p><div class="pati-actionbar"><a href="privacy.html" target="_blank" rel="noopener">Gizlilik Politikası</a><a href="terms.html" target="_blank" rel="noopener">Kullanım Şartları</a></div></section><section class="pati-card"><h3>Hesabım</h3><p>Oturumunu kapatabilir veya hesabını ve bağlı kişisel verilerini kalıcı olarak silebilirsin.</p><div class="pati-actionbar">${button('Çıkış yap','logout','','outline-btn')}${!isAdmin?button('Hesabımı kalıcı olarak sil','delete-account-open','','danger'):''}</div></section></div>`}
 const profileCountCache=new Map(),profileCountInFlight=new Set(),profileCountRevision=new Map();
 const pendingProfileFollows=new Set();
 async function syncProfileCounts(id,force=false){
@@ -3881,6 +3991,8 @@ function patiBindProfileLinkEditor(form){
 }
 function profilePage(){
  const p=profile(profileId||me.id),own=p.id===me.id,pets=data.pets.filter(x=>x.owner_id===p.id);
+ void patiSafetyRefresh();if(!own)patiRecordProfileVisit(p.id);
+ const privateLocked=!own&&p.is_private&&!followed.has(p.id);
  if(profilePostsTab==='reposts')void patiEnsureRepostSources(p.id);
  const posts=[...(typeof patiCollabPartnerPosts==='function'?patiCollabPartnerPosts(p.id):data.posts.filter(x=>x.author_id===p.id))].sort((a,b)=>{
  const ap=data.pins.find(x=>x.owner_id===p.id&&x.post_id===a.id),bp=data.pins.find(x=>x.owner_id===p.id&&x.post_id===b.id);
@@ -3897,7 +4009,7 @@ function profilePage(){
  const cachedCounts=profileCountCache.get(p.id)?.value;const followers=cachedCounts?.followers??data.follows.filter(f=>f.followee_id===p.id).length,following=cachedCounts?.following??data.follows.filter(f=>f.follower_id===p.id).length;
  const stories=data.stories.filter(x=>x.author_id===p.id&&new Date(x.expires_at).getTime()>Date.now());const assignedIds=new Set(data.highlightItems.filter(x=>data.highlightAlbums.some(a=>a.id===x.album_id&&a.owner_id===p.id)).map(x=>x.story_id));const highlights=data.stories.filter(x=>x.author_id===p.id&&x.is_highlight&&!assignedIds.has(x.id)).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));const albums=data.highlightAlbums.filter(x=>x.owner_id===p.id).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
  const storyThumb=stories[0]?.image_url||'';
- const active=profilePostsTab==='reposts'?patiRepostedPosts(p.id):profilePostsTab==='videos'?posts.filter(x=>x.video_url):profilePostsTab==='text'?posts.filter(x=>!x.image_url&&!x.video_url):posts.filter(x=>x.image_url||x.images?.length||x.video_url);
+ const active=privateLocked?[]:profilePostsTab==='reposts'?patiRepostedPosts(p.id):profilePostsTab==='videos'?posts.filter(x=>x.video_url):profilePostsTab==='text'?posts.filter(x=>!x.image_url&&!x.video_url):posts.filter(x=>x.image_url||x.images?.length||x.video_url);
  const iconTabs=[['media','▦','Fotoğraf ve videolar'],['videos','▷','Videolar'],['text','≡','Yazılar'],['reposts','↻','Yeniden paylaşılanlar']];
  if(own)void patiLoadProfileViewCounts(posts.map(x=>x.id),p.id);
  const grid=active.map(x=>{
@@ -3909,12 +4021,12 @@ function profilePage(){
    const views=own?'<span class="pati-profile-view-count" aria-label="Görüntülenme sayısı">◉ <span data-pati-view-count="'+esc(x.id)+'">'+(patiPostViewCounts.has(x.id)?patiPostViewCounts.get(x.id).toLocaleString('tr-TR'):'—')+'</span></span>':'';
   return '<button type="button" class="pati-profile-tile '+(!cover&&!x.video_url?'pati-profile-text-tile':'')+'" data-action="profile-open-post" data-id="'+esc(x.id)+'" aria-label="Paylaşımı aç">'+thumbnail+mediaIcon+pinBadge+views+'</button>';
  }).join('');
- const profileContent=profilePostsTab==='text'?'<div class="pati-profile-text-feed" aria-label="Yazı paylaşımları">'+(active.length?active.map((x,i)=>postCard(x,i===0)).join(''):'<p class="pati-ig-empty">Henüz yazı paylaşımı yok.</p>')+'</div>':'<div class="pati-ig-grid">'+(grid||'<p class="pati-ig-empty">Bu bölümde henüz paylaşım yok.</p>')+'</div>';
+ const profileContent=privateLocked?'<div class="pati-private-message">🔒 Bu hesap gizli. Gönderilerini görmek için takip isteği gönder.</div>':profilePostsTab==='text'?'<div class="pati-profile-text-feed" aria-label="Yazı paylaşımları">'+(active.length?active.map((x,i)=>postCard(x,i===0)).join(''):'<p class="pati-ig-empty">Henüz yazı paylaşımı yok.</p>')+'</div>':'<div class="pati-ig-grid">'+(grid||'<p class="pati-ig-empty">Bu bölümde henüz paylaşım yok.</p>')+'</div>';
  main.innerHTML=(own?patiyizProgressCard():'')+'<div class="pati-ig-profile">'+(!own?'<div class="pati-profile-back">'+button('← Geri','profile-back')+'</div>':'')+
  '<div class="pati-ig-summary"><div class="pati-ig-avatar">'+avatar(p,'l')+(own?'<button type="button" class="pati-profile-story-plus" data-action="story-create" aria-label="Profilinden hikâye paylaş" title="Hikâye ekle">'+ico('plus')+'</button>':'')+'</div><div class="pati-ig-info"><div class="pati-ig-handle-row"><strong class="pati-ig-handle">@'+esc(p.handle||'patiyiz')+'</strong>'+verifiedBadge(p)+'</div><strong class="pati-ig-name">'+esc(p.display_name||'Patiyiz üyesi')+'</strong><div class="pati-ig-stats"><span><b data-pati-count="posts">'+((cachedCounts?.posts??posts.filter(x=>x.author_id===p.id).length)+((typeof patiCollabs!=='undefined'?patiCollabs.rows:[]).filter(x=>x.user_id===p.id&&x.status==='accepted').length))+'</b><small>gönderi</small></span><button type="button" data-action="followers-list" data-id="'+esc(p.id)+'" data-mode="followers"><b data-pati-count="followers">'+followers+'</b><small>takipçi</small></button><button type="button" data-action="followers-list" data-id="'+esc(p.id)+'" data-mode="following"><b data-pati-count="following">'+following+'</b><small>takip edilen</small></button></div></div></div>'+
  (p.bio?'<div class="pati-ig-bio">'+esc(p.bio)+'</div>':'')+patiProfileLinksHTML(p)+mutualMarkup+
  
- '<div class="pati-ig-actions">'+(own?button('Profili düzenle','edit-profile'):button(followed.has(p.id)?'Takiptesin':followBack?'Sen de takip et':'Takip et','follow','data-id="'+esc(p.id)+'"'+(followBack?' data-follow-back="true"':''))+button('Mesaj gönder','chat','data-id="'+esc(p.id)+'"')+button('Hesabı bildir','report','data-id="'+esc(p.id)+'" data-kind="profile"'))+'</div>'+(own?patiVerificationProfileAction():'')+
+ '<div class="pati-ig-actions">'+(own?button('Profili düzenle','edit-profile')+button('İstatistikler','pati-insights'):button(followed.has(p.id)?'Takiptesin':patiIsFollowRequested(p.id)?'İstek gönderildi':followBack?'Sen de takip et':'Takip et','follow','data-id="'+esc(p.id)+'"'+(followBack?' data-follow-back="true"':''))+button('Mesaj gönder','chat','data-id="'+esc(p.id)+'"')+button('Hesabı bildir','report','data-id="'+esc(p.id)+'" data-kind="profile"')+button(patiSafetyState.restrictions.has(p.id)?'Kısıtlamayı kaldır':'Kısıtla','pati-restrict','data-id="'+esc(p.id)+'"'))+'</div>'+(own?patiVerificationProfileAction():'')+
  '<div class="pati-ig-tabs" role="tablist" aria-label="Profil gönderileri">'+iconTabs.map(x=>'<button type="button" role="tab" aria-selected="'+(profilePostsTab===x[0])+'" class="'+(profilePostsTab===x[0]?'active':'')+'" data-action="profile-posts-tab" data-id="'+x[0]+'" aria-label="'+x[2]+'">'+x[1]+'</button>').join('')+'</div>'+
  profileContent+
  '</div>';
@@ -4189,6 +4301,16 @@ async function patiGroupFetchInbox(force=false){
   if(res.error)throw res.error;
   if(me?.id!==owner||patiyizLoadToken!==token||patiGroupInboxState!==state)return;
   const rows=res.data||[];
+  // Group inbox is an existing view; resolve photos in a separate scoped query.
+  const ids=rows.map(g=>g.group_id).filter(Boolean);
+  if(ids.length){
+   const photos=await sb.from('patiyiz_group_chats').select('id,avatar_path').in('id',ids);
+   if(!photos.error){
+    const byId=new Map((photos.data||[]).map(g=>[g.id,g.avatar_path]));
+    for(const g of rows)g.avatar_path=byId.get(g.group_id)||null;
+   }
+  }
+  if(me?.id!==owner||patiyizLoadToken!==token||patiGroupInboxState!==state)return;
   const changed=!state.ready||JSON.stringify(rows)!==JSON.stringify(state.rows);
   state.rows=rows;state.ready=true;
   if(changed&&view==='messages'){patiDmSafeRender();navRender()}
@@ -4208,7 +4330,7 @@ function patiGroupChatPaneHTML(){
  const messages=ready?state.rows.slice():[];
  return '<header class="pati-group-chat-header">'+
   '<button type="button" class="mobile-chat-back" data-action="chat-back" aria-label="Sohbetlere dön">←</button>'+
-  '<span class="chat-head-avatar pati-group-avatar" aria-hidden="true">'+ico('users')+'</span>'+
+  '<span class="chat-head-avatar pati-group-avatar" aria-hidden="true">'+(ready&&patiGroupPhotoUrl(state.group?.avatar_path)?'<img src="'+esc(patiGroupPhotoUrl(state.group.avatar_path))+'" alt="" loading="lazy">':ico('users'))+'</span>'+
   '<span class="pati-group-chat-title"><strong>'+esc(title)+'</strong><small>'+ (ready?members+' üye':'Grup yükleniyor…')+'</small></span>'+
   '<button type="button" class="soft-btn chat-view-profile" data-action="pati-group-members" data-id="'+esc(id)+'">Üyeler</button>'+ 
   (ready&&state.group?.creator_id===me.id?'<button type="button" class="pati-group-delete-top" data-action="pati-group-delete" data-id="'+esc(id)+'" aria-label="Grubu kalıcı sil">'+ico('trash')+'</button>':'')+
@@ -4235,7 +4357,7 @@ function patiGroupMountInMessages(summaries,peers,chatFilter){
  }
  const groupHtml=groups.map(g=>'<div class="pati-dm-list-row pati-group-thread-row'+(patiActiveGroupId===g.group_id?' selected':'')+'" data-chat-group="'+esc(g.group_id)+'" data-activity="'+esc(g.activity_at||'')+'">'+
   '<button type="button" class="chat-person'+(patiActiveGroupId===g.group_id?' active':'')+'" data-action="pati-group-open" data-id="'+esc(g.group_id)+'" data-search="'+esc(g.title)+'">'+
-  '<span class="pati-group-inbox-avatar" aria-hidden="true">'+ico('users')+'</span>'+
+  '<span class="pati-group-inbox-avatar" aria-hidden="true">'+(patiGroupPhotoUrl(g.avatar_path)?'<img src="'+esc(patiGroupPhotoUrl(g.avatar_path))+'" alt="" loading="lazy">':ico('users'))+'</span>'+
   '<span class="chat-person-info"><strong>'+esc(g.title)+'</strong><small>'+esc(cut(g.last_body||'Grup sohbeti',80))+'</small></span>'+
   '<span class="chat-person-meta"><small>'+clock(g.activity_at)+'</small>'+(g.unread_count?'<b class="chat-unread">'+(g.unread_count>99?'99+':g.unread_count)+'</b>':'')+'</span></button>'+
   '<details class="pati-dm-row-actions"><summary aria-label="Grup seçenekleri">'+ico('more')+'</summary><div class="pati-dm-row-menu">'+
@@ -4381,6 +4503,36 @@ async function patiGroupDeletePermanent(groupId){
  if(view==='messages')render();
  notify('Grup ve tüm mesajları kalıcı olarak silindi.');
 }
+
+function patiGroupPhotoUrl(path){
+ if(!path||!/^[0-9a-f-]{36}\/[^/]+\.(?:jpg|jpeg|png|webp)$/i.test(path))return '';
+ try{return sb.storage.from('patiyiz-group-avatars').getPublicUrl(path).data.publicUrl||''}catch(_){return ''}
+}
+async function patiGroupPhotoUpload(groupId,file){
+ if(!me||!file||!file.size)return;
+ if(!/^image\/(jpeg|png|webp)$/.test(file.type))throw Error('Grup fotoğrafı JPG, PNG veya WebP olmalı.');
+ if(file.size>10*1024*1024)throw Error('Görsel çok büyük. Daha küçük bir fotoğraf seç.');
+ const url=URL.createObjectURL(file),image=new Image();
+ let blob;
+ try{
+  image.src=url;await image.decode();
+  const canvas=document.createElement('canvas'),ratio=Math.min(1,640/Math.max(1,image.naturalWidth,image.naturalHeight));
+  canvas.width=Math.max(1,Math.round(image.naturalWidth*ratio));
+  canvas.height=Math.max(1,Math.round(image.naturalHeight*ratio));
+  canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);
+  blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',.74));
+ }finally{URL.revokeObjectURL(url)}
+ if(!blob||blob.size>1024*1024)throw Error('Fotoğraf 1 MB altına indirilemedi.');
+ const key=groupId+'/'+crypto.randomUUID()+'.jpg';
+ const saved=await sb.storage.from('patiyiz-group-avatars').upload(key,blob,{contentType:'image/jpeg',upsert:false});
+ if(saved.error)throw saved.error;
+ const updated=await sb.rpc('patiyiz_group_set_photo',{p_group:groupId,p_path:key});
+ if(updated.error)throw updated.error;
+ if(patiGroupChatState.id===groupId&&patiGroupChatState.group)patiGroupChatState.group.avatar_path=key;
+ await patiGroupMembersDialog(groupId);
+ notify('Grup fotoğrafı güncellendi.');
+}
+
 async function patiGroupMembersDialog(id){
  const owner=me?.id;if(!owner)return;
  const [members,group]=await Promise.all([
@@ -4392,8 +4544,10 @@ async function patiGroupMembersDialog(id){
  const admin=(members.data||[]).some(x=>x.user_id===owner&&x.role==='admin');
  const creator=group.data.creator_id===owner;
  modal('Grup üyeleri','<div class="pati-group-tools"><button type="button" data-action="pati-group-open" data-id="'+esc(id)+'">← Sohbete dön</button>'+(admin?'<button type="button" data-action="pati-group-add-open" data-id="'+esc(id)+'">+ Üye ekle</button>':'')+'</div>'+
+ '<div class="pati-group-photo-editor"><span class="pati-group-photo-preview">'+(patiGroupPhotoUrl(group.data.avatar_path)?'<img src="'+esc(patiGroupPhotoUrl(group.data.avatar_path))+'" alt="Grup fotoğrafı">':ico('users'))+'</span><div><strong>'+esc(group.data.title)+'</strong><small>Grup görseli ve yöneticileri</small>'+(admin?'<label class="pati-group-photo-label">Fotoğraf değiştir<input type="file" accept="image/jpeg,image/png,image/webp" data-pati-group-avatar="'+esc(id)+'" aria-label="Grup fotoğrafı seç"></label>':'')+'</div></div>'+
  (creator?'<div class="pati-group-danger-zone"><strong>Grubu tamamen sil</strong><p>Grup ve tüm mesajları bütün üyeler için kalıcı olarak silinir.</p><button type="button" data-action="pati-group-delete" data-id="'+esc(id)+'">'+ico('trash')+' Grubu kalıcı sil</button></div>':'')+
  (members.data||[]).map(x=>'<div class="pati-social-person">'+avatar(profile(x.user_id),'s')+'<span><strong>'+esc(profile(x.user_id).display_name||'Üye')+'</strong><small>'+(x.role==='admin'?'Yönetici':'Üye')+'</small></span>'+
+ (creator&&x.user_id!==group.data.creator_id?'<button type="button" data-action="pati-group-role" data-id="'+esc(id)+'" data-peer="'+esc(x.user_id)+'" data-role="'+(x.role==='admin'?'member':'admin')+'">'+(x.role==='admin'?'Yöneticiliği kaldır':'Yönetici yap')+'</button>':'')+
  ((admin||x.user_id===owner)&&x.user_id!==group.data.creator_id?'<button type="button" data-action="pati-group-remove" data-id="'+esc(id)+'" data-peer="'+esc(x.user_id)+'">'+(x.user_id===owner?'Ayrıl':'Çıkar')+'</button>':'')+'</div>').join(''),
  'pati-group-members-form');
  document.querySelector('#pati-group-members-form .modal-footer')?.remove();
@@ -4711,6 +4865,7 @@ async function createPostPublication(form,f,str){
  if(!body&&!photoFiles.length&&!hasVideo)throw Error('Paylaşmak için bir fotoğraf, video veya yazı ekle.');
  return publishMediaRecord('posts',form,async send=>{
   const record={body,species:'Diğer',pet_id:null,images:[],selfie_mirrored:hasVideo&&form.dataset.selfieMirror==='true'};
+  if(form.dataset.sourcePost){if(!hasVideo)throw Error('Tepki Reels için video seç.');record.source_post_id=form.dataset.sourcePost;}
   for(let i=0;i<photoFiles.length;i++){
    uploadStatus('Fotoğraf '+(i+1)+' / '+photoFiles.length+' hazırlanıyor…');
    const file=await cropPostPhoto(photoFiles[i],str('aspect'));
@@ -5046,6 +5201,10 @@ async function togglePostSave(id){
 }
 
 async function doToggle(table,keys,present){
+ // Only private accounts need an approval RPC; public follows keep the
+ // stable optimistic Reels behavior and existing zero-reflow animations.
+ if(table==='follows'&&((typeof profile==='function'&&profile(keys.followee_id)?.is_private)||(typeof patiIsFollowRequested==='function'&&patiIsFollowRequested(keys.followee_id))))
+  return patiSocialFollow(keys.followee_id);
  const config={post_likes:['likes','post_id',liked],post_saves:['saves','post_id',saved],follows:['follows','followee_id',followed],question_votes:['votes','question_id',voted],kb_bookmarks:['bookmarks','article_id',favorites]};
  const item=config[table],rowKey=item&&keys[item[1]];
  const isFollow=table==='follows',pendingKey=isFollow?keys.follower_id+'|'+keys.followee_id:'';
@@ -5260,6 +5419,7 @@ case 'pati-group-list':void patiGroupList().catch(e=>notify(friendly(e),true));b
 case 'pati-group-create-open':patiGroupCreateDialog();break;
 case 'pati-group-open':void patiGroupOpen(id).catch(e=>notify(friendly(e),true));break;
 case 'pati-group-members':void patiGroupMembersDialog(id).catch(e=>notify(friendly(e),true));break;
+case 'pati-group-role':run(async()=>{const r=await sb.rpc('patiyiz_group_set_role',{p_group:id,p_member:target.dataset.peer,p_role:target.dataset.role});if(r.error)throw r.error;await patiGroupMembersDialog(id);},'Grup yöneticisi güncellendi.');break;
 case 'pati-group-delete-message':run(async()=>{
  const group=target.dataset.groupId,owner=me.id;
  const out=await sb.from('patiyiz_group_messages').delete().eq('id',id).eq('group_id',group).eq('sender_id',owner).select('id');
@@ -5312,6 +5472,7 @@ case 'dm-reply':{const m=patiDmFindMessage(id);const f=document.getElementById('
   patiHomeCountCache.delete(post);showComments(post);
  },'Yorum silindi');break}case 'replies':questionReplies(id);void patiLoadQuestionReplies(id);break;case 'post-menu':{const post=patiFindSocialPost(id);if(!post)break;const own=post.author_id===me.id;modal('Gönderi seçenekleri','<div class="pati-post-menu-list"><button type="button" data-action="pati-share-story" data-id="'+esc(id)+'">'+ico('story-create')+' Hikâyemde paylaş</button>'+(own?'<button type="button" data-action="edit-post" data-id="'+esc(id)+'">'+ico('edit')+' Gönderiyi düzenle</button><button type="button" data-action="pati-pin" data-id="'+esc(id)+'">'+(patiOwnPin(id)?'↻ Sabiti kaldır':'↻ Profilde sabitle')+'</button><button type="button" data-action="collab-invite-open" data-id="'+esc(id)+'">Ortak davet et</button>'+(patiCollabs.rows.some(x=>x.post_id===id)?'<button type="button" data-action="collab-remove" data-id="'+esc(id)+'">Ortak davetini kaldır</button>':'')+'<button type="button" class="danger" data-action="delete-post" data-id="'+esc(id)+'">'+ico('trash')+' Gönderiyi sil</button>':'<button type="button" data-action="report" data-kind="post" data-id="'+esc(id)+'">'+ico('alert')+' Gönderiyi bildir</button>'+(patiCollabs.rows.some(x=>x.post_id===id&&x.user_id===me.id&&x.status==='accepted')?'<button type="button" data-action="collab-remove" data-id="'+esc(id)+'">Ortaklıktan ayrıl</button>':''))+'</div>','post-actions-form');break}case 'collab-invite-open':{const p=data.posts.find(x=>x.id===id&&x.author_id===me?.id);if(!p)break;closeModal(true);modal('Ortak gönderi daveti',window.PatiyizCollabPicker?.makeMarkup('collab-handle')||'','collab-invite-form');const collabForm=document.getElementById('collab-invite-form');collabForm.dataset.post=id;window.PatiyizCollabPicker?.mount(collabForm,{sb,userId:me?.id,blocked,localProfiles:data.profiles,avatar,escape:esc});break;}
 case 'pati-repost':run(()=>patiToggleRepost(id));break;
+case 'pati-reaction-reel':{const source=patiFindSocialPost(id);if(!source)return notify('Orijinal paylaşım bulunamadı.',true);compose(null,'reels',false);const form=document.getElementById('post-form');if(form){form.dataset.sourcePost=id;form.querySelector('.modal-content')?.insertAdjacentHTML('afterbegin','<div class="pati-source-credit">🎬 @'+esc(profile(source.author_id).handle||'patiyiz')+' gönderisine tepki Reels · Kaynak otomatik belirtilecek.</div>')}break}
 case 'pati-pin':run(()=>patiTogglePin(id));break;
 case 'pati-share-story':if(confirm('Bu gönderi hikâyende 24 saat paylaşılsın mı?'))run(()=>patiSharePostToStory(id));break;
 case 'pati-story-open-post':run(()=>patiOpenSharedStoryPost(id));break;
@@ -5330,7 +5491,24 @@ case 'edit-post':compose(data.posts.find(p=>p.id===id));break;case 'delete-post'
   if(!result.data?.length)throw Error('Görev silinemedi veya yetkin yok.');
   data.care=data.care.filter(x=>x.id!==id);if(view==='care'||(view==='my-pet'&&patiMyPetTab==='care'))render();
  },'Bakım görevi silindi.');break;}case 'logout':run(async()=>{const r=await sb.auth.signOut();if(r.error)throw r.error;me=null;isAdmin=false;authMode='login';showAuth()},'Çıkış yapıldı');break;
-case 'like':void togglePostLike(id);break;case 'share-post':openPatiShareModal(id);break;case 'pati-copy-post':{const link=location.origin+location.pathname+'#post-'+id;if(navigator.clipboard?.writeText)navigator.clipboard.writeText(link).then(()=>notify('Paylaşım bağlantısı kopyalandı.'),()=>notify('Bağlantı kopyalanamadı.',true));else notify(link);break}case 'pati-share-system':{const link=location.origin+location.pathname+'#post-'+id;if(navigator.share)navigator.share({title:'Patiyiz paylaşımı',url:link}).catch(()=>{});else if(navigator.clipboard?.writeText)navigator.clipboard.writeText(link).then(()=>notify('Bağlantı kopyalandı.'));break}case 'dm-story-open':{if(!patiDmHasActiveStory(id))return notify('Bu kullanıcının aktif hikâyesi bulunmuyor.',true);openStory(id);break}case 'dm-open-shared-post':run(()=>patiDmOpenSharedPost(id));break;case 'send-post-dm':{const post=data.posts.find(x=>x.id===target.dataset.post);if(!post||id===me.id)break;run(async()=>{const r=await sb.from('messages').insert({sender_id:me.id,receiver_id:id,body:'📨 Paylaşım: '+location.origin+location.pathname+'#post-'+post.id});if(r.error)throw r.error;closeModal();},'Paylaşım mesajla gönderildi.');break;}case 'save':void togglePostSave(id);break;case 'follow':run(()=>doToggle('follows',{follower_id:me.id,followee_id:id},followed.has(id)||patiFollowPageState.viewerFollowing.has(id)));break;case 'vote':run(()=>patiRateQuestion(id,true));break;case 'vote-negative':run(()=>patiRateQuestion(id,false));break;case 'kb-save':run(()=>doToggle('kb_bookmarks',{article_id:id,user_id:me.id},favorites.has(id)));break;
+case 'like':void togglePostLike(id);break;case 'share-post':openPatiShareModal(id);break;case 'pati-copy-post':{const link=location.origin+location.pathname+'#post-'+id;if(navigator.clipboard?.writeText)navigator.clipboard.writeText(link).then(()=>notify('Paylaşım bağlantısı kopyalandı.'),()=>notify('Bağlantı kopyalanamadı.',true));else notify(link);break}case 'pati-share-system':{const link=location.origin+location.pathname+'#post-'+id;if(navigator.share)navigator.share({title:'Patiyiz paylaşımı',url:link}).catch(()=>{});else if(navigator.clipboard?.writeText)navigator.clipboard.writeText(link).then(()=>notify('Bağlantı kopyalandı.'));break}case 'dm-story-open':{if(!patiDmHasActiveStory(id))return notify('Bu kullanıcının aktif hikâyesi bulunmuyor.',true);openStory(id);break}case 'dm-open-shared-post':run(()=>patiDmOpenSharedPost(id));break;case 'send-post-dm':{const post=data.posts.find(x=>x.id===target.dataset.post);if(!post||id===me.id)break;run(async()=>{const r=await sb.from('messages').insert({sender_id:me.id,receiver_id:id,body:'📨 Paylaşım: '+location.origin+location.pathname+'#post-'+post.id});if(r.error)throw r.error;closeModal();},'Paylaşım mesajla gönderildi.');break;}case 'save':void togglePostSave(id);break;case 'follow':run(()=>doToggle('follows',{follower_id:me.id,followee_id:id},followed.has(id)||patiFollowPageState.viewerFollowing.has(id)));break;
+case 'pati-follow-accept':run(()=>patiFollowDecision(id,true));break;
+case 'pati-follow-decline':run(()=>patiFollowDecision(id,false));break;
+case 'pati-restrict':run(()=>patiRestrictToggle(id));break;
+case 'pati-insights':void patiCreatorInsights().catch(e=>notify(friendly(e),true));break;
+case 'pati-private-toggle':run(async()=>{
+ const owner=me.id,next=!current().is_private;
+ const r=await sb.from('profiles').update({is_private:next}).eq('id',owner).select('*').single();
+ if(r.error)throw r.error;
+ data.profiles=data.profiles.map(p=>p.id===owner?r.data:p);
+ patiSafetyState.loaded=false;render();
+},'Hesap gizliliği güncellendi.');break;
+case 'pati-dm-policy':run(async()=>{
+ const r=await sb.from('profiles').update({dm_policy:id}).eq('id',me.id).select('*').single();
+ if(r.error)throw r.error;
+ data.profiles=data.profiles.map(p=>p.id===me.id?r.data:p);render();
+},'Mesaj tercihi güncellendi.');break;
+case 'pati-comment-filter':modal('Yorum filtresi','<p>Virgülle ayırdığın kelimeleri içeren yeni yorumlar sunucu tarafından reddedilir.</p>'+textField('words','Filtre kelimeleri',(current().blocked_words||[]).join(', '),false,600),'pati-filter-form');break;case 'vote':run(()=>patiRateQuestion(id,true));break;case 'vote-negative':run(()=>patiRateQuestion(id,false));break;case 'kb-save':run(()=>doToggle('kb_bookmarks',{article_id:id,user_id:me.id},favorites.has(id)));break;
 case 'toggle-found':{const a=data.lost.find(x=>x.id===id&&x.owner_id===me.id);if(!a)break;const found=!a.found;
  if(!confirm(found?'Patili dostun bulundu mu? İlan bulundu olarak işaretlenecek.':'İlanı yeniden kayıp olarak yayınlamak istiyor musun?'))break;
  run(async()=>{const r=await sb.from('lost_reports').update({found}).eq('id',id).eq('owner_id',me.id).select('*');
@@ -5637,6 +5815,13 @@ case 'pati-group-message-form':{
 case 'story-answer-form':{const out=await sb.from('patiyiz_story_responses').insert({story_id:form.dataset.story,user_id:me.id,kind:'question',response:str('response')});if(out.error)throw out.error;closeModal(true);notify('Yanıtın gönderildi.');break}case 'story-form':{const result=await createStoryPublication(form,f,str);data.stories=[result,...data.stories.filter(x=>x.id!==result.id)];closeModal(true);render();notify(result.is_highlight?'Hikâyen profilinde kalıcı olarak görünecek.':'Hikâyen 24 saat boyunca görüntülenecek.');break}case 'verification-request-form':{if(current().is_verified)throw Error('Hesabın zaten doğrulanmış.');const uid=me.id;const r=await sb.from('verification_requests').insert({user_id:uid,note:str('note')});if(r.error){if(r.error.code==='23505')throw Error('Zaten bekleyen bir mavi tik talebin var.');throw r.error}if(me?.id!==uid)break;patiVerificationState={owner:uid,loaded:true,loading:false,latest:{status:'pending',created_at:new Date().toISOString()}};closeModal();if(view==='profile'&&(!profileId||profileId===uid))render();notify('Mavi tik talebin yöneticiye gönderildi.');break}case 'highlight-album-form':{const title=str('title').trim(),story_id=str('story_id');if(!title||title.length>32)throw Error('Albüm adı 1–32 karakter olmalı.');const story=data.stories.find(x=>x.id===story_id&&x.author_id===me.id);if(!story)throw Error('Hikâye bulunamadı.');if(!story.is_highlight){const mark=await sb.from('patiyiz_stories').update({is_highlight:true}).eq('id',story_id).eq('author_id',me.id);if(mark.error)throw mark.error;story.is_highlight=true}const out=await sb.from('patiyiz_highlight_albums').insert({owner_id:me.id,title}).select('id').single();if(out.error)throw out.error;const item=await sb.from('patiyiz_highlight_items').insert({album_id:out.data.id,story_id});if(item.error){await sb.from('patiyiz_highlight_albums').delete().eq('id',out.data.id);throw item.error}closeModal(true);await refresh();notify('Yeni öne çıkanlar albümü oluşturuldu.');break}
 case 'highlight-album-add-form':{const story_id=str('story_id'),album_id=form.dataset.album;if(!story_id||!album_id)throw Error('Hikâye ve albüm seç.');const out=await sb.from('patiyiz_highlight_items').upsert({album_id,story_id},{onConflict:'album_id,story_id'});if(out.error)throw out.error;closeModal(true);await refresh();notify('Hikâye albüme eklendi.');break}
 case 'collab-invite-form':{const postId=form.dataset.post,post=data.posts.find(p=>p.id===postId&&p.author_id===me.id);if(!post)throw Error('Bu gönderiye ortak davet edemezsin.');const selected=window.PatiyizCollabPicker?.selectedId(form,true);await patiCollabInvite(postId,str('collab_handle'),selected);closeModal(true);notify('Ortak daveti gönderildi.');render();break;}
+case 'pati-filter-form':{
+ const words=str('words').split(',').map(x=>x.trim()).filter(x=>x.length>=3).slice(0,30);
+ const r=await sb.from('profiles').update({blocked_words:words}).eq('id',me.id).select('*').single();
+ if(r.error)throw r.error;
+ data.profiles=data.profiles.map(p=>p.id===me.id?r.data:p);
+ closeModal(true);render();notify('Yorum filtreleri güncellendi.');break;
+}
 case 'post-form':{if(form.dataset.mode==='story'){const result=await createStoryPublication(form,f,str);data.stories=[result,...data.stories.filter(x=>x.id!==result.id)];closeModal(true);render();notify('Hikâyen 24 saat boyunca görüntülenecek.')}else if(form.dataset.edit){await save('posts',{body:str('body').trim()},form.dataset.edit)}else{const selectedCollab=window.PatiyizCollabPicker?.selectedId(form,false)||'';const result=await createPostPublication(form,f,str);profileCountCache.delete(me.id);let inviteMessage='Paylaşım yayınlandı.';if(selectedCollab){try{await patiCollabInvite(result.id,str('collab_handle'),selectedCollab);inviteMessage='Paylaşım yayınlandı; ortak daveti gönderildi.'}catch(error){console.warn('Ortak gönderi daveti:',error);inviteMessage='Paylaşım yayınlandı fakat ortak daveti gönderilemedi: '+friendly(error)}}closeModal(true);try{await refresh()}catch(error){console.warn('Paylaşım kaydedildi, akış yenilemesi başarısız:',error.message)}notify(inviteMessage,inviteMessage.includes('gönderilemedi'));void patiCollabRefresh();try{localStorage.removeItem(patiDraftKey())}catch{}}break}case 'question-form':{const title=str('title'),body=str('body');if(title.length<5||title.length>150)throw Error('Soru başlığı 5–150 karakter arasında olmalı.');if(body.length<5||body.length>2000)throw Error('Soru açıklaması 5–2000 karakter arasında olmalı.');const author=me.id,cat=str('category');
  const result=await sb.from('questions').insert({author_id:author,title,category:cat,body}).select('*').single();
  if(result.error)throw result.error;
@@ -5842,5 +6027,27 @@ document.addEventListener('submit',e=>{
  if(e.target?.id!=='pati-health-record-form'||!(view==='healthfile'||(view==='my-pet'&&patiMyPetTab==='healthfile'))||!healthFilePortal)return;
  e.preventDefault();void healthFilePortal.save(e.target);
 });
+document.addEventListener('change',event=>{
+ const input=event.target.closest?.('input[data-pati-group-avatar]');
+ if(!input?.files?.length)return;
+ const id=input.dataset.patiGroupAvatar;
+ void run(()=>patiGroupPhotoUpload(id,input.files[0]));
+});
+/* Error telemetry stores only type and daily count, never messages, stack or URLs. */
+const patiReportedErrors=new Map();
+function patiTrackClientError(kind){
+ if(!me?.id||!sb||navigator.onLine===false)return;
+ const key=me.id+':'+kind,now=Date.now();
+ if(now-(patiReportedErrors.get(key)||0)<60000)return;
+ patiReportedErrors.set(key,now);
+ void sb.rpc('patiyiz_track_client_error',{p_kind:kind}).then(({error})=>{
+  if(error)console.warn('İstemci hata sayacı gönderilemedi.');
+ }).catch(()=>{});
+}
+window.addEventListener('error',event=>{
+ const kind=event.target instanceof HTMLImageElement||event.target instanceof HTMLVideoElement?'asset':'script';
+ patiTrackClientError(kind);
+},true);
+window.addEventListener('unhandledrejection',()=>patiTrackClientError('promise'));
 boot();
 })();

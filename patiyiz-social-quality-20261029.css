@@ -1,0 +1,43 @@
+/* Patiyiz October social/creator/group polish. Scoped, keyboard and mobile safe. */
+.pati-safety-controls{display:grid;gap:10px;min-width:0}
+.pati-safety-controls h4{margin:12px 0 0;color:var(--pui-text,#17191e);font-size:14px}
+.pati-safety-controls .pati-social-person{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:9px;border:1px solid var(--pui-border,#ddd);border-radius:12px}
+.pati-safety-controls .pati-social-person>span{flex:1;min-width:100px;display:grid;gap:3px}
+.pati-safety-controls .pati-social-person small{color:var(--pui-secondary,#5c6067)}
+.pati-safety-controls button,.pati-group-photo-label{background:var(--pui-raised,#f3f4f6);color:var(--pui-text,#1c1d21);border:1px solid var(--pui-border,#ddd);padding:10px 12px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:700}
+.pati-safety-controls [aria-pressed="true"],.pati-safety-controls [aria-checked="true"]{background:var(--pui-text,#20212a);color:var(--pui-paper,#fff)}
+.pati-safety-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.pati-safety-buttons button{padding:10px 5px;line-height:1.3}
+.pati-private-message{margin:24px 12px;padding:24px 18px;border:1px solid var(--pui-border,#ddd);border-radius:18px;text-align:center;background:var(--pui-raised,#f6f7f9);color:var(--pui-text,#111);line-height:1.55;font-size:14px;font-weight:650}
+.pati-insights-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.pati-insights-card{display:flex;flex-direction:column;gap:5px;padding:14px;border:1px solid var(--pui-border,#ddd);border-radius:15px;background:var(--pui-raised,#f7f7f8);color:var(--pui-text,#202029);min-width:0}
+.pati-insights-card strong{font-size:clamp(18px,4vw,29px);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.pati-insights-card small{font-size:11px;color:var(--pui-secondary,#5b606a)}
+#pati-insights-panel .modal-content>h3{font-size:14px;color:var(--pui-text,#202029)}
+.pati-insights-chart{display:flex;align-items:stretch;height:130px;gap:3px;border-bottom:1px solid var(--pui-border,#ddd);padding:10px 0 0}
+.pati-insights-bar{display:flex;align-items:end;flex:1 1 0;min-width:2px}
+.pati-insights-bar span{display:block;width:100%;background:var(--pui-text,#23252e);border-radius:4px 4px 0 0;min-height:3px}
+.pati-group-photo-editor{display:flex;align-items:center;gap:14px;min-width:0;margin:12px 0 16px;padding:12px;border:1px solid var(--pui-border,#ddd);border-radius:16px;color:var(--pui-text,#242531)}
+.pati-group-photo-editor>div{display:grid;gap:5px;min-width:0}
+.pati-group-photo-editor small{color:var(--pui-secondary,#6a6a72)}
+.pati-group-photo-preview{display:grid;place-items:center;width:64px;height:64px;border-radius:50%;overflow:hidden;flex:0 0 64px;background:var(--pui-raised,#eee)}
+.pati-group-photo-preview img,.pati-group-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.pati-group-photo-label{display:inline-flex;width:max-content;align-items:center;justify-content:center;margin-top:4px}
+.pati-group-photo-label input{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;opacity:0!important}
+.pati-reaction-choice{display:grid;gap:7px;padding:12px;border:1px solid var(--pui-border,#ddd);border-radius:15px;margin:8px 0 15px;background:var(--pui-raised,#f5f6f7)}
+.pati-reaction-choice small{color:var(--pui-secondary,#555)}
+.pati-source-credit{display:block;width:100%;background:var(--pui-raised,#f5f6f7);color:var(--pui-text,#202029);border:1px solid var(--pui-border,#ddd);border-radius:10px;margin:9px 0;padding:9px 12px;font-size:12px;text-align:left;cursor:pointer}
+.pati-quality-status{position:fixed;z-index:10020;left:50%;top:calc(8px + env(safe-area-inset-top,0px));transform:translateX(-50%);width:max-content;max-width:calc(100vw - 28px);padding:9px 14px;border-radius:12px;background:#1c1f26;color:#fff;font-size:12px;font-weight:650;box-shadow:0 4px 18px #0003;pointer-events:none}
+.pati-quality-status[hidden]{display:none!important}
+html.pati-low-data .pati-micro-motion,html.pati-low-data .pati-feed-card{animation-duration:.01ms!important;transition-duration:.01ms!important}
+@media(max-width:520px){
+ .pati-insights-grid{gap:8px}
+ .pati-insights-card{padding:11px 9px}
+ .pati-group-photo-editor{gap:10px;padding:10px}
+ .pati-safety-buttons button{font-size:12px;min-height:44px}
+}
+@media(prefers-reduced-motion:reduce){
+ .pati-insights-bar,.pati-source-credit{transition:none!important}
+}
+.pati-reel-caption .pati-reel-source-credit{display:block;margin-top:7px;padding:5px 8px;border:1px solid #ffffff66;border-radius:10px;background:#0009;color:#fff;font-size:12px;line-height:1.35;text-align:left;cursor:pointer;max-width:100%}
+.pati-reel-caption .pati-reel-source-credit:focus-visible{outline:2px solid #fff;outline-offset:2px}
