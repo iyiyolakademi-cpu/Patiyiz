@@ -4478,12 +4478,12 @@ function profilePage(){
  (own?'<button type="button" class="pati-profile-story-plus" data-action="story-create" aria-label="Profilinden hikâye paylaş" title="Hikâye ekle">'+ico('plus')+'</button>':'')+'</div><div class="pati-ig-info"><div class="pati-ig-handle-row"><strong class="pati-ig-handle">@'+esc(p.handle||'patiyiz')+'</strong>'+verifiedBadge(p)+'</div><strong class="pati-ig-name">'+esc(p.display_name||'Patiyiz üyesi')+'</strong><div class="pati-ig-stats"><span><b data-pati-count="posts">'+((cachedCounts?.posts??posts.filter(x=>x.author_id===p.id).length)+((typeof patiCollabs!=='undefined'?patiCollabs.rows:[]).filter(x=>x.user_id===p.id&&x.status==='accepted').length))+'</b><small>gönderi</small></span><button type="button" data-action="followers-list" data-id="'+esc(p.id)+'" data-mode="followers"><b data-pati-count="followers">'+followers+'</b><small>takipçi</small></button><button type="button" data-action="followers-list" data-id="'+esc(p.id)+'" data-mode="following"><b data-pati-count="following">'+following+'</b><small>takip edilen</small></button></div></div></div>'+
  (p.bio?'<div class="pati-ig-bio">'+esc(p.bio)+'</div>':'')+patiProfileLinksHTML(p)+mutualMarkup+
  
- '<div class="pati-ig-actions">'+(own?button('Profili düzenle','edit-profile')+button('İstatistikler','pati-insights'):button(followed.has(p.id)?'Takiptesin':patiIsFollowRequested(p.id)?'İstek gönderildi':followBack?'Sen de takip et':'Takip et','follow','data-id="'+esc(p.id)+'"'+(followBack?' data-follow-back="true"':''))+button('Mesaj gönder','chat','data-id="'+esc(p.id)+'"')+button('Hesabı bildir','report','data-id="'+esc(p.id)+'" data-kind="profile"')+button(patiSafetyState.restrictions.has(p.id)?'Kısıtlamayı kaldır':'Kısıtla','pati-restrict','data-id="'+esc(p.id)+'"'))+'</div>'+(own?patiCreatorPreviewHTML():'')+(own?patiVerificationProfileAction():'')+
+ '<div class="pati-ig-actions">'+(own?button('Profili düzenle','edit-profile')+button('İstatistikler','pati-insights'):button(followed.has(p.id)?'Takiptesin':patiIsFollowRequested(p.id)?'İstek gönderildi':followBack?'Sen de takip et':'Takip et','follow','data-id="'+esc(p.id)+'"'+(followBack?' data-follow-back="true"':''))+button('Mesaj gönder','chat','data-id="'+esc(p.id)+'"')+button('Hesabı bildir','report','data-id="'+esc(p.id)+'" data-kind="profile"')+button(patiSafetyState.restrictions.has(p.id)?'Kısıtlamayı kaldır':'Kısıtla','pati-restrict','data-id="'+esc(p.id)+'"'))+'</div>'+(own&&typeof patiCreatorPreviewHTML==='function'?patiCreatorPreviewHTML():'')+(own?patiVerificationProfileAction():'')+
  '<div class="pati-ig-tabs" role="tablist" aria-label="Profil gönderileri">'+iconTabs.map(x=>'<button type="button" role="tab" aria-selected="'+(profilePostsTab===x[0])+'" class="'+(profilePostsTab===x[0]?'active':'')+'" data-action="profile-posts-tab" data-id="'+x[0]+'" aria-label="'+x[2]+'">'+x[1]+'</button>').join('')+'</div>'+
  profileContent+
  '</div>';
  void syncProfileCounts(p.id);
- if(own)void patiCreatorPreviewLoad();
+ if(own&&typeof patiCreatorPreviewLoad==='function')void patiCreatorPreviewLoad();
 }
 function formField(name,label,type='text',val='',required=false){return `<div class="pati-field"><label for="f-${name}">${esc(label)}</label><input id="f-${name}" name="${name}" type="${type}" ${required?'required':''} value="${esc(val)}"></div>`}
 function selectField(name,label,options,val=''){return `<div class="pati-field"><label>${esc(label)}</label><select name="${name}">${options.map(x=>`<option ${x===val?'selected':''}>${esc(x)}</option>`).join('')}</select></div>`}
@@ -5604,7 +5604,7 @@ async function createPostPublication(form,f,str){
   if(form.dataset.sourcePost){if(!hasVideo)throw Error('Tepki Reels için video seç.');record.source_post_id=form.dataset.sourcePost;}
   for(let i=0;i<photoFiles.length;i++){
    uploadStatus('Fotoğraf '+(i+1)+' / '+photoFiles.length+' hazırlanıyor…');
-   const file=patiCropEdits.has(photoFiles[i])?await cropPostPhoto(photoFiles[i],str('aspect')):str('aspect')==='original'?await preparePhoto(photoFiles[i]):await cropPostPhoto(photoFiles[i],str('aspect'));
+   const file=(typeof patiCropEdits!=='undefined'&&patiCropEdits.has(photoFiles[i]))?await cropPostPhoto(photoFiles[i],str('aspect')):str('aspect')==='original'?await preparePhoto(photoFiles[i]):await cropPostPhoto(photoFiles[i],str('aspect'));
    const url=await send(file,'image');
    if(url)record.images.push(url);
   }
