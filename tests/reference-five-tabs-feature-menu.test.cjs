@@ -68,7 +68,7 @@ test('Mobil üst menü düğmesi tüm gerçek bölümlere erişim sağlar',()=>{
  for(const id of known)assert.match(rendered,new RegExp('data-view="'+id+'"'),'missing '+id);
  assert.equal(removed,true);
  assert.match(app,/case 'tools':openMobileFeaturesMenu\(\);break/);
- assert.match(app,/if\(v\)\{closePatiCreate\(\);profileId='';selectedPostId='';/);
+ assert.match(app,/if\(v\)\{patiInsightsClose\(\);closePatiCreate\(\);profileId='';selectedPostId='';/);
  assert.match(css,/#tools-form \.pati-feature-group/);
 });
 
