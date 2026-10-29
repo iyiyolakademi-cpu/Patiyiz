@@ -13,7 +13,7 @@
    bar.setAttribute('aria-live','polite');bar.hidden=true;
    document.body.appendChild(bar);
   }
-  if(offline){bar.textContent='Bağlantı yok · Kaydedilmiş sayfalar açılabilir, gönderme işlemleri için internet gerekli';bar.hidden=false}
+  if(offline){bar.textContent='Bağlantı yok · Paylaşım ve mesaj göndermek için internet gerekli';bar.hidden=false}
   else{bar.textContent='';bar.hidden=true}
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',refresh,{once:true});
