@@ -65,7 +65,7 @@ test('Polish light and dark colors, responsive and no filters over user media',(
 });
 test('Polished components load after the unified theme and ship to native',()=>{
  const sheets=[...html.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map(x=>x[1]);
- assert.ok(sheets.at(-1).includes('patiyiz-dm-content-studio-20261029.css'), 'current design sheet should load last');
+ assert.ok(sheets.at(-1).includes('patiyiz-neutral-chat-profile-20261029.css'), 'neutral chat layer should load last');
  assert.ok(sheets.findIndex(x=>x.includes('patiyiz-polish-collab-dm-story-20261029.css'))<sheets.findIndex(x=>x.includes('patiyiz-dm-content-studio-20261029.css')), 'new design follows and preserves existing theme');
  assert.match(native,/'patiyiz-polish-collab-dm-story-20261029\.css'/);
  assert.match(html,/collab_dual_dm_story_activity=20261029/);
