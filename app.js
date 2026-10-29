@@ -3825,7 +3825,7 @@ async function patiCreatorInsights(){
 }
 function patiRecordProfileVisit(id){
  if(!me?.id||!id||id===me.id||document.hidden)return;
- const key=me.id+':'+id;if(patiProfileVisitRecorded.has(key))return;
+ const key=me.id+':'+id+':'+new Date().toISOString().slice(0,10);if(patiProfileVisitRecorded.has(key))return;
  patiProfileVisitRecorded.add(key);
  void sb.rpc('patiyiz_record_profile_visit',{p_profile:id}).then(({error})=>{if(error)patiProfileVisitRecorded.delete(key)}).catch(()=>patiProfileVisitRecorded.delete(key));
 }
