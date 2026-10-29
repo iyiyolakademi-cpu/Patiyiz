@@ -3508,6 +3508,106 @@ function patiDmTimelineDivider(messages,index){
  return '<div class="pati-dm-time-divider" role="separator" aria-label="'+esc(label)+'"><time datetime="'+esc(item.created_at)+'">'+esc(label)+'</time></div>';
 }
 
+
+/* Professional direct messaging: owner-scoped server search, scheduled delivery
+   managed by pg_cron, saved chat theme and first-party sticker picker. */
+const patiDmThemeCache=new Map(),patiDmThemePending=new Set();
+const PATI_DM_THEME_NAMES={classic:'Klasik',midnight:'Gece',lavender:'Lavanta',ocean:'Okyanus',rose:'Gül'};
+const PATI_DM_STICKERS=['🐾','🐶','🐱','🐰','🐥','🌸','💜','🎉','🧡','🥹','✨','🦴','🦋','⭐','🎈','💐'];
+function patiDmThemeKey(peer){return me?.id+':'+peer}
+function patiDmThemeGet(peer){
+ if(!peer||!me)return 'classic';
+ const key=patiDmThemeKey(peer);
+ if(!patiDmThemeCache.has(key)&&!patiDmThemePending.has(key)){
+  patiDmThemePending.add(key);
+  void sb.from('patiyiz_dm_themes').select('theme').eq('viewer_id',me.id).eq('peer_id',peer).maybeSingle()
+   .then(({data,error})=>{
+    if(error)throw error;
+    patiDmThemeCache.set(key,data?.theme||'classic');
+    if(view==='messages'&&personId===peer)render();
+   }).catch(error=>console.warn('Sohbet teması yüklenemedi:',error?.message||error))
+   .finally(()=>patiDmThemePending.delete(key));
+ }
+ return patiDmThemeCache.get(key)||'classic';
+}
+async function patiDmThemeSet(peer,theme){
+ if(!PATI_DM_THEME_NAMES[theme]||!me||!peer)return;
+ const r=await sb.from('patiyiz_dm_themes').upsert({viewer_id:me.id,peer_id:peer,theme,updated_at:new Date().toISOString()},{onConflict:'viewer_id,peer_id'});
+ if(r.error)throw r.error;
+ patiDmThemeCache.set(patiDmThemeKey(peer),theme);
+ closeModal(true);render();notify('Sohbet teması değiştirildi.');
+}
+function patiDmThemeDialog(peer){
+ if(!me||!peer)return;
+ modal('Sohbet teması','<p>Görünüm yalnızca senin sohbet ekranını değiştirir.</p><div class="pati-chat-theme-choices">'+
+ Object.entries(PATI_DM_THEME_NAMES).map(([key,label])=>'<button type="button" data-action="dm-theme-set" data-id="'+key+'" data-peer="'+esc(peer)+'" class="pati-theme-preview pati-chat-'+key+'" aria-pressed="'+(patiDmThemeGet(peer)===key)+'">'+esc(label)+'</button>').join('')+
+ '</div>','pati-dm-theme-form');
+ document.querySelector('#pati-dm-theme-form .modal-footer')?.remove();
+}
+async function patiDmSearchMessages(peer,query){
+ const uid=me?.id;
+ if(!uid||!peer||peer===uid)throw Error('Sohbet bulunamadı.');
+ const term=String(query||'').trim().slice(0,80);
+ if(term.length<2)throw Error('En az iki harf yaz.');
+ const escaped=term.replace(/[\\%_]/g,'\\function messagesPage(){');
+ const r=await sb.from('messages').select('id,sender_id,receiver_id,body,created_at')
+  .or('and(sender_id.eq.'+uid+',receiver_id.eq.'+peer+'),and(sender_id.eq.'+peer+',receiver_id.eq.'+uid+')')
+  .ilike('body','%'+escaped+'%').order('created_at',{ascending:false}).limit(60);
+ if(r.error)throw r.error;
+ return r.data||[];
+}
+function patiDmSearchOpen(peer){
+ if(!peer)return notify('Önce bir sohbet seç.',true);
+ modal('Mesajlarda ara','<label class="pati-field">Sohbette ara<input name="query" minlength="2" maxlength="80" placeholder="Kelime veya cümle" autocomplete="off" required></label><div id="pati-dm-search-results" role="status"></div>','pati-dm-search-form');
+ document.getElementById('pati-dm-search-form').dataset.peer=peer;
+ const button=document.querySelector('#pati-dm-search-form .modal-footer button[type=submit]');
+ if(button)button.textContent='Ara';
+}
+async function patiDmSearchJump(peer,id){
+ if(!me||!peer)return;
+ const owner=me.id;const r=await sb.from('messages').select('*').eq('id',id).maybeSingle();
+ if(r.error)throw r.error;
+ const row=r.data;
+ if(!row||!((row.sender_id===owner&&row.receiver_id===peer)||(row.receiver_id===owner&&row.sender_id===peer)))throw Error('Bu mesaj bulunamadı.');
+ const key=patiDmThreadKey(peer);
+ const state=patiDmThreads.get(key);
+ if(state&&!state.rows.some(x=>x.id===row.id))state.rows.push(row);
+ if(!data.messages.some(x=>x.id===row.id))data.messages.push(row);
+ closeModal(true);personId=peer;patiActiveGroupId='';mobileChatOpen=true;
+ if(view!=='messages')navigate('messages');else render();
+ requestAnimationFrame(()=>{
+  const el=[...document.querySelectorAll('.bubble-chat[data-message-id]')].find(x=>x.dataset.messageId===id);
+  el?.scrollIntoView({block:'center',behavior:'smooth'});
+  el?.classList.add('pati-dm-search-hit');
+ });
+}
+function patiDmScheduleOpen(peer){
+ if(!peer)return notify('Önce bir sohbet seç.',true);
+ const now=new Date(Date.now()+120000), local=new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,16);
+ modal('Mesajı zamanla','<p>Mesaj belirlediğin saatte, alıcının o andaki mesaj izinleri uygunsa gönderilir.</p>'+
+ '<div class="pati-field"><label>Mesaj<textarea name="body" rows="3" maxlength="1000" required placeholder="Gönderilecek mesaj"></textarea></label></div>'+
+ '<div class="pati-field"><label>Gönderim tarihi ve saati<input type="datetime-local" name="send_at" min="'+local+'" value="'+local+'" required></label></div>'+
+ '<button type="button" data-action="dm-scheduled-list" data-id="'+esc(peer)+'" class="soft-btn">Planlanan mesajları gör</button>','pati-dm-schedule-form');
+ document.getElementById('pati-dm-schedule-form').dataset.peer=peer;
+}
+async function patiDmScheduledList(peer){
+ if(!me||!peer)return;
+ const r=await sb.from('patiyiz_scheduled_messages').select('id,body,send_at,status,error_code').eq('sender_id',me.id)
+ .eq('receiver_id',peer).order('send_at',{ascending:false}).limit(40);
+ if(r.error)throw r.error;
+ const records=r.data||[];
+ modal('Planlanan mesajlar','<div class="pati-dm-scheduled-list">'+(records.length?records.map(row=>
+ '<div class="pati-dm-scheduled-item"><span><strong>'+esc(cut(row.body,140))+'</strong><small>'+esc(new Date(row.send_at).toLocaleString('tr-TR'))+' · '+esc(({pending:'Bekliyor',sent:'Gönderildi',failed:'Gönderilemedi',cancelled:'İptal'})[row.status]||row.status)+'</small></span>'+
+ (row.status==='pending'?'<button type="button" data-action="dm-scheduled-cancel" data-id="'+esc(row.id)+'" data-peer="'+esc(peer)+'">İptal et</button>':'')+'</div>').join(''):'<p>Henüz zamanlanmış mesaj bulunmuyor.</p>')+'</div>','pati-dm-scheduled-form');
+ document.querySelector('#pati-dm-scheduled-form .modal-footer')?.remove();
+}
+function patiDmStickerDialog(peer){
+ if(!peer)return;
+ modal('Çıkartmalar','<p>Hayvanseverlere özel çıkartmalar</p><div class="pati-dm-sticker-grid">'+
+ PATI_DM_STICKERS.map(item=>'<button type="button" data-action="dm-sticker-send" data-emoji="'+esc(item)+'" data-peer="'+esc(peer)+'" aria-label="'+esc(item)+' çıkartmasını gönder">'+item+'</button>').join('')+'</div>','pati-dm-sticker-form');
+ document.querySelector('#pati-dm-sticker-form .modal-footer')?.remove();
+}
+
 function messagesPage(){
  if(patiGroupInboxState.owner!==me.id||(!patiGroupInboxState.ready&&!patiGroupInboxState.loading))void patiGroupFetchInbox();
  patiGroupInboxStart();
