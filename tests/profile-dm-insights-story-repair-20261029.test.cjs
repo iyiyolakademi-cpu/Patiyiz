@@ -53,7 +53,7 @@ test('Chat header has no search control; voice contains sender avatar and playba
  assert.match(css,/filter:none!important/);
 });
 test('Insights stays inside dedicated dashboard and can recover from backend errors',async()=>{
- const section=between('function patiInsightsClose(){','function patiRecordProfileVisit(');
+ const section=between('let patiCreatorStats=','function patiRecordProfileVisit(');
  const state={dialog:null,open:false};
  const dom={
   getElementById:()=>state.dialog,
