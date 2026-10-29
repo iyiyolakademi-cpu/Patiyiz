@@ -1,0 +1,54 @@
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const app=fs.readFileSync('app.js','utf8');
+const css=fs.readFileSync('patiyiz-dm-content-studio-20261029.css','utf8');
+const sql=fs.readFileSync('supabase/patiyiz-creator-audience-20261029.sql','utf8');
+test('All JavaScript remains valid',()=>new vm.Script(app));
+test('Circular group avatar cropping supports drag, two-finger zoom, cancel, save and real photo upload',()=>{
+ assert.match(app,/async function patiGroupAvatarCropOpen\(groupId,file\)/);
+ assert.match(app,/canvas\.addEventListener\('pointerdown'/);
+ assert.match(app,/canvas\.addEventListener\('pointermove'/);
+ assert.match(app,/if\(pointers\.size===2\)/);
+ assert.match(app,/canvas\.toBlob\(/);
+ assert.match(app,/patiGroupPhotoUpload\(groupId,output\)/);
+ assert.match(app,/data-pati-group-avatar/);
+ assert.match(css,/\.pati-group-photo-preview\{[^}]*border-radius:50%/);
+ assert.match(css,/\.pati-group-crop-stage\{[^}]*border-radius:50%/);
+ assert.match(css,/@media\(max-width:540px\)/);
+});
+test('Repost is adjacent to comment and share on both normal posts and Reels, never stories',()=>{
+ const card=app.slice(app.indexOf('const controls=\'<div class="pati-actionbar'),app.indexOf('const sourcePost=',app.indexOf('const controls=\'<div class="pati-actionbar')));
+ assert.ok(card.indexOf('data-action="comment"')<card.indexOf('data-action="pati-repost"'));
+ assert.ok(card.indexOf('data-action="pati-repost"')<card.indexOf('data-action="share-post"'));
+ const reel=app.slice(app.indexOf('function reelsPage(){'),app.indexOf('function closePatiCreate()',app.indexOf('function reelsPage(){')));
+ assert.ok(reel.indexOf('data-action="comment"')<reel.indexOf('data-action="pati-repost"'));
+ assert.ok(reel.indexOf('data-action="pati-repost"')<reel.indexOf('data-action="share-post"'));
+ assert.match(app,/patiReelsFeed\.rows\|\|\[\]/);
+ assert.match(app,/if\(view==='reels'\)document\.querySelectorAll/);
+ assert.match(app,/PATI_REPOST_ICON/);
+});
+test('Creator dashboard fills the viewport and supports 7, 30 and 90-day real data',()=>{
+ assert.match(app,/function patiCreatorInsights\(days=30\)/);
+ assert.match(app,/patiyiz_creator_insights/);
+ assert.match(app,/patiyiz_creator_audience/);
+ assert.match(app,/\[7,30,90\]/);
+ assert.match(app,/patiInsightsBarChart/);
+ assert.match(app,/pati-stat-donut/);
+ assert.match(app,/pati-insights-close/);
+ assert.match(app,/pati-insights-period/);
+ assert.match(css,/\.pati-creator-dashboard\{[^}]*position:fixed;inset:0/);
+ assert.match(css,/height:100dvh/);
+ assert.match(css,/\.pati-insight-charts\{[^}]*grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+});
+test('Demographics are opt in, behind RLS and suppressed for tiny audience',()=>{
+ assert.match(sql,/create table if not exists public\.patiyiz_audience_demographics/);
+ assert.match(sql,/alter table public\.patiyiz_audience_demographics enable row level security/);
+ assert.match(sql,/user_id=\(select auth\.uid\(\)\)/);
+ assert.match(sql,/if v_sample < 10 then/);
+ assert.match(sql,/having count\(\*\) >= 5/g);
+ assert.match(sql,/revoke all on function public\.patiyiz_creator_audience\(integer\) from public,anon/);
+ assert.match(app,/name="analytics_gender"/);
+ assert.match(app,/aud\.genders/);
+ assert.match(app,/aud\.cities/);
+ assert.match(app,/cities\.length\|\|genders\.length/);
+ assert.doesNotMatch(sql,/gender_guess|face_scan|birth_name/);
+});
