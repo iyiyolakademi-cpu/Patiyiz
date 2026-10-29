@@ -25,7 +25,9 @@ test('Profile has three bold icons and a separate pinned marker',()=>{
  const profile=app.slice(app.indexOf('function profilePage(){'),app.indexOf('function formField(',app.indexOf('function profilePage(){')));
  assert.match(profile,/const iconTabs=\[\['media',gridTabIcon/);
  assert.match(profile,/\['reels',reelsTabIcon/);
- assert.match(profile,/\['videos',videoTabIcon/);\n assert.match(profile,/\['text',textTabIcon/);\n assert.match(profile,/\['reposts',repostTabIcon/);
+ assert.match(profile,/\['videos',videoTabIcon/);
+ assert.match(profile,/\['text',textTabIcon/);
+ assert.match(profile,/\['reposts',repostTabIcon/);
  assert.match(profile,/pati-profile-tab-icon/);
  assert.match(profile,/aria-label="Sabitlenmiş gönderi">📌/);
  assert.match(profile,/post_format!=='reels'/);
