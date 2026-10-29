@@ -3385,10 +3385,15 @@ function patiDmOpenPhoto(messageId){
  dialog.id='pati-dm-lightbox';
  dialog.className='pati-dm-lightbox';
  dialog.setAttribute('aria-label','Sohbet fotoğrafı');
- dialog.innerHTML='<div class="pati-dm-lightbox-toolbar"><strong>Fotoğraf</strong><button type="button" class="pati-dm-lightbox-close" aria-label="Fotoğrafı kapat">×</button></div><div class="pati-dm-lightbox-stage"><img src="'+esc(url)+'" alt="Sohbette gönderilen fotoğraf" loading="eager" decoding="async"></div>';
+ dialog.innerHTML='<div class="pati-dm-lightbox-toolbar"><strong>'+(message.body==='🎞️ GIF'?'GIF':'Fotoğraf')+'</strong><div class="pati-dm-lightbox-actions"><button type="button" data-dm-zoom="out" aria-label="Uzaklaştır">−</button><button type="button" data-dm-zoom="reset" aria-label="Boyutu sıfırla">1×</button><button type="button" data-dm-zoom="in" aria-label="Yakınlaştır">+</button><a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer" aria-label="Orijinal medyayı aç">Orijinal</a></div><button type="button" class="pati-dm-lightbox-close" aria-label="Fotoğrafı kapat">×</button></div><div class="pati-dm-lightbox-stage"><img src="'+esc(url)+'" alt="Sohbette gönderilen fotoğraf" loading="eager" decoding="async"></div>';
  const focusBefore=document.activeElement;
  document.body.appendChild(dialog);
  dialog.querySelector('.pati-dm-lightbox-close')?.addEventListener('click',()=>dialog.close());
+ let zoom=1;const photoEl=dialog.querySelector('.pati-dm-lightbox-stage img');
+ dialog.querySelectorAll('[data-dm-zoom]').forEach(control=>control.addEventListener('click',()=>{
+  zoom=control.dataset.dmZoom==='reset'?1:Math.max(1,Math.min(3,zoom+(control.dataset.dmZoom==='in'?.25:-.25)));
+  if(photoEl)photoEl.style.transform='scale('+zoom+')';
+ }));
  dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close()});
  dialog.addEventListener('close',()=>{dialog.remove();if(focusBefore?.isConnected)focusBefore.focus?.()},{once:true});
  dialog.showModal();
