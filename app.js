@@ -4316,7 +4316,7 @@ function patiGroupChatPaneHTML(){
  const messages=ready?state.rows.slice():[];
  return '<header class="pati-group-chat-header">'+
   '<button type="button" class="mobile-chat-back" data-action="chat-back" aria-label="Sohbetlere dön">←</button>'+
-  '<span class="chat-head-avatar pati-group-avatar" aria-hidden="true">'+ico('users')+'</span>'+
+  '<span class="chat-head-avatar pati-group-avatar" aria-hidden="true">'+(ready&&patiGroupPhotoUrl(state.group?.avatar_path)?'<img src="'+esc(patiGroupPhotoUrl(state.group.avatar_path))+'" alt="" loading="lazy">':ico('users'))+'</span>'+
   '<span class="pati-group-chat-title"><strong>'+esc(title)+'</strong><small>'+ (ready?members+' üye':'Grup yükleniyor…')+'</small></span>'+
   '<button type="button" class="soft-btn chat-view-profile" data-action="pati-group-members" data-id="'+esc(id)+'">Üyeler</button>'+ 
   (ready&&state.group?.creator_id===me.id?'<button type="button" class="pati-group-delete-top" data-action="pati-group-delete" data-id="'+esc(id)+'" aria-label="Grubu kalıcı sil">'+ico('trash')+'</button>':'')+
@@ -4489,6 +4489,36 @@ async function patiGroupDeletePermanent(groupId){
  if(view==='messages')render();
  notify('Grup ve tüm mesajları kalıcı olarak silindi.');
 }
+
+function patiGroupPhotoUrl(path){
+ if(!path||!/^[0-9a-f-]{36}\/[^/]+\.(?:jpg|jpeg|png|webp)$/i.test(path))return '';
+ try{return sb.storage.from('patiyiz-group-avatars').getPublicUrl(path).data.publicUrl||''}catch(_){return ''}
+}
+async function patiGroupPhotoUpload(groupId,file){
+ if(!me||!file||!file.size)return;
+ if(!/^image\/(jpeg|png|webp)$/.test(file.type))throw Error('Grup fotoğrafı JPG, PNG veya WebP olmalı.');
+ if(file.size>10*1024*1024)throw Error('Görsel çok büyük. Daha küçük bir fotoğraf seç.');
+ const url=URL.createObjectURL(file),image=new Image();
+ let blob;
+ try{
+  image.src=url;await image.decode();
+  const canvas=document.createElement('canvas'),ratio=Math.min(1,640/Math.max(1,image.naturalWidth,image.naturalHeight));
+  canvas.width=Math.max(1,Math.round(image.naturalWidth*ratio));
+  canvas.height=Math.max(1,Math.round(image.naturalHeight*ratio));
+  canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);
+  blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',.74));
+ }finally{URL.revokeObjectURL(url)}
+ if(!blob||blob.size>1024*1024)throw Error('Fotoğraf 1 MB altına indirilemedi.');
+ const key=groupId+'/'+crypto.randomUUID()+'.jpg';
+ const saved=await sb.storage.from('patiyiz-group-avatars').upload(key,blob,{contentType:'image/jpeg',upsert:false});
+ if(saved.error)throw saved.error;
+ const updated=await sb.rpc('patiyiz_group_set_photo',{p_group:groupId,p_path:key});
+ if(updated.error)throw updated.error;
+ if(patiGroupChatState.id===groupId&&patiGroupChatState.group)patiGroupChatState.group.avatar_path=key;
+ await patiGroupMembersDialog(groupId);
+ notify('Grup fotoğrafı güncellendi.');
+}
+
 async function patiGroupMembersDialog(id){
  const owner=me?.id;if(!owner)return;
  const [members,group]=await Promise.all([
@@ -4500,8 +4530,10 @@ async function patiGroupMembersDialog(id){
  const admin=(members.data||[]).some(x=>x.user_id===owner&&x.role==='admin');
  const creator=group.data.creator_id===owner;
  modal('Grup üyeleri','<div class="pati-group-tools"><button type="button" data-action="pati-group-open" data-id="'+esc(id)+'">← Sohbete dön</button>'+(admin?'<button type="button" data-action="pati-group-add-open" data-id="'+esc(id)+'">+ Üye ekle</button>':'')+'</div>'+
+ '<div class="pati-group-photo-editor"><span class="pati-group-photo-preview">'+(patiGroupPhotoUrl(group.data.avatar_path)?'<img src="'+esc(patiGroupPhotoUrl(group.data.avatar_path))+'" alt="Grup fotoğrafı">':ico('users'))+'</span><div><strong>'+esc(group.data.title)+'</strong><small>Grup görseli ve yöneticileri</small>'+(admin?'<label class="pati-group-photo-label">Fotoğraf değiştir<input type="file" accept="image/jpeg,image/png,image/webp" data-pati-group-avatar="'+esc(id)+'" aria-label="Grup fotoğrafı seç"></label>':'')+'</div></div>'+
  (creator?'<div class="pati-group-danger-zone"><strong>Grubu tamamen sil</strong><p>Grup ve tüm mesajları bütün üyeler için kalıcı olarak silinir.</p><button type="button" data-action="pati-group-delete" data-id="'+esc(id)+'">'+ico('trash')+' Grubu kalıcı sil</button></div>':'')+
  (members.data||[]).map(x=>'<div class="pati-social-person">'+avatar(profile(x.user_id),'s')+'<span><strong>'+esc(profile(x.user_id).display_name||'Üye')+'</strong><small>'+(x.role==='admin'?'Yönetici':'Üye')+'</small></span>'+
+ (creator&&x.user_id!==group.data.creator_id?'<button type="button" data-action="pati-group-role" data-id="'+esc(id)+'" data-peer="'+esc(x.user_id)+'" data-role="'+(x.role==='admin'?'member':'admin')+'">'+(x.role==='admin'?'Yöneticiliği kaldır':'Yönetici yap')+'</button>':'')+
  ((admin||x.user_id===owner)&&x.user_id!==group.data.creator_id?'<button type="button" data-action="pati-group-remove" data-id="'+esc(id)+'" data-peer="'+esc(x.user_id)+'">'+(x.user_id===owner?'Ayrıl':'Çıkar')+'</button>':'')+'</div>').join(''),
  'pati-group-members-form');
  document.querySelector('#pati-group-members-form .modal-footer')?.remove();
@@ -5368,6 +5400,7 @@ case 'pati-group-list':void patiGroupList().catch(e=>notify(friendly(e),true));b
 case 'pati-group-create-open':patiGroupCreateDialog();break;
 case 'pati-group-open':void patiGroupOpen(id).catch(e=>notify(friendly(e),true));break;
 case 'pati-group-members':void patiGroupMembersDialog(id).catch(e=>notify(friendly(e),true));break;
+case 'pati-group-role':run(async()=>{const r=await sb.rpc('patiyiz_group_set_role',{p_group:id,p_member:target.dataset.peer,p_role:target.dataset.role});if(r.error)throw r.error;await patiGroupMembersDialog(id);},'Grup yöneticisi güncellendi.');break;
 case 'pati-group-delete-message':run(async()=>{
  const group=target.dataset.groupId,owner=me.id;
  const out=await sb.from('patiyiz_group_messages').delete().eq('id',id).eq('group_id',group).eq('sender_id',owner).select('id');
@@ -5973,6 +6006,12 @@ document.addEventListener('input',e=>{
 document.addEventListener('submit',e=>{
  if(e.target?.id!=='pati-health-record-form'||!(view==='healthfile'||(view==='my-pet'&&patiMyPetTab==='healthfile'))||!healthFilePortal)return;
  e.preventDefault();void healthFilePortal.save(e.target);
+});
+document.addEventListener('change',event=>{
+ const input=event.target.closest?.('input[data-pati-group-avatar]');
+ if(!input?.files?.length)return;
+ const id=input.dataset.patiGroupAvatar;
+ void run(()=>patiGroupPhotoUpload(id,input.files[0]));
 });
 boot();
 })();
