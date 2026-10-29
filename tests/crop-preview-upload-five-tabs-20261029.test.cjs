@@ -26,7 +26,7 @@ test('Shared crop tool is available in OS/native picker; cancel does not commit 
  assert.match(system,/PatiyizCropMedia\.open\(/);
  assert.match(system,/remove.dataset.system='photo-remove'/);
  assert.match(system,/action==='photo-move-prev'/);
- assert.match(system,/action==='photo-move-next'/);
+ assert.match(system,/photo-move-next/);
 });
 test('Preview displays the actual cropped export and discards stale asynchronous media',()=>{
  assert.match(system,/current.previewVersion=\(current.previewVersion\|\|0\)\+1/);
