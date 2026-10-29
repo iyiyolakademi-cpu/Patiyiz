@@ -20,7 +20,7 @@ test('Canlı hikâyeler kişilerin hikâyeleri bitince sıradaki kişiye geçebi
  const ctx={data:{stories:rows},blocked:new Set(['blocked']),me:{id:'owner'},Map,Date,Set};
  const build=vm.runInNewContext(section('function patiBuildLiveStorySequence(','function openHighlightStory(')+'\npatiBuildLiveStorySequence',ctx);
  const queue=build('bob');assert.ok(queue);
- assert.deepEqual(Array.from(queue.items.map(x=>x.id)),['owner','bob-old','bob-new','ann-new']);
+ assert.deepEqual(Array.from(queue.items.map(x=>x.id)),['bob-old','bob-new','ann-new','owner']);
  assert.equal(queue.items[queue.index].id,'bob-old');
  assert.equal(build('blocked'),null);
 });

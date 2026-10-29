@@ -26,7 +26,7 @@ test('earlier dates: show date plus time, never pretend an old view happened tod
 test('story views already use a secure server RPC, which refreshes last_viewed_at on each open',()=>{
  assert.match(app,/async function recordStoryView\(x\)/);
  assert.match(app,/sb\.rpc\('patiyiz_record_story_view',\{p_story_id:x\.id\}\)/);
- assert.match(app,/if\(!x\.pati_pet_highlight\)recordStoryView\(x\)/);
+ assert.match(app,/if\(!x\.pati_pet_highlight\)\{patiStorySeen\(x\);recordStoryView\(x\);\}/);
  assert.match(app,/\.from\('patiyiz_story_views'\)\.select\('viewer_id,last_viewed_at'\)\.eq\('story_id',x\.id\)\.order\('last_viewed_at',\{ascending:false\}\)/);
  assert.match(app,/class="pati-story-view-last">Son görülme: <time datetime="/);
  assert.match(app,/patiStoryLastViewedLabel\(v\.last_viewed_at\)/);

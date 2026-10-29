@@ -47,7 +47,7 @@ test('Main foreground/background palette passes 4.5:1 contrast',()=>{
 });
 test('New CSS loads last; picker before app; native has both',()=>{
  const sheets=[...html.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map(x=>x[1]);
- assert.ok(sheets.at(-1).includes('patiyiz-profile-chat-repair-20261029.css'), 'final profile and chat fixes should load last');
+ assert.ok(sheets.at(-1).includes('patiyiz-story-seen-dark-final-20261029.css'), 'final profile and chat fixes should load last');
  assert.ok(sheets.findIndex(x=>x.includes('patiyiz-polish-collab-dm-story-20261029.css'))<sheets.findIndex(x=>x.includes('patiyiz-dm-content-studio-20261029.css')), 'new design follows and preserves existing theme');
  assert.ok(sheets.some(x=>x.includes('patiyiz-theme-unified-20261029.css?v=2')));
  assert.ok(html.indexOf('patiyiz-collab-picker-20261029.js?v=3')<html.indexOf('<script src="app.js?'));

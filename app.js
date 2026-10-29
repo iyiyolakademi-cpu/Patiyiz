@@ -68,7 +68,7 @@ function patiWatchPostViews(){
 }
 
 const allowed=['home','explore','pets','reels','streaks','rewards','shop','saved-posts','community','knowledge','education','lost','adoption','care','wellness','healthfile','my-pet','messages','notifications','profile','blocked','settings','follows-list'];
-const nav=[['home','Ana sayfa','home'],['explore','Keşfet','compass'],['pets','Patiler','heart'],['reels','Reels','up'],['streaks','Seriler','calendar'],['community','Topluluk','users'],['knowledge','Bilgi Merkezi','library'],['education','Eğitim','library'],['lost','Kayıp İlanları','location'],['adoption','Sahiplendirme','heart'],['my-pet','Hayvanım','heart'],['messages','Mesajlar','message'],['notifications','Bildirimler','bell'],['profile','Profilim','user'],['settings','Ayarlar ve Gizlilik','settings']];
+const nav=[['home','Ana sayfa','home'],['explore','Keşfet','compass'],['reels','Reels','up'],['streaks','Seriler','calendar'],['community','Topluluk','users'],['knowledge','Bilgi Merkezi','library'],['education','Eğitim','library'],['lost','Kayıp İlanları','location'],['adoption','Sahiplendirme','heart'],['my-pet','Hayvanım','heart'],['messages','Mesajlar','message'],['notifications','Bildirimler','bell'],['profile','Profilim','user'],['settings','Ayarlar ve Gizlilik','settings']];
 const cfg=window.PATIYIZ_CONFIG||{};
 const ready=String(cfg.supabaseUrl||'').startsWith('https://')&&!String(cfg.supabaseUrl).includes('BURAYA_')&&!!cfg.supabasePublishableKey&&!String(cfg.supabasePublishableKey).includes('BURAYA_')&&!!window.supabase?.createClient;
 let liveChannel=null,liveReloadTimer=null,liveReconnectTimer=null,liveUserId=null,liveInitialized=false,pushPublicKey='',lastForegroundSync=0;
@@ -391,7 +391,7 @@ function patiMenuRenderNotifications(){
 }
 function openMobileFeaturesMenu(){
  const groups=[
-  {title:'Topluluk',tone:'purple',items:[['messages','Mesajlar','message'],['community','Soru & Cevap','users'],['pets','Patileri keşfet','paw']]},
+  {title:'Topluluk',tone:'purple',items:[['community','Soru & Cevap','users'],['pets','Patileri keşfet','paw']]},
   {title:'Hayvanım',tone:'green',items:[['my-pet','Hayvanım Merkezi · Tüm seçenekler','heart']]},
   {title:'PatiCoin ve koleksiyonum',tone:'orange',items:[['streaks','Seriler','calendar'],['shop','Pati Mağaza','grid'],['saved-posts','Kaydettiğim gönderiler','bookmark']]},
   {title:'Hesabım',tone:'blue',items:[['settings','Ayarlar ve gizlilik','settings'],['blocked','Engellediğim kişiler','shield']]}
@@ -978,7 +978,7 @@ function postCard(p,priority=false){
  const media=multiVideos.length>1?'<div class="pati-carousel pati-video-carousel" data-post-id="'+esc(p.id)+'"><div class="pati-carousel-track">'+
  multiVideos.map((url,i)=>'<div class="pati-carousel-slide pati-video-slide" data-post-id="'+esc(p.id)+'"><div class="pati-video-frame"><video class="pati-post-video" playsinline webkit-playsinline muted loop preload="none"'+(i===0&&p.video_cover_url?' poster="'+esc(p.video_cover_url)+'"':'')+' data-pati-video-src="'+esc(url)+'" aria-label="Video '+(i+1)+' / '+multiVideos.length+'"></video><button type="button" class="pati-video-sound" data-action="video-sound" aria-label="Sesi aç">'+ico('volume-x')+'</button></div></div>').join('')+
  '</div><span class="pati-carousel-count">1 / '+multiVideos.length+'</span><button type="button" data-action="carousel-prev" class="pati-carousel-arrow prev" aria-label="Önceki video">‹</button><button type="button" data-action="carousel-next" class="pati-carousel-arrow next" aria-label="Sonraki video">›</button></div>':defaultMedia;
- const controls='<div class="pati-actionbar pati-social-actions"><button type="button" data-action="like" aria-label="Beğen" aria-pressed="'+liked.has(p.id)+'" data-id="'+esc(p.id)+'" class="'+(liked.has(p.id)?'active':'')+'">'+ico('heart')+' <span>'+count+'</span></button><button type="button" data-action="comment" aria-label="Yorum yap" data-id="'+esc(p.id)+'">'+ico('message-circle')+' <span>'+commentCount+'</span></button>'+(own?'':'<button type="button" class="pati-repost-btn '+(patiOwnRepost(p.id)?'active':'')+'" data-action="pati-repost" data-id="'+esc(p.id)+'" aria-pressed="'+patiOwnRepost(p.id)+'" aria-label="'+(patiOwnRepost(p.id)?'Yeniden paylaşımı kaldır':'Yeniden paylaş')+'">'+PATI_REPOST_ICON+'</button>')+'<button type="button" data-action="share-post" aria-label="Paylaş" data-id="'+esc(p.id)+'">'+ico('send')+'</button>'+'<button type="button" data-action="save" aria-label="Kaydet" aria-pressed="'+saved.has(p.id)+'" data-id="'+esc(p.id)+'" class="pati-save-action '+(saved.has(p.id)?'active':'')+'">'+ico('bookmark')+'</button></div>';
+ const controls='<div class="pati-actionbar pati-social-actions"><button type="button" data-action="like" aria-label="'+(own?'Kendi gönderine tepki veremezsin':'Beğen')+'" '+(own?'disabled title="Kendi gönderine tepki veremezsin"':'')+' aria-pressed="'+liked.has(p.id)+'" data-id="'+esc(p.id)+'" class="'+(liked.has(p.id)?'active':'')+'">'+ico('heart')+' <span>'+count+'</span></button><button type="button" data-action="comment" aria-label="Yorum yap" data-id="'+esc(p.id)+'">'+ico('message-circle')+' <span>'+commentCount+'</span></button>'+(own?'':'<button type="button" class="pati-repost-btn '+(patiOwnRepost(p.id)?'active':'')+'" data-action="pati-repost" data-id="'+esc(p.id)+'" aria-pressed="'+patiOwnRepost(p.id)+'" aria-label="'+(patiOwnRepost(p.id)?'Yeniden paylaşımı kaldır':'Yeniden paylaş')+'">'+PATI_REPOST_ICON+'</button>')+'<button type="button" data-action="share-post" aria-label="Paylaş" data-id="'+esc(p.id)+'">'+ico('send')+'</button>'+'<button type="button" data-action="save" aria-label="Kaydet" aria-pressed="'+saved.has(p.id)+'" data-id="'+esc(p.id)+'" class="pati-save-action '+(saved.has(p.id)?'active':'')+'">'+ico('bookmark')+'</button></div>';
  const sourcePost=p.source_post_id?data.posts.find(x=>x.id===p.source_post_id):null;
  const sourceCredit=sourcePost?'<button type="button" class="pati-source-credit" data-action="profile-open-post" data-id="'+esc(sourcePost.id)+'">↪ @'+esc(profile(sourcePost.author_id).handle||'patiyiz')+' paylaşımına tepki · Orijinal gönderiyi aç</button>':'';
  const caption=body?'<p class="pati-post-caption">'+(hasMedia?'<strong>'+displayName(profile(p.author_id))+'</strong> ':'')+formatPatiPostBody(body)+'</p>':'';
@@ -1040,6 +1040,64 @@ function openPost(id){
  patiExploreReturnTo=view==='explore';selectedPostId=id;navigate('home');
 }
 let storyItems=[],storyIndex=0,storyTimer=null,storyLikes=[];
+/* Story rings track unseen ACTIVE story IDs, never story deletion.
+   Own previews are local; other users' story receipts are also synced using viewer-only RLS. */
+let patiStorySeenState={owner:'',seen:new Set(),requested:new Set(),loading:false};
+function patiStorySeenInit(){
+ const owner=me?.id||'';
+ if(patiStorySeenState.owner===owner)return;
+ const seen=new Set();
+ if(owner)try{
+  const raw=JSON.parse(localStorage.getItem('patiyiz-story-seen:'+owner)||'[]');
+  if(Array.isArray(raw))for(const id of raw.slice(-300))if(typeof id==='string')seen.add(id);
+ }catch(_){}
+ patiStorySeenState={owner,seen,requested:new Set(),loading:false};
+}
+function patiStorySeenSave(){
+ if(!me?.id)return;
+ const active=new Set(data.stories.filter(s=>new Date(s.expires_at).getTime()>Date.now()).map(s=>s.id));
+ patiStorySeenState.seen=new Set([...patiStorySeenState.seen].filter(id=>active.has(id)));
+ try{localStorage.setItem('patiyiz-story-seen:'+me.id,JSON.stringify([...patiStorySeenState.seen].slice(-300)))}catch(_){}
+}
+function patiStorySeen(x){
+ if(!x?.id||!x?.author_id||x.pati_pet_highlight)return false;
+ patiStorySeenInit();
+ const unseen=!patiStorySeenState.seen.has(x.id);
+ if(unseen){patiStorySeenState.seen.add(x.id);patiStorySeenSave();}
+ return unseen;
+}
+function patiStoryIsSeen(x){patiStorySeenInit();return !!x&&patiStorySeenState.seen.has(x.id)}
+function patiActiveStoriesOf(author){
+ const now=Date.now();
+ return data.stories.filter(s=>s.author_id===author&&!s.pati_pet_highlight&&!blocked.has(s.author_id)&&new Date(s.expires_at).getTime()>now);
+}
+function patiHasUnseenStory(author){return patiActiveStoriesOf(author).some(x=>!patiStoryIsSeen(x))}
+async function patiStorySeenSync(){
+ if(!me?.id||!sb)return;
+ patiStorySeenInit();
+ const state=patiStorySeenState,owner=me.id;
+ const ids=data.stories.filter(s=>s.author_id!==owner&&!s.pati_pet_highlight&&new Date(s.expires_at).getTime()>Date.now()).map(s=>s.id);
+ const pending=ids.filter(id=>!state.requested.has(id));
+ if(!pending.length||state.loading)return;
+ state.loading=true;
+ const batch=pending.slice(0,90);
+ try{
+  const out=await sb.from('patiyiz_story_views').select('story_id').eq('viewer_id',owner).in('story_id',batch);
+  if(out.error)throw out.error;
+  if(me?.id!==owner||patiStorySeenState!==state)return;
+  batch.forEach(id=>state.requested.add(id));
+  for(const row of out.data||[])state.seen.add(row.story_id);
+  patiStorySeenSave();
+  if(view==='home'&&!document.getElementById('story-overlay'))render();
+  if(view==='profile'&&!document.getElementById('story-overlay'))render();
+ }catch(e){console.warn('Hikâye izlendi durumu eşitlenemedi:',e?.message||e)}
+ finally{
+  if(patiStorySeenState===state){state.loading=false;
+   if(pending.length>batch.length)queueMicrotask(()=>{if(me?.id===owner)void patiStorySeenSync()});
+  }
+ }
+}
+
 function patiPauseStoryBackgroundMedia(){
  document.querySelectorAll('video,audio').forEach(media=>{if(!media.closest('#story-overlay')){try{media.pause()}catch(_){}}});
  if(patiyizFeedActiveVideo){patiyizFeedActiveVideo.pause();patiyizFeedActiveVideo=null}
@@ -1065,7 +1123,7 @@ function closeStory(resume=true){
  clearTimeout(storyTimer);storyTimer=null;storyItems=[];
  document.getElementById('story-overlay')?.remove();document.body.classList.remove('story-fullscreen-open');
  if(!resume)return;
- if(view==='profile')render();else{setupFeedVideos();setupReelsViewer()}
+ if(view==='profile'||view==='home')render();else{setupFeedVideos();setupReelsViewer()}
 }
 async function recordStoryView(x){if(!me||x.pati_pet_highlight||x.author_id===me.id)return;try{const r=await sb.rpc('patiyiz_record_story_view',{p_story_id:x.id});if(r.error)console.warn('Hikâye görüntülemesi kaydedilemedi:',r.error.message)}catch(err){console.warn('Hikâye görüntüleme ağ hatası:',err)}}
 
@@ -1240,7 +1298,7 @@ async function patiOpenSharedStoryPost(postId){
  closeStory(false);openPost(postId);
 }
 
-function showStoryFrame(){const root=document.getElementById('story-overlay'),x=storyItems[storyIndex];if(!root||!x)return;clearTimeout(storyTimer);patiPauseStoryBackgroundMedia();const user=profile(x.author_id);const storyGroupItems=storyItems.filter(s=>s.author_id===x.author_id);const storyGroupIndex=storyGroupItems.findIndex(s=>s.id===x.id);if(!x.pati_pet_highlight)recordStoryView(x);if(!x.pati_pet_highlight&&x.author_id!==me.id)void syncStoryLike(x.id);root.dataset.audience=x.audience==='close_friends'?'close_friends':'everyone';root.classList.toggle('pati-story-own',x.author_id===me.id);root.classList.toggle('pati-story-has-source',!!x.shared_post_id);root.innerHTML='<div class="story-player"><div class="story-progress">'+storyGroupItems.map((_,i)=>'<span class="story-track"><span class="'+(i===storyGroupIndex?'story-playing':'')+'" style="width:'+(i<storyGroupIndex?'100':'0')+'%"></span></span>').join('')+'</div><div class="story-player-head">'+avatar(user,'s')+'<span class="pati-story-owner-name"><strong>'+displayName(user)+'</strong>'+(x.audience==='close_friends'?'<span class="pati-story-close-friends-label">★ Yakın Arkadaşlar</span>':'')+'</span><button data-action="story-close" aria-label="Kapat" class="story-close">×</button></div>'+(x.video_url?'<video class="story-big-video'+(x.selfie_mirrored?' pati-selfie-mirrored':'')+'" src="'+esc(x.video_url)+'" poster="'+esc(x.image_url||'')+'" muted autoplay playsinline preload="auto" aria-label="Video hikâyesi"></video><button type="button" class="pati-story-sound" data-action="story-sound" aria-label="Hikâye sesini aç">Ses aç</button>':x.image_url?'<img class="story-big-photo" src="'+esc(x.image_url)+'" alt="Hikâye">':'<div class="pati-story-no-photo">🐾</div>')+''+(x.caption?'<p class="story-caption">'+esc(x.caption)+'</p>':'')+(x.shared_post_id?'<button type="button" class="pati-story-shared-source" data-action="pati-story-open-post" data-id="'+esc(x.shared_post_id)+'">↗ Orijinal gönderiyi gör</button>':'')+'<button class="story-hit prev" data-action="story-prev" aria-label="Önceki"></button><button class="story-hit next" data-action="story-next" aria-label="Sonraki"></button>'+(x.pati_pet_highlight?'<span class="pati-saved-story-label">Kalıcı hikâye</span>':x.author_id===me.id?'<button type="button" class="story-delete" data-action="story-delete" data-id="'+esc(x.id)+'" aria-label="Hikâyeyi sil">'+ico('trash')+' <span>Sil</span></button><button type="button" class="story-viewers-button pati-story-viewer-preview" data-action="story-viewers" aria-label="Hikâye hareketlerini aç"><span class="pati-story-viewer-preview-stack" aria-hidden="true"></span><span class="pati-story-viewer-preview-label">Hareketler</span><span class="pati-story-viewer-preview-status" aria-live="polite">Görüntüleyenler yükleniyor…</span></button>':'<button class="pati-story-like" data-action="story-like" data-id="'+esc(x.id)+'" aria-label="Hikâyeyi beğen">♡</button>')+'<div id="story-viewers-sheet" class="story-viewers-sheet" hidden></div></div>';const upcoming=storyItems[storyIndex+1];if(upcoming?.image_url&&typeof Image==='function'){const preload=new Image();preload.src=upcoming.image_url}storyTimer=setTimeout(()=>stepStory(1),x.video_url?15000:6000);
+function showStoryFrame(){const root=document.getElementById('story-overlay'),x=storyItems[storyIndex];if(!root||!x)return;clearTimeout(storyTimer);patiPauseStoryBackgroundMedia();const user=profile(x.author_id);const storyGroupItems=storyItems.filter(s=>s.author_id===x.author_id);const storyGroupIndex=storyGroupItems.findIndex(s=>s.id===x.id);if(!x.pati_pet_highlight){patiStorySeen(x);recordStoryView(x);}if(!x.pati_pet_highlight&&x.author_id!==me.id)void syncStoryLike(x.id);root.dataset.audience=x.audience==='close_friends'?'close_friends':'everyone';root.classList.toggle('pati-story-own',x.author_id===me.id);root.classList.toggle('pati-story-has-source',!!x.shared_post_id);root.innerHTML='<div class="story-player"><div class="story-progress">'+storyGroupItems.map((_,i)=>'<span class="story-track"><span class="'+(i===storyGroupIndex?'story-playing':'')+'" style="width:'+(i<storyGroupIndex?'100':'0')+'%"></span></span>').join('')+'</div><div class="story-player-head">'+avatar(user,'s')+'<span class="pati-story-owner-name"><strong>'+displayName(user)+'</strong>'+(x.audience==='close_friends'?'<span class="pati-story-close-friends-label">★ Yakın Arkadaşlar</span>':'')+'</span><button data-action="story-close" aria-label="Kapat" class="story-close">×</button></div>'+(x.video_url?'<video class="story-big-video'+(x.selfie_mirrored?' pati-selfie-mirrored':'')+'" src="'+esc(x.video_url)+'" poster="'+esc(x.image_url||'')+'" muted autoplay playsinline preload="auto" aria-label="Video hikâyesi"></video><button type="button" class="pati-story-sound" data-action="story-sound" aria-label="Hikâye sesini aç">Ses aç</button>':x.image_url?'<img class="story-big-photo" src="'+esc(x.image_url)+'" alt="Hikâye">':'<div class="pati-story-no-photo">🐾</div>')+''+(x.caption?'<p class="story-caption">'+esc(x.caption)+'</p>':'')+(x.shared_post_id?'<button type="button" class="pati-story-shared-source" data-action="pati-story-open-post" data-id="'+esc(x.shared_post_id)+'">↗ Orijinal gönderiyi gör</button>':'')+'<button class="story-hit prev" data-action="story-prev" aria-label="Önceki"></button><button class="story-hit next" data-action="story-next" aria-label="Sonraki"></button>'+(x.pati_pet_highlight?'<span class="pati-saved-story-label">Kalıcı hikâye</span>':x.author_id===me.id?'<button type="button" class="story-delete" data-action="story-delete" data-id="'+esc(x.id)+'" aria-label="Hikâyeyi sil">'+ico('trash')+' <span>Sil</span></button><button type="button" class="story-viewers-button pati-story-viewer-preview" data-action="story-viewers" aria-label="Hikâye hareketlerini aç"><span class="pati-story-viewer-preview-stack" aria-hidden="true"></span><span class="pati-story-viewer-preview-label">Hareketler</span><span class="pati-story-viewer-preview-status" aria-live="polite">Görüntüleyenler yükleniyor…</span></button>':'<button class="pati-story-like" data-action="story-like" data-id="'+esc(x.id)+'" aria-label="Hikâyeyi beğen">♡</button>')+'<div id="story-viewers-sheet" class="story-viewers-sheet" hidden></div></div>';const upcoming=storyItems[storyIndex+1];if(upcoming?.image_url&&typeof Image==='function'){const preload=new Image();preload.src=upcoming.image_url}storyTimer=setTimeout(()=>stepStory(1),x.video_url?15000:6000);
  if(x.author_id===me.id&&!x.pati_pet_highlight)void patiStoryPreviewLoad(x.id);
  if(x.video_url){
   const video=root.querySelector('.story-big-video');
@@ -1261,6 +1319,7 @@ async function syncStoryLike(id){
  if(!r.error&&btn&&!btn.disabled&&me?.id===uid){btn.textContent=r.data?'♥':'♡';btn.classList.toggle('active',!!r.data)}
 }
 async function toggleStoryLike(id){
+ if(data.stories.some(x=>x.id===id&&x.author_id===me?.id))return;
  const btn=document.querySelector('.pati-story-like[data-id="'+id+'"]');if(!btn||btn.disabled)return;
  const uid=me.id,previous=btn.classList.contains('active');
  btn.disabled=true;
@@ -1276,7 +1335,22 @@ async function toggleStoryLike(id){
  }catch(e){notify('Hikâye beğenisi kaydedilemedi: '+friendly(e),true);await syncStoryLike(id)}
  finally{btn.disabled=false}
 }
-function storiesStrip(){const live=data.stories.filter(x=>new Date(x.expires_at).getTime()>Date.now()&&!blocked.has(x.author_id)).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));const seen=new Set(),people=[];for(const x of live)if(!seen.has(x.author_id)){seen.add(x.author_id);people.push(x)}const own=people.find(x=>x.author_id===me.id);return '<section class="stories-section"><div class="stories-heading"><strong>Hikâyeler</strong></div><div class="stories-strip"><div class="story-person story-own"><button class="story-own-photo '+(own?'has-story':'')+'" data-action="'+(own?'story-view':'story-create')+'" '+(own?'data-id="'+esc(me.id)+'"':'')+'>'+avatar(current(),'s')+'</button><button class="story-own-plus" data-action="story-create">+</button><small>'+(own?'Hikâyem':'Hikâye ekle')+'</small></div>'+people.filter(x=>x.author_id!==me.id).map(x=>'<button class="story-person" data-action="story-view" data-id="'+esc(x.author_id)+'"><span class="story-avatar">'+avatar(profile(x.author_id),'s')+'</span><small>'+esc(profile(x.author_id).display_name)+'</small></button>').join('')+'</div></section>'}
+function storiesStrip(){
+ patiStorySeenInit();void patiStorySeenSync();
+ const authors=[...new Set(data.stories.filter(x=>!x.pati_pet_highlight&&!blocked.has(x.author_id)&&new Date(x.expires_at).getTime()>Date.now()).map(x=>x.author_id))];
+ const own=authors.includes(me.id);
+ const others=authors.filter(id=>id!==me.id).sort((a,b)=>{
+  const aNew=patiHasUnseenStory(a),bNew=patiHasUnseenStory(b);
+  if(aNew!==bNew)return aNew?-1:1;
+  const aLast=Math.max(...patiActiveStoriesOf(a).map(s=>new Date(s.created_at).getTime()));
+  const bLast=Math.max(...patiActiveStoriesOf(b).map(s=>new Date(s.created_at).getTime()));
+  return bLast-aLast;
+ });
+ return '<section class="stories-section"><div class="stories-heading"><strong>Hikâyeler</strong></div><div class="stories-strip">'+
+  '<div class="story-person story-own"><button class="story-own-photo '+(own?(patiHasUnseenStory(me.id)?'has-story':'has-viewed-story'):'')+'" data-action="'+(own?'story-view':'story-create')+'" '+(own?'data-id="'+esc(me.id)+'"':'')+'>'+avatar(current(),'s')+'</button><button class="story-own-plus" data-action="story-create">+</button><small>'+(own?'Hikâyem':'Hikâye ekle')+'</small></div>'+
+  others.map(id=>'<button class="story-person '+(patiHasUnseenStory(id)?'has-unseen-story':'has-viewed-story')+'" data-action="story-view" data-id="'+esc(id)+'" aria-label="'+esc(profile(id).display_name||'Kullanıcı')+' hikâyesini izle"><span class="story-avatar">'+avatar(profile(id),'s')+'</span><small>'+esc(profile(id).display_name)+'</small></button>').join('')+
+ '</div></section>';
+}
 function patiBuildLiveStorySequence(selectedAuthor){
  const now=Date.now(),grouped=new Map();
  for(const item of data.stories){
@@ -1287,11 +1361,13 @@ function patiBuildLiveStorySequence(selectedAuthor){
  if(!grouped.has(selectedAuthor))return null;
  for(const entries of grouped.values())entries.sort((a,b)=>new Date(a.created_at)-new Date(b.created_at)||String(a.id).localeCompare(String(b.id)));
  const authors=[...grouped.keys()].sort((a,b)=>{
-  if(a===me.id)return -1;if(b===me.id)return 1;
+  const aUnseen=grouped.get(a).some(x=>typeof patiStoryIsSeen!=='function'||!patiStoryIsSeen(x)),bUnseen=grouped.get(b).some(x=>typeof patiStoryIsSeen!=='function'||!patiStoryIsSeen(x));
+  if(aUnseen!==bUnseen)return aUnseen?-1:1;
   return new Date(grouped.get(b).at(-1).created_at)-new Date(grouped.get(a).at(-1).created_at)||String(a).localeCompare(String(b));
  });
  const items=authors.flatMap(id=>grouped.get(id));
- return {items,index:items.findIndex(x=>x.author_id===selectedAuthor)};
+ const firstUnseen=items.findIndex(x=>x.author_id===selectedAuthor&&(typeof patiStoryIsSeen!=='function'||!patiStoryIsSeen(x)));
+ return {items,index:firstUnseen>=0?firstUnseen:items.findIndex(x=>x.author_id===selectedAuthor)};
 }
 function openStory(id){
  const sequence=patiBuildLiveStorySequence(id);
@@ -1645,7 +1721,7 @@ function reelsPage(){
   '<div class="pati-reel-author"><button type="button" class="pati-reel-avatar-link" data-action="view-user" data-id="'+esc(author.id)+'" aria-label="'+esc(author.display_name)+' profiline git">'+avatar(author,'s')+'</button><span><strong>'+displayName(author)+'</strong><small>@'+esc(author.handle||'patiyiz')+'</small></span>'+(p.author_id!==selfId?'<button type="button" class="pati-reel-follow" data-action="follow" data-id="'+esc(author.id)+'" aria-pressed="'+isFollowing(author.id)+'"'+(!isFollowing(author.id)&&followsMe(author.id)?' data-follow-back="true"':'')+'>'+(isFollowing(author.id)?'Takiptesin':followsMe(author.id)?'Sen de takip et':'Takip et')+'</button>':'')+'</div>'+
   '<div class="pati-reel-caption">'+esc(cut(p.video_subtitle||p.body||'',220))+(p.source_post_id?'<button type="button" class="pati-reel-source-credit" data-action="profile-open-post" data-id="'+esc(p.source_post_id)+'">↪ Orijinal gönderiyi gör</button>':'')+'</div>'+
   '<div class="pati-reel-progress"><input type="range" min="0" max="1000" value="0" step="1" data-action="reel-seek" aria-label="Videoyu ileri veya geri sar" style="--pati-reel-progress:0%"></div>'+ 
-  '<div class="pati-reel-rail"><button type="button" class="pati-reel-action '+(likedPost?'active':'')+'" data-action="like" data-id="'+esc(p.id)+'" aria-label="Beğen" aria-pressed="'+likedPost+'">'+ico('heart')+'<span class="pati-reel-count">'+count+'</span></button>'+
+  '<div class="pati-reel-rail"><button type="button" class="pati-reel-action '+(likedPost?'active':'')+'" data-action="like" data-id="'+esc(p.id)+'" aria-label="'+(p.author_id===selfId?'Kendi Reels içeriğine tepki veremezsin':'Beğen')+'" '+((typeof me!=='undefined'&&p.author_id===me.id)?'disabled':'')+' aria-pressed="'+likedPost+'">'+ico('heart')+'<span class="pati-reel-count">'+count+'</span></button>'+
   '<button type="button" class="pati-reel-action" data-action="comment" data-id="'+esc(p.id)+'" aria-label="Yorum yap">'+ico('message-circle')+'<span class="pati-reel-count">'+commentCount+'</span></button>'+
   (p.author_id!==selfId?'<button type="button" class="pati-reel-action pati-reel-repost '+((typeof patiOwnRepost==='function'&&patiOwnRepost(p.id))?'active':'')+'" data-action="pati-repost" data-id="'+esc(p.id)+'" aria-pressed="'+(typeof patiOwnRepost==='function'&&patiOwnRepost(p.id))+'" aria-label="'+((typeof patiOwnRepost==='function'&&patiOwnRepost(p.id))?'Yeniden paylaşımı kaldır':'Yeniden paylaş')+'">'+(typeof PATI_REPOST_ICON==='string'?PATI_REPOST_ICON:'↻')+'<span class="pati-reel-action-label">Yeniden paylaş</span></button>':'')+
   '<button type="button" class="pati-reel-action" data-action="share-post" data-id="'+esc(p.id)+'" aria-label="Paylaş">'+ico('send')+'<span class="pati-reel-action-label">Paylaş</span></button>'+
@@ -3429,7 +3505,7 @@ function patiDmReactionMarkup(messageId){
 }
 function patiDmOpenReactionPicker(messageId){
  const msg=patiDmFindMessage(messageId);
- if(!me||!msg||(msg.sender_id!==me.id&&msg.receiver_id!==me.id))return;
+ if(!me||!msg||msg.sender_id===me.id||msg.receiver_id!==me.id)return;
  modal('Mesaja tepki ver','<div class="pati-dm-reaction-picker" role="group" aria-label="Emoji seç">'+
  patiDmEmojis.map(emoji=>'<button type="button" data-action="dm-react-set" data-id="'+esc(messageId)+'" data-emoji="'+esc(emoji)+'" aria-label="'+esc(emoji)+' ile tepki ver">'+emoji+'</button>').join('')+
  '</div>','dm-reaction-picker-form');
@@ -3438,7 +3514,7 @@ function patiDmOpenReactionPicker(messageId){
 async function patiDmSetReaction(messageId,emoji){
  if(!me||!patiDmEmojis.includes(emoji))throw Error('Tepki seçilemedi.');
  const msg=patiDmFindMessage(messageId),owner=me.id;
- if(!msg||(msg.sender_id!==owner&&msg.receiver_id!==owner)||blocked.has(msg.sender_id)||blocked.has(msg.receiver_id))
+ if(!msg||msg.sender_id===owner||msg.receiver_id!==owner||blocked.has(msg.sender_id)||blocked.has(msg.receiver_id))
   throw Error('Bu mesaja tepki verilemez.');
  const existing=data.dmReactions.find(x=>x.message_id===messageId&&x.user_id===owner);
  // Database permissions intentionally allow updating emoji only, never moving a reaction
@@ -3483,7 +3559,7 @@ function patiDmHasActiveStory(userId){
 function patiDmStoryRingButton(userId){
  if(!patiDmHasActiveStory(userId))return '';
  const user=profile(userId);
- return '<button type="button" class="pati-dm-story-trigger" data-action="dm-story-open" data-id="'+esc(userId)+'" aria-label="'+esc(user.display_name||'Kullanıcı')+' hikâyesini aç" title="Hikâyeyi izle">'+avatar(user,'s')+'</button>';
+ return '<button type="button" class="pati-dm-story-trigger '+(patiHasUnseenStory(userId)?'':'is-seen')+'" data-action="dm-story-open" data-id="'+esc(userId)+'" aria-label="'+esc(user.display_name||'Kullanıcı')+' hikâyesini aç" title="Hikâyeyi izle">'+avatar(user,'s')+'</button>';
 }
 function patiDmSharedCard(message){
  const id=patiDmSharedPostId(message?.body);
@@ -3679,7 +3755,7 @@ function messagesPage(){
  main.innerHTML='<div class="pati-dm-top"><button type="button" class="pati-dm-inbox-back" data-action="dm-exit" aria-label="Önceki ekrana dön">←</button><div class="pati-dm-title"><strong>Mesajlar</strong><small>Özel sohbetlerin</small></div><div class="pati-dm-top-actions"><span>'+unreadTotal+' okunmamış</span><button type="button" class="pati-dm-new" data-action="dm-new">'+ico('plus')+' Yeni sohbet</button><button type="button" class="pati-dm-new" data-action="pati-group-create-open">+ Yeni grup</button></div></div>'+chatTabs+'<label class="pati-dm-searchbar">'+ico('search')+'<input type="search" id="pati-dm-search" placeholder="Sohbetlerde ara" aria-label="Sohbetlerde ara" autocomplete="off"></label>'+`<div class="chat-layout modern-chat pati-dm-layout ${mobileChatOpen&&(personId||patiActiveGroupId)?'mobile-chat-open':'mobile-chat-list'}"><div class="chat-people"><div class="chat-list-heading">Sohbetler <span>${filteredIds.length}</span></div>${filteredIds.map(id=>{const bucket=peers.get(id),summary=summaries.get(id);
  let last=summary?{body:summary.last_body,created_at:summary.last_created_at}:bucket?.last;
  const lastShared=last&&patiDmSharedPostId(last.body);if(lastShared)last={...last,body:(data.posts.find(p=>p.id===lastShared)||patiDmSharedPosts.get(lastShared))?.video_url?'🎬 Reels gönderdi':'📨 Gönderi paylaştı'};
- let unread=summary&&patiDmReadReceiptsEnabled()?Number(summary.unread_count||0):bucket?.unread||0;return `<div class="pati-dm-list-row" data-has-story="${patiDmHasActiveStory(id)?'true':'false'}" data-chat-peer="${esc(id)}">${patiDmStoryRingButton(id)}<button type="button" class="chat-person ${personId===id?'active':''}" data-action="chat" data-id="${esc(id)}" data-search="${esc(profile(id).display_name+' '+(profile(id).handle||''))}">${patiDmHasActiveStory(id)?'':avatar(profile(id),'s')}<span class="chat-person-info"><strong>${displayUser(id)}</strong><small>${last?esc(cut(last.body,80)):'Sohbete başla'}</small></span><span class="chat-person-meta"><small>${last?clock(last.created_at):''}</small>${unread?`<b class="chat-unread">${unread>99?'99+':unread}</b>`:''}</span></button><details class="pati-dm-row-actions"><summary aria-label="Sohbet seçenekleri" title="Sohbet seçenekleri">${ico('more')}</summary><div class="pati-dm-row-menu"><button type="button" class="pati-dm-delete-thread" data-action="dm-delete-thread" data-id="${esc(id)}" aria-label="${esc(profile(id).display_name||'Kullanıcı')} sohbetini listemden kaldır">${ico('trash')}<span>Sohbeti sil</span></button></div></details></div>`}).join('')||`<p style="padding:17px;color:#809181">${hiddenState.ready?'Keşfet\'ten bir kullanıcıya mesaj gönderebilirsin.':hiddenState.error?'Sohbetler şimdilik yüklenemedi. Sayfayı yenileyip tekrar dene.':'Sohbetler yükleniyor…'}</p>`}</div><div class="chat-window pati-dm-theme-classic" data-chat-person="${esc(personId||'')}"><header>${personId?`<button type="button" class="mobile-chat-back" data-action="chat-back" aria-label="Sohbetlere dön">←</button><span class="chat-head-avatar ${patiDmHasActiveStory(personId)?'pati-dm-has-story':''}">${patiDmStoryRingButton(personId)||avatar(profile(personId),'s')}</span><span><strong>${displayUser(personId)}</strong><small>@${esc(profile(personId).handle||'patiyiz')}</small><span class="pati-dm-typing-indicator" hidden><i class="pati-dm-dots"><b></b><b></b><b></b></i> yazıyor...</span></span><button type="button" data-action="view-user" data-id="${esc(personId)}" class="soft-btn chat-view-profile">Profil</button>`:'Sohbet seç'}</header>${pinBanner}<div class="chat-history">${conv.map((x,i)=>`${patiDmTimelineDivider(conv,i)}<div class="bubble-chat ${x.sender_id===me.id?'mine':''}${PATI_DM_STICKERS.includes(x.body)?' pati-dm-sticker-bubble':''}${x.attachment_type==='image'?' pati-dm-image-message':''}" data-message-id="${esc(x.id)}" title="Mesaj seçenekleri için basılı tut">${patiDmSharedPostId(x.body)?patiDmSharedCard(x):x.attachment_type==='image'?'<button type="button" class="pati-dm-image-open" data-action="dm-image-open" data-id="'+esc(x.id)+'" aria-label="Fotoğrafı büyüt"><img class="pati-dm-image" data-private-path="'+esc(x.attachment_path)+'" alt="Sohbette gönderilen fotoğraf" loading="lazy" decoding="async"></button>':x.attachment_type==='audio'?'<div class="pati-dm-voice-card"><span class="pati-dm-voice-avatar">'+avatar(profile(x.sender_id),'s')+'</span><div class="pati-dm-voice-main"><span class="pati-dm-voice-label">'+esc(profile(x.sender_id).display_name||'Sesli mesaj')+' · Sesli mesaj</span><audio controls preload="metadata" class="pati-dm-audio" data-private-path="'+esc(x.attachment_path)+'" aria-label="Sesli mesajı dinle"></audio></div></div>':(x.reply_to?'<div class="pati-dm-reply-preview">'+esc(replyText(x))+'</div>':'')+esc(x.body)}${patiDmReactionMarkup(x.id)}<small>${x.edited_at?'Düzenlendi · ':''}${clock(x.created_at)} · ${x.sender_id===me.id?(x.read_at&&showReadReceipts?'✓✓ Okundu':'✓ Gönderildi'):day(x.created_at)}</small><span class="pati-dm-msg-tools"><button type="button" data-action="dm-react-open" data-id="${esc(x.id)}">☺ Tepki</button><button type="button" data-action="dm-reply" data-id="${esc(x.id)}">↳ Yanıtla</button>${x.sender_id===me.id&&!x.attachment_path&&!x.attachment_type&&Date.now()-new Date(x.created_at).getTime()<900000?`<button type="button" data-action="dm-edit" data-id="${esc(x.id)}">Düzenle</button>`:''}</span></div>`).join('')||'<p style="color:#95a299;text-align:center;margin:auto">Henüz mesaj yok. İlk mesajı gönder! 🐾</p>'}</div>${personId?`<form id="message-form" class="chat-form"><details class="pati-dm-attach"><summary aria-label="Fotoğraf ve galeri seçenekleri" title="Fotoğraf ekle">＋</summary><div class="pati-dm-attach-menu"><label class="pati-dm-camera" aria-label="Fotoğraf çek">${ico('camera')}<input type="file" name="dm_camera" accept="image/*" capture="environment" hidden></label><button type="button" data-action="pati-dm-gallery-open" class="pati-dm-gallery" aria-label="Galeriden fotoğraf ekle">${ico('image')}</button></div></details><input type="file" name="dm_gallery" accept="image/*" multiple hidden><input name="body" placeholder="Mesaj yaz..." maxlength="1000" autocomplete="off"><button type="button" data-action="dm-record" class="pati-dm-mic" aria-label="Ses kaydet">${ico('mic')}</button><button type="submit" class="primary-btn" aria-label="Gönder">${ico('send')}</button><div class="pati-dm-rec-state" hidden>🎙️ Ses kaydediliyor <button type="button" data-action="dm-record-stop">Gönder</button><button type="button" data-action="dm-record-cancel">İptal</button></div></form>`:''}</div></div>`;
+ let unread=summary&&patiDmReadReceiptsEnabled()?Number(summary.unread_count||0):bucket?.unread||0;return `<div class="pati-dm-list-row" data-has-story="${patiHasUnseenStory(id)?'true':'false'}" data-chat-peer="${esc(id)}">${patiDmStoryRingButton(id)}<button type="button" class="chat-person ${personId===id?'active':''}" data-action="chat" data-id="${esc(id)}" data-search="${esc(profile(id).display_name+' '+(profile(id).handle||''))}">${patiDmHasActiveStory(id)?'':avatar(profile(id),'s')}<span class="chat-person-info"><strong>${displayUser(id)}</strong><small>${last?esc(cut(last.body,80)):'Sohbete başla'}</small></span><span class="chat-person-meta"><small>${last?clock(last.created_at):''}</small>${unread?`<b class="chat-unread">${unread>99?'99+':unread}</b>`:''}</span></button><details class="pati-dm-row-actions"><summary aria-label="Sohbet seçenekleri" title="Sohbet seçenekleri">${ico('more')}</summary><div class="pati-dm-row-menu"><button type="button" class="pati-dm-delete-thread" data-action="dm-delete-thread" data-id="${esc(id)}" aria-label="${esc(profile(id).display_name||'Kullanıcı')} sohbetini listemden kaldır">${ico('trash')}<span>Sohbeti sil</span></button></div></details></div>`}).join('')||`<p style="padding:17px;color:#809181">${hiddenState.ready?'Keşfet\'ten bir kullanıcıya mesaj gönderebilirsin.':hiddenState.error?'Sohbetler şimdilik yüklenemedi. Sayfayı yenileyip tekrar dene.':'Sohbetler yükleniyor…'}</p>`}</div><div class="chat-window pati-dm-theme-classic" data-chat-person="${esc(personId||'')}"><header>${personId?`<button type="button" class="mobile-chat-back" data-action="chat-back" aria-label="Sohbetlere dön">←</button><span class="chat-head-avatar ${patiDmHasActiveStory(personId)?'pati-dm-has-story':''}">${patiDmStoryRingButton(personId)||avatar(profile(personId),'s')}</span><span><strong>${displayUser(personId)}</strong><small>@${esc(profile(personId).handle||'patiyiz')}</small><span class="pati-dm-typing-indicator" hidden><i class="pati-dm-dots"><b></b><b></b><b></b></i> yazıyor...</span></span><button type="button" data-action="view-user" data-id="${esc(personId)}" class="soft-btn chat-view-profile">Profil</button>`:'Sohbet seç'}</header>${pinBanner}<div class="chat-history">${conv.map((x,i)=>`${patiDmTimelineDivider(conv,i)}<div class="bubble-chat ${x.sender_id===me.id?'mine':''}${PATI_DM_STICKERS.includes(x.body)?' pati-dm-sticker-bubble':''}${x.attachment_type==='image'?' pati-dm-image-message':''}" data-message-id="${esc(x.id)}" title="Mesaj seçenekleri için basılı tut">${patiDmSharedPostId(x.body)?patiDmSharedCard(x):x.attachment_type==='image'?'<button type="button" class="pati-dm-image-open" data-action="dm-image-open" data-id="'+esc(x.id)+'" aria-label="Fotoğrafı büyüt"><img class="pati-dm-image" data-private-path="'+esc(x.attachment_path)+'" alt="Sohbette gönderilen fotoğraf" loading="lazy" decoding="async"></button>':x.attachment_type==='audio'?'<div class="pati-dm-voice-card"><span class="pati-dm-voice-avatar">'+avatar(profile(x.sender_id),'s')+'</span><div class="pati-dm-voice-main"><span class="pati-dm-voice-label">'+esc(profile(x.sender_id).display_name||'Sesli mesaj')+' · Sesli mesaj</span><audio controls preload="metadata" class="pati-dm-audio" data-private-path="'+esc(x.attachment_path)+'" aria-label="Sesli mesajı dinle"></audio></div></div>':(x.reply_to?'<div class="pati-dm-reply-preview">'+esc(replyText(x))+'</div>':'')+esc(x.body)}${patiDmReactionMarkup(x.id)}<small>${x.edited_at?'Düzenlendi · ':''}${clock(x.created_at)} · ${x.sender_id===me.id?(x.read_at&&showReadReceipts?'✓✓ Okundu':'✓ Gönderildi'):day(x.created_at)}</small><span class="pati-dm-msg-tools">${x.sender_id!==me.id?`<button type="button" data-action="dm-react-open" data-id="${esc(x.id)}">☺ Tepki</button>`:'' }<button type="button" data-action="dm-reply" data-id="${esc(x.id)}">↳ Yanıtla</button>${x.sender_id===me.id&&!x.attachment_path&&!x.attachment_type&&Date.now()-new Date(x.created_at).getTime()<900000?`<button type="button" data-action="dm-edit" data-id="${esc(x.id)}">Düzenle</button>`:''}</span></div>`).join('')||'<p style="color:#95a299;text-align:center;margin:auto">Henüz mesaj yok. İlk mesajı gönder! 🐾</p>'}</div>${personId?`<form id="message-form" class="chat-form"><details class="pati-dm-attach"><summary aria-label="Fotoğraf ve galeri seçenekleri" title="Fotoğraf ekle">＋</summary><div class="pati-dm-attach-menu"><label class="pati-dm-camera" aria-label="Fotoğraf çek">${ico('camera')}<input type="file" name="dm_camera" accept="image/*" capture="environment" hidden></label><button type="button" data-action="pati-dm-gallery-open" class="pati-dm-gallery" aria-label="Galeriden fotoğraf ekle">${ico('image')}</button></div></details><input type="file" name="dm_gallery" accept="image/*" multiple hidden><input name="body" placeholder="Mesaj yaz..." maxlength="1000" autocomplete="off"><button type="button" data-action="dm-record" class="pati-dm-mic" aria-label="Ses kaydet">${ico('mic')}</button><button type="submit" class="primary-btn" aria-label="Gönder">${ico('send')}</button><div class="pati-dm-rec-state" hidden>🎙️ Ses kaydediliyor <button type="button" data-action="dm-record-stop">Gönder</button><button type="button" data-action="dm-record-cancel">İptal</button></div></form>`:''}</div></div>`;
  patiGroupMountInMessages(summaries,peers,chatFilter);
  if(inbox?.hasMore||inbox?.error||inbox?.loading){
  const box=main.querySelector('.chat-people');
@@ -4220,6 +4296,8 @@ function profilePage(){
  const cachedCounts=profileCountCache.get(p.id)?.value;const followers=cachedCounts?.followers??data.follows.filter(f=>f.followee_id===p.id).length,following=cachedCounts?.following??data.follows.filter(f=>f.follower_id===p.id).length;
  const stories=data.stories.filter(x=>x.author_id===p.id&&new Date(x.expires_at).getTime()>Date.now());const assignedIds=new Set(data.highlightItems.filter(x=>data.highlightAlbums.some(a=>a.id===x.album_id&&a.owner_id===p.id)).map(x=>x.story_id));const highlights=data.stories.filter(x=>x.author_id===p.id&&x.is_highlight&&!assignedIds.has(x.id)).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));const albums=data.highlightAlbums.filter(x=>x.owner_id===p.id).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
  const liveProfileStory=stories.some(x=>!x.pati_pet_highlight&&!blocked.has(x.author_id));
+ if(typeof patiStorySeenSync==='function')void patiStorySeenSync();
+ const unseenProfileStory=liveProfileStory&&(typeof patiHasUnseenStory!=='function'||patiHasUnseenStory(p.id));
  if(!['media','reels','videos','text','reposts'].includes(profilePostsTab))profilePostsTab='media';
  const active=privateLocked?[]:profilePostsTab==='reposts'?patiRepostedPosts(p.id):
   profilePostsTab==='reels'?posts.filter(x=>x.post_format==='reels'&&!!(x.video_url||x.media_videos?.length)):
@@ -4254,7 +4332,7 @@ function profilePage(){
  const profileContent=privateLocked?'<div class="pati-private-message">🔒 Bu hesap gizli. Gönderilerini görmek için takip isteği gönder.</div>':
   profilePostsTab==='text'?textFeed:'<div class="pati-ig-grid">'+(grid||'<p class="pati-ig-empty">Bu bölümde henüz paylaşım yok.</p>')+'</div>';
   main.innerHTML=(own?patiyizProgressCard():'')+'<div class="pati-ig-profile">'+(!own?'<div class="pati-profile-back">'+button('← Geri','profile-back')+'</div>':'')+
- '<div class="pati-ig-summary"><div class="pati-ig-avatar '+(liveProfileStory?'pati-profile-has-story':'')+'">'+
+ '<div class="pati-ig-summary"><div class="pati-ig-avatar '+(unseenProfileStory?'pati-profile-has-story':liveProfileStory?'pati-profile-story-seen':'')+'">'+
  (liveProfileStory?'<button type="button" class="pati-profile-story-view" data-action="story-view" data-id="'+esc(p.id)+'" aria-label="'+esc(p.display_name||'Kullanıcı')+' hikâyesini izle" title="Hikâyeyi izle">'+avatar(p,'l')+'</button>':avatar(p,'l'))+
  (own?'<button type="button" class="pati-profile-story-plus" data-action="story-create" aria-label="Profilinden hikâye paylaş" title="Hikâye ekle">'+ico('plus')+'</button>':'')+'</div><div class="pati-ig-info"><div class="pati-ig-handle-row"><strong class="pati-ig-handle">@'+esc(p.handle||'patiyiz')+'</strong>'+verifiedBadge(p)+'</div><strong class="pati-ig-name">'+esc(p.display_name||'Patiyiz üyesi')+'</strong><div class="pati-ig-stats"><span><b data-pati-count="posts">'+((cachedCounts?.posts??posts.filter(x=>x.author_id===p.id).length)+((typeof patiCollabs!=='undefined'?patiCollabs.rows:[]).filter(x=>x.user_id===p.id&&x.status==='accepted').length))+'</b><small>gönderi</small></span><button type="button" data-action="followers-list" data-id="'+esc(p.id)+'" data-mode="followers"><b data-pati-count="followers">'+followers+'</b><small>takipçi</small></button><button type="button" data-action="followers-list" data-id="'+esc(p.id)+'" data-mode="following"><b data-pati-count="following">'+following+'</b><small>takip edilen</small></button></div></div></div>'+
  (p.bio?'<div class="pati-ig-bio">'+esc(p.bio)+'</div>':'')+patiProfileLinksHTML(p)+mutualMarkup+
@@ -5501,6 +5579,8 @@ function questionReplies(id){
  * One in-flight mutation per post; a concurrent bootstrap cannot overwrite the result. */
 async function togglePostLike(id){
  if(!id||!me||!sb||pendingPostLikes.has(id))return;
+ const post=(typeof patiFindSocialPost==='function'?patiFindSocialPost(id):data.posts?.find(x=>x.id===id));
+ if(post?.author_id===me.id){notify('Kendi paylaşımına tepki veremezsin.',true);return;}
  const owner=me.id,wasLiked=liked.has(id);
  pendingPostLikes.add(id);likesChangeEpoch++;
  const buttons=[...document.querySelectorAll('[data-action="like"][data-id="'+id+'"]')];

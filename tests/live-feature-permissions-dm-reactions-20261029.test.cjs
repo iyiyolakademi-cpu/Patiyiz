@@ -36,7 +36,7 @@ function runtime(existing=null,alreadyInDB=false){
  const ctx={
   me:{id:'owner'},sb,data:{dmReactions:cache},
   patiDmEmojis:['❤️','😂','🐾'],
-  patiDmFindMessage:()=>({sender_id:'owner',receiver_id:'peer'}),
+  patiDmFindMessage:()=>({sender_id:'peer',receiver_id:'owner'}),
   blocked:new Set(),
   closeModal:()=>{modalCloses++},
   render:()=>{renders++},
