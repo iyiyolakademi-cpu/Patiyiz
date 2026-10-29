@@ -4476,7 +4476,7 @@ function profilePage(){
  '<div class="pati-ig-summary"><div class="pati-ig-avatar '+(unseenProfileStory?'pati-profile-has-story':liveProfileStory?'pati-profile-story-seen':'')+'">'+
  (liveProfileStory?'<button type="button" class="pati-profile-story-view" data-action="story-view" data-id="'+esc(p.id)+'" aria-label="'+esc(p.display_name||'Kullanıcı')+' hikâyesini izle" title="Hikâyeyi izle">'+avatar(p,'l')+'</button>':avatar(p,'l'))+
  (own?'<button type="button" class="pati-profile-story-plus" data-action="story-create" aria-label="Profilinden hikâye paylaş" title="Hikâye ekle">'+ico('plus')+'</button>':'')+'</div><div class="pati-ig-info"><div class="pati-ig-handle-row"><strong class="pati-ig-handle">@'+esc(p.handle||'patiyiz')+'</strong>'+verifiedBadge(p)+'</div><strong class="pati-ig-name">'+esc(p.display_name||'Patiyiz üyesi')+'</strong><div class="pati-ig-stats"><span><b data-pati-count="posts">'+((cachedCounts?.posts??posts.filter(x=>x.author_id===p.id).length)+((typeof patiCollabs!=='undefined'?patiCollabs.rows:[]).filter(x=>x.user_id===p.id&&x.status==='accepted').length))+'</b><small>gönderi</small></span><button type="button" data-action="followers-list" data-id="'+esc(p.id)+'" data-mode="followers"><b data-pati-count="followers">'+followers+'</b><small>takipçi</small></button><button type="button" data-action="followers-list" data-id="'+esc(p.id)+'" data-mode="following"><b data-pati-count="following">'+following+'</b><small>takip edilen</small></button></div></div></div>'+
- (p.bio?'<div class="pati-ig-bio">'+esc(p.bio)+'</div>':'')+patiProfileLinksHTML(p)+mutualMarkup+
+ (p.bio?'<div class="pati-ig-bio">'+esc(p.bio)+'</div>':'')+patiProfileLinksHTML(p)+mutualMarkup+(!own?'<p class="pati-profile-visit-disclosure">Profil ziyaretleri hesap sahibi tarafından görülebilir.</p>':'')+
  
  '<div class="pati-ig-actions">'+(own?button('Profili düzenle','edit-profile')+button('İstatistikler','pati-insights'):button(followed.has(p.id)?'Takiptesin':patiIsFollowRequested(p.id)?'İstek gönderildi':followBack?'Sen de takip et':'Takip et','follow','data-id="'+esc(p.id)+'"'+(followBack?' data-follow-back="true"':''))+button('Mesaj gönder','chat','data-id="'+esc(p.id)+'"')+button('Hesabı bildir','report','data-id="'+esc(p.id)+'" data-kind="profile"')+button(patiSafetyState.restrictions.has(p.id)?'Kısıtlamayı kaldır':'Kısıtla','pati-restrict','data-id="'+esc(p.id)+'"'))+'</div>'+(own&&typeof patiCreatorPreviewHTML==='function'?patiCreatorPreviewHTML():'')+(own?patiVerificationProfileAction():'')+
  '<div class="pati-ig-tabs" role="tablist" aria-label="Profil gönderileri">'+iconTabs.map(x=>'<button type="button" role="tab" aria-selected="'+(profilePostsTab===x[0])+'" class="'+(profilePostsTab===x[0]?'active':'')+'" data-action="profile-posts-tab" data-id="'+x[0]+'" aria-label="'+x[2]+'">'+x[1]+'</button>').join('')+'</div>'+
@@ -5338,14 +5338,15 @@ const patiCropEdits=new WeakMap();
 function patiCropDefault(file,ratio){
  return {ratio:ratio||'original',zoom:1,x:.5,y:.5,rotation:0,flip:false};
 }
-function patiCropSize(ratio,img){
+function patiCropSize(ratio,img,rotation=0){
  const sizes={'9:16':[720,1280],'4:5':[720,900],'1:1':[720,720],'1.91:1':[720,377]};
  if(sizes[ratio])return sizes[ratio];
- const max=2048,scale=Math.min(1,max/Math.max(img.naturalWidth,img.naturalHeight));
- return [Math.max(1,Math.round(img.naturalWidth*scale)),Math.max(1,Math.round(img.naturalHeight*scale))];
+ const rotate=rotation%180!==0,rw=rotate?img.naturalHeight:img.naturalWidth,rh=rotate?img.naturalWidth:img.naturalHeight;
+ const max=2048,scale=Math.min(1,max/Math.max(rw,rh));
+ return [Math.max(1,Math.round(rw*scale)),Math.max(1,Math.round(rh*scale))];
 }
 function patiCropPaint(canvas,img,state){
- const [w,h]=patiCropSize(state.ratio,img);
+ const [w,h]=patiCropSize(state.ratio,img,state.rotation);
  if(canvas.width!==w)canvas.width=w;
  if(canvas.height!==h)canvas.height=h;
  const ctx=canvas.getContext('2d');if(!ctx)throw Error('Fotoğraf düzenleyici açılamadı.');
@@ -5658,7 +5659,7 @@ async function createStoryPublication(form,f,str){
   let image_url=null,video_url=null;
   if(photo?.size){
    uploadStatus('Hikâye fotoğrafı hazırlanıyor…');
-   const img=shared?await cropPostPhoto(photo,str('aspect')||'9:16'):await renderEditedStoryFile(photo,form);
+   const img=(typeof patiCropEdits!=='undefined'&&patiCropEdits.has(photo))?await cropPostPhoto(photo,str('aspect')||'9:16'):shared?await cropPostPhoto(photo,str('aspect')||'9:16'):await renderEditedStoryFile(photo,form);
    image_url=await send(img,'image');
   }else{
    uploadStatus('Hikâye videosu hazırlanıyor…');
