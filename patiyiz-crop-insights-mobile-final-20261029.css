@@ -170,3 +170,20 @@ html[data-pati-theme="dark"] .pati-care-calendar-foot button{background:#181a20!
  .pati-care-calendar-grid button{min-height:43px}
  .pati-care-calendar-grid button i{width:16px;height:15px}
 }
+
+/* Own story hearts: visible above delete, without covering activity or swipe controls. */
+#story-overlay .pati-story-like.pati-story-like-own{
+ position:absolute!important;
+ right:14px!important;
+ bottom:calc(78px + env(safe-area-inset-bottom,0px))!important;
+ z-index:14!important;
+ width:45px!important;height:45px!important;
+ display:grid!important;place-items:center!important;
+ background:#15171dbb!important;color:#fff!important;
+ border:1px solid #ffffff88!important;border-radius:50%!important;
+ font-size:30px!important;line-height:1!important;
+}
+#story-overlay .pati-story-like.pati-story-like-own.active{
+ color:#ff335d!important;background:#fff!important;
+}
+#story-overlay.pati-story-viewers-open .pati-story-like-own{display:none!important}
