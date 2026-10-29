@@ -882,7 +882,7 @@ async function loadMore(key){pageLimits[key]=(pageLimits[key]||40)+50;
  }
 }
 function formatPatiPostBody(raw){
- return esc(raw||'').replace(/(^|[\s])#([\p{L}\p{N}_]{2,35})/gu,(_m,prefix,tag)=>prefix+'<button type="button" class="pati-hashtag" data-action="hashtag" data-id="'+tag+'">#'+tag+'</button>');
+ return patiMentionsHTML(raw||'').replace(/(^|[\s])#([\p{L}\p{N}_]{2,35})/gu,(_m,prefix,tag)=>prefix+'<button type="button" class="pati-hashtag" data-action="hashtag" data-id="'+tag+'">#'+tag+'</button>');
 }
 
 /* Social features: repost and pinned profile posts. */
@@ -4181,6 +4181,58 @@ async function patiFetchPostComments(postId,more=false){
   if(me?.id===owner&&patiPostCommentPages.get(postId)===state&&document.getElementById('comment-form')?.dataset.post===postId)showComments(postId);
  }
 }
+
+/* Per-post author controlled pinned comments, with existing replies and likes intact. */
+const patiCommentPinCache=new Map(),patiCommentPinBusy=new Set();
+async function patiCommentPinEnsure(postId){
+ if(!me||!postId||patiCommentPinCache.has(postId)||patiCommentPinBusy.has(postId))return;
+ patiCommentPinBusy.add(postId);
+ try{
+  const r=await sb.from('patiyiz_comment_pins').select('comment_id').eq('post_id',postId).maybeSingle();
+  if(r.error)throw r.error;
+  patiCommentPinCache.set(postId,r.data?.comment_id||'');
+  if(document.getElementById('comment-form')?.dataset.post===postId)showComments(postId);
+ }catch(e){console.warn('Sabit yorum yüklenemedi',e?.message||e)}
+ finally{patiCommentPinBusy.delete(postId)}
+}
+async function patiCommentPinToggle(id){
+ const form=document.getElementById('comment-form'),postId=form?.dataset.post;
+ const post=data.posts.find(p=>p.id===postId);
+ const comment=(patiPostCommentPages.get(postId)?.rows||data.comments).find(c=>c.id===id);
+ if(!me||!post||post.author_id!==me.id||!comment||comment.post_id!==postId||comment.parent_id)
+  throw Error('Yalnızca kendi gönderinin ana yorumunu sabitleyebilirsin.');
+ const already=patiCommentPinCache.get(postId)===id;
+ const r=already?await sb.from('patiyiz_comment_pins').delete().eq('post_id',postId).eq('owner_id',me.id):
+ await sb.from('patiyiz_comment_pins').upsert({post_id:postId,comment_id:id,owner_id:me.id},{onConflict:'post_id'});
+ if(r.error)throw r.error;
+ patiCommentPinCache.set(postId,already?'':id);
+ showComments(postId);notify(already?'Yorumun sabiti kaldırıldı.':'Yorum en üstte sabitlendi.');
+}
+function patiMentionsHTML(body){
+ const plain=esc(body||'');
+ return plain.replace(/(^|[^\\p{L}\\p{N}_])@([\\p{L}\\p{N}._]{2,40})/gu,(whole,prefix,handle)=>{
+  const person=data.profiles.find(x=>String(x.handle||'').toLocaleLowerCase('tr-TR')===handle.toLocaleLowerCase('tr-TR')&&!blocked.has(x.id));
+  return person?prefix+'<button type="button" class="pati-mention-link" data-action="view-user" data-id="'+esc(person.id)+'">@'+esc(handle)+'</button>':whole;
+ });
+}
+function patiMentionOpen(mode){
+ const form=document.getElementById(mode==='comment'?'comment-form':'post-form');
+ if(!form)return;
+ const target=form.querySelector('textarea[name="body"]');if(!target)return;
+ let panel=form.querySelector('.pati-mention-picker');
+ if(panel){panel.remove();return}
+ panel=document.createElement('div');panel.className='pati-mention-picker';
+ panel.innerHTML='<label>Kişi ara<input type="search" class="pati-mention-search" placeholder="İsim veya kullanıcı adı" aria-label="Etiketlenecek kullanıcı"></label><div class="pati-mention-results"></div>';
+ target.insertAdjacentElement('afterend',panel);
+ const search=panel.querySelector('input'),results=panel.querySelector('.pati-mention-results');
+ const paint=()=>{
+  const q=search.value.trim().toLocaleLowerCase('tr-TR');
+  const list=data.profiles.filter(p=>p.id!==me.id&&!blocked.has(p.id)&&p.handle&&(!q||(p.handle+' '+(p.display_name||'')).toLocaleLowerCase('tr-TR').includes(q))).slice(0,30);
+  results.innerHTML=list.length?list.map(p=>'<button type="button" data-action="pati-mention-select" data-handle="'+esc(p.handle)+'">'+avatar(p,'s')+'<span>'+esc(p.display_name||p.handle)+'<small>@'+esc(p.handle)+'</small></span></button>').join(''):'<p>Kullanıcı bulunamadı.</p>';
+ };
+ search.addEventListener('input',paint);paint();search.focus();
+}
+
 function showComments(postId){
  if(!postId||!me)return;
  const previous=document.getElementById('comment-form');
@@ -4190,6 +4242,8 @@ function showComments(postId){
  const scroll=same?previous.querySelector('.comment-list')?.scrollTop||0:0;
  if(patiyizCommentSheetPost!==postId){patiyizCommentExpandedReplies.clear();patiyizCommentSheetPost=postId}
  const post=data.posts.find(p=>p.id===postId);
+ void patiCommentPinEnsure(postId);
+ const pinnedCommentId=patiCommentPinCache.get(postId)||'';
  const author=post?profile(post.author_id):null;
  const scoped=typeof patiPostCommentPages!=='undefined'?patiPostCommentPages.get(postId):null;
  const source=scoped?.ready?scoped.rows:data.comments.filter(c=>c.post_id===postId);
@@ -4207,9 +4261,10 @@ function showComments(postId){
   return '<div class="comment-item pati-sheet-comment '+(depth?'pati-sheet-reply':'')+'" style="--pati-comment-depth:'+Math.min(depth,3)+'" data-comment-id="'+esc(c.id)+'">'+
    '<div class="pati-sheet-comment-avatar">'+avatar(person,'s')+'</div>'+
    '<div class="pati-sheet-comment-main"><div class="pati-sheet-comment-line"><strong>'+fullName+'</strong><time>'+patiCommentAge(c.created_at)+'</time></div>'+
-   '<p>'+esc(c.body)+'</p>'+
+   '<p>'+patiMentionsHTML(c.body)+'</p>'+(c.id===pinnedCommentId?'<span class="pati-comment-pinned-label">📌 Sabitlenen yorum</span>':'')+
    '<div class="comment-actions">'+
    '<button type="button" data-action="comment-reply" data-id="'+esc(c.id)+'">Yanıtla</button>'+
+ (post?.author_id===me.id&&!c.parent_id?'<button type="button" data-action="comment-pin" data-id="'+esc(c.id)+'">'+(pinnedCommentId===c.id?'Sabiti kaldır':'Sabitle')+'</button>':'')+
    (c.author_id===me.id?'<button type="button" data-action="comment-delete" data-id="'+esc(c.id)+'">Sil</button>':'<button type="button" data-action="report" data-kind="comment" data-id="'+esc(c.id)+'">Bildir</button>')+
    '</div>'+
    (replyList.length?'<button type="button" class="pati-comment-replies-toggle" data-action="comment-thread-toggle" data-id="'+esc(c.id)+'" aria-expanded="'+isExpanded+'">'+
@@ -4218,6 +4273,7 @@ function showComments(postId){
    '</div><button type="button" class="pati-comment-heart '+(isLiked?'active':'')+'" data-action="comment-like" data-id="'+esc(c.id)+'" aria-label="'+(isLiked?'Yorum beğenisini kaldır':'Yorumu beğen')+'" aria-pressed="'+isLiked+'">'+ico('heart')+'<small>'+count+'</small></button></div>';
  };
  const roots=items.filter(c=>!c.parent_id||!commentById.has(c.parent_id));
+ roots.sort((a,b)=>Number(b.id===pinnedCommentId)-Number(a.id===pinnedCommentId)||new Date(a.created_at)-new Date(b.created_at));
  const intro=post&&author?'<section class="pati-comment-post-summary">'+
   '<div class="pati-comment-post-user">'+avatar(author,'s')+'<strong>'+displayName(author)+'</strong>'+
   (author.id!==me.id?'<button type="button" data-action="follow" data-id="'+esc(author.id)+'" class="pati-comment-follow '+(followed.has(author.id)?'is-following':'')+'">'+(followed.has(author.id)?'Takiptesin':'Takip et')+'</button>':'')+'</div>'+
@@ -4237,7 +4293,7 @@ function showComments(postId){
  if(footer)footer.innerHTML='<div class="pati-comment-quick">'+['❤️','🙌','🔥','👏','🥹','😍','😂'].map(e=>'<button type="button" data-action="comment-emoji" data-emoji="'+e+'">'+e+'</button>').join('')+'</div>'+
  '<div class="pati-comment-editor-row"><div class="pati-comment-me">'+avatar(current(),'s')+'</div>'+
  '<textarea name="body" aria-label="Yorum ekle" maxlength="750" rows="1" required placeholder="Yorum ekle..."></textarea>'+
- '<button type="submit" class="pati-comment-send">Gönder</button></div>';
+ '<button type="button" class="pati-comment-mention" data-action="pati-mention-open" data-id="comment" aria-label="Kişi etiketle">@</button><button type="submit" class="pati-comment-send">Gönder</button></div>';
  const input=form.querySelector('[name="body"]');if(input)input.value=draft;
  if(parent){form.dataset.parent=parent;const who=profile(data.comments.find(c=>c.id===parent)?.author_id);const hint=form.querySelector('#comment-reply-hint');if(hint)hint.innerHTML='↳ '+displayName(who)+' kullanıcısına yanıt <button type="button" data-action="comment-reply-cancel">× Vazgeç</button>'}
  const list=form.querySelector('.comment-list');if(list)list.scrollTop=scroll;
@@ -5587,7 +5643,10 @@ case 'dm-reply':{const m=patiDmFindMessage(id);const f=document.getElementById('
   render();
  },'Mesaj iki tarafın sohbetinden silindi.');
  break;
-}case 'comment':showComments(id);void patiFetchPostComments(id);break;case 'comment-more':void patiFetchPostComments(id,true);break;case 'comment-emoji':{const ta=document.querySelector('#comment-form textarea[name="body"]');if(ta){ta.value+=target.dataset.emoji||'';ta.focus()}break;}case 'comment-reply':{const f=$('#comment-form');if(f){f.dataset.parent=id;const who=profile(data.comments.find(x=>x.id===id)?.author_id).display_name;const hint=$('#comment-reply-hint');if(hint)hint.innerHTML='↳ '+esc(who)+' kullanıcısına yanıt <button type="button" data-action="comment-reply-cancel">× Vazgeç</button>';f.querySelector('textarea')?.focus()}break}case 'comment-reply-cancel':{const f=$('#comment-form');if(f)f.dataset.parent='';const hint=$('#comment-reply-hint');if(hint)hint.textContent='';break}case 'comment-thread-toggle':{const form=$('#comment-form');const postId=form?.dataset.post;if(!postId)break;if(patiyizCommentExpandedReplies.has(id))patiyizCommentExpandedReplies.delete(id);else patiyizCommentExpandedReplies.add(id);showComments(postId);break;}case 'comment-like':run(async()=>{const form=$('#comment-form');const postId=form?.dataset.post||'',draft=form?.querySelector('textarea')?.value||'',parent=form?.dataset.parent||'';const liked=data.commentLikes.some(x=>x.comment_id===id&&x.user_id===me.id);let r=liked?await sb.from('comment_likes').delete().eq('comment_id',id).eq('user_id',me.id):await sb.from('comment_likes').insert({comment_id:id,user_id:me.id});if(r.error)throw r.error;await load();showComments(postId);const next=$('#comment-form');if(next){next.querySelector('textarea').value=draft;next.dataset.parent=parent;const hint=$('#comment-reply-hint');if(parent&&hint)hint.textContent=profile(data.comments.find(c=>c.id===parent)?.author_id).display_name+' kullanıcısına cevap veriyorsun';}});break;case 'comment-delete':{const c=data.comments.find(x=>x.id===id);if(!c||c.author_id!==me.id)break;if(!confirm('Yorum silinsin mi?'))break;run(async()=>{const post=$('#comment-form')?.dataset.post;const r=await sb.from('comments').delete().eq('id',id).eq('author_id',me.id);if(r.error)throw r.error;
+}case 'comment':showComments(id);void patiFetchPostComments(id);break;case 'comment-more':void patiFetchPostComments(id,true);break;case 'comment-emoji':{const ta=document.querySelector('#comment-form textarea[name="body"]');if(ta){ta.value+=target.dataset.emoji||'';ta.focus()}break;}case 'comment-reply':{const f=$('#comment-form');if(f){f.dataset.parent=id;const who=profile(data.comments.find(x=>x.id===id)?.author_id).display_name;const hint=$('#comment-reply-hint');if(hint)hint.innerHTML='↳ '+esc(who)+' kullanıcısına yanıt <button type="button" data-action="comment-reply-cancel">× Vazgeç</button>';f.querySelector('textarea')?.focus()}break}case 'comment-reply-cancel':{const f=$('#comment-form');if(f)f.dataset.parent='';const hint=$('#comment-reply-hint');if(hint)hint.textContent='';break}case 'comment-thread-toggle':{const form=$('#comment-form');const postId=form?.dataset.post;if(!postId)break;if(patiyizCommentExpandedReplies.has(id))patiyizCommentExpandedReplies.delete(id);else patiyizCommentExpandedReplies.add(id);showComments(postId);break;}case 'comment-pin':run(()=>patiCommentPinToggle(id));break;
+case 'pati-mention-open':patiMentionOpen(id==='comment'?'comment':'post');break;
+case 'pati-mention-select':{const picker=target.closest('.pati-mention-picker'),form=picker?.closest('form'),textarea=form?.querySelector('textarea[name="body"]');if(textarea){const name='@'+(target.dataset.handle||'');textarea.setRangeText(name+' ',textarea.selectionStart||textarea.value.length,textarea.selectionEnd||textarea.value.length,'end');textarea.focus();}picker?.remove();break}
+case 'comment-like':run(async()=>{const form=$('#comment-form');const postId=form?.dataset.post||'',draft=form?.querySelector('textarea')?.value||'',parent=form?.dataset.parent||'';const liked=data.commentLikes.some(x=>x.comment_id===id&&x.user_id===me.id);let r=liked?await sb.from('comment_likes').delete().eq('comment_id',id).eq('user_id',me.id):await sb.from('comment_likes').insert({comment_id:id,user_id:me.id});if(r.error)throw r.error;await load();showComments(postId);const next=$('#comment-form');if(next){next.querySelector('textarea').value=draft;next.dataset.parent=parent;const hint=$('#comment-reply-hint');if(parent&&hint)hint.textContent=profile(data.comments.find(c=>c.id===parent)?.author_id).display_name+' kullanıcısına cevap veriyorsun';}});break;case 'comment-delete':{const c=data.comments.find(x=>x.id===id);if(!c||c.author_id!==me.id)break;if(!confirm('Yorum silinsin mi?'))break;run(async()=>{const post=$('#comment-form')?.dataset.post;const r=await sb.from('comments').delete().eq('id',id).eq('author_id',me.id);if(r.error)throw r.error;
   data.comments=data.comments.filter(row=>row.id!==id);
   const state=patiPostCommentPages.get(post);
   if(state){state.rows=state.rows.filter(row=>row.id!==id);state.at=0}
