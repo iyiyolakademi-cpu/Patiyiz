@@ -68,7 +68,7 @@ function patiWatchPostViews(){
 }
 
 const allowed=['home','explore','pets','reels','streaks','rewards','shop','saved-posts','community','knowledge','education','lost','adoption','care','wellness','healthfile','my-pet','messages','notifications','profile','blocked','settings','follows-list'];
-const nav=[['home','Ana sayfa','home'],['explore','Keşfet','compass'],['pets','Patiler','heart'],['reels','Reels','up'],['streaks','Seriler','calendar'],['community','Topluluk','users'],['knowledge','Bilgi Merkezi','library'],['education','Eğitim','library'],['lost','Kayıp İlanları','location'],['adoption','Sahiplendirme','heart'],['my-pet','Hayvanım','heart'],['messages','Mesajlar','message'],['notifications','Bildirimler','bell'],['profile','Profilim','user'],['settings','Ayarlar ve Gizlilik','settings']];
+const nav=[['home','Ana sayfa','home'],['explore','Keşfet','compass'],['reels','Reels','up'],['streaks','Seriler','calendar'],['community','Topluluk','users'],['knowledge','Bilgi Merkezi','library'],['education','Eğitim','library'],['lost','Kayıp İlanları','location'],['adoption','Sahiplendirme','heart'],['my-pet','Hayvanım','heart'],['messages','Mesajlar','message'],['notifications','Bildirimler','bell'],['profile','Profilim','user'],['settings','Ayarlar ve Gizlilik','settings']];
 const cfg=window.PATIYIZ_CONFIG||{};
 const ready=String(cfg.supabaseUrl||'').startsWith('https://')&&!String(cfg.supabaseUrl).includes('BURAYA_')&&!!cfg.supabasePublishableKey&&!String(cfg.supabasePublishableKey).includes('BURAYA_')&&!!window.supabase?.createClient;
 let liveChannel=null,liveReloadTimer=null,liveReconnectTimer=null,liveUserId=null,liveInitialized=false,pushPublicKey='',lastForegroundSync=0;
@@ -391,7 +391,7 @@ function patiMenuRenderNotifications(){
 }
 function openMobileFeaturesMenu(){
  const groups=[
-  {title:'Topluluk',tone:'purple',items:[['messages','Mesajlar','message'],['community','Soru & Cevap','users'],['pets','Patileri keşfet','paw']]},
+  {title:'Topluluk',tone:'purple',items:[['community','Soru & Cevap','users'],['pets','Patileri keşfet','paw']]},
   {title:'Hayvanım',tone:'green',items:[['my-pet','Hayvanım Merkezi · Tüm seçenekler','heart']]},
   {title:'PatiCoin ve koleksiyonum',tone:'orange',items:[['streaks','Seriler','calendar'],['shop','Pati Mağaza','grid'],['saved-posts','Kaydettiğim gönderiler','bookmark']]},
   {title:'Hesabım',tone:'blue',items:[['settings','Ayarlar ve gizlilik','settings'],['blocked','Engellediğim kişiler','shield']]}
@@ -1040,6 +1040,64 @@ function openPost(id){
  patiExploreReturnTo=view==='explore';selectedPostId=id;navigate('home');
 }
 let storyItems=[],storyIndex=0,storyTimer=null,storyLikes=[];
+/* Story rings track unseen ACTIVE story IDs, never story deletion.
+   Own previews are local; other users' story receipts are also synced using viewer-only RLS. */
+let patiStorySeenState={owner:'',seen:new Set(),requested:new Set(),loading:false};
+function patiStorySeenInit(){
+ const owner=me?.id||'';
+ if(patiStorySeenState.owner===owner)return;
+ const seen=new Set();
+ if(owner)try{
+  const raw=JSON.parse(localStorage.getItem('patiyiz-story-seen:'+owner)||'[]');
+  if(Array.isArray(raw))for(const id of raw.slice(-300))if(typeof id==='string')seen.add(id);
+ }catch(_){}
+ patiStorySeenState={owner,seen,requested:new Set(),loading:false};
+}
+function patiStorySeenSave(){
+ if(!me?.id)return;
+ const active=new Set(data.stories.filter(s=>new Date(s.expires_at).getTime()>Date.now()).map(s=>s.id));
+ patiStorySeenState.seen=new Set([...patiStorySeenState.seen].filter(id=>active.has(id)));
+ try{localStorage.setItem('patiyiz-story-seen:'+me.id,JSON.stringify([...patiStorySeenState.seen].slice(-300)))}catch(_){}
+}
+function patiStorySeen(x){
+ if(!x?.id||!x?.author_id||x.pati_pet_highlight)return false;
+ patiStorySeenInit();
+ const unseen=!patiStorySeenState.seen.has(x.id);
+ if(unseen){patiStorySeenState.seen.add(x.id);patiStorySeenSave();}
+ return unseen;
+}
+function patiStoryIsSeen(x){patiStorySeenInit();return !!x&&patiStorySeenState.seen.has(x.id)}
+function patiActiveStoriesOf(author){
+ const now=Date.now();
+ return data.stories.filter(s=>s.author_id===author&&!s.pati_pet_highlight&&!blocked.has(s.author_id)&&new Date(s.expires_at).getTime()>now);
+}
+function patiHasUnseenStory(author){return patiActiveStoriesOf(author).some(x=>!patiStoryIsSeen(x))}
+async function patiStorySeenSync(){
+ if(!me?.id||!sb)return;
+ patiStorySeenInit();
+ const state=patiStorySeenState,owner=me.id;
+ const ids=data.stories.filter(s=>s.author_id!==owner&&!s.pati_pet_highlight&&new Date(s.expires_at).getTime()>Date.now()).map(s=>s.id);
+ const pending=ids.filter(id=>!state.requested.has(id));
+ if(!pending.length||state.loading)return;
+ state.loading=true;
+ const batch=pending.slice(0,90);
+ try{
+  const out=await sb.from('patiyiz_story_views').select('story_id').eq('viewer_id',owner).in('story_id',batch);
+  if(out.error)throw out.error;
+  if(me?.id!==owner||patiStorySeenState!==state)return;
+  batch.forEach(id=>state.requested.add(id));
+  for(const row of out.data||[])state.seen.add(row.story_id);
+  patiStorySeenSave();
+  if(view==='home'&&!document.getElementById('story-overlay'))render();
+  if(view==='profile'&&!document.getElementById('story-overlay'))render();
+ }catch(e){console.warn('Hikâye izlendi durumu eşitlenemedi:',e?.message||e)}
+ finally{
+  if(patiStorySeenState===state){state.loading=false;
+   if(pending.length>batch.length)queueMicrotask(()=>{if(me?.id===owner)void patiStorySeenSync()});
+  }
+ }
+}
+
 function patiPauseStoryBackgroundMedia(){
  document.querySelectorAll('video,audio').forEach(media=>{if(!media.closest('#story-overlay')){try{media.pause()}catch(_){}}});
  if(patiyizFeedActiveVideo){patiyizFeedActiveVideo.pause();patiyizFeedActiveVideo=null}
@@ -1065,7 +1123,7 @@ function closeStory(resume=true){
  clearTimeout(storyTimer);storyTimer=null;storyItems=[];
  document.getElementById('story-overlay')?.remove();document.body.classList.remove('story-fullscreen-open');
  if(!resume)return;
- if(view==='profile')render();else{setupFeedVideos();setupReelsViewer()}
+ if(view==='profile'||view==='home')render();else{setupFeedVideos();setupReelsViewer()}
 }
 async function recordStoryView(x){if(!me||x.pati_pet_highlight||x.author_id===me.id)return;try{const r=await sb.rpc('patiyiz_record_story_view',{p_story_id:x.id});if(r.error)console.warn('Hikâye görüntülemesi kaydedilemedi:',r.error.message)}catch(err){console.warn('Hikâye görüntüleme ağ hatası:',err)}}
 
@@ -1240,7 +1298,7 @@ async function patiOpenSharedStoryPost(postId){
  closeStory(false);openPost(postId);
 }
 
-function showStoryFrame(){const root=document.getElementById('story-overlay'),x=storyItems[storyIndex];if(!root||!x)return;clearTimeout(storyTimer);patiPauseStoryBackgroundMedia();const user=profile(x.author_id);const storyGroupItems=storyItems.filter(s=>s.author_id===x.author_id);const storyGroupIndex=storyGroupItems.findIndex(s=>s.id===x.id);if(!x.pati_pet_highlight)recordStoryView(x);if(!x.pati_pet_highlight&&x.author_id!==me.id)void syncStoryLike(x.id);root.dataset.audience=x.audience==='close_friends'?'close_friends':'everyone';root.classList.toggle('pati-story-own',x.author_id===me.id);root.classList.toggle('pati-story-has-source',!!x.shared_post_id);root.innerHTML='<div class="story-player"><div class="story-progress">'+storyGroupItems.map((_,i)=>'<span class="story-track"><span class="'+(i===storyGroupIndex?'story-playing':'')+'" style="width:'+(i<storyGroupIndex?'100':'0')+'%"></span></span>').join('')+'</div><div class="story-player-head">'+avatar(user,'s')+'<span class="pati-story-owner-name"><strong>'+displayName(user)+'</strong>'+(x.audience==='close_friends'?'<span class="pati-story-close-friends-label">★ Yakın Arkadaşlar</span>':'')+'</span><button data-action="story-close" aria-label="Kapat" class="story-close">×</button></div>'+(x.video_url?'<video class="story-big-video'+(x.selfie_mirrored?' pati-selfie-mirrored':'')+'" src="'+esc(x.video_url)+'" poster="'+esc(x.image_url||'')+'" muted autoplay playsinline preload="auto" aria-label="Video hikâyesi"></video><button type="button" class="pati-story-sound" data-action="story-sound" aria-label="Hikâye sesini aç">Ses aç</button>':x.image_url?'<img class="story-big-photo" src="'+esc(x.image_url)+'" alt="Hikâye">':'<div class="pati-story-no-photo">🐾</div>')+''+(x.caption?'<p class="story-caption">'+esc(x.caption)+'</p>':'')+(x.shared_post_id?'<button type="button" class="pati-story-shared-source" data-action="pati-story-open-post" data-id="'+esc(x.shared_post_id)+'">↗ Orijinal gönderiyi gör</button>':'')+'<button class="story-hit prev" data-action="story-prev" aria-label="Önceki"></button><button class="story-hit next" data-action="story-next" aria-label="Sonraki"></button>'+(x.pati_pet_highlight?'<span class="pati-saved-story-label">Kalıcı hikâye</span>':x.author_id===me.id?'<button type="button" class="story-delete" data-action="story-delete" data-id="'+esc(x.id)+'" aria-label="Hikâyeyi sil">'+ico('trash')+' <span>Sil</span></button><button type="button" class="story-viewers-button pati-story-viewer-preview" data-action="story-viewers" aria-label="Hikâye hareketlerini aç"><span class="pati-story-viewer-preview-stack" aria-hidden="true"></span><span class="pati-story-viewer-preview-label">Hareketler</span><span class="pati-story-viewer-preview-status" aria-live="polite">Görüntüleyenler yükleniyor…</span></button>':'<button class="pati-story-like" data-action="story-like" data-id="'+esc(x.id)+'" aria-label="Hikâyeyi beğen">♡</button>')+'<div id="story-viewers-sheet" class="story-viewers-sheet" hidden></div></div>';const upcoming=storyItems[storyIndex+1];if(upcoming?.image_url&&typeof Image==='function'){const preload=new Image();preload.src=upcoming.image_url}storyTimer=setTimeout(()=>stepStory(1),x.video_url?15000:6000);
+function showStoryFrame(){const root=document.getElementById('story-overlay'),x=storyItems[storyIndex];if(!root||!x)return;clearTimeout(storyTimer);patiPauseStoryBackgroundMedia();const user=profile(x.author_id);const storyGroupItems=storyItems.filter(s=>s.author_id===x.author_id);const storyGroupIndex=storyGroupItems.findIndex(s=>s.id===x.id);if(!x.pati_pet_highlight){patiStorySeen(x);recordStoryView(x);}if(!x.pati_pet_highlight&&x.author_id!==me.id)void syncStoryLike(x.id);root.dataset.audience=x.audience==='close_friends'?'close_friends':'everyone';root.classList.toggle('pati-story-own',x.author_id===me.id);root.classList.toggle('pati-story-has-source',!!x.shared_post_id);root.innerHTML='<div class="story-player"><div class="story-progress">'+storyGroupItems.map((_,i)=>'<span class="story-track"><span class="'+(i===storyGroupIndex?'story-playing':'')+'" style="width:'+(i<storyGroupIndex?'100':'0')+'%"></span></span>').join('')+'</div><div class="story-player-head">'+avatar(user,'s')+'<span class="pati-story-owner-name"><strong>'+displayName(user)+'</strong>'+(x.audience==='close_friends'?'<span class="pati-story-close-friends-label">★ Yakın Arkadaşlar</span>':'')+'</span><button data-action="story-close" aria-label="Kapat" class="story-close">×</button></div>'+(x.video_url?'<video class="story-big-video'+(x.selfie_mirrored?' pati-selfie-mirrored':'')+'" src="'+esc(x.video_url)+'" poster="'+esc(x.image_url||'')+'" muted autoplay playsinline preload="auto" aria-label="Video hikâyesi"></video><button type="button" class="pati-story-sound" data-action="story-sound" aria-label="Hikâye sesini aç">Ses aç</button>':x.image_url?'<img class="story-big-photo" src="'+esc(x.image_url)+'" alt="Hikâye">':'<div class="pati-story-no-photo">🐾</div>')+''+(x.caption?'<p class="story-caption">'+esc(x.caption)+'</p>':'')+(x.shared_post_id?'<button type="button" class="pati-story-shared-source" data-action="pati-story-open-post" data-id="'+esc(x.shared_post_id)+'">↗ Orijinal gönderiyi gör</button>':'')+'<button class="story-hit prev" data-action="story-prev" aria-label="Önceki"></button><button class="story-hit next" data-action="story-next" aria-label="Sonraki"></button>'+(x.pati_pet_highlight?'<span class="pati-saved-story-label">Kalıcı hikâye</span>':x.author_id===me.id?'<button type="button" class="story-delete" data-action="story-delete" data-id="'+esc(x.id)+'" aria-label="Hikâyeyi sil">'+ico('trash')+' <span>Sil</span></button><button type="button" class="story-viewers-button pati-story-viewer-preview" data-action="story-viewers" aria-label="Hikâye hareketlerini aç"><span class="pati-story-viewer-preview-stack" aria-hidden="true"></span><span class="pati-story-viewer-preview-label">Hareketler</span><span class="pati-story-viewer-preview-status" aria-live="polite">Görüntüleyenler yükleniyor…</span></button>':'<button class="pati-story-like" data-action="story-like" data-id="'+esc(x.id)+'" aria-label="Hikâyeyi beğen">♡</button>')+'<div id="story-viewers-sheet" class="story-viewers-sheet" hidden></div></div>';const upcoming=storyItems[storyIndex+1];if(upcoming?.image_url&&typeof Image==='function'){const preload=new Image();preload.src=upcoming.image_url}storyTimer=setTimeout(()=>stepStory(1),x.video_url?15000:6000);
  if(x.author_id===me.id&&!x.pati_pet_highlight)void patiStoryPreviewLoad(x.id);
  if(x.video_url){
   const video=root.querySelector('.story-big-video');
@@ -1261,6 +1319,7 @@ async function syncStoryLike(id){
  if(!r.error&&btn&&!btn.disabled&&me?.id===uid){btn.textContent=r.data?'♥':'♡';btn.classList.toggle('active',!!r.data)}
 }
 async function toggleStoryLike(id){
+ if(data.stories.some(x=>x.id===id&&x.author_id===me?.id))return;
  const btn=document.querySelector('.pati-story-like[data-id="'+id+'"]');if(!btn||btn.disabled)return;
  const uid=me.id,previous=btn.classList.contains('active');
  btn.disabled=true;
@@ -3429,7 +3488,7 @@ function patiDmReactionMarkup(messageId){
 }
 function patiDmOpenReactionPicker(messageId){
  const msg=patiDmFindMessage(messageId);
- if(!me||!msg||(msg.sender_id!==me.id&&msg.receiver_id!==me.id))return;
+ if(!me||!msg||msg.sender_id===me.id||msg.receiver_id!==me.id)return;
  modal('Mesaja tepki ver','<div class="pati-dm-reaction-picker" role="group" aria-label="Emoji seç">'+
  patiDmEmojis.map(emoji=>'<button type="button" data-action="dm-react-set" data-id="'+esc(messageId)+'" data-emoji="'+esc(emoji)+'" aria-label="'+esc(emoji)+' ile tepki ver">'+emoji+'</button>').join('')+
  '</div>','dm-reaction-picker-form');
@@ -3438,7 +3497,7 @@ function patiDmOpenReactionPicker(messageId){
 async function patiDmSetReaction(messageId,emoji){
  if(!me||!patiDmEmojis.includes(emoji))throw Error('Tepki seçilemedi.');
  const msg=patiDmFindMessage(messageId),owner=me.id;
- if(!msg||(msg.sender_id!==owner&&msg.receiver_id!==owner)||blocked.has(msg.sender_id)||blocked.has(msg.receiver_id))
+ if(!msg||msg.sender_id===owner||msg.receiver_id!==owner||blocked.has(msg.sender_id)||blocked.has(msg.receiver_id))
   throw Error('Bu mesaja tepki verilemez.');
  const existing=data.dmReactions.find(x=>x.message_id===messageId&&x.user_id===owner);
  // Database permissions intentionally allow updating emoji only, never moving a reaction
@@ -5501,6 +5560,8 @@ function questionReplies(id){
  * One in-flight mutation per post; a concurrent bootstrap cannot overwrite the result. */
 async function togglePostLike(id){
  if(!id||!me||!sb||pendingPostLikes.has(id))return;
+ const post=patiFindSocialPost(id);
+ if(post?.author_id===me.id){notify('Kendi paylaşımına tepki veremezsin.',true);return;}
  const owner=me.id,wasLiked=liked.has(id);
  pendingPostLikes.add(id);likesChangeEpoch++;
  const buttons=[...document.querySelectorAll('[data-action="like"][data-id="'+id+'"]')];
