@@ -17,3 +17,39 @@ self.addEventListener('notificationclick',event=>{
   await self.clients.openWindow(url);
  })());
 });
+
+
+/* Small same-origin static cache: faster return visits without storing API/user data.
+   Bump the cache version whenever this worker changes. URLs keep their release
+   query parameters, so updated CSS/JS assets are distinct cache entries. */
+const PATIYIZ_STATIC_CACHE='patiyiz-static-v20261029';
+const PATIYIZ_STATIC_PREFIX='patiyiz-static-v';
+self.addEventListener('install',event=>{
+ event.waitUntil(self.skipWaiting());
+});
+self.addEventListener('activate',event=>{
+ event.waitUntil((async()=>{
+  const keys=await caches.keys();
+  await Promise.all(keys.filter(k=>k.startsWith(PATIYIZ_STATIC_PREFIX)&&k!==PATIYIZ_STATIC_CACHE).map(k=>caches.delete(k)));
+  await self.clients.claim();
+ })());
+});
+self.addEventListener('fetch',event=>{
+ const request=event.request;
+ if(request.method!=='GET'||request.mode==='navigate'||request.cache==='no-store')return;
+ const url=new URL(request.url);
+ if(url.origin!==self.location.origin)return;
+ // Never cache HTML, private data, credentials, API requests or media uploads.
+ if(!/\.(?:css|js|svg|png|webp|woff2|webmanifest)$/i.test(url.pathname))return;
+ if(url.pathname.endsWith('/patiyiz-sw.js'))return;
+ event.respondWith((async()=>{
+  const cache=await caches.open(PATIYIZ_STATIC_CACHE);
+  const cached=await cache.match(request);
+  if(cached)return cached;
+  const response=await fetch(request);
+  if(response.ok&&response.type==='basic'){
+   try{await cache.put(request,response.clone())}catch(_){} // Quota is best effort.
+  }
+  return response;
+ })());
+});

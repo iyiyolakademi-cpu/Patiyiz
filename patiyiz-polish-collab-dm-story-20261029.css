@@ -633,3 +633,49 @@ html[data-pati-theme="dark"] #main-content .pati-streak-goal-card.is-selected{
  position:relative;z-index:2;min-height:44px!important;
  touch-action:manipulation;-webkit-tap-highlight-color:transparent;
 }
+
+
+/* 29 Oct: mobile usability & predictable contrast, without altering user media. */
+html[data-pati-theme="light"]{
+ --pati-final-field-bg:#f5f6f8;
+ --pati-final-field-text:#17191f;
+ --pati-final-field-line:#cdd2db;
+ --pati-final-placeholder:#686e7a;
+}
+html[data-pati-theme="dark"]{
+ --pati-final-field-bg:#282b32;
+ --pati-final-field-text:#f4f5f8;
+ --pati-final-field-line:#535765;
+ --pati-final-placeholder:#c0c3ce;
+}
+:is(#main-content,#modal-root) :is(
+ input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="color"]),
+ textarea,select
+):not(.pati-reels-overlay-input){
+ background-color:var(--pati-final-field-bg)!important;
+ color:var(--pati-final-field-text)!important;
+ border-color:var(--pati-final-field-line)!important;
+}
+:is(#main-content,#modal-root) :is(input,textarea)::placeholder{
+ color:var(--pati-final-placeholder)!important;opacity:1;
+}
+:is(#main-content,#modal-root) :is(input,textarea,select,button):focus-visible{
+ outline:2px solid var(--p3-chat-accent,#7450ff);
+ outline-offset:2px;
+}
+@media(max-width:740px) and (pointer:coarse){
+ /* At least 16px prevents iOS Safari's automatic zoom on focus. */
+ #modal-root :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea),
+ #main-content .pati-dm-layout .chat-form textarea{font-size:16px!important}
+}
+@supports (content-visibility:auto){
+ /* Off-screen feed cards can skip style/layout/paint until approaching view. */
+ #main-content .pati-feed-card:not(:first-child){
+  content-visibility:auto;
+  contain-intrinsic-size:auto 620px;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ #main-content .pati-feed-card,
+ #modal-root :is(input,textarea,button){scroll-behavior:auto!important}
+}
