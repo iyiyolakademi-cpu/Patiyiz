@@ -35,7 +35,7 @@ test('Full-sized editors and media composers receive full-page classes without a
  });
  // vm globals are supplied below separately in a direct function invocation test.
  assert.equal(typeof api,'function');
- assert.match(app,/new Set\(\['profile-form','pet-form','lost-form','adoption-form','care-form'\]\)/);
+ assert.match(app,/new Set\(\['profile-form','pet-form','lost-form','adoption-form','care-form','post-form','story-form'\]\)/);
  assert.match(app,/if\(PATI_MOBILE_FULL_PAGE_FORMS\.has\(id\)\)/);
  assert.match(app,/pati-full-page-form-backdrop/);
  assert.match(app,/pati-mobile-full-page-form/);
