@@ -79,18 +79,19 @@ test('Personal story receipts isolated by account and persisted, never leak to o
  assert.equal(api.patiStoryIsSeen(story[1]),false);
 });
 test('Story viewed flag sync is backed by the signed-in viewer RLS policy',()=>{
- assert.match(js,/\\.from\('patiyiz_story_views'\)\\.select\('story_id'\)\\.eq\('viewer_id',owner\)/);
- assert.match(policy,/FOR SELECT TO authenticated/);
- assert.match(policy,/viewer_id=\(SELECT auth\.uid\(\)\)/);
- assert.doesNotMatch(policy,/TO anon/);
+ assert.ok(js.includes(".from('patiyiz_story_views').select('story_id').eq('viewer_id',owner)"));
+ assert.ok(policy.includes('FOR SELECT TO authenticated'));
+ assert.ok(policy.includes('viewer_id=(SELECT auth.uid())'));
+ assert.ok(!policy.includes('TO anon'));
 });
 test('Self reaction controls disabled in post, reel, DM and story while incoming DM reaction stays',()=>{
- assert.match(js,/Kendi paylaşımına tepki veremezsin/);
- assert.match(js,/p\\.author_id===me\\.id\\?'disabled'/);
- assert.match(js,/msg\\.sender_id===me\\.id\\|\\|msg\\.receiver_id!==me\\.id/);
- assert.match(js,/x\\.sender_id!==me\\.id\\?[\s\S]*?dm-react-open/);
- assert.match(js,/data-action="dm-react-set"/);
- assert.match(js,/data-action="story-like"/);
+ assert.ok(js.includes('Kendi paylaşımına tepki veremezsin'));
+ assert.ok(js.includes("p.author_id===me.id)?'disabled'"));
+ assert.ok(js.includes('msg.sender_id===me.id||msg.receiver_id!==me.id'));
+ assert.ok(js.includes('x.sender_id!==me.id?'));
+ assert.ok(js.includes('data-action="dm-react-open"'));
+ assert.ok(js.includes('data-action="dm-react-set"'));
+ assert.ok(js.includes('data-action="story-like"'));
 });
 test('Main menu avoids home duplicates but Patiler remains discoverable in menu',()=>{
  const nav=between('const allowed=','const cfg=');
@@ -100,15 +101,10 @@ test('Main menu avoids home duplicates but Patiler remains discoverable in menu'
  assert.match(menu,/\['pets','Patileri keşfet','paw'\]/);
 });
 test('Final dark mode owns all common surfaces, text and forms without mutating media',()=>{
- assert.match(css,/--pui-paper:#1a1c21/);
- assert.match(css,/--pui-text:#f7f8fb/);
- assert.match(css,/\\.pati-profile-text-feed/);
- assert.match(css,/\\.pati-dm-layout/);
- assert.match(css,/\\.pati-feature-group/);
- assert.match(css,/\\.stories-section/);
- assert.match(css,/input:not\(\[type="checkbox"\]\)/);
- assert.match(css,/\\.pati-reel-item/);
- assert.match(css,/filter:none!important/);
+ for(const token of ['--pui-paper:#1a1c21','--pui-text:#f7f8fb',
+  '.pati-profile-text-feed','.pati-dm-layout','.pati-feature-group',
+  '.stories-section','input:not([type="checkbox"])','.pati-reel-item','filter:none!important'])
+  assert.ok(css.includes(token),'Missing theme rule: '+token);
  const styles=[...html.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map(m=>m[1]);
  assert.ok(styles.at(-1).includes('patiyiz-story-seen-dark-final-20261029.css'));
  assert.match(native,/'patiyiz-story-seen-dark-final-20261029\.css'/);
