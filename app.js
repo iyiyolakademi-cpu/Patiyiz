@@ -4683,6 +4683,84 @@ function patiGroupPhotoUrl(path){
  if(!path||!/^[0-9a-f-]{36}\/[^/]+\.(?:jpg|jpeg|png|webp)$/i.test(path))return '';
  try{return sb.storage.from('patiyiz-group-avatars').getPublicUrl(path).data.publicUrl||''}catch(_){return ''}
 }
+
+/* Mobile-first circular group avatar crop. The uploaded JPEG is square;
+   circular presentation is CSS, just like normal profile photographs. */
+async function patiGroupAvatarCropOpen(groupId,file){
+ if(!me?.id||!groupId||!file)return;
+ if(!/^image\/(jpeg|png|webp)$/.test(file.type)||file.size>10*1024*1024)throw Error('JPG, PNG veya WebP ve 10 MB altında bir fotoğraf seç.');
+ const url=URL.createObjectURL(file),image=new Image();
+ try{image.src=url;await image.decode()}catch(error){URL.revokeObjectURL(url);throw Error('Fotoğraf açılamadı. Başka bir görsel dene.')}
+ const popup=document.createElement('dialog');popup.id='pati-group-crop-dialog';
+ popup.className='pati-group-crop-dialog';
+ popup.setAttribute('aria-label','Grup fotoğrafını kırp');
+ popup.innerHTML='<div class="pati-group-crop-shell"><header><button type="button" data-group-crop="cancel" aria-label="Vazgeç">←</button><strong>Grup fotoğrafı</strong><button type="button" data-group-crop="save">Bitti</button></header>'+
+ '<p>Yuvarlak alanda görünmesini istediğin bölümü kaydırarak ayarla.</p>'+
+ '<div class="pati-group-crop-stage"><canvas width="360" height="360" aria-label="Yuvarlak grup fotoğrafı önizlemesi"></canvas><span class="pati-group-crop-outline" aria-hidden="true"></span></div>'+
+ '<label class="pati-group-crop-zoom">Yakınlaştır <input type="range" min="1" max="3" value="1" step=".01" aria-label="Fotoğrafı yakınlaştır"></label>'+
+ '<small>Parmağınla sürükle; iki parmakla yakınlaştırabilir veya kaydırabilirsin.</small><p class="pati-group-crop-status" role="status" aria-live="polite"></p></div>';
+ document.body.appendChild(popup);
+ const canvas=popup.querySelector('canvas'),context=canvas.getContext('2d');
+ const slider=popup.querySelector('input[type="range"]');
+ const size=360,state={zoom:1,dx:0,dy:0},pointers=new Map();
+ let prevDistance=0,prevCenter=null,saving=false;
+ const draw=()=>{
+  const cover=Math.max(size/image.naturalWidth,size/image.naturalHeight),scale=cover*state.zoom;
+  const w=image.naturalWidth*scale,h=image.naturalHeight*scale;
+  state.dx=Math.max(-(w-size)/2,Math.min((w-size)/2,state.dx));
+  state.dy=Math.max(-(h-size)/2,Math.min((h-size)/2,state.dy));
+  context.clearRect(0,0,size,size);
+  context.drawImage(image,(size-w)/2+state.dx,(size-h)/2+state.dy,w,h);
+ };
+ const setZoom=(value)=>{
+  state.zoom=Math.max(1,Math.min(3,Number(value)||1));
+  slider.value=String(state.zoom);draw();
+ };
+ slider.addEventListener('input',()=>setZoom(slider.value));
+ const normalized=event=>{
+  const b=canvas.getBoundingClientRect(),ratio=size/Math.max(1,b.width);
+  return {x:(event.clientX-b.left)*ratio,y:(event.clientY-b.top)*ratio};
+ };
+ canvas.addEventListener('pointerdown',event=>{
+  event.preventDefault();canvas.setPointerCapture(event.pointerId);
+  pointers.set(event.pointerId,normalized(event));
+  if(pointers.size===2){const [a,b]=[...pointers.values()];prevDistance=Math.hypot(a.x-b.x,a.y-b.y);prevCenter={x:(a.x+b.x)/2,y:(a.y+b.y)/2}}
+ });
+ canvas.addEventListener('pointermove',event=>{
+  if(!pointers.has(event.pointerId))return;
+  event.preventDefault();const before=pointers.get(event.pointerId),next=normalized(event);
+  pointers.set(event.pointerId,next);
+  if(pointers.size===1){state.dx+=next.x-before.x;state.dy+=next.y-before.y;}
+  else if(pointers.size===2){
+   const [a,b]=[...pointers.values()],distance=Math.hypot(a.x-b.x,a.y-b.y);
+   const center={x:(a.x+b.x)/2,y:(a.y+b.y)/2};
+   if(prevDistance>0)setZoom(state.zoom*distance/prevDistance);
+   if(prevCenter){state.dx+=center.x-prevCenter.x;state.dy+=center.y-prevCenter.y}
+   prevDistance=distance;prevCenter=center;
+  }
+  draw();
+ });
+ const end=event=>{pointers.delete(event.pointerId);prevDistance=0;prevCenter=null};
+ canvas.addEventListener('pointerup',end);canvas.addEventListener('pointercancel',end);
+ canvas.addEventListener('wheel',event=>{event.preventDefault();setZoom(state.zoom+(event.deltaY<0?.08:-.08))},{passive:false});
+ popup.addEventListener('close',()=>{URL.revokeObjectURL(url);popup.remove()},{once:true});
+ popup.querySelector('[data-group-crop="cancel"]').addEventListener('click',()=>{if(!saving)popup.close()});
+ popup.querySelector('[data-group-crop="save"]').addEventListener('click',async event=>{
+  if(saving)return;saving=true;event.currentTarget.disabled=true;
+  const status=popup.querySelector('.pati-group-crop-status');status.textContent='Fotoğraf hazırlanıyor…';
+  try{
+   const cropped=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error('Fotoğraf kırpılamadı.')),'image/jpeg',.83));
+   const output=new File([cropped],'group-avatar.jpg',{type:'image/jpeg'});
+   await patiGroupPhotoUpload(groupId,output);
+   popup.close();
+  }catch(error){
+   status.textContent='Fotoğraf kaydedilemedi: '+(error?.message||'Bilinmeyen hata');
+   saving=false;event.currentTarget.disabled=false;
+  }
+ });
+ draw();popup.showModal();
+}
+
 async function patiGroupPhotoUpload(groupId,file){
  if(!me||!file||!file.size)return;
  if(!/^image\/(jpeg|png|webp)$/.test(file.type))throw Error('Grup fotoğrafı JPG, PNG veya WebP olmalı.');
@@ -6281,7 +6359,7 @@ document.addEventListener('change',event=>{
  const input=event.target.closest?.('input[data-pati-group-avatar]');
  if(!input?.files?.length)return;
  const id=input.dataset.patiGroupAvatar;
- void run(()=>patiGroupPhotoUpload(id,input.files[0]));
+ const file=input.files[0];input.value='';void patiGroupAvatarCropOpen(id,file).catch(error=>notify(friendly(error),true));
 });
 /* Error telemetry stores only type and daily count, never messages, stack or URLs. */
 const patiReportedErrors=new Map();
