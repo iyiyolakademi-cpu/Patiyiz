@@ -5449,7 +5449,7 @@ async function patiCropOpen(options={}){
 }
 /* Reuse the exact same editor and export settings in the native camera/gallery flow.
    The preview uses a separate blob; source files and publication identity are unchanged. */
-window.PatiyizCropMedia={
+if(typeof window!=='undefined')window.PatiyizCropMedia={
  open:onDone=>patiCropOpen({onDone}),
  async preview(file){
   if(!patiCropEdits.has(file))return null;
@@ -5517,8 +5517,8 @@ async function uploadVideo(file){
    if(!result.error)break;
    throw result.error;
   }catch(error){
-   if(await patiStorageUploadConfirmed('patiyiz-videos',key,file.size)){result={error:null};break;}
-   if(attempt===2||!patiUploadRetryable(error))throw error;
+   if(typeof patiStorageUploadConfirmed==='function'&&await patiStorageUploadConfirmed('patiyiz-videos',key,file.size)){result={error:null};break;}
+   if(attempt===2||!(typeof patiUploadRetryable==='function'?patiUploadRetryable(error):/timeout|network|fetch|502|503|504/i.test(String(error?.message||error))))throw error;
    uploadStatus('Video bağlantısı tekrar deneniyor… ('+(attempt+2)+'/3)');
    await new Promise(resolve=>setTimeout(resolve,900*(attempt+1)));
   }
