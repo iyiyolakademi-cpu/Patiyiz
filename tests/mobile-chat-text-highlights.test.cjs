@@ -20,7 +20,7 @@ test('Üstte paylaşım artısı var, mesaj bağlantısı özellikler menüsünd
  assert.doesNotMatch(h,/id="pati-header-notifications"/);
  assert.match(app,/pati-feature-notifications-content/);
  const menu=extract('function openMobileFeaturesMenu(){','const patiCoinTasks=');
- assert.match(menu,/\['messages','Mesajlar','message'\]/);
+ assert.doesNotMatch(menu,/\['messages','Mesajlar','message'\]/);
  const navSource=extract('function navRender(){','function side(){');
  const dom={'#desktop-nav':{innerHTML:''},'#mobile-nav':{innerHTML:''},'#pati-header-notifications':{classList:{toggle(){}},setAttribute(){}}};
  const ctx={$:s=>dom[s]||null,view:'home',isAdmin:false,me:{id:'me'},
