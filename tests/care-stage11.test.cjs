@@ -79,7 +79,8 @@ test('Care dashboard shows timeline, live counts and an accurate disclaimer',()=
  const page=ctx.main.innerHTML;
  assert.match(page,/Bakım Takvimi/);
  assert.match(page,/pati-ref-care-timeline/);
- assert.match(page,/p4-care-dates/);
+ assert.match(page,/pati-care-calendar-grid/);
+ assert.match(page,/data-action="pati-care-month"/);
  assert.match(page,/data-action="pati-care-day"/);
  assert.match(page,/data-action="care-add"/);
  assert.match(page,/data-action="care-filter"/);
