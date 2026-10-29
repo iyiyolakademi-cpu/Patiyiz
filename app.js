@@ -3441,9 +3441,20 @@ async function patiDmSetReaction(messageId,emoji){
  if(!msg||(msg.sender_id!==owner&&msg.receiver_id!==owner)||blocked.has(msg.sender_id)||blocked.has(msg.receiver_id))
   throw Error('Bu mesaja tepki verilemez.');
  const existing=data.dmReactions.find(x=>x.message_id===messageId&&x.user_id===owner);
- const result=existing?.emoji===emoji?
-  await sb.from('patiyiz_dm_reactions').delete().eq('message_id',messageId).eq('user_id',owner).select('message_id'):
-  await sb.from('patiyiz_dm_reactions').upsert({message_id:messageId,user_id:owner,emoji},{onConflict:'message_id,user_id'}).select('*');
+ // Database permissions intentionally allow updating emoji only, never moving a reaction
+ // to another user or message. Upsert writes key columns on conflict, so avoid it.
+ let result;
+ if(existing?.emoji===emoji){
+  result=await sb.from('patiyiz_dm_reactions').delete().eq('message_id',messageId).eq('user_id',owner).select('message_id');
+ }else if(existing){
+  result=await sb.from('patiyiz_dm_reactions').update({emoji}).eq('message_id',messageId).eq('user_id',owner).select('*');
+  if(!result.error&&!result.data?.length)
+   result=await sb.from('patiyiz_dm_reactions').insert({message_id:messageId,user_id:owner,emoji}).select('*');
+ }else{
+  result=await sb.from('patiyiz_dm_reactions').insert({message_id:messageId,user_id:owner,emoji}).select('*');
+  if(result.error?.code==='23505')
+   result=await sb.from('patiyiz_dm_reactions').update({emoji}).eq('message_id',messageId).eq('user_id',owner).select('*');
+ }
  if(result.error)throw result.error;
  if(!result.data?.length)throw Error('Mesaj tepkisi kaydedilemedi.');
  if(me?.id!==owner)return;
@@ -5197,7 +5208,7 @@ async function publishMediaRecord(table,form,createRecord){
  }catch(error){
   const checked=await checkPublishedRecord(table,id,owner);
   if(checked.known){
-   const references=new Set(checked.row?[checked.row.image_url,checked.row.video_url,checked.row.video_cover_url,...(checked.row.images||[])].filter(Boolean):[]);
+   const references=new Set(checked.row?[checked.row.image_url,checked.row.video_url,checked.row.video_cover_url,...(checked.row.images||[]),...(checked.row.media_videos||[])].filter(Boolean):[]);
    await cleanPublicationMedia(uploaded.filter(url=>!references.has(url)),owner);
    if(checked.row){recordMetric('success');return checked.row;}
   }else if(uploaded.length){
