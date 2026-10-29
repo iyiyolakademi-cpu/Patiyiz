@@ -32,7 +32,9 @@ test('Creator dashboard fills the viewport and supports 7, 30 and 90-day real da
  assert.match(app,/patiyiz_creator_audience/);
  assert.match(app,/\[7,30,90\]/);
  assert.match(app,/patiInsightsBarChart/);
- assert.match(app,/pati-stat-donut/);
+ assert.match(app,/pati-creator-stat/);
+ assert.match(app,/patiyiz_creator_insights_extended/);
+ assert.match(app,/patiyiz_creator_recent_visitors/);
  assert.match(app,/pati-insights-close/);
  assert.match(app,/pati-insights-period/);
  assert.match(css,/\.pati-creator-dashboard\{[^}]*position:fixed;inset:0/);
@@ -47,8 +49,9 @@ test('Demographics are opt in, behind RLS and suppressed for tiny audience',()=>
  assert.match(sql,/having count\(\*\) >= 5/g);
  assert.match(sql,/revoke all on function public\.patiyiz_creator_audience\(integer\) from public,anon/);
  assert.match(app,/name="analytics_gender"/);
- assert.match(app,/aud\.genders/);
- assert.match(app,/aud\.cities/);
- assert.match(app,/cities\.length\|\|genders\.length/);
+ assert.match(app,/a\.genders/);
+ assert.match(app,/a\.cities/);
+ assert.match(app,/patiCreatorBreakdown\(genders/);
+ assert.match(app,/patiCreatorBreakdown\(cities/);
  assert.doesNotMatch(sql,/gender_guess|face_scan|birth_name/);
 });
