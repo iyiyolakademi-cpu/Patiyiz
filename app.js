@@ -4811,8 +4811,9 @@ async function patiGroupAvatarCropOpen(groupId,file){
  canvas.addEventListener('wheel',event=>{event.preventDefault();setZoom(state.zoom+(event.deltaY<0?.08:-.08))},{passive:false});
  popup.addEventListener('close',()=>{URL.revokeObjectURL(url);popup.remove()},{once:true});
  popup.querySelector('[data-group-crop="cancel"]').addEventListener('click',()=>{if(!saving)popup.close()});
- popup.querySelector('[data-group-crop="save"]').addEventListener('click',async event=>{
-  if(saving)return;saving=true;event.currentTarget.disabled=true;
+ const saveButton=popup.querySelector('[data-group-crop="save"]');
+ saveButton.addEventListener('click',async event=>{
+  if(saving)return;saving=true;saveButton.disabled=true;
   const status=popup.querySelector('.pati-group-crop-status');status.textContent='Fotoğraf hazırlanıyor…';
   try{
    const cropped=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error('Fotoğraf kırpılamadı.')),'image/jpeg',.83));
@@ -4821,7 +4822,7 @@ async function patiGroupAvatarCropOpen(groupId,file){
    popup.close();
   }catch(error){
    status.textContent='Fotoğraf kaydedilemedi: '+(error?.message||'Bilinmeyen hata');
-   saving=false;event.currentTarget.disabled=false;
+   saving=false;saveButton.disabled=false;
   }
  });
  draw();popup.showModal();
@@ -5389,12 +5390,18 @@ function editProfile(){
  formField('handle','Kullanıcı adı','text',p.handle,true)+
  textField('bio','Biyografi',p.bio||'',false,500)+
  formField('city','Şehir','text',p.city||'')+
+ '<div class="pati-field pati-gender-option"><label for="pati-profile-gender">Cinsiyet (isteğe bağlı)</label><select id="pati-profile-gender" name="analytics_gender"><option value="">Seçim yapmadan devam et</option><option value="woman">Kadın</option><option value="man">Erkek</option><option value="other">Diğer</option><option value="undisclosed">Paylaşmak istemiyorum</option></select><small>Hesabında görünmez; yalnızca yeterli sayıda ziyaretçi varsa toplu istatistiklere dahil edilir.</small></div>'+
  '<section class="pati-edit-links-section"><div class="pati-edit-section-title">Bağlantılar</div><p class="pati-edit-hint">Web siteni, sosyal medya hesaplarını veya istediğin diğer web adreslerini ekleyebilirsin.</p><div id="pati-profile-links-editor">'+patiProfileLinks(p).map(patiProfileLinkEditorRow).join('')+'</div><div class="pati-profile-links-editor-foot"><span id="pati-profile-links-count"></span><button type="button" data-action="pati-profile-link-add">'+ico('plus')+' Bağlantı ekle</button></div></section>'+
  '<p class="pati-edit-hint">Kullanıcı adı 3–24 karakter olmalı. Kaydettiğin bilgiler profilinde görünür.</p></div>';
  modal('Profili düzenle',fields,'profile-form');
  const root=document.querySelector('#modal-root .modal');
  root?.classList.add('pati-profile-edit-modal');
  patiBindProfileLinkEditor(document.getElementById('profile-form'));
+ void sb.from('patiyiz_audience_demographics').select('gender').eq('user_id',me.id).maybeSingle().then(({data,error})=>{
+  if(error)return;
+  const field=document.querySelector('#pati-profile-gender');
+  if(field&&!field.value&&data?.gender)field.value=data.gender;
+ }).catch(()=>{});
  const submit=document.querySelector('#profile-form .modal-footer button[type="submit"]');
  if(submit)submit.textContent='Bitti';
 }
@@ -6250,7 +6257,16 @@ case 'wellness-reminder-form':await patiWellnessSaveReminder(form,str);break;cas
  const item=result.data[0];data.care=[item,...data.care.filter(x=>x.id!==item.id)];
  patiyizLoadedTables.add('care_tasks');closeModal(true);if(view==='care'||(view==='my-pet'&&patiMyPetTab==='care'))render();
  notify(editId?'Bakım görevi güncellendi.':'Bakım görevi eklendi.');break;}
-case 'profile-form':{let handle=str('handle').toLowerCase();if(!/^[a-z0-9_]{3,24}$/.test(handle))throw Error('Kullanıcı adı 3–24 karakter, küçük harf, rakam veya alt çizgi olmalı.');let o={display_name:str('display_name'),handle,city:str('city'),bio:str('bio'),profile_links:patiCollectProfileLinks(form)},image=await upload(f.get('photo'));if(image)o.avatar_url=image;await save('profiles',o,me.id);break}
+case 'profile-form':{let handle=str('handle').toLowerCase();if(!/^[a-z0-9_]{3,24}$/.test(handle))throw Error('Kullanıcı adı 3–24 karakter, küçük harf, rakam veya alt çizgi olmalı.');let o={display_name:str('display_name'),handle,city:str('city'),bio:str('bio'),profile_links:patiCollectProfileLinks(form)},image=await upload(f.get('photo'));if(image)o.avatar_url=image;await save('profiles',o,me.id);
+ const audienceGender=str('analytics_gender');
+ if(['woman','man','other'].includes(audienceGender)){
+  const added=await sb.from('patiyiz_audience_demographics').upsert({user_id:me.id,gender:audienceGender,updated_at:new Date().toISOString()},{onConflict:'user_id'});
+  if(added.error)throw added.error;
+ }else if(audienceGender==='undisclosed'){
+  const removed=await sb.from('patiyiz_audience_demographics').delete().eq('user_id',me.id);
+  if(removed.error)throw removed.error;
+ }
+ break}
 case 'pet-form':{
  const owner=me.id,editId=form.dataset.edit||'',existing=editId?data.pets.find(p=>p.id===editId):null;
  if(editId&&(!existing||existing.owner_id!==owner))throw Error('Bu hayvanı düzenleme yetkin yok.');
