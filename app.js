@@ -3554,7 +3554,7 @@ async function patiDmSearchMessages(peer,query){
  if(!uid||!peer||peer===uid)throw Error('Sohbet bulunamadı.');
  const term=String(query||'').trim().slice(0,80);
  if(term.length<2)throw Error('En az iki harf yaz.');
- const escaped=term.replace(/[\\%_]/g,'\\function messagesPage(){');
+ const escaped=term.replace(/[\\%_]/g,'\\$&');
  const r=await sb.from('messages').select('id,sender_id,receiver_id,body,created_at')
   .or('and(sender_id.eq.'+uid+',receiver_id.eq.'+peer+'),and(sender_id.eq.'+peer+',receiver_id.eq.'+uid+')')
   .ilike('body','%'+escaped+'%').order('created_at',{ascending:false}).limit(60);
