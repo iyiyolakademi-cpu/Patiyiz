@@ -3968,13 +3968,21 @@ async function patiCreatorInsights(days=30){
  dialog.innerHTML='<div class="pati-creator-head"><button type="button" data-action="pati-insights-close" aria-label="İstatistikleri kapat">←</button><div><strong>İstatistikler</strong><small>Profesyonel pano</small></div></div><div class="pati-creator-loading" role="status">İstatistikler yükleniyor…</div>';
  dialog.querySelector('button')?.focus();
  const uid=me.id;
- const [a,b]=await Promise.all([
+ const responses=await Promise.allSettled([
   sb.rpc('patiyiz_creator_insights',{p_days:days}),
   sb.rpc('patiyiz_creator_audience',{p_days:days})
  ]);
- if(a.error)throw a.error;if(b.error)throw b.error;
  if(me?.id!==uid||!dialog.isConnected||dialog.dataset.owner!==uid||dialog.dataset.days!==String(days))return;
- const v=a.data||{},aud=b.data||{},daily=Array.isArray(v.daily)?v.daily:[];
+ const a=responses[0].status==='fulfilled'?responses[0].value:{error:responses[0].reason};
+ const b=responses[1].status==='fulfilled'?responses[1].value:{error:responses[1].reason};
+ if(a.error||!a.data||typeof a.data!=='object'){
+  console.error('İstatistik RPC hatası:',a.error||'Beklenmeyen yanıt');
+  dialog.innerHTML='<div class="pati-creator-head"><button type="button" data-action="pati-insights-close" aria-label="İstatistikleri kapat">←</button><div><strong>İstatistikler</strong><small>Hesap performansı</small></div></div>'+
+   '<div class="pati-creator-failure" role="alert"><strong>İstatistikler yüklenemedi</strong><p>Bağlantını kontrol edip yeniden deneyebilirsin. Hiçbir paylaşımın etkilenmedi.</p><button type="button" data-action="pati-insights-period" data-id="'+days+'">Tekrar dene</button></div>';
+  return;
+ }
+ if(b.error)console.warn('Kitle dağılımı alınamadı, temel istatistikler gösteriliyor:',b.error);
+ const v=a.data||{},aud=!b.error&&b.data&&typeof b.data==='object'?b.data:{},daily=Array.isArray(v.daily)?v.daily:[];
  const views=Math.max(0,Number(v.views)||0),likes=Number(v.likes)||0,saves=Number(v.saves)||0,reposts=Number(v.reposts)||0;
  const interactions=likes+saves+reposts;
  const engagement=views?interactions*100/views:null;
