@@ -6,14 +6,14 @@ const app=fs.readFileSync('app.js','utf8');
 const css=fs.readFileSync('patiyiz-crop-insights-mobile-final-20261029.css','utf8');
 const nativeMedia=fs.readFileSync('patiyiz-system-media.js','utf8');
 const html=fs.readFileSync('index.html','utf8');
-test('like uses INSERT instead of disallowed UPDATE-style UPSERT and respects self-like rule',()=>{
+test('like uses INSERT instead of disallowed UPDATE-style UPSERT and permits own post likes',()=>{
  const start=app.indexOf('async function togglePostLike(id){');
  const end=app.indexOf('const pendingPostSaves',start);
  assert.ok(start>=0&&end>start);
  const like=app.slice(start,end);
  assert.match(like,/post_likes'\)\.insert\(\{user_id:owner,post_id:id\}\)/);
  assert.doesNotMatch(like,/post_likes'\)\.upsert/);
- assert.match(like,/post\.author_id===me\.id/);
+ assert.doesNotMatch(like,/if\(post\.author_id===me\.id\)/);
  assert.match(like,/verified\.data/);
 });
 test('only bottom profile statistics remains, preserving 7 30 and 90-day tabs',()=>{
