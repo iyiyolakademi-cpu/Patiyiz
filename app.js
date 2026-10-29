@@ -4109,8 +4109,8 @@ function profilePage(){
  const cachedCounts=profileCountCache.get(p.id)?.value;const followers=cachedCounts?.followers??data.follows.filter(f=>f.followee_id===p.id).length,following=cachedCounts?.following??data.follows.filter(f=>f.follower_id===p.id).length;
  const stories=data.stories.filter(x=>x.author_id===p.id&&new Date(x.expires_at).getTime()>Date.now());const assignedIds=new Set(data.highlightItems.filter(x=>data.highlightAlbums.some(a=>a.id===x.album_id&&a.owner_id===p.id)).map(x=>x.story_id));const highlights=data.stories.filter(x=>x.author_id===p.id&&x.is_highlight&&!assignedIds.has(x.id)).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));const albums=data.highlightAlbums.filter(x=>x.owner_id===p.id).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
  const storyThumb=stories[0]?.image_url||'';
- const active=privateLocked?[]:profilePostsTab==='reposts'?patiRepostedPosts(p.id):profilePostsTab==='videos'?posts.filter(x=>x.video_url):profilePostsTab==='text'?posts.filter(x=>!x.image_url&&!x.video_url):posts.filter(x=>x.image_url||x.images?.length||x.video_url);
- const iconTabs=[['media','▦','Fotoğraf ve videolar'],['videos','▷','Videolar'],['text','≡','Yazılar'],['reposts','↻','Yeniden paylaşılanlar']];
+ const active=privateLocked?[]:profilePostsTab==='reposts'?patiRepostedPosts(p.id):profilePostsTab==='reels'?posts.filter(x=>x.video_url&&x.post_format==='reels'):profilePostsTab==='videos'?posts.filter(x=>x.video_url&&x.post_format!=='reels'):profilePostsTab==='text'?posts.filter(x=>!x.image_url&&!x.video_url):posts.filter(x=>x.image_url||x.images?.length||x.video_url);
+ const iconTabs=[['media','▦','Gönderiler'],['reels','▷','Reels'],['videos','▻','Videolar'],['text','≡','Yazılar'],['reposts','↻','Yeniden paylaşılanlar']];
  if(own)void patiLoadProfileViewCounts(posts.map(x=>x.id),p.id);
  const grid=active.map(x=>{
   const cover=x.video_url?(x.video_cover_url||x.image_url):(x.images?.[0]||x.image_url);
@@ -4210,7 +4210,7 @@ async function patiCommentPinToggle(id){
 }
 function patiMentionsHTML(body){
  const plain=esc(body||'');
- return plain.replace(/(^|[^\\p{L}\\p{N}_])@([\\p{L}\\p{N}._]{2,40})/gu,(whole,prefix,handle)=>{
+ return plain.replace(/(^|[^\p{L}\p{N}_])@([\p{L}\p{N}._]{2,40})/gu,(whole,prefix,handle)=>{
   const person=data.profiles.find(x=>String(x.handle||'').toLocaleLowerCase('tr-TR')===handle.toLocaleLowerCase('tr-TR')&&!blocked.has(x.id));
   return person?prefix+'<button type="button" class="pati-mention-link" data-action="view-user" data-id="'+esc(person.id)+'">@'+esc(handle)+'</button>':whole;
  });
@@ -4729,15 +4729,15 @@ async function patiGroupAddDialog(id){
 
 function postMediaField(mode){
  const reel=mode==='reels',story=mode==='story';
- const description=reel?'Kısa videonu galeriden seç veya kamerayla çek; 90 saniyeye kadar.':story?'Bir fotoğraf ya da kısa video seç.':'En fazla 10 fotoğraf veya 1 video paylaşabilirsin.';
+ const description=reel?'Kısa videonu galeriden seç veya kamerayla çek; 90 saniyeye kadar.':story?'Bir fotoğraf ya da kısa video seç.':'En fazla 10 fotoğraf veya 4 video; paylaşmadan önce incele, sırala ve sil.';
  const title=reel?'Reels videosu':story?'Hikâyen':'Fotoğraf ve video';
  return '<section class="pati-compose-media" aria-label="Medya seçimi"><div class="pati-media-intro"><span class="pati-media-icon">'+(reel?'▷':story?'✦':'▧')+'</span><div><strong>'+title+'</strong><p>'+description+'</p></div></div>'+
  '<div class="pati-media-gallery" id="pati-post-media-gallery"><div class="pati-media-empty"><span>▧</span><strong>Galerinden bir an seç</strong><small>Fotoğraf veya video seçerek başlayabilirsin.</small></div></div>'+
  '<div class="pati-media-thumbs" id="pati-post-media-thumbs" hidden></div>'+
  '<div class="pati-media-picker-actions"><button type="button" class="pati-media-pick-primary" data-action="pati-media-gallery">▧ Galeriyi aç</button><button type="button" class="pati-media-pick-secondary" data-action="pati-media-camera">◎ '+(reel?'Video çek':'Fotoğraf çek')+'</button>'+(!reel?'<button type="button" class="pati-media-pick-secondary" data-action="pati-media-video">▷ Video seç</button>':'')+'</div>'+
- (reel?'<div class="pati-reels-editor"><label>Video kapak fotoğrafı <input type="file" name="cover_photo" accept="image/*" aria-label="Video kapağı seç"></label><label>Video altyazısı <input name="video_subtitle" maxlength="220" placeholder="Video için altyazı"></label></div>':story?'<div class="pati-reels-editor"><label>Video kapağı (isteğe bağlı) <input type="file" name="cover_photo" accept="image/*" aria-label="Hikâye video kapağı seç"></label></div>':'')+
+ (reel?'<div class="pati-reels-editor"><label>Video kapak fotoğrafı <input type="file" name="cover_photo" accept="image/*" aria-label="Video kapağı seç"></label><label>Video altyazısı <input name="video_subtitle" maxlength="220" placeholder="Video için altyazı"></label></div>':story?'<div class="pati-reels-editor"><label>Video kapağı (isteğe bağlı) <input type="file" name="cover_photo" accept="image/*" aria-label="Hikâye video kapağı seç"></label></div>':'<div class="pati-reels-editor"><label>Gönderi video kapağı (isteğe bağlı) <input type="file" name="cover_photo" accept="image/*" aria-label="Gönderi video kapağı seç"></label></div>')+
  '<p class="pati-media-help">'+(reel?'MP4, WebM veya MOV · 50 MB altı; büyük klipler uygun cihazlarda sıkıştırılır.':story?'Fotoğraf ya da 50 MB altı video · 24 saatlik hikâye.':'JPG, PNG, HEIC ve desteklenen videolar.')+'</p>'+
- '<input type="file" name="photo" accept="image/*,.heic,.heif" '+(!story&&!reel?'multiple':'')+' class="pati-native-input" aria-label="Fotoğraf seç"><input type="file" name="video" accept="video/mp4,video/webm,video/quicktime,.mov"'+(reel?' multiple':'')+' class="pati-native-input" aria-label="Video seç"></section>';
+ '<input type="file" name="photo" accept="image/*,.heic,.heif" '+(!story&&!reel?'multiple':'')+' class="pati-native-input" aria-label="Fotoğraf seç"><input type="file" name="video" accept="video/mp4,video/webm,video/quicktime,.mov"'+(!story?' multiple':'')+' class="pati-native-input" aria-label="Video seç"></section>';
 }
 function openComposerMediaPicker(kind){
  const form=document.getElementById('post-form');if(!form)return;
@@ -4867,12 +4867,13 @@ function compose(post,mode='post',autoPick=true){
  postCropX=.5;postCropY=.5;postCropRatio=mode==='story'||mode==='reels'?'9:16':'1:1';postCropZoom=1;postCropIndex=0;clearPatiMediaUrls();
  const reel=!post&&mode==='reels',story=!post&&mode==='story',textOnly=!post&&mode==='text';
  const title=post?'Paylaşımı düzenle':story?'Yeni hikâye':reel?'Yeni Reels':textOnly?'Yeni yazı':'Yeni gönderi';
- const sizes=story?[['9:16','▯ Dikey'],['1:1','□ Kare'],['1.91:1','▭ Yatay']]:[['4:5','▯ Dikey'],['1.91:1','▭ Yatay'],['1:1','□ Kare']];
+ const sizes=story?[['9:16','▯ Dikey'],['1:1','□ Kare'],['1.91:1','▭ Yatay']]:[['original','⬚ Orijinal'],['4:5','▯ Dikey'],['1.91:1','▭ Yatay'],['1:1','□ Kare']];
  const editor=!post&&!textOnly?'<div class="pati-media-controls" hidden><label>Fotoğrafın kadrajını düzenle</label><div class="pati-ratio-options">'+sizes.map(([key,label],i)=>'<button type="button" class="'+(i===0?'active':'')+'" data-action="post-ratio" data-id="'+key+'">'+label+'</button>').join('')+'</div><input type="hidden" name="aspect" value="'+(story?'9:16':'4:5')+'"><button type="button" class="pati-inline-crop-toggle" data-action="post-crop-open">Kadrajı ayarla</button><div class="pati-crop-preview" hidden><div class="pati-crop-pages"><button type="button" data-action="post-crop-prev" aria-label="Önceki fotoğraf">‹</button><strong id="pati-crop-index">1 / 1</strong><button type="button" data-action="post-crop-next" aria-label="Sonraki fotoğraf">›</button></div><canvas id="pati-crop-canvas" width="320" height="400" aria-label="Fotoğraf kırpma önizlemesi"></canvas><p>Fotoğrafı sürükleyerek istediğin kadrajı seç.</p><label>Yakınlaştır <input type="range" name="crop_zoom" min="1" max="2.5" value="1" step="0.05"></label></div></div>':textOnly?'':'<p class="small-note">Düzenleme sırasında mevcut medya korunur.</p>';
  const flow=!post&&!textOnly?'<div class="pati-composer-flow" aria-label="Paylaşım adımları"><span><b>1</b> Medya seç</span><i>›</i><span><b>2</b> Düzenle</span><i>›</i><span><b>3</b> Paylaş</span></div>':'';
  const invite=!post&&!story?(window.PatiyizCollabPicker?.makeMarkup('pati-collab-handle')||''):'';
+ const tagButton=!story&&!post?'<button type="button" class="pati-mention-open" data-action="pati-mention-open" data-id="post">@ Kişi etiketle</button>':'';
  const storyAudienceSelect=story?'<div class="pati-field"><label>Kimler görebilir?<select name="story_audience"><option value="everyone">Herkes</option><option value="close_friends">Yakın Arkadaşlar</option></select></label></div>':'';
- const formBody=flow+(!post&&!textOnly?postMediaField(mode):'')+textField('body',textOnly?'Ne düşünüyorsun?':story?'Hikâye açıklaması (isteğe bağlı)':'Açıklama (isteğe bağlı)',post?.body||'',textOnly,story?300:1500)+storyAudienceSelect+editor+invite;
+ const formBody=flow+(!post&&!textOnly?postMediaField(mode):'')+textField('body',textOnly?'Ne düşünüyorsun?':story?'Hikâye açıklaması (isteğe bağlı)':'Açıklama (isteğe bağlı)',post?.body||'',textOnly,story?300:1500)+tagButton+storyAudienceSelect+editor+invite;
  modal(title,formBody,'post-form');
  const f=document.getElementById('post-form');if(!post&&!story)window.PatiyizCollabPicker?.mount(f,{sb,userId:me?.id,blocked,localProfiles:data.profiles,avatar,escape:esc});const captionField=f.querySelector('textarea[name="body"]');if(captionField&&!textOnly)captionField.required=false;f.dataset.edit=post?.id||'';f.dataset.mode=story?'story':reel?'reels':textOnly?'text':'post';
  const submit=f.querySelector('.modal-footer button[type="submit"]');if(submit)submit.textContent=post?'Değişiklikleri kaydet':story?'Hikâyeyi paylaş':reel?'Reels paylaş':textOnly?'Yazıyı paylaş':'Paylaş';
@@ -5013,18 +5014,19 @@ async function patiGenerateVideoCover(file){
 }
 async function createPostPublication(form,f,str){
  const photoFiles=[...(form.querySelector('input[name="photo"]')?.files||[])];
- const videoFile=f.get('video'),hasVideo=!!videoFile?.size,body=str('body').trim();
+ const videoFiles=[...(form.querySelector('input[name="video"]')?.files||[])].filter(x=>x?.size),videoFile=videoFiles[0],hasVideo=videoFiles.length>0,body=str('body').trim();
+ if(form.dataset.mode!=='reels'&&videoFiles.length>4)throw Error('Bir gönderide en fazla 4 video paylaşabilirsin.');
  if(form.dataset.mode==='text'&&!body)throw Error('Yazı paylaşmak için önce bir metin yaz.');
  if(form.dataset.mode==='reels'&&!hasVideo)throw Error('Reels paylaşmak için önce bir video seç.');
  if(photoFiles.length>10)throw Error('En fazla 10 fotoğraf seçebilirsin.');
  if(photoFiles.length&&hasVideo)throw Error('Bir paylaşımda fotoğraf veya video seçebilirsin.');
  if(!body&&!photoFiles.length&&!hasVideo)throw Error('Paylaşmak için bir fotoğraf, video veya yazı ekle.');
  return publishMediaRecord('posts',form,async send=>{
-  const record={body,species:'Diğer',pet_id:null,images:[],selfie_mirrored:hasVideo&&form.dataset.selfieMirror==='true'};
+  const record={body,species:'Diğer',pet_id:null,images:[],media_videos:[],post_format:form.dataset.mode==='reels'?'reels':'post',selfie_mirrored:hasVideo&&form.dataset.selfieMirror==='true'};
   if(form.dataset.sourcePost){if(!hasVideo)throw Error('Tepki Reels için video seç.');record.source_post_id=form.dataset.sourcePost;}
   for(let i=0;i<photoFiles.length;i++){
    uploadStatus('Fotoğraf '+(i+1)+' / '+photoFiles.length+' hazırlanıyor…');
-   const file=await cropPostPhoto(photoFiles[i],str('aspect'));
+   const file=str('aspect')==='original'?await preparePhoto(photoFiles[i]):await cropPostPhoto(photoFiles[i],str('aspect'));
    const url=await send(file,'image');
    if(url)record.images.push(url);
   }
@@ -5036,6 +5038,13 @@ async function createPostPublication(form,f,str){
    video=await window.PatiyizReelsEditor.exportVideo(percent=>uploadStatus('Reels işleniyor… %'+percent));
   }
   record.video_url=await send(video,'video');
+ if(record.video_url)record.media_videos.push(record.video_url);
+ if(form.dataset.mode!=='reels'&&videoFiles.length>1){
+  for(let i=1;i<videoFiles.length;i++){
+   uploadStatus('Video '+(i+1)+' / '+videoFiles.length+' yükleniyor…');
+   const url=await send(videoFiles[i],'video');if(url)record.media_videos.push(url);
+  }
+ }
   if(video?.size){
    record.video_subtitle=str('video_subtitle').slice(0,220)||null;
    const cover=form.querySelector('input[name="cover_photo"]')?.files?.[0];
@@ -5862,6 +5871,7 @@ document.addEventListener('change',e=>{
  if(post&&(input.name==='photo'||input.name==='video')){
   const cameraCapture=input.hasAttribute('capture');
   if(input.name==='photo'){input.removeAttribute('capture');input.multiple=post.dataset.mode!=='story'&&post.dataset.mode!=='reels'}
+  if(input.name==='video'&&post.dataset.mode==='post'&&!input.hasAttribute('capture'))input.multiple=true;
   if(input.files?.length){const other=post.querySelector('input[name="'+(input.name==='photo'?'video':'photo')+'"]');if(other)other.value=''}
   postCropIndex=0;postCropX=.5;postCropY=.5;postCropZoom=1;
   // Camera-first flow already owns the selected files and preview. Do not
