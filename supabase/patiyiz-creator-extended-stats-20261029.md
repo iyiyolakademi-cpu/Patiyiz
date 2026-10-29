@@ -1,0 +1,12 @@
+-- Deployed on 2026-10-29 to Supabase Patiyiz. Read-only, authenticated owner RPCs:
+-- public.patiyiz_creator_insights_extended(integer)
+-- public.patiyiz_creator_recent_visitors(integer)
+-- Tables public.patiyiz_follow_loss_events and public.patiyiz_stats_tracking
+-- Trigger patiyiz_follow_loss_capture_20261029 on public.follows DELETE.
+--
+-- RLS is ON; anon/authenticated have no raw-table access.
+-- Both security-definer functions take the owner only from auth.uid(), never a supplied user id.
+-- Events prior to trigger activation are not reconstructable: 'loss_history_complete' is false until enough days pass.
+-- Visitor names originate from the active daily profile visit ledger, not inferred analytics.
+-- The full live SQL is tracked in Supabase migration history under:
+-- patiyiz_creator_extended_stats_follow_losses_owner_visitors_20261029.
