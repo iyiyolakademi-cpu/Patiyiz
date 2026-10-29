@@ -5361,7 +5361,7 @@ function patiCropPaint(canvas,img,state){
  ctx.restore();
  return {extraX:Math.max(0,extraX),extraY:Math.max(0,extraY)};
 }
-async function patiCropOpen(){
+async function patiCropOpen(options={}){
  const form=document.getElementById('post-form'),files=[...(form?.querySelector('input[name="photo"]')?.files||[])];
  if(!files.length)return notify('Kırpmak için bir fotoğraf seç.',true);
  document.getElementById('pati-full-crop-dialog')?.close();
@@ -5419,7 +5419,7 @@ async function patiCropOpen(){
   if(action==='done'){
    busy=true;btn.disabled=true;
    for(const [i,edit] of drafts)patiCropEdits.set(files[i],{...edit});
-   postCropIndex=index;popup.close();updatePostMediaPreview();return;
+   postCropIndex=index;popup.close();updatePostMediaPreview();options.onDone?.();return;
   }
   if(action==='prev'||action==='next'){index=(index+(action==='next'?1:-1)+files.length)%files.length;await draw();return}
   if(action==='flip')state.flip=!state.flip;
@@ -5447,6 +5447,16 @@ async function patiCropOpen(){
  canvas.addEventListener('pointerup',endDrag);canvas.addEventListener('pointercancel',endDrag);
  popup.showModal();await draw();
 }
+/* Reuse the exact same editor and export settings in the native camera/gallery flow.
+   The preview uses a separate blob; source files and publication identity are unchanged. */
+if(typeof window!=='undefined')window.PatiyizCropMedia={
+ open:onDone=>patiCropOpen({onDone}),
+ async preview(file){
+  if(!patiCropEdits.has(file))return null;
+  return cropPostPhoto(file,'original');
+ },
+ has:file=>patiCropEdits.has(file)
+};
 async function drawPostCrop(){
  // Legacy inline editor is replaced by the full-screen media editor.
  const inline=document.querySelector('#post-form .pati-crop-preview');
@@ -5464,6 +5474,21 @@ async function cropPostPhoto(file,aspect){
   if(!blob)throw Error('Fotoğraf kırpılamadı.');
   return new File([blob],'patiyiz-post-'+Date.now()+'.jpg',{type:'image/jpeg'});
  }finally{URL.revokeObjectURL(url)}
+}
+/* Network retries can arrive after Storage already saved the object. Only accept
+   a retry as successful after verifying its exact path and byte size. */
+function patiUploadRetryable(error){
+ return /timeout|network|fetch|502|503|504|ECONN|ETIMEDOUT|already exists|duplicate|409/i.test(String(error?.message||error||''));
+}
+async function patiStorageUploadConfirmed(bucket,key,expectedBytes){
+ try{
+  const storage=sb.storage.from(bucket);
+  if(typeof storage.info!=='function')return false;
+  const {data,error}=await storage.info(key);
+  if(error||!data)return false;
+  const bytes=Number(data.size??data.metadata?.size);
+  return Number.isFinite(bytes)&&bytes===expectedBytes;
+ }catch(_){return false}
 }
 async function uploadVideo(file){
  if(!file||!file.size)return null;
@@ -5484,19 +5509,24 @@ async function uploadVideo(file){
  const key=me.id+'/'+crypto.randomUUID()+'.'+ext;
  uploadStatus('Video yükleniyor…');
  let result;
- for(let attempt=0;attempt<2;attempt++){
-  result=(typeof window!=='undefined'&&window.PatiyizReliableUpload?.upload)
-   ?await window.PatiyizReliableUpload.upload({sb,projectUrl:cfg.supabaseUrl,bucket:'patiyiz-videos',key,file,contentType:mime,onProgress:p=>uploadStatus('Video yükleniyor… %'+p)})
-   :await sb.storage.from('patiyiz-videos').upload(key,file,{contentType:mime,cacheControl:'86400',upsert:false});
-  if(!result.error)break;
-  if(attempt===1||!/timeout|network|fetch|502|503|504/i.test(result.error.message||''))throw result.error;
-  uploadStatus('Video bağlantısı tekrar deneniyor…');
-  await new Promise(resolve=>setTimeout(resolve,900));
+ for(let attempt=0;attempt<3;attempt++){
+  try{
+   result=(typeof window!=='undefined'&&window.PatiyizReliableUpload?.upload)
+    ?await window.PatiyizReliableUpload.upload({sb,projectUrl:cfg.supabaseUrl,bucket:'patiyiz-videos',key,file,contentType:mime,onProgress:p=>uploadStatus('Video yükleniyor… %'+p)})
+    :await sb.storage.from('patiyiz-videos').upload(key,file,{contentType:mime,cacheControl:'86400',upsert:false});
+   if(!result.error)break;
+   throw result.error;
+  }catch(error){
+   if(typeof patiStorageUploadConfirmed==='function'&&await patiStorageUploadConfirmed('patiyiz-videos',key,file.size)){result={error:null};break;}
+   if(attempt===2||!(typeof patiUploadRetryable==='function'?patiUploadRetryable(error):/timeout|network|fetch|502|503|504/i.test(String(error?.message||error))))throw error;
+   uploadStatus('Video bağlantısı tekrar deneniyor… ('+(attempt+2)+'/3)');
+   await new Promise(resolve=>setTimeout(resolve,900*(attempt+1)));
+  }
  }
  if(result?.error)throw result.error;
  return sb.storage.from('patiyiz-videos').getPublicUrl(key).data.publicUrl;
 }
-async function upload(file){if(!file||!file.size)return null;if(navigator.onLine===false)throw Error('İnternet bağlantısı yok. Fotoğrafı bağlantı geldiğinde yükle.');if(file.size>30*1024*1024)throw Error('Fotoğraf en fazla 30 MB olabilir.');uploadStatus('Fotoğraf hazırlanıyor…');const prepared=await preparePhoto(file);const ext=prepared.type==='image/png'?'png':prepared.type==='image/webp'?'webp':'jpg';const key=me.id+'/'+crypto.randomUUID()+'.'+ext;uploadStatus('Fotoğraf yükleniyor…');let up;for(let attempt=0;attempt<2;attempt++){try{up=(typeof window!=='undefined'&&window.PatiyizReliableUpload?.upload)?await window.PatiyizReliableUpload.upload({sb,projectUrl:cfg.supabaseUrl,bucket:'patiyiz-media',key,file:prepared,contentType:prepared.type,onProgress:p=>uploadStatus('Fotoğraf yükleniyor… %'+p)}):await sb.storage.from('patiyiz-media').upload(key,prepared,{contentType:prepared.type,cacheControl:'86400',upsert:false});if(!up.error)break;if(attempt===1||!/timeout|network|fetch|502|503|504/i.test(up.error.message||''))throw up.error}catch(err){if(attempt===1||!/timeout|network|fetch|502|503|504/i.test(String(err?.message||err)))throw err}uploadStatus('Bağlantı yeniden deneniyor…');await new Promise(r=>setTimeout(r,900))}if(up?.error)throw up.error;uploadStatus('Paylaşım hazırlanıyor…');return sb.storage.from('patiyiz-media').getPublicUrl(key).data.publicUrl}
+async function upload(file){if(!file||!file.size)return null;if(navigator.onLine===false)throw Error('İnternet bağlantısı yok. Fotoğrafı bağlantı geldiğinde yükle.');if(file.size>30*1024*1024)throw Error('Fotoğraf en fazla 30 MB olabilir.');uploadStatus('Fotoğraf hazırlanıyor…');const prepared=await preparePhoto(file);const ext=prepared.type==='image/png'?'png':prepared.type==='image/webp'?'webp':'jpg';const key=me.id+'/'+crypto.randomUUID()+'.'+ext;uploadStatus('Fotoğraf yükleniyor…');let up;for(let attempt=0;attempt<2;attempt++){try{up=(typeof window!=='undefined'&&window.PatiyizReliableUpload?.upload)?await window.PatiyizReliableUpload.upload({sb,projectUrl:cfg.supabaseUrl,bucket:'patiyiz-media',key,file:prepared,contentType:prepared.type,onProgress:p=>uploadStatus('Fotoğraf yükleniyor… %'+p)}):await sb.storage.from('patiyiz-media').upload(key,prepared,{contentType:prepared.type,cacheControl:'86400',upsert:false});if(!up.error)break;if(await patiStorageUploadConfirmed('patiyiz-media',key,prepared.size)){up={error:null};break}if(attempt===1||!patiUploadRetryable(up.error))throw up.error}catch(err){if(await patiStorageUploadConfirmed('patiyiz-media',key,prepared.size)){up={error:null};break}if(attempt===1||!patiUploadRetryable(err))throw err}uploadStatus('Bağlantı yeniden deneniyor…');await new Promise(r=>setTimeout(r,900))}if(up?.error)throw up.error;uploadStatus('Paylaşım hazırlanıyor…');return sb.storage.from('patiyiz-media').getPublicUrl(key).data.publicUrl}
 /* Publication transaction: protect against duplicate posts and clean up only unreferenced, owned media. */
 function publicationMediaReference(url,owner){
  try{

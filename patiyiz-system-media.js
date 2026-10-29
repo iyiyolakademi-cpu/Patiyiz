@@ -27,6 +27,7 @@
   const node=state.root.querySelector('#pati-system-error');node.hidden=true;node.textContent='';
  }
  function freeURLs(current){
+  current.previewVersion=(current.previewVersion||0)+1;
   for(const url of current.urls)URL.revokeObjectURL(url);
   current.urls.length=0;
  }
@@ -59,6 +60,32 @@
   const dots=root.querySelector('#pati-system-carousel-dots');
   if(dots)dots.innerHTML=files.length>1?files.map((_,index)=>'<i class="'+(index===current.previewIndex?'active':'')+'" aria-hidden="true"></i>').join(''):'';
  }
+ async function showCroppedPreviews(current){
+  if(!state||state!==current||!current.files.every(isPhoto)||!window.PatiyizCropMedia?.preview)return;
+  const version=current.previewVersion;
+  const media=current.root.querySelector('#pati-system-preview-media');
+  for(const [index,file] of current.files.entries()){
+   if(!window.PatiyizCropMedia.has(file))continue;
+   try{
+    const output=await window.PatiyizCropMedia.preview(file);
+    if(!output?.size)throw Error('Düzenlenen fotoğraf gösterilemiyor.');
+    if(state!==current||current.previewVersion!==version)return;
+    const url=URL.createObjectURL(output);current.urls.push(url);
+    const main=media.querySelector('img[data-file-index="'+index+'"]');
+    const thumb=current.root.querySelector('[data-system="photo-select"][data-index="'+index+'"] img');
+    if(main)main.src=url;
+    if(thumb)thumb.src=url;
+   }catch(err){
+    if(state!==current||current.previewVersion!==version)return;
+    error('Düzenlenen fotoğraf önizlenemedi. Kırpma ekranından yeniden dene.');
+    current.previewError=true;
+    const button=current.root.querySelector('#pati-system-publish');
+    if(button)button.disabled=true;
+    console.warn('Kırpma önizleme hatası:',err);
+    return;
+   }
+  }
+ }
  function showPreview(){
   if(!state)return;
   const current=state,root=current.root;
@@ -72,18 +99,20 @@
   freeURLs(current);
   const video=isVideo(first);
   if(video){
-   const el=document.createElement('video');
-   el.src=URL.createObjectURL(first);
-   current.urls.push(el.src);
-   el.playsInline=true;el.controls=true;el.preload='metadata';
-   el.setAttribute('aria-label','Seçilen videonun önizlemesi');
-   el.classList.toggle('pati-selfie-mirrored',current.mirrorSelfie);
-   media.appendChild(el);
+   for(const [index,file] of files.entries()){
+    const el=document.createElement('video');
+    el.src=URL.createObjectURL(file);current.urls.push(el.src);
+    el.playsInline=true;el.controls=true;el.preload='metadata';
+    el.setAttribute('aria-label',(index+1)+'. videonun önizlemesi');
+    el.classList.toggle('pati-selfie-mirrored',current.mirrorSelfie);
+    media.appendChild(el);
+   }
   }else{
-   for(const f of files.slice(0,10)){
+   for(const [index,file] of files.slice(0,10).entries()){
     const image=document.createElement('img');
-    image.src=URL.createObjectURL(f);current.urls.push(image.src);
-    image.alt='Seçilen fotoğraf';image.loading='lazy';
+    image.src=URL.createObjectURL(file);current.urls.push(image.src);
+    image.dataset.fileIndex=String(index);
+    image.alt=(index+1)+'. fotoğraf önizlemesi';image.loading=index===current.previewIndex?'eager':'lazy';
     media.appendChild(image);
    }
   }
@@ -108,10 +137,14 @@
   controls.hidden=files.length<2;
   updateCarouselControls(current);
   if(files.length>1)queueMicrotask(()=>{if(state===current)media.scrollLeft=media.clientWidth*current.previewIndex});
+  current.previewError=false;
+  const cropButton=root.querySelector('[data-system="photo-crop"]');
+  if(cropButton)cropButton.hidden=video||!files.length;
+  void showCroppedPreviews(current);
   const option=root.querySelector('#pati-system-mirror-option'),toggle=root.querySelector('#pati-system-mirror');
   option.hidden=!video;toggle.checked=video&&current.mirrorSelfie;
   const info=root.querySelector('#pati-system-summary');
-  info.textContent=files.length>1?files.length+' fotoğraf seçildi':(video?'Video':'Fotoğraf')+' seçildi · '+fmtSize(first.size);
+  info.textContent=files.length>1?files.length+' '+(video?'video':'fotoğraf')+' seçildi':(video?'Video':'Fotoğraf')+' seçildi · '+fmtSize(first.size);
   const publish=root.querySelector('#pati-system-publish');
   publish.disabled=false;publish.textContent='Paylaş';
   // Let the person view their selected media before choosing to type a caption.
@@ -128,7 +161,7 @@
   if(photos.length+videos.length!==selected.length){error('Yalnızca fotoğraf veya video seçebilirsin.');return}
   if(current.mode==='reels'&&(!videos.length||selected.length!==1)){error('Reels için tek bir video seç.');return}
   if(current.mode==='story'&&selected.length!==1){error('Hikâye için tek bir fotoğraf veya video seç.');return}
-  if(videos.length&&(videos.length>1||photos.length)){error('Videoyu fotoğraflardan ayrı paylaşmalısın.');return}
+  if(videos.length&&(photos.length||(current.mode!=='post'&&videos.length>1)||videos.length>4)){error('Gönderide en fazla 4 video seçebilir, fotoğraflarla karıştıramazsın.');return}
   if(videos[0]?.size>500*1024*1024){error('Video 500 MB sınırını aşıyor. Galeride küçültüp yeniden dene.');return}
   clearError();
   try{
@@ -204,7 +237,7 @@
    '<div id="pati-system-photo-review" class="pati-system-photo-review" hidden><strong>Fotoğraflarını kontrol et</strong><small>Her fotoğrafa dokunarak aç, × ile kaldır. Sırasını değiştirebilirsin.</small></div>'+ 
    '<div id="pati-system-thumbnails" class="pati-system-thumbnails" aria-label="Seçilen fotoğraflar" hidden></div>'+ 
    '<div id="pati-system-photo-actions" class="pati-system-photo-actions" hidden><button type="button" data-system="photo-move-prev">← Sola taşı</button><button type="button" data-system="photo-move-next">Sağa taşı →</button></div>'+
-   '<p id="pati-system-summary" class="pati-system-summary"></p>'+ 
+   '<p id="pati-system-summary" class="pati-system-summary"></p><button type="button" class="pati-system-crop-entry" data-system="photo-crop" hidden>✂ Fotoğrafı kırp ve düzenle</button>'+ 
    '<label id="pati-system-mirror-option" class="pati-system-mirror-option" hidden><input id="pati-system-mirror" type="checkbox"><span><strong>Selfie gibi göster</strong><small>Ön kamerada ekranda gördüğün ayna yönünü paylaşımda koru. Arka kamerada kapat.</small></span></label>'+
    (mode==='story'?'<label class="pati-system-audience" for="pati-system-audience">Kimler görebilir?<select id="pati-system-audience"><option value="everyone">Herkes</option><option value="close_friends">Yakın Arkadaşlar</option></select></label>':'')+
    '<label class="pati-system-caption-label" for="pati-system-caption">Açıklama (isteğe bağlı)</label>'+
@@ -221,7 +254,7 @@
    '<input id="pati-system-gallery" type="file" accept="'+(kind(mode)==='video'?'video/*,.mov,.mp4,.webm,.m4v':'image/*,video/*,.heic,.heif,.mov,.mp4,.webm,.m4v')+'"'+(mode==='post'?' multiple':'')+' hidden>';
   document.body.appendChild(root);
   document.body.classList.add('pati-system-media-active');
-  state={root,mode,userId,onMedia,onMirrorChange,onPublish,onCancel,onSwitch,onStoryPhotoCamera,publishing:false,editing:false,files:[],urls:[],previewIndex:0,mirrorSelfie:false,appendMode:false};
+  state={root,mode,userId,onMedia,onMirrorChange,onPublish,onCancel,onSwitch,onStoryPhotoCamera,publishing:false,editing:false,files:[],urls:[],previewVersion:0,previewError:false,previewIndex:0,mirrorSelfie:false,appendMode:false};
   const current=state;
   for(const n of ['camera-photo','camera-video','gallery']){
    root.querySelector('#pati-system-'+n).addEventListener('change',async event=>{
@@ -265,7 +298,23 @@
     viewport.scrollTo({left:index*viewport.clientWidth,behavior:'smooth'});
     return;
    }
-   if(['photo-remove','photo-move-prev','photo-move-next'].includes(action)){
+   if(action==='photo-crop'){
+     if(state.publishing||state.editing||!state.files.length||!state.files.every(isPhoto))return;
+     if(!window.PatiyizCropMedia?.open){error('Fotoğraf düzenleyici henüz yüklenemedi. Sayfayı yeniden aç.');return}
+     state.editing=true;clearError();
+     try{
+      await window.PatiyizCropMedia.open(()=>{
+       if(state!==current)return;
+       state.editing=false;
+       showPreview();
+      });
+     }catch(err){if(state===current){state.editing=false;error(err?.message||'Kırpma ekranı açılamadı. Tekrar dene.')}}
+     // Cancel must also restore the share action, without committing edits.
+     const popup=document.getElementById('pati-full-crop-dialog');
+     popup?.addEventListener('close',()=>{if(state===current)state.editing=false},{once:true});
+     return;
+    }
+    if(['photo-remove','photo-move-prev','photo-move-next'].includes(action)){
     if(state.publishing||state.editing||state.mode!=='post'||!state.files.every(isPhoto))return;
     const oldIndex=state.previewIndex,at=action==='photo-remove'?Number(btn.dataset.index):oldIndex;
     if(!Number.isInteger(at)||at<0||at>=state.files.length)return;
@@ -316,7 +365,7 @@
     return;
    }
    if(action==='publish'){
-    if(state.publishing||state.editing||!state.files.length)return;
+    if(state.publishing||state.editing||state.previewError||!state.files.length)return;
     state.publishing=true;
     const publish=root.querySelector('#pati-system-publish');
     publish.disabled=true;publish.textContent='Paylaşılıyor…';clearError();

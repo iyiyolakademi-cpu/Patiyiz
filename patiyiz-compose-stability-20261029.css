@@ -1,0 +1,98 @@
+/* Patiyiz — crop, preview and publishing polish (web + native), 2026-10-29.
+   Narrow mobile viewports never allow a media preview to overflow the page.
+   Keep the existing five content tabs; only refine their hit areas and rhythm. */
+#patiyiz-system-media .pati-system-panel{
+ width:min(100%,580px)!important;max-width:100%!important;
+ min-width:0!important;box-sizing:border-box!important;
+ overflow-x:hidden!important;
+}
+#patiyiz-system-media #pati-system-preview,
+#patiyiz-system-media .pati-system-preview-wrap{
+ width:100%!important;min-width:0!important;max-width:100%!important;
+ overflow:hidden!important;
+}
+#patiyiz-system-media .pati-system-preview-media{
+ width:100%!important;max-width:100%!important;
+ scroll-snap-type:x mandatory;
+ overflow-x:auto!important;overscroll-behavior-x:contain;
+ -webkit-overflow-scrolling:touch;
+ scrollbar-width:none;
+ background:#141518!important;
+}
+#patiyiz-system-media .pati-system-preview-media::-webkit-scrollbar{display:none}
+#patiyiz-system-media .pati-system-preview-media :is(img,video){
+ min-width:100%!important;width:100%!important;max-width:100%!important;
+ height:100%!important;flex:0 0 100%!important;
+ display:block;object-fit:contain!important;
+ scroll-snap-align:center;box-sizing:border-box;
+}
+#patiyiz-system-media .pati-system-crop-entry{
+ display:flex;align-items:center;justify-content:center;gap:9px;
+ width:100%;min-width:0;min-height:45px;
+ padding:11px 15px;margin:0 0 13px;
+ font:inherit;font-size:14px;font-weight:800;
+ border:1px solid #656874;border-radius:14px;
+ color:#f8f8fb;background:#2c2e37;cursor:pointer;
+ box-sizing:border-box;
+}
+#patiyiz-system-media .pati-system-crop-entry[hidden]{display:none!important}
+#patiyiz-system-media .pati-system-crop-entry:focus-visible{
+ outline:2px solid #a4b7fe;outline-offset:3px;
+}
+#patiyiz-system-media .pati-system-thumbnails{
+ max-width:100%!important;
+ overflow-x:auto!important;
+ -webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
+ scrollbar-width:thin;
+}
+#patiyiz-system-media .pati-system-photo-review :is(strong,small){
+ line-height:1.4;overflow-wrap:anywhere;
+}
+#patiyiz-system-media .pati-system-publish-actions{
+ display:grid!important;
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ align-items:stretch!important;gap:9px!important;
+ width:100%;min-width:0;max-width:100%;
+}
+#patiyiz-system-media .pati-system-publish-actions button{
+ min-width:0!important;width:100%!important;
+ flex:none!important;box-sizing:border-box!important;
+ padding:9px!important;min-height:46px!important;
+ white-space:normal!important;line-height:1.25!important;
+}
+#patiyiz-system-media .pati-system-publish-actions #pati-system-publish{
+ grid-column:1 / -1;
+ min-height:53px!important;
+ font-weight:850!important;
+}
+#main-content .pati-ig-profile .pati-ig-tabs{
+ display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;
+ width:100%!important;min-width:0!important;
+ gap:0!important;
+}
+#main-content .pati-ig-profile .pati-ig-tabs button{
+ min-width:0!important;padding:8px 3px!important;
+ min-height:54px!important;
+ touch-action:manipulation;
+}
+#main-content .pati-ig-profile .pati-ig-tabs .pati-profile-tab-icon{
+ width:25px!important;height:25px!important;
+ max-width:100%!important;
+}
+html[data-pati-theme="dark"] #patiyiz-system-media .pati-system-crop-entry{
+ background:#292b33!important;
+ color:#f7f8fb!important;border-color:#535663!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-tabs{
+ background:#1a1c21!important;color:#f7f8fb!important;
+}
+@media(max-width:420px){
+ #patiyiz-system-media .pati-system-panel{padding-inline:10px!important}
+ #patiyiz-system-media .pati-system-preview-media{max-height:47dvh!important}
+ #patiyiz-system-media .pati-system-publish-actions button{font-size:12px!important}
+ #main-content .pati-ig-profile .pati-ig-tabs button{min-height:50px!important}
+}
+@media(max-height:650px){
+ #patiyiz-system-media .pati-system-preview-media{max-height:35dvh!important}
+ #patiyiz-system-media .pati-system-panel{overflow-y:auto!important}
+}
