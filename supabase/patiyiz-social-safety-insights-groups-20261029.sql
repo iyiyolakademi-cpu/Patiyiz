@@ -140,6 +140,33 @@ $$;
 revoke all on function public.patiyiz_record_post_view(uuid) from public,anon;
 grant execute on function public.patiyiz_record_post_view(uuid) to authenticated;
 
+-- Story-view recording must obey the same audience AND account privacy rules,
+-- including for SECURITY DEFINER calls made with a guessed story id.
+create or replace function public.patiyiz_record_story_view(p_story_id uuid)
+returns void language plpgsql security definer set search_path=''
+as $
+declare v_viewer uuid := auth.uid(); v_owner uuid;
+begin
+ if v_viewer is null then raise exception 'Oturum gerekli' using errcode='42501'; end if;
+ select s.author_id into v_owner
+ from public.patiyiz_stories s join public.profiles pr on pr.id=s.author_id
+ where s.id=p_story_id and s.expires_at>now()
+ and not public.patiyiz_users_blocked(v_viewer,s.author_id)
+ and (s.author_id=v_viewer or not pr.is_private or exists(
+   select 1 from public.follows f where f.follower_id=v_viewer and f.followee_id=s.author_id))
+ and (s.author_id=v_viewer or s.audience='everyone' or
+     (s.audience='close_friends' and public.patiyiz_is_close_friend(s.author_id,v_viewer)));
+ if v_owner is null then raise exception 'Hikâyeye erişim yok' using errcode='42501'; end if;
+ if v_owner=v_viewer then return; end if;
+ insert into public.patiyiz_story_views(story_id,viewer_id,first_viewed_at,last_viewed_at)
+ values(p_story_id,v_viewer,now(),now())
+ on conflict(story_id,viewer_id) do update
+ set last_viewed_at=greatest(public.patiyiz_story_views.last_viewed_at,excluded.last_viewed_at);
+end
+$;
+revoke all on function public.patiyiz_record_story_view(uuid) from public,anon;
+grant execute on function public.patiyiz_record_story_view(uuid) to authenticated;
+
 -- Group photos are stored in a dedicated 1 MB photo bucket. Admins control
 -- membership and photo; the creator remains the sole authority to grant admin.
 alter table public.patiyiz_group_chats add column if not exists avatar_path text;
