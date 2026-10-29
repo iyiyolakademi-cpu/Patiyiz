@@ -28,7 +28,7 @@ test('Profile Yazılar returns its original full-length timeline, not a tiled ph
   me:{id:'owner'},profileId:'',profilePostsTab:'text',
   profile:()=>p,blocked:new Set(),followed:new Set(),
   data:{posts,stories:[],pets:[],pins:[{owner_id:'owner',post_id:'text-1',created_at:'2026-10-28'}],highlightItems:[],highlightAlbums:[],follows:[]},
-  profileCountCache:new Map(),main:{innerHTML:''},Date,Set,Number,Math,
+  profileCountCache:new Map(),patiPostViewCounts:new Map(),main:{innerHTML:''},Date,Set,Number,Math,
   patiSafetyRefresh:()=>{},patiLoadProfileViewCounts:()=>{},syncProfileCounts:()=>{},
   patiyizProgressCard:()=>'',patiVerificationProfileAction:()=>'',patiProfileLinksHTML:()=>'',verifiedBadge:()=>'',avatar:()=>'<i class="avatar"></i>',
   button:(name,action)=>'<button data-action="'+action+'">'+name+'</button>',
