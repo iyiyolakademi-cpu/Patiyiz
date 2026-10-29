@@ -4038,12 +4038,178 @@ function patiInsightsTrend(daily,key){
  const chunks=[];for(let i=0;i<points.length;i+=7){const set=points.slice(i,i+7);chunks.push({day:set[0]?.day||'',value:set.reduce((sum,p)=>sum+p.value,0)})}
  return chunks;
 }
+let patiCreatorStats={owner:'',days:30,main:null,audience:null,content:null,visitors:null,tab:'overview',detail:''};
+let patiCreatorPreview={owner:'',value:null,fetched:0,pending:false};
 function patiInsightsClose(){
  document.getElementById('pati-creator-dashboard')?.remove();
  document.body.classList.remove('pati-insights-open');
+ patiCreatorStats.detail='';
+}
+function patiInsightsPct(now,prev){
+ if(!Number.isFinite(Number(prev))||Number(prev)===0)return Number(now)>0?'Yeni':'0%';
+ return ((Number(now)-Number(prev))/Number(prev)*100).toLocaleString('tr-TR',{maximumFractionDigits:1})+'%';
+}
+function patiInsightsChange(now,prev){
+ const delta=(Number(now)||0)-(Number(prev)||0);
+ return '<span class="pati-creator-change '+(delta>0?'increase':delta<0?'decrease':'neutral')+'" aria-label="'+(delta>0?'Artış':delta<0?'Düşüş':'Değişim yok')+'">'+
+ (delta>0?'↗':delta<0?'↘':'→')+' '+patiInsightsPct(now,prev)+'</span>';
+}
+function patiCreatorPreviewHTML(){
+ return '<button type="button" class="pati-profile-insights-preview" data-action="pati-insights" aria-label="İstatistiklerini aç">'+
+ '<span><strong>İstatistikler</strong><small>Son 30 günlük profil ziyaretlerin</small></span>'+
+ '<span class="pati-profile-insights-value" id="pati-profile-insights-value">—</span>'+
+ '<span class="pati-profile-insights-arrow" id="pati-profile-insights-arrow" aria-hidden="true">→</span></button>';
+}
+async function patiCreatorPreviewLoad(){
+ if(!me?.id||view!=='profile'||(profileId&&profileId!==me.id))return;
+ const owner=me.id;
+ const el=document.getElementById('pati-profile-insights-value'),arrow=document.getElementById('pati-profile-insights-arrow');
+ if(!el||!arrow)return;
+ if(patiCreatorPreview.owner!==owner)patiCreatorPreview={owner,value:null,fetched:0,pending:false};
+ const state=patiCreatorPreview;
+ const renderPreview=()=>{
+  if(!el.isConnected||me?.id!==owner)return;
+  const data=state.value;
+  el.textContent=data?patiInsightsMetric(data.profile_visits):'—';
+  if(data){
+   const change=(Number(data.profile_visits)||0)-(Number(data.profile_visits_previous)||0);
+   arrow.textContent=change>0?'↗':change<0?'↘':'→';
+   arrow.className='pati-profile-insights-arrow '+(change>0?'increase':change<0?'decrease':'neutral');
+  }
+ };
+ renderPreview();
+ if(state.pending||Date.now()-state.fetched<90000)return;
+ state.pending=true;
+ try{
+  let res=await sb.rpc('patiyiz_creator_insights_extended',{p_days:30});
+  if(res.error)res=await sb.rpc('patiyiz_creator_insights',{p_days:30});
+  if(res.error)throw res.error;
+  if(me?.id!==owner)return;
+  state.value=res.data;state.fetched=Date.now();
+  renderPreview();
+ }catch(error){console.warn('Profil istatistiği önizleme:',error?.message||error)}
+ finally{state.pending=false}
+}
+function patiCreatorBreakdown(items,title){
+ const rows=Array.isArray(items)?items:[],max=Math.max(1,...rows.map(x=>Number(x.count)||0));
+ return '<section class="pati-creator-breakdown"><h3>'+esc(title)+'</h3>'+
+ (rows.length?rows.map(x=>{
+  const name={woman:'Kadın',man:'Erkek',other:'Diğer'}[x.name]||x.name;
+  const value=Math.max(0,Number(x.count)||0);
+  return '<div class="pati-creator-breakdown-item"><div><strong>'+esc(name||'Belirtilmedi')+'</strong><span>'+patiInsightsMetric(value)+'</span></div>'+
+  '<div class="pati-creator-bartrack"><span style="width:'+Math.round(value/max*100)+'%"></span></div></div>';
+ }).join(''):'<p class="pati-creator-empty">Yeterli doğrulanmış veri yok.</p>')+'</section>';
+}
+function patiCreatorInsightsRender(){
+ const state=patiCreatorStats,dlg=document.getElementById('pati-creator-dashboard');
+ if(!dlg||!state.main||state.owner!==me?.id)return;
+ const v=state.main,a=state.audience||{},content=state.content||{},days=state.days;
+ const visits=Number(v.profile_visits)||0,gained=Number(v.followers_gained)||0,lost=Number(v.followers_lost)||0;
+ const complete=v.loss_history_complete===true;
+ const kpis=[
+  ['visits','Profil ziyaretleri',visits,'Kayıtlı profil ziyaretleri'],
+  ['followers','Yeni takipçiler',gained,'Kazanılan / kaybedilen takipçiler'],
+  ['engagement','Etkileşimler',(Number(v.likes)||0)+(Number(v.saves)||0)+(Number(v.reposts)||0),'Beğeni, kaydetme ve yeniden paylaşım'],
+  ['content','Paylaşımlar',Number(v.posts)||0,'Bu dönemde yayımlanan içerikler']
+ ];
+ const range='<div class="pati-creator-ranges" role="group" aria-label="İstatistik dönemi">'+[7,30,90].map(n=>
+  '<button type="button" data-action="pati-insights-period" data-id="'+n+'" aria-pressed="'+(days===n)+'">Son '+n+' gün</button>').join('')+'</div>';
+ const tabs=[['overview','Genel bakış'],['content','İçerik'],['audience','Hedef kitle']];
+ const head='<header class="pati-creator-head"><button type="button" data-action="pati-insights-close" aria-label="İstatistikleri kapat">←</button>'+
+  '<strong>İstatistikler</strong><span class="pati-creator-private" title="Bu ekranı yalnızca hesap sahibi görür">Sana özel</span></header>';
+ let body='';
+ if(state.detail==='visitors'){
+  const visitors=state.visitors;
+  body='<div class="pati-creator-detail-head"><button type="button" data-action="pati-insights-detail" data-id="visits">← Geri</button><h2>Profilini ziyaret edenler</h2><p>Son '+days+' gündeki kayıtlı, giriş yapmış ziyaretçiler. Anonim ziyaretler gösterilmez.</p></div>'+
+   (!visitors?'<p class="pati-creator-loading">Ziyaretçiler yükleniyor…</p>':visitors.error?
+    '<div class="pati-creator-empty">Ziyaretçiler getirilemedi. <button type="button" data-action="pati-insights-visitors">Yeniden dene</button></div>':
+    '<div class="pati-creator-visitor-total">'+patiInsightsMetric(visitors.total||0)+' farklı ziyaretçi</div>'+
+    ((visitors.visitors||[]).length?(visitors.visitors||[]).map(person=>
+      '<button class="pati-creator-visitor" type="button" data-action="pati-insights-person" data-id="'+esc(person.id)+'">'+
+      avatar({avatar_url:person.avatar_url,display_name:person.display_name},'s')+'<span><strong>'+esc(person.display_name||'Patiyiz üyesi')+'</strong><small>@'+esc(person.handle||'patiyiz')+'</small></span><time>'+esc(person.last_visit||'')+'</time></button>').join(''):
+      '<p class="pati-creator-empty">Bu dönemde görüntülenecek ziyaretçi yok.</p>')+
+    '<p class="pati-creator-footnote">Kayıtlar Patiyiz içinde giriş yaparak ziyaret eden hesapları kapsar. En fazla son 50 hesap listelenir.</p>');
+ }else if(state.detail){
+  const detail=kpis.find(x=>x[0]===state.detail);
+  const metrics=state.detail==='followers'?[
+    ['Kazanılan',gained],['Kaybedilen (kayıtlı)',lost],['Net değişim (kayıtlı)',gained-lost],['Toplam takipçi',Number(v.followers_now)||0]
+  ]:state.detail==='visits'?[
+    ['Profil ziyaretleri',visits],['Önceki dönem',Number(v.profile_visits_previous)||0],['Değişim',patiInsightsPct(visits,v.profile_visits_previous)],['Kayıtlı gün',days]
+  ]:state.detail==='engagement'?[
+    ['Beğenmeler',Number(v.likes)||0],['Kaydetmeler',Number(v.saves)||0],
+    ['Yeniden paylaşımlar',Number(v.reposts)||0],['Toplam',kpis[2][2]]
+  ]:[['Gönderiler',Number(content.posts)||0],['Reels',Number(content.reels)||0],['Hikâyeler',Number(content.stories)||0],['Toplam',Number(v.posts)||0]];
+  body='<div class="pati-creator-detail-head"><button type="button" data-action="pati-insights-detail" data-id="">← Genel bakış</button><h2>'+esc(detail?.[1]||'Ayrıntılar')+'</h2>'+
+   '<p>Son '+days+' günün gerçek kayıtları</p></div><div class="pati-creator-detail-grid">'+metrics.map(([name,value])=>
+    '<article><small>'+esc(name)+'</small><strong>'+esc(typeof value==='number'?patiInsightsMetric(value):value)+'</strong></article>').join('')+'</div>'+
+   (state.detail==='visits'?'<button type="button" class="pati-creator-visitors-link" data-action="pati-insights-visitors">Kimler profilimi ziyaret etti? <span>›</span></button>':'')+
+   (state.detail==='followers'&&!complete?'<p class="pati-creator-footnote">Takipten çıkma kayıtları yeni tutulmaya başlandı. Önceki dönem kayıpları mevcut olmadığından net değişim yalnızca kayıtlı kayıpları içerir.</p>':'')+
+   patiInsightsBarChart(patiInsightsTrend(v.daily||[],state.detail==='visits'?'visits':state.detail==='followers'?'followers':'likes'),'Günlük değişim');
+ }else{
+  const tabbar='<div class="pati-creator-tabs" role="tablist">'+tabs.map(([id,name])=>
+   '<button type="button" role="tab" data-action="pati-insights-tab" data-id="'+id+'" aria-selected="'+(state.tab===id)+'">'+name+'</button>').join('')+'</div>';
+  if(state.tab==='overview'){
+   body='<section class="pati-creator-overview"><h2>Genel bakış</h2><p>Son '+days+' günün hesabına özel verileri</p>'+
+    '<div class="pati-creator-kpis">'+kpis.map(([id,name,value,desc])=>
+     '<button type="button" data-action="pati-insights-detail" data-id="'+id+'" class="pati-creator-stat"><span>'+name+'</span>'+
+     '<strong>'+patiInsightsMetric(value)+'</strong>'+
+     (id==='visits'?patiInsightsChange(visits,v.profile_visits_previous):id==='followers'?patiInsightsChange(gained,v.followers_gained_previous):'<small>'+esc(desc)+'</small>')+
+     '<span class="pati-creator-stat-arrow">›</span></button>').join('')+'</div>'+
+    '<div class="pati-creator-profile-moves"><h3>Profil hareketleri</h3>'+
+    '<button type="button" data-action="pati-insights-detail" data-id="visits"><span>Profil ziyaretleri</span><strong>'+patiInsightsMetric(visits)+'</strong><span>›</span></button>'+
+    '<button type="button" data-action="pati-insights-detail" data-id="followers"><span>Takipçi değişimi</span><strong>+'+patiInsightsMetric(gained)+' / −'+(complete?patiInsightsMetric(lost):patiInsightsMetric(lost)+'*')+'</strong><span>›</span></button></div>'+
+    '<div class="pati-creator-chart-card"><h3>Profil ziyaretleri</h3>'+patiInsightsBarChart(patiInsightsTrend(v.daily||[],'visits'),'Profil ziyaretleri')+'</div>'+
+    (!complete?'<p class="pati-creator-footnote">* Takipçi kayıpları yalnızca yeni takip sistemi kayıtlarının başlangıcından itibaren ölçülmektedir.</p>':'')+
+    '</section>';
+  }else if(state.tab==='content'){
+   const top=Array.isArray(content.top)?content.top:[];
+   body='<section class="pati-creator-overview"><h2>İçerik istatistikleri</h2><p>Gerçek görüntülenme ve etkileşimlere dayalı performans</p>'+
+    '<div class="pati-creator-detail-grid">'+[['Gönderiler',content.posts],['Reels',content.reels],['Hikâyeler',content.stories]].map(([name,n])=>
+    '<article><small>'+name+'</small><strong>'+patiInsightsMetric(n)+'</strong></article>').join('')+'</div>'+
+    '<div class="pati-creator-chart-card"><h3>En çok görüntülenen içerikler</h3>'+
+    (top.length?top.map(x=>'<button type="button" class="pati-creator-top-post" data-action="pati-insights-post" data-id="'+esc(x.id)+'"><span>'+(x.kind==='reels'?'Reels':'Gönderi')+'</span><strong>'+patiInsightsMetric(x.views)+' görüntüleme</strong><small>'+patiInsightsMetric(x.likes)+' beğeni · '+patiInsightsMetric(x.comments)+' yorum</small><b>›</b></button>').join(''):
+    '<p class="pati-creator-empty">Bu dönem için içerik kaydı yok.</p>')+'</div></section>';
+  }else{
+   const cities=Array.isArray(a.cities)?a.cities.slice(0,5):[];
+   const genders=Array.isArray(a.genders)?a.genders:[];
+   body='<section class="pati-creator-overview"><h2>Hedef kitle</h2><p>Profilini ziyaret eden, bilgilerini isteğe bağlı olarak paylaşmış kişiler</p>'+
+    '<div class="pati-creator-audience-count"><strong>'+patiInsightsMetric(a.sample)+'</strong><span>Kayıtlı farklı ziyaretçi</span></div>'+
+    patiCreatorBreakdown(genders,'Cinsiyet dağılımı')+patiCreatorBreakdown(cities,'En fazla 5 şehir')+
+    '<p class="pati-creator-footnote">Gizlilik için en az 10 farklı ziyaretçi ve her grupta en az 5 kişi gerekir. Cinsiyet ya da şehir bilgisi paylaşmayanlar sayılmaz. Veri yoksa oran uydurulmaz.</p></section>';
+  }
+  body=tabbar+body;
+ }
+ dlg.innerHTML=head+'<div class="pati-creator-scroll"><div class="pati-creator-container">'+(state.detail?body:range+body)+'</div></div>';
+}
+function patiInsightsNavigate(tab){
+ if(!['overview','content','audience'].includes(tab))return;
+ patiCreatorStats.tab=tab;patiCreatorStats.detail='';
+ patiCreatorInsightsRender();
+}
+function patiInsightsDetail(detail){
+ patiCreatorStats.detail=detail;
+ patiCreatorInsightsRender();
+}
+async function patiCreatorVisitors(force=false){
+ if(!me?.id||patiCreatorStats.owner!==me.id)return;
+ patiCreatorStats.detail='visitors';
+ if(force)patiCreatorStats.visitors=null;
+ patiCreatorInsightsRender();
+ if(patiCreatorStats.visitors)return;
+ const owner=me.id,days=patiCreatorStats.days;
+ try{
+  const r=await sb.rpc('patiyiz_creator_recent_visitors',{p_days:days});
+  if(r.error)throw r.error;
+  if(me?.id===owner&&patiCreatorStats.days===days&&patiCreatorStats.owner===owner)
+   patiCreatorStats.visitors=r.data||{visitors:[],total:0};
+ }catch(e){
+  if(me?.id===owner)patiCreatorStats.visitors={error:true};
+  console.warn('Ziyaretçiler yüklenemedi:',e?.message||e);
+ }
+ if(patiCreatorStats.detail==='visitors')patiCreatorInsightsRender();
 }
 async function patiCreatorInsights(days=30){
- if(!me?.id)return;
+ if(!me?.id||view!=='profile'||(profileId&&profileId!==me.id))return;
  days=[7,30,90].includes(Number(days))?Number(days):30;
  let dialog=document.getElementById('pati-creator-dashboard');
  if(!dialog){
@@ -4053,62 +4219,37 @@ async function patiCreatorInsights(days=30){
   document.body.appendChild(dialog);document.body.classList.add('pati-insights-open');
   dialog.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();patiInsightsClose()}});
  }
- dialog.dataset.owner=me.id;dialog.dataset.days=String(days);
- dialog.innerHTML='<div class="pati-creator-head"><button type="button" data-action="pati-insights-close" aria-label="İstatistikleri kapat">←</button><div><strong>İstatistikler</strong><small>Profesyonel pano</small></div></div><div class="pati-creator-loading" role="status">İstatistikler yükleniyor…</div>';
+ const owner=me.id;
+ patiCreatorStats={owner,days,main:null,audience:null,content:null,visitors:null,tab:'overview',detail:''};
+ dialog.dataset.owner=owner;dialog.dataset.days=String(days);
+ dialog.innerHTML='<header class="pati-creator-head"><button type="button" data-action="pati-insights-close" aria-label="İstatistikleri kapat">←</button><strong>İstatistikler</strong></header>'+
+  '<div class="pati-creator-loading" role="status">İstatistikler yükleniyor…</div>';
  dialog.querySelector('button')?.focus();
- const uid=me.id;
- const responses=await Promise.allSettled([
-  sb.rpc('patiyiz_creator_insights',{p_days:days}),
-  sb.rpc('patiyiz_creator_audience',{p_days:days})
+ const results=await Promise.allSettled([
+  sb.rpc('patiyiz_creator_insights_extended',{p_days:days}),
+  sb.rpc('patiyiz_creator_audience',{p_days:days}),
+  sb.rpc('patiyiz_creator_content_breakdown',{p_days:days})
  ]);
- if(me?.id!==uid||!dialog.isConnected||dialog.dataset.owner!==uid||dialog.dataset.days!==String(days))return;
- const a=responses[0].status==='fulfilled'?responses[0].value:{error:responses[0].reason};
- const b=responses[1].status==='fulfilled'?responses[1].value:{error:responses[1].reason};
+ if(me?.id!==owner||!dialog.isConnected||dialog.dataset.owner!==owner||dialog.dataset.days!==String(days))return;
+ let a=results[0].status==='fulfilled'?results[0].value:{error:results[0].reason};
+ const b=results[1].status==='fulfilled'?results[1].value:{error:results[1].reason};
+ const c=results[2].status==='fulfilled'?results[2].value:{error:results[2].reason};
+ if(a.error||!a.data||typeof a.data!=='object'){
+  a=await sb.rpc('patiyiz_creator_insights',{p_days:days}).catch(e=>({error:e}));
+ }
+ if(me?.id!==owner||!dialog.isConnected||dialog.dataset.days!==String(days))return;
  if(a.error||!a.data||typeof a.data!=='object'){
   console.error('İstatistik RPC hatası:',a.error||'Beklenmeyen yanıt');
-  dialog.innerHTML='<div class="pati-creator-head"><button type="button" data-action="pati-insights-close" aria-label="İstatistikleri kapat">←</button><div><strong>İstatistikler</strong><small>Hesap performansı</small></div></div>'+
-   '<div class="pati-creator-failure" role="alert"><strong>İstatistikler yüklenemedi</strong><p>Bağlantını kontrol edip yeniden deneyebilirsin. Hiçbir paylaşımın etkilenmedi.</p><button type="button" data-action="pati-insights-period" data-id="'+days+'">Tekrar dene</button></div>';
+  dialog.innerHTML='<header class="pati-creator-head"><button type="button" data-action="pati-insights-close">←</button><strong>İstatistikler</strong></header>'+
+   '<div class="pati-creator-failure" role="alert"><strong>İstatistikler yüklenemedi</strong><p>Bağlantını kontrol edip yeniden dene.</p>'+
+   '<button type="button" data-action="pati-insights-period" data-id="'+days+'">Tekrar dene</button></div>';
   return;
  }
- if(b.error)console.warn('Kitle dağılımı alınamadı, temel istatistikler gösteriliyor:',b.error);
- const v=a.data||{},aud=!b.error&&b.data&&typeof b.data==='object'?b.data:{},daily=Array.isArray(v.daily)?v.daily:[];
- const views=Math.max(0,Number(v.views)||0),likes=Number(v.likes)||0,saves=Number(v.saves)||0,reposts=Number(v.reposts)||0;
- const interactions=likes+saves+reposts;
- const engagement=views?interactions*100/views:null;
- const engagementText=engagement===null?'—':engagement.toLocaleString('tr-TR',{minimumFractionDigits:1,maximumFractionDigits:1})+'%';
- const watch=Number(v.reel_watch_seconds)||0;
- const kpis=[
-  ['Erişilen hesaplar',views],
-  ['Profil ziyaretleri',v.profile_visits],
-  ['Yeni takipçiler',v.followers_gained],
-  ['Etkileşimler',interactions],
-  ['Kaydetmeler',saves],
-  ['Reels izlenme',watch+' sn']
- ];
- const kpiMarkup=kpis.map(([label,value],i)=>'<div class="pati-insight-kpi"><span>'+esc(label)+'</span><strong>'+([0,1,2,3,4].includes(i)?patiInsightsMetric(value):esc(value))+'</strong></div>').join('');
- const trendCards=[['Profil ziyaretleri','visits'],['Yeni takipçiler','followers'],['Beğeniler','likes']];
- const charts=trendCards.map(([label,key])=>'<article class="pati-stat-panel"><h3>'+esc(label)+'</h3>'+patiInsightsBarChart(patiInsightsTrend(daily,key),label)+'</article>').join('');
- const ePercent=engagement===null?0:Math.max(0,Math.min(100,engagement));
- const circle='<article class="pati-stat-panel pati-engagement-panel"><h3>Etkileşim oranı</h3><div class="pati-stat-donut" role="img" aria-label="Etkileşim oranı '+esc(engagementText)+'" style="--pati-stat-percent:'+ePercent+'%"><span>'+engagementText+'</span></div><small>Beğeni, kaydetme ve yeniden paylaşım / erişilen hesaplar</small></article>';
- const range='<div class="pati-creator-ranges" role="group" aria-label="İstatistik dönemi">'+[7,30,90].map(n=>'<button type="button" data-action="pati-insights-period" data-id="'+n+'" aria-pressed="'+(n===days)+'">Son '+n+' gün</button>').join('')+'</div>';
- const cities=Array.isArray(aud.cities)?aud.cities:[],genders=Array.isArray(aud.genders)?aud.genders:[];
- const genderNames={woman:'Kadın',man:'Erkek',other:'Diğer'};
- const dist=(items,names,title)=>{
-  const highest=Math.max(1,...items.map(x=>Number(x.count)||0));
-  return '<article class="pati-stat-panel"><h3>'+esc(title)+'</h3><div class="pati-insight-breakdown">'+items.map(x=>{
-   const count=Number(x.count)||0,name=names?.[x.name]||x.name||'';
-   return '<div class="pati-stat-breakdown-row"><div><strong>'+esc(name)+'</strong><span>'+patiInsightsMetric(count)+'</span></div><div class="pati-stat-progress"><span style="width:'+Math.max(0,Math.min(100,100*count/highest))+'%"></span></div></div>';
-  }).join('')+'</div></article>';
- };
- const demographics=(cities.length||genders.length)?'<section class="pati-insight-section"><h2>Ziyaretçi kitlesi</h2><p class="pati-insight-subtitle">Profilini ziyaret eden, isteğe bağlı bilgilerini paylaşmış kişilerden toplu dağılım. Küçük gruplar gizlenir.</p><div class="pati-insight-demographics">'+(cities.length?dist(cities,null,'Şehirlere göre'):'' )+(genders.length?dist(genders,genderNames,'Cinsiyet dağılımı'):'')+'</div></section>':'';
- dialog.innerHTML='<div class="pati-creator-head"><button type="button" data-action="pati-insights-close" aria-label="İstatistikleri kapat">←</button><div><strong>İstatistikler</strong><small>Hesabının gerçek verileri</small></div></div>'+
- '<div class="pati-creator-scroll"><div class="pati-creator-container">'+
- '<header class="pati-creator-intro"><div><h1>Genel Bakış</h1><p>İçeriklerinin performansını takip et</p></div>'+range+'</header>'+
- '<section class="pati-insight-section"><h2>Performans</h2><div class="pati-insight-kpis">'+kpiMarkup+'</div></section>'+
- '<section class="pati-insight-section"><h2>Hesap hareketleri</h2><div class="pati-insight-charts">'+charts+circle+'</div></section>'+
- demographics+
- '<p class="pati-creator-footnote">Görüntülenme ve izlenme ölçümü sistemde kaydedilen olaylara dayanır. Eski veriler eksik olabilir; grafiklerde tahmini değer kullanılmaz. Cinsiyet bilgisi tamamen isteğe bağlıdır.</p>'+
- '</div></div>';
+ patiCreatorStats.main=a.data;
+ patiCreatorStats.audience=!b.error&&b.data&&typeof b.data==='object'?b.data:{};
+ patiCreatorStats.content=!c.error&&c.data&&typeof c.data==='object'?c.data:{};
+ if(days===30)patiCreatorPreview={owner,value:a.data,fetched:Date.now(),pending:false};
+ patiCreatorInsightsRender();
 }
 function patiRecordProfileVisit(id){
  if(!me?.id||!id||id===me.id||document.hidden)return;
