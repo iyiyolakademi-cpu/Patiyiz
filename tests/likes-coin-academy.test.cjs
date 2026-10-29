@@ -15,7 +15,7 @@ test('Likes are present in initial and feed data, and are confirmed by the datab
  assert.match(load,/likesEpoch/);
  const action=piece('async function togglePostLike(id){','async function doToggle(');
  assert.match(action,/pendingPostLikes\.has\(id\)/);
- assert.match(action,/ignoreDuplicates:true/);
+ assert.match(action,/post_likes'\)\.insert\(\{user_id:owner,post_id:id\}\)/);
  assert.match(action,/const verified=await sb\.from\('post_likes'\)\.select\('post_id,user_id'\)\.eq\('post_id',id\)/);
  assert.match(action,/savedLike===wasLiked/);
  assert.match(app,/case 'like':void togglePostLike\(id\);break/);
@@ -26,10 +26,10 @@ test('A like and unlike persist across reads, including someone else\'s likes',a
  const code=piece('async function togglePostLike(id){','async function doToggle(');
  let rows=[{user_id:'friend',post_id:'post'}];
  const button={disabled:false,attributes:{},classList:{toggle(){}},setAttribute(k,v){this.attributes[k]=v},removeAttribute(k){delete this.attributes[k]},querySelector(){return {textContent:''}}};
- const ctx={me:{id:'owner'},data:{likes:[]},liked:new Set(),pendingPostLikes:new Set(),likesChangeEpoch:0,console,notify(){},friendly:e=>e.message||String(e),
+ const ctx={me:{id:'owner'},patiFindSocialPost:()=>({id:'post',author_id:'friend'}),data:{likes:[]},liked:new Set(),pendingPostLikes:new Set(),likesChangeEpoch:0,console,notify(){},friendly:e=>e.message||String(e),
   document:{querySelectorAll(selector){return selector.includes('[data-action="like"]')?[button]:[]}},
   sb:{from(table){assert.equal(table,'post_likes');return {
-   upsert:async row=>{if(!rows.some(r=>r.user_id===row.user_id&&r.post_id===row.post_id))rows.push(row);return {error:null}},
+   insert:async row=>{if(!rows.some(r=>r.user_id===row.user_id&&r.post_id===row.post_id))rows.push(row);return {error:null}},
    delete(){return {eq(){return this},then(done){rows=rows.filter(r=>r.user_id!=='owner');done({error:null})}}},
    select(){return {eq:async(_key,id)=>({error:null,data:rows.filter(r=>r.post_id===id)})}}
   }}}};
