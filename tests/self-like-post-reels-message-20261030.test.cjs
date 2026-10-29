@@ -7,7 +7,6 @@ const app=fs.readFileSync('app.js','utf8');
 const sql=fs.readFileSync('supabase/patiyiz-no-self-dm-reactions-20261030.sql','utf8');
 const likeSource=app.slice(app.indexOf('async function togglePostLike(id){'),app.indexOf('const pendingPostSaves'));
 const feedSource=app.slice(app.indexOf("const controls='<div class=\"pati-actionbar pati-social-actions\""),app.indexOf(" const sourcePost=p.source_post_id"));
-const reelSource=app.slice(app.indexOf("'<div class=\"pati-reel-rail\">"),app.indexOf('pati-reel-progress',app.indexOf("'<div class=\"pati-reel-rail\">")+10000)>0?app.indexOf("'</div>'",app.indexOf("'<div class=\"pati-reel-rail\">")):app.indexOf("pati-reel-rail")+3000);
 
 test('owners can tap normal post and Reels heart controls',()=>{
  assert.match(feedSource,/data-action="like" aria-label="Beğen"/);
@@ -60,4 +59,42 @@ test('own direct messages remain non-reactable in UI and database policies',()=>
  assert.match(sql,/m\.receiver_id = \(select auth\.uid\(\)\)/);
  assert.match(sql,/m\.sender_id <> \(select auth\.uid\(\)\)/);
  assert.doesNotMatch(sql,/alter policy "pati_dm_reactions_delete"/);
+});
+
+test('owner can like and unlike their own active story without an UPDATE grant',async()=>{
+ const start=app.indexOf('async function toggleStoryLike(id){'),end=app.indexOf('function storiesStrip(){',start);
+ assert.ok(start>=0&&end>start);
+ const source=app.slice(start,end);
+ assert.doesNotMatch(source,/data\.stories\.some\(x=>x\.id===id&&x\.author_id===me\?\.id\)/);
+ assert.match(source,/patiyiz_story_likes'\)\.insert\(/);
+ assert.doesNotMatch(source,/patiyiz_story_likes'\)\.upsert\(/);
+ assert.match(app,/class="pati-story-like pati-story-like-own"/);
+ assert.match(app,/if\(!x\.pati_pet_highlight\)void syncStoryLike\(x\.id\)/);
+ const storySql=fs.readFileSync('supabase/patiyiz-owner-story-like-20261030.sql','utf8');
+ assert.match(storySql,/alter policy "story_likes_self_insert"/);
+ assert.doesNotMatch(storySql,/author_id <>/);
+ let rows=[],pressed=false;
+ const button={disabled:false,textContent:'♡',classList:{
+   contains(name){return name==='active'&&pressed},
+   toggle(name,value){if(name==='active')pressed=value}
+ }};
+ const ctx={me:{id:'owner'},console,document:{querySelector:()=>button},notify(){},friendly:e=>e.message,
+   sb:{from(table){
+    assert.equal(table,'patiyiz_story_likes');
+    return {
+     insert:async row=>{rows.push(row);return {error:null}},
+     delete(){return {eq(){return this},then(done){rows=[];done({error:null})}}},
+     select(){return {eq(){return this},maybeSingle:async()=>({error:null,data:rows[0]||null})}}
+    }
+   }}
+ };
+ const toggle=vm.runInNewContext(source+'\ntoggleStoryLike',ctx);
+ await toggle('own-story');
+ assert.equal(rows.length,1);
+ assert.equal(button.textContent,'♥');
+ assert.equal(pressed,true);
+ await toggle('own-story');
+ assert.equal(rows.length,0);
+ assert.equal(button.textContent,'♡');
+ assert.equal(pressed,false);
 });
