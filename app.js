@@ -6019,5 +6019,21 @@ document.addEventListener('change',event=>{
  const id=input.dataset.patiGroupAvatar;
  void run(()=>patiGroupPhotoUpload(id,input.files[0]));
 });
+/* Error telemetry stores only type and daily count, never messages, stack or URLs. */
+const patiReportedErrors=new Map();
+function patiTrackClientError(kind){
+ if(!me?.id||!sb||navigator.onLine===false)return;
+ const key=me.id+':'+kind,now=Date.now();
+ if(now-(patiReportedErrors.get(key)||0)<60000)return;
+ patiReportedErrors.set(key,now);
+ void sb.rpc('patiyiz_track_client_error',{p_kind:kind}).then(({error})=>{
+  if(error)console.warn('İstemci hata sayacı gönderilemedi.');
+ }).catch(()=>{});
+}
+window.addEventListener('error',event=>{
+ const kind=event.target instanceof HTMLImageElement||event.target instanceof HTMLVideoElement?'asset':'script';
+ patiTrackClientError(kind);
+},true);
+window.addEventListener('unhandledrejection',()=>patiTrackClientError('promise'));
 boot();
 })();
