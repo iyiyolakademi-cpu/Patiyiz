@@ -54,7 +54,7 @@ test('Profile uses three portrait thumbnail columns with overlay media badges an
  assert.match(css,/aspect-ratio:3 \/ 4!important/);
  assert.match(css,/justify-content:flex-start!important/);
  assert.match(profile,/data-action="profile-open-post"/);
- assert.match(app,/case 'profile-open-post':openPost\(id\)/);
+ assert.match(app,/case 'profile-open-post':\{const selected=patiFindSocialPost\(id\)/);\n assert.match(app,/openPost\(id\);break;\}/);
 });
 
 test('Opened posts keep original media proportions and native build includes styles',()=>{
