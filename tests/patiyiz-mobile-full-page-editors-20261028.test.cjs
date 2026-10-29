@@ -15,7 +15,7 @@ test('Editor JavaScript remains valid and the new responsive stylesheet is loade
  assert.match(css,/#modal-root \.pati-full-page-form-backdrop/);
  assert.match(css,/#modal-root \.pati-full-page-form-backdrop>\.pati-mobile-full-page-form/);
 });
-test('Only full-sized editing and creation forms receive mobile full-page classes',()=>{
+test('Full-sized editors and media composers receive full-page classes without affecting comment forms',()=>{
  const from=app.indexOf('const PATI_MOBILE_FULL_PAGE_FORMS=');
  const to=app.indexOf('function closeModal(',from);
  assert.ok(from>=0&&to>from);
