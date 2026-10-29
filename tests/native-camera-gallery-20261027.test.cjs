@@ -30,7 +30,7 @@ test('iPhone and browser picker supports videos in story and photo or video gall
  assert.match(system,/mode==='post'\?' multiple'/);
  assert.match(system,/current\.mode==='reels'&&\(!videos\.length\|\|selected\.length!==1\)/);
  assert.match(system,/current\.mode==='story'&&selected\.length!==1/);
- assert.match(system,/videos\.length&&\(videos\.length>1\|\|photos\.length\)/);
+ assert.match(system,/videos\.length&&\(photos\.length\|\|\(current\.mode!=='post'&&videos\.length>1\)\|\|videos\.length>4\)/);
 });
 test('After selection only native file preview caption and publication remain',()=>{
  assert.match(system,/id="pati-system-preview-media"/);
