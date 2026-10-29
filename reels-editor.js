@@ -8,7 +8,8 @@ const FILTERS={
  siyahbeyaz:'grayscale(1) contrast(1.12)',
  sinema:'contrast(1.22) saturate(.77) brightness(.92)'
 };
-const MAX_CLIPS=6,MAX_SECONDS=90,WIDTH=480,HEIGHT=854;
+// Balance sharper video with on-device CPU and the 50 MB storage quota.
+const MAX_CLIPS=6,MAX_SECONDS=90,WIDTH=720,HEIGHT=1280,TARGET_FPS=30,MAX_EXPORT_BYTES=48*1024*1024;
 const clamp=(n,min,max)=>Math.min(max,Math.max(min,Number(n)||0));
 const clean=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const seconds=n=>Number(n||0).toFixed(1)+' sn';
@@ -201,7 +202,7 @@ async function exportVideo(progress){
  const total=duration(snapshot.clips);let elapsed=0,transitionFrame=null;
  try{
   for(const clip of snapshot.clips){const video=document.createElement('video');video.playsInline=true;video.preload='auto';video.src=clip.url;clip.video=video;await readMetadata(video,clip.file)}
-  stream=canvas.captureStream(24);
+  stream=canvas.captureStream(TARGET_FPS);
   if(!snapshot.mute){
    const AudioContext=window.AudioContext||window.webkitAudioContext;
    if(!AudioContext)throw Error('Bu tarayıcı sesli video birleştirmeyi desteklemiyor. Sesi kaldır seçeneğini kullanabilir veya başka tarayıcı deneyebilirsin.');
@@ -214,7 +215,8 @@ async function exportVideo(progress){
   }
   composite=new MediaStream([...stream.getVideoTracks(),...(audioDest?audioDest.stream.getAudioTracks():[])]);
   const mime=bestMime();
-  recorder=new MediaRecorder(composite,{mimeType:mime,videoBitsPerSecond:1100000,audioBitsPerSecond:96000});
+  const targetVideoBps=Math.max(900000,Math.min(3000000,Math.floor(MAX_EXPORT_BYTES*8/Math.max(total,1))-128000));
+  recorder=new MediaRecorder(composite,{mimeType:mime,videoBitsPerSecond:targetVideoBps,audioBitsPerSecond:96000});
   stopResult=new Promise((resolve,reject)=>{recorder.addEventListener('dataavailable',e=>{if(e.data?.size)recs.push(e.data)});recorder.addEventListener('stop',resolve,{once:true});recorder.addEventListener('error',()=>reject(Error('Video kodlama başarısız.')),{once:true})});
   recorder.start(500);
   for(let i=0;i<snapshot.clips.length;i++){
@@ -244,7 +246,7 @@ async function exportVideo(progress){
   const type=recorder.mimeType?.split(';')[0]||'video/webm';
   const blob=new Blob(recs,{type});
   if(!blob.size)throw Error('Düzenlenmiş video oluşturulamadı.');
-  if(blob.size>25*1024*1024)throw Error('Video 25 MB sınırını aştı; süreyi azalt.');
+  if(blob.size>MAX_EXPORT_BYTES)throw Error('Düzenlenen video 48 MB sınırını aştı; süreyi kısalt veya daha az klip kullan.');
   progress?.(100);
   return new File([blob],'patiyiz-reels-'+Date.now()+(type==='video/mp4'?'.mp4':'.webm'),{type});
  }catch(e){if(recorder?.state==='recording'){recorder.stop();try{await stopResult}catch(_){}}throw e}
