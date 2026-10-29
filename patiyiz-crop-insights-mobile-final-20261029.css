@@ -71,3 +71,102 @@ html[data-pati-theme="dark"] .pati-creator-dashboard :is(p,small,.pati-creator-f
  .pati-crop-ratios button{min-height:34px;padding:6px 12px}
  .pati-full-crop-controls>p:not(.pati-crop-status){display:none}
 }
+
+
+/* 2026-10-30: publish buttons must remain reachable on every phone height. */
+#modal-root .pati-mobile-full-page-form:has(#post-form),
+#modal-root .pati-mobile-full-page-form:has(#story-form){min-height:0!important;max-height:100dvh!important}
+#modal-root .pati-mobile-full-page-form #post-form .modal-footer,
+#modal-root .pati-mobile-full-page-form #story-form .modal-footer{
+ display:flex!important;visibility:visible!important;opacity:1!important;
+ flex:0 0 auto!important;position:relative!important;
+ min-height:72px!important;padding:10px 14px max(13px,env(safe-area-inset-bottom,0px))!important;
+ z-index:20!important;background:var(--pui-paper,#fff)!important;
+}
+#modal-root #post-form .modal-footer button[type="submit"],
+#modal-root #story-form .modal-footer button[type="submit"]{
+ display:inline-flex!important;visibility:visible!important;opacity:1!important;
+ min-width:110px!important;min-height:49px!important;
+ align-items:center!important;justify-content:center!important;
+ font-size:16px!important;font-weight:800!important;
+ background:#17191d!important;color:#fff!important;border-radius:13px!important;
+}
+#modal-root #post-form .modal-footer button[type="submit"]::after{
+ content:none!important;display:none!important
+}
+#patiyiz-system-media .pati-system-head{
+ position:sticky;top:0;z-index:15;padding:8px 10px;
+ background:#141519;box-sizing:border-box;max-width:100%;
+}
+#patiyiz-system-media .pati-system-head .pati-system-head-publish{
+ display:inline-flex;align-items:center;justify-content:center;
+ width:auto!important;max-width:112px;min-width:70px;height:auto!important;min-height:43px!important;
+ padding:8px 10px!important;border:0!important;border-radius:12px!important;
+ background:#fff!important;color:#17181b!important;font-size:13px!important;font-weight:850!important;
+ text-align:center;white-space:normal;line-height:1.2!important;
+}
+#patiyiz-system-media .pati-system-head .pati-system-head-publish[hidden]{display:none!important}
+#patiyiz-system-media .pati-system-head .pati-system-head-publish:disabled{opacity:.5!important;cursor:wait}
+#patiyiz-system-media .pati-system-publish-actions{
+ position:sticky!important;bottom:0!important;z-index:12!important;
+ background:#141519!important;
+ margin:12px 0 0!important;padding:12px 8px max(12px,env(safe-area-inset-bottom,0px))!important;
+ border-top:1px solid #42444c!important;box-sizing:border-box!important;
+}
+#patiyiz-system-media #pati-system-publish{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ visibility:visible!important;min-height:50px!important;
+ background:#fff!important;color:#17181b!important;
+}
+#patiyiz-system-media #pati-system-publish:disabled{opacity:.55!important}
+html[data-pati-theme="dark"] #modal-root .pati-mobile-full-page-form :is(#post-form,#story-form) .modal-footer{
+ background:#17191d!important;
+}
+html[data-pati-theme="dark"] #modal-root :is(#post-form,#story-form) .modal-footer button[type="submit"]{
+ background:#f5f6f8!important;color:#17191d!important;border-color:#f5f6f8!important;
+}
+/* One timeline: vaccination, veterinarian and ordinary care tasks. */
+.pati-care-calendar{
+ margin:14px 12px 20px;padding:15px 12px 12px;
+ border:1px solid var(--pui-border,#e6e6ec);border-radius:17px;
+ background:var(--pui-raised,#f8f8fa);color:var(--pui-text,#17191d);
+ box-sizing:border-box;min-width:0;
+}
+.pati-care-calendar-head{display:grid;grid-template-columns:42px minmax(0,1fr) 42px;align-items:center;gap:8px;margin-bottom:13px}
+.pati-care-calendar-head strong{text-align:center;text-transform:capitalize;font-size:15px;font-weight:850}
+.pati-care-calendar-head button{
+ width:42px;height:42px;border:1px solid var(--pui-border,#d8d8df);border-radius:12px;
+ background:var(--pui-paper,#fff);color:inherit;font-size:25px;cursor:pointer;
+}
+.pati-care-calendar-days,.pati-care-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.pati-care-calendar-days span{text-align:center;font-size:10px;font-weight:800;opacity:.7;padding:4px 0 8px}
+.pati-care-calendar-grid button{
+ display:flex;flex-direction:column;align-items:center;justify-content:center;
+ gap:1px;min-width:0;min-height:48px;padding:3px 1px;
+ border:1px solid transparent;background:transparent;color:inherit;border-radius:12px;
+ font-size:12px;font-weight:740;cursor:pointer;
+}
+.pati-care-calendar-grid button.is-outside{opacity:.35}
+.pati-care-calendar-grid button.is-today{border-color:var(--pui-border,#babcc6)}
+.pati-care-calendar-grid button.is-selected{
+ background:#20232a!important;color:white!important;border-color:#20232a!important;
+}
+.pati-care-calendar-grid button i{
+ display:grid;place-items:center;width:18px;height:17px;border-radius:7px;
+ background:#e2e5f5;color:#1c233a;font-size:10px;font-weight:850;font-style:normal;
+}
+.pati-care-calendar-foot{display:flex;justify-content:space-between;align-items:center;gap:9px;margin-top:12px}
+.pati-care-calendar-foot small{font-size:10px;line-height:1.5;color:var(--pui-secondary,#747780)}
+.pati-care-calendar-foot button{
+ flex:0 0 auto;min-height:35px;padding:7px 12px;border-radius:10px;border:1px solid var(--pui-border,#ddd);
+ background:var(--pui-paper,#fff);color:inherit;font-size:12px;font-weight:750;
+}
+html[data-pati-theme="dark"] .pati-care-calendar{background:#24262d!important;border-color:#444751!important;color:#f6f7f9!important}
+html[data-pati-theme="dark"] .pati-care-calendar-head button,
+html[data-pati-theme="dark"] .pati-care-calendar-foot button{background:#181a20!important;color:#f6f7f9!important;border-color:#4c505b!important}
+@media(max-width:390px){
+ .pati-care-calendar{margin-inline:7px;padding-inline:7px}
+ .pati-care-calendar-grid{gap:2px}
+ .pati-care-calendar-grid button{min-height:43px}
+ .pati-care-calendar-grid button i{width:16px;height:15px}
+}
