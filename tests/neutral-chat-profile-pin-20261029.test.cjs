@@ -14,8 +14,8 @@ test('App syntax and chat composition remain valid',()=>{
  assert.match(conversation,/pati-dm-attach-menu/);
  assert.match(conversation,/name="dm_gallery"/);
  assert.match(conversation,/name="dm_camera"/);
- assert.match(conversation,/data-action="dm-sticker-open"/);
- assert.match(conversation,/data-action="dm-gif-open"/);
+ assert.doesNotMatch(conversation,/data-action="dm-sticker-open"/);
+ assert.doesNotMatch(conversation,/data-action="dm-gif-open"/);
  assert.match(conversation,/data-action="dm-record"/);
  assert.doesNotMatch(conversation,/data-action="dm-theme-open"/);
  assert.doesNotMatch(conversation,/data-action="dm-schedule-open"/);
@@ -25,6 +25,8 @@ test('Profile has three bold icons and a separate pinned marker',()=>{
  const profile=app.slice(app.indexOf('function profilePage(){'),app.indexOf('function formField(',app.indexOf('function profilePage(){')));
  assert.match(profile,/const iconTabs=\[\['media',gridTabIcon/);
  assert.match(profile,/\['reels',reelsTabIcon/);
+ assert.match(profile,/\['videos',videoTabIcon/);
+ assert.match(profile,/\['text',textTabIcon/);
  assert.match(profile,/\['reposts',repostTabIcon/);
  assert.match(profile,/pati-profile-tab-icon/);
  assert.match(profile,/aria-label="Sabitlenmiş gönderi">📌/);

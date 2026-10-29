@@ -43,7 +43,7 @@ test('Themes, stickers, media zoom, GIF upload and read receipts remain supporte
  assert.match(sql,/patiyiz_dm_themes/);
  assert.match(sql,/for update to authenticated using\(viewer_id=\(select auth\.uid\(\)\)\)/);
  for(const name of ['patiDmThemeDialog','patiDmScheduleOpen','patiDmStickerDialog','patiDmSearchOpen','data-dm-zoom','dm-gif-open','dm-sticker-send'])assert.ok(app.includes(name),name);
- assert.match(app,/name="dm_gif" accept="image\/gif,\.gif"/);
+ assert.doesNotMatch(app,/name="dm_gif" accept="image\/gif,\.gif"/);
  assert.match(app,/from\('patiyiz-private-messages'\)/);
  assert.match(app,/case 'dm-receipts-toggle':/);
  assert.match(sql,/image\/gif/);
