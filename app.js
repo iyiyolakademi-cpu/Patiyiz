@@ -1300,28 +1300,23 @@ async function patiOpenSharedStoryPost(postId){
  closeStory(false);openPost(postId);
 }
 
-function showStoryFrame(){const root=document.getElementById('story-overlay'),x=storyItems[storyIndex];if(!root||!x)return;clearTimeout(storyTimer);patiPauseStoryBackgroundMedia();const user=profile(x.author_id);const storyGroupItems=storyItems.filter(s=>s.author_id===x.author_id);const storyGroupIndex=storyGroupItems.findIndex(s=>s.id===x.id);if(!x.pati_pet_highlight){patiStorySeen(x);recordStoryView(x);}if(!x.pati_pet_highlight)void syncStoryLike(x.id);root.dataset.audience=x.audience==='close_friends'?'close_friends':'everyone';root.classList.toggle('pati-story-own',x.author_id===me.id);root.classList.toggle('pati-story-has-source',!!x.shared_post_id);root.innerHTML='<div class="story-player"><div class="story-progress">'+storyGroupItems.map((_,i)=>'<span class="story-track"><span class="'+(i===storyGroupIndex?'story-playing':'')+'" style="width:'+(i<storyGroupIndex?'100':'0')+'%"></span></span>').join('')+'</div><div class="story-player-head">'+avatar(user,'s')+'<span class="pati-story-owner-name"><strong>'+displayName(user)+'</strong>'+(x.audience==='close_friends'?'<span class="pati-story-close-friends-label">★ Yakın Arkadaşlar</span>':'')+'</span><button data-action="story-close" aria-label="Kapat" class="story-close">×</button></div>'+(x.video_url?'<video class="story-big-video'+(x.selfie_mirrored?' pati-selfie-mirrored':'')+'" src="'+esc(x.video_url)+'" poster="'+esc(x.image_url||'')+'" muted autoplay playsinline preload="auto" aria-label="Video hikâyesi"></video><button type="button" class="pati-story-sound" data-action="story-sound" aria-label="Hikâye sesini aç">Ses aç</button>':x.image_url?'<img class="story-big-photo" src="'+esc(x.image_url)+'" alt="Hikâye">':'<div class="pati-story-no-photo">🐾</div>')+''+(x.caption?'<p class="story-caption">'+esc(x.caption)+'</p>':'')+(x.shared_post_id?'<button type="button" class="pati-story-shared-source" data-action="pati-story-open-post" data-id="'+esc(x.shared_post_id)+'">↗ Orijinal gönderiyi gör</button>':'')+'<button class="story-hit prev" data-action="story-prev" aria-label="Önceki"></button><button class="story-hit next" data-action="story-next" aria-label="Sonraki"></button>'+(x.pati_pet_highlight?'<span class="pati-saved-story-label">Kalıcı hikâye</span>':x.author_id===me.id?'<button type="button" class="story-delete" data-action="story-delete" data-id="'+esc(x.id)+'" aria-label="Hikâyeyi sil">'+ico('trash')+' <span>Sil</span></button><button type="button" class="story-viewers-button pati-story-viewer-preview" data-action="story-viewers" aria-label="Hikâye hareketlerini aç"><span class="pati-story-viewer-preview-stack" aria-hidden="true"></span><span class="pati-story-viewer-preview-label">Hareketler</span><span class="pati-story-viewer-preview-status" aria-live="polite">Görüntüleyenler yükleniyor…</span></button><button class="pati-story-like pati-story-like-own" data-action="story-like" data-id="'+esc(x.id)+'" aria-label="Hikâyeni beğen">♡</button>':'<button class="pati-story-like" data-action="story-like" data-id="'+esc(x.id)+'" aria-label="Hikâyeyi beğen">♡</button>')+'<div id="story-viewers-sheet" class="story-viewers-sheet" hidden></div></div>';
- // Keep all the original actions and handlers. Only reorder the owner's controls
- // into one flow so captions, view counts, like and delete cannot overlap.
+function showStoryFrame(){const root=document.getElementById('story-overlay'),x=storyItems[storyIndex];if(!root||!x)return;clearTimeout(storyTimer);patiPauseStoryBackgroundMedia();const user=profile(x.author_id);const storyGroupItems=storyItems.filter(s=>s.author_id===x.author_id);const storyGroupIndex=storyGroupItems.findIndex(s=>s.id===x.id);if(!x.pati_pet_highlight){patiStorySeen(x);recordStoryView(x);}if(!x.pati_pet_highlight&&x.author_id!==me.id)void syncStoryLike(x.id);root.dataset.audience=x.audience==='close_friends'?'close_friends':'everyone';root.classList.toggle('pati-story-own',x.author_id===me.id);root.classList.toggle('pati-story-has-source',!!x.shared_post_id);root.innerHTML='<div class="story-player"><div class="story-progress">'+storyGroupItems.map((_,i)=>'<span class="story-track"><span class="'+(i===storyGroupIndex?'story-playing':'')+'" style="width:'+(i<storyGroupIndex?'100':'0')+'%"></span></span>').join('')+'</div><div class="story-player-head">'+avatar(user,'s')+'<span class="pati-story-owner-name"><strong>'+displayName(user)+'</strong>'+(x.audience==='close_friends'?'<span class="pati-story-close-friends-label">★ Yakın Arkadaşlar</span>':'')+'</span><button data-action="story-close" aria-label="Kapat" class="story-close">×</button></div>'+(x.video_url?'<video class="story-big-video'+(x.selfie_mirrored?' pati-selfie-mirrored':'')+'" src="'+esc(x.video_url)+'" poster="'+esc(x.image_url||'')+'" muted autoplay playsinline preload="auto" aria-label="Video hikâyesi"></video><button type="button" class="pati-story-sound" data-action="story-sound" aria-label="Hikâye sesini aç">Ses aç</button>':x.image_url?'<img class="story-big-photo" src="'+esc(x.image_url)+'" alt="Hikâye">':'<div class="pati-story-no-photo">🐾</div>')+''+(x.caption?'<p class="story-caption">'+esc(x.caption)+'</p>':'')+(x.shared_post_id?'<button type="button" class="pati-story-shared-source" data-action="pati-story-open-post" data-id="'+esc(x.shared_post_id)+'">↗ Orijinal gönderiyi gör</button>':'')+'<button class="story-hit prev" data-action="story-prev" aria-label="Önceki"></button><button class="story-hit next" data-action="story-next" aria-label="Sonraki"></button>'+(x.pati_pet_highlight?'<span class="pati-saved-story-label">Kalıcı hikâye</span>':x.author_id===me.id?'<button type="button" class="story-delete" data-action="story-delete" data-id="'+esc(x.id)+'" aria-label="Hikâyeyi sil">'+ico('trash')+' <span>Sil</span></button><button type="button" class="story-viewers-button pati-story-viewer-preview" data-action="story-viewers" aria-label="Hikâye hareketlerini aç"><span class="pati-story-viewer-preview-stack" aria-hidden="true"></span><span class="pati-story-viewer-preview-label">Hareketler</span><span class="pati-story-viewer-preview-status" aria-live="polite">Görüntüleyenler yükleniyor…</span></button>':'<button class="pati-story-like" data-action="story-like" data-id="'+esc(x.id)+'" aria-label="Hikâyeyi beğen">♡</button>')+'<div id="story-viewers-sheet" class="story-viewers-sheet" hidden></div></div>';
+ // Own-story footer: viewers in the bottom-left marked area, Delete on the
+ // right at the same baseline. Captions stay above, and self-like is absent.
  if(x.author_id===me.id&&!x.pati_pet_highlight){
   const player=root.querySelector('.story-player');
   const caption=player?.querySelector('.story-caption');
   const source=player?.querySelector('.pati-story-shared-source');
   const viewers=player?.querySelector('.pati-story-viewer-preview');
-  const like=player?.querySelector('.pati-story-like-own');
   const deleteButton=player?.querySelector('.story-delete');
   if(player&&viewers&&deleteButton){
    const stack=document.createElement('div');
    stack.className='pati-own-story-stack';
    if(caption)stack.appendChild(caption);
    if(source)stack.appendChild(source);
-   const row=document.createElement('div');
-   row.className='pati-own-story-actions';
-   row.appendChild(viewers);
-   if(like)row.appendChild(like);
-   stack.appendChild(row);
    const foot=document.createElement('div');
    foot.className='pati-own-story-footer';
+   foot.appendChild(viewers);
    foot.appendChild(deleteButton);
    stack.appendChild(foot);
    player.appendChild(stack);
@@ -1348,6 +1343,8 @@ async function syncStoryLike(id){
  if(!r.error&&btn&&!btn.disabled&&me?.id===uid){btn.textContent=r.data?'♥':'♡';btn.classList.toggle('active',!!r.data)}
 }
 async function toggleStoryLike(id){
+ const story=storyItems.find(item=>item.id===id);
+ if(!story||story.author_id===me?.id)return; // no self-like, including stale UI callbacks
  const btn=document.querySelector('.pati-story-like[data-id="'+id+'"]');if(!btn||btn.disabled)return;
  const uid=me.id,previous=btn.classList.contains('active');
  btn.disabled=true;
