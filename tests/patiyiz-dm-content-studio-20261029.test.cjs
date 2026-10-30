@@ -21,7 +21,7 @@ test('Chat search only queries the two authorized participants',()=>{
  assert.match(app,/async function patiDmSearchMessages\(peer,query\)/);
  assert.match(app,/\.or\('and\(sender_id\.eq\.'\+uid/);
  assert.match(app,/\.ilike\('body','%'\+escaped\+'%'\)/);
- assert.match(app,/async function patiDmSearchJump\(peer,id\)/);
+ assert.match(app,/async function patiDmSearchJump\(peer,id,source='search'\)/);
  assert.match(app,/row\.sender_id===owner&&row\.receiver_id===peer/);
 });
 
