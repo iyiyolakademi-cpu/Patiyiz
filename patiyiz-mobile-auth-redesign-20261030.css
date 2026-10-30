@@ -12,7 +12,7 @@
 .auth-pane .pati-auth-terms input[type="checkbox"]{flex:0 0 18px!important;width:18px!important;min-width:18px!important;height:18px!important;margin:1px 0!important;accent-color:#151619!important}
 @media(max-width:680px){
  html:has(#auth-root:not(.hidden)),body:has(#auth-root:not(.hidden)){overflow-x:hidden!important}
- #auth-root.auth-root{display:block!important;min-height:100dvh!important;height:auto!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding:0!important;background:#fff!important;overflow-x:hidden!important}
+ #auth-root.auth-root:not(.hidden){display:block!important;min-height:100dvh!important;height:auto!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding:0!important;background:#fff!important;overflow-x:hidden!important}
  #auth-root .auth-shell{display:flex!important;flex-direction:column!important;min-height:100dvh!important;height:auto!important;overflow:visible!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:#fff!important}
  #auth-root .auth-story{display:flex!important;flex:0 0 auto!important;position:relative!important;box-sizing:border-box!important;min-height:228px!important;height:clamp(228px,36dvh,320px)!important;width:100%!important;max-width:100%!important;border:0!important;overflow:hidden!important;justify-content:space-between!important;padding:calc(16px + env(safe-area-inset-top,0px)) 23px 41px!important;background-position:center 44%!important;background-size:cover!important;background-color:#202025!important}
  #auth-root .auth-story::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(10,12,15,.45) 0%,rgba(10,12,15,.02) 35%,rgba(10,12,15,.55) 100%);pointer-events:none}
@@ -62,3 +62,6 @@
  #auth-root .auth-story-bottom>p{font-size:10.5px!important}
  #auth-root .auth-pane{padding-top:17px!important}
 }
+
+/* Auth screen must fully disappear after a successful login at every viewport width. */
+#auth-root.auth-root.hidden{display:none!important;visibility:hidden!important}
