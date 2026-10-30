@@ -1,0 +1,40 @@
+const test=require('node:test');
+const assert=require('node:assert/strict');
+const vm=require('node:vm');
+const fs=require('node:fs');
+const app=fs.readFileSync('app.js','utf8');
+const html=fs.readFileSync('index.html','utf8');
+const native=fs.readFileSync('native-capacitor/scripts/build-web.mjs','utf8');
+const css=fs.readFileSync('patiyiz-black-outgoing-messages-20261030.css','utf8');
+const slice=(a,b)=>app.slice(app.indexOf(a),app.indexOf(b,app.indexOf(a)));
+test('Only outgoing messages use black and white; media exceptions preserved and easy rollback CSS',()=>{
+ assert.match(css,/#main-content \.pati-dm-layout/);
+ assert.match(css,/--p3-chat-mine:#08090b!important/);
+ assert.match(css,/--p3-chat-mine-text:#fff!important/);
+ assert.match(css,/\.bubble-chat\.mine:not\(\.pati-dm-image-message\):not\(\.pati-dm-sticker-bubble\)/);
+ assert.match(css,/\.pati-group-bubble\.mine/);
+ assert.doesNotMatch(css,/\.bubble-chat:not\(\.mine\)/);
+ assert.match(css,/Remove this stylesheet link to restore previous green bubble colours/);
+});
+test('PWA and native ship black outgoing messages without modifying old theme file',()=>{
+ assert.match(html,/patiyiz-black-outgoing-messages-20261030\.css\?v=1/);
+ assert.match(html,/dm_latest_black_bubbles=20261030/);
+ assert.match(native,/'patiyiz-black-outgoing-messages-20261030\.css'/);
+ assert.ok(html.indexOf('patiyiz-black-outgoing-messages-20261030.css')<html.indexOf('patiyiz-crop-insights-mobile-final-20261029.css'));
+});
+test('Chat re-opens at newest message including tagged content after async redraw and respects manual scrolling',()=>{
+ new vm.Script(app);
+ const helper=slice("let patiDmPendingLatestPeer='';","// Conversations are hidden only");
+ assert.match(helper,/function patiDmOpenAtLatest\(peer\)/);
+ assert.match(helper,/patiDmLatestAnchor=\{owner:me\?\.id\|\|'',peer,until:Date\.now\(\)\+18000,cancelled:false\}/);
+ assert.match(helper,/function patiDmShouldPinLatest\(peer\)/);
+ assert.match(helper,/stopByUser=\(\)=>\{if\(patiDmLatestAnchor\.peer===peer\)patiDmLatestAnchor\.cancelled=true;cleanup\(\)\}/);
+ assert.match(helper,/new ResizeObserver\(\(\)=>pin\(\)\)/);
+ const page=slice('function messagesPage(){','function pushKeyBytes(');
+ assert.match(page,/const pinIntent=patiDmShouldPinLatest\(personId\)/);
+ assert.match(page,/const pinBottom=openLatest\|\|pinIntent/);
+ assert.match(page,/if\(openLatest\|\|pinIntent\|\|!oldHistory/);
+ assert.match(page,/let conv=.*\.sort\(\(a,b\)=>new Date\(a\.created_at\)-new Date\(b\.created_at\)\)/);
+ assert.match(app,/\.order\('created_at',\{ascending:false\}\)\.limit\(PATI_DM_THREAD_PAGE\)/);
+ assert.match(app,/patiDmOpenAtLatest\(id\);personId=id;mobileChatOpen=true/);
+});

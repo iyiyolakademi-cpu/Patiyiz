@@ -36,8 +36,9 @@ test('Creator stats are aggregated per current account; crash telemetry excludes
  assert.match(app,/patiTrackClientError\('promise'\)/);
  assert.doesNotMatch(sql,/stack_trace|error_body|exception_message/i);
 });
-test('Reaction reels link to original and repost remains usable',()=>{
- for(const s of ['source_post_id','pati-reaction-reel','pati-source-credit','patiToggleRepost'])assert.ok(app.includes(s),s);
+test('Existing reaction Reels remain credited while no new reaction Reels can be created',()=>{
+ for(const s of ['source_post_id','pati-source-credit','patiToggleRepost'])assert.ok(app.includes(s),s);
+ assert.ok(!app.includes('pati-reaction-reel'));
  assert.match(sql,/patiyiz_guard_reaction_insert_20261029/);
  assert.match(sql,/not public\.patiyiz_users_blocked\(new\.author_id,p\.author_id\)/);
 });

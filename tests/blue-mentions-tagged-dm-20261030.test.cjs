@@ -75,9 +75,12 @@ test('Tap on blue @handle closes comments and navigates to tagged profile, not t
  const fn=app.slice(app.indexOf('function patiMentionsHTML(body){'),app.indexOf('function patiMentionOpen(mode){'));
  assert.match(fn,/data-action="pati-mention-profile" data-handle/);
  assert.match(fn,/person\?' data-id=/);
- assert.match(fn,/document\.querySelector\('#comment-form'\)\?\.closest\('\.modal-backdrop'\)\)closeModal\(true\)/);
- assert.match(fn,/profileId=person\.id/);
- assert.match(fn,/navigate\('profile'\)/);
+ assert.match(fn,/patiOpenProfileOnly\(person\.id\)/);
+ const profileOnly=app.slice(app.indexOf('function patiOpenProfileOnly(userId){'),app.indexOf('async function patiOpenMentionProfile(',app.indexOf('function patiOpenProfileOnly(userId){')));
+ assert.match(profileOnly,/document\.getElementById\('comment-form'\)/);
+ assert.match(profileOnly,/closeModal\(true\)/);
+ assert.match(profileOnly,/profileId=userId/);
+ assert.match(profileOnly,/navigate\('profile'\)/);
  assert.match(app,/case 'pati-mention-profile':e\.preventDefault\(\)/);
  const dm=app.slice(app.indexOf('function patiDmSharedCard(message){'),app.indexOf('async function patiDmHydrateSharedPosts(messages,peer){'));
  assert.match(dm,/pati-dm-mention-person/);
