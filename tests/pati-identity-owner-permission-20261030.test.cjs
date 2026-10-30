@@ -13,7 +13,7 @@ test('Pati Kimliği pet picker gets the signed-in owners pet list from the serve
 });
 test('HTTP 403 is no longer inaccurately shown as a missing QR server',()=>{
  assert.match(owner,/error\.context/);
- assert.match(owner,/response\.clone\(\)\.json\(\)/);
+ assert.match(owner,/typeof response\.clone==='function'\?response\.clone\(\):response/);
  assert.match(owner,/response\?\.status===403/);
  assert.match(edge,/if\(petError\)return err\('Hayvan kaydına şu anda ulaşılamadı\.'/);
  assert.match(edge,/if\(!pet\)return err\('Bu hayvan bu hesapta bulunamadı\./);
