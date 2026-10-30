@@ -15,3 +15,12 @@ test('Latest profile editor and story layout are linked from app shell',()=>{
  assert.match(index,/story_profile_avatar_fix=20261030/);
  assert.doesNotThrow(()=>new Function(sw));
 });
+
+test('Story caption and Hareketler are slightly lower without losing safe-area spacing',()=>{
+ const css=fs.readFileSync('patiyiz-crop-insights-mobile-final-20261029.css','utf8');
+ assert.match(css,/#story-overlay\.pati-story-own \.pati-own-story-stack\{[\s\S]*?bottom:calc\(4px \+ env\(safe-area-inset-bottom,0px\)\)!important/);
+ assert.match(css,/#story-overlay\.pati-story-own \.pati-own-story-stack\{[\s\S]*?gap:6px!important/);
+ assert.match(css,/#story-overlay\.pati-story-own \.pati-own-story-actions > \.story-viewers-button\{/);
+ assert.match(css,/#story-overlay\.pati-story-own \.pati-own-story-footer > \.story-delete\{/);
+ assert.match(index,/story_bottom_lower=20261030/);
+});
