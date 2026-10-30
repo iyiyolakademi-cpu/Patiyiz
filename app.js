@@ -6366,10 +6366,11 @@ function editProfile(){
  '<div class="pati-edit-sections"><div class="pati-edit-section-title">Profil bilgileri</div>'+
  formField('display_name','Ad','text',p.display_name,true)+
  formField('handle','Kullanıcı adı','text',p.handle,true)+
- '<div class="pati-field pati-profile-title-field"><label for="f-professional_title">Profil unvanı (isteğe bağlı)</label>'+
- '<input id="f-professional_title" name="professional_title" type="text" maxlength="60" list="pati-profile-title-options" autocomplete="off" placeholder="Örn. Girişimci veya Yazar" value="'+esc(p.professional_title||'')+'">'+
- '<datalist id="pati-profile-title-options">'+['Girişimci','Yazar','İçerik Üreticisi','Veteriner Hekim','Hayvansever','Eğitimci','Yazılım Geliştirici','Kurucu','Fotoğrafçı','Sanatçı','Tasarımcı','Öğrenci','Sporcu','Müzisyen','İşletme Sahibi'].map(x=>'<option value="'+esc(x)+'"></option>').join('')+'</datalist>'+
- '<small>İstediğin unvanı yazabilirsin. Birden fazla unvan için: Girişimci · Yazar</small></div>'+
+ '<div class="pati-field pati-profile-title-field"><label id="pati-profile-title-label" for="pati-profile-title-open">Profil unvanı (isteğe bağlı)</label>'+
+ '<input id="f-professional_title" name="professional_title" type="hidden" value="'+esc(p.professional_title||'')+'">'+
+ '<button id="pati-profile-title-open" class="pati-profile-title-open" type="button" data-pati-profile-title-open aria-labelledby="pati-profile-title-label pati-profile-title-value">'+
+ '<span id="pati-profile-title-value" data-pati-profile-title-current>'+esc(String(p.professional_title||'').trim()||'Unvan seç')+'</span><span aria-hidden="true" class="pati-profile-title-chevron">›</span></button>'+
+ '<small>Dokunup unvan ara, birden fazla seç veya kendin yeni bir unvan yaz.</small></div>'+
  textField('bio','Biyografi',p.bio||'',false,500)+
  formField('city','Şehir','text',p.city||'')+
  '<div class="pati-field pati-gender-option"><label for="pati-profile-gender">Cinsiyet (isteğe bağlı)</label><select id="pati-profile-gender" name="analytics_gender"><option value="">Seçim yapmadan devam et</option><option value="woman">Kadın</option><option value="man">Erkek</option><option value="other">Diğer</option><option value="undisclosed">Paylaşmak istemiyorum</option></select><small>Hesabında görünmez; yalnızca yeterli sayıda ziyaretçi varsa toplu istatistiklere dahil edilir.</small></div>'+
