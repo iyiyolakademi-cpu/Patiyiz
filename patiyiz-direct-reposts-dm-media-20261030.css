@@ -1,0 +1,83 @@
+/* Full repost content and direct media in private-message shares (30 Oct 2026). */
+#main-content .pati-profile-reposts-feed{
+ display:grid;gap:16px;width:100%;max-width:660px;min-width:0;
+ margin:0 auto;padding:10px 0 18px;box-sizing:border-box;
+}
+#main-content .pati-profile-repost-item{min-width:0;width:100%}
+#main-content .pati-profile-repost-item>.pati-feed-card{
+ width:100%;max-width:100%;box-sizing:border-box;margin:0;
+}
+#main-content .pati-profile-reposts-feed>.pati-ig-empty{padding:28px 14px;text-align:center}
+.bubble-chat.pati-dm-shared-message{
+ width:min(76vw,385px);max-width:min(85vw,385px);min-width:0;
+ box-sizing:border-box;overflow:hidden;padding:6px!important;
+}
+.bubble-chat.pati-dm-shared-message>.pati-dm-shared-card{width:100%}
+.pati-dm-shared-card{
+ display:flex;flex-direction:column;gap:0;overflow:hidden;
+ min-width:0;max-width:100%;border-radius:15px;
+ background:var(--pui-paper,#fff);color:var(--pui-text,#17191c);
+ border:1px solid var(--pui-border,#e0e1e4);
+ text-align:left;box-sizing:border-box;
+}
+.pati-dm-shared-card button{
+ font:inherit;color:inherit;cursor:pointer;
+}
+.pati-dm-shared-card .pati-dm-shared-by{
+ display:flex;align-items:center;gap:9px;width:100%;min-width:0;
+ padding:12px;border:0;background:transparent;text-align:left;
+}
+.pati-dm-shared-by>.avatar,.pati-dm-shared-by .avatar{
+ width:36px;height:36px;min-width:36px;border-radius:50%;overflow:hidden;
+}
+.pati-dm-shared-by>span{min-width:0;display:grid;gap:2px}
+.pati-dm-shared-by b{font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pati-dm-shared-by small{font-size:11px;opacity:.65;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pati-dm-shared-media{width:100%;min-width:0;overflow:hidden}
+.pati-dm-shared-video-wrap{background:#121318;display:grid;place-items:center}
+.pati-dm-shared-card .pati-dm-shared-video{
+ display:block;width:100%;max-height:min(55dvh,500px);height:auto;
+ object-fit:contain;background:#121318;
+}
+.pati-dm-shared-card.pati-dm-shared-reel .pati-dm-shared-video{
+ aspect-ratio:9/16;max-height:min(55dvh,500px);
+}
+.pati-dm-shared-images{
+ display:flex;overflow-x:auto;scroll-snap-type:x mandatory;
+ overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
+ scrollbar-width:thin;background:transparent;
+}
+.pati-dm-shared-images img{
+ flex:0 0 100%;width:100%;min-width:100%;
+ height:auto;max-height:min(53dvh,480px);
+ object-fit:contain;scroll-snap-align:center;
+}
+.pati-dm-shared-text{
+ padding:16px 14px;font-size:14px;line-height:1.5;
+ overflow-wrap:anywhere;white-space:pre-wrap;
+}
+.pati-dm-shared-caption{
+ padding:12px 13px 5px;font-size:13px;
+ line-height:1.4;overflow-wrap:anywhere;white-space:pre-wrap;
+}
+.pati-dm-shared-card .pati-dm-shared-footer{
+ width:100%;padding:12px 13px;display:flex;gap:7px;
+ align-items:center;justify-content:flex-start;text-align:left;
+ border:0;background:transparent;font-size:12px;font-weight:750;
+}
+.pati-dm-shared-footer .icon{width:15px;height:15px}
+.pati-dm-shared-card .pati-dm-shared-open:focus-visible,
+.pati-dm-shared-card .pati-dm-shared-footer:focus-visible{
+ outline:2px solid currentColor;outline-offset:-3px;
+}
+html[data-pati-theme="dark"] .pati-dm-shared-card{
+ background:#202126;color:#f4f4f5;border-color:#3b3d45;
+}
+@media(max-width:720px){
+ #main-content .pati-profile-reposts-feed{gap:8px;padding:5px 0 16px}
+ #main-content .pati-profile-repost-item>.pati-feed-card{border-radius:0}
+ .bubble-chat.pati-dm-shared-message{width:min(80vw,385px);max-width:min(86vw,385px)}
+}
+@media(prefers-reduced-motion:reduce){
+ .pati-dm-shared-images{scroll-behavior:auto}
+}
