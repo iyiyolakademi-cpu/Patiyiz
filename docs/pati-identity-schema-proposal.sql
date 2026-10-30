@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS public.pati_identity_tags (
   token_hash text NOT NULL UNIQUE CHECK (token_hash ~ '^[0-9a-f]{64}$'),
   token_hint text NOT NULL CHECK (length(token_hint)=4),
   enabled boolean NOT NULL DEFAULT true,
-  show_photo boolean NOT NULL DEFAULT true,
+  show_photo boolean NOT NULL DEFAULT false,
   public_note text NOT NULL DEFAULT '' CHECK (char_length(public_note)<=200),
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
