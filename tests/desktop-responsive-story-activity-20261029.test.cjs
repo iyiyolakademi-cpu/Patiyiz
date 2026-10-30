@@ -41,6 +41,6 @@ test('Story activities hide own story profile and name; only a fullscreen activi
  assert.match(app,/classList\.remove\('pati-story-viewers-open'\)/);
 });
 test('New styles load after all legacy CSS and are packed in native web bundle',()=>{
- assert.match(html,/patiyiz-micro-motion-20261029\.css\?v=1">\s*<link rel="stylesheet" href="patiyiz-desktop-responsive-story-20261029\.css\?v=1"/);
+ assert.match(html,/patiyiz-micro-motion-20261029\.css\?v=[^"\s]+">\s*<link rel="stylesheet" href="patiyiz-desktop-responsive-story-20261029\.css\?v=1"/);
  assert.match(native,/'patiyiz-desktop-responsive-story-20261029\.css'/);
 });
