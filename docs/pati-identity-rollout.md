@@ -8,7 +8,7 @@ A code review branch, NOT a production release. Patiyiz's Supabase project was n
 - Existing social DM and `lost_reports` behavior is unchanged.
 - Scan landing page: `https://patiyiz.com/pati-kimligi.html#<random-token>`.
 - Raw QR token is returned only on create/rotate; SHA-256 hash is stored server side. Reprinting requires rotating the token, invalidating the older printed tag.
-- The public scan response contains ONLY name, species, breed, optional photo and manually approved public note; never owner ID, phone, email, health records or full address.
+- The public scan response contains ONLY name, species, breed, opt-in photo (OFF by default) and manually approved public note; never owner ID, phone, email, health records or full address.
 - Anonymous finders submit text after a Cloudflare Turnstile challenge; server-side IP/tag rate-limit protects against repeated requests.
 - Finder receives a private receipt secret as part of a URL fragment and can read only that conversation. Owner can reply from own Pati Identity dashboard; do not mix finder messages with normal `messages` table.
 - Threads expire after 30 days and must later be purged by a scheduled retention job, following user consent/privacy policy updates.
