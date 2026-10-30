@@ -23,7 +23,7 @@ An isolated code review branch from main, NOT a production release. The connecte
 7. Validate owner-list, create, rotate, toggle, lookup, finder send, owner reply, finder read, blocked QR, bad token, IP abuse, expired thread, multiple animals, account deletion and lost pet handoff.
 8. Test real iOS/Android camera scans and QR downloads and the Capacitor build. `qrcodejs@1.0.0` currently loads from a pinned CDN; consider vendoring the asset to guarantee offline QR rendering and reduce supply-chain dependency.
 9. Integrate owner alert/push delivery **after** verifying `notifications` and `push_subscriptions` schema. Current MVP has a secure inbox with manual refresh, not a confirmed real-time push notification.
-10. Add a periodic cleanup job for expired threads/messages and stale rate limit records. Document data retention, abuse reporting and legal basis before launch.
+10. The two Supabase `pg_cron` cleanup jobs are installed and active: daily expired-thread deletion (message rows cascade) and daily stale rate-limit cleanup. Document data retention, abuse reporting and legal basis.
 
 ## Design and code boundaries
 - DM work in `patiyiz-design-system-20261030.css` changes CSS only: no new message functions.
@@ -50,3 +50,9 @@ An isolated code review branch from main, NOT a production release. The connecte
 - Challenge verification is enforced server-side; scripts cannot bypass it by removing the input or calling the Edge Function directly without a valid solved challenge.
 - Manual arithmetic is not sophisticated bot detection. Deployers must monitor spam and can temporarily disable any compromised QR with `owner-toggle`.
 - Cloudflare is **not** required and no paid external CAPTCHA account is part of the system.
+
+## Verified production infrastructure
+- `pati-identity` Edge Function **v2** deployed ACTIVE on the dedicated Patiyiz Supabase project; no Cloudflare integration.
+- Identity tables and owner-only RLS live; no public browser write privileges.
+- Existing project `pg_cron` extension runs `pati_identity_expired_threads_daily` and `pati_identity_expired_limiter_daily` (verified active).
+- Confirm actual QR scan / finder contact with two phones and owner/finder accounts after website deployment. Automated unit/static CI does not replace device integration tests.
