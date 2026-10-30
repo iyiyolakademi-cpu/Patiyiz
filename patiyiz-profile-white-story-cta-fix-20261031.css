@@ -1,0 +1,176 @@
+/*
+  Patiyiz profile surface consistency and story CTA readability.
+  The user wants one LIGHT WHITE profile canvas (including profession, biography,
+  website links) even when the surrounding app uses dark mode.
+  Keep story photos, avatar and the rest of the app's theme unchanged.
+*/
+
+/* White profile canvas: statistics header, profession/bio, links, tabs all match. */
+#main-content .pati-ig-profile,
+#main-content .pati-ig-profile .pati-ig-summary,
+#main-content .pati-ig-profile .pati-ig-info,
+#main-content .pati-ig-profile .pati-ig-stats,
+#main-content .pati-ig-profile .pati-ig-about,
+#main-content .pati-ig-profile .pati-ig-profession,
+#main-content .pati-ig-profile .pati-ig-bio,
+#main-content .pati-ig-profile .pati-profile-links,
+#main-content .pati-ig-profile .pati-mutual-followers,
+#main-content .pati-ig-profile .pati-ig-actions,
+#main-content .pati-ig-profile .pati-ig-tabs,
+#main-content .pati-ig-profile .pati-ig-grid,
+#main-content .pati-ig-profile .pati-ig-empty,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-summary,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-info,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-stats,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-about,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-profession,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-bio,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-links,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-mutual-followers,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-actions,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-tabs,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-grid,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-empty{
+ background:#fff!important;
+ background-color:#fff!important;
+ color:#17191d!important;
+}
+
+/* All the information directly around the profile photo uses dark ink on white. */
+#main-content .pati-ig-profile .pati-ig-handle,
+#main-content .pati-ig-profile .pati-ig-name,
+#main-content .pati-ig-profile .pati-ig-handle-row,
+#main-content .pati-ig-profile .pati-ig-stats,
+#main-content .pati-ig-profile .pati-ig-stats b,
+#main-content .pati-ig-profile .pati-ig-stats span,
+#main-content .pati-ig-profile .pati-ig-stats button,
+#main-content .pati-ig-profile .pati-ig-stats small,
+#main-content .pati-ig-profile .pati-ig-about .pati-ig-profession,
+#main-content .pati-ig-profile .pati-ig-about .pati-ig-bio,
+#main-content .pati-ig-profile .pati-mutual-followers,
+#main-content .pati-ig-profile .pati-profile-links .pati-profile-link,
+#main-content .pati-ig-profile .pati-profile-links .pati-profile-link-label,
+#main-content .pati-ig-profile .pati-profile-links .pati-profile-link-domain,
+#main-content .pati-ig-profile .pati-profile-links .pati-profile-link-arrow,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-handle,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-name,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-handle-row,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-stats,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-stats b,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-stats span,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-stats button,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-stats small,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-about .pati-ig-profession,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-about .pati-ig-bio,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-mutual-followers,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-links .pati-profile-link,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-links .pati-profile-link-label,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-links .pati-profile-link-domain,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-links .pati-profile-link-arrow{
+ color:#17191d!important;
+ -webkit-text-fill-color:#17191d!important;
+ opacity:1!important;
+ text-shadow:none!important;
+}
+
+/* The biography should not have a shaded strip or disconnected card. */
+#main-content .pati-ig-profile .pati-ig-about,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-about{
+ box-shadow:none!important;
+ border:0!important;
+}
+#main-content .pati-ig-profile .pati-profile-links .pati-profile-link,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-links .pati-profile-link{
+ background:#fff!important;
+ background-color:#fff!important;
+ border:1px solid #e7e8ec!important;
+ box-shadow:none!important;
+}
+#main-content .pati-ig-profile .pati-ig-tabs button,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-tabs button{
+ background:transparent!important;
+ color:#44474e!important;
+ -webkit-text-fill-color:#44474e!important;
+ opacity:1!important;
+}
+#main-content .pati-ig-profile .pati-ig-tabs button.active,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-tabs button.active{
+ background:#f4f5f7!important;
+ color:#17191d!important;
+ -webkit-text-fill-color:#17191d!important;
+}
+#main-content .pati-ig-profile .pati-ig-tabs{
+ border-color:#ededf0!important;
+}
+#main-content .pati-ig-profile .pati-private-message,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-private-message{
+ background:#fff!important;color:#17191d!important;
+}
+
+/* Story shared-post CTA: the label to the LEFT of the arrow was invisible.
+   Give label its own explicitly white text, no inherited dark text fill. */
+#story-overlay.pati-story-has-source .pati-story-share-card>.pati-story-shared-source{
+ position:relative!important;
+ inset:auto!important;
+ display:flex!important;
+ align-items:center!important;
+ justify-content:space-between!important;
+ gap:10px!important;
+ box-sizing:border-box!important;
+ width:calc(100% - 20px)!important;
+ max-width:calc(100% - 20px)!important;
+ min-width:0!important;
+ min-height:44px!important;
+ height:auto!important;
+ margin:10px!important;
+ padding:10px 14px!important;
+ background:#111216!important;
+ background-color:#111216!important;
+ border:0!important;
+ border-radius:11px!important;
+ color:#fff!important;
+ -webkit-text-fill-color:#fff!important;
+ text-shadow:none!important;
+ opacity:1!important;
+ visibility:visible!important;
+ filter:none!important;
+ font-size:13px!important;
+ font-weight:850!important;
+ line-height:1.3!important;
+ white-space:normal!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-card>.pati-story-shared-source>.pati-story-source-label,
+#story-overlay.pati-story-has-source .pati-story-share-card>.pati-story-shared-source>.pati-story-source-arrow{
+ display:inline-block!important;
+ position:relative!important;
+ z-index:1!important;
+ flex:0 1 auto!important;
+ color:#fff!important;
+ -webkit-text-fill-color:#fff!important;
+ opacity:1!important;
+ visibility:visible!important;
+ text-shadow:none!important;
+ filter:none!important;
+ mix-blend-mode:normal!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-card>.pati-story-shared-source>.pati-story-source-label{
+ flex:1 1 auto!important;
+ min-width:0!important;
+ font-size:13px!important;
+ font-weight:850!important;
+ text-align:left!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-card>.pati-story-shared-source>.pati-story-source-arrow{
+ flex:0 0 auto!important;
+ font-size:19px!important;
+ line-height:1!important;
+}
+@media(max-width:500px){
+ #story-overlay.pati-story-has-source .pati-story-share-card>.pati-story-shared-source{
+  min-height:44px!important;
+  margin:9px!important;
+  width:calc(100% - 18px)!important;
+  max-width:calc(100% - 18px)!important;
+ }
+}
