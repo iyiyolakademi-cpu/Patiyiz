@@ -82,3 +82,27 @@ html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-links 
 html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-tabs button{color:#fff!important;opacity:1!important}
 html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-about .pati-ig-bio{color:#fff!important;opacity:1!important}
 html:not([data-pati-theme="dark"]) #main-content .pati-ig-profile .pati-ig-about .pati-ig-bio{color:#17181d!important;opacity:1!important}
+
+/* Surface-specific contrast so white profile text never lands on white cards. */
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-links .pati-profile-link,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-links .pati-profile-link:hover{
+ background:#25262e!important;border-color:#444650!important;color:#fff!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-link-label,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-link-domain,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-link-arrow{
+ color:#fff!important;opacity:1!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-tabs{
+ background:#16171b!important;border-color:#42434b!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-tabs button{
+ background:transparent!important;color:#fff!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-tabs button.active{
+ background:#2e3039!important;color:#fff!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-private-message,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-empty{
+ background:#25262e!important;color:#fff!important;
+}
