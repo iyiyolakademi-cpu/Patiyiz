@@ -16,10 +16,11 @@ test('Repost tab renders full cards, including text, images and videos, rather t
  assert.match(profile,/profilePostsTab==='reposts'\?repostFeed/);
  assert.match(css,/\.pati-profile-reposts-feed/);
 });
-test('DM shared post shows original video with controls, photos, and text',()=>{
+test('DM shared post opens original video content, photos and text',()=>{
  const fn=app.slice(app.indexOf('function patiDmSharedCard(message){'),app.indexOf('async function patiDmHydrateSharedPosts(',app.indexOf('function patiDmSharedCard(message){')));
  assert.match(fn,/video_url\|\|videos\[0\]/);
- assert.match(fn,/controls playsinline webkit-playsinline preload="metadata"/);
+ assert.match(fn,/muted playsinline webkit-playsinline preload="metadata"/);
+ assert.match(fn,/pati-dm-shared-media-open/);
  assert.match(fn,/pati-dm-shared-images/);
  assert.match(fn,/pati-dm-shared-text/);
  assert.match(fn,/data-action="dm-open-shared-post"/);
