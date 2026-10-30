@@ -1,7 +1,7 @@
 # Patiyiz — Pati Kimliği delivery and security checklist (30 October 2026)
 
 ## Status
-A code review branch, NOT a production release. Patiyiz's Supabase project was not available among the connected Supabase projects, so no live SQL, Edge deployment, push integration, or production device verification has been performed. Do not merge before these steps are complete.
+An isolated code review branch from main, NOT a production release. The connected Supabase project was verified as **Patiyiz** and its existing pets columns were checked. The QR SQL / Edge service has NOT been deployed; private messaging still requires Cloudflare Turnstile secrets. Do not merge or expose the QR action until the deployment checklist and security/device tests pass.
 
 ## Functional boundaries
 - Existing `pets` are the source of identity; owner must own the pet.
@@ -17,7 +17,7 @@ A code review branch, NOT a production release. Patiyiz's Supabase project was n
 1. Verify the SQL assumptions for `public.pets.id` and `public.pets.owner_id`, review `docs/pati-identity-schema-proposal.sql`, and apply the approved SQL to the **Patiyiz** project, not another Supabase instance. Follow the project's migration naming and rollout practice.
 2. Deploy `supabase/functions/pati-identity/index.ts` to the Patiyiz project. This one endpoint accepts anonymous scan/contacts and must be configured with **verify_jwt=false**; all `owner-*` requests separately validate the user JWT with Auth and validate pet ownership.
 3. Configure server-only secrets `PATI_TURNSTILE_SECRET`, `PATI_TURNSTILE_SITE`, `PATI_RATE_PEPPER`; `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are supplied by the server environment. **Do not store secrets in config.js, GitHub, or the browser.**
-4. Cloudflare Turnstile site hostnames must include patiyiz.com (and the approved GitHub Pages preview hostname, if testing there). Without both keys the form correctly remains disabled.
+4. Cloudflare Turnstile site hostnames must include patiyiz.com (and the approved GitHub Pages preview hostname, if testing there). Patiyiz Capacitor's https://localhost is allowed as an API Origin for *owner-authorized actions*; the public scan is hosted on patiyiz.com. Without both keys the form correctly remains disabled.
 5. Ensure patiyiz.com actually serves `pati-kimligi.html` (and that privacy/terms reflect QR messaging, contact retention, and finder safety).
 6. Confirm service_role is never in public HTML, scan payload or client logs. Confirm anon/authenticated cannot SELECT/UPDATE/INSERT/DELETE identity tables directly except owner-only SELECT granted under RLS.
 7. Validate owner-list, create, rotate, toggle, lookup, finder send, owner reply, finder read, blocked QR, bad token, IP abuse, expired thread, multiple animals, account deletion and lost pet handoff.
@@ -39,3 +39,7 @@ A code review branch, NOT a production release. Patiyiz's Supabase project was n
 - 7/30/90 statistics: no invented sample, follower loss history limitations clearly displayed.
 - Dark/light DM styling, full width media, mobile input safe area, actual Android/iOS regression.
 - Play Store build updated separately; merging a GitHub PR does not update installed apps.
+
+## Additional review fixes
+- The Edge handler rate-limits both the visitor/device key and an independent total-per-tag key, so rotating reported client IPs cannot fully bypass the contact throttle.
+- If any required Turnstile secret is missing, the public contact form fails closed; no insecure anonymous messages are allowed.
