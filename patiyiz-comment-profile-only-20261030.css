@@ -1,0 +1,40 @@
+/* Direct profile navigation from comment sheet — keep only profile visible. */
+#comment-form .pati-comment-profile-avatar,
+#comment-form .pati-comment-profile-name{
+ appearance:none!important;-webkit-appearance:none!important;
+ background:transparent!important;border:0!important;
+ padding:0!important;margin:0!important;
+ color:inherit!important;cursor:pointer!important;
+ font:inherit!important;letter-spacing:inherit!important;
+ box-shadow:none!important;text-align:left!important;
+}
+#comment-form .pati-comment-profile-avatar{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ width:36px!important;height:36px!important;min-width:36px!important;
+ flex:0 0 36px!important;
+ border-radius:50%!important;overflow:hidden!important;
+}
+#comment-form .pati-sheet-comment-avatar .pati-comment-profile-avatar{
+ width:34px!important;height:34px!important;min-width:34px!important;flex-basis:34px!important;
+}
+#comment-form .pati-comment-profile-avatar .avatar,
+#comment-form .pati-comment-profile-avatar .avatar.s{
+ display:block!important;width:100%!important;height:100%!important;
+ min-width:0!important;min-height:0!important;
+ border-radius:50%!important;overflow:hidden!important;
+}
+#comment-form .pati-comment-profile-avatar .avatar img{
+ width:100%!important;height:100%!important;object-fit:cover!important;
+}
+#comment-form .pati-comment-profile-name{
+ display:inline-block!important;min-width:0!important;max-width:100%!important;
+ font-size:13px!important;font-weight:800!important;line-height:1.45!important;
+ overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+}
+#comment-form .pati-comment-post-user .pati-comment-profile-name{
+ font-size:14px!important;
+}
+#comment-form .pati-comment-profile-avatar:focus-visible,
+#comment-form .pati-comment-profile-name:focus-visible{
+ outline:2px solid #2388fa!important;outline-offset:3px!important;
+}
