@@ -67,7 +67,7 @@ function patiWatchPostViews(){
  cards.forEach(card=>patiPostViewObserver.observe(card));
 }
 
-const allowed=['home','explore','pets','reels','streaks','rewards','shop','saved-posts','community','knowledge','education','lost','adoption','care','wellness','healthfile','my-pet','messages','notifications','profile','blocked','settings','follows-list'];
+const allowed=['pati-identity','home','explore','pets','reels','streaks','rewards','shop','saved-posts','community','knowledge','education','lost','adoption','care','wellness','healthfile','my-pet','messages','notifications','profile','blocked','settings','follows-list'];
 const nav=[['home','Ana sayfa','home'],['explore','Keşfet','compass'],['reels','Reels','up'],['streaks','Seriler','calendar'],['community','Topluluk','users'],['knowledge','Bilgi Merkezi','library'],['education','Eğitim','library'],['lost','Kayıp İlanları','location'],['adoption','Sahiplendirme','heart'],['my-pet','Hayvanım','heart'],['messages','Mesajlar','message'],['notifications','Bildirimler','bell'],['profile','Profilim','user'],['settings','Ayarlar ve Gizlilik','settings']];
 const cfg=window.PATIYIZ_CONFIG||{};
 const ready=String(cfg.supabaseUrl||'').startsWith('https://')&&!String(cfg.supabaseUrl).includes('BURAYA_')&&!!cfg.supabasePublishableKey&&!String(cfg.supabasePublishableKey).includes('BURAYA_')&&!!window.supabase?.createClient;
@@ -812,7 +812,7 @@ function patiEnsurePageBack(){
  const btn=document.createElement('button');btn.type='button';btn.className='pati-page-back';btn.dataset.action='pati-page-back';btn.innerHTML='‹ <span>Geri</span>';
  btn.setAttribute('aria-label','Önceki ekrana dön');main.prepend(btn);
 }
-function render(){try{if(view!=='profile'&&document.getElementById('pati-creator-dashboard'))patiInsightsClose();if(view!=='messages'&&typeof patiGroupInboxStop==='function')patiGroupInboxStop();patiPostRenderStats=['home','reels','profile','explore','saved-posts'].includes(view)?patiBuildPostStats(data.likes,data.comments,blocked):null;({home:homePage,explore:explorePage,reels:reelsPage,streaks:patiStreaksPage,pets:petsPage,wellness:patiWellnessPage,healthfile:healthFilePage,'saved-posts':savedPostsPage,rewards:patiRewardsPage,shop:patiShopPage,community:communityPage,knowledge:knowledgePage,education:educationPage,lost:lostPage,adoption:adoptionPage,care:carePage,'my-pet':patiMyPetCenterPage,messages:messagesPage,notifications:notificationsPage,profile:profilePage,blocked:blockedPage,settings:settingsPage,'follows-list':followListPage}[view]||homePage)();setupFeedMediaRatios();setupFeedVideos();setupReelsViewer();patiEnsurePageBack();patiWatchPostViews();patiPetHubBackButton()}catch(e){console.error(e);main.innerHTML=header('Bir hata oldu')+empty('Ekran açılamadı','Sayfayı yenile veya daha sonra tekrar dene.')}}
+function render(){try{if(view!=='profile'&&document.getElementById('pati-creator-dashboard'))patiInsightsClose();if(view!=='messages'&&typeof patiGroupInboxStop==='function')patiGroupInboxStop();patiPostRenderStats=['home','reels','profile','explore','saved-posts'].includes(view)?patiBuildPostStats(data.likes,data.comments,blocked):null;({home:homePage,explore:explorePage,reels:reelsPage,streaks:patiStreaksPage,pets:petsPage,wellness:patiWellnessPage,healthfile:healthFilePage,'saved-posts':savedPostsPage,rewards:patiRewardsPage,shop:patiShopPage,community:communityPage,knowledge:knowledgePage,education:educationPage,lost:lostPage,adoption:adoptionPage,care:carePage,'my-pet':patiMyPetCenterPage,'pati-identity':()=>window.PatiyizPatiIdentity?.mount({sb,me,pets:data.pets,main,notify}),messages:messagesPage,notifications:notificationsPage,profile:profilePage,blocked:blockedPage,settings:settingsPage,'follows-list':followListPage}[view]||homePage)();setupFeedMediaRatios();setupFeedVideos();setupReelsViewer();patiEnsurePageBack();patiWatchPostViews();patiPetHubBackButton()}catch(e){console.error(e);main.innerHTML=header('Bir hata oldu')+empty('Ekran açılamadı','Sayfayı yenile veya daha sonra tekrar dene.')}}
 async function load(mode='all'){if(!me)return;const userId=me.id,loadToken=patiyizLoadToken,likesEpoch=(typeof likesChangeEpoch==='number'?likesChangeEpoch:0),savesEpoch=(typeof savesChangeEpoch==='number'?savesChangeEpoch:0);let specs=[['profiles','profiles',800],['pets','pets',600],['posts','posts',200],['post_likes','likes',2000],['post_saves','saves',2000],['comments','comments',1500],['comment_likes','commentLikes',3000],['follows','follows',2000],['questions','questions',150],['replies','replies',1500],['question_votes','votes',2000],['lost_reports','lost',300],['adoption_listings','adoption',300],['patiyiz_stories','stories',250],['patiyiz_story_responses','storyResponses',1000],['patiyiz_reposts','reposts',600],['patiyiz_post_pins','pins',500],['patiyiz_dm_reactions','dmReactions',2000],['patiyiz_highlight_albums','highlightAlbums',250],['patiyiz_highlight_items','highlightItems',500],['care_tasks','care',500],['messages','messages',1000],['message_hidden','messageHidden',1000],['notifications','notifications',500],['kb_bookmarks','bookmarks',300],['user_blocks','blocks',500]];if(mode==='initial')specs=specs.filter(([table])=>['profiles','pets','posts','post_likes','post_saves','patiyiz_stories','patiyiz_highlight_albums','patiyiz_highlight_items','user_blocks'].includes(table));else if(mode==='feed')specs=specs.filter(([table])=>['patiyiz_reposts','patiyiz_post_pins','profiles','posts','post_likes','post_saves','patiyiz_stories','patiyiz_highlight_albums','patiyiz_highlight_items'].includes(table));else if(mode==='deferred')specs=specs.filter(([table])=>!patiyizLoadedTables.has(table));
 const fetchSpec=async([table,key,limit])=>{const chunks=[];const size=250,cap=Math.max(1,Math.min(5000,pageLimits[key]||limit));try{for(let start=0;start<cap;start+=size){let req=sb.from(table).select('*').range(start,Math.min(start+size-1,cap-1));if(table==='kb_bookmarks')req=req.eq('user_id',userId);if(['messages','notifications','comments','posts','replies','questions','lost_reports','patiyiz_stories','patiyiz_story_responses','adoption_listings'].includes(table))req=req.order('created_at',{ascending:false});if(table==='posts')req=req.order('id',{ascending:false});const r=await req;if(r.error)throw r.error;chunks.push(...(r.data||[]));if((r.data||[]).length<size)break;}if(pageLimits[key])pageMore[key]=chunks.length>=cap;return[key,chunks,true]}catch(e){console.warn(table,'yüklenemedi:',e.message);if(table==='posts'&&typeof patiHomeLoadError!=='undefined')patiHomeLoadError='Gönderiler yüklenemedi.';return[key,data[key]||[],false]}};const results=[];if(mode==='deferred'){for(let i=0;i<specs.length;i+=4){if(me?.id!==userId||patiyizLoadToken!==loadToken)return;results.push(...await Promise.all(specs.slice(i,i+4).map(fetchSpec)))}}else results.push(...await Promise.all(specs.map(fetchSpec)));if(me?.id!==userId||patiyizLoadToken!==loadToken)return;for(const [k,val,ok]of results){
  if(k==='posts'&&ok&&typeof patiHomeFeedIds!=='undefined'){
@@ -2330,6 +2330,7 @@ function patiMyPetCenterPage(){
    ['care','Bakım Takvimi','calendar','sky','📅','tab'],
    ['wellness','Sağlık','pulse','pink','💗','tab'],
    ['own-pets','Hayvanlarım','pets','peach','🐱','tab'],
+    ['pati-identity','Pati Kimliği','qr','aqua','▣','view'],
    ['education','Eğitim','academy','violet','🎓','view'],
    ['knowledge','Bilgi Merkezi','book','aqua','📖','view'],
    ['lost','Kayıp İlanları','lost','coral','🔎','view'],
@@ -4055,9 +4056,10 @@ const patiMetric=v=>Number(v||0).toLocaleString('tr-TR');
 
 /* Full-screen creator dashboard: every metric is server-sourced and personally scoped.
    Small demographic samples are suppressed by the database, not by CSS. */
-function patiInsightsMetric(number){return patiMetric(Number(number)||0)}
+function patiInsightsMetric(number){const n=window.PatiyizInsightsMetrics?.count(number);return n===null?'—':patiMetric(Number(number)||0)}
 function patiInsightsBarChart(series,label){
  const rows=Array.isArray(series)?series:[];
+ if(rows.some(x=>window.PatiyizInsightsMetrics.count(x.value)===null))return '<p class="pati-creator-empty" role="status">Bu dönemin günlük verileri eksik. Eksik günler sıfır kabul edilmedi.</p>';
  const values=rows.map(x=>Number(x.value)||0),maximum=Math.max(1,...values);
  if(!rows.length||values.every(v=>v===0))
   return '<p class="pati-creator-empty" role="status">Bu dönemde henüz kayıtlı '+esc(label.toLocaleLowerCase('tr-TR'))+' verisi yok. Yeni hareketler olduğunda grafik burada oluşacak.</p>';
@@ -4066,9 +4068,9 @@ function patiInsightsBarChart(series,label){
  '<div class="pati-stat-axis"><span>'+esc(rows[0]?.day||'')+'</span><span>'+esc(rows[Math.floor((rows.length-1)/2)]?.day||'')+'</span><span>'+esc(rows.at(-1)?.day||'')+'</span></div>';
 }
 function patiInsightsTrend(daily,key){
- const points=(Array.isArray(daily)?daily:[]).map(x=>({day:String(x.day||'').slice(5),value:Number(x[key])||0}));
+ const points=(Array.isArray(daily)?daily:[]).map(x=>({day:String(x.day||'').slice(5),value:window.PatiyizInsightsMetrics.count(x[key])}));
  if(points.length<=31)return points;
- const chunks=[];for(let i=0;i<points.length;i+=7){const set=points.slice(i,i+7);chunks.push({day:set[0]?.day||'',value:set.reduce((sum,p)=>sum+p.value,0)})}
+ const chunks=[];for(let i=0;i<points.length;i+=7){const set=points.slice(i,i+7);chunks.push({day:set[0]?.day||'',value:set.some(p=>p.value===null)?null:set.reduce((sum,p)=>sum+p.value,0)})}
  return chunks;
 }
 let patiCreatorStats={owner:'',days:30,main:null,audience:null,content:null,visitors:null,tab:'overview',detail:''};
@@ -4079,13 +4081,13 @@ function patiInsightsClose(){
  patiCreatorStats.detail='';
 }
 function patiInsightsPct(now,prev){
- if(!Number.isFinite(Number(prev))||Number(prev)===0)return Number(now)>0?'Yeni':'0%';
- return ((Number(now)-Number(prev))/Number(prev)*100).toLocaleString('tr-TR',{maximumFractionDigits:1})+'%';
+ return window.PatiyizInsightsMetrics.change(now,prev).label;
 }
 function patiInsightsChange(now,prev){
- const delta=(Number(now)||0)-(Number(prev)||0);
- return '<span class="pati-creator-change '+(delta>0?'increase':delta<0?'decrease':'neutral')+'" aria-label="'+(delta>0?'Artış':delta<0?'Düşüş':'Değişim yok')+'">'+
- (delta>0?'↗':delta<0?'↘':'→')+' '+patiInsightsPct(now,prev)+'</span>';
+ const state=window.PatiyizInsightsMetrics.change(now,prev);
+ const text={increase:'Artış',decrease:'Düşüş',neutral:'Değişim yok',unknown:'Veri mevcut değil'};
+ const arrow={increase:'↗',decrease:'↘',neutral:'→',unknown:'—'};
+ return '<span class="pati-creator-change '+state.direction+'" aria-label="'+text[state.direction]+'">'+arrow[state.direction]+' '+state.label+'</span>';
 }
 function patiCreatorPreviewHTML(){
  return '<button type="button" class="pati-profile-insights-preview" data-action="pati-insights" aria-label="İstatistiklerini aç">'+
@@ -4165,7 +4167,7 @@ function patiCreatorInsightsRender(){
  }else if(state.detail){
   const detail=kpis.find(x=>x[0]===state.detail);
   const metrics=state.detail==='followers'?[
-    ['Kazanılan',gained],['Kaybedilen (kayıtlı)',lost],['Net değişim (kayıtlı)',gained-lost],['Toplam takipçi',Number(v.followers_now)||0]
+    ['Kazanılan',gained],['Kaybedilen (kayıtlı)',lost],['Net değişim',complete?gained-lost:'—'],['Toplam takipçi',Number(v.followers_now)||0]
   ]:state.detail==='visits'?[
     ['Profil ziyaretleri',visits],['Önceki dönem',Number(v.profile_visits_previous)||0],['Değişim',patiInsightsPct(visits,v.profile_visits_previous)],['Kayıtlı gün',days]
   ]:state.detail==='engagement'?[
