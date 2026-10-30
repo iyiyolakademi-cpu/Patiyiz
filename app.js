@@ -3646,13 +3646,13 @@ function patiDmSharedCard(message){
  const reel=post.post_format==='reels'||!!video;
  const action=' data-action="dm-open-shared-post" data-id="'+esc(id)+'"';
  const media=video?
-  '<div class="pati-dm-shared-media pati-dm-shared-video-wrap"><video class="pati-dm-shared-video'+(post.selfie_mirrored?' pati-selfie-mirrored':'')+'" src="'+esc(video)+'#t=0.1"'+(cover?' poster="'+esc(cover)+'"':'')+' controls playsinline webkit-playsinline preload="metadata" aria-label="Paylaşılan videoyu oynat"></video></div>':
-  images.length?'<div class="pati-dm-shared-media pati-dm-shared-images" aria-label="Paylaşılan fotoğraflar">'+images.map((src,i)=>'<img src="'+esc(src)+'" loading="lazy" decoding="async" alt="Paylaşılan fotoğraf '+(i+1)+' / '+images.length+'">').join('')+'</div>':
-  '<div class="pati-dm-shared-text">'+esc(post.body||'Yazılı paylaşım')+'</div>';
+  '<button type="button" class="pati-dm-shared-media pati-dm-shared-video-wrap pati-dm-shared-media-open"'+action+' aria-label="Paylaşılan videoyu aç"><video class="pati-dm-shared-video'+(post.selfie_mirrored?' pati-selfie-mirrored':'')+'" src="'+esc(video)+'#t=0.2"'+(cover?' poster="'+esc(cover)+'"':'')+' muted playsinline webkit-playsinline preload="metadata" aria-label="Video önizlemesi"></video><span class="pati-dm-shared-play" aria-hidden="true">▶</span></button>':
+  images.length?'<div class="pati-dm-shared-media pati-dm-shared-images" aria-label="Paylaşılan fotoğraflar">'+images.map((src,i)=>'<button type="button" class="pati-dm-shared-image-open"'+action+' aria-label="Fotoğraf '+(i+1)+' içeren gönderiyi aç"><img src="'+esc(src)+'" loading="lazy" decoding="async" alt="Paylaşılan fotoğraf '+(i+1)+' / '+images.length+'"></button>').join('')+'</div>':
+  '<button type="button" class="pati-dm-shared-text pati-dm-shared-text-open"'+action+'>'+esc(post.body||'Yazılı paylaşım')+'</button>';
  return '<article class="pati-dm-shared-card '+(video?'pati-dm-shared-reel':'')+'">'+
-  '<button type="button" class="pati-dm-shared-by pati-dm-shared-open"'+action+' aria-label="Paylaşımı aç">'+avatar(author,'s')+'<span><b>'+displayName(author)+'</b><small>@'+esc(author.handle||'patiyiz')+' · '+(reel?'Reels':'Gönderi')+'</small></span></button>'+
+  '<button type="button" class="pati-dm-shared-by pati-dm-shared-author" data-action="view-user" data-id="'+esc(post.author_id)+'" aria-label="'+esc(author.display_name||author.handle||'Kullanıcı')+' profiline git">'+avatar(author,'s')+'<span><b>'+displayName(author)+'</b><small>@'+esc(author.handle||'patiyiz')+' · '+(reel?'Reels':'Gönderi')+'</small></span></button>'+
   media+
-  ((video||images.length)&&post.body?'<div class="pati-dm-shared-caption">'+esc(cut(post.body,250))+'</div>':'')+
+  ((video||images.length)&&post.body?'<button type="button" class="pati-dm-shared-caption pati-dm-shared-caption-open"'+action+'>'+esc(cut(post.body,250))+'</button>':'')+
   '<button type="button" class="pati-dm-shared-footer"'+action+'>Gönderiyi aç '+ico('arrow-right')+'</button></article>';
 }
 async function patiDmHydrateSharedPosts(messages,peer){
