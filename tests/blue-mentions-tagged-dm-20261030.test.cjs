@@ -24,8 +24,8 @@ test('Comment and post @handles are blue clickable links, including profiles not
  const text=app.slice(app.indexOf('function patiMentionsHTML(body){'),app.indexOf('function patiMentionOpen(mode){'));
  assert.match(text,/class="pati-mention-link"/);
  assert.match(text,/pati-mention-profile/);
- assert.match(text,/async function patiOpenMentionProfile\(handle\)/);
- assert.match(app,/case 'pati-mention-profile':void patiOpenMentionProfile\(target\.dataset\.handle\)/);
+ assert.match(text,/async function patiOpenMentionProfile\(handle,knownId=''\)/);
+ assert.match(app,/case 'pati-mention-profile':e\.preventDefault\(\);void patiOpenMentionProfile\(target\.dataset\.handle,target\.dataset\.id\|\|''\)/);
  assert.match(css,/\.pati-mention-link/);
  assert.match(css,/color:#1683f6!important/);
 });
@@ -64,7 +64,7 @@ test('Mention notification creates direct message only when user privacy, blocks
  assert.match(sql,/after insert on public\.notifications/);
 });
 test('Web and Android include late mobile-visible blue styling while preserving final crop styles last',()=>{
- assert.match(html,/patiyiz-blue-mentions-dm-20261030\.css\?v=1/);
+ assert.match(html,/patiyiz-blue-mentions-dm-20261030\.css\?v=2/);
  assert.match(html,/blue_dm_mentions=20261030/);
  assert.match(native,/'patiyiz-blue-mentions-dm-20261030\.css'/);
  assert.ok(html.indexOf('patiyiz-blue-mentions-dm-20261030.css')>html.indexOf('patiyiz-mention-mobile-fix-20261030.css'));
