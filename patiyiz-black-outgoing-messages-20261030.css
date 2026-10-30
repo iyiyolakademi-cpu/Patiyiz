@@ -1,0 +1,32 @@
+/* 30 Oct 2026: Reversible outgoing-message colour experiment.
+ * Remove this stylesheet link to restore previous green bubble colours.
+ * Only the current user's sent messages change; photo/voice/sticker media keeps its surface.
+ */
+#main-content .pati-dm-layout{
+ --p3-chat-mine:#0b0c0f!important;
+ --p3-chat-mine-text:#fff!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-dm-layout,
+html[data-pati-theme="light"] #main-content .pati-dm-layout{
+ --p3-chat-mine:#08090b!important;
+ --p3-chat-mine-text:#fff!important;
+}
+#main-content .pati-dm-layout .chat-window .chat-history .bubble-chat.mine:not(.pati-dm-image-message):not(.pati-dm-sticker-bubble):not(:has(.pati-dm-audio)):not(:has(.pati-dm-voice-card)),
+html[data-pati-theme="dark"] #main-content .pati-dm-layout .chat-window .chat-history .bubble-chat.mine:not(.pati-dm-image-message):not(.pati-dm-sticker-bubble):not(:has(.pati-dm-audio)):not(:has(.pati-dm-voice-card)){
+ background:#0a0b0e!important;
+ color:#fff!important;
+ border-color:#20232a!important;
+}
+#main-content .pati-dm-layout .chat-window .chat-history .bubble-chat.mine>small{
+ color:#fff!important;opacity:.72!important;
+}
+#main-content .pati-dm-layout .chat-window .chat-history .bubble-chat.mine .pati-dm-msg-tools button{
+ color:#fff!important;
+}
+#main-content .pati-dm-layout .chat-window .chat-history .bubble-chat.mine .pati-dm-voice-card{
+ background:#0a0b0e!important;border-color:#262930!important;color:#fff!important;
+}
+#main-content .pati-group-chat-window .pati-group-bubble.mine,
+html[data-pati-theme="dark"] #main-content .pati-group-chat-window .pati-group-bubble.mine{
+ background:#0a0b0e!important;color:#fff!important;border-color:#25272b!important;
+}
