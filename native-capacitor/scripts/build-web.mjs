@@ -34,7 +34,23 @@ html=replace(html,'<script src="https://cdn.jsdelivr.net/npm/tus-js-client@4.3.1
 html=replace(html,'<script src="app.js?', '<script src="native-shell.js" defer></script><script src="app.js?','native entry');
 html=replace(html,'</head>','<link rel="stylesheet" href="native-reels.css">\n</head>','native Reels CSS');
 html=html.replace(/<link rel="canonical" href="https:\/\/patiyiz\.com\/">/,'');
-await writeFile(path.join(out,'index.html'),html);
+// Preserve the cascade order but serve one stylesheet inside Capacitor.
+ // Source files remain separate and editable. This removes dozens of runtime CSS requests.
+ const sourceStyles=[...html.matchAll(/<link rel="stylesheet" href="([^"]+)">/g)];
+ const stylesheetPieces=[];
+ for(const match of sourceStyles){
+  const filename=match[1].split('?')[0];
+  if(!/^[a-zA-Z0-9._-]+\.css$/.test(filename))throw Error('Unexpected stylesheet reference: '+filename);
+  const css=await readFile(path.join(out,filename),'utf8');
+  if(/@import\s/i.test(css))throw Error('CSS imports require additional bundle handling: '+filename);
+  stylesheetPieces.push('/* '+filename+' */\n'+css);
+ }
+ if(sourceStyles.length){
+  await writeFile(path.join(out,'patiyiz-native-styles.css'),stylesheetPieces.join('\n'));
+  html=html.replace(/<link rel="stylesheet" href="([^"]+)">/g,'');
+  html=html.replace('</head>','<link rel="stylesheet" href="patiyiz-native-styles.css"></head>');
+ }
+ await writeFile(path.join(out,'index.html'),html);
 let admin=await readFile(path.join(out,'admin.html'),'utf8');
 admin=admin.replace(/https:\/\/cdn\.jsdelivr\.net\/npm\/@supabase\/supabase-js@2(?:\.\d+\.\d+)?(?:\/dist\/umd\/supabase\.js)?/g,'vendor/supabase-compat.js');
 await writeFile(path.join(out,'admin.html'),admin);
