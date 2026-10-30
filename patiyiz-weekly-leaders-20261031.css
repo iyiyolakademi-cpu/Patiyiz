@@ -146,3 +146,90 @@ html[data-pati-theme="dark"] #main-content .pati-weekly-person.is-bronze{
 }
 @media(max-width:340px){#main-content .pati-weekly-avatar-ring{width:62px;height:62px}#main-content .pati-weekly-place{font-size:8px}}
 @media(prefers-reduced-motion:reduce){#main-content .pati-weekly-person::after{display:none}}
+
+/* Compact placements 3-5 follow the two featured medal cards. */
+#main-content .pati-weekly-runners{
+ margin-top:12px;display:flex;flex-direction:column;gap:7px;
+}
+#main-content .pati-weekly-compact-row{
+ display:flex;align-items:center;gap:10px;min-height:60px;
+ padding:6px 10px;border:1px solid #e3e5ea;border-radius:13px;
+ box-sizing:border-box;min-width:0;background:rgba(137,145,159,.045);
+ color:inherit;
+}
+#main-content .pati-weekly-compact-rank{
+ flex:0 0 31px;display:grid;place-items:center;
+ height:31px;border-radius:10px;
+ background:rgba(105,111,123,.12);color:inherit;
+ font-size:12px;font-weight:850;
+}
+#main-content .pati-weekly-compact-profile{
+ flex:1;min-width:0;display:flex!important;align-items:center!important;
+ gap:10px!important;padding:0!important;text-align:left!important;
+ border:0!important;background:transparent!important;
+ color:inherit!important;cursor:pointer;
+}
+#main-content .pati-weekly-compact-profile:focus-visible{
+ outline:3px solid #5c86df!important;outline-offset:4px;
+ border-radius:8px;
+}
+#main-content .pati-weekly-mini-avatar{
+ display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;
+ box-sizing:border-box;border:2px solid #c5cad3;
+ background:#eef0f3;border-radius:50%;overflow:hidden;
+ font-size:19px;color:#5d6573;
+}
+#main-content .pati-weekly-mini-avatar .pati-weekly-avatar{
+ width:100%;height:100%;object-fit:cover;font-size:17px;
+ border-radius:50%;background:transparent;
+}
+#main-content .pati-weekly-compact-name{
+ flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;
+}
+#main-content .pati-weekly-compact-name strong{
+ color:inherit;font-size:12px;font-weight:800;
+ overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+#main-content .pati-weekly-compact-name small{
+ font-size:10px;opacity:.7;color:inherit;
+ overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+#main-content .pati-weekly-compact-score{
+ flex:0 0 auto;display:flex;flex-direction:column;gap:1px;
+ text-align:right;color:inherit;padding-left:5px;
+}
+#main-content .pati-weekly-compact-score strong{
+ color:inherit;font-size:12px;font-weight:850;font-variant-numeric:tabular-nums;
+}
+#main-content .pati-weekly-compact-score small{
+ color:inherit;font-size:10px;opacity:.65;
+}
+#main-content .pati-weekly-compact-placeholder{
+ flex:1;display:flex;align-items:center;gap:10px;
+ min-width:0;font-size:11px;opacity:.7;color:inherit;
+}
+#main-content .pati-weekly-compact-row.is-empty .pati-weekly-compact-rank{
+ opacity:.75;
+}
+html[data-pati-theme="dark"] #main-content .pati-weekly-compact-row{
+ border-color:#3b3f49;background:#252832;color:#f7f8fa;
+}
+html[data-pati-theme="dark"] #main-content .pati-weekly-mini-avatar{
+ border-color:#676d79;background:#383d48;color:#e7e8eb;
+}
+@media(max-width:510px){
+ #main-content .pati-weekly-runners{margin-top:9px;gap:6px}
+ #main-content .pati-weekly-compact-row{
+  gap:7px;min-height:55px;padding:5px 8px;border-radius:12px;
+ }
+ #main-content .pati-weekly-compact-rank{
+  flex-basis:27px;height:27px;font-size:11px;border-radius:8px;
+ }
+ #main-content .pati-weekly-mini-avatar{
+  flex-basis:36px;width:36px;height:36px;font-size:16px;
+ }
+ #main-content .pati-weekly-compact-profile{gap:7px!important}
+ #main-content .pati-weekly-compact-name strong{font-size:11px}
+ #main-content .pati-weekly-compact-name small{font-size:9px}
+ #main-content .pati-weekly-compact-score strong{font-size:11px}
+}
