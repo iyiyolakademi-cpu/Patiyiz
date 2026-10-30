@@ -3335,10 +3335,38 @@ const patiDmThreads=new Map();
 const PATI_DM_INBOX_PAGE=80,PATI_DM_THREAD_PAGE=50;
 let patiDmPendingLatestPeer='';
 function patiDmScrollLatest(history,peer){
- if(!history||!peer)return;
- const pin=()=>{if(history.isConnected&&view==='messages'&&personId===peer)history.scrollTop=history.scrollHeight};
+ if(!history||!peer||view!=='messages'||personId!==peer)return;
+ // Image heights and signed media URLs can arrive AFTER opening the chat.
+ // Temporarily keep the last message in view, not an older photo above it.
+ history.style.overflowAnchor='none';
+ let active=true,resizeObserver=null,timeout=null;
+ const cleanup=()=>{
+  if(!active)return;active=false;
+  resizeObserver?.disconnect();
+  if(timeout!==null)clearTimeout(timeout);
+  history.removeEventListener('wheel',cleanup);
+  history.removeEventListener('touchstart',cleanup);
+  history.removeEventListener('pointerdown',cleanup);
+  history.removeEventListener('keydown',cleanup);
+  history.style.overflowAnchor='';
+ };
+ const pin=()=>{
+  if(!active)return;
+  if(!history.isConnected||view!=='messages'||personId!==peer){cleanup();return}
+  history.scrollTop=Math.max(0,history.scrollHeight-history.clientHeight);
+ };
+ for(const name of ['wheel','touchstart','pointerdown','keydown'])
+  history.addEventListener(name,cleanup,{once:true,passive:true});
+ if(typeof ResizeObserver==='function'){
+  resizeObserver=new ResizeObserver(()=>pin());
+  for(const bubble of history.querySelectorAll('.bubble-chat'))resizeObserver.observe(bubble);
+ }
+ for(const media of history.querySelectorAll('img,video')){
+  for(const event of ['load','loadedmetadata','error'])media.addEventListener(event,pin,{once:true});
+ }
  pin();
  if(typeof requestAnimationFrame==='function')requestAnimationFrame(()=>requestAnimationFrame(pin));
+ timeout=setTimeout(cleanup,15000);
 }
 
 // Conversations are hidden only for the current account; underlying messages stay intact.
@@ -3949,14 +3977,18 @@ function messagesPage(){
    else history.scrollTop=Math.min(oldTop,Math.max(0,history.scrollHeight-history.clientHeight));
   };
   restore();requestAnimationFrame(restore);
-  if(openLatest){
-   patiDmPendingLatestPeer='';
+  if(openLatest||!oldHistory||oldChatId!==personId){
+   if(openLatest)patiDmPendingLatestPeer='';
    patiDmScrollLatest(history,personId);
+  }else if(pinBottom){
+   // Media may still be loading on an established conversation.
+   history.querySelectorAll('img,video').forEach(media=>{
+    for(const event of ['load','loadedmetadata'])media.addEventListener(event,()=>{
+     if(history.isConnected&&history.scrollHeight-history.scrollTop-history.clientHeight<200)
+      history.scrollTop=history.scrollHeight;
+    },{once:true});
+   });
   }
-  history.querySelectorAll('img').forEach(img=>img.addEventListener('load',()=>{
-   if(history.isConnected&&pinBottom&&history.scrollHeight-history.scrollTop-history.clientHeight<220)
-    history.scrollTop=history.scrollHeight;
-  },{once:true}));
  }const chatSearch=main.querySelector('#pati-dm-search');
  chatSearch?.addEventListener('input',()=>{
   const q=chatSearch.value.trim().toLocaleLowerCase('tr-TR');
