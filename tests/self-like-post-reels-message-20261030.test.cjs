@@ -61,24 +61,22 @@ test('own direct messages remain non-reactable in UI and database policies',()=>
  assert.doesNotMatch(sql,/alter policy "pati_dm_reactions_delete"/);
 });
 
-test('owner can like and unlike their own active story without an UPDATE grant',async()=>{
+test('Self-like is rejected while other users can like and unlike stories',async()=>{
  const start=app.indexOf('async function toggleStoryLike(id){'),end=app.indexOf('function storiesStrip(){',start);
  assert.ok(start>=0&&end>start);
  const source=app.slice(start,end);
- assert.doesNotMatch(source,/data\.stories\.some\(x=>x\.id===id&&x\.author_id===me\?\.id\)/);
+ assert.match(source,/story\.author_id===me\?\.id\)return/);
  assert.match(source,/patiyiz_story_likes'\)\.insert\(/);
  assert.doesNotMatch(source,/patiyiz_story_likes'\)\.upsert\(/);
- assert.match(app,/class="pati-story-like pati-story-like-own"/);
- assert.match(app,/if\(!x\.pati_pet_highlight\)void syncStoryLike\(x\.id\)/);
- const storySql=fs.readFileSync('supabase/patiyiz-owner-story-like-20261030.sql','utf8');
- assert.match(storySql,/alter policy "story_likes_self_insert"/);
- assert.doesNotMatch(storySql,/author_id <>/);
+ assert.doesNotMatch(app,/class="pati-story-like pati-story-like-own"/);
+ assert.match(app,/x\.author_id!==me\.id\)void syncStoryLike\(x\.id\)/);
  let rows=[],pressed=false;
  const button={disabled:false,textContent:'♡',classList:{
    contains(name){return name==='active'&&pressed},
    toggle(name,value){if(name==='active')pressed=value}
  }};
- const ctx={me:{id:'owner'},console,document:{querySelector:()=>button},notify(){},friendly:e=>e.message,
+ const ctx={me:{id:'owner'},storyItems:[{id:'own-story',author_id:'owner'},{id:'other-story',author_id:'friend'}],console,
+   document:{querySelector:()=>button},notify(){},friendly:e=>e.message,
    sb:{from(table){
     assert.equal(table,'patiyiz_story_likes');
     return {
@@ -90,10 +88,13 @@ test('owner can like and unlike their own active story without an UPDATE grant',
  };
  const toggle=vm.runInNewContext(source+'\ntoggleStoryLike',ctx);
  await toggle('own-story');
+ assert.equal(rows.length,0);
+ assert.equal(button.textContent,'♡');
+ await toggle('other-story');
  assert.equal(rows.length,1);
  assert.equal(button.textContent,'♥');
  assert.equal(pressed,true);
- await toggle('own-story');
+ await toggle('other-story');
  assert.equal(rows.length,0);
  assert.equal(button.textContent,'♡');
  assert.equal(pressed,false);
