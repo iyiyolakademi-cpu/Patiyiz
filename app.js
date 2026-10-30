@@ -1395,14 +1395,15 @@ function patiStorySharedPostCard(x){
  const content=video?
   '<video class="story-big-video pati-story-share-media-video'+(x.selfie_mirrored?' pati-selfie-mirrored':'')+'" src="'+esc(video)+'"'+(cover?' poster="'+esc(cover)+'"':'')+(patiyizStorySoundEnabled?'':' muted')+' autoplay playsinline webkit-playsinline preload="metadata" aria-label="Paylaşılan Reels önizlemesi"></video>':
   cover?'<img class="story-big-photo pati-story-share-media-photo" src="'+esc(cover)+'" alt="Paylaşılan gönderi fotoğrafı">':
+  post?.body?'<span class="pati-story-share-text-content">'+esc(cut(post.body,550))+'</span>':
   '<span class="pati-story-share-empty">'+ico('image')+'</span>';
  const source=' data-action="pati-story-open-post" data-id="'+esc(x.shared_post_id)+'"';
  return '<div class="pati-story-share-stage" aria-label="Hikâyede paylaşılan gönderi">'+
   '<div class="pati-story-share-card">'+
    '<div class="pati-story-share-card-heading"><button type="button" class="pati-story-share-profile" data-action="pati-story-share-author" data-id="'+esc(post?.author_id||'')+'" aria-label="Paylaşımı yapan kişinin profiline git">'+(original?avatar(original,'s'):'<span class="pati-story-share-default-avatar">P</span>')+'<span><strong>'+esc(authorLabel||'Paylaşım')+'</strong><small>'+(video?'Reels':'Gönderi')+'</small></span></button></div>'+
-   '<button type="button" class="pati-story-share-media"'+source+' aria-label="Paylaşılan '+(video?'Reels':'gönderi')+' içeriğini aç">'+content+'</button>'+
+   '<button type="button" class="pati-story-share-media'+(!video&&!cover&&post?.body?' pati-story-share-media-text':'')+'"'+source+' aria-label="Paylaşılan '+(video?'Reels':'gönderi')+' içeriğini aç">'+content+'</button>'+
    (video?'<button type="button" class="pati-story-sound pati-story-share-sound" data-action="story-sound" aria-label="'+(patiyizStorySoundEnabled?'Hikâye sesini kapat':'Hikâye sesini aç')+'">'+(patiyizStorySoundEnabled?'Sesi kapat':'Sesi aç')+'</button>':'')+
-   (post?.body?'<p class="pati-story-share-post-caption">'+esc(cut(post.body,85))+'</p>':'')+
+   (post?.body&&(video||cover)?'<p class="pati-story-share-post-caption">'+esc(cut(post.body,85))+'</p>':'')+
    '<button type="button" class="pati-story-shared-source"'+source+'>Gönderiyi aç <span aria-hidden="true">↗</span></button>'+
   '</div></div>';
 }
