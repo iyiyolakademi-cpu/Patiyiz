@@ -23,12 +23,15 @@ test('only bottom profile statistics remains, preserving 7 30 and 90-day tabs',(
  assert.match(app,/\[7,30,90\]\.map\(n=>/);
  assert.match(app,/role="status">Bu dönemde henüz kayıtlı /);
 });
-test('system media always offers visible head publish action after selecting a file',()=>{
- assert.match(nativeMedia,/class="pati-system-head-publish" data-system="publish" hidden/);
- assert.match(nativeMedia,/headPublish\.hidden=!chosen/);
- assert.match(nativeMedia,/headerPublish\.disabled=true/);
- assert.match(css,/\.pati-system-head-publish\{/);
+test('system media offers one lower Share button without a duplicate in the header',()=>{
+ assert.doesNotMatch(nativeMedia,/class="pati-system-head-publish" data-system="publish" hidden/);
+ assert.doesNotMatch(nativeMedia,/headPublish\.hidden=!chosen/);
+ assert.doesNotMatch(nativeMedia,/headerPublish\.disabled=true/);
+ assert.equal((nativeMedia.match(/data-system="publish"/g)||[]).length,1);
+ assert.match(nativeMedia,/id="pati-system-publish" data-system="publish"/);
+ assert.match(nativeMedia,/pati-system-edit-panel/);
  assert.match(css,/#pati-system-publish\{/);
+ assert.match(css,/\.pati-system-edit-panel\{/);
 });
 test('full-page mobile publisher maintains submit, content scrolls independently',()=>{
  assert.match(app,/new Set\(\['profile-form','pet-form','lost-form','adoption-form','care-form','post-form','story-form'\]\)/);
