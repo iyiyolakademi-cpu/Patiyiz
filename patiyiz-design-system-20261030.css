@@ -1,0 +1,122 @@
+/* PATIYIZ | chat + media visual system. No DM features, data or handlers altered.
+   One scoped final layer with explicit light/dark tokens. */
+html[data-pati-theme="light"] {
+  --pati-v2-paper:#ffffff; --pati-v2-bg:#f6f7f8; --pati-v2-ink:#17191d;
+  --pati-v2-muted:#687079; --pati-v2-stroke:#e7e9ec; --pati-v2-received:#ffffff;
+  --pati-v2-sent:#e5f5e9; --pati-v2-input:#ffffff;
+  --pati-v2-shadow:0 12px 36px rgba(14,19,24,.055);
+}
+html[data-pati-theme="dark"] {
+  --pati-v2-paper:#202329; --pati-v2-bg:#15171c; --pati-v2-ink:#f5f6f8;
+  --pati-v2-muted:#b5bac3; --pati-v2-stroke:#343841; --pati-v2-received:#2b2e36;
+  --pati-v2-sent:#254636; --pati-v2-input:#262a32;
+  --pati-v2-shadow:0 12px 36px rgba(0,0,0,.16);
+}
+/* Chat: spacing, typography, media edges and contrast only. Existing tools remain. */
+#main-content .pati-dm-layout .chat-people,
+#main-content .pati-dm-layout .chat-window{
+  background:var(--pati-v2-bg)!important;color:var(--pati-v2-ink)!important;
+  border-color:var(--pati-v2-stroke)!important;
+}
+#main-content .pati-dm-layout .chat-window>header{
+  background:var(--pati-v2-paper)!important;border-bottom:1px solid var(--pati-v2-stroke)!important;
+  padding-inline:clamp(10px,2.8vw,20px)!important;box-shadow:0 1px 6px #00000008;
+}
+#main-content .pati-dm-layout .chat-window>header strong{
+  font-weight:750!important;letter-spacing:-.018em;
+}
+#main-content .pati-dm-layout .chat-window>header small{color:var(--pati-v2-muted)!important}
+#main-content .pati-dm-layout .chat-history{
+  background:var(--pati-v2-bg)!important;gap:5px!important;
+  padding:clamp(12px,2.5vw,24px)!important;
+  scrollbar-color:var(--pati-v2-stroke) transparent;
+}
+#main-content .pati-dm-layout .chat-history .bubble-chat{
+  font-family:inherit;font-size:14.5px!important;line-height:1.46!important;
+  max-width:min(81%,490px)!important;min-width:0;overflow-wrap:anywhere;
+  padding:10px 13px!important;margin-block:2px!important;
+  background:var(--pati-v2-received)!important;color:var(--pati-v2-ink)!important;
+  border-color:var(--pati-v2-stroke)!important;
+  border-radius:17px 17px 17px 5px!important;
+  box-shadow:0 1px 2px rgba(0,0,0,.045)!important;
+}
+#main-content .pati-dm-layout .chat-history .bubble-chat.mine{
+  background:var(--pati-v2-sent)!important;
+  color:var(--pati-v2-ink)!important;border-color:transparent!important;
+  border-radius:17px 17px 5px 17px!important;
+}
+#main-content .pati-dm-layout .chat-history .bubble-chat>small{
+  display:block;font-size:10.5px!important;line-height:1.25!important;opacity:.66!important;
+  letter-spacing:.01em;font-variant-numeric:tabular-nums;
+}
+/* Media bubbles: no thick frame around the actual image; no awkward letterboxing. */
+#main-content .pati-dm-layout .chat-history .bubble-chat:has(.pati-dm-image-open),
+#main-content .pati-dm-layout .chat-history .bubble-chat.pati-dm-image-message{
+  padding:2px!important;border:none!important;box-shadow:none!important;
+  background:transparent!important;
+}
+#main-content .pati-dm-layout .chat-history .pati-dm-image-open{
+  border:1px solid var(--pati-v2-stroke)!important;border-radius:15px!important;
+  overflow:hidden!important;background:var(--pati-v2-paper)!important;
+}
+#main-content .pati-dm-layout .chat-history .pati-dm-image{
+  display:block!important;width:auto!important;max-width:100%!important;
+  height:auto!important;max-height:min(55dvh,430px)!important;
+  object-fit:contain!important;border:0!important;border-radius:14px!important;
+}
+#main-content .pati-dm-layout .chat-form{
+  background:var(--pati-v2-paper)!important;border-top:1px solid var(--pati-v2-stroke)!important;
+  padding:10px clamp(9px,2vw,15px) calc(10px + env(safe-area-inset-bottom,0px))!important;
+  gap:8px!important;
+}
+#main-content .pati-dm-layout .chat-form input[name="body"]{
+  min-height:43px!important;background:var(--pati-v2-input)!important;
+  color:var(--pati-v2-ink)!important;border:1px solid var(--pati-v2-stroke)!important;
+  border-radius:999px!important;padding-inline:16px!important;
+  font-size:14px!important;box-shadow:0 1px 2px #00000006!important;
+}
+#main-content .pati-dm-layout .chat-form input[name="body"]::placeholder{color:var(--pati-v2-muted)!important}
+#main-content .pati-dm-layout .chat-people .pati-dm-list-row{
+  min-height:72px!important;border-bottom:1px solid var(--pati-v2-stroke)!important;
+}
+#main-content .pati-dm-layout .chat-people .chat-person{
+  color:var(--pati-v2-ink)!important;min-width:0!important;
+}
+#main-content .pati-dm-layout .chat-people .chat-person:focus-visible,
+#main-content .pati-dm-layout .chat-history button:focus-visible{
+  outline:2px solid var(--pati-v2-muted)!important;outline-offset:2px!important;
+}
+/* Feed/media: respect the original aspect ratio and prevent black side gutters. */
+#main-content .pati-feed-card .pati-video-frame,
+#main-content .pati-feed-card .pati-carousel,
+#main-content .pati-feed-card .pati-carousel-slide{
+  min-width:0!important;max-width:100%!important;overflow:hidden!important;
+  background:var(--pati-v2-bg)!important;
+}
+#main-content .pati-feed-card .pati-video-frame video,
+#main-content .pati-feed-card .pati-carousel-slide img{
+  display:block!important;width:100%!important;height:auto!important;
+  max-width:100%!important;object-fit:contain!important;
+}
+#main-content .pati-ig-grid .pati-profile-tile{
+  min-width:0;overflow:hidden;background:var(--pati-v2-bg);
+}
+#main-content .pati-ig-grid .pati-profile-tile :is(img,video){
+  width:100%!important;height:100%!important;object-fit:cover!important;
+}
+#main-content .pati-media-gallery img,
+#main-content .pati-media-review-item img{
+  max-width:100%;object-fit:contain;image-orientation:from-image;
+}
+#main-content :is(.pati-media-review-item,.pati-media-thumb){
+  min-width:0;overflow:hidden;
+}
+@media(max-width:740px){
+  #main-content .pati-dm-layout .chat-history{padding:12px 10px!important}
+  #main-content .pati-dm-layout .chat-history .bubble-chat{max-width:86%!important}
+  #main-content .pati-dm-layout .chat-window>header{min-height:60px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #main-content .pati-dm-layout *,
+  #main-content .pati-feed-card *{scroll-behavior:auto!important;animation-duration:.01ms!important}
+}
