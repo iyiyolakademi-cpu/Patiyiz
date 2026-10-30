@@ -4902,7 +4902,10 @@ function profilePage(){
  '<div class="pati-ig-summary"><div class="pati-ig-avatar '+(unseenProfileStory?'pati-profile-has-story':liveProfileStory?'pati-profile-story-seen':'')+'">'+
  (liveProfileStory?'<button type="button" class="pati-profile-story-view" data-action="story-view" data-id="'+esc(p.id)+'" aria-label="'+esc(p.display_name||'Kullanıcı')+' hikâyesini izle" title="Hikâyeyi izle">'+avatar(p,'l')+'</button>':avatar(p,'l'))+
  (own?'<button type="button" class="pati-profile-story-plus" data-action="story-create" aria-label="Profilinden hikâye paylaş" title="Hikâye ekle">'+ico('plus')+'</button>':'')+'</div><div class="pati-ig-info"><div class="pati-ig-handle-row"><strong class="pati-ig-handle">@'+esc(p.handle||'patiyiz')+'</strong>'+verifiedBadge(p)+'</div><strong class="pati-ig-name">'+esc(p.display_name||'Patiyiz üyesi')+'</strong><div class="pati-ig-stats"><span><b data-pati-count="posts">'+((cachedCounts?.posts??posts.filter(x=>x.author_id===p.id).length)+((typeof patiCollabs!=='undefined'?patiCollabs.rows:[]).filter(x=>x.user_id===p.id&&x.status==='accepted').length))+'</b><small>gönderi</small></span><button type="button" data-action="followers-list" data-id="'+esc(p.id)+'" data-mode="followers"><b data-pati-count="followers">'+followers+'</b><small>takipçi</small></button><button type="button" data-action="followers-list" data-id="'+esc(p.id)+'" data-mode="following"><b data-pati-count="following">'+following+'</b><small>takip edilen</small></button></div></div></div>'+
- (p.bio?'<div class="pati-ig-bio">'+esc(p.bio)+'</div>':'')+patiProfileLinksHTML(p)+mutualMarkup+
+ ((String(p.professional_title||'').trim()||p.bio)?'<div class="pati-ig-about">'+
+    (String(p.professional_title||'').trim()?'<div class="pati-ig-profession">'+esc(String(p.professional_title).trim())+'</div>':'')+
+    (p.bio?'<div class="pati-ig-bio">'+esc(p.bio)+'</div>':'')+'</div>':'')+
+ patiProfileLinksHTML(p)+mutualMarkup+
  
  '<div class="pati-ig-actions">'+(own?button('Profili düzenle','edit-profile'):button(followed.has(p.id)?'Takiptesin':patiIsFollowRequested(p.id)?'İstek gönderildi':followBack?'Sen de takip et':'Takip et','follow','data-id="'+esc(p.id)+'"'+(followBack?' data-follow-back="true"':''))+button('Mesaj gönder','chat','data-id="'+esc(p.id)+'"')+button('Hesabı bildir','report','data-id="'+esc(p.id)+'" data-kind="profile"')+button(patiSafetyState.restrictions.has(p.id)?'Kısıtlamayı kaldır':'Kısıtla','pati-restrict','data-id="'+esc(p.id)+'"'))+'</div>'+(own&&typeof patiCreatorPreviewHTML==='function'?patiCreatorPreviewHTML():'')+(own?patiVerificationProfileAction():'')+
  '<div class="pati-ig-tabs" role="tablist" aria-label="Profil gönderileri">'+iconTabs.map(x=>'<button type="button" role="tab" aria-selected="'+(profilePostsTab===x[0])+'" class="'+(profilePostsTab===x[0]?'active':'')+'" data-action="profile-posts-tab" data-id="'+x[0]+'" aria-label="'+x[2]+'">'+x[1]+'</button>').join('')+'</div>'+
@@ -6363,6 +6366,10 @@ function editProfile(){
  '<div class="pati-edit-sections"><div class="pati-edit-section-title">Profil bilgileri</div>'+
  formField('display_name','Ad','text',p.display_name,true)+
  formField('handle','Kullanıcı adı','text',p.handle,true)+
+ '<div class="pati-field pati-profile-title-field"><label for="f-professional_title">Profil unvanı (isteğe bağlı)</label>'+
+ '<input id="f-professional_title" name="professional_title" type="text" maxlength="60" list="pati-profile-title-options" autocomplete="off" placeholder="Örn. Girişimci veya Yazar" value="'+esc(p.professional_title||'')+'">'+
+ '<datalist id="pati-profile-title-options">'+['Girişimci','Yazar','İçerik Üreticisi','Veteriner Hekim','Hayvansever','Eğitimci','Yazılım Geliştirici','Kurucu','Fotoğrafçı','Sanatçı','Tasarımcı','Öğrenci','Sporcu','Müzisyen','İşletme Sahibi'].map(x=>'<option value="'+esc(x)+'"></option>').join('')+'</datalist>'+
+ '<small>İstediğin unvanı yazabilirsin. Birden fazla unvan için: Girişimci · Yazar</small></div>'+
  textField('bio','Biyografi',p.bio||'',false,500)+
  formField('city','Şehir','text',p.city||'')+
  '<div class="pati-field pati-gender-option"><label for="pati-profile-gender">Cinsiyet (isteğe bağlı)</label><select id="pati-profile-gender" name="analytics_gender"><option value="">Seçim yapmadan devam et</option><option value="woman">Kadın</option><option value="man">Erkek</option><option value="other">Diğer</option><option value="undisclosed">Paylaşmak istemiyorum</option></select><small>Hesabında görünmez; yalnızca yeterli sayıda ziyaretçi varsa toplu istatistiklere dahil edilir.</small></div>'+
@@ -7300,7 +7307,7 @@ case 'wellness-reminder-form':await patiWellnessSaveReminder(form,str);break;cas
  const item=result.data[0];data.care=[item,...data.care.filter(x=>x.id!==item.id)];
  patiyizLoadedTables.add('care_tasks');closeModal(true);if(view==='care'||(view==='my-pet'&&patiMyPetTab==='care'))render();
  notify(editId?'Bakım görevi güncellendi.':'Bakım görevi eklendi.');break;}
-case 'profile-form':{let handle=str('handle').toLowerCase();if(!/^[a-z0-9_]{3,24}$/.test(handle))throw Error('Kullanıcı adı 3–24 karakter, küçük harf, rakam veya alt çizgi olmalı.');let o={display_name:str('display_name'),handle,city:str('city'),bio:str('bio'),profile_links:patiCollectProfileLinks(form)},image=await upload(f.get('photo'));if(image)o.avatar_url=image;await save('profiles',o,me.id);
+case 'profile-form':{let handle=str('handle').toLowerCase();if(!/^[a-z0-9_]{3,24}$/.test(handle))throw Error('Kullanıcı adı 3–24 karakter, küçük harf, rakam veya alt çizgi olmalı.');let professionalTitle=str('professional_title').replace(/\s+/g,' ').trim();if(professionalTitle.length>60)throw Error('Profil unvanın en fazla 60 karakter olabilir.');let o={display_name:str('display_name'),handle,city:str('city'),professional_title:professionalTitle,bio:str('bio'),profile_links:patiCollectProfileLinks(form)},image=await upload(f.get('photo'));if(image)o.avatar_url=image;await save('profiles',o,me.id);
  const audienceGender=str('analytics_gender');
  if(['woman','man','other'].includes(audienceGender)){
   const added=await sb.from('patiyiz_audience_demographics').upsert({user_id:me.id,gender:audienceGender,updated_at:new Date().toISOString()},{onConflict:'user_id'});
