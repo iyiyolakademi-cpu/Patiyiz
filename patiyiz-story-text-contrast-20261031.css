@@ -1,0 +1,50 @@
+/* Story sharing contrast: text-only posts are readable instead of black-on-black. */
+#story-overlay.pati-story-has-source .pati-story-share-card .pati-story-share-media.pati-story-share-media-text{
+ display:flex!important;align-items:center!important;justify-content:flex-start!important;
+ min-height:145px!important;height:auto!important;max-height:min(44dvh,340px)!important;
+ padding:19px 18px!important;box-sizing:border-box!important;
+ overflow-y:auto!important;overscroll-behavior:contain;
+ background:#f7f8fa!important;color:#15161a!important;
+ text-align:left!important;border:0!important;border-radius:0!important;
+ white-space:normal!important;word-break:normal!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-card .pati-story-share-text-content{
+ display:block!important;width:100%!important;max-width:100%!important;
+ white-space:pre-line!important;overflow-wrap:anywhere!important;
+ margin:0!important;padding:0!important;opacity:1!important;
+ font-family:inherit!important;font-size:clamp(13px,2.8vw,16px)!important;
+ font-weight:650!important;line-height:1.55!important;
+ color:#15161a!important;-webkit-text-fill-color:#15161a!important;
+ text-shadow:none!important;mix-blend-mode:normal!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-card .pati-story-share-post-caption{
+ background:#fff!important;color:#17181c!important;
+ -webkit-text-fill-color:#17181c!important;opacity:1!important;text-shadow:none!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-card .pati-story-share-profile strong{
+ color:#17181c!important;-webkit-text-fill-color:#17181c!important;opacity:1!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-card>.pati-story-shared-source{
+ color:#fff!important;-webkit-text-fill-color:#fff!important;opacity:1!important;
+ background:#111216!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-card>.pati-story-shared-source>span{
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+/* A normal story caption always stays readable on the dark story viewer. */
+#story-overlay .story-player>.story-caption,
+#story-overlay .story-player .pati-own-story-stack>.story-caption{
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ opacity:1!important;text-shadow:0 2px 7px rgba(0,0,0,.85)!important;
+ background:rgba(9,10,14,.58)!important;border-radius:13px!important;
+ padding:9px 12px!important;box-sizing:border-box!important;
+ overflow-wrap:anywhere!important;white-space:pre-line!important;
+}
+@media(max-width:540px){
+ #story-overlay.pati-story-has-source .pati-story-share-card .pati-story-share-media.pati-story-share-media-text{
+  padding:14px 13px!important;max-height:min(38dvh,290px)!important;
+ }
+ #story-overlay.pati-story-has-source .pati-story-share-card .pati-story-share-text-content{
+  font-size:13px!important;line-height:1.5!important;
+ }
+}
