@@ -8,13 +8,19 @@ const root=path.resolve(native,'..'),out=path.join(native,'www');
 const files=[
 'index.html','admin.html','privacy.html','terms.html','delete-account.html',
 'style.css','patiyiz-inspired.css','ios-reels.css','follower-milestones.css','dm-fullscreen.css','pets-completion.css','reels-stage4.css','manifest.webmanifest','config.js','push-config.js',
-'pati-identity-owner.js','pati-identity-owner.css','pati-kimligi.html','knowledge.js','reels-editor.js','gallery-picker.js','academy-curriculum.js',
+'knowledge.js','reels-editor.js','gallery-picker.js','academy-curriculum.js',
 'academy-101-part1.js','academy-101-part2.js','follower-milestones.js',
 'instagram-share-clean.css','post-detail-twitter-text-stage16.css','patiyiz-avatar-crop-20261030.js','patiyiz-upload.js','patiyiz-video-prepare.js','patiyiz-camera-draft.js','patiyiz-system-media.js','app.js','patiyiz-sw.js','patiyiz-camera-flow.js',
 'pati-coin.svg','profile-explore-coin-polish.css','patiyiz-mobile-rewards-shop-20261025.css','patiyiz-ux-hayvanim-20261025.css','patiyiz-shared-create-studio-20261025.css','patiyiz-selected-logo.svg','patiyiz-icon.svg','patiyiz-app-icon-192.png',
 'patiyiz-app-icon-512.png','patiyiz-apple-touch-icon.png','patiyiz-favicon-48.png',
 'patiyiz-profile-chat-photo-polish-20261028.css','patiyiz-social-phase1-20261028.css','patiyiz-social-private-groups-20261028.css',
 'patiyiz-desktop-responsive-story-20261029.css','patiyiz-delight-20261029.css','patiyiz-theme-contrast-20261029.css','patiyiz-delight-20261029.js','patiyiz-streak-popup-20261029.css','patiyiz-dark-contrast-audit-20261029.css','patiyiz-theme-unified-20261029.css','patiyiz-polish-collab-dm-story-20261029.css','patiyiz-collab-picker-20261029.js','patiyiz-story-view-time-20261029.css','patiyiz-mascot.svg','patiyiz-micro-motion-20261029.css','patiyiz-micro-motion-20261029.js','patiyiz-dm-content-studio-20261029.css','patiyiz-neutral-chat-profile-20261029.css','patiyiz-profile-chat-repair-20261029.css','patiyiz-story-seen-dark-final-20261029.css','patiyiz-creator-crop-20261029.css','patiyiz-compose-stability-20261029.css','patiyiz-crop-insights-mobile-final-20261029.css','patiyiz-settings-private-20261030.css','patiyiz-direct-reposts-dm-media-20261030.css','patiyiz-story-media-mentions-20261030.css','patiyiz-mention-mobile-fix-20261030.css','patiyiz-blue-mentions-dm-20261030.css','patiyiz-comment-profile-only-20261030.css','patiyiz-post-likers-fullscreen-20261030.css','patiyiz-compact-shared-story-20261030.css','patiyiz-black-outgoing-messages-20261030.css','patiyiz-mobile-auth-redesign-20261030.css','patiyiz-clean-story-dm-shares-20261030.css','patiyiz-pan-zoom-photos-20261030.css','patiyiz-social-quality-20261029.css','patiyiz-social-quality-20261029.js'];
+// Include every referenced same-origin CSS/JS/image automatically in the native app.
+const htmlSource=await readFile(path.join(root,'index.html'),'utf8');
+const referenced=[...htmlSource.matchAll(/(?:href|src)="([^"]+)"/g)].map(x=>x[1].split('?')[0]);
+for(const file of referenced){
+ if(/^[a-zA-Z0-9._-]+\.(?:css|js|svg|png|webp|webmanifest)$/.test(file)&&!files.includes(file))files.push(file);
+}
 await rm(out,{recursive:true,force:true});await mkdir(path.join(out,'vendor'),{recursive:true});
 for(const name of files)await cp(path.join(root,name),path.join(out,name));
 await cp(path.join(native,'src/native-reels.css'),path.join(out,'native-reels.css'));
