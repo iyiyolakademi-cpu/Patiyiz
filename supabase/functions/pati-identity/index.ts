@@ -128,17 +128,22 @@ Deno.serve(async req=>{
   const user=await getOwner(req);
   if(!user)return err('Oturum gerekli.',401,origin);
   if(action==='owner-list'){
+   // Fetch the user's pets directly from authenticated ownership, not from a cached global feed.
+   const {data:pets,error:petsError}=await admin.from('pets')
+    .select('id,owner_id,name,species,breed,photo_url').eq('owner_id',user.id).order('created_at',{ascending:false}).limit(200);
+   if(petsError)return err('Hayvan kayıtları alınamadı. Daha sonra yeniden dene.',500,origin);
    const {data:tags,error}=await admin.from('pati_identity_tags').select('id,pet_id,enabled,show_photo,public_note,token_hint,updated_at').eq('owner_id',user.id).limit(100);
    if(error)return err('Kimlikler yüklenemedi.',500,origin);
    const {data:threads}=await admin.from('pati_identity_threads').select('id,tag_id,status,created_at,expires_at').eq('owner_id',user.id).order('created_at',{ascending:false}).limit(50);
    const ids=(threads||[]).map(t=>t.id);
    const {data:messages}=ids.length?await admin.from('pati_identity_messages').select('id,thread_id,sender,body,created_at').eq('owner_id',user.id).in('thread_id',ids).order('created_at',{ascending:true}).limit(1000):{data:[]};
-   return respond({ok:true,tags:tags||[],threads:threads||[],messages:messages||[]},200,origin);
+   return respond({ok:true,pets:pets||[],tags:tags||[],threads:threads||[],messages:messages||[]},200,origin);
   }
   if(action==='owner-create'){
    if(!uuidOk(input.petId))return err('Hayvan seçimi geçersiz.',400,origin);
-   const {data:pet}=await admin.from('pets').select('id').eq('id',input.petId).eq('owner_id',user.id).maybeSingle();
-   if(!pet)return err('Bu hayvanın kaydına erişimin yok.',403,origin);
+   const {data:pet,error:petError}=await admin.from('pets').select('id').eq('id',input.petId).eq('owner_id',user.id).maybeSingle();
+   if(petError)return err('Hayvan kaydına şu anda ulaşılamadı.',500,origin);
+   if(!pet)return err('Bu hayvan bu hesapta bulunamadı. Pati Kimliği ekranını yenile.',403,origin);
    const token=randomToken();
    const {data,error}=await admin.from('pati_identity_tags').upsert({pet_id:pet.id,owner_id:user.id,token_hash:await sha(token),token_hint:token.slice(-4),enabled:true,updated_at:new Date().toISOString()},{onConflict:'pet_id'}).select('id,pet_id,enabled,token_hint').single();
    if(error||!data)return err('QR oluşturulamadı.',500,origin);
