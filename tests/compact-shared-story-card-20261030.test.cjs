@@ -41,7 +41,7 @@ test('Compact story layout uses media-constrained card, not full screen, and res
  assert.match(css,/width:min\(76vw,310px\)!important/);
  assert.match(css,/height:min\(36dvh,306px\)!important/);
  assert.match(css,/object-fit:contain!important/);
- assert.match(css,/pati-story-share-card>\\.pati-story-shared-source/);
+ assert.ok(css.includes('.pati-story-share-card>.pati-story-shared-source'));
  assert.match(css,/pati-own-story-stack/);
  assert.match(css,/env\(safe-area-inset-bottom,0px\)/);
  assert.match(css,/@media\(max-height:690px\)/);
