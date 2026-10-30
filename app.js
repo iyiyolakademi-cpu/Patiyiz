@@ -4687,8 +4687,25 @@ function patiMentionsHTML(body){
  const plain=esc(body||'');
  return plain.replace(/(^|[^\p{L}\p{N}_])@([\p{L}\p{N}._]{2,40})/gu,(whole,prefix,handle)=>{
   const person=data.profiles.find(x=>String(x.handle||'').toLocaleLowerCase('tr-TR')===handle.toLocaleLowerCase('tr-TR')&&!blocked.has(x.id));
-  return person?prefix+'<button type="button" class="pati-mention-link" data-action="view-user" data-id="'+esc(person.id)+'">@'+esc(handle)+'</button>':whole;
+  // Keep @mentions visibly blue even when the mentioned profile has not yet loaded.
+  // A tap resolves the public handle under normal RLS; blocked users remain inaccessible.
+  return prefix+'<button type="button" class="pati-mention-link" '+(person?'data-action="view-user" data-id="'+esc(person.id)+'"':'data-action="pati-mention-profile" data-handle="'+esc(handle)+'"')+' aria-label="@'+esc(handle)+' profiline git">@'+esc(handle)+'</button>';
  });
+}
+async function patiOpenMentionProfile(handle){
+ const username=String(handle||'').trim().replace(/^@/,'').slice(0,40);
+ if(!/^[\p{L}\p{N}._]{2,40}$/u.test(username)||!me||!sb)return;
+ let person=data.profiles.find(p=>String(p.handle||'').toLocaleLowerCase('tr-TR')===username.toLocaleLowerCase('tr-TR'));
+ if(!person){
+  const result=await sb.from('profiles').select('id,display_name,handle,avatar_url,is_verified').ilike('handle',username).limit(1);
+  if(result.error){console.warn('Etiketli profil sorgusu:',result.error.message);notify('Etiketlenen profil açılamadı.');return}
+  person=result.data?.[0];
+  if(person&&!data.profiles.some(p=>p.id===person.id))data.profiles.push(person);
+ }
+ if(!person||blocked.has(person.id)){notify('Bu kullanıcı profili görüntülenemiyor.');return}
+ followReturnList=view==='follows-list';
+ if(!followReturnList&&view!=='profile')lastDetailView=view;
+ profileId=person.id;navigate('profile');
 }
 function patiMentionOpen(mode){
  const form=document.getElementById(mode==='comment'?'comment-form':'post-form');
@@ -4803,7 +4820,7 @@ function showComments(postId){
  if(footer)footer.innerHTML='<div class="pati-comment-quick">'+['❤️','🙌','🔥','👏','🥹','😍','😂'].map(e=>'<button type="button" data-action="comment-emoji" data-emoji="'+e+'">'+e+'</button>').join('')+'</div>'+
  '<div class="pati-comment-editor-row"><div class="pati-comment-me">'+avatar(current(),'s')+'</div>'+
  '<textarea name="body" aria-label="Yorum ekle" maxlength="750" rows="1" required placeholder="Yorum ekle..."></textarea>'+
- '<button type="button" class="pati-comment-mention" data-action="pati-mention-open" data-id="comment" aria-label="Kişi etiketle">@</button><button type="submit" class="pati-comment-send">Gönder</button></div>';
+ '<button type="button" class="pati-comment-mention" data-action="pati-mention-open" data-id="comment" aria-label="Kişi etiketle"><span aria-hidden="true">@</span> Etiketle</button><button type="submit" class="pati-comment-send">Gönder</button></div>';
  const input=form.querySelector('[name="body"]');if(input)input.value=draft;
  if(parent){form.dataset.parent=parent;const who=profile(data.comments.find(c=>c.id===parent)?.author_id);const hint=form.querySelector('#comment-reply-hint');if(hint)hint.innerHTML='↳ '+displayName(who)+' kullanıcısına yanıt <button type="button" data-action="comment-reply-cancel">× Vazgeç</button>'}
  const list=form.querySelector('.comment-list');if(list)list.scrollTop=scroll;
@@ -5519,7 +5536,7 @@ function compose(post,mode='post',autoPick=true){
  const editor=!post&&!textOnly?'<div class="pati-media-controls" hidden><label>Fotoğrafın kadrajını düzenle</label><div class="pati-ratio-options">'+sizes.map(([key,label],i)=>'<button type="button" class="'+(i===0?'active':'')+'" data-action="post-ratio" data-id="'+key+'">'+label+'</button>').join('')+'</div><input type="hidden" name="aspect" value="'+(story?'9:16':'original')+'"><button type="button" class="pati-inline-crop-toggle" data-action="post-crop-open">Fotoğrafı kırp</button><div class="pati-crop-preview" hidden><div class="pati-crop-pages"><button type="button" data-action="post-crop-prev" aria-label="Önceki fotoğraf">‹</button><strong id="pati-crop-index">1 / 1</strong><button type="button" data-action="post-crop-next" aria-label="Sonraki fotoğraf">›</button></div><canvas id="pati-crop-canvas" width="320" height="400" aria-label="Fotoğraf kırpma önizlemesi"></canvas><p>Fotoğrafı sürükleyerek istediğin kadrajı seç.</p><label>Yakınlaştır <input type="range" name="crop_zoom" min="1" max="2.5" value="1" step="0.05"></label></div></div>':textOnly?'':'<p class="small-note">Düzenleme sırasında mevcut medya korunur.</p>';
  const flow=!post&&!textOnly?'<div class="pati-composer-flow" aria-label="Paylaşım adımları"><span><b>1</b> Medya seç</span><i>›</i><span><b>2</b> Düzenle</span><i>›</i><span><b>3</b> Paylaş</span></div>':'';
  const invite=!post&&!story?(window.PatiyizCollabPicker?.makeMarkup('pati-collab-handle')||''):'';
- const tagButton=!story&&!post?'<button type="button" class="pati-mention-open" data-action="pati-mention-open" data-id="post">@ Kişi etiketle</button>':'';
+ const tagButton=!story&&!post?'<button type="button" class="pati-mention-open" data-action="pati-mention-open" data-id="post"><span aria-hidden="true">@</span> Etiketle</button>':'';
  const storyAudienceSelect=story?'<div class="pati-field"><label>Kimler görebilir?<select name="story_audience"><option value="everyone">Herkes</option><option value="close_friends">Yakın Arkadaşlar</option></select></label></div>':'';
  const formBody=flow+(!post&&!textOnly?postMediaField(mode):'')+textField('body',textOnly?'Ne düşünüyorsun?':story?'Hikâye açıklaması (isteğe bağlı)':'Açıklama (isteğe bağlı)',post?.body||'',textOnly,story?300:1500)+tagButton+storyAudienceSelect+editor+invite;
  modal(title,formBody,'post-form');
@@ -6485,6 +6502,7 @@ case 'dm-reply':{const m=patiDmFindMessage(id);const f=document.getElementById('
  break;
 }case 'comment':showComments(id);void patiFetchPostComments(id);break;case 'comment-more':void patiFetchPostComments(id,true);break;case 'comment-emoji':{const ta=document.querySelector('#comment-form textarea[name="body"]');if(ta){ta.value+=target.dataset.emoji||'';ta.focus()}break;}case 'comment-reply':{const f=$('#comment-form');if(f){f.dataset.parent=id;const who=profile(data.comments.find(x=>x.id===id)?.author_id).display_name;const hint=$('#comment-reply-hint');if(hint)hint.innerHTML='↳ '+esc(who)+' kullanıcısına yanıt <button type="button" data-action="comment-reply-cancel">× Vazgeç</button>';f.querySelector('textarea')?.focus()}break}case 'comment-reply-cancel':{const f=$('#comment-form');if(f)f.dataset.parent='';const hint=$('#comment-reply-hint');if(hint)hint.textContent='';break}case 'comment-thread-toggle':{const form=$('#comment-form');const postId=form?.dataset.post;if(!postId)break;if(patiyizCommentExpandedReplies.has(id))patiyizCommentExpandedReplies.delete(id);else patiyizCommentExpandedReplies.add(id);showComments(postId);break;}case 'comment-pin':run(()=>patiCommentPinToggle(id));break;
 case 'pati-mention-open':patiMentionOpen(id==='comment'?'comment':'post');break;
+case 'pati-mention-profile':void patiOpenMentionProfile(target.dataset.handle);break;
 case 'pati-mention-select':{const picker=target.closest('.pati-mention-picker'),form=picker?.closest('form'),textarea=form?.querySelector('textarea[name="body"]');if(textarea){const name='@'+(target.dataset.handle||'');textarea.setRangeText(name+' ',textarea.selectionStart||textarea.value.length,textarea.selectionEnd||textarea.value.length,'end');textarea.focus();}picker?.remove();break}
 case 'comment-like':run(async()=>{const form=$('#comment-form');const postId=form?.dataset.post||'',draft=form?.querySelector('textarea')?.value||'',parent=form?.dataset.parent||'';const liked=data.commentLikes.some(x=>x.comment_id===id&&x.user_id===me.id);let r=liked?await sb.from('comment_likes').delete().eq('comment_id',id).eq('user_id',me.id):await sb.from('comment_likes').insert({comment_id:id,user_id:me.id});if(r.error)throw r.error;await load();showComments(postId);const next=$('#comment-form');if(next){next.querySelector('textarea').value=draft;next.dataset.parent=parent;const hint=$('#comment-reply-hint');if(parent&&hint)hint.textContent=profile(data.comments.find(c=>c.id===parent)?.author_id).display_name+' kullanıcısına cevap veriyorsun';}});break;case 'comment-delete':{const c=data.comments.find(x=>x.id===id);if(!c||c.author_id!==me.id)break;if(!confirm('Yorum silinsin mi?'))break;run(async()=>{const post=$('#comment-form')?.dataset.post;const r=await sb.from('comments').delete().eq('id',id).eq('author_id',me.id);if(r.error)throw r.error;
   data.comments=data.comments.filter(row=>row.id!==id);
