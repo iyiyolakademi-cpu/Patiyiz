@@ -1,17 +1,35 @@
 /* Pati Kimliği — owner-only UI. Messages use separate finder threads, not regular DMs. */
 (function(global){
 'use strict';
-let api=null,owner='',selected='',state={loaded:false,busy:false,error:'',tags:[],threads:[],messages:[],token:'',tokenPet:''};
+let api=null,owner='',selected='',state={loaded:false,busy:false,error:'',pets:[],tags:[],threads:[],messages:[],token:'',tokenPet:''};
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const link=token=>'https://patiyiz.com/pati-kimligi.html#'+token;
-function ownPets(){return (api?.pets||[]).filter(p=>p.owner_id===owner)}
+function ownPets(){return state.loaded?state.pets:(api?.pets||[]).filter(p=>p.owner_id===owner)}
 function currentPet(){return ownPets().find(p=>p.id===selected)}
 function tag(){return state.tags.find(t=>t.pet_id===selected)}
 function active(){return !!api?.main?.querySelector('#pati-identity-root')}
 function flash(message,bad){if(api?.notify)api.notify(message,!!bad);else global.alert(message)}
 async function invoke(action,extra={}){
- const {data,error}=await api.sb.functions.invoke('pati-identity',{body:{action,...extra}});
- if(error)throw new Error('Pati Kimliği sunucusuna ulaşılamadı. Servis henüz kurulmamış olabilir.');
+ let result;
+ try{result=await api.sb.functions.invoke('pati-identity',{body:{action,...extra}})}
+ catch{throw new Error('Bağlantı kurulamadı. İnternet bağlantını kontrol edip yeniden dene.')}
+ const {data,error}=result;
+ if(error){
+  let message='';
+  const response=error.context;
+  if(response&&typeof response.json==='function'){
+   try{
+    const body=await (typeof response.clone==='function'?response.clone():response).json();
+    if(typeof body?.error==='string')message=body.error;
+   }catch{}
+  }
+  if(!message){
+   if(response?.status===401)message='Oturum süren dolmuş. Çıkış yapıp yeniden giriş yap.';
+   else if(response?.status===403)message='Bu hayvanın QR kimliği için hesabın doğrulanamadı. Sayfayı yenile.';
+   else message=error.name==='FunctionsFetchError'?'Sunucuya bağlanılamadı. Bağlantını kontrol et.':'QR servisi isteği tamamlayamadı. Yeniden dene.';
+  }
+  throw new Error(message);
+ }
  if(!data?.ok)throw new Error(data?.error||'İşlem tamamlanamadı.');
  return data;
 }
@@ -34,8 +52,8 @@ function render(){
  }).join('');
  api.main.innerHTML='<section id="pati-identity-root" class="pati-identity-owner">'+
   '<header class="pati-identity-top"><div><small>PATİYİZ · HAYVANIM</small><h1>Pati Kimliği</h1><p>Dostunun QR kimliğini güvenle yönet.</p></div><button type="button" data-view="my-pet">← Hayvanım</button></header>'+
-  '<div class="pati-identity-panel"><label class="pati-identity-label" for="pati-identity-pet">Hayvan seç</label><select id="pati-identity-pet" '+(!pets.length?'disabled':'')+'>'+pets.map(p=>'<option value="'+esc(p.id)+'" '+(selected===p.id?'selected':'')+'>'+esc(p.name||'Patili dost')+'</option>').join('')+'</select>'+
-  (!pets.length?'<p>Henüz hayvan kaydın yok. Önce Hayvanım bölümünden hayvan ekle.</p>':state.error?'<p role="alert">'+esc(state.error)+'</p><button type="button" data-pk-act="refresh">Tekrar dene</button>':state.loaded?
+  '<div class="pati-identity-panel"><label class="pati-identity-label" for="pati-identity-pet">Hayvan seç</label><select id="pati-identity-pet" '+(!state.loaded||!pets.length?'disabled':'')+'>'+pets.map(p=>'<option value="'+esc(p.id)+'" '+(selected===p.id?'selected':'')+'>'+esc(p.name||'Patili dost')+'</option>').join('')+'</select>'+
+  (state.error?'<p role="alert">'+esc(state.error)+'</p><button type="button" data-pk-act="refresh">Tekrar dene</button>':!state.loaded?'<p role="status">Hayvanların ve Pati Kimliğin güvenli şekilde yükleniyor…</p>':!pets.length?'<p>Bu hesabında kayıtlı hayvan bulunamadı. Önce Hayvanım bölümünden kendi hayvanını ekle.</p>':state.loaded?
    '<div class="pati-identity-hero"><span class="pati-identity-state '+(t?.enabled?'active':'')+'">'+(t?t.enabled?'Aktif kimlik':'Duraklatılmış':'Henüz QR yok')+'</span><h2>'+esc(p?.name||'Patili dost')+'</h2><p>QR okutulduğunda telefon veya e-posta adresin görünmez.</p></div>'+
    (state.token&&state.tokenPet===selected?'<div class="pati-identity-generated"><div id="pati-identity-qr" role="img" aria-label="Hayvanın Pati Kimliği QR kodu"></div><p>Bu QR kodunu şimdi indir veya bağlantısını kopyala. Güvenlik nedeniyle kodun kendisi sunucuda saklanmaz; yeniden oluşturursan eski QR geçersiz olur.</p><div class="pati-identity-actions"><button data-pk-act="download" type="button">QR indir</button><button data-pk-act="copy" type="button">Bağlantıyı kopyala</button></div></div>':'')+
    '<div class="pati-identity-actions">'+(t?'<button type="button" data-pk-act="rotate">'+(state.token?'QR yeniden oluştur':'Yeni QR üret')+'</button><button type="button" data-pk-act="toggle">'+(t.enabled?'Kimliği duraklat':'Kimliği etkinleştir')+'</button>':'<button type="button" data-pk-act="create">Pati Kimliği oluştur</button>')+
@@ -54,6 +72,9 @@ async function refresh(){
  try {
   const res=await invoke('owner-list');
   if(api?.me?.id!==owner)return;
+  if(!Array.isArray(res.pets))throw Error('Hayvan listesi güvenli şekilde doğrulanamadı. Lütfen yenile.');
+  state.pets=res.pets.filter(p=>p.owner_id===owner);
+  if(!state.pets.some(p=>p.id===selected)){selected=state.pets[0]?.id||'';state.token='';state.tokenPet=''}
   state.tags=res.tags||[];state.threads=res.threads||[];state.messages=res.messages||[];
   state.error='';state.loaded=true;
  }catch(e){state.error=e.message;state.loaded=true;flash(e.message,true)}
@@ -78,8 +99,10 @@ async function act(name,id){
   if(name==='rotate'&&!confirm('Yeni QR oluşturulursa eski tasma etiketinin QR kodu çalışmayacak. Devam edilsin mi?'))return;
   state.busy=true;
   if(name==='create'||name==='rotate'){
-   const res=await invoke('owner-create',{petId:selected});
-   state.token=res.token;state.tokenPet=selected;flash('QR oluşturuldu. Etiketini şimdi kaydet.');
+   const petId=selected;
+   if(!state.loaded||!state.pets.some(p=>p.id===petId))throw Error('Önce hayvanının hesabına ait olduğunu doğrulamak için listeyi yenile.');
+   const res=await invoke('owner-create',{petId});
+   state.token=res.token;state.tokenPet=petId;flash('QR oluşturuldu. Etiketini şimdi kaydet.');
   }else if(name==='toggle'){
    const t=tag();await invoke('owner-toggle',{tagId:t.id,enabled:!t.enabled});state.token='';state.tokenPet='';
   }else if(name==='close'){
@@ -91,7 +114,7 @@ async function act(name,id){
 function mount(context){
  if(!context?.me||!context.sb||!context.main)return;
  api=context;
- if(owner!==context.me.id){owner=context.me.id;selected='';state={loaded:false,busy:false,error:'',tags:[],threads:[],messages:[],token:'',tokenPet:''}}
+ if(owner!==context.me.id){owner=context.me.id;selected='';state={loaded:false,busy:false,error:'',pets:[],tags:[],threads:[],messages:[],token:'',tokenPet:''}}
  if(!ownPets().some(p=>p.id===selected))selected=ownPets()[0]?.id||'';
  if(!context.main.__patiIdentityBound){
   context.main.__patiIdentityBound=true;
