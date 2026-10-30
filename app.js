@@ -4715,6 +4715,25 @@ function patiMentionsHTML(body){
   return prefix+'<button type="button" class="pati-mention-link" data-action="pati-mention-profile" data-handle="'+esc(handle)+'"'+(person?' data-id="'+esc(person.id)+'"':'')+' aria-label="@'+esc(handle)+' profiline git">@'+esc(handle)+'</button>';
  });
 }
+function patiOpenProfileOnly(userId){
+ if(!me||!userId||blocked.has(userId))return;
+ const fromComments=Boolean(document.getElementById('comment-form'));
+ if(fromComments){
+  // The comment sheet lives outside #main-content; it must be removed
+  // before painting the destination profile or it stays above the new page.
+  document.activeElement?.blur?.();
+  closeModal(true);
+  patiyizCommentSheetPost='';
+  selectedPostId='';
+  patiDetailState=null;
+  patiExploreReturnTo=false;
+  patiDmSharedReturnPeer='';
+ }
+ followReturnList=view==='follows-list';
+ if(!followReturnList&&view!=='profile')lastDetailView=view;
+ profileId=userId;
+ navigate('profile');
+}
 async function patiOpenMentionProfile(handle,knownId=''){
  const username=String(handle||'').trim().replace(/^@/,'').slice(0,40);
  if(!/^[\p{L}\p{N}._]{2,40}$/u.test(username)||!me||!sb)return;
@@ -4732,13 +4751,7 @@ async function patiOpenMentionProfile(handle,knownId=''){
  }
  if(me?.id!==owner)return;
  if(!person||blocked.has(person.id)){notify('Bu kullanıcı profili görüntülenemiyor.');return}
- // Comments are shown in an overlay. Dismissing it first ensures the profile
- // actually becomes visible, instead of loading invisibly behind the sheet.
- if(document.querySelector('#comment-form')?.closest('.modal-backdrop'))closeModal(true);
- followReturnList=view==='follows-list';
- if(!followReturnList&&view!=='profile')lastDetailView=view;
- profileId=person.id;
- navigate('profile');
+ patiOpenProfileOnly(person.id);
 }
 
 function patiMentionOpen(mode){
@@ -4820,8 +4833,8 @@ function showComments(postId){
   const isExpanded=patiyizCommentExpandedReplies.has(c.id);
   const fullName=displayName(person);
   return '<div class="comment-item pati-sheet-comment '+(depth?'pati-sheet-reply':'')+'" style="--pati-comment-depth:'+Math.min(depth,3)+'" data-comment-id="'+esc(c.id)+'">'+
-   '<div class="pati-sheet-comment-avatar">'+avatar(person,'s')+'</div>'+
-   '<div class="pati-sheet-comment-main"><div class="pati-sheet-comment-line"><strong>'+fullName+'</strong><time>'+patiCommentAge(c.created_at)+'</time></div>'+
+   '<div class="pati-sheet-comment-avatar"><button type="button" class="pati-comment-profile-avatar" data-action="view-user" data-id="'+esc(c.author_id)+'" aria-label="'+esc(fullName)+' profiline git">'+avatar(person,'s')+'</button></div>'+
+   '<div class="pati-sheet-comment-main"><div class="pati-sheet-comment-line"><button type="button" class="pati-comment-profile-name" data-action="view-user" data-id="'+esc(c.author_id)+'" aria-label="'+esc(fullName)+' profiline git">'+fullName+'</button><time>'+patiCommentAge(c.created_at)+'</time></div>'+
    '<p>'+patiMentionsHTML(c.body)+'</p>'+(c.id===pinnedCommentId?'<span class="pati-comment-pinned-label">📌 Sabitlenen yorum</span>':'')+
    '<div class="comment-actions">'+
    '<button type="button" data-action="comment-reply" data-id="'+esc(c.id)+'">Yanıtla</button>'+
@@ -4836,7 +4849,7 @@ function showComments(postId){
  const roots=items.filter(c=>!c.parent_id||!commentById.has(c.parent_id));
  roots.sort((a,b)=>Number(b.id===pinnedCommentId)-Number(a.id===pinnedCommentId)||new Date(a.created_at)-new Date(b.created_at));
  const intro=post&&author?'<section class="pati-comment-post-summary">'+
-  '<div class="pati-comment-post-user">'+avatar(author,'s')+'<strong>'+displayName(author)+'</strong>'+
+  '<div class="pati-comment-post-user"><button type="button" class="pati-comment-profile-avatar" data-action="view-user" data-id="'+esc(author.id)+'" aria-label="'+esc(displayName(author))+' profiline git">'+avatar(author,'s')+'</button><button type="button" class="pati-comment-profile-name" data-action="view-user" data-id="'+esc(author.id)+'" aria-label="'+esc(displayName(author))+' profiline git">'+displayName(author)+'</button>'+
   (author.id!==me.id?'<button type="button" data-action="follow" data-id="'+esc(author.id)+'" class="pati-comment-follow '+(followed.has(author.id)?'is-following':'')+'">'+(followed.has(author.id)?'Takiptesin':'Takip et')+'</button>':'')+'</div>'+
   '<p>'+esc(cut(post.video_subtitle||post.body||'',500))+'</p><small>'+esc(day(post.created_at))+'</small>'+
   '</section>':'';
@@ -6434,7 +6447,7 @@ case 'pet-delete':{const pet=data.pets.find(p=>p.id===id);
  },'Hayvan profili silindi.');
  break}
 case 'pets-more':void patiLoadCommunityPets();break;
-case 'my-profile':profileId='';lastDetailView='';navigate('profile');break;case 'view-user':followReturnList=view==='follows-list';if(!followReturnList&&view!=='profile')lastDetailView=view;profileId=id;navigate('profile');break;case 'pati-page-back':{let dest='';while(patiViewTrail.length){const candidate=patiViewTrail.pop();if(candidate!==view&&allowed.includes(candidate)){dest=candidate;break}}if(!dest)dest=patiPreviousView&&patiPreviousView!==view&&allowed.includes(patiPreviousView)?patiPreviousView:'home';patiNavigatingBack=true;navigate(dest);break}case 'profile-back':{const dest=lastDetailView&&allowed.includes(lastDetailView)?lastDetailView:'explore';lastDetailView='';profileId='';followReturnList=false;navigate(dest);break}case 'open-notification':if(target.closest('#tools-form'))closeModal(true);openNotification(id);break;case 'post-back':{
+case 'my-profile':profileId='';lastDetailView='';navigate('profile');break;case 'view-user':patiOpenProfileOnly(id);break;case 'pati-page-back':{let dest='';while(patiViewTrail.length){const candidate=patiViewTrail.pop();if(candidate!==view&&allowed.includes(candidate)){dest=candidate;break}}if(!dest)dest=patiPreviousView&&patiPreviousView!==view&&allowed.includes(patiPreviousView)?patiPreviousView:'home';patiNavigatingBack=true;navigate(dest);break}case 'profile-back':{const dest=lastDetailView&&allowed.includes(lastDetailView)?lastDetailView:'explore';lastDetailView='';profileId='';followReturnList=false;navigate(dest);break}case 'open-notification':if(target.closest('#tools-form'))closeModal(true);openNotification(id);break;case 'post-back':{
  const detail=patiDetailState;patiDetailState=null;selectedPostId='';
  const returnPeer=patiDmSharedReturnPeer;patiDmSharedReturnPeer='';const back=returnPeer?'messages':detail?.origin||(patiExploreReturnTo?'explore':'home');if(returnPeer){personId=returnPeer;mobileChatOpen=true}patiExploreReturnTo=false;
  if(detail?.origin==='profile'){profileId=detail.profileId;profilePostsTab=detail.profilePostsTab}
