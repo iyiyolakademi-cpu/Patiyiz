@@ -36,7 +36,7 @@ test('Mesaj kutusundan yeni sohbet açılabilir ve diğer kullanıcıya geçileb
  assert.match(app,/case 'dm-new':/);
  assert.ok(app.includes('data-action="chat"'));
  assert.match(app,/case 'chat':if\(!id\|\|id===me.id\)/);
- assert.match(app,/closeModal\(true\);patiDmPendingLatestPeer=id;personId=id;mobileChatOpen=true;navigate\('messages'\)/);
+ assert.match(app,/closeModal\(true\);patiDmOpenAtLatest\(id\);personId=id;mobileChatOpen=true;navigate\('messages'\)/);
 });
 
 test('Paylaş menüsünde ayrı Yazı seçeneği bulunur',()=>{
