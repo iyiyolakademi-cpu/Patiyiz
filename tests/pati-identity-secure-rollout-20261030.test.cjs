@@ -31,6 +31,8 @@ test('identity storage and messages are owner-only under RLS and anonymous conta
  assert.match(sql,/GRANT SELECT ON public\.pati_identity_tags/);
  assert.match(sql,/FOR SELECT TO authenticated USING\(owner_id=\(select auth\.uid\(\)\)\)/);
  assert.match(sql,/show_photo boolean NOT NULL DEFAULT false/);
+ assert.match(sql,/SECURITY INVOKER SET search_path/);
+ assert.match(sql,/GRANT SELECT,INSERT,UPDATE,DELETE ON public.pati_identity_tags/);
  assert.match(edge,/await human\(input\.proof,ip\)/);
  assert.match(edge,/tag-global:/);
  assert.match(edge,/\.eq\('owner_id',user\.id\)/);
