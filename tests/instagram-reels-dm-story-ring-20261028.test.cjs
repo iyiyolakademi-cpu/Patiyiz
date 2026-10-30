@@ -67,7 +67,7 @@ test('DM Reels uses a visual cover card, opens original post and preserves conve
  assert.match(app,/patiDmSharedCard\(x\)/);
  assert.match(app,/pati-dm-shared-reel/);
  assert.match(app,/patiDmHydrateSharedPosts\(conv,personId\)/);
- assert.match(app,/case 'dm-open-shared-post':run\(\(\)=>patiDmOpenSharedPost\(id\)\)/);
+ assert.match(app,/case 'dm-open-shared-post':run\(\(\)=>patiDmOpenSharedPost\(id,target\.dataset\.comment\|\|''\)\)/);
  assert.match(app,/patiDmSharedReturnPeer=personId/);
  assert.match(app,/const returnPeer=patiDmSharedReturnPeer/);
  assert.match(css,/aspect-ratio:9\/13/);

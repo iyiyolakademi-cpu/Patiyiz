@@ -1,0 +1,58 @@
+/* Instagram-like, readable blue mention actions and tagged DM content. */
+#comment-form .pati-comment-editor-row .pati-comment-mention{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:3px!important;
+ flex:0 0 auto!important;min-height:40px!important;min-width:0!important;
+ padding:5px 3px!important;margin:0!important;
+ border:0!important;border-radius:8px!important;
+ background:transparent!important;color:#2388fa!important;
+ font-size:13px!important;font-weight:800!important;line-height:1.1!important;
+ white-space:nowrap!important;letter-spacing:0!important;
+ cursor:pointer!important;
+}
+#comment-form .pati-comment-editor-row .pati-comment-mention span{font-weight:900!important;font-size:15px!important;color:inherit!important}
+#post-form .pati-mention-open{
+ display:inline-flex!important;align-items:center!important;gap:5px!important;
+ width:auto!important;max-width:100%!important;min-height:40px!important;
+ padding:8px 11px!important;border:1px solid #2388fa66!important;border-radius:11px!important;
+ background:#2388fa12!important;color:#1683f6!important;
+ font-size:13px!important;font-weight:800!important;
+ white-space:nowrap!important;
+}
+#post-form .pati-mention-open span{color:inherit!important;font-weight:900!important}
+.pati-mention-link,
+#comment-form .pati-sheet-comment .pati-mention-link,
+#main-content .pati-mention-link,
+#modal-root .pati-mention-link{
+ display:inline!important;border:0!important;background:transparent!important;
+ padding:0 1px!important;margin:0!important;
+ color:#1683f6!important;font-weight:800!important;font-size:inherit!important;
+ text-decoration:none!important;line-height:inherit!important;
+ overflow-wrap:anywhere;cursor:pointer!important;
+}
+.pati-mention-link:focus-visible,
+#comment-form .pati-comment-editor-row .pati-comment-mention:focus-visible{
+ outline:2px solid #2388fa!important;outline-offset:2px!important;
+}
+.pati-dm-shared-card .pati-dm-mention-label{
+ display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:5px!important;
+ padding:9px 12px 12px!important;
+ background:color-mix(in srgb,#2388fa 7%,transparent)!important;
+ border-top:1px solid color-mix(in srgb,#2388fa 22%,transparent)!important;
+ color:#167ad9!important;font-size:12px!important;line-height:1.35!important;
+}
+.pati-dm-shared-card .pati-dm-mention-label strong{font-weight:800!important;min-width:0!important;overflow-wrap:anywhere}
+.pati-dm-shared-card .pati-dm-mention-label small{
+ display:block!important;flex-basis:100%!important;
+ font-size:11px!important;opacity:.8!important;color:inherit!important;
+ margin-left:24px!important;
+}
+html[data-pati-theme="dark"] .pati-mention-link,
+html[data-pati-theme="dark"] #comment-form .pati-comment-editor-row .pati-comment-mention,
+html[data-pati-theme="dark"] #post-form .pati-mention-open,
+html[data-pati-theme="dark"] .pati-dm-shared-card .pati-dm-mention-label{
+ color:#66b2ff!important;
+}
+@media(max-width:380px){
+ #comment-form .pati-comment-editor-row .pati-comment-mention{padding:4px 0!important;font-size:12px!important;gap:2px!important}
+ #comment-form .pati-comment-editor-row .pati-comment-send{padding:8px!important}
+}
