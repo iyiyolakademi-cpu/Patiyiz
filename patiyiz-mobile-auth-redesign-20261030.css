@@ -1,0 +1,64 @@
+/* Mobile-first sign-in and registration; desktop keeps the existing split layout.
+   The hero now contains the ACTUAL Patiyiz logo asset, never a generic paw SVG. */
+.auth-story-top .auth-story-icon{display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff!important;border:1px solid #ffffffcc!important;border-radius:13px!important;padding:5px!important;flex:0 0 45px!important;width:45px!important;height:45px!important}
+.auth-story-top .auth-story-icon img{display:block;width:100%!important;height:100%!important;object-fit:contain!important;filter:none!important}
+.auth-pane .auth-brand .patiyiz-chosen-logo{width:100%!important;height:100%!important;object-fit:contain!important}
+.auth-pane .pati-auth-password-field{display:flex;position:relative;width:100%;min-width:0;align-items:center}
+.auth-pane .pati-auth-password-field input{width:100%;min-width:0;padding-right:53px!important}
+.auth-pane .pati-auth-eye{position:absolute;right:7px;top:50%;transform:translateY(-50%);width:42px;height:42px;display:grid;place-items:center;border:0;border-radius:11px;background:transparent;color:#6a7078;cursor:pointer}
+.auth-pane .pati-auth-eye:focus-visible{outline:2px solid #202126!important;outline-offset:1px}
+.auth-pane .pati-auth-terms{display:block!important;line-height:1.55!important;margin:10px 0!important}
+.auth-pane .pati-auth-terms label{display:flex!important;gap:8px!important;align-items:flex-start!important;font-size:12px!important;line-height:1.65!important;padding:5px 0!important;cursor:pointer!important}
+.auth-pane .pati-auth-terms input[type="checkbox"]{flex:0 0 18px!important;width:18px!important;min-width:18px!important;height:18px!important;margin:1px 0!important;accent-color:#151619!important}
+@media(max-width:680px){
+ html:has(#auth-root:not(.hidden)),body:has(#auth-root:not(.hidden)){overflow-x:hidden!important}
+ #auth-root.auth-root{display:block!important;min-height:100dvh!important;height:auto!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding:0!important;background:#fff!important;overflow-x:hidden!important}
+ #auth-root .auth-shell{display:flex!important;flex-direction:column!important;min-height:100dvh!important;height:auto!important;overflow:visible!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:#fff!important}
+ #auth-root .auth-story{display:flex!important;flex:0 0 auto!important;position:relative!important;box-sizing:border-box!important;min-height:228px!important;height:clamp(228px,36dvh,320px)!important;width:100%!important;max-width:100%!important;border:0!important;overflow:hidden!important;justify-content:space-between!important;padding:calc(16px + env(safe-area-inset-top,0px)) 23px 41px!important;background-position:center 44%!important;background-size:cover!important;background-color:#202025!important}
+ #auth-root .auth-story::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(10,12,15,.45) 0%,rgba(10,12,15,.02) 35%,rgba(10,12,15,.55) 100%);pointer-events:none}
+ #auth-root .auth-story-top{gap:10px!important;align-items:center!important;min-width:0!important}
+ #auth-root .auth-story-top .auth-story-icon{width:44px!important;height:44px!important;min-width:44px!important;flex:0 0 44px!important}
+ #auth-root .auth-story-top>strong{font-size:25px!important;color:#fff!important;line-height:1.1!important;letter-spacing:-1px!important}
+ #auth-root .auth-story-topline{display:none!important}
+ #auth-root .auth-story-bottom{position:relative;z-index:2;max-width:360px}
+ #auth-root .auth-story-label{display:none!important}
+ #auth-root .auth-story h2{font-size:clamp(22px,6.2vw,30px)!important;letter-spacing:-.9px!important;line-height:1.14!important;margin:0 0 8px!important;text-wrap:balance!important;color:#fff!important}
+ #auth-root .auth-story h2 em{color:#fff!important}
+ #auth-root .auth-story-bottom>p{font-size:11.5px!important;line-height:1.5!important;color:#f8f8f9!important;max-width:290px!important;opacity:.96!important;margin:0!important}
+ #auth-root .auth-pane{display:block!important;flex:1 0 auto!important;position:relative!important;z-index:5!important;box-sizing:border-box!important;min-height:0!important;width:100%!important;max-width:100%!important;margin:-22px 0 0!important;padding:23px clamp(18px,5vw,28px) max(29px,env(safe-area-inset-bottom,0px))!important;border:0!important;border-radius:25px 25px 0 0!important;background:#fff!important;color:#17191d!important;box-shadow:0 -13px 25px #0000000a!important;overflow:visible!important}
+ #auth-root .auth-pane .auth-card{box-sizing:border-box!important;min-width:0!important;width:100%!important;max-width:450px!important;margin:0 auto!important;padding:0!important;background:#fff!important;color:#17191d!important;border:0!important;box-shadow:none!important}
+ #auth-root .auth-pane .auth-brand{display:none!important}
+ #auth-root .auth-pane .auth-tabs{display:grid!important;grid-template-columns:1fr 1fr!important;gap:4px!important;padding:4px!important;border-radius:14px!important;margin:0 0 21px!important;border:1px solid #e9eaea!important;background:#f4f5f4!important}
+ #auth-root .auth-pane .auth-tabs button{display:flex!important;align-items:center!important;justify-content:center!important;min-width:0!important;width:100%!important;min-height:42px!important;padding:8px 10px!important;border-radius:10px!important;font-size:13px!important;color:#777b80!important;background:transparent!important}
+ #auth-root .auth-pane .auth-tabs button.active{background:#fff!important;color:#151619!important;box-shadow:0 2px 9px #00000012!important}
+ #auth-root .auth-pane .auth-eyebrow{display:none!important}
+ #auth-root .auth-pane .auth-card h2{font-size:clamp(25px,6.6vw,32px)!important;letter-spacing:-1px!important;font-weight:850!important;line-height:1.2!important;margin:0 0 7px!important;color:#151619!important}
+ #auth-root .auth-pane .auth-sub{font-size:12px!important;line-height:1.55!important;margin:0 0 19px!important;color:#858b93!important;max-width:360px!important}
+ #auth-root .auth-pane .pati-field{margin:0 0 14px!important;gap:7px!important}
+ #auth-root .auth-pane .pati-field label{font-size:12px!important;font-weight:800!important;color:#24262a!important}
+ #auth-root .auth-pane .pati-field input:not([type="checkbox"]){display:block!important;box-sizing:border-box!important;width:100%!important;max-width:100%!important;min-width:0!important;min-height:49px!important;height:49px!important;margin:0!important;padding:11px 13px!important;border-radius:12px!important;border:1px solid #dfe3e0!important;background:#fff!important;color:#17191d!important;font-size:16px!important;outline-offset:2px!important;-webkit-appearance:none!important;appearance:none!important}
+ #auth-root .auth-pane .pati-auth-password-field input{padding-right:50px!important}
+ #auth-root .auth-pane .pati-field input::placeholder{color:#9ca2aa!important}
+ #auth-root .auth-pane .pati-field input:focus{border-color:#151619!important;box-shadow:0 0 0 3px #15161914!important;outline:none!important}
+ #auth-root .auth-pane .pati-auth-eye{color:#5e646c!important}
+ #auth-root .auth-pane .auth-submit{display:flex!important;align-items:center!important;justify-content:space-between!important;box-sizing:border-box!important;width:100%!important;min-height:52px!important;margin:13px 0 0!important;padding:0 18px!important;border-radius:13px!important;background:#161719!important;color:#fff!important;font-size:14px!important;font-weight:800!important;box-shadow:0 9px 23px #00000012!important}
+ #auth-root .auth-pane .auth-bottom{margin:11px 0!important;text-align:center!important}
+ #auth-root .auth-pane .auth-bottom .btn-link{min-height:41px!important;padding:10px!important;font-size:12px!important;color:#151619!important}
+ #auth-root .auth-pane .small-note{font-size:11px!important;line-height:1.5!important;color:#878c94!important;padding-top:13px!important;border-top:1px solid #e9e9ec!important;margin-top:13px!important}
+ #auth-root .auth-pane .pati-auth-terms{font-size:11px!important;color:#5e6268!important}
+ #auth-root .auth-pane .pati-auth-terms a{color:#17191d!important;text-decoration:underline!important;text-underline-offset:2px!important}
+ #auth-root .auth-pane .pati-note{margin:0 0 12px!important}
+}
+@media(max-width:370px){
+ #auth-root .auth-story{height:215px!important;min-height:215px!important;padding-inline:18px!important}
+ #auth-root .auth-pane{padding-left:17px!important;padding-right:17px!important}
+ #auth-root .auth-pane .auth-card h2{font-size:24px!important}
+ #auth-root .auth-pane .auth-tabs{margin-bottom:15px!important}
+ #auth-root .auth-pane .pati-field{margin-bottom:10px!important}
+}
+@media(max-height:700px) and (max-width:680px){
+ #auth-root .auth-story{height:205px!important;min-height:205px!important;padding-bottom:28px!important}
+ #auth-root .auth-story h2{font-size:21px!important}
+ #auth-root .auth-story-bottom>p{font-size:10.5px!important}
+ #auth-root .auth-pane{padding-top:17px!important}
+}
