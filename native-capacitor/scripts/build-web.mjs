@@ -8,6 +8,7 @@ const root=path.resolve(native,'..'),out=path.join(native,'www');
 const files=[
 'index.html','admin.html','privacy.html','terms.html','delete-account.html',
 'style.css','patiyiz-inspired.css','ios-reels.css','follower-milestones.css','dm-fullscreen.css','pets-completion.css','reels-stage4.css','manifest.webmanifest','config.js','push-config.js',
+'patiyiz-design-system-20261030.css','patiyiz-insights-metrics.js','pati-identity-owner.js','pati-identity-owner.css',
 'knowledge.js','reels-editor.js','gallery-picker.js','academy-curriculum.js',
 'academy-101-part1.js','academy-101-part2.js','follower-milestones.js',
 'instagram-share-clean.css','post-detail-twitter-text-stage16.css','patiyiz-upload.js','patiyiz-video-prepare.js','patiyiz-camera-draft.js','patiyiz-system-media.js','app.js','patiyiz-sw.js','patiyiz-camera-flow.js',
