@@ -54,8 +54,8 @@ const fragment=decodeURIComponent(location.hash.replace(/^#/,''));
 const parts=fragment.split('~'),tag=parts[0],receipt=parts[1]||'';
 const valid=x=>/^[a-zA-Z0-9_-]{40,50}$/.test(x||'');
 const $=id=>document.getElementById(id);
-const api=(window.PATIYIZ_CONFIG?.supabaseUrl||'https://tqnvvrgrsxrvxzbjbsgl.supabase.co').replace(/\/$/,'')+'/functions/v1/pati-identity';
-let siteKey='',challenge='',widgetId=null,busy=false;
+const api=(window.PATIYIZ_CONFIG?.supabaseUrl||'https://tqnvvrgrsxrvzxbjbsgl.supabase.co').replace(/\/$/,'')+'/functions/v1/pati-identity';
+let siteKey='',challenge='',widgetId=null,busy=false,challengeTries=0;
 function notice(text){$('notice').textContent=text}
 async function call(action,body={}){
  const response=await fetch(api,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,...body}),referrerPolicy:'no-referrer',cache:'no-store'});
@@ -65,7 +65,7 @@ async function call(action,body={}){
 }
 function setupChallenge(){
  if(!siteKey)return notice('İletişim güvenliği henüz etkin değil.');
- if(!window.turnstile)return setTimeout(setupChallenge,250);
+ if(!window.turnstile){if(challengeTries++<30)return setTimeout(setupChallenge,250);return notice('Güvenlik doğrulaması yüklenemedi. Sayfayı yenile.');}
  if(widgetId!==null)return;
  widgetId=window.turnstile.render('#pati-turnstile',{sitekey:siteKey,callback:value=>{challenge=value;$('send').disabled=false},'expired-callback':()=>{challenge='';$('send').disabled=true}});
 }
