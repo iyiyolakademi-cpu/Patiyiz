@@ -22,7 +22,7 @@ self.addEventListener('notificationclick',event=>{
 /* Small same-origin static cache: faster return visits without storing API/user data.
    Bump the cache version whenever this worker changes. URLs keep their release
    query parameters, so updated CSS/JS assets are distinct cache entries. */
-const PATIYIZ_STATIC_CACHE='patiyiz-static-v20261029-social2';
+const PATIYIZ_STATIC_CACHE='patiyiz-static-v20261030-mobile-refresh';
 const PATIYIZ_STATIC_PREFIX='patiyiz-static-v';
 self.addEventListener('install',event=>{
  event.waitUntil((async()=>{
@@ -58,6 +58,21 @@ self.addEventListener('fetch',event=>{
  event.respondWith((async()=>{
   const cache=await caches.open(PATIYIZ_STATIC_CACHE);
   const cached=await cache.match(request);
+  // Keep core application code and styling fresh on iOS home-screen PWAs.
+  // If the network is offline, use only an existing cached copy.
+  if(/\.(?:js|css)$/i.test(url.pathname)){
+   try{
+    const fresh=await fetch(request,{cache:'no-store'});
+    if(fresh.ok&&fresh.type==='basic'){
+     try{await cache.put(request,fresh.clone())}catch(_){}
+     return fresh;
+    }
+    return cached||fresh;
+   }catch(error){
+    if(cached)return cached;
+    throw error;
+   }
+  }
   if(cached)return cached;
   const response=await fetch(request);
   if(response.ok&&response.type==='basic'){
