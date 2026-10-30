@@ -688,6 +688,7 @@ function ensureViewData(to){const byView={community:[['questions','questions'],[
 const patiMobileTabScroll=new Map();
 let patiPreviousView='home';
  const patiViewTrail=[];
+let patiNavigatingBack=false;
 let patiSwipeNavDirection=0;
 let patiNavAnimationId=0;
 function navigate(to){
@@ -703,7 +704,7 @@ function navigate(to){
  if(!allowed.includes(to))to='home';
  if(to==='my-pet')patiPetHubOrigin=false;
  else if(!hubScreens.has(to))patiPetHubOrigin=false;
- const previous=view;if(previous!==to){patiPreviousView=previous;if(!['home','explore','reels','profile','messages'].includes(to)){patiViewTrail.push(previous);if(patiViewTrail.length>18)patiViewTrail.shift();}}const primary=['home','explore','reels'],reselect=previous===to&&primary.includes(to);
+ const previous=view;if(previous!==to){patiPreviousView=previous;if(!patiNavigatingBack&&!['home','explore','reels','profile','messages'].includes(to)){patiViewTrail.push(previous);if(patiViewTrail.length>18)patiViewTrail.shift();}patiNavigatingBack=false;}const primary=['home','explore','reels'],reselect=previous===to&&primary.includes(to);
  if(to==='education'&&previous!=='education'){educationCategory='Tümü';educationLesson='';educationSearch='';educationStatus='Tümü';patiAcademyBrowseAll=false}
  if(to==='messages'&&previous!=='messages')patiDmReturnView=previous;
  if(to==='streaks'){if(patiStreakState.checkedOn===patiStreakToday())void patiStreakGoalLoad();else void patiStreakCheckin()}
@@ -6272,7 +6273,7 @@ case 'pet-delete':{const pet=data.pets.find(p=>p.id===id);
  },'Hayvan profili silindi.');
  break}
 case 'pets-more':void patiLoadCommunityPets();break;
-case 'my-profile':profileId='';lastDetailView='';navigate('profile');break;case 'view-user':followReturnList=view==='follows-list';if(!followReturnList&&view!=='profile')lastDetailView=view;profileId=id;navigate('profile');break;case 'pati-page-back':{const dest=patiPreviousView&&patiPreviousView!==view&&allowed.includes(patiPreviousView)?patiPreviousView:'home';navigate(dest);break}case 'profile-back':{const dest=lastDetailView&&allowed.includes(lastDetailView)?lastDetailView:'explore';lastDetailView='';profileId='';followReturnList=false;navigate(dest);break}case 'open-notification':if(target.closest('#tools-form'))closeModal(true);openNotification(id);break;case 'post-back':{
+case 'my-profile':profileId='';lastDetailView='';navigate('profile');break;case 'view-user':followReturnList=view==='follows-list';if(!followReturnList&&view!=='profile')lastDetailView=view;profileId=id;navigate('profile');break;case 'pati-page-back':{let dest='';while(patiViewTrail.length){const candidate=patiViewTrail.pop();if(candidate!==view&&allowed.includes(candidate)){dest=candidate;break}}if(!dest)dest=patiPreviousView&&patiPreviousView!==view&&allowed.includes(patiPreviousView)?patiPreviousView:'home';patiNavigatingBack=true;navigate(dest);break}case 'profile-back':{const dest=lastDetailView&&allowed.includes(lastDetailView)?lastDetailView:'explore';lastDetailView='';profileId='';followReturnList=false;navigate(dest);break}case 'open-notification':if(target.closest('#tools-form'))closeModal(true);openNotification(id);break;case 'post-back':{
  const detail=patiDetailState;patiDetailState=null;selectedPostId='';
  const returnPeer=patiDmSharedReturnPeer;patiDmSharedReturnPeer='';const back=returnPeer?'messages':detail?.origin||(patiExploreReturnTo?'explore':'home');if(returnPeer){personId=returnPeer;mobileChatOpen=true}patiExploreReturnTo=false;
  if(detail?.origin==='profile'){profileId=detail.profileId;profilePostsTab=detail.profilePostsTab}
