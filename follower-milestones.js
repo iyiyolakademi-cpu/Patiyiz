@@ -7,7 +7,7 @@
   {need:5000,coins:300,title:'Gümüş Pati',icon:'🥈',kind:'Gümüş'},
   {need:10000,coins:100,cash:1000,title:'Altın Pati',icon:'🥇',kind:'Altın'},
   {need:50000,coins:500,cash:3000,title:'Platin Pati',icon:'💎',kind:'Platin'},
-  {need:100000,coins:1000,cash:50000,title:'Elmas Pati',icon:'👑',kind:'Elmas'}
+  {need:100000,coins:1000,cash:5000,title:'Elmas Pati',icon:'👑',kind:'Elmas'}
  ];
  const number=n=>Math.max(0,Math.floor(Number(n)||0)).toLocaleString('tr-TR');
  const countOf=n=>Math.max(0,Math.floor(Number(n)||0));
