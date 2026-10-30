@@ -1,0 +1,59 @@
+/* Compact Instagram-style story age beside username.
+   Applies to photo, video, reposted post and Reels stories. */
+#story-overlay .story-player-head .pati-story-owner-name{
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:flex-start!important;
+ min-width:0!important;
+ flex:1 1 auto!important;
+ max-width:100%!important;
+ gap:4px!important;
+}
+#story-overlay .story-player-head .pati-story-owner-top{
+ display:flex!important;
+ flex-direction:row!important;
+ align-items:center!important;
+ gap:8px!important;
+ width:100%!important;
+ max-width:100%!important;
+ min-width:0!important;
+ line-height:1.3!important;
+}
+#story-overlay .story-player-head .pati-story-owner-top>strong{
+ flex:0 1 auto!important;
+ display:inline-block!important;
+ width:auto!important;
+ min-width:0!important;
+ max-width:100%!important;
+ overflow:hidden!important;
+ text-overflow:ellipsis!important;
+ white-space:nowrap!important;
+ color:#fff!important;
+ -webkit-text-fill-color:#fff!important;
+ opacity:1!important;
+}
+#story-overlay .story-player-head .pati-story-upload-age{
+ display:inline-block!important;
+ position:relative!important;
+ z-index:1!important;
+ flex:0 0 auto!important;
+ max-width:80px!important;
+ white-space:nowrap!important;
+ font-family:inherit!important;
+ font-size:11px!important;
+ line-height:1.4!important;
+ font-weight:650!important;
+ letter-spacing:0!important;
+ color:#f1f2f5!important;
+ -webkit-text-fill-color:#f1f2f5!important;
+ opacity:1!important;
+ background:rgba(0,0,0,.32)!important;
+ border-radius:6px!important;
+ padding:2px 5px!important;
+ text-shadow:0 1px 3px #0009!important;
+ user-select:none;
+}
+@media(max-width:420px){
+ #story-overlay .story-player-head .pati-story-owner-top{gap:5px!important}
+ #story-overlay .story-player-head .pati-story-upload-age{font-size:10px!important;padding:2px 4px!important}
+}
