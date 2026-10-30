@@ -8,7 +8,7 @@ const TURNSTILE_SECRET=Deno.env.get('PATI_TURNSTILE_SECRET')||'';
 const TURNSTILE_SITE=Deno.env.get('PATI_TURNSTILE_SITE')||'';
 const PEPPER=Deno.env.get('PATI_RATE_PEPPER')||SECRET;
 const admin=createClient(URL_BASE,SECRET,{auth:{autoRefreshToken:false,persistSession:false}});
-const origins=new Set(['https://patiyiz.com','https://www.patiyiz.com','https://iyiyolakademi-cpu.github.io']);
+const origins=new Set(['https://patiyiz.com','https://www.patiyiz.com','https://iyiyolakademi-cpu.github.io','https://localhost','capacitor://localhost']);
 function cors(origin:string|null){
  const ok=origin&&origins.has(origin)?origin:'https://patiyiz.com';
  return {'Access-Control-Allow-Origin':ok,'Vary':'Origin','Access-Control-Allow-Methods':'POST,OPTIONS','Access-Control-Allow-Headers':'authorization,apikey,content-type','Cache-Control':'no-store','Referrer-Policy':'no-referrer'};
@@ -87,7 +87,7 @@ Deno.serve(async req=>{
    const tag=await findTag(input.token);
    if(!tag)return err('Bu Pati Kimliği artık aktif değil.',404,origin);
    if(!bodyOk(input.message))return err('Mesaj 1–1000 karakter olmalı.',400,origin);
-   if(!await limit('send:'+ip+':'+tag.id,4,3600))return err('Mesaj sınırına ulaştın.',429,origin);
+   if(!await limit('send:'+ip+':'+tag.id,4,3600)||!await limit('tag-global:'+tag.id,40,3600))return err('Mesaj sınırına ulaştın.',429,origin);
    if(!await human(input.proof,ip))return err('Güvenlik doğrulaması başarısız.',403,origin);
    let receipt:string|undefined,thread:string|undefined;
    if(action==='send'){
