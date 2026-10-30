@@ -3679,7 +3679,7 @@ async function patiDmOpenSharedPost(id){
  if(!me||!personId||!/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(id))throw Error('Gönderi bağlantısı geçersiz.');
  const result=await sb.from('posts').select('*').eq('id',id).maybeSingle();
  if(result.error)throw result.error;
- if(!result.data||blocked.has(result.data.author_id))throw Error('Bu paylaşım artık görüntülenemiyor.');
+ if(!result.data||blocked.has(result.data.author_id)){notify('Bu paylaşım artık görüntülenemiyor.');return;}
  const post=result.data;
  data.posts=[...data.posts.filter(p=>p.id!==id),post];
  patiDmSharedPosts.set(id,post);
@@ -3892,7 +3892,7 @@ async function enablePhonePush(){
  }catch(e){console.error(e);notify('Bildirim açılamadı: '+friendly(e),true)}
 }
 let notificationFilter='all',notificationSearch='',notificationBusy=false,notificationLoadError='',notificationPushStatus='checking',notificationPushOwner='',notificationPushLoading=false;
-const notificationKinds={messages:['message-circle','Mesaj'],comments:['message-square','Yorum'],post_likes:['heart','Beğeni'],follows:['user-plus','Takip'],pet_reminder:['calendar','Pati bakımı']};
+const notificationKinds={messages:['message-circle','Mesaj'],comments:['message-square','Yorum'],mentions:['at-sign','Etiketlenme'],post_likes:['heart','Beğeni'],follows:['user-plus','Takip'],pet_reminder:['calendar','Pati bakımı']};
 function notificationVisible(){
  return [...data.notifications].filter(n=>n.owner_id===me?.id&&!blocked.has(n.actor_id))
   .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)||String(b.id).localeCompare(String(a.id)));
@@ -3961,8 +3961,33 @@ function notificationsPage(){
    +(pageMore.notifications&&list.length?'<div class="pati-load-more">'+button('Daha eski bildirimler','load-more','data-id="notifications"')+'</div>':'')
   +'</section>';
 }
+async function patiOpenMentionNotification(n){
+ if(!n?.post_id)return;
+ const id=n.post_id,owner=me?.id;
+ if(!data.posts.some(p=>p.id===id)){
+  const response=await sb.from('posts').select('*').eq('id',id).maybeSingle();
+  if(response.error){console.warn('Etiketli içerik erişimi:',response.error.message);notify('Bu paylaşıma şu anda erişilemiyor.');return}
+  if(!response.data||blocked.has(response.data.author_id)){notify('Bu paylaşım artık görüntülenemiyor.');return}
+  if(me?.id!==owner)return;
+  data.posts.push(response.data);
+ }
+ openPost(id);
+ if(n.comment_id){
+  await patiFetchPostComments(id);
+  if(me?.id!==owner)return;
+  const comments=patiPostCommentPages.get(id)?.rows||data.comments;
+  const mentioned=comments.find(c=>c.id===n.comment_id&&c.post_id===id);
+  if(mentioned?.parent_id)patiyizCommentExpandedReplies.add(mentioned.parent_id);
+  showComments(id);
+  requestAnimationFrame(()=>{
+   const row=[...document.querySelectorAll('#comment-form [data-comment-id]')].find(el=>el.dataset.commentId===n.comment_id);
+   if(row){row.scrollIntoView({block:'center',behavior:'smooth'});row.classList.add('pati-comment-mention-highlight')}
+  });
+ }
+}
 async function openNotification(id){const n=data.notifications.find(x=>x.id===id&&x.owner_id===me.id);if(!n){navigate('notifications');return}
  if(!n.read){const result=await sb.from('notifications').update({read:true}).eq('id',n.id).eq('owner_id',me.id).select('id');if(!result.error&&result.data?.length){n.read=true;navRender()}}
+ if(n.kind==='mentions'&&n.post_id){await patiOpenMentionNotification(n);return}
  if(['comments','post_likes'].includes(n.kind)&&n.post_id){openPost(n.post_id);return}
  if(n.kind==='messages'&&n.actor_id&&n.actor_id!==me.id&&!blocked.has(n.actor_id)){personId=n.actor_id;mobileChatOpen=true;navigate('messages');return}
  if(n.kind==='pet_reminder'){navigate('wellness');return}
