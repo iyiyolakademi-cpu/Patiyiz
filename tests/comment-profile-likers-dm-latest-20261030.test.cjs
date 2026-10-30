@@ -61,7 +61,7 @@ test('Chat opening pins newest message until photos settle, but stops if user in
  assert.match(block,/setTimeout\(cleanup,15000\)/);
  const page=app.slice(app.indexOf('function messagesPage(){'),app.indexOf('function pushKeyBytes(',app.indexOf('function messagesPage(){')));
  assert.match(page,/patiDmScrollLatest\(history,personId\)/);
- assert.match(page,/if\(openLatest\|\|!oldHistory\|\|oldChatId!==personId\)/);
+ assert.match(page,/if\(openLatest\|\|pinIntent\|\|!oldHistory\|\|oldChatId!==personId\)/);
  assert.match(page,/oldWasAtBottom/);
 });
 test('iPhone web and native Android bundle profile & fullscreen styles and new app cache key',()=>{
