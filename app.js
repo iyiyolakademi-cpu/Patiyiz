@@ -436,7 +436,7 @@ const patiCoinTasks=[
  ['weekly_comments5','Haftada 5 yorum yap',8,'Bu hafta beş yorum yaz','weekly']
 ];
 let patiCoinState={balance:0,earned:0,claims:[],items:[],orders:[],history:[],loading:false};
-let patiFollowerRewardState={followers:null,claimed:[]};
+let patiFollowerRewardState={followers:null,claimed:[],cash:[]};
 let patiCoinCheckoutItem=null;
 let patiInviteState={code:'',invited_count:0,already_used:false,coins_each:50,loading:false};
 async function patiInviteLoad(){
@@ -471,20 +471,22 @@ async function patiCoinSync(withAnimation=false){
    const milestone=await sb.rpc('patiyiz_my_follower_milestones');
    if(milestone.error)throw milestone.error;
    if(me?.id!==uid)return;
-   patiFollowerRewardState={followers:milestone.data?.followers??null,claimed:milestone.data?.claimed||[]};
+   patiFollowerRewardState={followers:milestone.data?.followers??null,claimed:milestone.data?.claimed||[],cash:[]};
   }catch(error){console.warn('Takipçi ödülleri doğrulanamadı:',error)}
   const claimed=await sb.rpc('patiyiz_claim_completed_tasks');
   if(claimed.error)throw claimed.error;
   if(me?.id!==uid)return;
-  const [wallet,ledger,items,orders,history]=await Promise.all([
+  const [wallet,ledger,items,orders,history,cashClaims]=await Promise.all([
    sb.from('patiyiz_reward_wallets').select('balance,lifetime_earned').eq('user_id',uid).maybeSingle(),
    sb.from('patiyiz_reward_ledger').select('task_code').eq('user_id',uid).not('task_code','is',null),
    sb.from('patiyiz_reward_items').select('id,name,description,kind,coins,emoji,stock_available').eq('enabled',true).order('sort_order'),
    sb.from('patiyiz_reward_redemptions').select('id,item_id,coins_spent,destination,status,created_at,admin_note,proof_url,reviewed_at,fulfilled_at').eq('user_id',uid).order('created_at',{ascending:false}).limit(30),
-   sb.from('patiyiz_reward_fulfillment_events').select('redemption_id,previous_status,next_status,note,created_at').order('created_at',{ascending:false}).limit(100)
+   sb.from('patiyiz_reward_fulfillment_events').select('redemption_id,previous_status,next_status,note,created_at').order('created_at',{ascending:false}).limit(100),
+   sb.from('patiyiz_follower_cash_claims').select('threshold,amount_try,status,created_at').eq('user_id',uid)
   ]);
-  for(const r of [wallet,ledger,items,orders,history])if(r.error)throw r.error;
+  for(const r of [wallet,ledger,items,orders,history,cashClaims])if(r.error)throw r.error;
   if(me?.id!==uid)return;
+  patiFollowerRewardState.cash=cashClaims.data||[];
   patiCoinState={balance:wallet.data?.balance||0,earned:wallet.data?.lifetime_earned||0,
    claims:(ledger.data||[]).map(x=>x.task_code),items:items.data||[],orders:orders.data||[],history:history.data||[],loading:false};
   navRender();if(['rewards','shop'].includes(view))render();
@@ -518,7 +520,7 @@ function patiRewardsPage(){
   const visible=completed?rows.length:(group==='once'?5:group==='daily'?3:2);
   return '<div class="paticoin-tasks">'+rows.slice(0,visible).join('')+(rows.length>visible?'<details class="pati-missions-more"><summary>Diğer '+(rows.length-visible)+' görevi göster</summary><div class="pati-missions-more-list">'+rows.slice(visible).join('')+'</div></details>':'')+'</div>';
  };
- const milestones=window.PatiyizFollowerMilestones?.renderPanel(patiFollowerRewardState.followers,patiFollowerRewardState.claimed)||'';
+ const milestones=window.PatiyizFollowerMilestones?.renderPanel(patiFollowerRewardState.followers,patiFollowerRewardState.claimed,patiFollowerRewardState.cash)||'';
  const invite='<section class="paticoin-invite"><h2>🎁 Arkadaşını davet et</h2><p>Sen ve davet ettiğin kişi <b>50’şer PatiCoin</b> kazanırsınız. Her hesap yalnızca bir davet kodu kullanabilir.</p><div class="paticoin-invite-code"><strong>'+esc(patiInviteState.code||'Kod hazırlanıyor…')+'</strong><button data-action="paticoin-invite-share">Paylaş</button></div><small>Davet ettiğin kişi: '+(patiInviteState.invited_count||0)+'</small>'+(patiInviteState.already_used?'<p>✓ Davet kodu kullanma hakkını tamamladın.</p>':'<label class="paticoin-invite-entry">Arkadaşının kodu<input id="pati-invite-code" maxlength="9" autocomplete="off" placeholder="P1234ABCD"></label><button class="paticoin-invite-redeem" data-action="paticoin-invite-redeem">Kodu kullan · +50 <img class="pati-coin-icon" src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true"></button>')+'</section>';
  main.innerHTML='<section class="paticoin-page"><div class="paticoin-hero"><span>🐾 PATİYİZ GÖREV MERKEZİ</span><h1>PatiCoin</h1><strong><img class="pati-coin-icon" src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true"> '+Number(patiCoinState.balance).toLocaleString('tr-TR')+' <small>PatiCoin</small></strong><p>Toplam kazanılan: '+Number(patiCoinState.earned).toLocaleString('tr-TR')+' coin</p><div class="paticoin-actions"><button data-action="paticoin-claim">Görevlerimi kontrol et</button><button data-action="paticoin-shop">Pati Mağaza →</button></div></div>'+
  (milestones?'<details class="pati-follower-more"><summary>🏅 Takipçi hedeflerim</summary>'+milestones+'</details>':'')+'<div class="paticoin-mission-heading"><div><h2>🎯 Tek Seferlik Görevler</h2><p>Her hesapta yalnız bir kez puan kazandırır.</p></div><span>'+patiCoinTasks.filter(x=>!x[4]).length+' görev</span></div>'+missionList('once')+
@@ -6736,6 +6738,20 @@ case 'dm-sticker-send':run(async()=>{
  if(!data.messages.some(m=>m.id===r.data.id))data.messages.push(r.data);
  closeModal(true);if(view==='messages')render();
 },'Çıkartma gönderildi.');break;
+case 'pati-follower-cash-claim':run(async()=>{
+ const threshold=Number(id);
+ if(![10000,50000,100000].includes(threshold))throw Error('Geçersiz ödül hedefi.');
+ if(!confirm(threshold.toLocaleString('tr-TR')+' takipçi nakit ödülü için başvuru oluşturulsun mu? Ödeme doğrulama ve inceleme sonrasında gerçekleşir.'))return;
+ const owner=me.id;
+ const response=await sb.rpc('patiyiz_claim_cash_milestone',{p_threshold:threshold});
+ if(response.error)throw response.error;
+ if(me?.id!==owner)return;
+ const r=await sb.from('patiyiz_follower_cash_claims').select('threshold,amount_try,status,created_at').eq('user_id',owner);
+ if(r.error)throw r.error;
+ patiFollowerRewardState.cash=r.data||[];
+ if(view==='rewards')render();
+ notify('Nakit ödül başvurun alındı; doğrulama ve onay bekliyor.');
+});break;
 case 'dm-thread-older':void patiDmLoadThread(personId,true);break;
 case 'chat':if(!id||id===me.id)return notify('Kendine mesaj gönderemezsin.',true);patiActiveGroupId='';patiGroupLiveStop();closeModal(true);patiDmOpenAtLatest(id);personId=id;mobileChatOpen=true;navigate('messages');break;case 'open-unread-chat':{patiActiveGroupId='';patiGroupLiveStop();const source=unreadMessageSources().find(x=>x.id===id)||unreadMessageSources()[0];if(!source)break;closeModal();patiDmPendingLatestPeer=source.id;personId=source.id;mobileChatOpen=true;navigate('messages');break}case 'dm-tab':chatFilter=id;if(id!=='primary'){patiActiveGroupId='';patiGroupLiveStop()}mobileChatOpen=false;render();break;case 'post-crop-next':case 'post-crop-prev':{const files=document.querySelector('#post-form input[name="photo"]')?.files;if(files?.length){postCropIndex=(postCropIndex+(act==='post-crop-next'?1:-1)+files.length)%files.length;drawPostCrop()}break}case 'post-ratio':{postCropRatio=id;postCropX=.5;postCropY=.5;document.querySelectorAll('.pati-ratio-options button').forEach(b=>b.classList.toggle('active',b.dataset.id===id));const f=document.querySelector('#post-form input[name="aspect"]');if(f)f.value=id;updatePostMediaPreview();if(id==='original'){const crop=document.querySelector('.pati-crop-preview');if(crop)crop.hidden=true}else if(!document.querySelector('.pati-crop-preview')?.hidden)void drawPostCrop();break}case 'post-crop-open':void patiCropOpen();break;case 'carousel-prev':case 'carousel-next':{const root=target.closest('.pati-carousel'),track=root?.querySelector('.pati-carousel-track');if(track){const delta=track.clientWidth*(act==='carousel-next'?1:-1);track.scrollBy({left:delta,behavior:'smooth'})}break}case 'video-sound':{const v=target.parentElement?.querySelector('video');if(v){
  patiyizFeedSoundEnabled=v.muted;
@@ -7362,7 +7378,7 @@ function resetSessionState(){
 
  if(typeof window!=='undefined')window.PatiyizDelight?.closeStreak();
  patiStreakState={owner:'',count:0,best:0,ready:false,loading:false,checkedOn:''};patiStreakGoalState={owner:'',ready:false,loading:false,goal:null,earned:[],error:''};patiyizLoadToken++;patiyizLoadedTables.clear();patiyizDeferredLoading=null;
- if(typeof patiHomeFeedIds!=='undefined'){patiHomeFeedIds=null;patiHomeFeedCursor=null;patiHomeLoadError=''};if(typeof patiHomeCountCache!=='undefined'){patiHomeCountCache.clear();patiHomeCountsLoading.clear()};if(typeof patiPostCommentPages!=='undefined')patiPostCommentPages.clear();patiWellness={reminders:[],weights:[],loaded:false,loading:false,notified:new Set()};patiLeaderboard=[];patiInviteState={code:'',invited_count:0,already_used:false,coins_each:50,loading:false};patiDmReturnView='home';mobileChatOpen=false;patiCoinState={balance:0,earned:0,claims:[],items:[],orders:[],history:[],loading:false};patiFollowerRewardState={followers:null,claimed:[]};document.getElementById('paticoin-celebration')?.remove();
+ if(typeof patiHomeFeedIds!=='undefined'){patiHomeFeedIds=null;patiHomeFeedCursor=null;patiHomeLoadError=''};if(typeof patiHomeCountCache!=='undefined'){patiHomeCountCache.clear();patiHomeCountsLoading.clear()};if(typeof patiPostCommentPages!=='undefined')patiPostCommentPages.clear();patiWellness={reminders:[],weights:[],loaded:false,loading:false,notified:new Set()};patiLeaderboard=[];patiInviteState={code:'',invited_count:0,already_used:false,coins_each:50,loading:false};patiDmReturnView='home';mobileChatOpen=false;patiCoinState={balance:0,earned:0,claims:[],items:[],orders:[],history:[],loading:false};patiFollowerRewardState={followers:null,claimed:[],cash:[]};document.getElementById('paticoin-celebration')?.remove();
  if(typeof patiDmSharedPosts!=='undefined'){patiDmSharedPosts.clear();patiDmSharedFetched.clear();patiDmSharedReturnPeer='';patiDmSharedRetryAt=0}
  data=Object.fromEntries(Object.keys(data).map(key=>[key,[]]));
  for(const group of [favorites,followed,liked,saved,voted,blocked])group.clear();
