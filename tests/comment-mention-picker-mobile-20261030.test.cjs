@@ -34,6 +34,7 @@ test('Composer stays compact with keyboard, results are scrollable, names not cl
 test('iPhone PWA and Android bundle load the final override and new JS cache key',()=>{
  assert.match(html,/patiyiz-mention-mobile-fix-20261030\.css\?v=1/);
  assert.match(html,/mention_ios_layout_fix=20261030/);
- assert.ok(html.indexOf('patiyiz-mention-mobile-fix-20261030.css')>html.indexOf('patiyiz-crop-insights-mobile-final-20261029.css'));
+ assert.ok(html.indexOf('patiyiz-mention-mobile-fix-20261030.css')<html.indexOf('patiyiz-crop-insights-mobile-final-20261029.css'));
+ assert.ok(html.indexOf('patiyiz-mention-mobile-fix-20261030.css')>html.indexOf('patiyiz-story-media-mentions-20261030.css'));
  assert.match(native,/'patiyiz-mention-mobile-fix-20261030\.css'/);
 });
