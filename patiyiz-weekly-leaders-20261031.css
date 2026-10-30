@@ -1,0 +1,148 @@
+
+/* Weekly Pati League. Bronze is intentionally the second-place frame. */
+#main-content .pati-weekly-board{
+ box-sizing:border-box;margin:19px 0 25px;padding:20px;
+ border-radius:21px;border:1px solid #dfe3e8;
+ background:var(--pati-card,#fff);color:var(--pati-text,#17191e);
+ box-shadow:0 7px 25px rgba(20,25,36,.045);
+}
+#main-content .pati-weekly-head{
+ display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;
+}
+#main-content .pati-weekly-head>div{min-width:0}
+#main-content .pati-weekly-head span{
+ font-size:10px;letter-spacing:.1em;font-weight:850;color:inherit;opacity:.75;
+}
+#main-content .pati-weekly-head h2{
+ font-size:clamp(18px,3.5vw,23px);letter-spacing:-.6px;line-height:1.2;
+ margin:5px 0 4px;font-weight:850;color:inherit;
+}
+#main-content .pati-weekly-head p{
+ font-size:12px;margin:0;line-height:1.5;opacity:.7;color:inherit;
+}
+#main-content .pati-weekly-head button{
+ flex:0 0 auto;display:inline-flex!important;align-items:center;
+ gap:5px;min-height:36px;padding:8px 11px!important;
+ border:1px solid #c8cbd2!important;border-radius:10px!important;
+ color:inherit!important;background:transparent!important;
+ font-weight:750!important;font-size:11px!important;
+ cursor:pointer;
+}
+#main-content .pati-weekly-status{
+ margin:9px 0;padding:8px 12px;border-radius:10px;
+ font-size:12px;color:inherit;background:rgba(126,137,159,.1);
+}
+#main-content .pati-weekly-podium{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;align-items:stretch;
+}
+#main-content .pati-weekly-person{
+ position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;
+ box-sizing:border-box;min-width:0;min-height:238px;
+ padding:17px 13px 14px;border-radius:17px;overflow:hidden;
+ border:2px solid transparent;
+}
+#main-content .pati-weekly-person.is-gold{
+ border-color:#c39122;
+ background:linear-gradient(145deg,#fff6d7 0%,#f4d782 48%,#f9eac1 100%);
+ color:#4d330a;
+ box-shadow:0 8px 24px rgba(163,110,17,.11),inset 0 0 0 1px #fff6;
+}
+#main-content .pati-weekly-person.is-bronze{
+ border-color:#a05c39;
+ background:linear-gradient(145deg,#f9e8dd 0%,#d7a68b 48%,#f6d9c7 100%);
+ color:#563020;
+ box-shadow:0 8px 24px rgba(120,73,43,.1),inset 0 0 0 1px #fff7;
+}
+#main-content .pati-weekly-person::after{
+ content:"";position:absolute;top:-75px;right:-45px;transform:rotate(34deg);
+ width:75px;height:200px;background:linear-gradient(90deg,transparent,#ffffff45,transparent);
+ pointer-events:none;
+}
+#main-content .pati-weekly-place{
+ text-align:center;white-space:normal;font-size:10px;letter-spacing:.055em;
+ font-weight:900;color:inherit;line-height:1.4;
+}
+#main-content .pati-weekly-profile{
+ width:100%;display:flex!important;flex:1;flex-direction:column;
+ align-items:center;justify-content:center;gap:5px;padding:0!important;
+ background:transparent!important;border:0!important;color:inherit!important;
+ cursor:pointer;text-align:center;min-width:0;
+}
+#main-content .pati-weekly-profile:focus-visible,
+#main-content .pati-weekly-head button:focus-visible{
+ outline:3px solid #285ad3!important;outline-offset:3px;
+}
+#main-content .pati-weekly-avatar-ring{
+ display:grid;place-items:center;width:88px;height:88px;padding:5px;
+ border-radius:50%;box-sizing:border-box;
+ border:4px solid #c69726;
+ background:linear-gradient(145deg,#fff4c3,#c69125);
+ box-shadow:0 4px 11px #704b1b2a;
+}
+#main-content .is-bronze .pati-weekly-avatar-ring{
+ border-color:#9e6347;background:linear-gradient(145deg,#f4ceb5,#a46d4c);
+}
+#main-content .pati-weekly-avatar{
+ display:grid;place-items:center;width:100%;height:100%;
+ border-radius:50%;object-fit:cover;background:#fff;
+ font-size:29px;overflow:hidden;color:#6b5032;
+}
+#main-content .pati-weekly-person-name{
+ display:block;max-width:100%;font-size:14px;font-weight:850;
+ overflow-wrap:anywhere;line-height:1.3;color:inherit;
+}
+#main-content .pati-weekly-handle{
+ display:block;max-width:100%;font-size:11px;font-weight:600;
+ overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.8;color:inherit;
+}
+#main-content .pati-weekly-bottom{
+ width:100%;margin-top:auto;border-top:1px solid #6c541d33;
+ padding-top:9px;display:flex;flex-direction:column;gap:5px;
+ text-align:center;align-items:center;color:inherit;
+}
+#main-content .pati-weekly-bottom span{font-size:11px;font-weight:700;color:inherit}
+#main-content .pati-weekly-bottom strong{
+ display:flex;align-items:center;gap:4px;font-size:12px;font-weight:850;
+ color:inherit;line-height:1.35;
+}
+#main-content .pati-weekly-bottom img{width:15px;height:15px;object-fit:contain}
+#main-content .pati-weekly-empty{
+ flex:1;display:grid;place-items:center;font-size:12px;
+ text-align:center;opacity:.75;color:inherit;
+}
+#main-content .pati-weekly-previous{
+ display:flex;gap:8px;flex-wrap:wrap;align-items:center;
+ padding:12px 4px 0;font-size:12px;line-height:1.6;color:inherit;
+}
+#main-content .pati-weekly-previous>strong{font-size:11px;margin-right:4px}
+#main-content .pati-weekly-previous>span{
+ border:1px solid #8d91992d;padding:5px 8px;border-radius:999px;
+ background:#8d91990d;font-size:11px;
+}
+#main-content .pati-weekly-rules{
+ margin:15px 0 0;font-size:11px;line-height:1.65;opacity:.74;color:inherit;
+}
+html[data-pati-theme="dark"] #main-content .pati-weekly-board{
+ border-color:#3d4049;background:#1b1d24;color:#f7f8fb;
+}
+html[data-pati-theme="dark"] #main-content .pati-weekly-person.is-gold{
+ background:linear-gradient(145deg,#423014,#8d621e 55%,#4d3916);
+ color:#fff0c5;border-color:#d5ad51;
+}
+html[data-pati-theme="dark"] #main-content .pati-weekly-person.is-bronze{
+ background:linear-gradient(145deg,#492d28,#7d4f39 55%,#4f302b);
+ color:#ffe5d1;border-color:#b17c62;
+}
+@media(max-width:510px){
+ #main-content .pati-weekly-board{padding:13px;border-radius:16px;margin:14px 0 22px}
+ #main-content .pati-weekly-podium{gap:8px}
+ #main-content .pati-weekly-person{padding:13px 8px 11px;min-height:218px;gap:8px}
+ #main-content .pati-weekly-avatar-ring{width:72px;height:72px;padding:4px;border-width:3px}
+ #main-content .pati-weekly-place{font-size:9px}
+ #main-content .pati-weekly-person-name{font-size:12px}
+ #main-content .pati-weekly-bottom strong{font-size:11px}
+ #main-content .pati-weekly-head button{padding:6px 8px!important;min-height:34px}
+ #main-content .pati-weekly-head p{font-size:11px}
+}
+@media(max-width:340px){#main-content .pati-weekly-avatar-ring{width:62px;height:62px}#main-content .pati-weekly-place{font-size:8px}}
+@media(prefers-reduced-motion:reduce){#main-content .pati-weekly-person::after{display:none}}
