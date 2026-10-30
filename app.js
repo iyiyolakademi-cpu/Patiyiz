@@ -2896,7 +2896,7 @@ function patiWeeklyBoard(){
    (p&&!blocked.has(p.user_id)?'<button type="button" class="pati-weekly-profile" data-action="view-user" data-id="'+esc(p.user_id)+'" aria-label="'+esc((p.name||'Kullanıcı')+' profiline git')+'">'+
     '<span class="pati-weekly-avatar-ring">'+portrait(p)+'</span>'+
     '<span class="pati-weekly-person-name">'+esc(p.name||p.handle||'Patiyiz üyesi')+'</span>'+
-    '<span class="pati-weekly-handle">@'+esc(p.handle||'patiyiz')+'</span></button>'+
+    '<span class="pati-weekly-handle">@'+esc(p.handle||'patiyiz')+'</span></button>':
     '<span class="pati-weekly-empty">Bu sıra henüz boş</span>')+
    '<div class="pati-weekly-bottom"><span>'+(p&&!blocked.has(p.user_id)?Number(p.score||0).toLocaleString('tr-TR')+' puan':'Sıralama bekleniyor')+'</span>'+
    '<strong>+'+prize+' <img src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true"> Pati Coin</strong></div></article>';
