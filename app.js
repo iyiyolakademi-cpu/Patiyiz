@@ -3623,8 +3623,10 @@ function patiDmMentionDetails(body){
 }
 function patiDmSharedPostId(body){
  const text=String(body||'');
- const mention=patiDmMentionDetails(text);
- if(mention)return mention.postId;
+ if(text.startsWith('🔖 Seni etiketledi: ')){
+  const match=text.match(/^🔖 Seni etiketledi:\s+https?:\/\/[^\s#]+#post-([0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})(?:\?comment=([0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}))?$/i);
+  return match?match[1].toLowerCase():'';
+ }
  if(!text.startsWith('📨 Paylaşım: '))return '';
  const match=text.match(/^📨 Paylaşım:\s+https?:\/\/[^\s#]+#post-([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i);
  return match?match[1].toLowerCase():'';
