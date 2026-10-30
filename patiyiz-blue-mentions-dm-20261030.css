@@ -56,3 +56,17 @@ html[data-pati-theme="dark"] .pati-dm-shared-card .pati-dm-mention-label{
  #comment-form .pati-comment-editor-row .pati-comment-mention{padding:4px 0!important;font-size:12px!important;gap:2px!important}
  #comment-form .pati-comment-editor-row .pati-comment-send{padding:8px!important}
 }
+
+/* In tagged direct messages, the tagger's name is a clear profile link. */
+.pati-dm-shared-card .pati-dm-mention-label .pati-dm-mention-person{
+ display:inline-flex!important;align-items:center!important;
+ border:0!important;border-radius:4px!important;
+ padding:2px 0!important;min-width:0!important;
+ background:transparent!important;color:#1683f6!important;
+ font-size:12px!important;font-weight:850!important;line-height:1.35!important;
+ cursor:pointer!important;text-align:left!important;
+}
+.pati-dm-shared-card .pati-dm-mention-label .pati-dm-mention-person:focus-visible{
+ outline:2px solid #2388fa!important;outline-offset:2px!important;
+}
+html[data-pati-theme="dark"] .pati-dm-shared-card .pati-dm-mention-label .pati-dm-mention-person{color:#66b2ff!important}

@@ -24,8 +24,8 @@ test('Comment and post @handles are blue clickable links, including profiles not
  const text=app.slice(app.indexOf('function patiMentionsHTML(body){'),app.indexOf('function patiMentionOpen(mode){'));
  assert.match(text,/class="pati-mention-link"/);
  assert.match(text,/pati-mention-profile/);
- assert.match(text,/async function patiOpenMentionProfile\(handle\)/);
- assert.match(app,/case 'pati-mention-profile':void patiOpenMentionProfile\(target\.dataset\.handle\)/);
+ assert.match(text,/async function patiOpenMentionProfile\(handle,knownId=''\)/);
+ assert.match(app,/case 'pati-mention-profile':e\.preventDefault\(\);void patiOpenMentionProfile\(target\.dataset\.handle,target\.dataset\.id\|\|''\)/);
  assert.match(css,/\.pati-mention-link/);
  assert.match(css,/color:#1683f6!important/);
 });
@@ -64,9 +64,24 @@ test('Mention notification creates direct message only when user privacy, blocks
  assert.match(sql,/after insert on public\.notifications/);
 });
 test('Web and Android include late mobile-visible blue styling while preserving final crop styles last',()=>{
- assert.match(html,/patiyiz-blue-mentions-dm-20261030\.css\?v=1/);
+ assert.match(html,/patiyiz-blue-mentions-dm-20261030\.css\?v=2/);
  assert.match(html,/blue_dm_mentions=20261030/);
  assert.match(native,/'patiyiz-blue-mentions-dm-20261030\.css'/);
  assert.ok(html.indexOf('patiyiz-blue-mentions-dm-20261030.css')>html.indexOf('patiyiz-mention-mobile-fix-20261030.css'));
  assert.ok(html.indexOf('patiyiz-blue-mentions-dm-20261030.css')<html.indexOf('patiyiz-crop-insights-mobile-final-20261029.css'));
+});
+
+test('Tap on blue @handle closes comments and navigates to tagged profile, not the post',()=>{
+ const fn=app.slice(app.indexOf('function patiMentionsHTML(body){'),app.indexOf('function patiMentionOpen(mode){'));
+ assert.match(fn,/data-action="pati-mention-profile" data-handle/);
+ assert.match(fn,/person\?' data-id=/);
+ assert.match(fn,/document\.querySelector\('#comment-form'\)\?\.closest\('\.modal-backdrop'\)\)closeModal\(true\)/);
+ assert.match(fn,/profileId=person\.id/);
+ assert.match(fn,/navigate\('profile'\)/);
+ assert.match(app,/case 'pati-mention-profile':e\.preventDefault\(\)/);
+ const dm=app.slice(app.indexOf('function patiDmSharedCard(message){'),app.indexOf('async function patiDmHydrateSharedPosts(messages,peer){'));
+ assert.match(dm,/pati-dm-mention-person/);
+ assert.match(dm,/data-action="view-user" data-id="\'+esc\(message\.sender_id\)/);
+ assert.match(css,/\.pati-dm-mention-person/);
+ assert.match(html,/tag_tap_profile=20261030/);
 });

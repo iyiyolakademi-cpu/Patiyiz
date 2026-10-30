@@ -3666,7 +3666,7 @@ function patiDmSharedCard(message){
   media+
   ((video||images.length)&&post.body?'<button type="button" class="pati-dm-shared-caption pati-dm-shared-caption-open"'+action+'>'+esc(cut(post.body,250))+'</button>':'')+
   '<button type="button" class="pati-dm-shared-footer"'+action+'>Gönderiyi aç '+ico('arrow-right')+'</button>'+
-  (mention?'<div class="pati-dm-mention-label"><span aria-hidden="true">🔖</span><strong>'+esc(profile(message.sender_id)?.display_name||profile(message.sender_id)?.handle||'Bir kullanıcı')+' seni etiketledi</strong>'+(mention.commentId?'<small>Yorumda etiketlendin</small>':'')+'</div>':'')+'</article>';
+  (mention?'<div class="pati-dm-mention-label"><span aria-hidden="true">🔖</span><button type="button" class="pati-dm-mention-person" data-action="view-user" data-id="'+esc(message.sender_id)+'" aria-label="Etiketleyen kişinin profiline git">'+esc(profile(message.sender_id)?.display_name||profile(message.sender_id)?.handle||'Bir kullanıcı')+'</button><strong>seni etiketledi</strong>'+(mention.commentId?'<small>Yorumda etiketlendin</small>':'')+'</div>':'')+'</article>';
 }
 async function patiDmHydrateSharedPosts(messages,peer){
  if(!me||!sb||patiDmSharedLoading||Date.now()<patiDmSharedRetryAt)return;
@@ -4712,24 +4712,35 @@ function patiMentionsHTML(body){
   const person=data.profiles.find(x=>String(x.handle||'').toLocaleLowerCase('tr-TR')===handle.toLocaleLowerCase('tr-TR')&&!blocked.has(x.id));
   // Keep @mentions visibly blue even when the mentioned profile has not yet loaded.
   // A tap resolves the public handle under normal RLS; blocked users remain inaccessible.
-  return prefix+'<button type="button" class="pati-mention-link" '+(person?'data-action="view-user" data-id="'+esc(person.id)+'"':'data-action="pati-mention-profile" data-handle="'+esc(handle)+'"')+' aria-label="@'+esc(handle)+' profiline git">@'+esc(handle)+'</button>';
+  return prefix+'<button type="button" class="pati-mention-link" data-action="pati-mention-profile" data-handle="'+esc(handle)+'"'+(person?' data-id="'+esc(person.id)+'"':'')+' aria-label="@'+esc(handle)+' profiline git">@'+esc(handle)+'</button>';
  });
 }
-async function patiOpenMentionProfile(handle){
+async function patiOpenMentionProfile(handle,knownId=''){
  const username=String(handle||'').trim().replace(/^@/,'').slice(0,40);
  if(!/^[\p{L}\p{N}._]{2,40}$/u.test(username)||!me||!sb)return;
- let person=data.profiles.find(p=>String(p.handle||'').toLocaleLowerCase('tr-TR')===username.toLocaleLowerCase('tr-TR'));
+ const owner=me.id;
+ let person=data.profiles.find(p=>String(p.handle||'').toLocaleLowerCase('tr-TR')===username.toLocaleLowerCase('tr-TR')&&(!knownId||p.id===knownId));
  if(!person){
-  const result=await sb.from('profiles').select('id,display_name,handle,avatar_url,is_verified').ilike('handle',username).limit(1);
+  const result=await sb.from('profiles').select('id,display_name,handle,avatar_url,is_verified,is_private').ilike('handle',username).limit(1);
   if(result.error){console.warn('Etiketli profil sorgusu:',result.error.message);notify('Etiketlenen profil açılamadı.');return}
-  person=result.data?.[0];
-  if(person&&!data.profiles.some(p=>p.id===person.id))data.profiles.push(person);
+  person=result.data?.find(p=>String(p.handle||'').toLocaleLowerCase('tr-TR')===username.toLocaleLowerCase('tr-TR'));
+  if(person){
+   const index=data.profiles.findIndex(p=>p.id===person.id);
+   if(index<0)data.profiles.push(person);
+   else data.profiles[index]={...data.profiles[index],...person};
+  }
  }
+ if(me?.id!==owner)return;
  if(!person||blocked.has(person.id)){notify('Bu kullanıcı profili görüntülenemiyor.');return}
+ // Comments are shown in an overlay. Dismissing it first ensures the profile
+ // actually becomes visible, instead of loading invisibly behind the sheet.
+ if(document.querySelector('#comment-form')?.closest('.modal-backdrop'))closeModal(true);
  followReturnList=view==='follows-list';
  if(!followReturnList&&view!=='profile')lastDetailView=view;
- profileId=person.id;navigate('profile');
+ profileId=person.id;
+ navigate('profile');
 }
+
 function patiMentionOpen(mode){
  const form=document.getElementById(mode==='comment'?'comment-form':'post-form');
  if(!form)return;
@@ -6525,7 +6536,7 @@ case 'dm-reply':{const m=patiDmFindMessage(id);const f=document.getElementById('
  break;
 }case 'comment':showComments(id);void patiFetchPostComments(id);break;case 'comment-more':void patiFetchPostComments(id,true);break;case 'comment-emoji':{const ta=document.querySelector('#comment-form textarea[name="body"]');if(ta){ta.value+=target.dataset.emoji||'';ta.focus()}break;}case 'comment-reply':{const f=$('#comment-form');if(f){f.dataset.parent=id;const who=profile(data.comments.find(x=>x.id===id)?.author_id).display_name;const hint=$('#comment-reply-hint');if(hint)hint.innerHTML='↳ '+esc(who)+' kullanıcısına yanıt <button type="button" data-action="comment-reply-cancel">× Vazgeç</button>';f.querySelector('textarea')?.focus()}break}case 'comment-reply-cancel':{const f=$('#comment-form');if(f)f.dataset.parent='';const hint=$('#comment-reply-hint');if(hint)hint.textContent='';break}case 'comment-thread-toggle':{const form=$('#comment-form');const postId=form?.dataset.post;if(!postId)break;if(patiyizCommentExpandedReplies.has(id))patiyizCommentExpandedReplies.delete(id);else patiyizCommentExpandedReplies.add(id);showComments(postId);break;}case 'comment-pin':run(()=>patiCommentPinToggle(id));break;
 case 'pati-mention-open':patiMentionOpen(id==='comment'?'comment':'post');break;
-case 'pati-mention-profile':void patiOpenMentionProfile(target.dataset.handle);break;
+case 'pati-mention-profile':e.preventDefault();void patiOpenMentionProfile(target.dataset.handle,target.dataset.id||'');break;
 case 'pati-mention-select':{const picker=target.closest('.pati-mention-picker'),form=picker?.closest('form'),textarea=form?.querySelector('textarea[name="body"]');if(textarea){const name='@'+(target.dataset.handle||'');textarea.setRangeText(name+' ',textarea.selectionStart||textarea.value.length,textarea.selectionEnd||textarea.value.length,'end');textarea.focus();}picker?.remove();break}
 case 'comment-like':run(async()=>{const form=$('#comment-form');const postId=form?.dataset.post||'',draft=form?.querySelector('textarea')?.value||'',parent=form?.dataset.parent||'';const liked=data.commentLikes.some(x=>x.comment_id===id&&x.user_id===me.id);let r=liked?await sb.from('comment_likes').delete().eq('comment_id',id).eq('user_id',me.id):await sb.from('comment_likes').insert({comment_id:id,user_id:me.id});if(r.error)throw r.error;await load();showComments(postId);const next=$('#comment-form');if(next){next.querySelector('textarea').value=draft;next.dataset.parent=parent;const hint=$('#comment-reply-hint');if(parent&&hint)hint.textContent=profile(data.comments.find(c=>c.id===parent)?.author_id).display_name+' kullanıcısına cevap veriyorsun';}});break;case 'comment-delete':{const c=data.comments.find(x=>x.id===id);if(!c||c.author_id!==me.id)break;if(!confirm('Yorum silinsin mi?'))break;run(async()=>{const post=$('#comment-form')?.dataset.post;const r=await sb.from('comments').delete().eq('id',id).eq('author_id',me.id);if(r.error)throw r.error;
   data.comments=data.comments.filter(row=>row.id!==id);
