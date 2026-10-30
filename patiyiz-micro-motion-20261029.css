@@ -37,7 +37,6 @@
 .pati-motion-paws span:nth-child(2){animation-delay:.17s}
 .pati-motion-paws span:nth-child(3){animation-delay:.34s}
 @keyframes patiMotionPawStep{0%,70%,100%{opacity:.22;transform:translateY(0) scale(.88)}35%{opacity:1;transform:translateY(-4px) scale(1)}}
-#startup .pati-motion-splash-paws{position:absolute;top:calc(100% + 17px);left:50%;transform:translateX(-50%);color:#202126}
 #modal-root .pati-upload-status:not([hidden]) .pati-upload-spinner{display:none!important}
 #modal-root .pati-upload-status:not([hidden]) .pati-motion-paws{margin-right:8px}
 #modal-root .pati-upload-status[hidden] .pati-motion-paws{display:none}

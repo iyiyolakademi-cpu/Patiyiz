@@ -44,10 +44,10 @@ test('After selection only native file preview caption and publication remain',(
  assert.match(app,/form\.dataset\.cameraFirst='1'/);
  assert.match(css,/#patiyiz-system-media \.pati-system-options/);
 });
-test('No lost files on cancellation or failed upload, no cross-account drafts',()=>{
+test('Cancellation and failed upload stay safe; deleted previous-selection restore does not return',()=>{
  assert.match(system,/const cb=state\.onCancel;close\(\);cb\?\.\(\)/);
  assert.match(system,/catch\(err\)\{[\s\S]*?publish\.disabled=false;publish\.textContent='Tekrar paylaş'/);
- assert.match(system,/PatiyizCameraDraft\?\.save\(current\.userId,current\.mode,selected/);
+ assert.doesNotMatch(system,/PatiyizCameraDraft|restoreDraft|pati-system-restore/);
  assert.match(app,/mode,userId:me\.id/);
  assert.match(app,/mediaFlow\?\.close\(\);closeModal\(true\)/);
  assert.match(app,/void window\.PatiyizCameraDraft\?\.clear\(me\.id\)/);

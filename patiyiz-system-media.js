@@ -177,7 +177,6 @@
   // for a camera recording and let people turn it off for rear-camera clips.
   current.mirrorSelfie=!!videos.length&&source==='camera-video';
   current.onMirrorChange?.(current.mirrorSelfie);
-  void window.PatiyizCameraDraft?.save(current.userId,current.mode,selected,current.root.querySelector('#pati-system-caption')?.value||'');
   showPreview();
  }
  function launchPicker(name){
@@ -194,20 +193,6 @@
    return;
   }
   try{input.click()}catch(err){error('Telefonun kamera/galeri seçicisi açılamadı. Cihaz izinlerini kontrol et.')}
- }
- async function restoreDraft(){
-  if(!state)return;
-  const current=state,restore=current.root.querySelector('#pati-system-restore');
-  const saved=await window.PatiyizCameraDraft?.load(current.userId);
-  if(state!==current||!saved||saved.mode!==current.mode)return;
-  restore.hidden=false;
-  restore.onclick=async()=>{
-   if(state!==current)return;
-   const caption=current.root.querySelector('#pati-system-caption');
-   caption.value=saved.caption||'';
-   await acceptFiles(saved.files,'gallery');
-   restore.hidden=true;
-  };
  }
  function open({mode='post',userId,onMedia,onMirrorChange,onPublish,onCancel,onSwitch,onStoryPhotoCamera}={}){
   if(state)return;
@@ -229,7 +214,7 @@
     '<button type="button" data-system="camera-photo"><span class="pati-system-option-icon pati-system-option-photo" aria-hidden="true">'+optionIcons.photo+'</span><span><strong>Fotoğraf çek</strong><small>Telefonun normal kamerası</small></span></button>')+
    '<button type="button" data-system="camera-video"><span class="pati-system-option-icon pati-system-option-video" aria-hidden="true">'+optionIcons.video+'</span><span><strong>Video çek</strong><small>Telefonun video kamerası</small></span></button>'+
    '<button type="button" data-system="gallery"><span class="pati-system-option-icon pati-system-option-gallery" aria-hidden="true">'+optionIcons.gallery+'</span><span><strong>Galeriden seç</strong><small>'+(mode==='reels'?'Fotoğraf arşivinden video seç':'Fotoğraf veya video seç')+'</small></span></button>'+
-   '</div><button id="pati-system-restore" class="pati-system-restore" type="button" hidden>Önceki seçimi geri getir</button></div>'+
+   '</div></div>'+
    '<div id="pati-system-preview" hidden>'+
    '<div class="pati-system-preview-wrap"><div id="pati-system-preview-media" class="pati-system-preview-media" tabindex="0" aria-label="Seçilen fotoğraflar, kaydırarak gezebilirsin"></div>'+ 
    '<div id="pati-system-carousel-controls" class="pati-system-carousel-controls" hidden><button type="button" data-system="preview-prev" aria-label="Önceki fotoğraf">‹</button><span id="pati-system-carousel-count" aria-live="polite">1 / 1</span><button type="button" data-system="preview-next" aria-label="Sonraki fotoğraf">›</button></div></div>'+ 
@@ -334,11 +319,6 @@
      await state.onMedia(next,'photo');
      if(state!==current)return;
      state.files=next;state.previewIndex=Math.max(0,nextIndex);state.appendMode=false;
-     if(next.length){
-      void window.PatiyizCameraDraft?.save(state.userId,state.mode,next,root.querySelector('#pati-system-caption')?.value||'');
-     }else{
-      void window.PatiyizCameraDraft?.clear(state.userId);
-     }
      showPreview();
     }catch(err){if(state===current)error(err?.message||'Fotoğraf güncellenemedi. Tekrar dene.')}
     finally{if(state===current)state.editing=false}
@@ -379,7 +359,6 @@
     }
    }
   });
-  void restoreDraft();
  }
  window.PatiyizSystemMediaFlow={open,close,get active(){return !!state}};
  document.addEventListener('keydown',e=>{

@@ -62,12 +62,6 @@
   };
   queue(find);
  }
- function boot(){
-  const splash=document.querySelector('#startup .pati-splash-center');
-  if(splash&&!splash.querySelector('.pati-motion-paws')){
-   const wrap=document.createElement('div');wrap.className='pati-motion-splash-paws';wrap.innerHTML=pawHTML;splash.append(wrap);
-  }
- }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+ /* Opening splash intentionally shows only the existing Patiyiz logo. */
  window.PatiyizMotion=Object.freeze({heart,coin,loading,messageSent,petAdded});
 })();
