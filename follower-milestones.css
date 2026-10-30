@@ -25,3 +25,18 @@
 .pati-follower-progress{height:5px;background:rgba(128,128,128,.22);border-radius:999px;overflow:hidden;width:100%}
 @media(max-width:850px){.pati-follower-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.pati-follower-milestones{padding:15px;border-radius:17px}.pati-follower-grid{grid-template-columns:1fr}.pati-follower-summary small{margin-left:0;width:100%}.pati-follower-hint{margin:8px 0 10px}}
+
+/* Verified follower milestones: cash applications are always review-gated. */
+.pati-follower-cash{
+ grid-column:1/-1;display:flex;flex-direction:column;align-items:flex-start;
+ gap:6px;padding:11px 12px;border-radius:12px;
+ border:1px solid rgba(113,123,142,.25);background:rgba(128,138,158,.08);
+}
+.pati-follower-cash strong{font-size:13px;font-weight:800;color:inherit}
+.pati-follower-cash small{font-size:11px;line-height:1.5;opacity:.8}
+.pati-follower-cash button{
+ min-height:39px;padding:9px 13px;border:0;border-radius:11px;
+ background:#17191e;color:#fff;font-size:12px;font-weight:750;cursor:pointer;
+}
+.pati-follower-cash button:focus-visible{outline:3px solid #5c8cff;outline-offset:2px}
+html[data-pati-theme="dark"] .pati-follower-cash button{background:#f3f4f6;color:#17191e}
