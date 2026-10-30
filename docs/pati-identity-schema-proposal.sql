@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS public.pati_identity_rate_limits (
   attempts integer NOT NULL DEFAULT 0
 );
 CREATE OR REPLACE FUNCTION public.pati_identity_throttle(p_key_hash text,p_limit integer,p_window_seconds integer)
-RETURNS boolean LANGUAGE plpgsql SECURITY DEFINER SET search_path=''
+RETURNS boolean LANGUAGE plpgsql SECURITY INVOKER SET search_path=''
 AS $$
 DECLARE n integer;
 BEGIN
@@ -66,6 +66,7 @@ REVOKE ALL ON public.pati_identity_threads FROM PUBLIC,anon,authenticated;
 REVOKE ALL ON public.pati_identity_messages FROM PUBLIC,anon,authenticated;
 REVOKE ALL ON public.pati_identity_rate_limits FROM PUBLIC,anon,authenticated;
 GRANT SELECT ON public.pati_identity_tags, public.pati_identity_threads, public.pati_identity_messages TO authenticated;
+GRANT SELECT,INSERT,UPDATE,DELETE ON public.pati_identity_tags, public.pati_identity_threads, public.pati_identity_messages, public.pati_identity_rate_limits TO service_role;
 CREATE POLICY pati_identity_tag_owner_read ON public.pati_identity_tags
   FOR SELECT TO authenticated USING(owner_id=(select auth.uid()));
 CREATE POLICY pati_identity_thread_owner_read ON public.pati_identity_threads
