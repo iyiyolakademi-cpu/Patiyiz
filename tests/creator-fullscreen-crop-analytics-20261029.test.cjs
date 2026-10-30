@@ -68,7 +68,7 @@ test('Dashboard is scoped to own profile and uses real backend events, never gue
  assert.match(js,/patiCreatorBreakdown\(cities/);
  assert.match(js,/loss_history_complete/);
  assert.match(js,/pati-profile-insights-preview/);
- assert.match(js,/pati-profile-visit-disclosure/);
+ assert.doesNotMatch(js,/Profil ziyaretleri hesap sahibi tarafından görülebilir|pati-profile-visit-disclosure/);
  assert.ok(!js.includes('Profesyonel pano'));
 });
 test('New stylesheet is last, viewport-safe and packaged with Capacitor',()=>{

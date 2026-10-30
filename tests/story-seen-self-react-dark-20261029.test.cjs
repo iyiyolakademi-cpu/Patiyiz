@@ -84,10 +84,11 @@ test('Story viewed flag sync is backed by the signed-in viewer RLS policy',()=>{
  assert.ok(policy.includes('viewer_id=(SELECT auth.uid())'));
  assert.ok(!policy.includes('TO anon'));
 });
-test('Own post, Reels and story likes enabled while own DM reaction stays blocked',()=>{
+test('Own post and Reels likes remain; self story and own DM reactions are disabled',()=>{
  assert.ok(!js.includes('Kendi paylaşımına tepki veremezsin'));
  assert.ok(!js.includes("p.author_id===me.id)?'disabled'"));
- assert.ok(js.includes('class="pati-story-like pati-story-like-own"'));
+ assert.ok(!js.includes('class="pati-story-like pati-story-like-own"'));
+ assert.ok(js.includes('story.author_id===me?.id)return'));
  assert.ok(js.includes('msg.sender_id===me.id||msg.receiver_id!==me.id'));
  assert.ok(js.includes('x.sender_id!==me.id?'));
  assert.ok(js.includes('data-action="dm-react-open"'));

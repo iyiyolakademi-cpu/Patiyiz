@@ -14,12 +14,12 @@ test('Profile portrait image completely fills one circle without inset frame',()
  assert.match(app,/class="pati-ig-avatar/);
  assert.match(app,/avatar\(p,'l'\)/);
 });
-test('Own story caption, viewers, heart and delete arranged in distinct stacked rows',()=>{
+test('Own story caption remains above viewers and Delete aligned on the bottom row',()=>{
  assert.match(app,/const stack=document\.createElement\('div'\)/);
  assert.match(app,/stack\.className='pati-own-story-stack'/);
  assert.match(app,/if\(caption\)stack\.appendChild\(caption\)/);
- assert.match(app,/row\.appendChild\(viewers\)/);
- assert.match(app,/if\(like\)row\.appendChild\(like\)/);
+ assert.match(app,/foot\.appendChild\(viewers\)/);
+ assert.doesNotMatch(app,/pati-story-like-own/);
  assert.match(app,/foot\.appendChild\(deleteButton\)/);
  assert.match(css,/#story-overlay\.pati-story-own \.pati-own-story-stack/);
  assert.match(css,/flex-direction:column!important/);

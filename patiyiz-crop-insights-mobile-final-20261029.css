@@ -712,3 +712,68 @@ body.pati-avatar-crop-open{overflow:hidden!important}
  #pati-avatar-crop-overlay footer{padding-block:10px}
 }
 @media(prefers-reduced-motion:reduce){#pati-avatar-crop-overlay *{animation:none!important;transition:none!important}}
+
+/* 30 Oct 2026 | Own-story bottom-left activity aligned with the Sil action.
+   The personal story has no like button; other people's heart stays as before. */
+#story-overlay.pati-story-own .pati-own-story-footer{
+ display:flex!important;
+ flex-direction:row!important;
+ align-items:flex-end!important;
+ justify-content:space-between!important;
+ gap:12px!important;
+ width:100%!important;
+ min-width:0!important;
+}
+#story-overlay.pati-story-own .pati-own-story-footer > .story-viewers-button{
+ position:relative!important;
+ inset:auto!important;
+ transform:none!important;
+ float:none!important;
+ margin:0!important;
+ display:flex!important;
+ flex:0 1 min(50vw,190px)!important;
+ flex-direction:column!important;
+ align-items:flex-start!important;
+ justify-content:center!important;
+ gap:6px!important;
+ width:min(50vw,190px)!important;
+ min-width:0!important;
+ max-width:190px!important;
+ min-height:104px!important;
+ max-height:144px!important;
+ overflow:hidden!important;
+ box-sizing:border-box!important;
+ padding:12px 13px!important;
+ background:rgba(13,13,18,.78)!important;
+ color:#fff!important;
+ border:1px solid rgba(255,255,255,.44)!important;
+ border-radius:21px!important;
+ z-index:20!important;
+ text-align:left!important;
+}
+#story-overlay.pati-story-own .pati-own-story-footer > .story-viewers-button .pati-story-viewer-preview-label{
+ font-size:16px!important;
+ font-weight:800!important;
+ line-height:1.2!important;
+}
+#story-overlay.pati-story-own .pati-own-story-footer > .story-viewers-button .pati-story-viewer-preview-status{
+ font-size:12px!important;
+ line-height:1.3!important;
+}
+#story-overlay.pati-story-own .pati-own-story-footer > .story-delete{
+ align-self:flex-end!important;
+ flex:0 0 auto!important;
+}
+#story-overlay.pati-story-own .pati-own-story-stack > .story-caption{
+ margin-bottom:6px!important;
+}
+#story-overlay.pati-story-own .pati-story-like-own{display:none!important}
+@media(max-width:350px){
+ #story-overlay.pati-story-own .pati-own-story-footer{gap:8px!important}
+ #story-overlay.pati-story-own .pati-own-story-footer > .story-viewers-button{
+  width:min(49vw,170px)!important;
+  min-height:88px!important;
+  padding:9px 10px!important;
+ }
+ #story-overlay.pati-story-own .pati-own-story-footer > .story-delete{min-width:88px!important}
+}
