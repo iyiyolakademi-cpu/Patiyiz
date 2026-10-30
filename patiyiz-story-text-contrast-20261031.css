@@ -48,3 +48,19 @@
   font-size:13px!important;line-height:1.5!important;
  }
 }
+/* Guard against legacy story dark-theme rules dimming the shared card. */
+#story-overlay.pati-story-has-source .pati-story-share-card{
+ background:#fff!important;color:#15161a!important;mix-blend-mode:normal!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-media:not(.pati-story-share-media-text){
+ background:#f5f5f7!important;color:#15161a!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-empty{
+ display:grid!important;place-items:center!important;
+ width:100%!important;height:100%!important;color:#191a1e!important;
+ background:#f5f5f7!important;opacity:1!important;
+}
+#story-overlay .story-player>.story-caption,
+#story-overlay .story-player .pati-own-story-stack>.story-caption{
+ mix-blend-mode:normal!important;filter:none!important;opacity:1!important;
+}
