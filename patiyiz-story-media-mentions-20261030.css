@@ -1,0 +1,54 @@
+/* Real story still frame, readable clickable share cards and focused mention destinations. */
+#story-viewers-sheet .pati-story-activity-cover{
+ position:relative;overflow:hidden;background:#1b1c20;
+}
+#story-viewers-sheet .pati-story-activity-cover .pati-story-activity-video-frame{
+ display:block;width:100%;height:100%;object-fit:cover;
+ min-height:180px;max-height:40dvh;
+}
+#story-viewers-sheet .pati-story-activity-cover.pati-story-preview-unavailable:after{
+ content:"Video önizlemesi yüklenemedi";
+ position:absolute;inset:auto 0 0;padding:10px 8px;text-align:center;
+ color:white;background:#17181acc;font-size:12px;
+}
+.pati-dm-shared-card .pati-dm-shared-author{
+ cursor:pointer;text-align:left;
+}
+.pati-dm-shared-card .pati-dm-shared-media-open{
+ display:block;position:relative;width:100%;padding:0;border:0;
+ background:#16171b;color:white;overflow:hidden;text-align:center;
+}
+.pati-dm-shared-card .pati-dm-shared-play{
+ display:grid;place-items:center;position:absolute;left:50%;top:50%;
+ transform:translate(-50%,-50%);width:48px;height:48px;
+ border-radius:50%;border:1px solid #ffffff80;
+ background:#1119;color:white;font-size:20px;pointer-events:none;
+}
+.pati-dm-shared-images .pati-dm-shared-image-open{
+ display:flex;flex:0 0 100%;min-width:100%;min-height:0;
+ padding:0;margin:0;border:0;background:transparent;
+ scroll-snap-align:center;cursor:pointer;
+}
+.pati-dm-shared-card .pati-dm-shared-image-open img{
+ display:block;width:100%;height:auto;max-height:min(53dvh,480px);
+ object-fit:contain;
+}
+.pati-dm-shared-card .pati-dm-shared-text-open,
+.pati-dm-shared-card .pati-dm-shared-caption-open{
+ display:block;width:100%;border:0;background:transparent;
+ text-align:left;cursor:pointer;
+}
+#comment-form .pati-comment-mention-highlight{
+ background:color-mix(in srgb,#e7bd34 22%,transparent);
+ border-radius:12px;outline:2px solid #edc84e;
+ outline-offset:3px;transition:background .3s ease;
+}
+@media(max-width:720px){
+ #story-viewers-sheet .pati-story-activity-cover .pati-story-activity-video-frame{
+  min-height:120px;max-height:38dvh;
+ }
+ .pati-dm-shared-card .pati-dm-shared-play{width:42px;height:42px}
+}
+@media(prefers-reduced-motion:reduce){
+ #comment-form .pati-comment-mention-highlight{transition:none}
+}
