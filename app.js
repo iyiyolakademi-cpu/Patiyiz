@@ -4192,7 +4192,7 @@ function patiCreatorInsightsRender(){
      '<span class="pati-creator-stat-arrow">›</span></button>').join('')+'</div>'+
     '<div class="pati-creator-profile-moves"><h3>Profil hareketleri</h3>'+
     '<button type="button" data-action="pati-insights-detail" data-id="visits"><span>Profil ziyaretleri</span><strong>'+patiInsightsMetric(visits)+'</strong><span>›</span></button>'+
-    '<button type="button" data-action="pati-insights-detail" data-id="followers"><span>Takipçi değişimi</span><strong>+'+patiInsightsMetric(gained)+' / −'+(complete?patiInsightsMetric(lost):patiInsightsMetric(lost)+'*')+'</strong><span>›</span></button></div>'+
+    '<button type="button" data-action="pati-insights-detail" data-id="followers"><span>Takipçi değişimi</span><strong>+'+patiInsightsMetric(gained)+(complete?' / −'+patiInsightsMetric(lost):' / Kayıp geçmişi eksik')+'</strong><span>›</span></button></div>'+
     '<div class="pati-creator-chart-card"><h3>Profil ziyaretleri</h3>'+patiInsightsBarChart(patiInsightsTrend(v.daily||[],'visits'),'Profil ziyaretleri')+'</div>'+
     (!complete?'<p class="pati-creator-footnote">* Takipçi kayıpları yalnızca yeni takip sistemi kayıtlarının başlangıcından itibaren ölçülmektedir.</p>':'')+
     '</section>';
