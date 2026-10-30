@@ -1,12 +1,11 @@
-// Patiyiz QR identity gateway. Deploy only after SQL, Turnstile and RLS review.
+// Patiyiz QR identity gateway — self-hosted, no paid CAPTCHA provider.
+// Visitor checks use HMAC-signed single-use arithmetic challenges, honeypot and owner-scoped rate limits.
 // Public lookup contains an intentionally minimal pet card; never returns owner identifiers.
 import { createClient } from 'npm:@supabase/supabase-js@2.58.0';
 
 const URL_BASE=Deno.env.get('SUPABASE_URL')||'';
 const SECRET=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')||'';
-const TURNSTILE_SECRET=Deno.env.get('PATI_TURNSTILE_SECRET')||'';
-const TURNSTILE_SITE=Deno.env.get('PATI_TURNSTILE_SITE')||'';
-const PEPPER=Deno.env.get('PATI_RATE_PEPPER')||SECRET;
+const PEPPER=Deno.env.get('PATI_RATE_PEPPER')||SECRET; // Supabase supplies SECRET server-side; never sent to clients.
 const admin=createClient(URL_BASE,SECRET,{auth:{autoRefreshToken:false,persistSession:false}});
 const origins=new Set(['https://patiyiz.com','https://www.patiyiz.com','https://iyiyolakademi-cpu.github.io','https://localhost','capacitor://localhost']);
 function cors(origin:string|null){
@@ -34,17 +33,29 @@ async function limit(key:string,max:number,seconds:number){
  const {data,error}=await admin.rpc('pati_identity_throttle',{p_key_hash:key_hash,p_limit:max,p_window_seconds:seconds});
  return !error&&data===true;
 }
-async function human(proof:unknown,ip:string){
- if(!TURNSTILE_SECRET||!TURNSTILE_SITE||typeof proof!=='string'||proof.length<20)return false;
- try {
-  const form=new FormData();
-  form.set('secret',TURNSTILE_SECRET);form.set('response',proof);if(ip!=='unknown')form.set('remoteip',ip);
-  const response=await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify',{method:'POST',body:form});
-  if(!response.ok)return false;
-  const x=await response.json();
-  return x.success===true&&(!x.hostname||['patiyiz.com','www.patiyiz.com','iyiyolakademi-cpu.github.io'].includes(x.hostname));
- }catch{return false}
+/* HMAC signed five-minute challenge; all secrets and rate limits are server-side.
+ * This is a practical free abuse barrier, NOT equivalent to a managed CAPTCHA. */
+function randomInt(min:number,max:number){const bytes=crypto.getRandomValues(new Uint32Array(1));return min+(bytes[0]%(max-min+1))}
+async function hmacKey(){return crypto.subtle.importKey('raw',new TextEncoder().encode(PEPPER),{name:'HMAC',hash:'SHA-256'},false,['sign','verify'])}
+function challengeData(nonce:string,a:number,b:number,expires:number,tagId:string){return [nonce,a,b,expires,tagId].join(':')}
+async function issueChallenge(tagId:string){
+ const nonce=randomToken(),a=randomInt(4,13),b=randomInt(3,12),expires=Date.now()+5*60*1000;
+ const signature=new Uint8Array(await crypto.subtle.sign('HMAC',await hmacKey(),new TextEncoder().encode(challengeData(nonce,a,b,expires,tagId))));
+ return {nonce,a,b,expires,signature:[...signature].map(x=>x.toString(16).padStart(2,'0')).join('')};
 }
+async function verifyChallenge(tagId:string,input:any){
+ const p=input?.challenge;
+ if(!p||!tokenOk(p.nonce)||!Number.isSafeInteger(p.a)||p.a<4||p.a>13||!Number.isSafeInteger(p.b)||p.b<3||p.b>12||
+   !Number.isSafeInteger(p.expires)||p.expires<=Date.now()||p.expires>Date.now()+300000||
+   typeof p.signature!=='string'||!/^[a-f0-9]{64}$/.test(p.signature)||
+   String(input?.answer??'').trim()!==String(p.a+p.b))return false;
+ if(typeof input?.website==='string'&&input.website.trim())return false;
+ const signature=Uint8Array.from(p.signature.match(/../g)!.map((hex:string)=>parseInt(hex,16)));
+ const valid=await crypto.subtle.verify('HMAC',await hmacKey(),signature,
+   new TextEncoder().encode(challengeData(p.nonce,p.a,p.b,p.expires,tagId)));
+ return valid&&await limit('challenge-once:'+p.nonce,1,86400);
+}
+
 async function getOwner(req:Request){
  const jwt=req.headers.get('authorization')?.match(/^Bearer\s+([^\s]+)$/i)?.[1];
  if(!jwt)return null;
@@ -65,7 +76,13 @@ Deno.serve(async req=>{
   const input=await req.json();
   const action=String(input?.action||'');
   const ip=ipOf(req);
-  if(action==='config')return respond({ok:true,siteKey:TURNSTILE_SITE||null,contactReady:!!(TURNSTILE_SITE&&TURNSTILE_SECRET)},200,origin);
+  if(action==='config')return respond({ok:true,mode:'self-hosted',contactReady:!!PEPPER},200,origin);
+  if(action==='challenge'){
+   const tag=await findTag(input.token);
+   if(!tag)return err('Bu Pati Kimliği aktif değil.',404,origin);
+   if(!await limit('challenge-ip:'+ip,24,3600)||!await limit('challenge-tag:'+tag.id,150,3600))return err('Çok sık deneme. Daha sonra tekrar dene.',429,origin);
+   return respond({ok:true,challenge:await issueChallenge(tag.id)},200,origin);
+  }
   if(action==='lookup'){
    if(!await limit('scan:'+ip,120,3600))return err('Çok sayıda istek. Daha sonra dene.',429,origin);
    const tag=await findTag(input.token);
@@ -75,6 +92,7 @@ Deno.serve(async req=>{
    return respond({ok:true,pet:{name:pet.name||'Patili dost',species:pet.species||'Hayvan',breed:pet.breed||'',photo_url:tag.show_photo?pet.photo_url:null,note:tag.public_note||''}},200,origin);
   }
   if(action==='read-thread'){
+   if(!await limit('read-thread:'+ip,100,3600))return err('Çok sık kontrol yapıldı.',429,origin);
    const tag=await findTag(input.token);
    if(!tag||!tokenOk(input.receipt))return err('Özel konuşma bağlantısı geçersiz.',404,origin);
    const {data:t}=await admin.from('pati_identity_threads').select('id,expires_at,status').eq('tag_id',tag.id).eq('receipt_hash',await sha(input.receipt)).maybeSingle();
@@ -87,8 +105,9 @@ Deno.serve(async req=>{
    const tag=await findTag(input.token);
    if(!tag)return err('Bu Pati Kimliği artık aktif değil.',404,origin);
    if(!bodyOk(input.message))return err('Mesaj 1–1000 karakter olmalı.',400,origin);
-   if(!await limit('send:'+ip+':'+tag.id,4,3600)||!await limit('tag-global:'+tag.id,40,3600))return err('Mesaj sınırına ulaştın.',429,origin);
-   if(!await human(input.proof,ip))return err('Güvenlik doğrulaması başarısız.',403,origin);
+   if(!await limit('send-ip:'+ip+':'+tag.id,8,3600))return err('Mesaj deneme sınırına ulaştın.',429,origin);
+   if(!await verifyChallenge(tag.id,input))return err('Güvenlik sorusu yanlış, kullanılmış veya süresi dolmuş. Yeniden dene.',403,origin);
+   if(!await limit('tag-global:'+tag.id,30,3600))return err('Bu hayvan için mesaj sınırına ulaşıldı.',429,origin);
    let receipt:string|undefined,thread:string|undefined;
    if(action==='send'){
     receipt=randomToken();
