@@ -4700,12 +4700,30 @@ function patiMentionOpen(mode){
  panel.innerHTML='<label>Kişi ara<input type="search" class="pati-mention-search" placeholder="İsim veya kullanıcı adı" aria-label="Etiketlenecek kullanıcı"></label><div class="pati-mention-results"></div>';
  target.insertAdjacentElement('afterend',panel);
  const search=panel.querySelector('input'),results=panel.querySelector('.pati-mention-results');
+ let remote=[],timeout=null,request=0;
  const paint=()=>{
   const q=search.value.trim().toLocaleLowerCase('tr-TR');
-  const list=data.profiles.filter(p=>p.id!==me.id&&!blocked.has(p.id)&&p.handle&&(!q||(p.handle+' '+(p.display_name||'')).toLocaleLowerCase('tr-TR').includes(q))).slice(0,30);
+  const pool=[...new Map([...remote,...data.profiles].filter(p=>p?.id).map(p=>[p.id,p])).values()];
+  const list=pool.filter(p=>p.id!==me?.id&&!blocked.has(p.id)&&p.handle&&(!q||(p.handle+' '+(p.display_name||'')).toLocaleLowerCase('tr-TR').includes(q))).slice(0,30);
   results.innerHTML=list.length?list.map(p=>'<button type="button" data-action="pati-mention-select" data-handle="'+esc(p.handle)+'">'+avatar(p,'s')+'<span>'+esc(p.display_name||p.handle)+'<small>@'+esc(p.handle)+'</small></span></button>').join(''):'<p>Kullanıcı bulunamadı.</p>';
  };
- search.addEventListener('input',paint);paint();search.focus();
+ search.addEventListener('input',()=>{
+  paint();clearTimeout(timeout);const token=++request;
+  const query=search.value.trim().replace(/[^\p{L}\p{N}_.]/gu,'').slice(0,40);
+  if(query.length<2||!sb)return;
+  timeout=setTimeout(async()=>{
+   try{
+    const result=await sb.from('profiles').select('id,display_name,handle,avatar_url,is_verified').ilike('handle','%'+query+'%').limit(30);
+    if(result.error)throw result.error;
+    if(!panel.isConnected||token!==request)return;
+    remote=result.data||[];
+    const known=new Set(data.profiles.map(p=>p.id));
+    for(const p of remote)if(!known.has(p.id)){data.profiles.push(p);known.add(p.id)}
+    paint();
+   }catch(error){console.warn('Etiketlenecek kullanıcı araması:',error?.message||error)}
+  },250);
+ });
+ paint();search.focus();
 }
 
 function showComments(postId){
