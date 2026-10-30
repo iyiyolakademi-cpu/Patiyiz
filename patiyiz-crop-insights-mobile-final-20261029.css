@@ -526,14 +526,16 @@ html[data-pati-theme="dark"] #modal-root #story-form select[name="story_audience
 #story-overlay.pati-story-own .pati-own-story-stack{
  position:absolute!important;
  z-index:19!important;
- bottom:calc(12px + env(safe-area-inset-bottom,0px))!important;
+ /* Raise neither caption nor activity: shift the stack down while
+    respecting iPhone's home-indicator safe area and keeping Sil visible. */
+ bottom:calc(4px + env(safe-area-inset-bottom,0px))!important;
  left:14px!important;
  right:14px!important;
  box-sizing:border-box!important;
  display:flex!important;
  flex-direction:column!important;
  align-items:stretch!important;
- gap:11px!important;
+ gap:6px!important;
  max-height:min(53dvh,470px);
  pointer-events:none;
 }
@@ -623,7 +625,7 @@ html[data-pati-theme="dark"] #modal-root #story-form select[name="story_audience
 }
 #story-overlay.pati-story-viewers-open .pati-own-story-stack{display:none!important}
 @media(max-height:690px){
- #story-overlay.pati-story-own .pati-own-story-stack{gap:7px!important;max-height:54dvh}
+ #story-overlay.pati-story-own .pati-own-story-stack{gap:5px!important;max-height:54dvh}
  #story-overlay.pati-story-own .pati-own-story-actions > .story-viewers-button{min-height:82px!important}
  #story-overlay.pati-story-own .pati-own-story-stack > .story-caption{max-height:12dvh!important}
 }
