@@ -4056,10 +4056,10 @@ const patiMetric=v=>Number(v||0).toLocaleString('tr-TR');
 
 /* Full-screen creator dashboard: every metric is server-sourced and personally scoped.
    Small demographic samples are suppressed by the database, not by CSS. */
-function patiInsightsMetric(number){const n=window.PatiyizInsightsMetrics?.count(number);return n===null?'—':patiMetric(Number(number)||0)}
+function patiInsightsMetric(number){const n=typeof window!=='undefined'&&window.PatiyizInsightsMetrics?window.PatiyizInsightsMetrics.count(number):(number==null||number===''||!Number.isFinite(Number(number))?null:Number(number));return n===null?'—':patiMetric(Number(number)||0)}
 function patiInsightsBarChart(series,label){
  const rows=Array.isArray(series)?series:[];
- if(rows.some(x=>window.PatiyizInsightsMetrics.count(x.value)===null))return '<p class="pati-creator-empty" role="status">Bu dönemin günlük verileri eksik. Eksik günler sıfır kabul edilmedi.</p>';
+ if(rows.some(x=>x.value==null||x.value===''||!Number.isFinite(Number(x.value))))return '<p class="pati-creator-empty" role="status">Bu dönemin günlük verileri eksik. Eksik günler sıfır kabul edilmedi.</p>';
  const values=rows.map(x=>Number(x.value)||0),maximum=Math.max(1,...values);
  if(!rows.length||values.every(v=>v===0))
   return '<p class="pati-creator-empty" role="status">Bu dönemde henüz kayıtlı '+esc(label.toLocaleLowerCase('tr-TR'))+' verisi yok. Yeni hareketler olduğunda grafik burada oluşacak.</p>';
@@ -4068,7 +4068,7 @@ function patiInsightsBarChart(series,label){
  '<div class="pati-stat-axis"><span>'+esc(rows[0]?.day||'')+'</span><span>'+esc(rows[Math.floor((rows.length-1)/2)]?.day||'')+'</span><span>'+esc(rows.at(-1)?.day||'')+'</span></div>';
 }
 function patiInsightsTrend(daily,key){
- const points=(Array.isArray(daily)?daily:[]).map(x=>({day:String(x.day||'').slice(5),value:window.PatiyizInsightsMetrics.count(x[key])}));
+ const points=(Array.isArray(daily)?daily:[]).map(x=>({day:String(x.day||'').slice(5),value:x[key]==null||!Number.isFinite(Number(x[key]))?null:Number(x[key])}));
  if(points.length<=31)return points;
  const chunks=[];for(let i=0;i<points.length;i+=7){const set=points.slice(i,i+7);chunks.push({day:set[0]?.day||'',value:set.some(p=>p.value===null)?null:set.reduce((sum,p)=>sum+p.value,0)})}
  return chunks;
@@ -4081,10 +4081,16 @@ function patiInsightsClose(){
  patiCreatorStats.detail='';
 }
 function patiInsightsPct(now,prev){
- return window.PatiyizInsightsMetrics.change(now,prev).label;
+ const metrics=typeof window!=='undefined'&&window.PatiyizInsightsMetrics;
+ if(metrics)return metrics.change(now,prev).label;
+ if(now==null||prev==null)return 'Veri yok';
+ if(!Number.isFinite(Number(prev))||Number(prev)===0)return Number(now)>0?'Yeni':'0%';
+ return ((Number(now)-Number(prev))/Number(prev)*100).toLocaleString('tr-TR',{maximumFractionDigits:1})+'%';
 }
 function patiInsightsChange(now,prev){
- const state=window.PatiyizInsightsMetrics.change(now,prev);
+ const metrics=typeof window!=='undefined'&&window.PatiyizInsightsMetrics;
+ const delta=now==null||prev==null?null:Number(now)-Number(prev);
+ const state=metrics?metrics.change(now,prev):{direction:delta===null?'unknown':delta>0?'increase':delta<0?'decrease':'neutral',label:patiInsightsPct(now,prev)};
  const text={increase:'Artış',decrease:'Düşüş',neutral:'Değişim yok',unknown:'Veri mevcut değil'};
  const arrow={increase:'↗',decrease:'↘',neutral:'→',unknown:'—'};
  return '<span class="pati-creator-change '+state.direction+'" aria-label="'+text[state.direction]+'">'+arrow[state.direction]+' '+state.label+'</span>';
