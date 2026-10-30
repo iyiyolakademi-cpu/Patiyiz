@@ -1,0 +1,63 @@
+/* Patiyiz private settings: simple, Instagram-style spacing; original UI. */
+#main-content .pati-settings-v2{width:min(100%,700px);margin:0 auto;padding:4px 12px 100px;display:grid;gap:24px}
+#main-content .pati-settings-v2 .pati-settings-section{margin:0;background:transparent;border:none;padding:0;box-shadow:none}
+#main-content .pati-settings-v2 .pati-settings-section>h2{font-size:14px;font-weight:850;letter-spacing:-.02em;color:var(--ink,#17191d);margin:10px 10px 11px}
+#main-content .pati-settings-v2 .pati-settings-items{border:1px solid var(--line,#e8e8eb);border-radius:17px;background:var(--paper,#fff);overflow:hidden}
+#main-content .pati-settings-v2 .pati-settings-row{width:100%;display:flex;gap:13px;align-items:center;text-align:left;min-height:69px;padding:12px 16px;background:transparent;border:0;border-bottom:1px solid var(--line,#eceef1);color:var(--ink,#14161a);font:inherit}
+#main-content .pati-settings-v2 .pati-settings-row:last-child{border-bottom:0}
+#main-content .pati-settings-v2 .pati-settings-icon{flex:0 0 34px;width:34px;height:34px;display:grid;place-items:center;font-size:18px;background:var(--bg,#f4f5f7);border-radius:11px}
+#main-content .pati-settings-v2 .pati-settings-copy{flex:1;min-width:0;display:grid;gap:4px}
+#main-content .pati-settings-v2 .pati-settings-copy strong{font-size:14px;line-height:1.35;font-weight:750;white-space:normal;color:inherit}
+#main-content .pati-settings-v2 .pati-settings-copy small{font-size:12px;line-height:1.4;color:#858b96}
+#main-content .pati-settings-v2 .pati-settings-arrow{font-size:23px;color:#a4a9b1;font-weight:400}
+#main-content .pati-settings-v2 .pati-settings-switch{flex:0 0 40px;width:40px;height:24px;border-radius:99px;background:#c7cbd0;position:relative}
+#main-content .pati-settings-v2 .pati-settings-switch:after{content:'';position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:white;transition:transform .18s}
+#main-content .pati-settings-v2 .pati-settings-private[aria-checked="true"] .pati-settings-switch{background:#17191d}
+#main-content .pati-settings-v2 .pati-settings-private[aria-checked="true"] .pati-settings-switch:after{transform:translateX(16px)}
+#main-content .pati-settings-v2 .pati-settings-line{padding:14px;display:grid;gap:11px}
+#main-content .pati-settings-v2 .pati-settings-line>strong{font-size:13px}
+#main-content .pati-settings-v2 .pati-theme-options{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#main-content .pati-settings-v2 .pati-theme-options button{min-height:43px;border-radius:12px;font-weight:750}
+#main-content .pati-settings-v2 .pati-settings-choice{padding:17px 14px;display:grid;gap:13px;border-bottom:1px solid var(--line,#eee)}
+#main-content .pati-settings-v2 .pati-settings-choice>strong{font-size:13px}
+#main-content .pati-settings-v2 .pati-safety-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+#main-content .pati-settings-v2 .pati-safety-buttons button{min-width:0;min-height:44px;padding:8px 5px;border:1px solid #dadde3;border-radius:11px;background:#f4f5f7;color:#33363c;font:inherit;font-size:11px;font-weight:750}
+#main-content .pati-settings-v2 .pati-safety-buttons button[aria-pressed="true"]{background:#17191d;color:#fff;border-color:#17191d}
+#main-content .pati-settings-v2 .pati-settings-requests{padding:12px 14px}
+#main-content .pati-settings-v2 .pati-settings-links{display:flex;gap:16px;flex-wrap:wrap;padding:16px;border-bottom:1px solid #e7e7e9;font-size:13px}
+#main-content .pati-settings-v2 .pati-settings-warning{margin:0 6px;font-size:12px;line-height:1.5;color:#818791}
+html[data-pati-theme="dark"] #main-content .pati-settings-v2 .pati-settings-items{background:#1d2026;border-color:#373a43}
+html[data-pati-theme="dark"] #main-content .pati-settings-v2 .pati-settings-section>h2,
+html[data-pati-theme="dark"] #main-content .pati-settings-v2 .pati-settings-row,
+html[data-pati-theme="dark"] #main-content .pati-settings-v2 .pati-settings-line{color:#f7f7f9!important}
+html[data-pati-theme="dark"] #main-content .pati-settings-v2 .pati-settings-icon{background:#292c34;color:#f2f3f4}
+html[data-pati-theme="dark"] #main-content .pati-settings-v2 .pati-settings-choice{color:#fff;border-color:#343841}
+html[data-pati-theme="dark"] #main-content .pati-settings-v2 .pati-safety-buttons button{background:#292d33;color:#eee;border-color:#474b54}
+html[data-pati-theme="dark"] #main-content .pati-settings-v2 .pati-safety-buttons button[aria-pressed="true"]{background:#f4f4f6;color:#16181c;border-color:#f4f4f6}
+body.pati-close-picker-active{overflow:hidden!important}
+#pati-close-picker{position:fixed;inset:0;z-index:31000;background:#fff;color:#17191d;overflow-y:auto;overscroll-behavior:contain}
+#pati-close-picker *{box-sizing:border-box}
+#pati-close-picker .pati-close-picker-shell{width:min(100%,700px);margin:0 auto;padding:env(safe-area-inset-top,0px) 14px calc(26px + env(safe-area-inset-bottom,0px))}
+#pati-close-picker header{position:sticky;top:0;z-index:3;background:#fff;display:grid;grid-template-columns:55px minmax(0,1fr) 94px;align-items:center;min-height:65px;border-bottom:1px solid #e9eaee}
+#pati-close-picker header strong{text-align:center;font-size:17px}
+#pati-close-picker header button{min-height:44px;background:transparent;color:inherit;border:0;font:inherit;font-size:24px}
+#pati-close-picker header .pati-close-confirm{background:#17191d;border-radius:12px;color:#fff;font-size:13px;font-weight:800;padding:8px}
+#pati-close-picker .pati-close-info{padding:18px 5px 14px}
+#pati-close-picker .pati-close-info strong{font-size:16px}
+#pati-close-picker .pati-close-info p{font-size:12px;line-height:1.55;color:#777e88}
+#pati-close-picker #pati-close-search{width:100%;height:47px;border:1px solid #e5e7e9;border-radius:12px;background:#f3f4f6;padding:0 15px;font:inherit;font-size:14px;color:inherit}
+#pati-close-picker .pati-close-people{display:grid;padding:10px 0}
+#pati-close-picker .pati-close-person{display:flex;align-items:center;gap:12px;width:100%;min-height:68px;padding:9px 6px;background:transparent;border:0;border-bottom:1px solid #eef0f2;color:inherit;text-align:left;font:inherit}
+#pati-close-picker .pati-close-person .avatar{flex:none}
+#pati-close-picker .pati-close-person>span:nth-last-child(2){flex:1;min-width:0;display:grid;gap:3px}
+#pati-close-picker .pati-close-person strong{font-size:14px}
+#pati-close-picker .pati-close-person small{font-size:12px;color:#7d8490}
+#pati-close-picker .pati-close-person>b{display:grid;place-items:center;flex:0 0 25px;width:25px;height:25px;border:2px solid #c7cbd0;border-radius:50%;font-size:14px}
+#pati-close-picker .pati-close-person[aria-pressed="true"]>b{background:#17191d;border-color:#17191d;color:#fff}
+#pati-close-picker .pati-close-error{padding:12px;color:#bf4040}
+#pati-close-picker .pati-close-empty{padding:32px 12px;text-align:center;color:#858b96}
+html[data-pati-theme="dark"] #pati-close-picker,html[data-pati-theme="dark"] #pati-close-picker header{background:#14161b;color:#f8f8fa}
+html[data-pati-theme="dark"] #pati-close-picker #pati-close-search{background:#282b33;border-color:#3d414b;color:#fff}
+html[data-pati-theme="dark"] #pati-close-picker .pati-close-person{border-color:#363a43}
+html[data-pati-theme="dark"] #pati-close-picker header .pati-close-confirm{background:#fff;color:#14161b}
+@media(max-width:410px){#main-content .pati-settings-v2{padding-inline:8px}#main-content .pati-settings-v2 .pati-safety-buttons button{font-size:10.5px}}

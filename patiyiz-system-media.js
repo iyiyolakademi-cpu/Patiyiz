@@ -194,7 +194,7 @@
   }
   try{input.click()}catch(err){error('Telefonun kamera/galeri seçicisi açılamadı. Cihaz izinlerini kontrol et.')}
  }
- function open({mode='post',userId,onMedia,onMirrorChange,onPublish,onCancel,onSwitch,onStoryPhotoCamera}={}){
+ function open({mode='post',userId,onMedia,onMirrorChange,onBeforePublish,onPublish,onCancel,onSwitch,onStoryPhotoCamera}={}){
   if(state)return;
   if(!['post','story','reels'].includes(mode))mode='post';
   if(typeof onMedia!=='function'||typeof onPublish!=='function')throw Error('Paylaşım bağlanamadı.');
@@ -239,7 +239,7 @@
    '<input id="pati-system-gallery" type="file" accept="'+(kind(mode)==='video'?'video/*,.mov,.mp4,.webm,.m4v':'image/*,video/*,.heic,.heif,.mov,.mp4,.webm,.m4v')+'"'+(mode==='post'?' multiple':'')+' hidden>';
   document.body.appendChild(root);
   document.body.classList.add('pati-system-media-active');
-  state={root,mode,userId,onMedia,onMirrorChange,onPublish,onCancel,onSwitch,onStoryPhotoCamera,publishing:false,editing:false,files:[],urls:[],previewVersion:0,previewError:false,previewIndex:0,mirrorSelfie:false,appendMode:false};
+  state={root,mode,userId,onMedia,onMirrorChange,onBeforePublish,onPublish,onCancel,onSwitch,onStoryPhotoCamera,publishing:false,editing:false,files:[],urls:[],previewVersion:0,previewError:false,previewIndex:0,mirrorSelfie:false,appendMode:false};
   const current=state;
   for(const n of ['camera-photo','camera-video','gallery']){
    root.querySelector('#pati-system-'+n).addEventListener('change',async event=>{
@@ -346,6 +346,12 @@
    }
    if(action==='publish'){
     if(state.publishing||state.editing||state.previewError||!state.files.length)return;
+    if(typeof state.onBeforePublish==='function'){
+     state.editing=true;
+     try{const approved=await state.onBeforePublish(root.querySelector('#pati-system-audience')?.value||'everyone');if(state!==current||approved!==true)return}
+     catch(err){if(state===current)error(err?.message||'Yakın arkadaş seçimi açılamadı.');return}
+     finally{if(state===current)state.editing=false}
+    }
     state.publishing=true;
     const publish=root.querySelector('#pati-system-publish');
     publish.disabled=true;publish.textContent='Paylaşılıyor…';
