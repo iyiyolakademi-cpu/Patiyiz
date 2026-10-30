@@ -2901,15 +2901,27 @@ function patiWeeklyBoard(){
    '<div class="pati-weekly-bottom"><span>'+(p&&!blocked.has(p.user_id)?Number(p.score||0).toLocaleString('tr-TR')+' puan':'Sıralama bekleniyor')+'</span>'+
    '<strong>+'+prize+' <img src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true"> Pati Coin</strong></div></article>';
  }).join('');
+ const compactRows=[3,4,5].map(rank=>{
+  const p=leaders.find(row=>Number(row.rank)===rank);
+  const available=p&&!blocked.has(p.user_id);
+  return '<div class="pati-weekly-compact-row'+(available?'':' is-empty')+'">'+
+    '<span class="pati-weekly-compact-rank" aria-label="'+rank+'. sıra">'+rank+'.</span>'+
+    (available?'<button type="button" class="pati-weekly-compact-profile" data-action="view-user" data-id="'+esc(p.user_id)+'" aria-label="'+rank+'. sıradaki '+esc(p.name||p.handle||'kullanıcı')+' profilini aç">'+
+      '<span class="pati-weekly-mini-avatar">'+portrait(p)+'</span>'+
+      '<span class="pati-weekly-compact-name"><strong>'+esc(p.name||p.handle||'Patiyiz üyesi')+'</strong><small>@'+esc(p.handle||'patiyiz')+'</small></span>'+
+      '<span class="pati-weekly-compact-score"><strong>'+Number(p.score||0).toLocaleString('tr-TR')+'</strong><small>puan</small></span></button>':
+      '<div class="pati-weekly-compact-placeholder"><span class="pati-weekly-mini-avatar" aria-hidden="true">🐾</span><span>Bu sıra henüz boş</span></div>')+
+    '</div>';
+ }).join('');
  const past=previous.length?'<div class="pati-weekly-previous"><strong>Geçen haftanın kazananları</strong>'+
   previous.map(p=>'<span>'+(Number(p.rank)===1?'🥇':'🥉')+' '+esc(p.name||p.handle||'Patiyiz üyesi')+' · +'+Number(p.coins||0)+' Pati Coin</span>').join('')+'</div>':'';
  const empty=state.error?'<p role="status" class="pati-weekly-status">'+esc(state.error)+'</p>':
  (!state.ready?'<p class="pati-weekly-status">Haftalık sıralama yükleniyor…</p>':'');
  return '<section class="pati-weekly-board" id="pati-weekly-board" aria-label="Haftanın en aktif kullanıcıları">'+
-  '<header class="pati-weekly-head"><div><span>🏆 HAFTALIK PATİ LİGİ</span><h2>Haftanın en aktif 2 üyesi</h2><p>'+
+  '<header class="pati-weekly-head"><div><span>🏆 HAFTALIK PATİ LİGİ</span><h2>Haftanın en aktif 5 üyesi</h2><p>'+
    (result.week_start&&result.week_end?shortDate(result.week_start)+' – '+shortDate(result.week_end)+' · ':'')+
    'Pazartesi–pazar · Türkiye saati</p></div><button type="button" data-action="pati-weekly-refresh" aria-label="Haftalık sıralamayı yenile">↻ Yenile</button></header>'+
-  empty+'<div class="pati-weekly-podium">'+cards+'</div>'+past+
+  empty+'<div class="pati-weekly-podium">'+cards+'</div><div class="pati-weekly-runners" aria-label="3, 4 ve 5. sıradaki kullanıcılar">'+compactRows+'</div>'+past+
   '<p class="pati-weekly-rules">Gönderi, yorum, beğeni ve aktif günlerden puan kazanılır. Her türde haftalık üst sınır vardır. Pazar gecesi sıralama kapanır; pazartesi 00.05 sonrası birinciye 100, ikinciye 50 Pati Coin otomatik ve yalnızca bir kez verilir. Beraberliklerde aktif gün sayısı, ardından hesap kimliği esas alınır.</p>'+
   '</section>';
 }
