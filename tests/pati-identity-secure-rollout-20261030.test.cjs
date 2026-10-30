@@ -22,7 +22,10 @@ test('QR scanner avoids private information and retains self-contained secret in
  assert.match(scan,/<meta name="robots" content="noindex,nofollow">/);
  assert.match(scan,/<meta name="referrer" content="no-referrer">/);
  assert.match(scan,/location\.hash/);
- assert.match(scan,/turnstile/);
+ assert.match(scan,/id="question"/);
+ assert.match(scan,/id="answer"/);
+ assert.match(scan,/new-challenge/);
+ assert.doesNotMatch(scan,/turnstile|cloudflare/i);
  assert.doesNotMatch(scan,/SUPABASE_SERVICE_ROLE_KEY/);
 });
 test('identity storage and messages are owner-only under RLS and anonymous contact is challenge guarded',()=>{
@@ -33,7 +36,13 @@ test('identity storage and messages are owner-only under RLS and anonymous conta
  assert.match(sql,/show_photo boolean NOT NULL DEFAULT false/);
  assert.match(sql,/SECURITY INVOKER SET search_path/);
  assert.match(sql,/GRANT SELECT,INSERT,UPDATE,DELETE ON public.pati_identity_tags/);
- assert.match(edge,/await human\(input\.proof,ip\)/);
+ assert.match(edge,/await verifyChallenge\(tag\.id,input\)/);
+ assert.match(edge,/crypto\.subtle\.verify\('HMAC'/);
+ assert.match(edge,/challenge-once:/);
+ assert.match(edge,/action==='challenge'/);
+ assert.match(edge,/action==='config'/);
+ assert.match(edge,/input\.website/);
+ assert.doesNotMatch(edge,/turnstile|cloudflare/i);
  assert.match(edge,/tag-global:/);
  assert.match(edge,/\.eq\('owner_id',user\.id\)/);
  assert.match(edge,/if\(!user\)return err\('Oturum gerekli.'/);
@@ -45,4 +54,15 @@ test('Original Patiyiz core JavaScript and scan/owner scripts parse',()=>{
  const match=scan.match(/<script>\s*([\s\S]*?)<\/script>\s*<\/body>/);
  assert.ok(match);
  assert.doesNotThrow(()=>new Function(match[1]));
+});
+
+test('Challenge rate limits and self-hosted confirmation remain server-side',()=>{
+ assert.match(edge,/limit\('challenge-ip:'/);
+ assert.match(edge,/limit\('challenge-tag:'/);
+ assert.match(edge,/limit\('send-ip:'/);
+ assert.match(edge,/limit\('tag-global:'/);
+ assert.match(edge,/Date\.now\(\)\+5\*60\*1000/);
+ assert.match(scan,/await call\('challenge',\{token:tag\}\)/);
+ assert.match(scan,/answer:\$\('answer'\)\.value/);
+ assert.match(scan,/website:\$\('website'\)\.value/);
 });
