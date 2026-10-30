@@ -1,0 +1,126 @@
+/* Patiyiz: full-screen liked-by list and profile-only comment navigation. */
+#modal-root .modal-backdrop.pati-post-likers-backdrop{
+ position:fixed!important;inset:0!important;z-index:100800!important;
+ display:flex!important;justify-content:center!important;align-items:stretch!important;
+ padding:0!important;margin:0!important;background:#0008!important;
+}
+#modal-root .modal.pati-post-likers-modal{
+ display:flex!important;flex-direction:column!important;
+ width:min(100%,740px)!important;max-width:740px!important;
+ height:100dvh!important;max-height:100dvh!important;
+ min-height:0!important;box-sizing:border-box!important;
+ margin:0!important;border-radius:0!important;
+ background:var(--pati-final-field-bg,#fff)!important;
+ color:var(--pati-final-field-text,#16191c)!important;
+ overflow:hidden!important;
+}
+#modal-root .pati-post-likers-modal>.modal-header{
+ flex:0 0 auto!important;display:flex!important;align-items:center!important;
+ min-height:66px!important;padding:13px 56px 13px 20px!important;
+ border-bottom:1px solid var(--pati-final-field-line,#e7e8eb)!important;
+ background:inherit!important;color:inherit!important;
+}
+#modal-root .pati-post-likers-modal>.modal-header h2{font-weight:850!important;font-size:17px!important;color:inherit!important}
+#modal-root .pati-post-likers-modal .close-modal{
+ display:grid!important;place-items:center!important;
+ position:absolute!important;top:14px!important;right:14px!important;
+ width:38px!important;height:38px!important;min-width:38px!important;
+ padding:0!important;border-radius:50%!important;
+ background:color-mix(in srgb,currentColor 9%,transparent)!important;
+ color:inherit!important;font-size:25px!important;z-index:1!important;
+}
+#modal-root .pati-post-likers-modal #pati-post-likers-form{
+ display:flex!important;flex-direction:column!important;flex:1 1 auto!important;
+ min-height:0!important;overflow:hidden!important;
+}
+#modal-root .pati-post-likers-modal .modal-content{
+ display:flex!important;flex-direction:column!important;flex:1 1 auto!important;
+ min-height:0!important;max-height:none!important;overflow:hidden!important;
+ gap:0!important;padding:0!important;
+ background:inherit!important;color:inherit!important;
+}
+#modal-root .pati-post-likers-modal .modal-footer{display:none!important}
+#modal-root .pati-post-likers-modal .pati-post-likers-status{
+ padding:12px 19px!important;flex:0 0 auto!important;
+ font-size:12px!important;color:inherit!important;opacity:.68!important;
+ border-bottom:1px solid var(--pati-final-field-line,#e7e8eb)!important;
+}
+#modal-root .pati-post-likers-modal .pati-post-likers-list{
+ flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;
+ overscroll-behavior:contain;-webkit-overflow-scrolling:touch!important;
+ padding:7px 12px 22px!important;scrollbar-width:thin;
+}
+#modal-root .pati-post-likers-modal .pati-post-liker-person{
+ width:100%!important;max-width:100%!important;min-width:0!important;
+ display:flex!important;align-items:center!important;gap:12px!important;
+ min-height:65px!important;
+ padding:9px 11px!important;box-sizing:border-box!important;
+ border:0!important;border-radius:12px!important;background:transparent!important;
+ color:inherit!important;font:inherit!important;text-align:left!important;cursor:pointer!important;
+}
+#modal-root .pati-post-likers-modal .pati-post-liker-person .avatar{
+ width:44px!important;height:44px!important;min-width:44px!important;flex:0 0 44px!important;
+ border-radius:50%!important;overflow:hidden!important;
+}
+#modal-root .pati-post-likers-modal .pati-post-liker-person .avatar img{
+ width:100%!important;height:100%!important;object-fit:cover!important;
+}
+#modal-root .pati-post-likers-modal .pati-post-liker-identity{
+ display:flex!important;flex:1 1 auto!important;min-width:0!important;max-width:100%!important;
+ flex-direction:column!important;gap:3px!important;
+}
+#modal-root .pati-post-likers-modal .pati-post-liker-identity strong,
+#modal-root .pati-post-likers-modal .pati-post-liker-identity small{
+ display:block!important;width:100%!important;overflow:hidden!important;
+ text-overflow:ellipsis!important;white-space:nowrap!important;color:inherit!important;
+}
+#modal-root .pati-post-likers-modal .pati-post-liker-identity strong{font-size:14px!important;font-weight:800!important}
+#modal-root .pati-post-likers-modal .pati-post-liker-identity small{font-size:12px!important;opacity:.64!important}
+#modal-root .pati-post-likers-modal .pati-post-liker-person>.icon{flex:0 0 18px!important;opacity:.55!important}
+#modal-root .pati-post-likers-modal .pati-post-liker-person:active{
+ background:color-mix(in srgb,currentColor 9%,transparent)!important;
+}
+#modal-root .pati-post-likers-modal .pati-post-liker-person:focus-visible{
+ outline:2px solid #2388fa!important;outline-offset:-2px!important;
+}
+#modal-root .pati-post-likers-modal .pati-post-likers-empty{
+ text-align:center!important;padding:30px 12px!important;opacity:.7!important;font-size:14px!important;
+}
+#modal-root .pati-post-likers-modal .pati-post-likers-more{
+ flex:0 0 auto!important;align-self:stretch!important;margin:0 15px 15px!important;
+ padding:12px!important;border-radius:12px!important;min-height:44px!important;
+ border:1px solid var(--pati-final-field-line,#e7e8eb)!important;
+ background:transparent!important;color:#2388fa!important;
+ font-size:14px!important;font-weight:800!important;cursor:pointer!important;
+}
+#main-content .pati-post-like-summary{
+ display:inline-block!important;width:fit-content!important;max-width:100%!important;
+ padding:3px 0!important;margin:0!important;border:0!important;
+ border-radius:4px!important;background:transparent!important;
+ color:inherit!important;font-size:inherit!important;
+ font-weight:850!important;line-height:1.4!important;text-align:left!important;
+ cursor:pointer!important;
+}
+#main-content .pati-post-like-summary:focus-visible{outline:2px solid #2388fa!important;outline-offset:2px!important}
+#main-content .pati-reel-likers-trigger{
+ cursor:pointer!important;position:relative!important;z-index:5!important;
+ display:block!important;min-height:24px!important;min-width:29px!important;
+ padding:2px 0!important;text-align:center!important;
+}
+#main-content .pati-reel-likers-trigger:focus-visible{
+ outline:2px solid #fff!important;outline-offset:2px!important;border-radius:4px!important;
+}
+@media(max-width:740px){
+ #modal-root .modal.pati-post-likers-modal{
+  width:100vw!important;max-width:none!important;
+  height:100dvh!important;max-height:100dvh!important;
+  border-radius:0!important;
+ }
+ #modal-root .pati-post-likers-modal>.modal-header{
+  padding-top:max(14px,env(safe-area-inset-top,0px))!important;
+  min-height:calc(58px + env(safe-area-inset-top,0px))!important;
+ }
+ #modal-root .pati-post-likers-modal .pati-post-likers-list{
+  padding-bottom:max(30px,env(safe-area-inset-bottom,0px))!important;
+ }
+}
