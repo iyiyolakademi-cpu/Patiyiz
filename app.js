@@ -123,7 +123,7 @@ const starter=()=>{
   },remaining);
 };
 const showSetup=()=>{starter();authRoot.classList.remove('hidden');authRoot.innerHTML=`<div class="auth-card setup-card"><div class="auth-brand"><div class="brand-icon"><img class="patiyiz-chosen-logo" src="patiyiz-selected-logo.svg?v=20261024-new-p-logo-1" alt="Patiyiz"></div><h1>Patiyiz</h1></div><h2>Kurulum gerekli</h2><p class="auth-sub">Uygulamanın güvenli kayıt sistemi için önce Supabase projesi oluşturulmalı.</p><p class="small-note">1. Supabase projesi oluşturun.<br>2. supabase_kurulum.sql dosyasını SQL Editor'da çalıştırın.<br>3. <b>config.js</b> dosyasına <b>Project URL</b> ve <b>publishable key</b> girin.<br>4. Dosyaları GitHub Pages'e yükleyin.<br><b>Secret/service_role anahtarını kesinlikle bu dosyaya koymayın.</b></p></div>`};
-function showAuth(msg='') {starter();appRoot.classList.add('hidden');authRoot.classList.remove('hidden');let isSign=authMode==='signup',reset=authMode==='reset';authRoot.innerHTML=`<div class="auth-shell"><aside class="auth-story" aria-label="Patiyiz topluluğu"><div class="auth-story-top"><span class="auth-story-icon" aria-hidden="true"><svg viewBox="0 0 64 64" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><ellipse cx="13" cy="19" rx="6" ry="9" transform="rotate(-22 13 19)"/><ellipse cx="27" cy="11" rx="6" ry="9" transform="rotate(-7 27 11)"/><ellipse cx="43" cy="14" rx="6" ry="9" transform="rotate(15 43 14)"/><ellipse cx="54" cy="27" rx="5" ry="8" transform="rotate(32 54 27)"/><path d="M33 26c-6-1-9 5-14 10-5 4-10 10-7 17 3 8 11 7 19 4 4-2 9-1 14 1 9 3 16-2 13-10-2-6-8-10-12-15-4-5-7-7-13-7Z"/></svg></span><strong>patiyiz</strong><span class="auth-story-topline">BİRLİKTE DAHA GÜZEL</span></div><div class="auth-story-bottom"><span class="auth-story-label"><span class="auth-story-dot"></span> HAYVANSEVERLERİN DÜNYASI</span><h2>Onların hikâyesi,<br><em>bizim dünyamız.</em></h2><p>Patili dostlarınla anılarını paylaş, yeni arkadaşlıklar kur ve merak ettiklerini keşfet.</p></div></aside><div class="auth-pane"><div class="auth-card"><div class="auth-brand"><div class="brand-icon auth-matching-logo" aria-label="Patiyiz logosu"><img class="patiyiz-chosen-logo" src="patiyiz-selected-logo.svg?v=20261024-new-p-logo-1" alt="Patiyiz"></div><div><h1>patiyiz</h1><p>Hayvanseverlerin buluşma noktası</p></div></div>${reset?'':`<div class="auth-tabs"><button data-auth="login" class="${authMode==='login'?'active':''}">Giriş yap</button><button data-auth="signup" class="${isSign?'active':''}">Kayıt ol</button></div>`}<div class="auth-eyebrow">🐾 PATİYİZ'E HOŞ GELDİN</div><h2>${reset?'Şifreni yenileyelim':isSign?'Aramıza katıl':'Yeniden merhaba!'}</h2><p class="auth-sub">${reset?'E-posta adresini yaz, sana şifre yenileme bağlantısı gönderelim.':isSign?'Patili dostunla yeni bir dünyaya adım at. Üyelik ücretsiz.':'Patili dostların ve güzel hikâyeler burada seni bekliyor.'}</p>${msg?`<div class="pati-note">${esc(msg)}</div>`:''}<form id="auth-form">${isSign?`<div class="pati-field"><label for="display_name">Adın</label><input id="display_name" name="display_name" required minlength="2" maxlength="70" autocomplete="name" placeholder="Ad ve soyad"></div>`:''}<div class="pati-field"><label for="email">E-posta</label><input id="email" name="email" type="email" required autocomplete="email" placeholder="ornek@eposta.com"></div>${reset?'':`<div class="pati-field"><label for="password">Şifre</label><input id="password" name="password" type="password" required minlength="6" autocomplete="${isSign?'new-password':'current-password'}" placeholder="Şifreni gir"></div>`}<span class="pati-auth-terms">${isSign?'<label><input name="age_accepted" type="checkbox" value="yes" required> 18 yaşını doldurduğumu onaylıyorum.</label><label><input name="terms_accepted" type="checkbox" value="yes" required> <a href="terms.html" target="_blank" rel="noopener">Kullanım Şartlarını</a> ve <a href="privacy.html" target="_blank" rel="noopener">Gizlilik Politikasını</a> okudum, kabul ediyorum.</label>':'<a href="privacy.html" target="_blank" rel="noopener">Gizlilik Politikası</a> · <a href="terms.html" target="_blank" rel="noopener">Kullanım Şartları</a>'}</span><button class="primary-btn auth-submit" type="submit"><span>${reset?'Sıfırlama bağlantısı gönder':isSign?'Ücretsiz hesap oluştur':'Giriş yap'}</span><span aria-hidden="true">→</span></button></form><div class="auth-bottom"><button class="btn-link" data-auth="${reset?'login':'reset'}">${reset?'← Girişe dön':'Şifremi unuttum'}</button></div><p class="small-note"><span aria-hidden="true">🔒</span> E-posta doğrulama ve güvenli giriş. Gelen kutunu, gerekirse spam klasörünü kontrol et.</p></div></div></div>`}
+function showAuth(msg='') {starter();appRoot.classList.add('hidden');authRoot.classList.remove('hidden');let isSign=authMode==='signup',reset=authMode==='reset';authRoot.innerHTML=`<div class="auth-shell"><aside class="auth-story" aria-label="Patiyiz topluluğu"><div class="auth-story-top"><span class="auth-story-icon" aria-label="Patiyiz logosu"><img src="patiyiz-selected-logo.svg?v=20261024-new-p-logo-1" alt="Patiyiz logosu"></span><strong>patiyiz</strong><span class="auth-story-topline">BİRLİKTE DAHA GÜZEL</span></div><div class="auth-story-bottom"><span class="auth-story-label"><span class="auth-story-dot"></span> HAYVANSEVERLERİN DÜNYASI</span><h2>Onların hikâyesi,<br><em>bizim dünyamız.</em></h2><p>Patili dostlarınla anılarını paylaş, yeni arkadaşlıklar kur ve merak ettiklerini keşfet.</p></div></aside><div class="auth-pane"><div class="auth-card"><div class="auth-brand"><div class="brand-icon auth-matching-logo" aria-label="Patiyiz logosu"><img class="patiyiz-chosen-logo" src="patiyiz-selected-logo.svg?v=20261024-new-p-logo-1" alt="Patiyiz"></div><div><h1>patiyiz</h1><p>Hayvanseverlerin buluşma noktası</p></div></div>${reset?'':`<div class="auth-tabs"><button data-auth="login" class="${authMode==='login'?'active':''}">Giriş yap</button><button data-auth="signup" class="${isSign?'active':''}">Kayıt ol</button></div>`}<div class="auth-eyebrow">🐾 PATİYİZ'E HOŞ GELDİN</div><h2>${reset?'Şifreni yenileyelim':isSign?'Aramıza katıl':'Yeniden merhaba!'}</h2><p class="auth-sub">${reset?'E-posta adresini yaz, sana şifre yenileme bağlantısı gönderelim.':isSign?'Patili dostunla yeni bir dünyaya adım at. Üyelik ücretsiz.':'Patili dostların ve güzel hikâyeler burada seni bekliyor.'}</p>${msg?`<div class="pati-note">${esc(msg)}</div>`:''}<form id="auth-form">${isSign?`<div class="pati-field"><label for="display_name">Adın</label><input id="display_name" name="display_name" required minlength="2" maxlength="70" autocomplete="name" placeholder="Ad ve soyad"></div>`:''}<div class="pati-field"><label for="email">E-posta</label><input id="email" name="email" type="email" inputmode="email" autocapitalize="none" spellcheck="false" required autocomplete="email" placeholder="ornek@eposta.com"></div>${reset?'':`<div class="pati-field"><label for="password">Şifre</label><span class="pati-auth-password-field"><input id="password" name="password" type="password" required minlength="6" autocomplete="${isSign?'new-password':'current-password'}" placeholder="${isSign?'Şifreni oluştur':'Şifreni gir'}"><button type="button" class="pati-auth-eye" data-auth-toggle-password aria-label="Şifreyi göster" aria-pressed="false">${ico('eye')}</button></span></div>`}<span class="pati-auth-terms">${isSign?'<label><input name="age_accepted" type="checkbox" value="yes" required> 18 yaşını doldurduğumu onaylıyorum.</label><label><input name="terms_accepted" type="checkbox" value="yes" required> <a href="terms.html" target="_blank" rel="noopener">Kullanım Şartlarını</a> ve <a href="privacy.html" target="_blank" rel="noopener">Gizlilik Politikasını</a> okudum, kabul ediyorum.</label>':'<a href="privacy.html" target="_blank" rel="noopener">Gizlilik Politikası</a> · <a href="terms.html" target="_blank" rel="noopener">Kullanım Şartları</a>'}</span><button class="primary-btn auth-submit" type="submit"><span>${reset?'Sıfırlama bağlantısı gönder':isSign?'Ücretsiz hesap oluştur':'Giriş yap'}</span><span aria-hidden="true">→</span></button></form><div class="auth-bottom"><button class="btn-link" data-auth="${reset?'login':'reset'}">${reset?'← Girişe dön':'Şifremi unuttum'}</button></div><p class="small-note"><span aria-hidden="true">🔒</span> E-posta doğrulama ve güvenli giriş. Gelen kutunu, gerekirse spam klasörünü kontrol et.</p></div></div></div>`}
 async function checkAdmin(){if(!me||!sb){isAdmin=false;return}try{const {data,error}=await sb.rpc('patiyiz_is_admin');isAdmin=!error&&data===true}catch(e){isAdmin=false}if(!appRoot.classList.contains('hidden')){navRender();if(view==='settings')render()}}
 /* Daily login streak: the database decides today's calendar date in Europe/Istanbul.
    No client-generated visit dates and no PatiCoin balance updates. */
@@ -254,7 +254,11 @@ function showApp(){starter();if(me)window.setTimeout(()=>patiStreakCheckin(),550
  }
 }
 const authBusy=async(fn)=>{try{let r=await fn();if(r.error)throw r.error;return r.data}catch(e){notify(friendly(e),true);return null}};
-authRoot.addEventListener('click',e=>{let b=e.target.closest('[data-auth]');if(!b)return;authMode=b.dataset.auth;showAuth()});
+authRoot.addEventListener('click',e=>{
+ const toggle=e.target.closest('[data-auth-toggle-password]');
+ if(toggle){const input=authRoot.querySelector('#password');if(input){const revealing=input.type==='password';input.type=revealing?'text':'password';toggle.setAttribute('aria-pressed',String(revealing));toggle.setAttribute('aria-label',revealing?'Şifreyi gizle':'Şifreyi göster')}return}
+ const b=e.target.closest('[data-auth]');if(!b)return;authMode=b.dataset.auth;showAuth();
+});
 authRoot.addEventListener('submit',async(e)=>{if(e.target.id!=='auth-form')return;e.preventDefault();let fd=new FormData(e.target), email=String(fd.get('email')||'').trim(), password=String(fd.get('password')||'');if(authMode==='reset'){let res=await authBusy(()=>sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname}));if(res!==null)showAuth('Şifre yenileme e-postasını kontrol edin.');return}if(authMode==='signup'){if(fd.get('age_accepted')!=='yes')return notify('Patiyiz şu anda 18 yaş ve üzeri kullanıcılar içindir.',true);if(fd.get('terms_accepted')!=='yes')return notify('Kayıt olmak için şartları kabul etmelisin.',true);let res=await authBusy(()=>sb.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname,data:{display_name:String(fd.get('display_name')||'Patiyiz Üyesi')}}}));if(res){if(res.session){if(me?.id!==res.user.id){stopLive();resetSessionState()}me=res.user;await load('initial');showApp()}else{authMode='login';showAuth('Hesabın oluşturuldu. Gelen e-postadan adresini doğrula, ardından giriş yap.')}}return}let res=await authBusy(()=>sb.auth.signInWithPassword({email,password}));if(res){if(me?.id!==res.user.id){stopLive();resetSessionState()}me=res.user;await load('initial');showApp()}});
 function header(title,subtitle='',cta=''){return `<div class="page-intro"><div><div class="hello">PATİYİZ TOPLULUĞU</div><h1 class="page-title">${esc(title)}</h1>${subtitle?`<p style="font-size:12px;color:#7e9384;margin:5px 0 0">${esc(subtitle)}</p>`:''}</div><div class="top-actions">${cta}</div></div>`}
 
@@ -1391,11 +1395,11 @@ function patiStorySharedPostCard(x){
  const source=' data-action="pati-story-open-post" data-id="'+esc(x.shared_post_id)+'"';
  return '<div class="pati-story-share-stage" aria-label="Hikâyede paylaşılan gönderi">'+
   '<div class="pati-story-share-card">'+
-   '<div class="pati-story-share-card-heading"><span class="pati-story-share-card-dot" aria-hidden="true">●</span><strong>'+esc(authorLabel||'Paylaşım')+'</strong><small>'+(video?'Reels':'Gönderi')+'</small></div>'+
+   '<div class="pati-story-share-card-heading"><button type="button" class="pati-story-share-profile" data-action="pati-story-share-author" data-id="'+esc(post?.author_id||'')+'" aria-label="Paylaşımı yapan kişinin profiline git">'+(original?avatar(original,'s'):'<span class="pati-story-share-default-avatar">P</span>')+'<span><strong>'+esc(authorLabel||'Paylaşım')+'</strong><small>'+(video?'Reels':'Gönderi')+'</small></span></button></div>'+
    '<button type="button" class="pati-story-share-media"'+source+' aria-label="Paylaşılan '+(video?'Reels':'gönderi')+' içeriğini aç">'+content+'</button>'+
    (video?'<button type="button" class="pati-story-sound pati-story-share-sound" data-action="story-sound" aria-label="'+(patiyizStorySoundEnabled?'Hikâye sesini kapat':'Hikâye sesini aç')+'">'+(patiyizStorySoundEnabled?'Sesi kapat':'Sesi aç')+'</button>':'')+
    (post?.body?'<p class="pati-story-share-post-caption">'+esc(cut(post.body,85))+'</p>':'')+
-   '<button type="button" class="pati-story-shared-source"'+source+'>Gönderiyi aç '+ico('arrow-right')+'</button>'+
+   '<button type="button" class="pati-story-shared-source"'+source+'>Gönderiyi aç <span aria-hidden="true">↗</span></button>'+
   '</div></div>';
 }
 function showStoryFrame(){const root=document.getElementById('story-overlay'),x=storyItems[storyIndex];if(!root||!x)return;clearTimeout(storyTimer);patiPauseStoryBackgroundMedia();const user=profile(x.author_id);const storyGroupItems=storyItems.filter(s=>s.author_id===x.author_id);const storyGroupIndex=storyGroupItems.findIndex(s=>s.id===x.id);if(!x.pati_pet_highlight){patiStorySeen(x);recordStoryView(x);}if(!x.pati_pet_highlight&&x.author_id!==me.id)void syncStoryLike(x.id);root.dataset.audience=x.audience==='close_friends'?'close_friends':'everyone';root.classList.toggle('pati-story-own',x.author_id===me.id);root.classList.toggle('pati-story-has-source',!!x.shared_post_id);root.innerHTML='<div class="story-player"><div class="story-progress">'+storyGroupItems.map((_,i)=>'<span class="story-track"><span class="'+(i===storyGroupIndex?'story-playing':'')+'" style="width:'+(i<storyGroupIndex?'100':'0')+'%"></span></span>').join('')+'</div><div class="story-player-head">'+avatar(user,'s')+'<span class="pati-story-owner-name"><strong>'+displayName(user)+'</strong>'+(x.audience==='close_friends'?'<span class="pati-story-close-friends-label">★ Yakın Arkadaşlar</span>':'')+'</span><button data-action="story-close" aria-label="Kapat" class="story-close">×</button></div>'+(x.shared_post_id?patiStorySharedPostCard(x):x.video_url?'<video class="story-big-video'+(x.selfie_mirrored?' pati-selfie-mirrored':'')+'" src="'+esc(x.video_url)+'" poster="'+esc(x.image_url||'')+'"'+(patiyizStorySoundEnabled?'':' muted')+' autoplay playsinline preload="auto" aria-label="Video hikâyesi"></video><button type="button" class="pati-story-sound" data-action="story-sound" aria-label="'+(patiyizStorySoundEnabled?'Hikâye sesini kapat':'Hikâye sesini aç')+'">'+(patiyizStorySoundEnabled?'Ses kapat':'Ses aç')+'</button>':x.image_url?'<img class="story-big-photo" src="'+esc(x.image_url)+'" alt="Hikâye">':'<div class="pati-story-no-photo">🐾</div>')+(x.caption&&!x.shared_post_id?'<p class="story-caption">'+esc(x.caption)+'</p>':'')+'<button class="story-hit prev" data-action="story-prev" aria-label="Önceki"></button><button class="story-hit next" data-action="story-next" aria-label="Sonraki"></button>'+(x.pati_pet_highlight?'<span class="pati-saved-story-label">Kalıcı hikâye</span>':x.author_id===me.id?'<button type="button" class="story-delete" data-action="story-delete" data-id="'+esc(x.id)+'" aria-label="Hikâyeyi sil">'+ico('trash')+' <span>Sil</span></button><button type="button" class="story-viewers-button pati-story-viewer-preview" data-action="story-viewers" aria-label="Hikâye hareketlerini aç"><span class="pati-story-viewer-preview-stack" aria-hidden="true"></span><span class="pati-story-viewer-preview-label">Hareketler</span><span class="pati-story-viewer-preview-status" aria-live="polite">Görüntüleyenler yükleniyor…</span></button>':'<button class="pati-story-like" data-action="story-like" data-id="'+esc(x.id)+'" aria-label="Hikâyeyi beğen">♡</button>')+'<div id="story-viewers-sheet" class="story-viewers-sheet" hidden></div></div>';
@@ -3671,28 +3675,89 @@ function patiDmOpenPhoto(messageId){
  if(!photo?.src||!photo.dataset.privatePath||photo.dataset.privatePath!==message.attachment_path){
   notify('Fotoğraf yükleniyor. Biraz sonra tekrar dokun.',true);return;
  }
+ // Keep signed media URL inside the existing authenticated chat. No public storage URL.
  const url=photo.src;
- // Reuse only the short-lived authenticated URL from the already loaded message.
- // A native modal dialog preserves the original photo proportions and keyboard focus.
  document.getElementById('pati-dm-lightbox')?.remove();
  const dialog=document.createElement('dialog');
- dialog.id='pati-dm-lightbox';
- dialog.className='pati-dm-lightbox';
+ dialog.id='pati-dm-lightbox';dialog.className='pati-dm-lightbox';
  dialog.setAttribute('aria-label','Sohbet fotoğrafı');
- dialog.innerHTML='<div class="pati-dm-lightbox-toolbar"><strong>'+(message.body==='🎞️ GIF'?'GIF':'Fotoğraf')+'</strong><div class="pati-dm-lightbox-actions"><button type="button" data-dm-zoom="out" aria-label="Uzaklaştır">−</button><button type="button" data-dm-zoom="reset" aria-label="Boyutu sıfırla">1×</button><button type="button" data-dm-zoom="in" aria-label="Yakınlaştır">+</button><a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer" aria-label="Orijinal medyayı aç">Orijinal</a></div><button type="button" class="pati-dm-lightbox-close" aria-label="Fotoğrafı kapat">×</button></div><div class="pati-dm-lightbox-stage"><img src="'+esc(url)+'" alt="Sohbette gönderilen fotoğraf" loading="eager" decoding="async"></div>';
+ dialog.innerHTML='<div class="pati-dm-lightbox-toolbar"><strong>'+(message.body==='🎞️ GIF'?'GIF':'Fotoğraf')+'</strong><div class="pati-dm-lightbox-actions"><button type="button" data-dm-zoom="out" aria-label="Uzaklaştır">−</button><button type="button" data-dm-zoom="reset" aria-label="Boyutu sıfırla">1×</button><button type="button" data-dm-zoom="in" aria-label="Yakınlaştır">+</button><a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer" aria-label="Orijinal medyayı aç">Orijinal</a></div><button type="button" class="pati-dm-lightbox-close" aria-label="Fotoğrafı kapat">×</button></div><div class="pati-dm-lightbox-stage" aria-label="Yakınlaştırmak için iki parmak kullan, yakınken fotoğrafı sürükle"><img src="'+esc(url)+'" alt="Sohbette gönderilen fotoğraf" loading="eager" decoding="async" draggable="false"></div>';
  const focusBefore=document.activeElement;
  document.body.appendChild(dialog);
+ const stage=dialog.querySelector('.pati-dm-lightbox-stage');
+ const img=stage.querySelector('img');
+ const points=new Map();
+ let zoom=1,tx=0,ty=0,previousCenter=null,previousDistance=0;
+ const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+ const constrain=()=>{
+  const maxX=Math.max(0,(img.clientWidth*zoom-stage.clientWidth)/2);
+  const maxY=Math.max(0,(img.clientHeight*zoom-stage.clientHeight)/2);
+  tx=clamp(tx,-maxX,maxX);ty=clamp(ty,-maxY,maxY);
+  if(zoom<=1.005){zoom=1;tx=0;ty=0}
+ };
+ const paint=()=>{
+  constrain();
+  img.style.transform='translate3d('+tx.toFixed(2)+'px,'+ty.toFixed(2)+'px,0) scale('+zoom.toFixed(3)+')';
+  stage.classList.toggle('pati-zoomed',zoom>1);
+  const reset=dialog.querySelector('[data-dm-zoom="reset"]');
+  if(reset)reset.textContent=zoom.toFixed(1)+'×';
+ };
+ const zoomAt=(factor,x=stage.clientWidth/2,y=stage.clientHeight/2)=>{
+  const previous=zoom;
+  zoom=clamp(zoom*factor,1,4);
+  const rect=stage.getBoundingClientRect();
+  tx+=(rect.width/2-x)*(zoom/previous-1);
+  ty+=(rect.height/2-y)*(zoom/previous-1);
+  paint();
+ };
  dialog.querySelector('.pati-dm-lightbox-close')?.addEventListener('click',()=>dialog.close());
- let zoom=1;const photoEl=dialog.querySelector('.pati-dm-lightbox-stage img');
  dialog.querySelectorAll('[data-dm-zoom]').forEach(control=>control.addEventListener('click',()=>{
-  zoom=control.dataset.dmZoom==='reset'?1:Math.max(1,Math.min(3,zoom+(control.dataset.dmZoom==='in'?.25:-.25)));
-  if(photoEl)photoEl.style.transform='scale('+zoom+')';
+  const action=control.dataset.dmZoom;
+  if(action==='reset'){zoom=1;tx=0;ty=0;paint()}
+  else zoomAt(action==='in'?1.3:1/1.3);
  }));
+ const pointer=(event)=>{
+  const rect=stage.getBoundingClientRect();
+  return {x:event.clientX-rect.left,y:event.clientY-rect.top};
+ };
+ stage.addEventListener('pointerdown',event=>{
+  if(event.pointerType==='mouse'&&event.button!==0)return;
+  event.preventDefault();stage.setPointerCapture?.(event.pointerId);
+  points.set(event.pointerId,pointer(event));
+  previousCenter=null;previousDistance=0;
+ });
+ stage.addEventListener('pointermove',event=>{
+  if(!points.has(event.pointerId))return;
+  event.preventDefault();
+  const prev=points.get(event.pointerId),next=pointer(event);
+  points.set(event.pointerId,next);
+  if(points.size===1&&zoom>1){tx+=next.x-prev.x;ty+=next.y-prev.y;paint()}
+  if(points.size===2){
+   const pair=[...points.values()],cx=(pair[0].x+pair[1].x)/2,cy=(pair[0].y+pair[1].y)/2;
+   const distance=Math.hypot(pair[0].x-pair[1].x,pair[0].y-pair[1].y);
+   if(previousDistance>0&&distance>0)zoomAt(distance/previousDistance,cx,cy);
+   if(previousCenter){tx+=cx-previousCenter.x;ty+=cy-previousCenter.y;paint()}
+   previousDistance=distance;previousCenter={x:cx,y:cy};
+  }
+ });
+ const end=event=>{points.delete(event.pointerId);previousCenter=null;previousDistance=0};
+ stage.addEventListener('pointerup',end);
+ stage.addEventListener('pointercancel',end);
+ stage.addEventListener('lostpointercapture',end);
+ stage.addEventListener('wheel',event=>{
+  if(!event.ctrlKey&&zoom===1&&!event.altKey)return;
+  event.preventDefault();
+  const p=pointer(event);
+  zoomAt(event.deltaY<0?1.13:1/1.13,p.x,p.y);
+ },{passive:false});
+ stage.addEventListener('dblclick',event=>{
+  const p=pointer(event);
+  if(zoom>1){zoom=1;tx=0;ty=0;paint()}else zoomAt(2.1,p.x,p.y);
+ });
  dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close()});
- dialog.addEventListener('close',()=>{dialog.remove();if(focusBefore?.isConnected)focusBefore.focus?.()},{once:true});
- dialog.showModal();
+ dialog.addEventListener('close',()=>{points.clear();dialog.remove();if(focusBefore?.isConnected)focusBefore.focus?.()},{once:true});
+ dialog.showModal();paint();
 }
-
 
 const patiDmEmojis=['❤️','😂','😮','😢','👏','🐾'];
 function patiDmReactionMarkup(messageId){
@@ -6698,7 +6763,7 @@ case 'comment-like':run(async()=>{const form=$('#comment-form');const postId=for
 case 'pati-repost':run(()=>patiToggleRepost(id));break;
 case 'pati-pin':run(()=>patiTogglePin(id));break;
 case 'pati-share-story':if(confirm('Bu gönderi hikâyende 24 saat paylaşılsın mı?'))run(()=>patiSharePostToStory(id));break;
-case 'pati-story-open-post':run(()=>patiOpenSharedStoryPost(id));break;
+case 'pati-story-open-post':run(()=>patiOpenSharedStoryPost(id));break;case 'pati-story-share-author':if(id&&!blocked.has(id)){closeStory(false);patiOpenProfileOnly(id)}break;
 case 'collab-remove':run(()=>patiCollabRemove(id),'Ortaklık daveti kaldırıldı.');break;
 case 'collab-accept':run(()=>patiCollabRespond(id,'accepted'),'Ortak gönderi kabul edildi.');break;
 case 'collab-decline':run(()=>patiCollabRespond(id,'declined'),'Ortak gönderi reddedildi.');break;
@@ -6799,34 +6864,67 @@ document.addEventListener('focusout',e=>{
 });
 
 let patiPinch=null;
+const patiFeedImagePaint=()=>{
+ const p=patiPinch;if(!p?.image?.isConnected)return;
+ const img=p.image,base=img.getBoundingClientRect(),parent=img.closest('.pati-photo')||img.parentElement;
+ if(!parent)return;
+ const frame=parent.getBoundingClientRect();
+ const maxX=Math.max(0,(frame.width*(p.scale-1))/2);
+ const maxY=Math.max(0,(frame.height*(p.scale-1))/2);
+ p.tx=Math.max(-maxX,Math.min(maxX,p.tx));
+ p.ty=Math.max(-maxY,Math.min(maxY,p.ty));
+ img.style.transformOrigin='center center';
+ img.style.transform='translate3d('+p.tx.toFixed(1)+'px,'+p.ty.toFixed(1)+'px,0) scale('+p.scale.toFixed(3)+')';
+};
 document.addEventListener('touchstart',e=>{
- if(e.touches.length!==2)return;
- const image=e.target.closest?.('.pati-carousel-slide .pati-photo img');
- if(!image)return;
- const [a,b]=e.touches;
- const distance=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);
- if(distance<8)return;
- patiPinch={image,distance,scale:1};
- image.classList.add('pati-pinching');
- image.style.transformOrigin='center center';
+ const image=e.target.closest?.('.pati-carousel-slide .pati-photo img, .pati-doubletap-photo .pati-photo img');
+ if(e.touches.length===2&&image){
+  const [first,second]=e.touches;
+  const distance=Math.hypot(first.clientX-second.clientX,first.clientY-second.clientY);
+  if(distance<8)return;
+  if(!patiPinch||patiPinch.image!==image){
+   patiPinch={image,scale:1,tx:0,ty:0,distance,center:{x:(first.clientX+second.clientX)/2,y:(first.clientY+second.clientY)/2},lastTouch:null};
+   image.classList.add('pati-pinching');
+  }else{
+   patiPinch.distance=distance;
+   patiPinch.center={x:(first.clientX+second.clientX)/2,y:(first.clientY+second.clientY)/2};
+  }
+ }else if(e.touches.length===1&&patiPinch?.image.isConnected){
+  const touch=e.touches[0];patiPinch.lastTouch={x:touch.clientX,y:touch.clientY};
+ }
 },{passive:true});
 document.addEventListener('touchmove',e=>{
- if(!patiPinch||e.touches.length!==2)return;
- const {image,distance}=patiPinch;
- if(!image.isConnected){patiPinch=null;return}
- const [a,b]=e.touches,now=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);
- patiPinch.scale=Math.max(1,Math.min(3,now/distance));
- image.style.transform='scale('+patiPinch.scale.toFixed(3)+')';
- if(e.cancelable)e.preventDefault();
+ const p=patiPinch;
+ if(!p||!p.image.isConnected){patiPinch=null;return}
+ if(e.touches.length===2){
+  const [first,second]=e.touches;
+  const distance=Math.hypot(first.clientX-second.clientX,first.clientY-second.clientY);
+  const center={x:(first.clientX+second.clientX)/2,y:(first.clientY+second.clientY)/2};
+  if(p.distance>0)p.scale=Math.max(1,Math.min(4,p.scale*distance/p.distance));
+  if(p.center){p.tx+=center.x-p.center.x;p.ty+=center.y-p.center.y}
+  p.distance=distance;p.center=center;p.lastTouch=null;
+  patiFeedImagePaint();if(e.cancelable)e.preventDefault();
+ }else if(e.touches.length===1&&p.scale>1){
+  const touch=e.touches[0],prev=p.lastTouch;
+  if(prev){p.tx+=touch.clientX-prev.x;p.ty+=touch.clientY-prev.y}
+  p.lastTouch={x:touch.clientX,y:touch.clientY};
+  patiFeedImagePaint();if(e.cancelable)e.preventDefault();
+ }
 },{passive:false});
 const patiFinishPinch=()=>{
  if(!patiPinch)return;
  const image=patiPinch.image;patiPinch=null;
  image.classList.remove('pati-pinching');
- image.style.transform='';
- image.style.transformOrigin='';
+ image.style.transform='';image.style.transformOrigin='';
 };
-document.addEventListener('touchend',e=>{if(patiPinch&&e.touches.length<2)patiFinishPinch()},{passive:true});
+document.addEventListener('touchend',e=>{
+ if(!patiPinch)return;
+ if(e.touches.length===0)patiFinishPinch();
+ else if(e.touches.length===1){
+  const touch=e.touches[0];patiPinch.distance=0;patiPinch.center=null;
+  patiPinch.lastTouch={x:touch.clientX,y:touch.clientY};
+ }
+},{passive:true});
 document.addEventListener('touchcancel',patiFinishPinch,{passive:true});
 
 document.addEventListener('input',e=>{

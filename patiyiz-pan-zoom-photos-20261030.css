@@ -1,0 +1,37 @@
+/* Touch-driven photo navigation: pan across the whole zoomed image. */
+.pati-dm-lightbox .pati-dm-lightbox-stage{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ position:relative!important;overflow:hidden!important;
+ width:100%!important;max-width:100%!important;min-width:0!important;
+ touch-action:none!important;overscroll-behavior:contain!important;
+ user-select:none!important;-webkit-user-select:none!important;
+ cursor:zoom-in!important;
+}
+.pati-dm-lightbox .pati-dm-lightbox-stage.pati-zoomed{
+ cursor:grab!important;
+}
+.pati-dm-lightbox .pati-dm-lightbox-stage.pati-zoomed:active{cursor:grabbing!important}
+.pati-dm-lightbox .pati-dm-lightbox-stage img{
+ display:block!important;position:relative!important;
+ max-width:100%!important;max-height:calc(100dvh - 120px)!important;
+ width:auto!important;height:auto!important;object-fit:contain!important;
+ transform-origin:center center!important;
+ transition:none!important;will-change:transform!important;
+ user-select:none!important;-webkit-user-select:none!important;
+ -webkit-user-drag:none!important;pointer-events:none!important;
+}
+.pati-dm-lightbox .pati-dm-lightbox-actions [data-dm-zoom]{
+ min-width:37px!important;min-height:37px!important;
+}
+.pati-dm-lightbox .pati-dm-lightbox-stage:focus-visible{outline:2px solid #2388fa!important;outline-offset:-3px!important}
+#main-content .pati-carousel-slide .pati-photo img.pati-pinching,
+#main-content .pati-doubletap-photo .pati-photo img.pati-pinching{
+ position:relative!important;z-index:12!important;
+ will-change:transform!important;transition:none!important;
+ pointer-events:none!important;user-select:none!important;
+}
+#main-content .pati-carousel-slide:has(.pati-pinching){scroll-snap-align:none!important}
+@media(max-width:740px){
+ .pati-dm-lightbox .pati-dm-lightbox-stage{height:auto!important;min-height:45dvh!important;max-height:calc(100dvh - 110px)!important}
+ .pati-dm-lightbox .pati-dm-lightbox-stage img{max-height:calc(100dvh - 125px)!important}
+}
