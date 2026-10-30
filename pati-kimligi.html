@@ -18,8 +18,14 @@ label{display:grid;gap:7px;font-weight:700;font-size:14px}
 textarea{min-height:116px;resize:vertical;width:100%;font:inherit;border:1px solid #d6dbe1;border-radius:14px;padding:12px;background:#fff;color:#1d2026}
 button{border:0;background:#17191d;color:#fff;border-radius:14px;min-height:48px;padding:10px 16px;font:inherit;font-weight:720;cursor:pointer}
 button:disabled{opacity:.5;cursor:not-allowed}button.secondary{background:#f0f2f4;color:#222}
-button:focus-visible,textarea:focus-visible{outline:3px solid #8791a0;outline-offset:2px}
+button:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid #8791a0;outline-offset:2px}
 #notice{margin-top:10px;font-size:13px;min-height:20px}
+.pati-challenge{border:1px solid #d9dde5;background:#f3f5f8;border-radius:15px;padding:14px;display:grid;gap:8px}
+.pati-challenge strong{font-size:14px}
+.pati-challenge input{background:#fff;border:1px solid #b9c1cb;border-radius:12px;padding:11px 12px;width:100%;min-height:46px;color:#15171a;font:inherit}
+.pati-challenge button{min-height:40px;background:#dde2e8;color:#25282b}
+.pati-website-trap{position:absolute!important;left:-99999px!important;width:1px;height:1px;overflow:hidden}
+@media(prefers-color-scheme:dark){.pati-challenge{background:#292d34;border-color:#414751}.pati-challenge input{color:#fff;background:#17191f;border-color:#555d66}.pati-challenge button{background:#3b414b;color:#fff}}
 #conversation{display:grid;gap:8px;margin:15px 0;text-align:left}
 .message{padding:11px 13px;background:#f2f3f5;border-radius:13px;line-height:1.5;overflow-wrap:anywhere}
 .message.mine{background:#e0f2e7}
@@ -28,7 +34,6 @@ button:focus-visible,textarea:focus-visible{outline:3px solid #8791a0;outline-of
 @media(prefers-color-scheme:dark){body{background:#101216;color:#f3f4f6}header,article{background:#1d2026;border-color:#333740}p,small{color:#b7bdc7}.tag,.message{background:#30343c}.message.mine{background:#224636}textarea{background:#292d35;border-color:#505761;color:#fff}button{background:#f4f6fa;color:#15171b}button.secondary{background:#363b43;color:#fff}}
 </style>
 <script src="config.js" defer></script>
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 </head>
 <body>
 <header>PATİYİZ</header>
@@ -37,7 +42,7 @@ button:focus-visible,textarea:focus-visible{outline:3px solid #8791a0;outline-of
  <section id="contact" hidden>
   <h2>Bu hayvanı buldun mu?</h2>
   <p>Telefon numaranı veya ev adresini paylaşmadan sahibine haber verebilirsin. Yanıtlarını görmek için özel görüşme bağlantını kaydet.</p>
-  <form id="contact-form"><label for="message">Sahibine mesajın<textarea id="message" name="message" maxlength="1000" minlength="1" required placeholder="Örneğin: Patili dostunu parkın yakınında gördüm."></textarea></label><div id="pati-turnstile"></div><button id="send" type="submit" disabled>Güvenli mesaj gönder</button></form>
+  <form id="contact-form"><label for="message">Sahibine mesajın<textarea id="message" name="message" maxlength="1000" minlength="1" required placeholder="Örneğin: Patili dostunu parkın yakınında gördüm."></textarea></label><div class="pati-challenge"><strong id="question">Güvenlik sorusu yükleniyor…</strong><label for="answer">Cevabın<input id="answer" type="number" min="0" max="99" inputmode="numeric" required autocomplete="off" placeholder="Cevabı yaz"></label><button type="button" id="new-challenge">Yeni soru getir</button></div><div class="pati-website-trap" aria-hidden="true"><label>Website<input type="text" id="website" tabindex="-1" autocomplete="off"></label></div><button id="send" type="submit" disabled>Güvenli mesaj gönder</button></form>
   <p id="notice" role="status" aria-live="polite"></p>
  </section>
  <section id="thread" hidden>
@@ -55,7 +60,7 @@ const parts=fragment.split('~'),tag=parts[0],receipt=parts[1]||'';
 const valid=x=>/^[a-zA-Z0-9_-]{40,50}$/.test(x||'');
 const $=id=>document.getElementById(id);
 const api=(window.PATIYIZ_CONFIG?.supabaseUrl||'https://tqnvvrgrsxrvzxbjbsgl.supabase.co').replace(/\/$/,'')+'/functions/v1/pati-identity';
-let siteKey='',challenge='',widgetId=null,busy=false,challengeTries=0;
+let challenge=null,busy=false;
 function notice(text){$('notice').textContent=text}
 async function call(action,body={}){
  const response=await fetch(api,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,...body}),referrerPolicy:'no-referrer',cache:'no-store'});
@@ -63,12 +68,18 @@ async function call(action,body={}){
  if(!response.ok||!payload.ok)throw Error(payload.error||'İstek tamamlanamadı.');
  return payload;
 }
-function setupChallenge(){
- if(!siteKey)return notice('İletişim güvenliği henüz etkin değil.');
- if(!window.turnstile){if(challengeTries++<30)return setTimeout(setupChallenge,250);return notice('Güvenlik doğrulaması yüklenemedi. Sayfayı yenile.');}
- if(widgetId!==null)return;
- widgetId=window.turnstile.render('#pati-turnstile',{sitekey:siteKey,callback:value=>{challenge=value;$('send').disabled=false},'expired-callback':()=>{challenge='';$('send').disabled=true}});
+async function setupChallenge(){
+ $('send').disabled=true;challenge=null;
+ $('question').textContent='Güvenlik sorusu hazırlanıyor…';
+ try{
+  const response=await call('challenge',{token:tag});
+  challenge=response.challenge;
+  $('question').textContent=challenge.a+' + '+challenge.b+' = ?';
+  $('answer').value='';
+  $('send').disabled=false;
+ }catch(e){$('question').textContent='Güvenlik sorusu yüklenemedi.';notice(e.message)}
 }
+
 async function showThread(){
  $('contact').hidden=false;$('thread').hidden=false;
  try {
@@ -90,8 +101,8 @@ async function start(){
   if(res.pet.note){$('note').textContent=res.pet.note;$('note').hidden=false}
   if(/^https:\/\//.test(res.pet.photo_url||'')){$('photo').src=res.pet.photo_url;$('photo').style.display='block'}
   $('contact').hidden=false;
-  const config=await call('config');siteKey=config.siteKey||'';
-  if(!config.contactReady){$('send').disabled=true;notice('Güvenli mesaj servisi henüz etkinleştirilmedi.')}else setupChallenge();
+  const config=await call('config');
+  if(!config.contactReady){$('send').disabled=true;notice('Güvenli mesaj servisi şu anda kullanılamıyor.')}else await setupChallenge();
   if(receipt)await showThread();
  }catch(e){$('type').textContent=e.message;$('contact').hidden=true}
 }
@@ -100,15 +111,16 @@ $('contact-form').addEventListener('submit',async event=>{
  const message=$('message').value.trim();if(!message)return;
  busy=true;$('send').disabled=true;
  try{
-  const result=await call(receipt?'finder-reply':'send',{token:tag,...(receipt?{receipt}:{}),message,proof:challenge});
+  const result=await call(receipt?'finder-reply':'send',{token:tag,...(receipt?{receipt}:{}),message,challenge,answer:$('answer').value.trim(),website:$('website').value});
   if(result.receipt&&!receipt){
    history.replaceState(null,'','#'+tag+'~'+result.receipt);
    notice('Mesajın kaydedildi. Yanıtı görmek için bu sayfanın bağlantısını sakla.');
   }else notice('Mesajın kaydedildi.');
   $('message').value='';
   setTimeout(()=>location.reload(),600);
- }catch(e){notice(e.message);busy=false;challenge='';window.turnstile?.reset(widgetId)}
+ }catch(e){notice(e.message);busy=false;await setupChallenge()}
 });
+$('new-challenge').addEventListener('click',()=>void setupChallenge());
 $('refresh').addEventListener('click',()=>location.reload());
 $('copy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(location.href);notice('Özel görüşme bağlantısı kopyalandı.')}catch{notice('Bağlantıyı adres çubuğundan kopyalayabilirsin.')}});
 window.addEventListener('DOMContentLoaded',start);
