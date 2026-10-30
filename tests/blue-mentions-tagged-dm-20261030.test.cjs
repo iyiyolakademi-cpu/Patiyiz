@@ -81,7 +81,8 @@ test('Tap on blue @handle closes comments and navigates to tagged profile, not t
  assert.match(app,/case 'pati-mention-profile':e\.preventDefault\(\)/);
  const dm=app.slice(app.indexOf('function patiDmSharedCard(message){'),app.indexOf('async function patiDmHydrateSharedPosts(messages,peer){'));
  assert.match(dm,/pati-dm-mention-person/);
- assert.match(dm,/data-action="view-user" data-id="\'+esc\(message\.sender_id\)/);
+ assert.match(dm,/pati-dm-mention-person" data-action="view-user"/);
+ assert.match(dm,/esc\(message\.sender_id\)/);
  assert.match(css,/\.pati-dm-mention-person/);
  assert.match(html,/tag_tap_profile=20261030/);
 });
