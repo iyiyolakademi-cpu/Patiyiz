@@ -40,7 +40,8 @@ function render(){
    (state.token&&state.tokenPet===selected?'<div class="pati-identity-generated"><div id="pati-identity-qr" role="img" aria-label="Hayvanın Pati Kimliği QR kodu"></div><p>Bu QR kodunu şimdi indir veya bağlantısını kopyala. Güvenlik nedeniyle kodun kendisi sunucuda saklanmaz; yeniden oluşturursan eski QR geçersiz olur.</p><div class="pati-identity-actions"><button data-pk-act="download" type="button">QR indir</button><button data-pk-act="copy" type="button">Bağlantıyı kopyala</button></div></div>':'')+
    '<div class="pati-identity-actions">'+(t?'<button type="button" data-pk-act="rotate">'+(state.token?'QR yeniden oluştur':'Yeni QR üret')+'</button><button type="button" data-pk-act="toggle">'+(t.enabled?'Kimliği duraklat':'Kimliği etkinleştir')+'</button>':'<button type="button" data-pk-act="create">Pati Kimliği oluştur</button>')+
    '<button data-pk-act="refresh" type="button">Yenile</button></div>'+
-   '<p class="pati-identity-footnote">QR değiştirildiğinde eski basılı etiket çalışmaz. Bu ekran yalnızca hesap sahibine açıktır.</p>':
+   (t?'<form class="pati-identity-privacy"><strong>QR kartı gizliliği</strong><label><input type="checkbox" name="show_photo" '+(t.show_photo?'checked':'')+'> Hayvanın fotoğrafını göster</label><label>Bulana gösterilecek kısa not<input type="text" name="public_note" maxlength="200" value="'+esc(t.public_note||'')+'" placeholder="Örneğin: Sakin yaklaşın."></label><button type="submit">Gizlilik ayarlarını kaydet</button></form>':'')+
+   '<p class="pati-identity-footnote">QR değiştirildiğinde eski basılı etiket çalışmaz. Bu ekran yalnızca hesap sahibine açıktır. QR notuna telefon veya ev adresi yazma.</p>':
    '<p role="status">Pati Kimliği bilgileri yükleniyor…</p>')+
    '</div><section class="pati-identity-inbox"><h2>Gelen QR bildirimleri</h2>'+
    (state.loaded?(rows||'<p>Henüz bu hayvan için güvenli iletişim kaydı yok.</p>'):'<p>Bildirimler yükleniyor…</p>')+
@@ -104,7 +105,17 @@ function mount(context){
    selected=e.target.value;render();
   },true);
   context.main.addEventListener('submit',e=>{
-   const form=e.target;if(!form.matches?.('.pati-identity-reply'))return;
+   const form=e.target;
+   if(form.matches?.('.pati-identity-privacy')){
+    e.preventDefault();e.stopPropagation();
+    const t=tag();if(!t)return;
+    const input=form.querySelector('[name="public_note"]')?.value.trim()||'';
+    const show_photo=!!form.querySelector('[name="show_photo"]')?.checked;
+    state.busy=true;
+    void invoke('owner-settings',{tagId:t.id,show_photo,public_note:input}).then(()=>flash('QR kartı ayarları kaydedildi.')).catch(error=>flash(error.message,true)).finally(()=>{state.busy=false;void refresh()});
+    return;
+   }
+   if(!form.matches?.('.pati-identity-reply'))return;
    e.preventDefault();e.stopPropagation();
    const message=form.querySelector('[name="message"]')?.value.trim();
    if(!message)return;
