@@ -1,0 +1,84 @@
+/* Fullscreen selectable profile titles + legible profile text */
+#modal-root #profile-form .pati-profile-title-open{box-sizing:border-box;display:flex!important;align-items:center;justify-content:space-between;width:100%;min-height:52px;gap:14px;padding:12px 15px!important;text-align:left;border-radius:14px!important;border:1px solid #cfd1d7!important;background:#fafafd!important;color:#222329!important;font:inherit;font-size:15px!important;font-weight:650!important;cursor:pointer}
+#modal-root #profile-form .pati-profile-title-open [data-pati-profile-title-current]{flex:1;overflow-wrap:anywhere;color:inherit!important}
+#modal-root #profile-form .pati-profile-title-chevron{flex:none;font-size:26px;font-weight:300;line-height:1;color:inherit}
+#modal-root #profile-form .pati-profile-title-open:focus-visible{outline:3px solid #5c80ce!important;outline-offset:3px}
+html[data-pati-theme="dark"] #modal-root #profile-form .pati-profile-title-open{background:#25262e!important;color:#fff!important;border-color:#555763!important}
+body.pati-title-picker-open{overflow:hidden!important}
+.pati-title-picker,.pati-title-picker *{box-sizing:border-box}
+.pati-title-picker{position:fixed!important;inset:0!important;z-index:2147483000!important;display:flex!important;flex-direction:column;width:100%;height:100dvh;overflow:hidden;background:#fff!important;color:#17181d!important;font-family:inherit}
+.pati-title-picker-shell{width:100%;height:100%;max-height:100%;min-height:0;display:flex;flex-direction:column;background:inherit;color:inherit}
+.pati-title-picker-header{display:flex;align-items:center;gap:13px;flex:0 0 auto;border-bottom:1px solid #ebedf0;padding:max(14px,env(safe-area-inset-top)) 18px 14px;background:inherit;color:inherit}
+.pati-title-picker-header>div{flex:1;min-width:0}
+.pati-title-picker-header span{font-size:10px!important;font-weight:800!important;letter-spacing:.1em;color:inherit!important;opacity:.7}
+.pati-title-picker-header h2{font-size:19px!important;line-height:1.35!important;font-weight:850!important;color:inherit!important;margin:2px 0 0!important}
+.pati-title-picker button{color:inherit;cursor:pointer;font-family:inherit}
+.pati-title-picker-back{flex:none;width:40px;height:40px;background:#f0f1f4!important;border:0!important;border-radius:12px!important;display:grid;place-items:center;font-size:22px!important;color:inherit!important}
+.pati-title-picker-apply-top{font-size:13px!important;font-weight:850!important;min-height:40px;padding:8px 13px!important;border-radius:11px!important;border:0!important;background:#17181d!important;color:#fff!important}
+.pati-title-picker-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:18px clamp(16px,4vw,32px) 28px;scrollbar-width:thin}
+.pati-title-picker-scroll>*{max-width:850px;margin-left:auto;margin-right:auto}
+.pati-title-picker-intro p{font-size:13px;line-height:1.6;color:inherit;opacity:.8;margin:0 0 12px}
+.pati-title-picker-selected{display:flex;flex-wrap:wrap;gap:7px;align-items:center;min-height:33px}
+.pati-title-picked{display:inline-flex;align-items:center;gap:7px;padding:5px 6px 5px 11px;border-radius:999px;background:#222329!important;color:#fff!important;font-size:12px;font-weight:750}
+.pati-title-picked button{width:24px;height:24px;border:0!important;border-radius:50%!important;display:grid;place-items:center;background:#ffffff30!important;color:#fff!important;font-size:17px!important;line-height:1}
+.pati-title-picker-no-selection{color:inherit;opacity:.72;font-size:12px}
+.pati-title-picker-counter{margin-top:8px;font-size:11px;color:inherit;opacity:.72;font-variant-numeric:tabular-nums}
+.pati-title-picker-search{display:flex;align-items:center;gap:10px;min-height:51px;width:100%;border:1px solid #d3d6db;background:#f5f6f8;color:#242630;border-radius:14px;margin-top:19px;margin-bottom:18px;padding:0 15px}
+.pati-title-picker-search>span{font-size:26px;line-height:1;color:inherit;opacity:.75}
+.pati-title-picker-search input{display:block;flex:1;min-width:0;width:100%;min-height:46px;padding:0;background:transparent!important;border:0!important;box-shadow:none!important;outline:none!important;color:inherit!important;font:inherit;font-size:16px!important}
+.pati-title-picker-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:18px;row-gap:16px}
+.pati-title-picker-category{min-width:0}
+.pati-title-picker-category h3,.pati-title-picker-custom h3{margin:0 0 9px!important;font-size:13px!important;font-weight:850!important;color:inherit!important;line-height:1.4}
+.pati-title-picker-options{display:flex;flex-direction:column;gap:5px;min-width:0}
+.pati-title-picker-item{display:flex;align-items:center;gap:12px;min-width:0;min-height:46px;cursor:pointer;padding:10px 12px;border-radius:11px;border:1px solid #e8eaee;background:#f7f8fa;color:#222329}
+.pati-title-picker-item.is-selected{border-color:#17181d;background:#e8eaef}
+.pati-title-picker-item input[type="checkbox"]{flex:0 0 18px;width:18px;height:18px;margin:0;accent-color:#222329}
+.pati-title-picker-item-name{flex:1;min-width:0;overflow-wrap:anywhere;font-size:13px!important;font-weight:650!important;line-height:1.4;color:inherit!important}
+.pati-title-picker-check{width:21px;flex:none;text-align:center;font-size:18px;color:inherit;font-weight:900}
+.pati-title-picker-custom{margin-top:19px;border-top:1px solid #dddfe5;padding-top:17px}
+.pati-title-picker-custom-row{display:flex;gap:8px}
+.pati-title-picker-custom input{flex:1;min-width:0;min-height:46px;max-width:100%;border-radius:12px;border:1px solid #cfd2d9!important;background:transparent!important;color:inherit!important;padding:10px 12px;font-family:inherit;font-size:16px!important}
+.pati-title-picker-custom-row button{min-height:46px;flex:none;border:0!important;border-radius:12px!important;padding:9px 15px!important;color:#fff!important;background:#222329!important;font-size:12px!important;font-weight:850!important}
+.pati-title-picker-no-result{font-size:13px;line-height:1.6;opacity:.8;color:inherit}
+.pati-title-picker-error{min-height:16px;margin:10px 0 0;color:#a3202e;font-size:12px;line-height:1.5}
+.pati-title-picker-footer{flex:none;width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px solid #e5e7eb;background:inherit;padding:12px clamp(16px,4vw,32px) max(13px,env(safe-area-inset-bottom))}
+.pati-title-picker-footer button{display:grid;place-items:center;min-height:48px;padding:12px 18px!important;border-radius:13px!important;font-weight:850!important;font-size:13px!important}
+.pati-title-picker-clear{border:1px solid #c7cbd2!important;color:inherit!important;background:transparent!important}
+.pati-title-picker-save{border:1px solid #17181d!important;color:#fff!important;background:#17181d!important;flex:1;max-width:340px}
+.pati-title-picker button:focus-visible,.pati-title-picker input:focus-visible{outline:3px solid #6c8ef2!important;outline-offset:2px!important}
+html[data-pati-theme="dark"] .pati-title-picker{background:#15161b!important;color:#fff!important}
+html[data-pati-theme="dark"] .pati-title-picker-header,html[data-pati-theme="dark"] .pati-title-picker-footer{border-color:#353741}
+html[data-pati-theme="dark"] .pati-title-picker-back{background:#2b2c33!important;color:#fff!important}
+html[data-pati-theme="dark"] .pati-title-picker-search{background:#26282f!important;border-color:#444750;color:#fff}
+html[data-pati-theme="dark"] .pati-title-picker-item{background:#23252b;border-color:#3b3e47;color:#fff}
+html[data-pati-theme="dark"] .pati-title-picker-item.is-selected{background:#33363e;border-color:#eef0f4}
+html[data-pati-theme="dark"] .pati-title-picker-item input{accent-color:#fff}
+html[data-pati-theme="dark"] .pati-title-picked{background:#eaecef!important;color:#17181d!important}
+html[data-pati-theme="dark"] .pati-title-picked button{background:#0002!important;color:#17181d!important}
+html[data-pati-theme="dark"] .pati-title-picker-custom{border-color:#444750}
+html[data-pati-theme="dark"] .pati-title-picker-apply-top,html[data-pati-theme="dark"] .pati-title-picker-custom-row button,html[data-pati-theme="dark"] .pati-title-picker-save{background:#f5f5f6!important;color:#17181d!important;border-color:#f5f5f6!important}
+html[data-pati-theme="dark"] .pati-title-picker-error{color:#ff99a5}
+html[data-pati-theme="dark"] .pati-title-picker-search input::placeholder,html[data-pati-theme="dark"] .pati-title-picker-custom input::placeholder{color:#b9bbc3!important}
+@media(max-width:670px){.pati-title-picker-results{grid-template-columns:minmax(0,1fr)}.pati-title-picker-header{padding-left:14px;padding-right:14px}.pati-title-picker-scroll{padding:14px 14px 22px}.pati-title-picker-footer{padding-left:14px;padding-right:14px}}
+@media(prefers-reduced-motion:reduce){.pati-title-picker-item{transition:none}}
+/* All profile text should remain equally bright and legible in dark mode. */
+html[data-pati-theme="dark"] #main-content .pati-ig-profile,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-summary{background:#16171b!important;color:#fff!important}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-info,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-handle,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-handle-row,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-name,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-stats,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-stats b,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-stats small,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-stats span,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-stats button,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-about,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-profession,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-bio,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-mutual-followers,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-links,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-links a,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-tabs button{color:#fff!important;opacity:1!important}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-about .pati-ig-bio{color:#fff!important;opacity:1!important}
+html:not([data-pati-theme="dark"]) #main-content .pati-ig-profile .pati-ig-about .pati-ig-bio{color:#17181d!important;opacity:1!important}
