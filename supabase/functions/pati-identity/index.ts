@@ -131,6 +131,13 @@ Deno.serve(async req=>{
    if(error||!data)return err('Kimlik güncellenemedi.',403,origin);
    return respond({ok:true,tag:data},200,origin);
   }
+  if(action==='owner-settings'){
+   if(!uuidOk(input.tagId))return err('Kimlik seçimi geçersiz.',400,origin);
+   const public_note=String(input.public_note||'').trim();
+   if(public_note.length>200||/@|(?:\\+?\\d[\\d\\s()\\-]{7,}\\d)/.test(public_note))return err('Notta telefon veya e-posta paylaşma (en fazla 200 karakter).',400,origin);
+   const {data,error}=await admin.from('pati_identity_tags').update({public_note,show_photo:input.show_photo===true,updated_at:new Date().toISOString()}).eq('owner_id',user.id).eq('id',input.tagId).select('id').maybeSingle();
+   return error||!data?err('Gizlilik ayarları kaydedilemedi.',403,origin):respond({ok:true},200,origin);
+  }
   if(action==='owner-reply'){
    if(!uuidOk(input.threadId)||!bodyOk(input.message))return err('Yanıt geçersiz.',400,origin);
    const {data:t}=await admin.from('pati_identity_threads').select('id,status,expires_at').eq('owner_id',user.id).eq('id',input.threadId).maybeSingle();
