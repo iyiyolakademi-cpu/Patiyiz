@@ -42,10 +42,10 @@ test('Top five publicly scored accounts based on server verified activities only
  assert.match(analytics,/least\(count\(\*\),30\)/);
  assert.match(analytics,/least\(count\(\*\),45\)/);
  assert.match(analytics,/order by points desc,c.user_id limit 5/);
- assert.match(app,/function patiLeaderBoard\(\)/);
- assert.match(app,/En Aktif 5 Pati/);
+ assert.match(app,/function patiWeeklyBoard\(\)/);
+ assert.match(app,/Haftanın en aktif 5 üyesi/);
  assert.match(app,/data-action="view-user"/);
- assert.match(app,/i===1\?patiLeaderBoard\(\)/);
+ assert.doesNotMatch(app,/i===1\?patiLeaderBoard\(\)/);
  assert.doesNotMatch(analytics,/from public.messages/);
 });
 test('DAU is one authenticated account per day; share telemetry is only approximate',()=>{

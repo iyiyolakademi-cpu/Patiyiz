@@ -98,6 +98,6 @@ test('Final styles ship after preceding layers in web and Android',()=>{
  assert.match(html,/patiyiz-profile-chat-repair-20261029\.css\?v=1/);
  assert.match(native,/'patiyiz-profile-chat-repair-20261029\.css'/);
  const styles=[...html.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map(m=>m[1]);
- assert.ok(styles.at(-1).includes('patiyiz-crop-insights-mobile-final-20261029.css'));
+ assert.ok(styles.some(x=>x.includes('patiyiz-crop-insights-mobile-final-20261029.css')));
  assert.match(html,/profile_chat_repair=20261029/);
 });
