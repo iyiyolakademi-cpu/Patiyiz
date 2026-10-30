@@ -3675,28 +3675,89 @@ function patiDmOpenPhoto(messageId){
  if(!photo?.src||!photo.dataset.privatePath||photo.dataset.privatePath!==message.attachment_path){
   notify('Fotoğraf yükleniyor. Biraz sonra tekrar dokun.',true);return;
  }
+ // Keep signed media URL inside the existing authenticated chat. No public storage URL.
  const url=photo.src;
- // Reuse only the short-lived authenticated URL from the already loaded message.
- // A native modal dialog preserves the original photo proportions and keyboard focus.
  document.getElementById('pati-dm-lightbox')?.remove();
  const dialog=document.createElement('dialog');
- dialog.id='pati-dm-lightbox';
- dialog.className='pati-dm-lightbox';
+ dialog.id='pati-dm-lightbox';dialog.className='pati-dm-lightbox';
  dialog.setAttribute('aria-label','Sohbet fotoğrafı');
- dialog.innerHTML='<div class="pati-dm-lightbox-toolbar"><strong>'+(message.body==='🎞️ GIF'?'GIF':'Fotoğraf')+'</strong><div class="pati-dm-lightbox-actions"><button type="button" data-dm-zoom="out" aria-label="Uzaklaştır">−</button><button type="button" data-dm-zoom="reset" aria-label="Boyutu sıfırla">1×</button><button type="button" data-dm-zoom="in" aria-label="Yakınlaştır">+</button><a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer" aria-label="Orijinal medyayı aç">Orijinal</a></div><button type="button" class="pati-dm-lightbox-close" aria-label="Fotoğrafı kapat">×</button></div><div class="pati-dm-lightbox-stage"><img src="'+esc(url)+'" alt="Sohbette gönderilen fotoğraf" loading="eager" decoding="async"></div>';
+ dialog.innerHTML='<div class="pati-dm-lightbox-toolbar"><strong>'+(message.body==='🎞️ GIF'?'GIF':'Fotoğraf')+'</strong><div class="pati-dm-lightbox-actions"><button type="button" data-dm-zoom="out" aria-label="Uzaklaştır">−</button><button type="button" data-dm-zoom="reset" aria-label="Boyutu sıfırla">1×</button><button type="button" data-dm-zoom="in" aria-label="Yakınlaştır">+</button><a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer" aria-label="Orijinal medyayı aç">Orijinal</a></div><button type="button" class="pati-dm-lightbox-close" aria-label="Fotoğrafı kapat">×</button></div><div class="pati-dm-lightbox-stage" aria-label="Yakınlaştırmak için iki parmak kullan, yakınken fotoğrafı sürükle"><img src="'+esc(url)+'" alt="Sohbette gönderilen fotoğraf" loading="eager" decoding="async" draggable="false"></div>';
  const focusBefore=document.activeElement;
  document.body.appendChild(dialog);
+ const stage=dialog.querySelector('.pati-dm-lightbox-stage');
+ const img=stage.querySelector('img');
+ const points=new Map();
+ let zoom=1,tx=0,ty=0,previousCenter=null,previousDistance=0;
+ const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+ const constrain=()=>{
+  const maxX=Math.max(0,(img.clientWidth*zoom-stage.clientWidth)/2);
+  const maxY=Math.max(0,(img.clientHeight*zoom-stage.clientHeight)/2);
+  tx=clamp(tx,-maxX,maxX);ty=clamp(ty,-maxY,maxY);
+  if(zoom<=1.005){zoom=1;tx=0;ty=0}
+ };
+ const paint=()=>{
+  constrain();
+  img.style.transform='translate3d('+tx.toFixed(2)+'px,'+ty.toFixed(2)+'px,0) scale('+zoom.toFixed(3)+')';
+  stage.classList.toggle('pati-zoomed',zoom>1);
+  const reset=dialog.querySelector('[data-dm-zoom="reset"]');
+  if(reset)reset.textContent=zoom.toFixed(1)+'×';
+ };
+ const zoomAt=(factor,x=stage.clientWidth/2,y=stage.clientHeight/2)=>{
+  const previous=zoom;
+  zoom=clamp(zoom*factor,1,4);
+  const rect=stage.getBoundingClientRect();
+  tx+=(rect.width/2-x)*(zoom/previous-1);
+  ty+=(rect.height/2-y)*(zoom/previous-1);
+  paint();
+ };
  dialog.querySelector('.pati-dm-lightbox-close')?.addEventListener('click',()=>dialog.close());
- let zoom=1;const photoEl=dialog.querySelector('.pati-dm-lightbox-stage img');
  dialog.querySelectorAll('[data-dm-zoom]').forEach(control=>control.addEventListener('click',()=>{
-  zoom=control.dataset.dmZoom==='reset'?1:Math.max(1,Math.min(3,zoom+(control.dataset.dmZoom==='in'?.25:-.25)));
-  if(photoEl)photoEl.style.transform='scale('+zoom+')';
+  const action=control.dataset.dmZoom;
+  if(action==='reset'){zoom=1;tx=0;ty=0;paint()}
+  else zoomAt(action==='in'?1.3:1/1.3);
  }));
+ const pointer=(event)=>{
+  const rect=stage.getBoundingClientRect();
+  return {x:event.clientX-rect.left,y:event.clientY-rect.top};
+ };
+ stage.addEventListener('pointerdown',event=>{
+  if(event.pointerType==='mouse'&&event.button!==0)return;
+  event.preventDefault();stage.setPointerCapture?.(event.pointerId);
+  points.set(event.pointerId,pointer(event));
+  previousCenter=null;previousDistance=0;
+ });
+ stage.addEventListener('pointermove',event=>{
+  if(!points.has(event.pointerId))return;
+  event.preventDefault();
+  const prev=points.get(event.pointerId),next=pointer(event);
+  points.set(event.pointerId,next);
+  if(points.size===1&&zoom>1){tx+=next.x-prev.x;ty+=next.y-prev.y;paint()}
+  if(points.size===2){
+   const pair=[...points.values()],cx=(pair[0].x+pair[1].x)/2,cy=(pair[0].y+pair[1].y)/2;
+   const distance=Math.hypot(pair[0].x-pair[1].x,pair[0].y-pair[1].y);
+   if(previousDistance>0&&distance>0)zoomAt(distance/previousDistance,cx,cy);
+   if(previousCenter){tx+=cx-previousCenter.x;ty+=cy-previousCenter.y;paint()}
+   previousDistance=distance;previousCenter={x:cx,y:cy};
+  }
+ });
+ const end=event=>{points.delete(event.pointerId);previousCenter=null;previousDistance=0};
+ stage.addEventListener('pointerup',end);
+ stage.addEventListener('pointercancel',end);
+ stage.addEventListener('lostpointercapture',end);
+ stage.addEventListener('wheel',event=>{
+  if(!event.ctrlKey&&zoom===1&&!event.altKey)return;
+  event.preventDefault();
+  const p=pointer(event);
+  zoomAt(event.deltaY<0?1.13:1/1.13,p.x,p.y);
+ },{passive:false});
+ stage.addEventListener('dblclick',event=>{
+  const p=pointer(event);
+  if(zoom>1){zoom=1;tx=0;ty=0;paint()}else zoomAt(2.1,p.x,p.y);
+ });
  dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close()});
- dialog.addEventListener('close',()=>{dialog.remove();if(focusBefore?.isConnected)focusBefore.focus?.()},{once:true});
- dialog.showModal();
+ dialog.addEventListener('close',()=>{points.clear();dialog.remove();if(focusBefore?.isConnected)focusBefore.focus?.()},{once:true});
+ dialog.showModal();paint();
 }
-
 
 const patiDmEmojis=['❤️','😂','😮','😢','👏','🐾'];
 function patiDmReactionMarkup(messageId){
