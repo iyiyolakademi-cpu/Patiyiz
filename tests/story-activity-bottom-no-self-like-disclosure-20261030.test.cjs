@@ -33,3 +33,11 @@ test('New main JS and CSS are cache-busted for iOS while parsing',()=>{
  assert.match(index,/activity_bottom_left_no_like=20261030/);
  assert.doesNotThrow(()=>new Function(app));
 });
+
+test('Supabase insert policy rejects a viewer liking their own story',()=>{
+ const sql=fs.readFileSync('supabase/patiyiz-disable-own-story-like-20261030.sql','utf8');
+ assert.match(sql,/ALTER POLICY "story_likes_self_insert"/);
+ assert.match(sql,/s\.author_id <> \(SELECT auth\.uid\(\)\)/);
+ assert.match(sql,/s\.expires_at > now\(\)/);
+ assert.match(sql,/NOT public\.patiyiz_users_blocked/);
+});
