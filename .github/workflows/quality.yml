@@ -24,5 +24,7 @@ jobs:
           done
       - name: Android PWA readiness (offline; no credentials)
         run: node android/check-readiness.mjs && node --check android/generate-assetlinks.mjs
+      - name: Verify source assets and Android packaging references
+        run: node scripts/check-assets.cjs
       - name: Regression tests
         run: node --test tests/*.test.cjs

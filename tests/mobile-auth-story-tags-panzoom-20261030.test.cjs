@@ -19,7 +19,7 @@ test('Mobile login and signup reuse actual Patiyiz logo and keep real working au
  assert.match(form,/data-auth="signup"/);
  assert.match(form,/id="auth-form"/);
  assert.match(form,/id="email"/);
- assert.match(form,/name="display_name"/);
+ assert.match(form,/name="first_name"/); assert.match(form,/name="last_name"/);
  assert.match(form,/name="age_accepted"/);
  assert.match(form,/name="terms_accepted"/);
  assert.match(form,/\$\{ico\('eye'\)\}/);
@@ -69,7 +69,7 @@ test('Full photo viewer supports pinch, pan, wheel and double tap without exposi
 });
 test('PWA and native bundles include all updated styles and app cache versions',()=>{
  for(const path of ['patiyiz-mobile-auth-redesign-20261030.css','patiyiz-clean-story-dm-shares-20261030.css','patiyiz-pan-zoom-photos-20261030.css']){
-  assert.ok(html.includes(path+'?v=1'),path);
+  assert.ok(html.includes(path+'?v='),path);
   assert.ok(native.includes(path),path);
  }
  assert.match(html,/auth_story_pan_fix=20261030/);

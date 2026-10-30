@@ -256,6 +256,7 @@ function showApp(){starter();if(me)window.setTimeout(()=>patiStreakCheckin(),550
 }
 const authBusy=async(fn)=>{try{let r=await fn();if(r.error)throw r.error;return r.data}catch(e){notify(friendly(e),true);return null}};
 authRoot.addEventListener('click',e=>{
+ if(e.target.closest('[data-auth-sdk-retry]')){location.reload();return}
  const toggle=e.target.closest('[data-auth-toggle-password]');
  if(toggle){const input=authRoot.querySelector('#password');if(input){const revealing=input.type==='password';input.type=revealing?'text':'password';toggle.setAttribute('aria-pressed',String(revealing));toggle.setAttribute('aria-label',revealing?'Şifreyi gizle':'Şifreyi göster')}return}
  const b=e.target.closest('[data-auth]');if(!b)return;authMode=b.dataset.auth;showAuth();
@@ -7478,7 +7479,13 @@ function resetSessionState(){
  dmStream?.getTracks().forEach(track=>track.stop());dmStream=null;dmRecipient=null;dmParts=[];dmMediaSending=false;
 }
 
-async function boot(){if(!ready){showSetup();return}sb=window.supabase.createClient(cfg.supabaseUrl,cfg.supabasePublishableKey);try{let {data:result,error}=await sb.auth.getSession();if(error)throw error;me=result.session?.user;if(me){showApp()}else{showAuth()}sb.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){stopLive();resetSessionState();me=null;authMode='login';showAuth()}else if(event==='PASSWORD_RECOVERY'){modal('Yeni şifre belirle',formField('password','Yeni şifre','password','',true),'reset-password-form');}else if(event==='SIGNED_IN'&&session?.user&&(!me||me.id!==session.user.id)){stopLive();resetSessionState();me=session.user;const signedUser=me.id;setTimeout(async()=>{if(me?.id!==signedUser)return;if(me?.id===signedUser)showApp()},0)}})}catch(e){starter();showAuth('Bağlantı kurulamadı. Supabase ayarlarını kontrol et.');notify(friendly(e),true)}}
+async function boot(){if(!ready){showSetup();return}
+ if(typeof window.supabase?.createClient!=='function'){
+  starter();appRoot.classList.add('hidden');authRoot.classList.remove('hidden');
+  authRoot.innerHTML='<div class="auth-card" role="alert"><div class="auth-brand"><img src="patiyiz-selected-logo.svg" alt="Patiyiz" width="64" height="64"></div><h2>Bağlantı kurulamadı</h2><p class="auth-sub">Güvenli giriş sistemi yüklenemedi. İnternet bağlantını kontrol edip yeniden dene.</p><button class="primary-btn auth-submit" type="button" data-auth-sdk-retry>Yeniden dene</button></div>';
+  return;
+ }
+ try{sb=window.supabase.createClient(cfg.supabaseUrl,cfg.supabasePublishableKey);let {data:result,error}=await sb.auth.getSession();if(error)throw error;me=result.session?.user;if(me){showApp()}else{showAuth()}sb.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){stopLive();resetSessionState();me=null;authMode='login';showAuth()}else if(event==='PASSWORD_RECOVERY'){modal('Yeni şifre belirle',formField('password','Yeni şifre','password','',true),'reset-password-form');}else if(event==='SIGNED_IN'&&session?.user&&(!me||me.id!==session.user.id)){stopLive();resetSessionState();me=session.user;const signedUser=me.id;setTimeout(async()=>{if(me?.id!==signedUser)return;if(me?.id===signedUser)showApp()},0)}})}catch(e){starter();showAuth('Bağlantı kurulamadı. Supabase ayarlarını kontrol et.');notify(friendly(e),true)}}
 document.addEventListener('submit',async e=>{if(e.target.id!=='reset-password-form')return;e.preventDefault();let password=new FormData(e.target).get('password');await run(async()=>{let r=await sb.auth.updateUser({password});if(r.error)throw r.error;closeModal()},'Şifren güncellendi')});
 document.addEventListener('click',e=>{
  const h=e.target.closest('[data-health-pet],[data-health-open],[data-health-delete],[data-health-print],[data-health-retry],[data-health-edit],[data-health-cancel],[data-health-filter],[data-health-clear]');
@@ -7510,21 +7517,33 @@ document.addEventListener('change',event=>{
  const id=input.dataset.patiGroupAvatar;
  const file=input.files[0];input.value='';void patiGroupAvatarCropOpen(id,file).catch(error=>notify(friendly(error),true));
 });
-/* Error telemetry stores only type and daily count, never messages, stack or URLs. */
-const patiReportedErrors=new Map();
-function patiTrackClientError(kind){
- if(!me?.id||!sb||navigator.onLine===false)return;
- const key=me.id+':'+kind,now=Date.now();
- if(now-(patiReportedErrors.get(key)||0)<60000)return;
- patiReportedErrors.set(key,now);
- void sb.rpc('patiyiz_track_client_error',{p_kind:kind}).then(({error})=>{
-  if(error)console.warn('İstemci hata sayacı gönderilemedi.');
- }).catch(()=>{});
-}
-window.addEventListener('error',event=>{
- const kind=event.target instanceof HTMLImageElement||event.target instanceof HTMLVideoElement?'asset':'script';
- patiTrackClientError(kind);
-},true);
-window.addEventListener('unhandledrejection',()=>patiTrackClientError('promise'));
-boot();
+/* Privacy-safe telemetry: no messages, URLs, stack traces or form contents. */
+ const PATI_ERROR_RELEASE='20261031-audit1',patiReportedErrors=new Map();
+ let patiLastUiAction='unknown';
+ function patiSafeErrorLabel(value){
+  const str=String(value||'unknown').toLowerCase();
+  return /^[a-z0-9_-]{1,40}$/.test(str)?str:'unknown';
+ }
+ document.addEventListener('click',event=>{
+  const target=event.target.closest?.('[data-action],[data-view],[data-auth]');
+  if(target)patiLastUiAction=patiSafeErrorLabel(target.dataset.action||target.dataset.view||target.dataset.auth);
+ },true);
+ document.addEventListener('submit',event=>{
+  patiLastUiAction=patiSafeErrorLabel(event.target?.id||'form');
+ },true);
+ function patiTrackClientError(kind){
+  if(!me?.id||!sb||navigator.onLine===false)return;
+  const screen=patiSafeErrorLabel(view||'unknown'),action=patiLastUiAction;
+  const key=me.id+':'+kind+':'+screen+':'+action,now=Date.now();
+  if(now-(patiReportedErrors.get(key)||0)<60000)return;
+  patiReportedErrors.set(key,now);
+  void sb.rpc('patiyiz_track_client_error_context',{
+   p_kind:kind,p_screen:screen,p_action:action,p_release:PATI_ERROR_RELEASE
+  }).then(({error})=>{if(error)console.warn('İstemci hata sayacı gönderilemedi.')}).catch(()=>{});
+ }
+ window.addEventListener('error',event=>{
+  patiTrackClientError(event.target instanceof HTMLImageElement||event.target instanceof HTMLVideoElement?'asset':'script');
+ },true);
+ window.addEventListener('unhandledrejection',()=>patiTrackClientError('promise'));
+ boot();
 })();
