@@ -1,7 +1,7 @@
 # Patiyiz — Pati Kimliği delivery and security checklist (30 October 2026)
 
 ## Status
-An isolated code review branch from main, NOT a production release. The connected Supabase project was verified as **Patiyiz** and its existing pets columns were checked. The QR SQL / Edge service has NOT been deployed; private messaging still requires Cloudflare Turnstile secrets. Do not merge or expose the QR action until the deployment checklist and security/device tests pass.
+An isolated code review branch from main, NOT a production release. The connected Supabase project was verified as **Patiyiz** and its existing pets columns were checked. The QR SQL migration was applied to the connected Patiyiz project and the original function was deployed. This branch now uses **Patiyiz's free self-hosted HMAC-signed arithmetic challenge** instead of Cloudflare. Publish only after the replacement Edge deployment and checks pass.
 
 ## Functional boundaries
 - Existing `pets` are the source of identity; owner must own the pet.
@@ -9,15 +9,15 @@ An isolated code review branch from main, NOT a production release. The connecte
 - Scan landing page: `https://patiyiz.com/pati-kimligi.html#<random-token>`.
 - Raw QR token is returned only on create/rotate; SHA-256 hash is stored server side. Reprinting requires rotating the token, invalidating the older printed tag.
 - The public scan response contains ONLY name, species, breed, opt-in photo (OFF by default) and manually approved public note; never owner ID, phone, email, health records or full address.
-- Anonymous finders submit text after a Cloudflare Turnstile challenge; server-side IP/tag rate-limit protects against repeated requests.
+- Anonymous finders answer a short arithmetic question in an HMAC-signed, five-minute, single-use challenge. A hidden honeypot, per-visitor limits and total QR-tag message limits offer practical anti-spam protection. This is weaker than a managed CAPTCHA against determined automated attackers; monitor abuse.
 - Finder receives a private receipt secret as part of a URL fragment and can read only that conversation. Owner can reply from own Pati Identity dashboard; do not mix finder messages with normal `messages` table.
 - Threads expire after 30 days and must later be purged by a scheduled retention job, following user consent/privacy policy updates.
 
 ## Deploy prerequisite steps
 1. Verify the SQL assumptions for `public.pets.id` and `public.pets.owner_id`, review `docs/pati-identity-schema-proposal.sql`, and apply the approved SQL to the **Patiyiz** project, not another Supabase instance. Follow the project's migration naming and rollout practice.
 2. Deploy `supabase/functions/pati-identity/index.ts` to the Patiyiz project. This one endpoint accepts anonymous scan/contacts and must be configured with **verify_jwt=false**; all `owner-*` requests separately validate the user JWT with Auth and validate pet ownership.
-3. Configure server-only secrets `PATI_TURNSTILE_SECRET`, `PATI_TURNSTILE_SITE`, `PATI_RATE_PEPPER`; `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are supplied by the server environment. **Do not store secrets in config.js, GitHub, or the browser.**
-4. Cloudflare Turnstile site hostnames must include patiyiz.com (and the approved GitHub Pages preview hostname, if testing there). Patiyiz Capacitor's https://localhost is allowed as an API Origin for *owner-authorized actions*; the public scan is hosted on patiyiz.com. Without both keys the form correctly remains disabled.
+3. No third-party CAPTCHA account or secret is needed. The HMAC signer uses optional server-only `PATI_RATE_PEPPER`, otherwise Supabase's built-in service-role secret. Supabase supplies `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` to the Edge Function. **Do not expose any secret in config.js, GitHub, or the browser.**
+4. The public scan is hosted on patiyiz.com and has a standalone, accessible arithmetic challenge with a renewal button. Patiyiz Capacitor's https://localhost is an approved API origin for **owner-authorized actions**. Challenge expiry, invalid signatures, replay, honeypot and per-tag limits must be tested.
 5. Ensure patiyiz.com actually serves `pati-kimligi.html` (and that privacy/terms reflect QR messaging, contact retention, and finder safety).
 6. Confirm service_role is never in public HTML, scan payload or client logs. Confirm anon/authenticated cannot SELECT/UPDATE/INSERT/DELETE identity tables directly except owner-only SELECT granted under RLS.
 7. Validate owner-list, create, rotate, toggle, lookup, finder send, owner reply, finder read, blocked QR, bad token, IP abuse, expired thread, multiple animals, account deletion and lost pet handoff.
@@ -41,5 +41,12 @@ An isolated code review branch from main, NOT a production release. The connecte
 - Play Store build updated separately; merging a GitHub PR does not update installed apps.
 
 ## Additional review fixes
-- The Edge handler rate-limits both the visitor/device key and an independent total-per-tag key, so rotating reported client IPs cannot fully bypass the contact throttle.
-- If any required Turnstile secret is missing, the public contact form fails closed; no insecure anonymous messages are allowed.
+- The Edge handler rate-limits both visitor requests and per-tag messages; the QR global cap is applied only after a valid challenge so invalid anonymous requests cannot exhaust it without solving a challenge.
+- All contact requests require a valid HMAC signature tied to the QR tag, a correct answer, and an unused five-minute nonce. The secret stays exclusively on the server. This approach has **no recurring third-party CAPTCHA fee** (normal Supabase resource quotas still apply).
+
+## Free protection acceptance (30 October 2026)
+- The public form never sends contact details until the owner QR and one-time challenge are validated.
+- Challenge is signed with HMAC SHA-256 and expires in five minutes, then consumed with the existing atomic `pati_identity_throttle` RPC.
+- Challenge verification is enforced server-side; scripts cannot bypass it by removing the input or calling the Edge Function directly without a valid solved challenge.
+- Manual arithmetic is not sophisticated bot detection. Deployers must monitor spam and can temporarily disable any compromised QR with `owner-toggle`.
+- Cloudflare is **not** required and no paid external CAPTCHA account is part of the system.
