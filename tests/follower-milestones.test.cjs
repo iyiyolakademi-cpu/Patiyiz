@@ -4,7 +4,7 @@ const ctx={window:{}};vm.runInNewContext(script,ctx);
 const api=ctx.window.PatiyizFollowerMilestones;
 test('five follower goals and rewards are defined',()=>{
  assert.deepEqual(Array.from(api.tiers,t=>t.need),[1000,5000,10000,50000,100000]);
- assert.deepEqual(Array.from(api.tiers,t=>t.coins),[100,300,700,1500,3000]);
+ assert.deepEqual(Array.from(api.tiers,t=>t.coins),[100,300,100,500,1000]); assert.equal(api.tiers.at(-1).cash,5000);
 });
 test('rewards are marked earned only by the server claim ledger',()=>{
  assert.match(api.renderPanel(50000,[]),/Doğrulanıyor/);
