@@ -56,7 +56,7 @@ test('Chat opening pins newest message until photos settle, but stops if user in
  assert.match(block,/history\.style\.overflowAnchor='none'/);
  assert.match(block,/history\.scrollTop=Math\.max\(0,history\.scrollHeight-history\.clientHeight\)/);
  assert.match(block,/new ResizeObserver\(\(\)=>pin\(\)\)/);
- assert.match(block,/history\.addEventListener\(name,cleanup/);
+ assert.match(block,/history\.addEventListener\(name,stopByUser/);
  assert.match(block,/history\.querySelectorAll\('img,video'\)/);
  assert.match(block,/setTimeout\(cleanup,15000\)/);
  const page=app.slice(app.indexOf('function messagesPage(){'),app.indexOf('function pushKeyBytes(',app.indexOf('function messagesPage(){')));
