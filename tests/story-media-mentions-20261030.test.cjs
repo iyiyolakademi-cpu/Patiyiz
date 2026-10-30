@@ -37,7 +37,7 @@ test('Shared media opens its post; avatar or author name opens profile',()=>{
  assert.match(piece,/data-action="dm-open-shared-post"/);
  assert.match(piece,/pati-dm-shared-video-wrap pati-dm-shared-media-open/);
  assert.match(piece,/pati-dm-shared-image-open/);
- assert.match(app,/case 'dm-open-shared-post':run\(\(\)=>patiDmOpenSharedPost\(id\)\)/);
+ assert.match(app,/case 'dm-open-shared-post':run\(\(\)=>patiDmOpenSharedPost\(id,target\.dataset\.comment\|\|''\)\)/);
 });
 test('Mentions are server-generated, owner-scoped and linked to post/comment',()=>{
  assert.match(sql,/create or replace function patiyiz_private\.notify_content_mentions_20261030\(\)/);
