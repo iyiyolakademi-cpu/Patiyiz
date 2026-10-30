@@ -417,3 +417,33 @@ html[data-pati-theme="dark"] .pati-care-calendar-foot button{background:#181a20!
  #patiyiz-system-media[data-mode="story"] .pati-system-preview-media,
  #patiyiz-system-media[data-mode="reels"] .pati-system-preview-media{max-height:34dvh!important}
 }
+
+/* Story visibility control — white, readable labels on the dark media composer.
+ * Applies to the existing selector; access rules and publish behavior stay unchanged. */
+#patiyiz-system-media[data-mode="story"] .pati-system-edit-panel label.pati-system-audience{
+  color:#ffffff!important;
+  font-weight:750!important;
+  font-size:14px!important;
+  line-height:1.45!important;
+}
+#patiyiz-system-media[data-mode="story"] .pati-system-edit-panel #pati-system-audience{
+  color:#ffffff!important;
+  background:#272a32!important;
+  border:1px solid #555964!important;
+  padding:11px 13px!important;
+  min-height:46px!important;
+  color-scheme:dark;
+  font:inherit!important;
+}
+#patiyiz-system-media[data-mode="story"] #pati-system-audience option{
+  background:#272a32;
+  color:#ffffff;
+}
+html[data-pati-theme="dark"] #modal-root #post-form .pati-field:has(select[name="story_audience"]) label,
+html[data-pati-theme="dark"] #modal-root #story-form .pati-field:has(select[name="story_audience"]) label{
+  color:#ffffff!important;
+}
+html[data-pati-theme="dark"] #modal-root #post-form select[name="story_audience"],
+html[data-pati-theme="dark"] #modal-root #story-form select[name="story_audience"]{
+  color:#fff!important;background:#272a32!important;border-color:#555964!important;color-scheme:dark;
+}
