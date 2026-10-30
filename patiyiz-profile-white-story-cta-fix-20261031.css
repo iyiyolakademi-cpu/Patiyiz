@@ -111,6 +111,13 @@ html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-private-messag
 /* Story shared-post CTA: the label to the LEFT of the arrow was invisible.
    Give label its own explicitly white text, no inherited dark text fill. */
 #story-overlay.pati-story-has-source .pati-story-share-card>.pati-story-shared-source{
+ /* Earlier social-phase1 CSS applied translateX(-50%), pushing the CTA label
+    outside the overflow-hidden story card. Reset that inherited transform. */
+ -webkit-transform:none!important;
+ transform:none!important;
+ translate:none!important;
+ left:auto!important;
+ right:auto!important;
  position:relative!important;
  inset:auto!important;
  display:flex!important;
