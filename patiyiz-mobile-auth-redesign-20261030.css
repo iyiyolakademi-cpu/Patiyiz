@@ -65,3 +65,32 @@
 
 /* Auth screen must fully disappear after a successful login at every viewport width. */
 #auth-root.auth-root.hidden{display:none!important;visibility:hidden!important}
+
+
+/* Separate first-name and surname inputs for Patiyiz registration. */
+#auth-root #auth-form .pati-auth-name-fields{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ column-gap:12px;
+ align-items:start;
+ width:100%;
+ min-width:0;
+ box-sizing:border-box;
+}
+#auth-root #auth-form .pati-auth-name-fields .pati-field{
+ min-width:0;
+ width:100%;
+ box-sizing:border-box;
+}
+#auth-root #auth-form .pati-auth-name-fields input{
+ box-sizing:border-box;
+ width:100%!important;
+ min-width:0;
+ max-width:100%;
+}
+@media(max-width:520px){
+ #auth-root #auth-form .pati-auth-name-fields{
+  grid-template-columns:minmax(0,1fr);
+  gap:0;
+ }
+}
