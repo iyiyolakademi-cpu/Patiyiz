@@ -81,7 +81,6 @@
     current.previewError=true;
     const button=current.root.querySelector('#pati-system-publish');
     if(button)button.disabled=true;
-    const headerButton=current.root.querySelector('.pati-system-head-publish');if(headerButton)headerButton.disabled=true;
     console.warn('Kırpma önizleme hatası:',err);
     return;
    }
@@ -94,9 +93,6 @@
   current.previewIndex=Math.max(0,Math.min(files.length-1,current.previewIndex||0));
   const chooser=root.querySelector('#pati-system-chooser'),preview=root.querySelector('#pati-system-preview');
   chooser.hidden=chosen;preview.hidden=!chosen;
-  const headPublish=root.querySelector('.pati-system-head-publish');
-  if(headPublish){headPublish.hidden=!chosen;headPublish.disabled=false;headPublish.textContent='Paylaş';}
-  const brand=root.querySelector('.pati-system-brand');if(brand)brand.hidden=chosen;
   if(!chosen){freeURLs(current);root.querySelector('#pati-system-thumbnails').replaceChildren();return}
   const media=root.querySelector('#pati-system-preview-media');
   media.replaceChildren();
@@ -224,7 +220,7 @@
   root.dataset.mode=mode;
   root.innerHTML=
    '<div class="pati-system-panel">'+
-   '<header class="pati-system-head"><button type="button" data-system="close" aria-label="Vazgeç">×</button><strong>'+title(mode)+'</strong><span class="pati-system-brand">patiyiz</span><button type="button" class="pati-system-head-publish" data-system="publish" hidden>Paylaş</button></header>'+
+   '<header class="pati-system-head"><button type="button" data-system="close" aria-label="Vazgeç">×</button><strong>'+title(mode)+'</strong><span class="pati-system-head-spacer" aria-hidden="true"></span></header>'+
    '<div id="pati-system-error" class="pati-system-error" role="alert" hidden></div>'+
    '<div id="pati-system-chooser">'+
    '<div class="pati-system-intro"><div class="pati-system-intro-symbol">＋</div><h2>Nasıl paylaşmak istersin?</h2><p>Telefonunun kamerasını veya galerisini kullan.</p></div>'+
@@ -241,14 +237,14 @@
    '<div id="pati-system-photo-review" class="pati-system-photo-review" hidden><strong>Fotoğraflarını kontrol et</strong><small>Her fotoğrafa dokunarak aç, × ile kaldır. Sırasını değiştirebilirsin.</small></div>'+ 
    '<div id="pati-system-thumbnails" class="pati-system-thumbnails" aria-label="Seçilen fotoğraflar" hidden></div>'+ 
    '<div id="pati-system-photo-actions" class="pati-system-photo-actions" hidden><button type="button" data-system="photo-move-prev">← Sola taşı</button><button type="button" data-system="photo-move-next">Sağa taşı →</button></div>'+
-   '<p id="pati-system-summary" class="pati-system-summary"></p><button type="button" class="pati-system-crop-entry" data-system="photo-crop" hidden>✂ Fotoğrafı kırp ve düzenle</button>'+ 
+   '<p id="pati-system-summary" class="pati-system-summary"></p><section class="pati-system-edit-panel" aria-label="Medya düzenleme ve paylaşım"><button type="button" class="pati-system-crop-entry" data-system="photo-crop" hidden>✂ Fotoğrafı kırp ve düzenle <span aria-hidden="true" class="pati-system-crop-chevron">›</span></button>'+ 
    '<label id="pati-system-mirror-option" class="pati-system-mirror-option" hidden><input id="pati-system-mirror" type="checkbox"><span><strong>Selfie gibi göster</strong><small>Ön kamerada ekranda gördüğün ayna yönünü paylaşımda koru. Arka kamerada kapat.</small></span></label>'+
    (mode==='story'?'<label class="pati-system-audience" for="pati-system-audience">Kimler görebilir?<select id="pati-system-audience"><option value="everyone">Herkes</option><option value="close_friends">Yakın Arkadaşlar</option></select></label>':'')+
    '<label class="pati-system-caption-label" for="pati-system-caption">Açıklama (isteğe bağlı)</label>'+
    '<textarea id="pati-system-caption" maxlength="'+(mode==='story'?'300':'1500')+'" rows="3" placeholder="İstersen açıklama yazabilirsin…"></textarea>'+
    '<div class="pati-system-publish-actions">'+
    (mode==='post'?'<button type="button" data-system="add-camera-photo">＋ Fotoğraf çek</button><button type="button" data-system="add-gallery">＋ Galeriden ekle</button>':'')+
-   '<button type="button" data-system="rechoose">Başka seç</button><button type="button" id="pati-system-publish" data-system="publish">Paylaş</button></div>'+
+   '<button type="button" data-system="rechoose">Başka seç</button><button type="button" id="pati-system-publish" data-system="publish">Paylaş</button></div></section>'+
    '</div>'+
    '<nav class="pati-system-modes" aria-label="İçerik türü">'+
    ['post','story','reels'].map(m=>'<button type="button" data-system="switch" data-mode="'+m+'"'+(m===mode?' aria-current="page" class="active"':'')+'>'+(m==='post'?'GÖNDERİ':m==='story'?'HİKÂYE':'REELS')+'</button>').join('')+'</nav>'+
@@ -373,14 +369,12 @@
     state.publishing=true;
     const publish=root.querySelector('#pati-system-publish');
     publish.disabled=true;publish.textContent='Paylaşılıyor…';
-    const headerPublish=root.querySelector('.pati-system-head-publish');if(headerPublish){headerPublish.disabled=true;headerPublish.textContent='Yükleniyor…';}
     clearError();
     try{await state.onPublish(root.querySelector('#pati-system-caption').value)}
     catch(err){
      if(state===current){
       error(err?.message||'Paylaşım yüklenemedi. Tekrar dene.');
       state.publishing=false;publish.disabled=false;publish.textContent='Tekrar paylaş';
-      const headerPublish=root.querySelector('.pati-system-head-publish');if(headerPublish){headerPublish.disabled=false;headerPublish.textContent='Yeniden dene';}
      }
     }
    }
