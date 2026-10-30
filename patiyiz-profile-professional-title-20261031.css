@@ -1,0 +1,84 @@
+/* Patiyiz profile: editable bold professional title, immediately above biography. */
+#main-content .pati-ig-profile .pati-ig-about{
+ box-sizing:border-box;
+ width:100%;
+ min-width:0;
+ padding:2px clamp(16px,5vw,48px) 10px!important;
+ text-align:left;
+ color:#212126;
+}
+#main-content .pati-ig-profile .pati-ig-about .pati-ig-profession{
+ display:block!important;
+ width:100%;
+ min-width:0;
+ font-family:inherit;
+ font-size:15px!important;
+ line-height:1.38!important;
+ font-weight:850!important;
+ letter-spacing:-.012em;
+ color:#17181d!important;
+ opacity:1!important;
+ white-space:normal!important;
+ overflow-wrap:anywhere;
+ margin:0!important;
+ padding:0!important;
+}
+#main-content .pati-ig-profile .pati-ig-about .pati-ig-bio{
+ box-sizing:border-box;
+ margin:0!important;
+ padding:4px 0 0!important;
+ font-size:14px!important;
+ line-height:1.53!important;
+ font-weight:400!important;
+ letter-spacing:normal;
+ color:#36383e!important;
+ white-space:pre-line!important;
+ overflow-wrap:anywhere;
+}
+#main-content .pati-ig-profile .pati-ig-about .pati-ig-bio:first-child{
+ padding-top:0!important;
+}
+#modal-root #profile-form .pati-profile-title-field{
+ min-width:0;
+}
+#modal-root #profile-form .pati-profile-title-field input{
+ box-sizing:border-box;
+ max-width:100%;
+ width:100%;
+ font-family:inherit;
+ font-size:16px;
+}
+#modal-root #profile-form .pati-profile-title-field small{
+ display:block;
+ margin-top:6px;
+ font-size:12px;
+ line-height:1.45;
+ color:#60636c;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-about,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-about .pati-ig-profession{
+ color:#f4f4f6!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-about .pati-ig-bio{
+ color:#dedee4!important;
+}
+html[data-pati-theme="dark"] #modal-root #profile-form .pati-profile-title-field small{
+ color:#c0c2cb;
+}
+@media(max-width:740px){
+ #main-content .pati-ig-profile .pati-ig-about{
+  padding:5px 15px 9px!important;
+ }
+ #main-content .pati-ig-profile .pati-ig-about .pati-ig-profession{
+  font-size:14px!important;
+  line-height:1.35!important;
+  font-weight:850!important;
+ }
+ #main-content .pati-ig-profile .pati-ig-about .pati-ig-bio{
+  padding-top:3px!important;
+  font-size:13px!important;
+ }
+}
+@media(max-width:350px){
+ #main-content .pati-ig-profile .pati-ig-about{padding-inline:12px!important}
+}
