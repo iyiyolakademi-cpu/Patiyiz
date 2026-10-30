@@ -4693,19 +4693,35 @@ function patiMentionsHTML(body){
 function patiMentionOpen(mode){
  const form=document.getElementById(mode==='comment'?'comment-form':'post-form');
  if(!form)return;
- const target=form.querySelector('textarea[name="body"]');if(!target)return;
+ const target=form.querySelector('textarea[name="body"]');
+ if(!target)return;
  let panel=form.querySelector('.pati-mention-picker');
  if(panel){panel.remove();return}
- panel=document.createElement('div');panel.className='pati-mention-picker';
- panel.innerHTML='<label>Kişi ara<input type="search" class="pati-mention-search" placeholder="İsim veya kullanıcı adı" aria-label="Etiketlenecek kullanıcı"></label><div class="pati-mention-results"></div>';
- target.insertAdjacentElement('afterend',panel);
- const search=panel.querySelector('input'),results=panel.querySelector('.pati-mention-results');
+ panel=document.createElement('div');
+ panel.className='pati-mention-picker';
+ panel.setAttribute('role','region');
+ panel.setAttribute('aria-label','Kişi etiketle');
+ panel.innerHTML='<div class="pati-mention-header"><strong>Kişi etiketle</strong><button type="button" class="pati-mention-close" aria-label="Kişi aramayı kapat">×</button></div>'+
+ '<label class="pati-mention-search-label" for="pati-mention-search-field">Kişi ara</label>'+
+ '<input id="pati-mention-search-field" type="search" class="pati-mention-search" placeholder="İsim veya kullanıcı adı" aria-label="Etiketlenecek kullanıcı" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" enterkeyhint="search">'+
+ '<div class="pati-mention-results" role="listbox" aria-label="Eşleşen kullanıcılar"></div>';
+ // The comment composer is a flex row. Inserting this panel after its textarea
+ // used to crush both the text field and all search results into a narrow column.
+ const editor=mode==='comment'?target.closest('.pati-comment-editor-row'):null;
+ if(editor?.parentElement?.classList.contains('modal-footer')){
+  editor.insertAdjacentElement('beforebegin',panel);
+ }else target.insertAdjacentElement('afterend',panel);
+ panel.querySelector('.pati-mention-close')?.addEventListener('click',()=>{
+  panel.remove();target.focus({preventScroll:true});
+ });
+ const search=panel.querySelector('.pati-mention-search'),results=panel.querySelector('.pati-mention-results');
  let remote=[],timeout=null,request=0;
  const paint=()=>{
+  if(!panel.isConnected)return;
   const q=search.value.trim().toLocaleLowerCase('tr-TR');
   const pool=[...new Map([...remote,...data.profiles].filter(p=>p?.id).map(p=>[p.id,p])).values()];
   const list=pool.filter(p=>p.id!==me?.id&&!blocked.has(p.id)&&p.handle&&(!q||(p.handle+' '+(p.display_name||'')).toLocaleLowerCase('tr-TR').includes(q))).slice(0,30);
-  results.innerHTML=list.length?list.map(p=>'<button type="button" data-action="pati-mention-select" data-handle="'+esc(p.handle)+'">'+avatar(p,'s')+'<span>'+esc(p.display_name||p.handle)+'<small>@'+esc(p.handle)+'</small></span></button>').join(''):'<p>Kullanıcı bulunamadı.</p>';
+  results.innerHTML=list.length?list.map(p=>'<button type="button" role="option" class="pati-mention-person" data-action="pati-mention-select" data-handle="'+esc(p.handle)+'">'+avatar(p,'s')+'<span class="pati-mention-person-name"><strong>'+esc(p.display_name||p.handle)+'</strong><small>@'+esc(p.handle)+'</small></span></button>').join(''):'<p class="pati-mention-empty">Kullanıcı bulunamadı.</p>';
  };
  search.addEventListener('input',()=>{
   paint();clearTimeout(timeout);const token=++request;
@@ -4718,12 +4734,13 @@ function patiMentionOpen(mode){
     if(!panel.isConnected||token!==request)return;
     remote=result.data||[];
     const known=new Set(data.profiles.map(p=>p.id));
-    for(const p of remote)if(!known.has(p.id)){data.profiles.push(p);known.add(p.id)}
+    for(const person of remote)if(!known.has(person.id)){data.profiles.push(person);known.add(person.id)}
     paint();
    }catch(error){console.warn('Etiketlenecek kullanıcı araması:',error?.message||error)}
   },250);
  });
- paint();search.focus();
+ panel.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();panel.remove();target.focus({preventScroll:true})}});
+ paint();search.focus({preventScroll:true});
 }
 
 function showComments(postId){
@@ -6791,7 +6808,7 @@ if(window.visualViewport){
  document.addEventListener('focusout',()=>setTimeout(updateViewport,0));
  updateViewport();
 }
-document.addEventListener('focusin',e=>{if(e.target.matches('.chat-form input, .modal input, .modal textarea'))requestAnimationFrame(()=>e.target.scrollIntoView({block:'nearest',behavior:'smooth'}))});
+document.addEventListener('focusin',e=>{if(e.target.matches('.pati-mention-search'))return;if(e.target.matches('.chat-form input, .modal input, .modal textarea'))requestAnimationFrame(()=>e.target.scrollIntoView({block:'nearest',behavior:'smooth'}))});
 document.addEventListener('input',e=>{
  if(e.target?.id!=='pati-academy-search')return;
  educationSearch=e.target.value;
