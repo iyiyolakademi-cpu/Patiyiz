@@ -62,7 +62,8 @@ test('DM opens a conversation at the last message, even after async fetch',()=>{
  const list={isConnected:true,scrollTop:0,scrollHeight:1250};
  ctx.scrollLatest(list,'peer-1');assert.equal(list.scrollTop,1250);
  list.scrollTop=0;ctx.personId='peer-2';ctx.scrollLatest(list,'peer-1');assert.equal(list.scrollTop,0,'old async loads cannot scroll a different chat');
- assert.match(app,/patiDmPendingLatestPeer=id;personId=id;mobileChatOpen=true/);
+ assert.match(app,/patiDmOpenAtLatest\(id\);personId=id;mobileChatOpen=true/);
+ assert.match(app,/const pinIntent=patiDmShouldPinLatest\(personId\)/);
  assert.match(app,/const openLatest=patiDmPendingLatestPeer===personId&&threadReady/);
  assert.match(app,/patiDmScrollLatest\(history,personId\)/);
  assert.match(app,/if\(anchor&&typeof requestAnimationFrame==='function'\)requestAnimationFrame/);
