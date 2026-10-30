@@ -21,14 +21,19 @@ test('Reels playback displays a seekbar driven by video timeupdate',()=>{
  assert.match(app,/video\.currentTime=\(Math\.max\(0,Math\.min\(1000,Number\(target\.value\)/);
  assert.match(css,/\.pati-reel-progress input\[type="range"\]/);
 });
-test('Touch photo zoom only activates with two fingers and clamps scale to 3',()=>{
- assert.match(app,/patiPinch=\{image,distance,scale:1\}/);
- assert.match(app,/e\.touches\.length!==2/);
- assert.match(app,/Math\.max\(1,Math\.min\(3,now\/distance\)\)/);
- assert.match(app,/touchmove',[\s\S]*?\{passive:false\}/);
- assert.match(app,/patiFinishPinch/);
+test('Touch photo zoom starts with two fingers and allows panning around image after zoom',()=>{
+ const pinch=part('let patiPinch=null;',"document.addEventListener('input',e=>{");
+ assert.match(pinch,/e\.touches\.length===2&&image/);
+ assert.match(pinch,/patiPinch=\{image,scale:1,tx:0,ty:0/);
+ assert.match(pinch,/p\.scale=Math\.max\(1,Math\.min\(4,p\.scale\*distance\/p\.distance\)\)/);
+ assert.match(pinch,/e\.touches\.length===1&&p\.scale>1/);
+ assert.match(pinch,/p\.tx\+=touch\.clientX-prev\.x/);
+ assert.match(pinch,/p\.ty\+=touch\.clientY-prev\.y/);
+ assert.match(pinch,/touchmove',[\s\S]*?\{passive:false\}/);
+ assert.match(pinch,/patiFinishPinch/);
  assert.match(css,/pati-pinching/);
 });
+
 test('Like and follow micro animations respect reduced motion',()=>{
  assert.match(app,/pati-like-pop/);
  assert.match(app,/pati-follow-pop/);
