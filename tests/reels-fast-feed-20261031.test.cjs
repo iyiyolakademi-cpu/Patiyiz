@@ -64,7 +64,7 @@ test('Existing playback actions, iOS fallback and seek controls are still presen
  assert.match(setup,/IntersectionObserver/);
  assert.match(setup,/video\.play\(\)/);
  assert.match(setup,/patiUpdateReelsSoundButton/);
- assert.match(setup,/patiReelsCleanup/);
+ assert.match(setup,/patiyizReelsCleanup/);
 });
 test('Delayed spinner is small, error remains readable, and CSS is last',()=>{
  assert.match(css,/\.pati-reel-buffering:not\(\.pati-reel-buffering-error\)/);
