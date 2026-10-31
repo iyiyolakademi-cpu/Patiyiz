@@ -1,0 +1,41 @@
+/* Patiyiz / 31 Ekim: Reels, akış, mesaj, bakım, kayıp ilanı ve ödül UX. */
+/* Keep the currently selected Patiyiz theme; override only these screens. */
+.pati-reel-item{position:relative}
+.pati-reel-buffering{position:absolute;z-index:8;left:50%;top:43%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:9px;min-width:175px;max-width:75%;padding:14px 20px;border-radius:16px;background:rgba(0,0,0,.76);color:#fff;font-size:12px;font-weight:700;text-align:center;pointer-events:none}
+.pati-reel-buffering[hidden]{display:none!important}
+.pati-reel-spinner{display:block;width:23px;height:23px;border:3px solid #fff5;border-top-color:white;border-radius:50%;animation:patiReelBufferSpin .8s linear infinite}
+@keyframes patiReelBufferSpin{to{transform:rotate(360deg)}}
+.pati-reel-buffering progress{display:block;width:100%;height:5px;accent-color:#fff}
+.pati-reel-video[poster]{background:#111}
+.pati-feed-card .pati-carousel-track{overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+.pati-feed-card .pati-carousel,.pati-feed-card .pati-video-frame{aspect-ratio:var(--pati-feed-aspect,4 / 5);max-height:min(78dvh,780px);overflow:hidden}
+.pati-feed-card .pati-carousel-slide img{width:100%;height:100%;object-fit:contain}
+.pati-feed-card .pati-post-video{max-height:100%}
+.pati-dm-image-message .pati-dm-image-open{display:block;max-width:min(72vw,390px);padding:0;overflow:hidden}
+.pati-dm-image-message .pati-dm-image{display:block;width:auto;max-width:100%;max-height:min(65dvh,520px);height:auto;object-fit:contain;border-radius:14px}
+.pati-dm-voice-card{display:flex;align-items:center;gap:10px;max-width:min(82vw,440px);min-width:0}
+.pati-dm-voice-main{flex:1;min-width:0}
+.pati-dm-voice-label{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;font-weight:650}
+.pati-dm-audio{display:block;width:100%;max-width:100%;min-width:180px;height:44px}
+.pati-dm-rec-state:not([hidden]){display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.pati-dm-record-elapsed{font-variant-numeric:tabular-nums;font-weight:800}
+.pati-city-alert small{display:block;margin-top:5px;font-size:11px;line-height:1.5;opacity:.8}
+.pati-lost-close-btn{font-weight:750!important;border:1px solid currentColor!important}
+.lost-v2-card.is-found{opacity:.88}
+.lost-v2-card.is-found .lost-v2-badge{font-weight:800}
+.pati-coin-spent-overview{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 22px}
+.pati-coin-spent-overview>div{display:flex;flex-direction:column;gap:5px;padding:15px;border:1px solid var(--border,#e4e4e7);border-radius:14px;background:var(--paper,#fff);color:var(--ink,#17191d)}
+.pati-coin-spent-overview strong{font-size:23px;font-weight:800;font-variant-numeric:tabular-nums}
+.pati-coin-spent-overview span{font-size:12px;line-height:1.5;color:var(--muted,#666)}
+.pati-coin-spent-overview>button{grid-column:1 / -1;min-height:44px;border:1px solid currentColor;border-radius:12px;background:transparent;color:inherit;font-weight:700}
+@media(max-width:740px){
+ /* This switch had been forcibly hidden in the 31 October home stylesheet. */
+ #main-content>.pati-home-feed-tabs{display:grid!important;grid-template-columns:1fr 1fr;gap:6px!important;margin:5px 9px 6px!important;padding:4px!important;border-radius:13px!important;background:var(--pui-panel,#f3f3f5)}
+ #main-content>.pati-home-feed-tabs>button{min-height:44px!important;font-weight:700!important}
+ #main-content>.pati-feed-posts>.pati-feed-card:nth-child(n+5){content-visibility:auto;contain-intrinsic-size:auto 520px}
+ .pati-dm-voice-card{max-width:100%}
+ .pati-dm-audio{min-width:148px}
+ .pati-coin-spent-overview{gap:8px}
+ .pati-coin-spent-overview>div{padding:12px}
+}
+@media(prefers-reduced-motion:reduce){.pati-reel-spinner{animation:none}}
