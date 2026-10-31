@@ -185,5 +185,9 @@
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && activeChoice && !busy) closeChoice();
   });
-  window.PatiyizSavedV2 = {render, visiblePosts};
+  function choose(id, ctx) {
+    if (ctx) context = ctx;
+    openChoice(id);
+  }
+  window.PatiyizSavedV2 = {render, visiblePosts, choose};
 })();
