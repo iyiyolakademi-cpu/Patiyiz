@@ -1116,7 +1116,7 @@ function patiOpenPostLikers(postId){
  void patiLoadPostLikers();
 }
 const patiEngagementCounts=new Map();
-let patiEngagementTimer=null,patiEngagementLoading=false,patiEngagementFailedUntil=0;
+let patiEngagementTimer=null,patiEngagementLoading=false,patiEngagementFailedUntil=0,patiEngagementRetryTimer=null,patiEngagementRetryDelay=4000,patiEngagementOwner='';
 function patiSocialMetric(id,kind,label){
  const row=patiEngagementCounts.get(id);
  const value=row&&Number.isFinite(row[kind])?row[kind].toLocaleString('tr-TR'):'—';
@@ -1137,6 +1137,7 @@ function patiScheduleEngagement(){
 }
 async function patiRefreshEngagement(){
  if(!me||!sb||patiEngagementLoading||Date.now()<patiEngagementFailedUntil)return;
+ if(patiEngagementOwner!==me.id){patiEngagementOwner=me.id;patiEngagementCounts.clear()}
  const owner=me.id,ids=[...new Set([...document.querySelectorAll('[data-pati-metric][data-post-id]')].map(el=>el.dataset.postId))];
  const now=Date.now(),batch=ids.filter(id=>{const row=patiEngagementCounts.get(id);return !row||now-row.updatedAt>90000}).slice(0,40);
  if(!batch.length){patiPaintEngagement();return;}
@@ -1150,9 +1151,17 @@ async function patiRefreshEngagement(){
    patiEngagementCounts.set(id,{sent:Number(row.sent_count)||0,saved:Number(row.saved_count)||0,repost:Number(row.repost_count)||0,updatedAt:Date.now()});
   }
   patiPaintEngagement();
+  patiEngagementFailedUntil=0;patiEngagementRetryDelay=4000;
+  if(patiEngagementRetryTimer){clearTimeout(patiEngagementRetryTimer);patiEngagementRetryTimer=null}
  }catch(error){
-  patiEngagementFailedUntil=Date.now()+180000;
+  const delay=patiEngagementRetryDelay;
+  patiEngagementFailedUntil=Date.now()+delay;
+  patiEngagementRetryDelay=Math.min(20000,delay*2);
   console.warn('Paylaşım istatistikleri alınamadı:',error?.message||error);
+  if(!patiEngagementRetryTimer)patiEngagementRetryTimer=setTimeout(()=>{
+   patiEngagementRetryTimer=null;
+   if(me?.id===owner&&document.querySelector('[data-pati-metric]'))patiScheduleEngagement();
+  },delay+150);
  }finally{patiEngagementLoading=false;}
  if(ids.length>batch.length)patiScheduleEngagement();
 }
