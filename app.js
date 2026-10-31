@@ -1926,6 +1926,16 @@ function reelHandleTap(button){
   }
  },390);
 }
+function patiReelPlayFeedback(button,playing){
+ const item=button?.closest?.('.pati-reel-item');
+ if(!item||typeof document==='undefined'||typeof document.createElement!=='function')return;
+ let mark=item.querySelector?.('.pati-reel-play-feedback');
+ if(!mark){mark=document.createElement('span');mark.className='pati-reel-play-feedback';mark.setAttribute('aria-hidden','true');item.appendChild(mark)}
+ mark.textContent=playing?'▶':'Ⅱ';
+ mark.classList.remove('pati-reel-play-flash');
+ void mark.offsetWidth;
+ mark.classList.add('pati-reel-play-flash');
+}
 function reelTogglePlay(button){
  const video=button.closest('.pati-reel-item')?.querySelector('video');if(!video)return;
  if(video.paused){
@@ -1936,7 +1946,8 @@ function reelTogglePlay(button){
   document.querySelectorAll('#main-content .pati-reel-video').forEach(other=>{if(other!==video)other.pause()});
   video.muted=!patiyizReelsSoundEnabled;
   video.play().catch(()=>notify('Video oynatılamadı.',true));
- }else{video.dataset.manualPause='1';video.pause()}
+  patiReelPlayFeedback(button,true);
+ }else{video.dataset.manualPause='1';video.pause();patiReelPlayFeedback(button,false)}
 }
 function reelToggleSound(button){
  const video=button.closest('.pati-reel-item')?.querySelector('video');if(!video)return;
@@ -2000,6 +2011,7 @@ function reelsPage(){
  const followsMe=id=>typeof data!=='undefined'&&data.follows?.some(f=>f.follower_id===id&&f.followee_id===selfId);
  const soundOn=(nativeReels||(typeof patiIsIOSStandaloneReels==='function'&&patiIsIOSStandaloneReels()))&&patiyizReelsSoundEnabled;
  const page=typeof patiReelsFeed!=='undefined'&&patiReelsFeed.owner===selfId?patiReelsFeed:null;
+ const focusReelId=typeof patiFeedReelTarget==='string'?patiFeedReelTarget:'';
  const source=page?.ready?[...page.rows,...data.posts]:data.posts;
  const items=[...new Map(source.map(p=>[p.id,p])).values()]
   .filter(x=>x.video_url&&!blocked.has(x.author_id))
@@ -2007,7 +2019,7 @@ function reelsPage(){
  main.innerHTML='<section class="pati-reels-head"><h1>Reels</h1></section><div class="pati-reels-viewport">'+(items.length?items.map((p,index)=>{
   const cached=typeof patiPostRenderStats!=='undefined'&&patiPostRenderStats;
   const author=profile(p.author_id),count=cached?(cached.get(p.id)?.likes||0):data.likes.filter(x=>x.post_id===p.id).length,commentCount=cached?(cached.get(p.id)?.comments||0):data.comments.filter(x=>x.post_id===p.id).length,likedPost=liked.has(p.id),savedPost=saved.has(p.id);
-  return '<article class="pati-reel-item" data-post="'+esc(p.id)+'"><video class="pati-reel-video'+(p.selfie_mirrored?' pati-selfie-mirrored':'')+'" '+(index===0?'src="':'data-pati-video-src="')+esc(p.video_url)+'"'+(p.video_cover_url?' poster="'+esc(p.video_cover_url)+'"':'')+' playsinline webkit-playsinline'+(nativeReels?'':' muted')+' loop preload="'+(index===0?'auto':index===1?'metadata':'none')+'" aria-label="'+esc(author.display_name)+' videosu"></video>'+
+  return '<article class="pati-reel-item" data-post="'+esc(p.id)+'"><video class="pati-reel-video'+(p.selfie_mirrored?' pati-selfie-mirrored':'')+'" '+((focusReelId?p.id===focusReelId:index===0)?'src="':'data-pati-video-src="')+esc(p.video_url)+'"'+(p.video_cover_url?' poster="'+esc(p.video_cover_url)+'"':'')+' playsinline webkit-playsinline'+(nativeReels?'':' muted')+' loop preload="'+((focusReelId?p.id===focusReelId:index===0)?'auto':'none')+'" aria-label="'+esc(author.display_name)+' videosu"></video>'+
   '<button type="button" class="pati-reel-tap" data-action="reel-play" aria-label="Videoyu oynat veya durdur, çift dokunarak beğen"><span class="pati-reel-heart-burst" aria-hidden="true">'+ico('heart')+'</span></button>'+
   '<div class="pati-reel-author"><button type="button" class="pati-reel-avatar-link" data-action="view-user" data-id="'+esc(author.id)+'" aria-label="'+esc(author.display_name)+' profiline git">'+avatar(author,'s')+'</button><span><strong>'+displayName(author)+'</strong><small>@'+esc(author.handle||'patiyiz')+'</small></span>'+(p.author_id!==selfId?'<button type="button" class="pati-reel-follow" data-action="follow" data-id="'+esc(author.id)+'" aria-pressed="'+isFollowing(author.id)+'"'+(!isFollowing(author.id)&&followsMe(author.id)?' data-follow-back="true"':'')+'>'+(isFollowing(author.id)?'Takiptesin':followsMe(author.id)?'Sen de takip et':'Takip et')+'</button>':'')+'</div>'+
   '<div class="pati-reel-caption">'+esc(cut(p.video_subtitle||p.body||'',220))+(p.source_post_id?'<button type="button" class="pati-reel-source-credit" data-action="profile-open-post" data-id="'+esc(p.source_post_id)+'">↪ Orijinal gönderiyi gör</button>':'')+'</div>'+
@@ -2022,6 +2034,17 @@ function reelsPage(){
  }).join(''):'<div class="pati-reels-empty">'+(page?.loading?'Reels videoları yükleniyor…':'Henüz Reels yok. İlk videoyu sen paylaş!')+'</div>')+
  (page?.loading?'<div class="pati-reels-load-more" role="status">Videolar yükleniyor…</div>':
  page?.hasMore||page?.error?'<div class="pati-reels-load-more">'+(page?.error?'<p role="alert">'+esc(page.error)+'</p>':'')+'<button type="button" data-action="reels-more">'+(page?.error?'Tekrar dene':'Daha fazla Reels yükle')+'</button>'+'</div>':'')+'</div>';
+ if(focusReelId){
+  const area=main.querySelector('.pati-reels-viewport');
+  const nodes=[...(area?.querySelectorAll('.pati-reel-item[data-post]')||[])];
+  const focused=nodes.find(el=>el.dataset.post===focusReelId);
+  if(focused){
+   // The video is already focused when setupReelsViewer runs.
+   if(area?.clientHeight&&nodes.length>1)area.scrollTop=nodes.indexOf(focused)*area.clientHeight;
+   else if(typeof focused.scrollIntoView==='function')focused.scrollIntoView({block:'start',behavior:'instant'});
+   patiFeedReelTarget='';
+  }
+ }
 }
 
 function closePatiCreate(){const el=$('#pati-create-sheet');if(el)el.hidden=true;document.body.classList.remove('pati-create-open')}
@@ -2313,17 +2336,7 @@ function patiOpenFeedReel(postId){
  if(!postId||!me?.id)return;
  patiFeedReelTarget=postId;
  navigate('reels');
- // The reels view uses its existing full-height vertical viewport.
- const focus=()=>{
-  if(view!=='reels'||!patiFeedReelTarget)return;
-  const viewport=document.querySelector('.pati-reels-viewport');
-  const node=[...(viewport?.querySelectorAll('.pati-reel-item[data-post]')||[])].find(el=>el.dataset.post===patiFeedReelTarget);
-  if(!node)return;
-  node.scrollIntoView({block:'start',behavior:'instant'});
-  patiFeedReelTarget='';
-  setupReelsViewer();
- };
- requestAnimationFrame(()=>requestAnimationFrame(focus));
+ // Render focuses the target first, so the viewer is initialized just once.
 }
 function homePage(){
  // The existing central feed stays unified; duplicated feed selector is removed.
