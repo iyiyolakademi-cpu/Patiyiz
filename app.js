@@ -839,7 +839,7 @@ const fetchSpec=async([table,key,limit])=>{const chunks=[];const size=250,cap=Ma
   const last=val[val.length-1];patiHomeFeedCursor=last?{created_at:last.created_at,id:last.id}:null;
   patiHomeLoadError='';
  }
- if(k==='likes'&&likesEpoch!==(typeof likesChangeEpoch==='number'?likesChangeEpoch:0))continue;if(k==='saves'&&savesEpoch!==(typeof savesChangeEpoch==='number'?savesChangeEpoch:0))continue;data[k]=(['posts','stories'].includes(k)&&window.PatiyizPrivateMedia)?await window.PatiyizPrivateMedia.hydrateRows(val,userId,sb):val;if(ok)patiyizLoadedTables.add(({profiles:'profiles',pets:'pets',posts:'posts',likes:'post_likes',saves:'post_saves',comments:'comments',commentLikes:'comment_likes',follows:'follows',questions:'questions',replies:'replies',votes:'question_votes',lost:'lost_reports',adoption:'adoption_listings',stories:'patiyiz_stories',storyResponses:'patiyiz_story_responses',reposts:'patiyiz_reposts',pins:'patiyiz_post_pins',dmReactions:'patiyiz_dm_reactions',highlightAlbums:'patiyiz_highlight_albums',highlightItems:'patiyiz_highlight_items',care:'care_tasks',messages:'messages',messageHidden:'message_hidden',notifications:'notifications',bookmarks:'kb_bookmarks',blocks:'user_blocks'})[k])}if(typeof patiHydrateCloseStories==='function')await patiHydrateCloseStories();liked=new Set(data.likes.filter(x=>x.user_id===me.id).map(x=>x.post_id));saved=new Set(data.saves.filter(x=>x.user_id===me.id).map(x=>x.post_id));followed=new Set(data.follows.filter(x=>x.follower_id===me.id).map(x=>x.followee_id));voted=new Set(data.votes.filter(x=>x.user_id===me.id).map(x=>x.question_id));favorites=new Set(data.bookmarks.filter(x=>x.user_id===me.id).map(x=>x.article_id));blocked=new Set(data.blocks.filter(x=>x.blocker_id===me.id).map(x=>x.blocked_id))}
+ if(k==='likes'&&likesEpoch!==(typeof likesChangeEpoch==='number'?likesChangeEpoch:0))continue;if(k==='saves'&&savesEpoch!==(typeof savesChangeEpoch==='number'?savesChangeEpoch:0))continue;data[k]=(['posts','stories'].includes(k)&&globalThis.PatiyizPrivateMedia)?await globalThis.PatiyizPrivateMedia.hydrateRows(val,userId,sb):val;if(ok)patiyizLoadedTables.add(({profiles:'profiles',pets:'pets',posts:'posts',likes:'post_likes',saves:'post_saves',comments:'comments',commentLikes:'comment_likes',follows:'follows',questions:'questions',replies:'replies',votes:'question_votes',lost:'lost_reports',adoption:'adoption_listings',stories:'patiyiz_stories',storyResponses:'patiyiz_story_responses',reposts:'patiyiz_reposts',pins:'patiyiz_post_pins',dmReactions:'patiyiz_dm_reactions',highlightAlbums:'patiyiz_highlight_albums',highlightItems:'patiyiz_highlight_items',care:'care_tasks',messages:'messages',messageHidden:'message_hidden',notifications:'notifications',bookmarks:'kb_bookmarks',blocks:'user_blocks'})[k])}if(typeof patiHydrateCloseStories==='function')await patiHydrateCloseStories();liked=new Set(data.likes.filter(x=>x.user_id===me.id).map(x=>x.post_id));saved=new Set(data.saves.filter(x=>x.user_id===me.id).map(x=>x.post_id));followed=new Set(data.follows.filter(x=>x.follower_id===me.id).map(x=>x.followee_id));voted=new Set(data.votes.filter(x=>x.user_id===me.id).map(x=>x.question_id));favorites=new Set(data.bookmarks.filter(x=>x.user_id===me.id).map(x=>x.article_id));blocked=new Set(data.blocks.filter(x=>x.blocker_id===me.id).map(x=>x.blocked_id))}
 async function refreshKeys(specs){
  const userId=me?.id,loadToken=patiyizLoadToken;if(!userId)return;
  const results=await Promise.all(specs.map(async([table,key])=>{const r=await sb.from(table).select('*').order('created_at',{ascending:false}).limit(key==='messages'?400:key==='notifications'?150:200);if(r.error)throw r.error;return[key,r.data||[]]}));
@@ -863,7 +863,7 @@ async function loadMore(key){pageLimits[key]=(pageLimits[key]||40)+50;
    if(result.error)throw result.error;
    if(me?.id!==uid||patiyizLoadToken!==token)return;
    const rows=result.data||[],known=new Set(data.posts.map(p=>p.id));
-   const shown=window.PatiyizPrivateMedia?await window.PatiyizPrivateMedia.hydrateRows(rows,uid,sb):rows;
+   const shown=globalThis.PatiyizPrivateMedia?await globalThis.PatiyizPrivateMedia.hydrateRows(rows,uid,sb):rows;
    for(const row of shown)if(!known.has(row.id)){data.posts.push(row);known.add(row.id)}
    if(!patiHomeFeedIds)patiHomeFeedIds=new Set();
    for(const row of rows)patiHomeFeedIds.add(row.id);
@@ -928,7 +928,7 @@ async function patiEnsureRepostSources(ownerId){
   if(result.error)throw result.error;
   if(me?.id!==viewer||patiyizLoadToken!==token)return;
   const seen=new Set(data.posts.map(p=>p.id));
-  const visible=window.PatiyizPrivateMedia?await window.PatiyizPrivateMedia.hydrateRows(result.data||[],viewer,sb):result.data||[];
+  const visible=globalThis.PatiyizPrivateMedia?await globalThis.PatiyizPrivateMedia.hydrateRows(result.data||[],viewer,sb):result.data||[];
   for(const post of visible)if(!seen.has(post.id)){data.posts.push(post);seen.add(post.id)}
   if(view==='profile'&&(profileId||me.id)===ownerId&&profilePostsTab==='reposts')render();
  }catch(e){
@@ -1391,7 +1391,7 @@ async function patiOpenSharedStoryPost(postId){
   const result=await sb.from('posts').select('*').eq('id',postId).maybeSingle();
   if(result.error)throw result.error;
   post=result.data;
-  if(post){post=window.PatiyizPrivateMedia?(await window.PatiyizPrivateMedia.hydrateRows([post],me.id,sb))[0]:post;data.posts.push(post)}
+  if(post){post=globalThis.PatiyizPrivateMedia?(await globalThis.PatiyizPrivateMedia.hydrateRows([post],me.id,sb))[0]:post;data.posts.push(post)}
  }
  if(!post||blocked.has(post.author_id))throw Error('Bu gönderi artık mevcut değil.');
  closeStory(false);openPost(postId);
@@ -1844,7 +1844,7 @@ async function patiLoadMoreReels(reset=false){
    .range(state.offset,state.offset+PATI_REELS_PAGE-1);
   if(response.error)throw response.error;
   if(me?.id!==uid||patiyizLoadToken!==token||patiReelsFeed!==state)return;
-  const rows=window.PatiyizPrivateMedia?await window.PatiyizPrivateMedia.hydrateRows(response.data||[],uid,sb):response.data||[];
+  const rows=globalThis.PatiyizPrivateMedia?await globalThis.PatiyizPrivateMedia.hydrateRows(response.data||[],uid,sb):response.data||[];
   const seen=new Set(state.rows.map(p=>p.id));
   for(const p of rows)if(!seen.has(p.id)){state.rows.push(p);seen.add(p.id)}
   state.offset+=rows.length;state.hasMore=rows.length===PATI_REELS_PAGE;state.ready=true;
@@ -1987,7 +1987,7 @@ async function patiCollabHydrate(rows){
   if(r.error)throw r.error;
   if(me?.id!==uid)return;
   const known=new Set(data.posts.map(p=>p.id));
-  const visible=window.PatiyizPrivateMedia?await window.PatiyizPrivateMedia.hydrateRows(r.data||[],uid,sb):r.data||[];
+  const visible=globalThis.PatiyizPrivateMedia?await globalThis.PatiyizPrivateMedia.hydrateRows(r.data||[],uid,sb):r.data||[];
   for(const p of visible)if(!known.has(p.id)){data.posts.push(p);known.add(p.id)}
  }
 }
@@ -2094,7 +2094,7 @@ async function patiFollowingFetch(more=false){
   const r=await sb.rpc('patiyiz_following_feed',{p_limit:40,p_before:cursor?.created_at||null,p_before_id:cursor?.id||null});
   if(r.error)throw r.error;
   if(me?.id!==uid)return;
-  const rows=window.PatiyizPrivateMedia?await window.PatiyizPrivateMedia.hydrateRows(r.data||[],uid,sb):r.data||[];
+  const rows=globalThis.PatiyizPrivateMedia?await globalThis.PatiyizPrivateMedia.hydrateRows(r.data||[],uid,sb):r.data||[];
   const map=new Map((more?patiFollowingState.rows:[]).map(p=>[p.id,p]));
   rows.forEach(p=>map.set(p.id,p));
   patiFollowingState.rows=[...map.values()];
@@ -2142,7 +2142,7 @@ async function fetchMissingSavedPosts(){
   const r=await sb.from('posts').select('*').in('id',ids);
   if(r.error)throw r.error;
   if(me?.id!==uid)return;
-  ids.forEach(id=>savedMissingAttempted.add(id));const visible=window.PatiyizPrivateMedia?await window.PatiyizPrivateMedia.hydrateRows(r.data||[],uid,sb):r.data||[];
+  ids.forEach(id=>savedMissingAttempted.add(id));const visible=globalThis.PatiyizPrivateMedia?await globalThis.PatiyizPrivateMedia.hydrateRows(r.data||[],uid,sb):r.data||[];
   for(const post of visible)if(!data.posts.some(p=>p.id===post.id))data.posts.push(post);
   if(view==='saved-posts')render();
  }catch(e){console.warn('Kaydedilen gönderilerin yüklenmesi:',e)}
@@ -2202,7 +2202,7 @@ async function patiExploreLoadMedia(reset=false){
   }
   if(result.error)throw result.error;
   if(me?.id!==uid||token!==patiyizLoadToken||patiExploreMedia!==state)return;
-  const rows=window.PatiyizPrivateMedia?await window.PatiyizPrivateMedia.hydrateRows(result.data||[],uid,sb):result.data||[];
+  const rows=globalThis.PatiyizPrivateMedia?await globalThis.PatiyizPrivateMedia.hydrateRows(result.data||[],uid,sb):result.data||[];
   const existing=new Set(state.rows.map(p=>p.id));
   for(const p of rows)if(!existing.has(p.id)){state.rows.push(p);existing.add(p.id)}
   state.offset+=rows.length;state.hasMore=rows.length===PATI_EXPLORE_MEDIA_PAGE;state.ready=true;
@@ -4010,7 +4010,7 @@ async function patiDmHydrateSharedPosts(messages,peer){
  try{
   const result=await sb.from('posts').select('id,author_id,body,image_url,images,video_url,video_cover_url,media_videos,post_format,selfie_mirrored').in('id',ids);
   if(result.error)throw result.error;
-  const hydrated=window.PatiyizPrivateMedia?await window.PatiyizPrivateMedia.hydrateRows(result.data||[],owner,sb):result.data||[];
+  const hydrated=globalThis.PatiyizPrivateMedia?await globalThis.PatiyizPrivateMedia.hydrateRows(result.data||[],owner,sb):result.data||[];
   if(me?.id!==owner)return;
   for(const post of hydrated)if(!blocked.has(post.author_id))patiDmSharedPosts.set(post.id.toLowerCase(),post);
   if(view==='messages'&&personId===peer)render();
@@ -4025,7 +4025,7 @@ async function patiDmOpenSharedPost(id,commentId=''){
  const result=await sb.from('posts').select('*').eq('id',id).maybeSingle();
  if(result.error)throw result.error;
  if(!result.data||blocked.has(result.data.author_id)){notify('Bu paylaşım artık görüntülenemiyor.');return;}
- const post=window.PatiyizPrivateMedia?(await window.PatiyizPrivateMedia.hydrateRows([result.data],me.id,sb))[0]:result.data;
+ const post=globalThis.PatiyizPrivateMedia?(await globalThis.PatiyizPrivateMedia.hydrateRows([result.data],me.id,sb))[0]:result.data;
  data.posts=[...data.posts.filter(p=>p.id!==id),post];
  patiDmSharedPosts.set(id,post);
  patiDmSharedReturnPeer=personId;
@@ -4344,7 +4344,7 @@ async function patiOpenMentionNotification(n){
   if(response.error){console.warn('Etiketli içerik erişimi:',response.error.message);notify('Bu paylaşıma şu anda erişilemiyor.');return}
   if(!response.data||blocked.has(response.data.author_id)){notify('Bu paylaşım artık görüntülenemiyor.');return}
   if(me?.id!==owner)return;
-  const shown=window.PatiyizPrivateMedia?(await window.PatiyizPrivateMedia.hydrateRows([response.data],owner,sb))[0]:response.data;
+  const shown=globalThis.PatiyizPrivateMedia?(await globalThis.PatiyizPrivateMedia.hydrateRows([response.data],owner,sb))[0]:response.data;
   data.posts.push(shown);
  }
  openPost(id);
@@ -6114,7 +6114,7 @@ async function patiStorageUploadConfirmed(bucket,key,expectedBytes){
  }catch(_){return false}
 }
 async function uploadPrivatePublicationMedia(file,kind){
- if(!window.PatiyizPrivateMedia)throw Error('Güvenli medya yükleyici başlatılamadı. Sayfayı yenile.');
+ if(!globalThis.PatiyizPrivateMedia)throw Error('Güvenli medya yükleyici başlatılamadı. Sayfayı yenile.');
  if(!file?.size)return null;
  if(navigator.onLine===false)throw Error('Medya yüklemek için internet bağlantısı gerekli.');
  if(kind==='video'&&file.size>50*1024*1024){
@@ -6126,7 +6126,7 @@ async function uploadPrivatePublicationMedia(file,kind){
  const contentType=kind==='video'?(['video/mp4','video/webm','video/quicktime'].includes(file.type)?file.type:/\.mov$/i.test(file.name)?'video/quicktime':/\.webm$/i.test(file.name)?'video/webm':'video/mp4'):file.type;
  const prepared=file.type===contentType?file:new File([file],file.name||'patiyiz-private-media',{type:contentType});
  uploadStatus('Medya özel depoya yükleniyor…');
- return window.PatiyizPrivateMedia.upload(prepared,kind,me.id,sb,{projectUrl:cfg.supabaseUrl,onProgress:p=>uploadStatus('Güvenli yükleme… %'+p)});
+ return globalThis.PatiyizPrivateMedia.upload(prepared,kind,me.id,sb,{projectUrl:cfg.supabaseUrl,onProgress:p=>uploadStatus('Güvenli yükleme… %'+p)});
 }
 async function uploadVideo(file){
  if(!file||!file.size)return null;
@@ -6167,7 +6167,7 @@ async function uploadVideo(file){
 async function upload(file){if(!file||!file.size)return null;if(navigator.onLine===false)throw Error('İnternet bağlantısı yok. Fotoğrafı bağlantı geldiğinde yükle.');if(file.size>30*1024*1024)throw Error('Fotoğraf en fazla 30 MB olabilir.');uploadStatus('Fotoğraf hazırlanıyor…');const prepared=await preparePhoto(file);const ext=prepared.type==='image/png'?'png':prepared.type==='image/webp'?'webp':'jpg';const key=me.id+'/'+crypto.randomUUID()+'.'+ext;uploadStatus('Fotoğraf yükleniyor…');let up;for(let attempt=0;attempt<2;attempt++){try{up=(typeof window!=='undefined'&&window.PatiyizReliableUpload?.upload)?await window.PatiyizReliableUpload.upload({sb,projectUrl:cfg.supabaseUrl,bucket:'patiyiz-media',key,file:prepared,contentType:prepared.type,onProgress:p=>uploadStatus('Fotoğraf yükleniyor… %'+p)}):await sb.storage.from('patiyiz-media').upload(key,prepared,{contentType:prepared.type,cacheControl:'86400',upsert:false});if(!up.error)break;if(await patiStorageUploadConfirmed('patiyiz-media',key,prepared.size)){up={error:null};break}if(attempt===1||!patiUploadRetryable(up.error))throw up.error}catch(err){if(await patiStorageUploadConfirmed('patiyiz-media',key,prepared.size)){up={error:null};break}if(attempt===1||!patiUploadRetryable(err))throw err}uploadStatus('Bağlantı yeniden deneniyor…');await new Promise(r=>setTimeout(r,900))}if(up?.error)throw up.error;uploadStatus('Paylaşım hazırlanıyor…');return sb.storage.from('patiyiz-media').getPublicUrl(key).data.publicUrl}
 /* Publication transaction: protect against duplicate posts and clean up only unreferenced, owned media. */
 function publicationMediaReference(url,owner){
- const privatePath=window.PatiyizPrivateMedia?.getPath(url);
+ const privatePath=globalThis.PatiyizPrivateMedia?.getPath(url);
  if(privatePath&&privatePath.startsWith(owner+'/'))return {bucket:'patiyiz-private-posts',name:privatePath,url};
  try{
   const host=new URL(cfg.supabaseUrl),candidate=new URL(url);
@@ -6225,7 +6225,7 @@ async function publishMediaRecord(table,form,createRecord){
   const response=await sb.from(table).insert({...record,id,author_id:owner}).select('*').single();
   if(response.error)throw response.error;
   if(!response.data)throw Error('Paylaşım kaydı doğrulanamadı.');
-  recordMetric('success');const media=window.PatiyizPrivateMedia;
+  recordMetric('success');const media=globalThis.PatiyizPrivateMedia;
   return media?(await media.hydrateRows([response.data],owner,sb))[0]:response.data;
  }catch(error){
   const checked=await checkPublishedRecord(table,id,owner);
@@ -6977,7 +6977,7 @@ case 'edit-post':compose(data.posts.find(p=>p.id===id));break;case 'delete-post'
   if(result.error)throw result.error;
   if(!result.data?.length)throw Error('Görev silinemedi veya yetkin yok.');
   data.care=data.care.filter(x=>x.id!==id);if(view==='care'||(view==='my-pet'&&patiMyPetTab==='care'))render();
- },'Bakım görevi silindi.');break;}case 'logout':run(async()=>{window.PatiyizPrivateMedia?.clear();const r=await sb.auth.signOut();if(r.error)throw r.error;me=null;isAdmin=false;authMode='login';showAuth()},'Çıkış yapıldı');break;
+ },'Bakım görevi silindi.');break;}case 'logout':run(async()=>{globalThis.PatiyizPrivateMedia?.clear();const r=await sb.auth.signOut();if(r.error)throw r.error;me=null;isAdmin=false;authMode='login';showAuth()},'Çıkış yapıldı');break;
 case 'post-likers-more':void patiLoadPostLikers();break;case 'post-likers':patiOpenPostLikers(id);break;case 'like':void togglePostLike(id);break;case 'share-post':openPatiShareModal(id);break;case 'pati-copy-post':{const link=location.origin+location.pathname+'#post-'+id;if(navigator.clipboard?.writeText)navigator.clipboard.writeText(link).then(()=>notify('Paylaşım bağlantısı kopyalandı.'),()=>notify('Bağlantı kopyalanamadı.',true));else notify(link);break}case 'pati-share-system':{const link=location.origin+location.pathname+'#post-'+id;if(navigator.share)navigator.share({title:'Patiyiz paylaşımı',url:link}).catch(()=>{});else if(navigator.clipboard?.writeText)navigator.clipboard.writeText(link).then(()=>notify('Bağlantı kopyalandı.'));break}case 'dm-story-open':{if(!patiDmHasActiveStory(id))return notify('Bu kullanıcının aktif hikâyesi bulunmuyor.',true);openStory(id);break}case 'dm-open-shared-post':run(()=>patiDmOpenSharedPost(id,target.dataset.comment||''));break;case 'send-post-dm':{const post=data.posts.find(x=>x.id===target.dataset.post);if(!post||id===me.id)break;run(async()=>{const r=await sb.from('messages').insert({sender_id:me.id,receiver_id:id,body:'📨 Paylaşım: '+location.origin+location.pathname+'#post-'+post.id});if(r.error)throw r.error;closeModal();},'Paylaşım mesajla gönderildi.');break;}case 'save':void togglePostSave(id);break;case 'follow':run(()=>doToggle('follows',{follower_id:me.id,followee_id:id},followed.has(id)||patiFollowPageState.viewerFollowing.has(id)));break;
 case 'pati-follow-accept':run(()=>patiFollowDecision(id,true));break;
 case 'pati-follow-decline':run(()=>patiFollowDecision(id,false));break;
@@ -7000,7 +7000,7 @@ case 'pati-settings-notifications':navigate('notifications');break;case 'pati-pr
  const r=await sb.from('profiles').update({is_private:next}).eq('id',owner).select('*').single();
  if(r.error)throw r.error;
  data.profiles=data.profiles.map(p=>p.id===owner?r.data:p);
- window.PatiyizPrivateMedia?.clear();
+ globalThis.PatiyizPrivateMedia?.clear();
  await load('feed');
  patiSafetyState.loaded=false;render();
 },'Hesap gizliliği güncellendi.');break;
@@ -7572,11 +7572,11 @@ function resetSessionState(){
  dmStream?.getTracks().forEach(track=>track.stop());dmStream=null;dmRecipient=null;dmParts=[];dmMediaSending=false;
 }
 
-window.PatiyizPrivateMedia?.onRefresh(async()=>{
+globalThis.PatiyizPrivateMedia?.onRefresh(async()=>{
  if(!me?.id||!sb)return;
  const uid=me.id;
- data.posts=await window.PatiyizPrivateMedia.hydrateRows(data.posts,uid,sb);
- data.stories=await window.PatiyizPrivateMedia.hydrateRows(data.stories,uid,sb);
+ data.posts=await globalThis.PatiyizPrivateMedia.hydrateRows(data.posts,uid,sb);
+ data.stories=await globalThis.PatiyizPrivateMedia.hydrateRows(data.stories,uid,sb);
  if(me?.id===uid)render();
 });
 async function boot(){if(!ready){showSetup();return}
