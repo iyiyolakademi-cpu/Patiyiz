@@ -527,10 +527,13 @@ function patiRewardsPage(){
   const visible=completed?rows.length:(group==='once'?5:group==='daily'?3:2);
   return '<div class="paticoin-tasks">'+rows.slice(0,visible).join('')+(rows.length>visible?'<details class="pati-missions-more"><summary>Diğer '+(rows.length-visible)+' görevi göster</summary><div class="pati-missions-more-list">'+rows.slice(visible).join('')+'</div></details>':'')+'</div>';
  };
+ const earnedToday=patiCoinTasks.filter(t=>(t[4]||'once')==='daily'&&done.has(patiCoinMissionKey(t[0],'daily'))).length;
+ const earnedWeek=patiCoinTasks.filter(t=>(t[4]||'once')==='weekly'&&done.has(patiCoinMissionKey(t[0],'weekly'))).length;
+ const missionStatus='<div class="pati-mission-progress" aria-label="Görev ilerlemesi"><div><strong>Bugünkü görevlerin</strong><span>'+earnedToday+' / 5 tamamlandı</span><progress value="'+earnedToday+'" max="5"></progress></div><div><strong>Haftalık görevlerin</strong><span>'+earnedWeek+' / 4 tamamlandı</span><progress value="'+earnedWeek+'" max="4"></progress></div></div>';
  const milestones=window.PatiyizFollowerMilestones?.renderPanel(patiFollowerRewardState.followers,patiFollowerRewardState.claimed,patiFollowerRewardState.cash)||'';
  const invite='<section class="paticoin-invite"><h2>🎁 Arkadaşını davet et</h2><p>Sen ve davet ettiğin kişi <b>50’şer PatiCoin</b> kazanırsınız. Her hesap yalnızca bir davet kodu kullanabilir.</p><div class="paticoin-invite-code"><strong>'+esc(patiInviteState.code||'Kod hazırlanıyor…')+'</strong><button data-action="paticoin-invite-share">Paylaş</button></div><small>Davet ettiğin kişi: '+(patiInviteState.invited_count||0)+'</small>'+(patiInviteState.already_used?'<p>✓ Davet kodu kullanma hakkını tamamladın.</p>':'<label class="paticoin-invite-entry">Arkadaşının kodu<input id="pati-invite-code" maxlength="9" autocomplete="off" placeholder="P1234ABCD"></label><button class="paticoin-invite-redeem" data-action="paticoin-invite-redeem">Kodu kullan · +50 <img class="pati-coin-icon" src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true"></button>')+'</section>';
  main.innerHTML='<section class="paticoin-page"><div class="paticoin-hero"><span>🐾 PATİYİZ GÖREV MERKEZİ</span><h1>PatiCoin</h1><strong><img class="pati-coin-icon" src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true"> '+Number(patiCoinState.balance).toLocaleString('tr-TR')+' <small>PatiCoin</small></strong><p>Toplam kazanılan: '+Number(patiCoinState.earned).toLocaleString('tr-TR')+' coin</p><div class="paticoin-actions"><button data-action="paticoin-claim">Görevlerimi kontrol et</button><button data-action="paticoin-shop">Pati Mağaza →</button></div></div>'+
- patiWeeklyBoard()+(milestones?'<details class="pati-follower-more"><summary>🏅 Takipçi hedeflerim</summary>'+milestones+'</details>':'')+'<div class="paticoin-mission-heading"><div><h2>🎯 Tek Seferlik Görevler</h2><p>Her hesapta yalnız bir kez puan kazandırır.</p></div><span>'+patiCoinTasks.filter(x=>!x[4]).length+' görev</span></div>'+missionList('once')+
+ missionStatus+patiWeeklyBoard()+(milestones?'<details class="pati-follower-more"><summary>🏅 Takipçi hedeflerim</summary>'+milestones+'</details>':'')+'<div class="paticoin-mission-heading"><div><h2>🎯 Tek Seferlik Görevler</h2><p>Her hesapta yalnız bir kez puan kazandırır.</p></div><span>'+patiCoinTasks.filter(x=>!x[4]).length+' görev</span></div>'+missionList('once')+
  '<div class="paticoin-mission-heading"><div><h2>☀️ Günlük Görevler</h2><p>Her yeni gün yeniden yapılabilir. Aynı görevden günde bir kez puan kazanılır.</p></div><span>5 görev</span></div>'+missionList('daily')+
  '<div class="paticoin-mission-heading"><div><h2>🗓️ Haftalık Görevler</h2><p>Her pazartesi yeniden başlar. Aynı görevden haftada en fazla bir kez puan kazanılır.</p></div><span>4 görev</span></div>'+missionList('weekly')+
  invite+'<details class="paticoin-done-zone" aria-label="Tamamlanan görevler"><summary>✓ Tamamlanan görevler ve puan geçmişi</summary>'+
@@ -2771,14 +2774,14 @@ function patiWellnessPage(){
   :'<div class="pati-wellness-empty-card"><h2>Önce patili dostunu ekle 🐾</h2><p>Sağlık ve kilo takibi için hayvan profili gerekli.</p><button type="button" data-action="pet-add">＋ Hayvan ekle</button></div>')
   +'</section>';
 }
-function patiWellnessReminderDialog(existing){
+function patiWellnessReminderDialog(existing,presetKind='vaccine'){
  if(!patiWellnessOwnedPets().length)return notify('Önce hayvan profili ekle.',true);
  if(existing&&(!patiWellness.reminders.some(x=>x.id===existing.id)||existing.completed_at||!patiWellnessOwnedPets().some(p=>p.id===existing.pet_id)))return notify('Bu hatırlatma düzenlenemez.',true);
  const future=new Date(Date.now()+86400000);
  const dateLocal=existing?patiWellnessDateLocal(existing.due_at):patiWellnessDateLocal(future);
  const one=(key,value)=>String(key)===String(value)?' selected':'';
  modal(existing?'Hatırlatmayı düzenle':'Yeni sağlık hatırlatması',patiPetSelector()+
- '<label class="pati-wellness-field">Hatırlatma türü<select name="kind">'+Object.entries(patiReminderNames).map(([k,v])=>'<option value="'+esc(k)+'"'+one(k,existing?.kind||'vaccine')+'>'+esc(v)+'</option>').join('')+'</select></label>'+
+ '<label class="pati-wellness-field">Hatırlatma türü<select name="kind">'+Object.entries(patiReminderNames).map(([k,v])=>'<option value="'+esc(k)+'"'+one(k,existing?.kind||presetKind)+'>'+esc(v)+'</option>').join('')+'</select></label>'+
  '<label class="pati-wellness-field">Başlık<input name="title" required minlength="2" maxlength="110" value="'+esc(existing?.title||'')+'" placeholder="Örn. Karma aşı, veteriner, akşam maması"></label>'+
  '<label class="pati-wellness-field">Tarih ve saat<input type="datetime-local" name="due_at" required value="'+esc(dateLocal)+'"></label>'+
  '<label class="pati-wellness-field">Ne kadar önce hatırlat?<select name="remind_minutes_before">'+[[0,'Zamanında'],[30,'30 dakika önce'],[60,'1 saat önce'],[1440,'1 gün önce'],[2880,'2 gün önce']].map(([v,name])=>'<option value="'+v+'"'+one(v,existing?.remind_minutes_before??60)+'>'+name+'</option>').join('')+'</select></label>'+
@@ -3170,13 +3173,15 @@ async function routePendingLost(){
  if(card){card.classList.add('is-linked');card.scrollIntoView({block:'center',behavior:'smooth'})}
  else notify('İlan bulunamadı veya artık görüntülenemiyor.',true);
 }
-let patiLostAlert={loaded:false,loading:false,enabled:false,city:''};
+let patiLostAlert={owner:'',loaded:false,loading:false,enabled:false,city:''};
 async function patiLostAlertLoad(){
- if(!me?.id||!sb||patiLostAlert.loading||patiLostAlert.loaded)return;
+ if(!me?.id||!sb)return;
+ if(patiLostAlert.owner!==me.id)patiLostAlert={owner:me.id,loaded:false,loading:false,enabled:false,city:''};
+ if(patiLostAlert.loading||patiLostAlert.loaded)return;
  const owner=me.id;patiLostAlert.loading=true;
  try{const r=await sb.from('patiyiz_lost_city_alerts').select('city,enabled').eq('user_id',owner).maybeSingle();
   if(r.error)throw r.error;if(me?.id!==owner)return;
-  patiLostAlert={loaded:true,loading:false,city:r.data?.city||'',enabled:!!r.data?.enabled};
+  patiLostAlert={owner,loaded:true,loading:false,city:r.data?.city||'',enabled:!!r.data?.enabled};
  }catch(e){console.warn('Şehir bildirimi okunamadı:',e?.message||e)}
  finally{patiLostAlert.loading=false;if(view==='lost')patiLostAlertRefresh()}
 }
@@ -3193,13 +3198,13 @@ async function patiLostAlertToggle(){
  patiLostAlert.loading=true;patiLostAlertRefresh();
  try{const r=await sb.from('patiyiz_lost_city_alerts').upsert({user_id:owner,city,enabled:!enabled,updated_at:new Date().toISOString()},{onConflict:'user_id'});
   if(r.error)throw r.error;if(me?.id!==owner)return;
-  patiLostAlert={loaded:true,loading:false,city,enabled:!enabled};
+  patiLostAlert={owner,loaded:true,loading:false,city,enabled:!enabled};
   notify(enabled?'Kayıp hayvan bildirimleri kapatıldı.':'Yeni kayıp ilanlarını uygulama içinde göreceksin. Telefon bildirimi için ayrıca izin vermelisin.');
  }catch(e){notify(friendly(e),true)}finally{patiLostAlert.loading=false;patiLostAlertRefresh()}
 }
 let lostPhotoObjectUrl='';
 function lostPage(){
- if(!patiLostAlert.loaded&&!patiLostAlert.loading)void patiLostAlertLoad();
+ if(patiLostAlert.owner!==me?.id||!patiLostAlert.loaded&&!patiLostAlert.loading)void patiLostAlertLoad();
  const detail=data.lost.find(x=>x.id===(typeof patiLostDetailId==='string'?patiLostDetailId:'')&&!blocked.has(x.owner_id));
  if(detail){patiListingDetail('lost',detail);return}
  const safe=data.lost.filter(x=>!blocked.has(x.owner_id));
@@ -3422,6 +3427,9 @@ function carePage(){
  main.innerHTML='<section class="care-v2 pati-care-simple pati-ref-care"><div class="pati-ref-subhead"><div><small>GÜNLÜK RUTİN</small><h1>Bakım Takvimi</h1><p>Küçük adımlar, mutlu patiler.</p></div><button type="button" class="pati-ref-add-round" data-action="care-add" aria-label="Görev ekle">+</button></div>'+
   '<div class="pati-ref-care-hero"><div class="pati-ref-care-hero-copy"><small>🐾 '+esc(active?.name||'Patili dostum')+'</small><h2>'+(next?'Yaklaşan bakım görevin var!':'Bugün patiler keyifli!')+'</h2><p>'+(next?esc(next.title)+' · '+esc(day(next.due_date)):'Yeni bir görev planlayabilirsin.')+'</p><button type="button" data-action="care-add">+ Bakım ekle</button></div><img src="'+esc(image)+'" alt="'+esc(active?.name||'Hayvan')+'" loading="lazy"></div>'+
   patiCareCalendarMarkup(all,healthReminders)+
+  '<div class="pati-care-quick" role="group" aria-label="Sağlık ve bakım ekle">'+
+  [['vaccine','💉','Aşı'],['vet','🩺','Veteriner'],['medicine','💊','İlaç'],['food','🥣','Beslenme']].map(([id,icon,label])=>
+  '<button type="button" data-action="pati-care-quick" data-id="'+id+'"><span>'+icon+'</span><strong>'+label+'</strong><small>Hatırlatma ekle</small></button>').join('')+'</div>'+
   '<div class="pati-ref-care-summary"><strong>Bakım durumun</strong><small>Bir bölümü seçerek görevlerini görüntüle.</small></div><div class="pati-simple-filters" role="group" aria-label="Görev durumu">'+filter('today','Bugün',counts.today)+filter('upcoming','Yaklaşan',counts.upcoming)+filter('done','Tamamlanan',counts.done)+'</div>'+
   '<div class="pati-simple-list-head"><h2>Bakım Listesi</h2><button type="button" data-action="care-filter" data-id="all" aria-pressed="'+(careFilter==='all')+'">Tüm görevler →</button></div>'+
   (careLoadError?'<p class="care-v2-error" role="alert">'+esc(careLoadError)+'</p>':'')+
@@ -6767,7 +6775,7 @@ case 'care-pet-filter':carePetFilter=id;carePage();break;
 case 'care-category':careCategoryFilter=id;carePage();break;
 case 'care-clear':careSearch='';carePage();document.getElementById('care-search')?.focus();break;
 case 'care-reset':patiCareSelectedDate='';careFilter='all';carePetFilter='all';careCategoryFilter='Tümü';careSearch='';carePage();break;
-case 'care-refresh':void careRefresh();break;
+case 'care-refresh':void careRefresh();break;case 'pati-care-quick':{if(['vaccine','vet','medicine','food'].includes(id))patiWellnessReminderDialog(null,id);break;}
 case 'care-edit':{const item=data.care.find(x=>x.id===id&&x.owner_id===me.id);if(item)composeCare(item);break;}case 'lost-add':composeLost();break;case 'adoption-add':composeAdoption();break;case 'adoption-edit':{const a=data.adoption.find(x=>x.id===id&&x.owner_id===me.id);if(a)composeAdoption(a);break}case 'adoption-toggle':{const a=data.adoption.find(x=>x.id===id&&x.owner_id===me.id);if(!a)break;const adopted=!a.adopted;
  if(!confirm(adopted?'Bu hayvan sahiplendirildi mi? İlan tamamlandı olarak görünecek.':'İlanı tekrar yuva arıyor durumuna almak istiyor musun?'))break;
  run(async()=>{const r=await sb.from('adoption_listings').update({adopted}).eq('id',id).eq('owner_id',me.id).select('*');
