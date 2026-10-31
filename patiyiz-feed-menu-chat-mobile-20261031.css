@@ -91,3 +91,13 @@
  #main-content .pati-dm-layout.mobile-chat-list .chat-window{display:none!important}
 }
 @media(prefers-reduced-motion:reduce){#main-content .pati-feed-reel-open{transition:none!important}}
+
+/* Reel rail: keep like, share and saved icon visibly grouped and thumb-friendly. */
+#main-content .pati-reel-rail{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-end!important;gap:5px!important}
+#main-content .pati-reel-rail .pati-reel-action{margin:0!important;padding:6px 5px!important;min-width:43px!important;min-height:47px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:1px!important}
+#main-content .pati-reel-rail .pati-reel-action svg{width:23px!important;height:23px!important}
+#main-content .pati-reel-rail .pati-reel-action-label,#main-content .pati-reel-rail .pati-reel-count{font-size:10px!important;line-height:1.25!important}
+@media(max-width:740px){
+ #main-content .pati-reel-rail{right:max(5px,env(safe-area-inset-right))!important}
+ #main-content .pati-reel-rail .pati-reel-action{min-height:44px!important}
+}
