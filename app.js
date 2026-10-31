@@ -5789,7 +5789,9 @@ function showComments(postId){
  if(parent){form.dataset.parent=parent;const who=profile(data.comments.find(c=>c.id===parent)?.author_id);const hint=form.querySelector('#comment-reply-hint');if(hint)hint.innerHTML='↳ '+displayName(who)+' kullanıcısına yanıt <button type="button" data-action="comment-reply-cancel">× Vazgeç</button>'}
  const list=form.querySelector('.comment-list');if(list)list.scrollTop=scroll;
 }
-const PATI_MOBILE_FULL_PAGE_FORMS=new Set(['profile-form','pet-form','lost-form','adoption-form','care-form','post-form','story-form','dm-new-form','pati-group-create-form']);
+const PATI_MOBILE_FULL_PAGE_FORMS=new Set(['profile-form','pet-form','lost-form','adoption-form','care-form','post-form','story-form']);
+PATI_MOBILE_FULL_PAGE_FORMS.add('dm-new-form');
+PATI_MOBILE_FULL_PAGE_FORMS.add('pati-group-create-form');
 function modal(title,form,id='entry-form'){if(id!=='pati-group-message-form'&&typeof patiGroupLiveStop==='function')patiGroupLiveStop();let root=$('#modal-root');root.innerHTML=`<div class="modal-backdrop" data-action="close"><section class="modal" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="modal-header"><h2>${esc(title)}</h2><button type="button" class="close-modal" data-action="close" aria-label="Pencereyi kapat">×</button></div><form id="${id}"><div class="modal-content">${form}</div><div class="pati-upload-status" role="status" aria-live="polite" hidden><i class="pati-upload-spinner"></i><span>Yükleniyor…</span></div><div class="modal-footer"><button class="outline-btn" type="button" data-action="close">İptal</button><button class="primary-btn" type="submit">Kaydet</button></div></form></section></div>`;
  if(PATI_MOBILE_FULL_PAGE_FORMS.has(id)){
   root.querySelector('.modal-backdrop')?.classList.add('pati-full-page-form-backdrop');
