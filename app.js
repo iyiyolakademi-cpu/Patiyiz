@@ -2850,7 +2850,14 @@ async function patiWellnessSaveReminder(form,str){
  const editId=form.dataset.edit||'';
  if(editId&&!patiWellness.reminders.some(x=>x.id===editId&&!x.completed_at&&patiWellnessOwnedPets().some(p=>p.id===x.pet_id)))throw Error('Bu hatırlatmayı düzenleme yetkin yok.');
  const rec=patiWellnessValidateReminder({pet_id:str('pet_id'),kind:str('kind'),title:str('title'),note:str('note'),due_at:d.toISOString(),remind_minutes_before:Number(str('remind_minutes_before')),repeat_days:str('repeat_days')?Number(str('repeat_days')):null});
- if(!editId)rec.owner_id=me.id;
+ if(!editId){
+  const date=patiCareDate(rec.due_at);
+  const category={vaccine:'Aşı',vet:'Veteriner',medicine:'İlaç',food:'Mama'}[rec.kind]||'Bakım';
+  const key=[rec.pet_id,date,careFold(category),careFold(rec.title)].join('|');
+  const existing=patiWellness.reminders.some(x=>x.pet_id===rec.pet_id&&x.id!==editId&&[x.pet_id,patiCareDate(x.due_at),careFold({vaccine:'Aşı',vet:'Veteriner',medicine:'İlaç',food:'Mama'}[x.kind]||'Bakım'),careFold(x.title)].join('|')===key);
+  if(existing||careOwnItems().some(x=>patiCareTaskKey(x)===key))throw Error('Bu tarihte aynı bakım hatırlatması zaten bulunuyor.');
+  rec.owner_id=me.id;
+ }
  const r=editId?await sb.from('patiyiz_pet_reminders').update(rec).eq('id',editId).eq('owner_id',me.id).is('completed_at',null).select('*'):
   await sb.from('patiyiz_pet_reminders').insert(rec).select('*');
  if(r.error)throw r.error;
@@ -3159,11 +3166,11 @@ function lostCards(list){
   const own=x.owner_id===me?.id,found=!!x.found;
   return '<article class="lost-v2-card'+(found?' is-found':'')+'" data-lost-id="'+esc(x.id)+'">'
   +'<div class="lost-v2-cover">'+(x.photo_url?'<img src="'+esc(x.photo_url)+'" alt="'+esc(x.name)+' ilan fotoğrafı" loading="lazy" decoding="async">':'<span class="lost-v2-placeholder">'+petIcon(x.species)+'</span>')
-  +'<span class="lost-v2-badge '+(found?'is-found':'')+'">'+(found?'✓ Bulundu':'● Kayıp')+'</span></div>'
+  +'<span class="lost-v2-badge '+(found?'is-found':'')+'">'+(found?'✓ Bulundu · İlan kapalı':'● Aranıyor')+'</span></div>'
   +'<div class="lost-v2-card-info"><div class="lost-v2-meta"><span>'+esc(x.species)+'</span><time>'+esc(day(x.last_seen))+'</time></div>'
   +'<h3>'+esc(x.name)+'</h3><p class="lost-v2-city">📍 '+esc(x.city)+(x.district?' / '+esc(x.district):'')+'</p>'
   +'<p class="lost-v2-description">'+esc(x.description)+'</p><button type="button" class="pati-ref-listing-view" data-action="pati-lost-open" data-id="'+esc(x.id)+'">Detayları gör →</button><div class="lost-v2-actions">'
-  +(own?'<button type="button" data-action="lost-edit" data-id="'+esc(x.id)+'">Düzenle</button><button type="button" data-action="toggle-found" data-id="'+esc(x.id)+'">'+(found?'Yeniden kayıp':'✓ Bulundu')+'</button><button type="button" data-action="delete-lost" data-id="'+esc(x.id)+'" class="lost-v2-danger">Sil</button>'
+  +(own?'<button type="button" data-action="lost-edit" data-id="'+esc(x.id)+'">Düzenle</button><button type="button" class="pati-lost-close-btn" data-action="toggle-found" data-id="'+esc(x.id)+'">'+(found?'↶ İlanı yeniden aç':'✓ Bulundu · İlanı kapat')+'</button><button type="button" data-action="delete-lost" data-id="'+esc(x.id)+'" class="lost-v2-danger">Sil</button>'
   :(!found?'<button type="button" data-action="chat" data-id="'+esc(x.owner_id)+'" class="lost-v2-primary">Sahibine mesaj</button>':'')+'<button type="button" data-action="report" data-id="'+esc(x.id)+'" data-kind="lost">Bildir</button>')
   +'<button type="button" data-action="lost-share" data-id="'+esc(x.id)+'">Paylaş</button></div></div></article>';
  }).join('');
@@ -3213,7 +3220,7 @@ async function patiLostAlertLoad(){
 }
 function patiLostAlertMarkup(){
  const city=String((typeof current==='function'?current()?.city:'')||'').trim(),active=patiLostAlert.enabled&&patiLostAlert.city.toLocaleLowerCase('tr-TR')===city.toLocaleLowerCase('tr-TR');
- return '<section class="pati-city-alert"><div><strong>🔔 Şehrimdeki kayıp hayvanlar</strong><p>'+(city?esc(city)+' için yeni ilanlar. Konum izni ve açık adres kullanılmaz.':'Bildirimleri açmak için profilinde şehir belirt.')+'</p></div><button type="button" data-action="lost-city-alert-toggle" '+(!city||patiLostAlert.loading?'disabled':'')+' aria-pressed="'+active+'">'+(patiLostAlert.loading?'Yükleniyor…':active?'Bildirimleri kapat':'Bildirimleri aç')+'</button></section>';
+ return '<section class="pati-city-alert"><div><strong>🔔 Şehrimdeki kayıp hayvanlar</strong><p>'+(city?esc(city)+' için yeni ilan bildirimi · '+(active?'✓ Açık (isteğe bağlı)':'Kapalı (isteğe bağlı)')+'. Açık adres ve konum izni kullanılmaz.':'Bildirimleri açmak için profilinde şehir belirt.')+'</p><small>Telefon bildirimi ayrıca cihaz iznine bağlıdır.</small></div><button type="button" data-action="lost-city-alert-toggle" '+(!city||patiLostAlert.loading?'disabled':'')+' aria-pressed="'+active+'">'+(patiLostAlert.loading?'Yükleniyor…':active?'Bildirimleri kapat':'Bildirimleri aç')+'</button></section>';
 }
 function patiLostAlertRefresh(){const target=document.getElementById('pati-lost-alert-subscribe');if(target)target.innerHTML=patiLostAlertMarkup()}
 async function patiLostAlertToggle(){
@@ -3355,7 +3362,20 @@ function patiCareCalendarMarkup(tasks,reminders){
  }).join('')+'</div><div class="pati-care-calendar-foot"><small>Günlere dokunarak görev ve hatırlatmaları filtrele.</small><button type="button" data-action="pati-care-clear-day">Tüm günler</button></div></section>';
 }
 function careFold(v){return String(v||'').toLocaleLowerCase('tr-TR').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i').trim()}
-function careOwnItems(){return data.care.filter(x=>x.owner_id===me?.id)}
+function patiCareTaskKey(x){
+ const category=String(x.category||'Bakım');
+ return [x.pet_id||'',patiCareDate(x.due_date),careFold(category),careFold(x.title)].join('|');
+}
+function careOwnItems(){
+ // Existing duplicate entries remain safely stored; show each task only once in the shared calendar.
+ const seen=new Set();
+ return data.care.filter(x=>{
+  if(x.owner_id!==me?.id)return false;
+  const key=patiCareTaskKey(x);
+  if(seen.has(key))return false;
+  seen.add(key);return true;
+ });
+}
 function careDueState(item,today=careToday()){
  if(item.done)return 'done';
  if(item.due_date<today)return 'late';
@@ -3388,12 +3408,16 @@ function careCard(x){
 function patiUnifiedCareReminders(ignoreFilters=false){
  if(typeof patiWellness==='undefined'||!patiWellness.loaded||!Array.isArray(patiWellness.reminders))return [];
  const own=new Set((data.pets||[]).filter(p=>p.owner_id===me?.id).map(p=>p.id));
- const careNames=new Set(careOwnItems().map(x=>[x.pet_id||'',String(x.due_date||''),careFold(x.title)].join('|')));
+ const careNames=new Set(careOwnItems().map(patiCareTaskKey));
+ const seenReminders=new Set();
  const today=careToday(),q=careFold(careSearch);
  return patiWellness.reminders.filter(x=>{
   if(!own.has(x.pet_id))return false;
   const date=patiCareDate(x.due_at);
-  if(careNames.has([x.pet_id,date,careFold(x.title)].join('|')))return false;
+  const category={vaccine:'Aşı',vet:'Veteriner',medicine:'İlaç',food:'Mama'}[x.kind]||'Bakım';
+   const key=[x.pet_id||'',date,careFold(category),careFold(x.title)].join('|');
+   if(careNames.has(key)||seenReminders.has(key))return false;
+   seenReminders.add(key);
   const state=x.completed_at?'done':date<today?'late':date===today?'today':'upcoming';
   const pet=data.pets.find(p=>p.id===x.pet_id);
   return ignoreFilters||((careFilter==='all'||careFilter===state)
@@ -6443,11 +6467,16 @@ function composeCare(a){
  form.querySelector('[name="title"]').maxLength=110;
  form.querySelector('.modal-footer button[type="submit"]').textContent=a?'Değişiklikleri kaydet':'Görev ekle';
 }
-function careValidateRecord(record){
+function careValidateRecord(record,editId=''){
  if(record.title.length<2||record.title.length>110)throw Error('Görev adı 2–110 karakter arasında olmalı.');
  if(!CARE_CATEGORIES.includes(record.category))throw Error('Geçerli bakım kategorisi seç.');
  if(!careDateValid(record.due_date))throw Error('Geçerli görev tarihi seç.');
  if(record.pet_id&&!data.pets.some(p=>p.id===record.pet_id&&p.owner_id===me?.id))throw Error('Bu hayvan profiline görev ekleme yetkin yok.');
+ const key=patiCareTaskKey(record);
+ if(data.care.some(x=>x.owner_id===me?.id&&x.id!==editId&&patiCareTaskKey(x)===key))throw Error('Bu bakım görevi aynı tarihte zaten mevcut.');
+ const kind={Aşı:'vaccine',Veteriner:'vet',İlaç:'medicine',Mama:'food',Bakım:'care'}[record.category];
+ if(record.pet_id&&Array.isArray(patiWellness?.reminders)&&patiWellness.reminders.some(x=>x.pet_id===record.pet_id&&patiCareDate(x.due_at)===record.due_date&&careFold(x.title)===careFold(record.title)&&({vaccine:'Aşı',vet:'Veteriner',medicine:'İlaç',food:'Mama'}[x.kind]||'Bakım')===record.category))
+  throw Error('Bu görev sağlık hatırlatmalarında zaten mevcut.');
  return record;
 }
 function editProfile(){
@@ -7395,7 +7424,7 @@ case 'adoption-form':{
 case 'wellness-reminder-form':await patiWellnessSaveReminder(form,str);break;case 'wellness-weight-form':await patiWellnessSaveWeight(form,str);break;case 'care-form':{
  const editId=form.dataset.edit||'';
  if(editId&&!data.care.some(x=>x.id===editId&&x.owner_id===me.id))throw Error('Bu görevi düzenleme yetkin yok.');
- const rec=careValidateRecord({title:str('title'),category:str('category'),due_date:str('due_date'),pet_id:str('pet_id')||null});
+ const rec=careValidateRecord({title:str('title'),category:str('category'),due_date:str('due_date'),pet_id:str('pet_id')||null},editId);
  if(!editId)rec.owner_id=me.id;
  const result=editId?await sb.from('care_tasks').update(rec).eq('id',editId).eq('owner_id',me.id).select('*'):
   await sb.from('care_tasks').insert(rec).select('*');
