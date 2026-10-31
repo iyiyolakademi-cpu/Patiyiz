@@ -1,0 +1,717 @@
+/* Patiyiz CSS bundle: original order. */
+/* patiyiz-story-media-mentions-20261030.css */
+/* Real story still frame, readable clickable share cards and focused mention destinations. */
+#story-viewers-sheet .pati-story-activity-cover{
+ position:relative;overflow:hidden;background:#1b1c20;
+}
+#story-viewers-sheet .pati-story-activity-cover .pati-story-activity-video-frame{
+ display:block;width:100%;height:100%;object-fit:cover;
+ min-height:180px;max-height:40dvh;
+}
+#story-viewers-sheet .pati-story-activity-cover.pati-story-preview-unavailable:after{
+ content:"Video önizlemesi yüklenemedi";
+ position:absolute;inset:auto 0 0;padding:10px 8px;text-align:center;
+ color:white;background:#17181acc;font-size:12px;
+}
+.pati-dm-shared-card .pati-dm-shared-author{
+ cursor:pointer;text-align:left;
+}
+.pati-dm-shared-card .pati-dm-shared-media-open{
+ display:block;position:relative;width:100%;padding:0;border:0;
+ background:#16171b;color:white;overflow:hidden;text-align:center;
+}
+.pati-dm-shared-card .pati-dm-shared-play{
+ display:grid;place-items:center;position:absolute;left:50%;top:50%;
+ transform:translate(-50%,-50%);width:48px;height:48px;
+ border-radius:50%;border:1px solid #ffffff80;
+ background:#1119;color:white;font-size:20px;pointer-events:none;
+}
+.pati-dm-shared-images .pati-dm-shared-image-open{
+ display:flex;flex:0 0 100%;min-width:100%;min-height:0;
+ padding:0;margin:0;border:0;background:transparent;
+ scroll-snap-align:center;cursor:pointer;
+}
+.pati-dm-shared-card .pati-dm-shared-image-open img{
+ display:block;width:100%;height:auto;max-height:min(53dvh,480px);
+ object-fit:contain;
+}
+.pati-dm-shared-card .pati-dm-shared-text-open,
+.pati-dm-shared-card .pati-dm-shared-caption-open{
+ display:block;width:100%;border:0;background:transparent;
+ text-align:left;cursor:pointer;
+}
+#comment-form .pati-comment-mention-highlight{
+ background:color-mix(in srgb,#e7bd34 22%,transparent);
+ border-radius:12px;outline:2px solid #edc84e;
+ outline-offset:3px;transition:background .3s ease;
+}
+@media(max-width:720px){
+ #story-viewers-sheet .pati-story-activity-cover .pati-story-activity-video-frame{
+  min-height:120px;max-height:38dvh;
+ }
+ .pati-dm-shared-card .pati-dm-shared-play{width:42px;height:42px}
+}
+@media(prefers-reduced-motion:reduce){
+ #comment-form .pati-comment-mention-highlight{transition:none}
+}
+
+
+/* patiyiz-mention-mobile-fix-20261030.css */
+/* Patiyiz iPhone comment @mention layout repair, 30 October 2026.
+   Search lives ABOVE (never inside) the four-column comment composer. */
+#modal-root #comment-form .modal-footer > .pati-mention-picker{
+ position:relative!important;
+ display:flex!important;
+ flex-direction:column!important;
+ flex:0 0 auto!important;
+ align-self:stretch!important;
+ box-sizing:border-box!important;
+ width:100%!important;
+ max-width:100%!important;
+ min-width:0!important;
+ max-height:min(38dvh,290px)!important;
+ overflow:hidden!important;
+ margin:3px 0 2px!important;
+ padding:12px!important;
+ gap:8px!important;
+ border:1px solid color-mix(in srgb,currentColor 20%,transparent)!important;
+ border-radius:17px!important;
+ color:inherit!important;
+ background:color-mix(in srgb,currentColor 7%,transparent)!important;
+ box-shadow:0 5px 18px #00000016;
+ z-index:3!important;
+}
+#comment-form .modal-footer > .pati-mention-picker .pati-mention-header{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ min-height:27px;min-width:0;gap:12px;
+}
+#comment-form .modal-footer > .pati-mention-picker .pati-mention-header strong{
+ font-size:14px!important;line-height:1.4!important;white-space:nowrap;
+}
+#comment-form .modal-footer > .pati-mention-picker .pati-mention-close{
+ display:grid!important;place-items:center!important;
+ flex:0 0 30px!important;width:30px!important;height:30px!important;
+ min-width:30px!important;min-height:30px!important;padding:0!important;
+ border:0!important;border-radius:50%!important;
+ background:color-mix(in srgb,currentColor 12%,transparent)!important;
+ color:inherit!important;font-size:24px!important;line-height:1!important;
+ cursor:pointer;
+}
+#comment-form .modal-footer > .pati-mention-picker .pati-mention-search-label{
+ display:block!important;margin:0!important;min-width:0!important;
+ font-size:12px!important;font-weight:700!important;line-height:1.3!important;
+}
+#comment-form .modal-footer > .pati-mention-picker input.pati-mention-search{
+ display:block!important;box-sizing:border-box!important;
+ flex:0 0 43px!important;
+ width:100%!important;min-width:0!important;max-width:100%!important;
+ min-height:43px!important;height:43px!important;
+ margin:0!important;padding:8px 12px!important;
+ border:1px solid color-mix(in srgb,currentColor 23%,transparent)!important;
+ border-radius:11px!important;
+ background:color-mix(in srgb,currentColor 5%,transparent)!important;
+ color:inherit!important;
+ font-size:16px!important;line-height:1.4!important;
+}
+#comment-form .modal-footer > .pati-mention-picker input.pati-mention-search::placeholder{
+ color:inherit!important;opacity:.56!important;
+}
+#comment-form .modal-footer > .pati-mention-picker .pati-mention-results{
+ display:flex!important;flex-direction:column!important;
+ flex:1 1 auto!important;
+ width:100%!important;max-width:100%!important;min-width:0!important;
+ min-height:0!important;max-height:170px!important;
+ overflow-x:hidden!important;overflow-y:auto!important;
+ overscroll-behavior:contain;
+ -webkit-overflow-scrolling:touch;
+ gap:2px!important;padding:0!important;margin:0!important;
+}
+#comment-form .modal-footer > .pati-mention-picker .pati-mention-person{
+ display:flex!important;align-items:center!important;gap:10px!important;
+ flex:0 0 auto!important;
+ box-sizing:border-box!important;
+ width:100%!important;min-width:0!important;max-width:100%!important;
+ min-height:50px!important;
+ border:0!important;border-radius:10px!important;
+ margin:0!important;padding:7px 9px!important;
+ color:inherit!important;background:transparent!important;
+ text-align:left!important;
+}
+#comment-form .modal-footer > .pati-mention-picker .pati-mention-person:active{
+ background:color-mix(in srgb,currentColor 11%,transparent)!important;
+}
+#comment-form .modal-footer > .pati-mention-picker .pati-mention-person .avatar{
+ display:flex!important;align-items:center;justify-content:center;
+ flex:0 0 37px!important;
+ width:37px!important;height:37px!important;min-width:37px!important;
+ max-width:37px!important;max-height:37px!important;
+ border-radius:50%!important;overflow:hidden!important;
+}
+#comment-form .modal-footer > .pati-mention-picker .pati-mention-person .avatar img{
+ width:100%!important;height:100%!important;object-fit:cover!important;
+}
+#comment-form .modal-footer > .pati-mention-picker .pati-mention-person-name{
+ display:flex!important;flex-direction:column!important;gap:2px!important;
+ flex:1 1 auto!important;
+ min-width:0!important;max-width:100%!important;overflow:hidden!important;
+ text-align:left!important;
+}
+#comment-form .modal-footer > .pati-mention-picker .pati-mention-person-name strong,
+#comment-form .modal-footer > .pati-mention-picker .pati-mention-person-name small{
+ display:block!important;width:100%!important;min-width:0!important;
+ overflow:hidden!important;white-space:nowrap!important;text-overflow:ellipsis!important;
+ font-size:13px!important;line-height:1.35!important;color:inherit!important;
+}
+#comment-form .modal-footer > .pati-mention-picker .pati-mention-person-name small{
+ font-size:11px!important;opacity:.7!important;
+}
+#comment-form .modal-footer > .pati-mention-picker .pati-mention-empty{
+ margin:0;padding:11px 6px;font-size:13px;opacity:.75;
+}
+#comment-form .modal-footer:has(> .pati-mention-picker) .pati-comment-quick{
+ display:none!important;
+}
+#comment-form .modal-footer > .pati-mention-picker .pati-mention-close:focus-visible,
+#comment-form .modal-footer > .pati-mention-picker .pati-mention-person:focus-visible{
+ outline:2px solid currentColor!important;outline-offset:-2px!important;
+}
+@media(max-width:740px){
+ #modal-root #comment-form .modal-footer > .pati-mention-picker{
+  max-height:min(33dvh,240px)!important;padding:10px!important;
+ }
+ #comment-form .pati-comment-editor-row{
+  box-sizing:border-box!important;max-width:100%!important;min-width:0!important;gap:7px!important;
+ }
+ #comment-form .pati-comment-editor-row textarea{
+  flex:1 1 auto!important;min-width:0!important;
+ }
+ html.pati-keyboard-open #modal-root .modal-backdrop.pati-instagram-comments-backdrop{
+  inset:0 0 var(--pati-keyboard-inset,0px) 0!important;
+ }
+ html.pati-keyboard-open #modal-root .modal.pati-instagram-comments{
+  height:min(75dvh,calc(100dvh - var(--pati-keyboard-inset,0px) - 12px))!important;
+  max-height:calc(100dvh - var(--pati-keyboard-inset,0px) - 12px)!important;
+ }
+ html.pati-keyboard-open #modal-root #comment-form .modal-footer > .pati-mention-picker{
+  max-height:min(30dvh,220px)!important;
+ }
+}
+@media(max-width:360px){
+ #comment-form .pati-comment-editor-row .pati-comment-me .avatar{
+  width:31px!important;height:31px!important;min-width:31px!important;
+ }
+ #comment-form .pati-comment-editor-row .pati-comment-send{
+  padding:8px!important;
+ }
+}
+
+
+/* patiyiz-blue-mentions-dm-20261030.css */
+/* Instagram-like, readable blue mention actions and tagged DM content. */
+#comment-form .pati-comment-editor-row .pati-comment-mention{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:3px!important;
+ flex:0 0 auto!important;min-height:40px!important;min-width:0!important;
+ padding:5px 3px!important;margin:0!important;
+ border:0!important;border-radius:8px!important;
+ background:transparent!important;color:#2388fa!important;
+ font-size:13px!important;font-weight:800!important;line-height:1.1!important;
+ white-space:nowrap!important;letter-spacing:0!important;
+ cursor:pointer!important;
+}
+#comment-form .pati-comment-editor-row .pati-comment-mention span{font-weight:900!important;font-size:15px!important;color:inherit!important}
+#post-form .pati-mention-open{
+ display:inline-flex!important;align-items:center!important;gap:5px!important;
+ width:auto!important;max-width:100%!important;min-height:40px!important;
+ padding:8px 11px!important;border:1px solid #2388fa66!important;border-radius:11px!important;
+ background:#2388fa12!important;color:#1683f6!important;
+ font-size:13px!important;font-weight:800!important;
+ white-space:nowrap!important;
+}
+#post-form .pati-mention-open span{color:inherit!important;font-weight:900!important}
+.pati-mention-link,
+#comment-form .pati-sheet-comment .pati-mention-link,
+#main-content .pati-mention-link,
+#modal-root .pati-mention-link{
+ display:inline!important;border:0!important;background:transparent!important;
+ padding:0 1px!important;margin:0!important;
+ color:#1683f6!important;font-weight:800!important;font-size:inherit!important;
+ text-decoration:none!important;line-height:inherit!important;
+ overflow-wrap:anywhere;cursor:pointer!important;
+}
+.pati-mention-link:focus-visible,
+#comment-form .pati-comment-editor-row .pati-comment-mention:focus-visible{
+ outline:2px solid #2388fa!important;outline-offset:2px!important;
+}
+.pati-dm-shared-card .pati-dm-mention-label{
+ display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:5px!important;
+ padding:9px 12px 12px!important;
+ background:color-mix(in srgb,#2388fa 7%,transparent)!important;
+ border-top:1px solid color-mix(in srgb,#2388fa 22%,transparent)!important;
+ color:#167ad9!important;font-size:12px!important;line-height:1.35!important;
+}
+.pati-dm-shared-card .pati-dm-mention-label strong{font-weight:800!important;min-width:0!important;overflow-wrap:anywhere}
+.pati-dm-shared-card .pati-dm-mention-label small{
+ display:block!important;flex-basis:100%!important;
+ font-size:11px!important;opacity:.8!important;color:inherit!important;
+ margin-left:24px!important;
+}
+html[data-pati-theme="dark"] .pati-mention-link,
+html[data-pati-theme="dark"] #comment-form .pati-comment-editor-row .pati-comment-mention,
+html[data-pati-theme="dark"] #post-form .pati-mention-open,
+html[data-pati-theme="dark"] .pati-dm-shared-card .pati-dm-mention-label{
+ color:#66b2ff!important;
+}
+@media(max-width:380px){
+ #comment-form .pati-comment-editor-row .pati-comment-mention{padding:4px 0!important;font-size:12px!important;gap:2px!important}
+ #comment-form .pati-comment-editor-row .pati-comment-send{padding:8px!important}
+}
+
+/* In tagged direct messages, the tagger's name is a clear profile link. */
+.pati-dm-shared-card .pati-dm-mention-label .pati-dm-mention-person{
+ display:inline-flex!important;align-items:center!important;
+ border:0!important;border-radius:4px!important;
+ padding:2px 0!important;min-width:0!important;
+ background:transparent!important;color:#1683f6!important;
+ font-size:12px!important;font-weight:850!important;line-height:1.35!important;
+ cursor:pointer!important;text-align:left!important;
+}
+.pati-dm-shared-card .pati-dm-mention-label .pati-dm-mention-person:focus-visible{
+ outline:2px solid #2388fa!important;outline-offset:2px!important;
+}
+html[data-pati-theme="dark"] .pati-dm-shared-card .pati-dm-mention-label .pati-dm-mention-person{color:#66b2ff!important}
+
+
+/* patiyiz-comment-profile-only-20261030.css */
+/* Direct profile navigation from comment sheet — keep only profile visible. */
+#comment-form .pati-comment-profile-avatar,
+#comment-form .pati-comment-profile-name{
+ appearance:none!important;-webkit-appearance:none!important;
+ background:transparent!important;border:0!important;
+ padding:0!important;margin:0!important;
+ color:inherit!important;cursor:pointer!important;
+ font:inherit!important;letter-spacing:inherit!important;
+ box-shadow:none!important;text-align:left!important;
+}
+#comment-form .pati-comment-profile-avatar{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ width:36px!important;height:36px!important;min-width:36px!important;
+ flex:0 0 36px!important;
+ border-radius:50%!important;overflow:hidden!important;
+}
+#comment-form .pati-sheet-comment-avatar .pati-comment-profile-avatar{
+ width:34px!important;height:34px!important;min-width:34px!important;flex-basis:34px!important;
+}
+#comment-form .pati-comment-profile-avatar .avatar,
+#comment-form .pati-comment-profile-avatar .avatar.s{
+ display:block!important;width:100%!important;height:100%!important;
+ min-width:0!important;min-height:0!important;
+ border-radius:50%!important;overflow:hidden!important;
+}
+#comment-form .pati-comment-profile-avatar .avatar img{
+ width:100%!important;height:100%!important;object-fit:cover!important;
+}
+#comment-form .pati-comment-profile-name{
+ display:inline-block!important;min-width:0!important;max-width:100%!important;
+ font-size:13px!important;font-weight:800!important;line-height:1.45!important;
+ overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+}
+#comment-form .pati-comment-post-user .pati-comment-profile-name{
+ font-size:14px!important;
+}
+#comment-form .pati-comment-profile-avatar:focus-visible,
+#comment-form .pati-comment-profile-name:focus-visible{
+ outline:2px solid #2388fa!important;outline-offset:3px!important;
+}
+
+
+/* patiyiz-post-likers-fullscreen-20261030.css */
+/* Patiyiz: full-screen liked-by list and profile-only comment navigation. */
+#modal-root .modal-backdrop.pati-post-likers-backdrop{
+ position:fixed!important;inset:0!important;z-index:100800!important;
+ display:flex!important;justify-content:center!important;align-items:stretch!important;
+ padding:0!important;margin:0!important;background:#0008!important;
+}
+#modal-root .modal.pati-post-likers-modal{
+ display:flex!important;flex-direction:column!important;
+ width:min(100%,740px)!important;max-width:740px!important;
+ height:100dvh!important;max-height:100dvh!important;
+ min-height:0!important;box-sizing:border-box!important;
+ margin:0!important;border-radius:0!important;
+ background:var(--pati-final-field-bg,#fff)!important;
+ color:var(--pati-final-field-text,#16191c)!important;
+ overflow:hidden!important;
+}
+#modal-root .pati-post-likers-modal>.modal-header{
+ flex:0 0 auto!important;display:flex!important;align-items:center!important;
+ min-height:66px!important;padding:13px 56px 13px 20px!important;
+ border-bottom:1px solid var(--pati-final-field-line,#e7e8eb)!important;
+ background:inherit!important;color:inherit!important;
+}
+#modal-root .pati-post-likers-modal>.modal-header h2{font-weight:850!important;font-size:17px!important;color:inherit!important}
+#modal-root .pati-post-likers-modal .close-modal{
+ display:grid!important;place-items:center!important;
+ position:absolute!important;top:14px!important;right:14px!important;
+ width:38px!important;height:38px!important;min-width:38px!important;
+ padding:0!important;border-radius:50%!important;
+ background:color-mix(in srgb,currentColor 9%,transparent)!important;
+ color:inherit!important;font-size:25px!important;z-index:1!important;
+}
+#modal-root .pati-post-likers-modal #pati-post-likers-form{
+ display:flex!important;flex-direction:column!important;flex:1 1 auto!important;
+ min-height:0!important;overflow:hidden!important;
+}
+#modal-root .pati-post-likers-modal .modal-content{
+ display:flex!important;flex-direction:column!important;flex:1 1 auto!important;
+ min-height:0!important;max-height:none!important;overflow:hidden!important;
+ gap:0!important;padding:0!important;
+ background:inherit!important;color:inherit!important;
+}
+#modal-root .pati-post-likers-modal .modal-footer{display:none!important}
+#modal-root .pati-post-likers-modal .pati-post-likers-status{
+ padding:12px 19px!important;flex:0 0 auto!important;
+ font-size:12px!important;color:inherit!important;opacity:.68!important;
+ border-bottom:1px solid var(--pati-final-field-line,#e7e8eb)!important;
+}
+#modal-root .pati-post-likers-modal .pati-post-likers-list{
+ flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;
+ overscroll-behavior:contain;-webkit-overflow-scrolling:touch!important;
+ padding:7px 12px 22px!important;scrollbar-width:thin;
+}
+#modal-root .pati-post-likers-modal .pati-post-liker-person{
+ width:100%!important;max-width:100%!important;min-width:0!important;
+ display:flex!important;align-items:center!important;gap:12px!important;
+ min-height:65px!important;
+ padding:9px 11px!important;box-sizing:border-box!important;
+ border:0!important;border-radius:12px!important;background:transparent!important;
+ color:inherit!important;font:inherit!important;text-align:left!important;cursor:pointer!important;
+}
+#modal-root .pati-post-likers-modal .pati-post-liker-person .avatar{
+ width:44px!important;height:44px!important;min-width:44px!important;flex:0 0 44px!important;
+ border-radius:50%!important;overflow:hidden!important;
+}
+#modal-root .pati-post-likers-modal .pati-post-liker-person .avatar img{
+ width:100%!important;height:100%!important;object-fit:cover!important;
+}
+#modal-root .pati-post-likers-modal .pati-post-liker-identity{
+ display:flex!important;flex:1 1 auto!important;min-width:0!important;max-width:100%!important;
+ flex-direction:column!important;gap:3px!important;
+}
+#modal-root .pati-post-likers-modal .pati-post-liker-identity strong,
+#modal-root .pati-post-likers-modal .pati-post-liker-identity small{
+ display:block!important;width:100%!important;overflow:hidden!important;
+ text-overflow:ellipsis!important;white-space:nowrap!important;color:inherit!important;
+}
+#modal-root .pati-post-likers-modal .pati-post-liker-identity strong{font-size:14px!important;font-weight:800!important}
+#modal-root .pati-post-likers-modal .pati-post-liker-identity small{font-size:12px!important;opacity:.64!important}
+#modal-root .pati-post-likers-modal .pati-post-liker-person>.icon{flex:0 0 18px!important;opacity:.55!important}
+#modal-root .pati-post-likers-modal .pati-post-liker-person:active{
+ background:color-mix(in srgb,currentColor 9%,transparent)!important;
+}
+#modal-root .pati-post-likers-modal .pati-post-liker-person:focus-visible{
+ outline:2px solid #2388fa!important;outline-offset:-2px!important;
+}
+#modal-root .pati-post-likers-modal .pati-post-likers-empty{
+ text-align:center!important;padding:30px 12px!important;opacity:.7!important;font-size:14px!important;
+}
+#modal-root .pati-post-likers-modal .pati-post-likers-more{
+ flex:0 0 auto!important;align-self:stretch!important;margin:0 15px 15px!important;
+ padding:12px!important;border-radius:12px!important;min-height:44px!important;
+ border:1px solid var(--pati-final-field-line,#e7e8eb)!important;
+ background:transparent!important;color:#2388fa!important;
+ font-size:14px!important;font-weight:800!important;cursor:pointer!important;
+}
+#main-content .pati-post-like-summary{
+ display:inline-block!important;width:fit-content!important;max-width:100%!important;
+ padding:3px 0!important;margin:0!important;border:0!important;
+ border-radius:4px!important;background:transparent!important;
+ color:inherit!important;font-size:inherit!important;
+ font-weight:850!important;line-height:1.4!important;text-align:left!important;
+ cursor:pointer!important;
+}
+#main-content .pati-post-like-summary:focus-visible{outline:2px solid #2388fa!important;outline-offset:2px!important}
+#main-content .pati-reel-likers-trigger{
+ cursor:pointer!important;position:relative!important;z-index:5!important;
+ display:block!important;min-height:24px!important;min-width:29px!important;
+ padding:2px 0!important;text-align:center!important;
+}
+#main-content .pati-reel-likers-trigger:focus-visible{
+ outline:2px solid #fff!important;outline-offset:2px!important;border-radius:4px!important;
+}
+@media(max-width:740px){
+ #modal-root .modal.pati-post-likers-modal{
+  width:100vw!important;max-width:none!important;
+  height:100dvh!important;max-height:100dvh!important;
+  border-radius:0!important;
+ }
+ #modal-root .pati-post-likers-modal>.modal-header{
+  padding-top:max(14px,env(safe-area-inset-top,0px))!important;
+  min-height:calc(58px + env(safe-area-inset-top,0px))!important;
+ }
+ #modal-root .pati-post-likers-modal .pati-post-likers-list{
+  padding-bottom:max(30px,env(safe-area-inset-bottom,0px))!important;
+ }
+}
+
+
+/* patiyiz-compact-shared-story-20261030.css */
+/* Compact Instagram-like repost card — ONLY story rows with shared_post_id.
+   Original photo/video stories remain immersive full screen. */
+#story-overlay.pati-story-has-source .story-player{
+ background:radial-gradient(ellipse at 25% 17%,#3d404a 0%,#24272f 46%,#111217 100%)!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-stage{
+ position:absolute!important;inset:78px 10px 116px!important;
+ z-index:9!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ box-sizing:border-box!important;
+ pointer-events:none!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-card{
+ position:relative!important;display:flex!important;flex-direction:column!important;
+ flex:0 1 auto!important;
+ box-sizing:border-box!important;
+ width:min(76vw,310px)!important;max-width:100%!important;
+ min-width:0!important;max-height:100%!important;
+ gap:8px!important;padding:11px!important;
+ border:1px solid #e5e5e8!important;border-radius:19px!important;
+ background:#fff!important;color:#191a1e!important;
+ box-shadow:0 22px 56px #0007,0 3px 8px #0002!important;
+ overflow:hidden!important;pointer-events:auto!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-card-heading{
+ display:flex!important;flex:0 0 auto!important;align-items:center!important;
+ gap:7px!important;min-height:29px!important;min-width:0!important;
+ width:100%!important;color:#202126!important;
+ text-shadow:none!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-card-dot{
+ display:grid!important;place-items:center!important;
+ width:23px!important;height:23px!important;min-width:23px!important;
+ border-radius:50%!important;background:#17191d!important;
+ color:#fff!important;font-size:9px!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-card-heading strong{
+ flex:1 1 auto!important;min-width:0!important;overflow:hidden!important;
+ white-space:nowrap!important;text-overflow:ellipsis!important;
+ font-size:13px!important;font-weight:850!important;line-height:1.3!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-card-heading small{
+ flex:0 0 auto!important;color:#73747a!important;font-size:11px!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-media{
+ display:block!important;position:relative!important;
+ flex:0 1 auto!important;width:100%!important;
+ height:min(36dvh,306px)!important;max-height:min(36dvh,306px)!important;
+ min-height:120px!important;min-width:0!important;
+ box-sizing:border-box!important;
+ padding:0!important;margin:0!important;border:0!important;
+ border-radius:12px!important;overflow:hidden!important;
+ background:#ecedf1!important;color:#25262a!important;
+ cursor:pointer!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-media>.story-big-photo,
+#story-overlay.pati-story-has-source .pati-story-share-media>.story-big-video{
+ display:block!important;position:static!important;
+ width:100%!important;height:100%!important;
+ min-width:0!important;min-height:0!important;
+ max-width:100%!important;max-height:100%!important;
+ object-fit:contain!important;object-position:center!important;
+ background:#ecedf1!important;
+ border:0!important;border-radius:0!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-post-caption{
+ flex:0 1 auto!important;max-height:50px!important;
+ padding:0 2px!important;margin:0!important;
+ overflow:hidden!important;display:-webkit-box!important;
+ -webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;
+ font-size:12px!important;line-height:1.4!important;color:#56565c!important;
+ text-align:left!important;overflow-wrap:anywhere!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-card>.pati-story-shared-source{
+ display:flex!important;position:relative!important;
+ align-items:center!important;justify-content:center!important;gap:6px!important;
+ flex:0 0 37px!important;inset:auto!important;
+ width:100%!important;min-height:37px!important;max-height:37px!important;
+ margin:0!important;padding:7px 12px!important;
+ border:0!important;border-radius:10px!important;
+ background:#181a20!important;color:#fff!important;
+ font-size:12px!important;font-weight:800!important;text-decoration:none!important;
+ cursor:pointer!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-sound{
+ position:absolute!important;z-index:11!important;
+ top:55px!important;right:18px!important;
+ padding:5px 8px!important;margin:0!important;
+ min-height:27px!important;max-width:120px!important;
+ border:1px solid #fff5!important;border-radius:100px!important;
+ background:#111b!important;color:#fff!important;
+ font-size:10px!important;font-weight:750!important;
+ text-shadow:none!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-card button:focus-visible{
+ outline:2px solid #2388fa!important;outline-offset:3px!important;
+}
+/* Saved own-story actions and progress stay separate from the shared card. */
+#story-overlay.pati-story-own.pati-story-has-source .story-player::after{
+ z-index:2!important;
+}
+#story-overlay.pati-story-own.pati-story-has-source .pati-own-story-stack{
+ z-index:19!important;
+}
+#story-overlay.pati-story-has-source.pati-story-viewers-open .pati-story-share-stage{
+ opacity:0!important;pointer-events:none!important;
+}
+@media(max-width:740px){
+ #story-overlay.pati-story-has-source .pati-story-share-stage{
+  inset:calc(65px + env(safe-area-inset-top,0px)) 10px calc(100px + env(safe-area-inset-bottom,0px))!important;
+ }
+ #story-overlay.pati-story-has-source .pati-story-share-card{
+  width:min(74vw,305px)!important;
+ }
+}
+@media(max-height:690px){
+ #story-overlay.pati-story-has-source .pati-story-share-stage{
+  inset:calc(62px + env(safe-area-inset-top,0px)) 10px calc(88px + env(safe-area-inset-bottom,0px))!important;
+ }
+ #story-overlay.pati-story-has-source .pati-story-share-media{
+  height:min(30dvh,240px)!important;max-height:min(30dvh,240px)!important;
+ }
+ #story-overlay.pati-story-has-source .pati-story-share-card{
+  gap:5px!important;padding:8px!important;
+ }
+}
+
+
+/* patiyiz-black-outgoing-messages-20261030.css */
+/* 30 Oct 2026: Reversible outgoing-message colour experiment.
+ * Remove this stylesheet link to restore previous green bubble colours.
+ * Only the current user's sent messages change; photo/voice/sticker media keeps its surface.
+ */
+#main-content .pati-dm-layout{
+ --p3-chat-mine:#0b0c0f!important;
+ --p3-chat-mine-text:#fff!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-dm-layout,
+html[data-pati-theme="light"] #main-content .pati-dm-layout{
+ --p3-chat-mine:#08090b!important;
+ --p3-chat-mine-text:#fff!important;
+}
+#main-content .pati-dm-layout .chat-window .chat-history .bubble-chat.mine:not(.pati-dm-image-message):not(.pati-dm-sticker-bubble):not(:has(.pati-dm-audio)):not(:has(.pati-dm-voice-card)),
+html[data-pati-theme="dark"] #main-content .pati-dm-layout .chat-window .chat-history .bubble-chat.mine:not(.pati-dm-image-message):not(.pati-dm-sticker-bubble):not(:has(.pati-dm-audio)):not(:has(.pati-dm-voice-card)){
+ background:#0a0b0e!important;
+ color:#fff!important;
+ border-color:#20232a!important;
+}
+#main-content .pati-dm-layout .chat-window .chat-history .bubble-chat.mine>small{
+ color:#fff!important;opacity:.72!important;
+}
+#main-content .pati-dm-layout .chat-window .chat-history .bubble-chat.mine .pati-dm-msg-tools button{
+ color:#fff!important;
+}
+#main-content .pati-dm-layout .chat-window .chat-history .bubble-chat.mine .pati-dm-voice-card{
+ background:#0a0b0e!important;border-color:#262930!important;color:#fff!important;
+}
+#main-content .pati-group-chat-window .pati-group-bubble.mine,
+html[data-pati-theme="dark"] #main-content .pati-group-chat-window .pati-group-bubble.mine{
+ background:#0a0b0e!important;color:#fff!important;border-color:#25272b!important;
+}
+
+
+/* patiyiz-dm-reply-contrast-jump-20261030.css */
+/* Reply actions and quoted-message navigation: light and dark contrast. */
+#main-content .pati-dm-layout .chat-history .bubble-chat .pati-dm-msg-tools{
+ display:flex!important;gap:6px!important;flex-wrap:wrap!important;
+ align-items:center!important;justify-content:flex-end!important;
+}
+#main-content .pati-dm-layout .chat-history .bubble-chat .pati-dm-msg-tools button{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ min-height:31px!important;padding:5px 9px!important;border-radius:9px!important;
+ background:#e9ebef!important;color:#24262b!important;
+ border:1px solid #cbd0d8!important;font-size:11px!important;font-weight:750!important;
+ opacity:1!important;visibility:visible!important;
+}
+#main-content .pati-dm-layout .chat-history .bubble-chat.mine .pati-dm-msg-tools button{
+ background:#30343c!important;border-color:#626b78!important;color:#fff!important;
+}
+#main-content .pati-dm-layout .chat-history .bubble-chat .pati-dm-msg-tools button:focus-visible,
+#main-content .pati-dm-layout .chat-history .bubble-chat .pati-dm-reply-preview:focus-visible{
+ outline:3px solid #5284ff!important;outline-offset:2px!important;
+}
+#main-content .pati-dm-layout .chat-history .bubble-chat .pati-dm-reply-preview{
+ display:flex!important;flex-direction:column!important;align-items:stretch!important;
+ gap:3px!important;text-align:left!important;box-sizing:border-box!important;
+ width:100%!important;max-width:100%!important;min-width:0!important;
+ padding:9px 11px!important;margin:0 0 7px!important;
+ border:1px solid #cbd0d8!important;border-left:3px solid #636c7c!important;
+ border-radius:10px!important;background:#f0f2f5!important;color:#20242b!important;
+ cursor:pointer!important;opacity:1!important;white-space:normal!important;
+}
+#main-content .pati-dm-layout .chat-history .bubble-chat .pati-dm-reply-preview span{
+ font-size:10px!important;font-weight:700!important;color:#515b68!important;
+}
+#main-content .pati-dm-layout .chat-history .bubble-chat .pati-dm-reply-preview strong{
+ font-size:12px!important;line-height:1.35!important;font-weight:650!important;
+ color:#15181d!important;word-break:break-word!important;
+}
+#main-content .pati-dm-layout .chat-history .bubble-chat.mine .pati-dm-reply-preview{
+ background:#262b33!important;border-color:#59616e!important;border-left-color:#9bb6ff!important;color:#fff!important;
+}
+#main-content .pati-dm-layout .chat-history .bubble-chat.mine .pati-dm-reply-preview span{
+ color:#d2def2!important;
+}
+#main-content .pati-dm-layout .chat-history .bubble-chat.mine .pati-dm-reply-preview strong{
+ color:#fff!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-dm-layout .chat-history .bubble-chat:not(.mine) .pati-dm-reply-preview{
+ background:#292d35!important;border-color:#58606c!important;border-left-color:#b0c2e6!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-dm-layout .chat-history .bubble-chat:not(.mine) .pati-dm-reply-preview :is(span,strong){
+ color:#fff!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-dm-layout .chat-history .bubble-chat:not(.mine) .pati-dm-msg-tools button{
+ background:#313740!important;color:#fff!important;border-color:#687280!important;
+}
+#main-content .pati-dm-layout #message-form.chat-form{
+ flex-wrap:wrap!important;
+}
+#main-content .pati-dm-layout #message-form .pati-dm-reply-compose{
+ flex:0 0 100%!important;display:flex!important;align-items:center!important;
+ justify-content:space-between!important;gap:10px!important;
+ border-left:3px solid #426ec9!important;padding:9px 11px!important;
+ border-radius:11px!important;background:#edf1f7!important;color:#242b37!important;
+ min-width:0!important;
+}
+#main-content .pati-dm-layout #message-form .pati-dm-reply-compose[hidden]{display:none!important}
+#main-content .pati-dm-layout #message-form .pati-dm-reply-compose>div{
+ min-width:0!important;display:flex!important;flex-direction:column!important;gap:2px!important;
+}
+#main-content .pati-dm-layout #message-form .pati-dm-reply-compose span{
+ font-size:11px!important;color:#3b62ae!important;font-weight:800!important;
+}
+#main-content .pati-dm-layout #message-form .pati-dm-reply-compose strong{
+ display:block!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+ font-size:12px!important;color:#242b37!important;
+}
+#main-content .pati-dm-layout #message-form .pati-dm-reply-compose button{
+ flex:0 0 34px!important;width:34px!important;height:34px!important;
+ border:0!important;background:#d9e0ed!important;color:#242b37!important;
+ border-radius:50%!important;font-size:22px!important;cursor:pointer!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-dm-layout #message-form .pati-dm-reply-compose{
+ background:#292e39!important;color:#f5f7ff!important;border-left-color:#a8c4ff!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-dm-layout #message-form .pati-dm-reply-compose :is(strong,span){color:#fff!important}
+#main-content .pati-dm-layout .chat-history .bubble-chat.pati-dm-reply-target{
+ outline:3px solid #78a1ff!important;outline-offset:3px!important;
+ box-shadow:0 0 0 6px rgba(104,150,255,.19)!important;
+ animation:pati-dm-reply-pulse 1.6s ease-out!important;
+}
+@keyframes pati-dm-reply-pulse{
+ 0%{box-shadow:0 0 0 0 rgba(93,143,255,.58)}
+ 65%{box-shadow:0 0 0 10px rgba(93,143,255,.12)}
+ 100%{box-shadow:0 0 0 6px rgba(104,150,255,.19)}
+}
+@media(prefers-reduced-motion:reduce){
+ #main-content .pati-dm-layout .chat-history .bubble-chat.pati-dm-reply-target{animation:none!important}
+}
+
