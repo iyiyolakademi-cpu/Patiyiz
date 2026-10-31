@@ -31,7 +31,9 @@ test('Feed reel card focuses fullscreen Reels screen rather than opening in-plac
  assert.match(app,/case 'pati-feed-open-reel':patiOpenFeedReel\(id\)/);
  assert.match(app,/function patiOpenFeedReel\(postId\)/);
  assert.match(app,/navigate\('reels'\)/);
- assert.match(app,/node\.scrollIntoView\(\{block:'start',behavior:'instant'\}\)/);
+ assert.match(app,/const focusReelId=/);
+ assert.match(app,/area\.scrollTop=nodes\.indexOf\(focused\)\*area\.clientHeight/);
+ assert.match(app,/patiFeedReelTarget='';/);
 });
 test('Menu shows one most recent notification and opens full list from Tümü',()=>{
  const source=slice('function patiMenuNotificationsHTML(){','function patiMenuRenderNotifications(){');
