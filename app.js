@@ -248,7 +248,7 @@ function patiStreaksPage(){
   const disabled=!patiStreakGoalState.ready||patiStreakGoalState.loading||patiStreakClaimBusy||won||(!selected&&days>=item.days);
   return '<article class="pati-streak-goal-card '+(selected?'is-selected ':'')+(won?'is-earned':'')+'">'+
    '<div class="pati-streak-goal-top"><span class="pati-streak-goal-days">'+item.days+' <small>gün</small></span>'+
-   '<span class="pati-streak-goal-coins">+'+item.coins+' bakiye <span class="pati-balance-money" aria-hidden="true">💰</span></span></div>'+
+   '<span class="pati-streak-goal-coins">+'+item.coins+' <img class="pati-coin-icon" src="pati-coin.svg?v=20261025-brand-1" alt="PatiCoin"></span></div>'+
    '<strong>'+esc(item.name)+'</strong><small>'+esc(item.desc)+'</small>'+
    '<div class="pati-streak-progress"><span style="width:'+pct+'%"></span></div>'+
    '<div class="pati-streak-goal-footer"><span>'+
