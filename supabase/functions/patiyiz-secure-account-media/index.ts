@@ -45,7 +45,7 @@ Deno.serve(async(request)=>{
    sources[table]=data||[];
   }
   const originals=new Map<string,OriginItem>();
-  const transformed:Record<string,Array<{id:string,changes:Record<string,unknown>}>>={posts:[],patiyiz_stories:[]};
+  const transformed:Record<string,Array<{id:string,changes:Record<string,unknown>}>>={posts:[],patiyiz_stories:[],pets:[]};
   for(const [table,rows] of Object.entries(sources)){
    for(const row of rows){
     const changes:Record<string,unknown>={};
