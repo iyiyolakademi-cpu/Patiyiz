@@ -369,21 +369,27 @@ function refreshOnReturn(){
  queueLiveUpdate();
 }
 async function markConversationRead(){
- if(!me||view!=='messages'||!personId)return;
+ // Mark seen only when the conversation is actually visible.
+ if(!me||view!=='messages'||!personId||document.hidden)return;
+ if(window.matchMedia?.('(max-width:740px)').matches&&!mobileChatOpen)return;
  const unread=data.messages.filter(x=>x.sender_id===personId&&x.receiver_id===me.id&&!x.read_at&&!patiDmSeenIds().has(x.id));
  const backendUnread=typeof patiDmInbox!=='undefined'&&patiDmReadReceiptsEnabled()?(patiDmInbox.rows.find(x=>x.peer_id===personId)?.unread_count||0):0;
  if(!unread.length&&!backendUnread)return;
  const ids=unread.map(x=>x.id);
  if(!patiDmReadReceiptsEnabled()){patiDmStoreLocalSeen(ids);navRender();return}
  const uid=me.id,peer=personId,token=patiyizLoadToken,now=new Date().toISOString();
- const r=await sb.from('messages').update({read_at:now}).eq('sender_id',peer).eq('receiver_id',uid).is('read_at',null);
+ const r=await sb.from('messages').update({read_at:now}).eq('sender_id',peer).eq('receiver_id',uid).is('read_at',null).select('id,read_at');
  if(r.error){console.warn('Okundu bilgisi kaydedilemedi',r.error.message);return}
  if(me?.id!==uid||personId!==peer||patiyizLoadToken!==token)return;
- const thread=typeof patiDmThreads!=='undefined'?patiDmThreads.get(patiDmThreadKey(personId)):null;
- for(const row of thread?.rows||[])if(row.sender_id===personId&&row.receiver_id===me.id&&!row.read_at)row.read_at=now;
- const summary=typeof patiDmInbox!=='undefined'?patiDmInbox.rows.find(x=>x.peer_id===personId):null;
+ // An RLS-rejected UPDATE can return no rows without an error; never show a false receipt.
+ const confirmed=new Map((r.data||[]).map(x=>[x.id,x.read_at]));
+ if(!confirmed.size){queueLiveUpdate();return}
+ const thread=typeof patiDmThreads!=='undefined'?patiDmThreads.get(patiDmThreadKey(peer)):null;
+ for(const row of thread?.rows||[])if(confirmed.has(row.id))row.read_at=confirmed.get(row.id);
+ const summary=typeof patiDmInbox!=='undefined'?patiDmInbox.rows.find(x=>x.peer_id===peer):null;
  if(summary)summary.unread_count=0;
- unread.forEach(x=>x.read_at=now);navRender();
+ unread.forEach(x=>{if(confirmed.has(x.id))x.read_at=confirmed.get(x.id)});
+ navRender();
 }
 function unreadCounts(){const hidden=new Set(data.messageHidden.filter(x=>x.user_id===me?.id).map(x=>x.message_id));const groupCount=typeof patiGroupInboxState!=='undefined'&&patiGroupInboxState.owner===me?.id?patiGroupInboxState.rows.reduce((sum,g)=>sum+Number(g.unread_count||0),0):0;return {messages:data.messages.filter(x=>x.receiver_id===me?.id&&!x.read_at&&!patiDmSeenIds().has(x.id)&&!blocked.has(x.sender_id)&&!hidden.has(x.id)).length+groupCount,notifications:data.notifications.filter(x=>x.owner_id===me?.id&&!x.read&&!blocked.has(x.actor_id)).length}}
 function unreadMessageSources(){const hidden=new Set(data.messageHidden.filter(x=>x.user_id===me?.id).map(x=>x.message_id));const messages=data.messages.filter(x=>x.receiver_id===me?.id&&!x.read_at&&!patiDmSeenIds().has(x.id)&&!blocked.has(x.sender_id)&&!hidden.has(x.id));const tally=new Map();for(const m of messages)tally.set(m.sender_id,(tally.get(m.sender_id)||0)+1);return [...tally].sort((a,b)=>b[1]-a[1]).map(([id,count])=>({id,count,name:profile(id).display_name}))}
