@@ -63,15 +63,15 @@ test('Android bridge requests limited/photo permissions and only reads permitted
  assert.match(build,/PatiyizCameraFlow\?\.active/);
  assert.match(workflow,/setup-camera-gallery\.mjs/);
 });
-test('Light/dark theme is a visible settings choice, persists and is loaded before paint',()=>{
- assert.match(app,/case 'theme-set':patiApplyTheme\(id\)/);
- assert.match(app,/localStorage\.setItem\('patiyiz_theme',value\)/);
- assert.match(app,/data-action="theme-set" data-id="dark"/);
- assert.match(app,/data-action="theme-set" data-id="light"/);
- assert.match(index,/dataset\.patiTheme=localStorage\.getItem/);
- assert.match(css,/html\[data-pati-theme="dark"\]/);
- assert.match(css,/pati-theme-options button\.active/);
+test('Light-only theme does not offer a dark-mode switch',()=>{
+ assert.match(app,/const patiyizCurrentTheme=\(\)=> 'light'/);
+ assert.match(app,/document\.documentElement\.dataset\.patiTheme='light'/);
+ assert.doesNotMatch(app,/case 'theme-set':/);
+ assert.doesNotMatch(app,/data-action="theme-set" data-id="dark"/);
+ assert.doesNotMatch(index,/patiyiz-dark-mode-all-screens-20261031\.css/);
+ assert.match(index,/<meta name="theme-color" content="#f7f7f8">/);
 });
+
 test('Profile post/Reels viewers count is owner-visible and server-verifiable',()=>{
  assert.match(app,/patiPostViewCounts=new Map\(\)/);
  assert.match(app,/patiLoadProfileViewCounts/);
