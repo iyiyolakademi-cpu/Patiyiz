@@ -1747,12 +1747,12 @@ function setupReelsViewer(){
    if(!progress||!Number.isFinite(v.duration)||v.duration<=0||!v.buffered?.length)return;
    try{progress.value=Math.max(0,Math.min(100,Math.round(v.buffered.end(v.buffered.length-1)/v.duration*100)))}catch(_){}
   };
-  for(const event of ['loadstart','waiting','stalled','seeking'])v.addEventListener(event,()=>busy(true));
-  v.addEventListener('playing',()=>{busy(false);for(const other of videos)if(other!==v&&!other.paused)other.pause()});
-  v.addEventListener('canplay',()=>busy(false));
-  v.addEventListener('progress',updateBuffer);
-  v.addEventListener('loadedmetadata',updateBuffer);
-  v.addEventListener('error',()=>{busy(true);const label=indicator?.querySelector?.('.pati-reel-loading-label');if(label)label.textContent='Video açılamadı'});
+  for(const event of ['loadstart','waiting','stalled','seeking'])v.addEventListener?.(event,()=>busy(true));
+  v.addEventListener?.('playing',()=>{busy(false);for(const other of videos)if(other!==v&&!other.paused)other.pause()});
+  v.addEventListener?.('canplay',()=>busy(false));
+  v.addEventListener?.('progress',updateBuffer);
+  v.addEventListener?.('loadedmetadata',updateBuffer);
+  v.addEventListener?.('error',()=>{busy(true);const label=indicator?.querySelector?.('.pati-reel-loading-label');if(label)label.textContent='Video açılamadı'});
   if(typeof patiWatchReelAttach==='function')patiWatchReelAttach(v);
   patiyizReelsObserver.observe(v);
   const range=v.closest?.('.pati-reel-item')?.querySelector?.('[data-action="reel-seek"]');
@@ -6531,7 +6531,7 @@ function careValidateRecord(record){
  const key=patiCareTaskKey(record);
  if(data.care.some(x=>x.owner_id===me?.id&&x.id!==editId&&patiCareTaskKey(x)===key))throw Error('Bu bakım görevi aynı tarihte zaten mevcut.');
  const kind={Aşı:'vaccine',Veteriner:'vet',İlaç:'medicine',Mama:'food',Bakım:'care'}[record.category];
- if(record.pet_id&&Array.isArray(patiWellness?.reminders)&&patiWellness.reminders.some(x=>x.pet_id===record.pet_id&&patiCareDate(x.due_at)===record.due_date&&careFold(x.title)===careFold(record.title)&&({vaccine:'Aşı',vet:'Veteriner',medicine:'İlaç',food:'Mama'}[x.kind]||'Bakım')===record.category))
+ if(record.pet_id&&typeof patiWellness!=='undefined'&&Array.isArray(patiWellness.reminders)&&patiWellness.reminders.some(x=>x.pet_id===record.pet_id&&patiCareDate(x.due_at)===record.due_date&&careFold(x.title)===careFold(record.title)&&({vaccine:'Aşı',vet:'Veteriner',medicine:'İlaç',food:'Mama'}[x.kind]||'Bakım')===record.category))
   throw Error('Bu görev sağlık hatırlatmalarında zaten mevcut.');
  return record;
 }
