@@ -6,7 +6,7 @@ const origin=new URL(project).origin;
 const marker="patiyiz-private-posts:";
 const cors={"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"authorization,apikey,content-type","Access-Control-Allow-Methods":"POST,OPTIONS"};
 const reply=(status:number,body:object)=>new Response(JSON.stringify(body),{status,headers:{...cors,"content-type":"application/json; charset=utf-8","cache-control":"no-store"}});
-const fields={posts:["image_url","images","video_url","video_cover_url","media_videos"],patiyiz_stories:["image_url","video_url"]} as const;
+const fields={posts:["image_url","images","video_url","video_cover_url","media_videos"],patiyiz_stories:["image_url","video_url"],pets:["photo_url"]} as const;
 type OriginItem={bucket:string,path:string};
 function fromPublic(value:unknown,uid:string):OriginItem|null{
  if(typeof value!=="string"||!value)return null;
@@ -39,7 +39,7 @@ Deno.serve(async(request)=>{
  try{
   const sources:Record<string,any[]>={};
   for(const table of Object.keys(fields)){
-   const {data,error}=await admin.from(table).select("*").eq("author_id",uid).limit(500);
+   const {data,error}=await admin.from(table).select("*").eq(table==="pets"?"owner_id":"author_id",uid).limit(500);
    if(error)throw error;
    if((data||[]).length===500)throw Error("Çok fazla kayıt bulundu. Güvenli toplu taşıma gerektiriyor.");
    sources[table]=data||[];
@@ -97,13 +97,13 @@ Deno.serve(async(request)=>{
   // Rewriting rows is idempotent; the manifest allows cleanup to resume after interruption.
   for(const [table,changes] of Object.entries(transformed)){
    for(const row of changes){
-    const {data,error}=await admin.from(table).update(row.changes).eq("id",row.id).eq("author_id",uid).select("id").single();
+    const {data,error}=await admin.from(table).update(row.changes).eq("id",row.id).eq(table==="pets"?"owner_id":"author_id",uid).select("id").single();
     if(error||!data)throw Error("Paylaşım güvenli kayda dönüştürülemedi.");
     recordsChanged++;
    }
   }
   for(const table of Object.keys(fields)){
-   const {data,error}=await admin.from(table).select("*").eq("author_id",uid).limit(500);
+   const {data,error}=await admin.from(table).select("*").eq(table==="pets"?"owner_id":"author_id",uid).limit(500);
    if(error)throw error;
    for(const row of data||[]){
     for(const field of fields[table as keyof typeof fields]){
