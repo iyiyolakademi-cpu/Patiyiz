@@ -36,7 +36,7 @@ test('Hikâye tek aşamalı seçim ve isteğe bağlı düzenleme sunar; gizli ka
 test('Mağaza gerçek stok alanını okur, durumları dürüstçe gösterir',()=>{
  const catalog=cut('function patiShopPage(){','function patiCoinShowCheckout(');
  assert.match(app,/kind,coins,emoji,stock_available/);
- for(const label of ['Stokta yok','Yetersiz PatiCoin','Talebin beklemede'])assert.ok(catalog.includes(label),label);
+ for(const label of ['Stokta yok','Yetersiz Bakiye','Talebin beklemede'])assert.ok(catalog.includes(label),label);
  assert.match(catalog,/soldOut\|\|pending/);
  assert.match(catalog,/paticoin-rewards/);
 });
