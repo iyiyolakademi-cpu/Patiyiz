@@ -839,7 +839,7 @@ const fetchSpec=async([table,key,limit])=>{const chunks=[];const size=250,cap=Ma
   const last=val[val.length-1];patiHomeFeedCursor=last?{created_at:last.created_at,id:last.id}:null;
   patiHomeLoadError='';
  }
- if(k==='likes'&&likesEpoch!==(typeof likesChangeEpoch==='number'?likesChangeEpoch:0))continue;if(k==='saves'&&savesEpoch!==(typeof savesChangeEpoch==='number'?savesChangeEpoch:0))continue;data[k]=val;if(ok)patiyizLoadedTables.add(({profiles:'profiles',pets:'pets',posts:'posts',likes:'post_likes',saves:'post_saves',comments:'comments',commentLikes:'comment_likes',follows:'follows',questions:'questions',replies:'replies',votes:'question_votes',lost:'lost_reports',adoption:'adoption_listings',stories:'patiyiz_stories',storyResponses:'patiyiz_story_responses',reposts:'patiyiz_reposts',pins:'patiyiz_post_pins',dmReactions:'patiyiz_dm_reactions',highlightAlbums:'patiyiz_highlight_albums',highlightItems:'patiyiz_highlight_items',care:'care_tasks',messages:'messages',messageHidden:'message_hidden',notifications:'notifications',bookmarks:'kb_bookmarks',blocks:'user_blocks'})[k])}if(typeof patiHydrateCloseStories==='function')await patiHydrateCloseStories();liked=new Set(data.likes.filter(x=>x.user_id===me.id).map(x=>x.post_id));saved=new Set(data.saves.filter(x=>x.user_id===me.id).map(x=>x.post_id));followed=new Set(data.follows.filter(x=>x.follower_id===me.id).map(x=>x.followee_id));voted=new Set(data.votes.filter(x=>x.user_id===me.id).map(x=>x.question_id));favorites=new Set(data.bookmarks.filter(x=>x.user_id===me.id).map(x=>x.article_id));blocked=new Set(data.blocks.filter(x=>x.blocker_id===me.id).map(x=>x.blocked_id))}
+ if(k==='likes'&&likesEpoch!==(typeof likesChangeEpoch==='number'?likesChangeEpoch:0))continue;if(k==='saves'&&savesEpoch!==(typeof savesChangeEpoch==='number'?savesChangeEpoch:0))continue;data[k]=(['posts','stories'].includes(k)&&window.PatiyizPrivateMedia)?await window.PatiyizPrivateMedia.hydrateRows(val,userId,sb):val;if(ok)patiyizLoadedTables.add(({profiles:'profiles',pets:'pets',posts:'posts',likes:'post_likes',saves:'post_saves',comments:'comments',commentLikes:'comment_likes',follows:'follows',questions:'questions',replies:'replies',votes:'question_votes',lost:'lost_reports',adoption:'adoption_listings',stories:'patiyiz_stories',storyResponses:'patiyiz_story_responses',reposts:'patiyiz_reposts',pins:'patiyiz_post_pins',dmReactions:'patiyiz_dm_reactions',highlightAlbums:'patiyiz_highlight_albums',highlightItems:'patiyiz_highlight_items',care:'care_tasks',messages:'messages',messageHidden:'message_hidden',notifications:'notifications',bookmarks:'kb_bookmarks',blocks:'user_blocks'})[k])}if(typeof patiHydrateCloseStories==='function')await patiHydrateCloseStories();liked=new Set(data.likes.filter(x=>x.user_id===me.id).map(x=>x.post_id));saved=new Set(data.saves.filter(x=>x.user_id===me.id).map(x=>x.post_id));followed=new Set(data.follows.filter(x=>x.follower_id===me.id).map(x=>x.followee_id));voted=new Set(data.votes.filter(x=>x.user_id===me.id).map(x=>x.question_id));favorites=new Set(data.bookmarks.filter(x=>x.user_id===me.id).map(x=>x.article_id));blocked=new Set(data.blocks.filter(x=>x.blocker_id===me.id).map(x=>x.blocked_id))}
 async function refreshKeys(specs){
  const userId=me?.id,loadToken=patiyizLoadToken;if(!userId)return;
  const results=await Promise.all(specs.map(async([table,key])=>{const r=await sb.from(table).select('*').order('created_at',{ascending:false}).limit(key==='messages'?400:key==='notifications'?150:200);if(r.error)throw r.error;return[key,r.data||[]]}));
@@ -863,7 +863,8 @@ async function loadMore(key){pageLimits[key]=(pageLimits[key]||40)+50;
    if(result.error)throw result.error;
    if(me?.id!==uid||patiyizLoadToken!==token)return;
    const rows=result.data||[],known=new Set(data.posts.map(p=>p.id));
-   for(const row of rows)if(!known.has(row.id)){data.posts.push(row);known.add(row.id)}
+   const shown=window.PatiyizPrivateMedia?await window.PatiyizPrivateMedia.hydrateRows(rows,uid,sb):rows;
+   for(const row of shown)if(!known.has(row.id)){data.posts.push(row);known.add(row.id)}
    if(!patiHomeFeedIds)patiHomeFeedIds=new Set();
    for(const row of rows)patiHomeFeedIds.add(row.id);
    if(rows.length){const last=rows[rows.length-1];patiHomeFeedCursor={created_at:last.created_at,id:last.id}}
@@ -1373,7 +1374,7 @@ async function patiSharePostToStory(postId){
  const image=post.images?.[0]||post.image_url||post.video_cover_url||'';
  if(!image&&!post.video_url)throw Error('Şimdilik fotoğraf veya videolu gönderileri hikâyene ekleyebilirsin.');
  const owner=me.id,original=profile(post.author_id);
- const record={author_id:owner,image_url:image,video_url:post.video_url||null,
+ const record={author_id:owner,image_url:'',video_url:null,
   caption:'@'+(original.handle||'patiyiz')+' kullanıcısının gönderisi',shared_post_id:post.id};
  const result=await sb.from('patiyiz_stories').insert(record).select('*').single();
  if(result.error)throw result.error;
@@ -1389,7 +1390,7 @@ async function patiOpenSharedStoryPost(postId){
   const result=await sb.from('posts').select('*').eq('id',postId).maybeSingle();
   if(result.error)throw result.error;
   post=result.data;
-  if(post)data.posts.push(post);
+  if(post){post=window.PatiyizPrivateMedia?(await window.PatiyizPrivateMedia.hydrateRows([post],me.id,sb))[0]:post;data.posts.push(post)}
  }
  if(!post||blocked.has(post.author_id))throw Error('Bu gönderi artık mevcut değil.');
  closeStory(false);openPost(postId);
@@ -1400,7 +1401,7 @@ function patiStorySharedPostCard(x){
   ||data.posts.find(item=>item.id===x.shared_post_id);
  const original=post?profile(post.author_id):null;
  const authorLabel=original?(original.handle?'@'+original.handle:(original.display_name||'Kullanıcı')):String(x.caption||'Paylaşılan gönderi').replace(/\s+kullanıcısının gönderisi$/,'');
- const video=String(x.video_url||'');
+ const video=String(x.video_url||post?.video_url||'');
  const cover=x.image_url||post?.video_cover_url||post?.images?.[0]||post?.image_url||'';
  const content=video?
   '<video class="story-big-video pati-story-share-media-video'+(x.selfie_mirrored?' pati-selfie-mirrored':'')+'" src="'+esc(video)+'"'+(cover?' poster="'+esc(cover)+'"':'')+(patiyizStorySoundEnabled?'':' muted')+' autoplay playsinline webkit-playsinline preload="metadata" aria-label="Paylaşılan Reels önizlemesi"></video>':
@@ -4004,8 +4005,9 @@ async function patiDmHydrateSharedPosts(messages,peer){
  try{
   const result=await sb.from('posts').select('id,author_id,body,image_url,images,video_url,video_cover_url,media_videos,post_format,selfie_mirrored').in('id',ids);
   if(result.error)throw result.error;
+  const hydrated=window.PatiyizPrivateMedia?await window.PatiyizPrivateMedia.hydrateRows(result.data||[],owner,sb):result.data||[];
   if(me?.id!==owner)return;
-  for(const post of result.data||[])if(!blocked.has(post.author_id))patiDmSharedPosts.set(post.id.toLowerCase(),post);
+  for(const post of hydrated)if(!blocked.has(post.author_id))patiDmSharedPosts.set(post.id.toLowerCase(),post);
   if(view==='messages'&&personId===peer)render();
  }catch(error){
   for(const id of ids)patiDmSharedFetched.delete(id);
@@ -4018,7 +4020,7 @@ async function patiDmOpenSharedPost(id,commentId=''){
  const result=await sb.from('posts').select('*').eq('id',id).maybeSingle();
  if(result.error)throw result.error;
  if(!result.data||blocked.has(result.data.author_id)){notify('Bu paylaşım artık görüntülenemiyor.');return;}
- const post=result.data;
+ const post=window.PatiyizPrivateMedia?(await window.PatiyizPrivateMedia.hydrateRows([result.data],me.id,sb))[0]:result.data;
  data.posts=[...data.posts.filter(p=>p.id!==id),post];
  patiDmSharedPosts.set(id,post);
  patiDmSharedReturnPeer=personId;
@@ -6105,6 +6107,21 @@ async function patiStorageUploadConfirmed(bucket,key,expectedBytes){
   return Number.isFinite(bytes)&&bytes===expectedBytes;
  }catch(_){return false}
 }
+async function uploadPrivatePublicationMedia(file,kind){
+ if(!window.PatiyizPrivateMedia)throw Error('Güvenli medya yükleyici başlatılamadı. Sayfayı yenile.');
+ if(!file?.size)return null;
+ if(navigator.onLine===false)throw Error('Medya yüklemek için internet bağlantısı gerekli.');
+ if(kind==='video'&&file.size>50*1024*1024){
+  if(!window.PatiyizVideoPrepare?.prepare)throw Error('Video çok büyük. 50 MB altında bir dosya seç.');
+  uploadStatus('Video güvenli yükleme için hazırlanıyor…');
+  file=await window.PatiyizVideoPrepare.prepare(file,uploadStatus);
+ }
+ if(kind==='image')file=await preparePhoto(file);
+ const contentType=kind==='video'?(['video/mp4','video/webm','video/quicktime'].includes(file.type)?file.type:/\.mov$/i.test(file.name)?'video/quicktime':/\.webm$/i.test(file.name)?'video/webm':'video/mp4'):file.type;
+ const prepared=file.type===contentType?file:new File([file],file.name||'patiyiz-private-media',{type:contentType});
+ uploadStatus('Medya özel depoya yükleniyor…');
+ return window.PatiyizPrivateMedia.upload(prepared,kind,me.id,sb,{projectUrl:cfg.supabaseUrl,onProgress:p=>uploadStatus('Güvenli yükleme… %'+p)});
+}
 async function uploadVideo(file){
  if(!file||!file.size)return null;
  const max=50*1024*1024;
@@ -6144,6 +6161,8 @@ async function uploadVideo(file){
 async function upload(file){if(!file||!file.size)return null;if(navigator.onLine===false)throw Error('İnternet bağlantısı yok. Fotoğrafı bağlantı geldiğinde yükle.');if(file.size>30*1024*1024)throw Error('Fotoğraf en fazla 30 MB olabilir.');uploadStatus('Fotoğraf hazırlanıyor…');const prepared=await preparePhoto(file);const ext=prepared.type==='image/png'?'png':prepared.type==='image/webp'?'webp':'jpg';const key=me.id+'/'+crypto.randomUUID()+'.'+ext;uploadStatus('Fotoğraf yükleniyor…');let up;for(let attempt=0;attempt<2;attempt++){try{up=(typeof window!=='undefined'&&window.PatiyizReliableUpload?.upload)?await window.PatiyizReliableUpload.upload({sb,projectUrl:cfg.supabaseUrl,bucket:'patiyiz-media',key,file:prepared,contentType:prepared.type,onProgress:p=>uploadStatus('Fotoğraf yükleniyor… %'+p)}):await sb.storage.from('patiyiz-media').upload(key,prepared,{contentType:prepared.type,cacheControl:'86400',upsert:false});if(!up.error)break;if(await patiStorageUploadConfirmed('patiyiz-media',key,prepared.size)){up={error:null};break}if(attempt===1||!patiUploadRetryable(up.error))throw up.error}catch(err){if(await patiStorageUploadConfirmed('patiyiz-media',key,prepared.size)){up={error:null};break}if(attempt===1||!patiUploadRetryable(err))throw err}uploadStatus('Bağlantı yeniden deneniyor…');await new Promise(r=>setTimeout(r,900))}if(up?.error)throw up.error;uploadStatus('Paylaşım hazırlanıyor…');return sb.storage.from('patiyiz-media').getPublicUrl(key).data.publicUrl}
 /* Publication transaction: protect against duplicate posts and clean up only unreferenced, owned media. */
 function publicationMediaReference(url,owner){
+ const privatePath=window.PatiyizPrivateMedia?.getPath(url);
+ if(privatePath&&privatePath.startsWith(owner+'/'))return {bucket:'patiyiz-private-posts',name:privatePath,url};
  try{
   const host=new URL(cfg.supabaseUrl),candidate=new URL(url);
   if(candidate.origin!==host.origin)return null;
@@ -6191,7 +6210,7 @@ async function publishMediaRecord(table,form,createRecord){
  try{
   const record=await createRecord(async(file,kind)=>{
    if(me?.id!==owner)throw Error('Oturum değişti. Paylaşımı tekrar başlat.');
-   const url=kind==='video'?await uploadVideo(file):await upload(file);
+   const url=await uploadPrivatePublicationMedia(file,kind);
    if(url)uploaded.push(url);
    return url;
   });
@@ -6200,7 +6219,8 @@ async function publishMediaRecord(table,form,createRecord){
   const response=await sb.from(table).insert({...record,id,author_id:owner}).select('*').single();
   if(response.error)throw response.error;
   if(!response.data)throw Error('Paylaşım kaydı doğrulanamadı.');
-  recordMetric('success');return response.data;
+  recordMetric('success');const media=window.PatiyizPrivateMedia;
+  return media?(await media.hydrateRows([response.data],owner,sb))[0]:response.data;
  }catch(error){
   const checked=await checkPublishedRecord(table,id,owner);
   if(checked.known){
@@ -6951,7 +6971,7 @@ case 'edit-post':compose(data.posts.find(p=>p.id===id));break;case 'delete-post'
   if(result.error)throw result.error;
   if(!result.data?.length)throw Error('Görev silinemedi veya yetkin yok.');
   data.care=data.care.filter(x=>x.id!==id);if(view==='care'||(view==='my-pet'&&patiMyPetTab==='care'))render();
- },'Bakım görevi silindi.');break;}case 'logout':run(async()=>{const r=await sb.auth.signOut();if(r.error)throw r.error;me=null;isAdmin=false;authMode='login';showAuth()},'Çıkış yapıldı');break;
+ },'Bakım görevi silindi.');break;}case 'logout':run(async()=>{window.PatiyizPrivateMedia?.clear();const r=await sb.auth.signOut();if(r.error)throw r.error;me=null;isAdmin=false;authMode='login';showAuth()},'Çıkış yapıldı');break;
 case 'post-likers-more':void patiLoadPostLikers();break;case 'post-likers':patiOpenPostLikers(id);break;case 'like':void togglePostLike(id);break;case 'share-post':openPatiShareModal(id);break;case 'pati-copy-post':{const link=location.origin+location.pathname+'#post-'+id;if(navigator.clipboard?.writeText)navigator.clipboard.writeText(link).then(()=>notify('Paylaşım bağlantısı kopyalandı.'),()=>notify('Bağlantı kopyalanamadı.',true));else notify(link);break}case 'pati-share-system':{const link=location.origin+location.pathname+'#post-'+id;if(navigator.share)navigator.share({title:'Patiyiz paylaşımı',url:link}).catch(()=>{});else if(navigator.clipboard?.writeText)navigator.clipboard.writeText(link).then(()=>notify('Bağlantı kopyalandı.'));break}case 'dm-story-open':{if(!patiDmHasActiveStory(id))return notify('Bu kullanıcının aktif hikâyesi bulunmuyor.',true);openStory(id);break}case 'dm-open-shared-post':run(()=>patiDmOpenSharedPost(id,target.dataset.comment||''));break;case 'send-post-dm':{const post=data.posts.find(x=>x.id===target.dataset.post);if(!post||id===me.id)break;run(async()=>{const r=await sb.from('messages').insert({sender_id:me.id,receiver_id:id,body:'📨 Paylaşım: '+location.origin+location.pathname+'#post-'+post.id});if(r.error)throw r.error;closeModal();},'Paylaşım mesajla gönderildi.');break;}case 'save':void togglePostSave(id);break;case 'follow':run(()=>doToggle('follows',{follower_id:me.id,followee_id:id},followed.has(id)||patiFollowPageState.viewerFollowing.has(id)));break;
 case 'pati-follow-accept':run(()=>patiFollowDecision(id,true));break;
 case 'pati-follow-decline':run(()=>patiFollowDecision(id,false));break;
@@ -7534,6 +7554,13 @@ function resetSessionState(){
  dmStream?.getTracks().forEach(track=>track.stop());dmStream=null;dmRecipient=null;dmParts=[];dmMediaSending=false;
 }
 
+window.PatiyizPrivateMedia?.onRefresh(async()=>{
+ if(!me?.id||!sb)return;
+ const uid=me.id;
+ data.posts=await window.PatiyizPrivateMedia.hydrateRows(data.posts,uid,sb);
+ data.stories=await window.PatiyizPrivateMedia.hydrateRows(data.stories,uid,sb);
+ if(me?.id===uid)render();
+});
 async function boot(){if(!ready){showSetup();return}
  if(typeof window.supabase?.createClient!=='function'){
   starter();appRoot.classList.add('hidden');authRoot.classList.remove('hidden');
