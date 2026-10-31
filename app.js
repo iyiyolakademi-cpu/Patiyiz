@@ -6981,9 +6981,21 @@ case 'pati-insights-close':patiInsightsClose();break;
 case 'pati-insights-period':void patiCreatorInsights(Number(id)).catch(e=>notify(friendly(e),true));break;
 case 'pati-settings-notifications':navigate('notifications');break;case 'pati-private-toggle':run(async()=>{
  const owner=me.id,next=!current().is_private;
+ if(next){
+  const {data:session,error:sessionError}=await sb.auth.getSession();
+  if(sessionError||!session.session?.access_token)throw Error('Oturumu yenileyip tekrar dene.');
+  notify('Eski fotoğraf ve videolar güvenli depoya taşınıyor…');
+  const response=await fetch(cfg.supabaseUrl+'/functions/v1/patiyiz-secure-account-media',{
+    method:'POST',headers:{authorization:'Bearer '+session.session.access_token,apikey:cfg.supabasePublishableKey,'content-type':'application/json'},body:'{}'
+  });
+  const result=await response.json().catch(()=>({}));
+  if(!response.ok||!result.ok)throw Error(result.message||'Dosyalar güvene alınmadan hesap gizliye geçirilemez.');
+ }
  const r=await sb.from('profiles').update({is_private:next}).eq('id',owner).select('*').single();
  if(r.error)throw r.error;
  data.profiles=data.profiles.map(p=>p.id===owner?r.data:p);
+ window.PatiyizPrivateMedia?.clear();
+ await load('feed');
  patiSafetyState.loaded=false;render();
 },'Hesap gizliliği güncellendi.');break;
 case 'pati-dm-policy':run(async()=>{
