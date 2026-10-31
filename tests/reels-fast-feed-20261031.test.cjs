@@ -37,16 +37,16 @@ test('Appending fetched videos does not rebuild currently playing Reel',async()=
  assert.equal(page.rows.length,17);assert.equal(page.offset,17);
  assert.equal(page.hasMore,true);
 });
-test('Reels preloads one following video, auto-fetches near the end and delays overlay',()=>{
+test('Reels prepares adjacent videos, paginates early and delays overlay',()=>{
  const source=pick('function setupReelsViewer(){','function reelHandleTap(');
  assert.match(source,/const prepareNext=video=>/);
  assert.match(source,/videos\[position\+1\]/);
  assert.match(source,/lowData\?'metadata':'auto'/);
  assert.match(source,/const loadNearEnd=\(\)=>/);
- assert.match(source,/if\(idx\+4>=videos\.length\)void patiLoadMoreReels\(\)/);
+ assert.match(source,/if\(idx\+6>=videos\.length\)void patiLoadMoreReels\(\)/);
  assert.match(source,/onScroll=\(\)=>\{\s*loadNearEnd\(\)/);
  assert.match(source,/patiReelsBound==='1'/);
- assert.match(source,/setTimeout\(\(\)=>\{[\s\S]*?\},850\)/);
+ assert.match(source,/setTimeout\(\(\)=>\{[\s\S]*?\},1500\)/);
  assert.match(source,/isSelectedReel\(\)/);
  assert.match(source,/pati-reel-buffering-error/);
  assert.match(source,/deferBuffer/);
@@ -71,7 +71,7 @@ test('Delayed spinner is small, error remains readable, and CSS is last',()=>{
  assert.match(css,/width:46px!important/);
  assert.match(css,/pati-reel-buffering-error/);
  assert.match(css,/pati-reel-loading-label/);
- const newStyle='patiyiz-reels-fast-feed-20261031.css?v=1';
+ const newStyle='patiyiz-reels-fast-feed-20261031.css?v=2';
  const dark='patiyiz-dark-mode-all-screens-20261031.css?v=1';
  assert.ok(index.indexOf(newStyle)>index.indexOf(dark));
  new vm.Script(app);
