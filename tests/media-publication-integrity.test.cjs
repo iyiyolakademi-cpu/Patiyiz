@@ -25,6 +25,8 @@ function env(extra={}){
     select(){return{eq(){return this},async maybeSingle(){return state.readResult||{data:null,error:null}}}}
    }}
   },
+  uploadPrivatePublicationMedia:async file=>file?.size?'patiyiz-private-posts:owner/'+file.name:null,
+  PatiyizPrivateMedia:{getPath:value=>value.startsWith('patiyiz-private-posts:')?value.slice('patiyiz-private-posts:'.length):null,hydrateRows:async rows=>rows},
   upload:async file=>'https://example.supabase.co/storage/v1/object/public/patiyiz-media/owner/'+file.name,
   uploadVideo:async file=>file?.size?'https://example.supabase.co/storage/v1/object/public/patiyiz-videos/owner/'+file.name:null,
   uploadStatus(){},
@@ -75,7 +77,7 @@ test('Birden fazla görselden sonra işleme hatasında yüklenmiş dosya yalnız
   }),
   /İkinci görsel bozuk/
  );
- assert.deepEqual(JSON.parse(JSON.stringify(x.removed)),[{bucket:'patiyiz-media',keys:['owner/first.jpg']}]);
+ assert.deepEqual(JSON.parse(JSON.stringify(x.removed)),[{bucket:'patiyiz-private-posts',keys:['owner/first.jpg']}]);
  assert.equal(x.state.lastInserted,undefined);
 });
 
@@ -87,7 +89,7 @@ test('DB kaydı reddedilince yüklenen fotoğraf silinir ve kayıt kimliği tekr
   ()=>x.publishMediaRecord('posts',f,async send=>({image_url:await send({size:10,name:'unpublished.jpg'},'image')})),
   error=>error.message==='RLS insert rejected'
  );
- assert.deepEqual(JSON.parse(JSON.stringify(x.removed)),[{bucket:'patiyiz-media',keys:['owner/unpublished.jpg']}]);
+ assert.deepEqual(JSON.parse(JSON.stringify(x.removed)),[{bucket:'patiyiz-private-posts',keys:['owner/unpublished.jpg']}]);
  assert.equal(f.dataset.patiPublishAttempted,'yes');
  assert.equal(f.dataset.patiPublishId,'65049122-976f-4fb6-8731-1fb66a6f8027');
 });
@@ -129,7 +131,7 @@ test('Fotoğraf ve video seçimi varken metin boş olsa da paylaşım yapılabil
  const x=env();
  const f=form('post',[{size:120,name:'pet.jpg'}]);
  const record=await x.createPostPublication(f,data(),k=>k==='species'?'Kedi':'');
- assert.equal(record.image_url,'https://example.supabase.co/storage/v1/object/public/patiyiz-media/owner/pet.jpg');
+ assert.equal(record.image_url,'patiyiz-private-posts:owner/pet.jpg');
  assert.equal(record.id,'65049122-976f-4fb6-8731-1fb66a6f8027');
 });
 
