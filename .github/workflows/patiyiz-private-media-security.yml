@@ -1,0 +1,19 @@
+name: Patiyiz private media security
+on:
+  push:
+    branches: [main, security/private-media-enforcement-20261031]
+  pull_request:
+jobs:
+  edge-check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Type-check private account migration Edge Function
+        run: deno check supabase/functions/patiyiz-secure-account-media/index.ts
+      - name: Test protected media uploads and authorization integration
+        run: node --test tests/private-account-media-security-20261031.test.cjs
