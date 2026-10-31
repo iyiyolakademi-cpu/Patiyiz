@@ -1893,13 +1893,20 @@ function setupReelsViewer(){
    if(!progress||!Number.isFinite(v.duration)||v.duration<=0||!v.buffered?.length)return;
    try{progress.value=Math.max(0,Math.min(100,Math.round(v.buffered.end(v.buffered.length-1)/v.duration*100)))}catch(_){}
   };
+  const isSelectedReel=()=>{
+   const viewportNode=v.closest?.('.pati-reels-viewport');
+   const reels=[...(viewportNode?.querySelectorAll?.('.pati-reel-item[data-post]')||[])];
+   if(!viewportNode?.clientHeight||!reels.length)return activeVideo===v;
+   const idx=Math.max(0,Math.min(reels.length-1,Math.round(viewportNode.scrollTop/viewportNode.clientHeight)));
+   return reels[idx]===item;
+  };
   const deferBuffer=()=>{
    if(pendingBuffer!==null)clearTimeout(pendingBuffer);
    busy(false);
    // Typical short seeks or stalls no longer flash a loading card.
    pendingBuffer=setTimeout(()=>{
     pendingBuffer=null;
-    if(v.isConnected&&activeVideo===v&&!v.paused&&v.readyState<3)busy(true);
+    if(v.isConnected!==false&&isSelectedReel()&&!v.paused&&v.readyState<3)busy(true);
    },850);
   };
   for(const event of ['loadstart','waiting','stalled','seeking'])v.addEventListener?.(event,deferBuffer);
@@ -1907,7 +1914,7 @@ function setupReelsViewer(){
   v.addEventListener?.('playing',()=>{for(const other of videos)if(other!==v&&!other.paused)other.pause()});
   v.addEventListener?.('progress',updateBuffer);
   v.addEventListener?.('loadedmetadata',updateBuffer);
-  v.addEventListener?.('error',()=>{cancelBuffer();if(activeVideo!==v)return;busy(true);const label=indicator?.querySelector?.('.pati-reel-loading-label');if(label)label.textContent='Video açılamadı'});
+  v.addEventListener?.('error',()=>{cancelBuffer();if(!isSelectedReel())return;indicator?.classList?.add('pati-reel-buffering-error');busy(true);const label=indicator?.querySelector?.('.pati-reel-loading-label');if(label)label.textContent='Video açılamadı'});
   if(typeof patiWatchReelAttach==='function')patiWatchReelAttach(v);
   const range=v.closest?.('.pati-reel-item')?.querySelector?.('[data-action="reel-seek"]');
   if(!range)return;
