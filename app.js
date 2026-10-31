@@ -3175,7 +3175,7 @@ async function routePendingLost(){
 }
 let patiLostAlert={owner:'',loaded:false,loading:false,enabled:false,city:''};
 async function patiLostAlertLoad(){
- if(!me?.id||!sb)return;
+ if(!me?.id||typeof sb==='undefined'||!sb)return;
  if(patiLostAlert.owner!==me.id)patiLostAlert={owner:me.id,loaded:false,loading:false,enabled:false,city:''};
  if(patiLostAlert.loading||patiLostAlert.loaded)return;
  const owner=me.id;patiLostAlert.loading=true;
@@ -3186,7 +3186,7 @@ async function patiLostAlertLoad(){
  finally{patiLostAlert.loading=false;if(view==='lost')patiLostAlertRefresh()}
 }
 function patiLostAlertMarkup(){
- const city=String(current()?.city||'').trim(),active=patiLostAlert.enabled&&patiLostAlert.city.toLocaleLowerCase('tr-TR')===city.toLocaleLowerCase('tr-TR');
+ const city=String((typeof current==='function'?current()?.city:'')||'').trim(),active=patiLostAlert.enabled&&patiLostAlert.city.toLocaleLowerCase('tr-TR')===city.toLocaleLowerCase('tr-TR');
  return '<section class="pati-city-alert"><div><strong>🔔 Şehrimdeki kayıp hayvanlar</strong><p>'+(city?esc(city)+' için yeni ilanlar. Konum izni ve açık adres kullanılmaz.':'Bildirimleri açmak için profilinde şehir belirt.')+'</p></div><button type="button" data-action="lost-city-alert-toggle" '+(!city||patiLostAlert.loading?'disabled':'')+' aria-pressed="'+active+'">'+(patiLostAlert.loading?'Yükleniyor…':active?'Bildirimleri kapat':'Bildirimleri aç')+'</button></section>';
 }
 function patiLostAlertRefresh(){const target=document.getElementById('pati-lost-alert-subscribe');if(target)target.innerHTML=patiLostAlertMarkup()}
