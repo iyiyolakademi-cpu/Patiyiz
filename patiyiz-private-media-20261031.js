@@ -6,7 +6,7 @@
  const bucket='patiyiz-private-posts',prefix=bucket+':',seconds=300;
  const cache=new Map();
  let owner='',lastRefresh=0,refreshCallback=null,refreshBusy=false;
- const fields=['image_url','video_url','video_cover_url','images','media_videos'];
+ const fields=['image_url','video_url','video_cover_url','images','media_videos','photo_url'];
  const marker=value=>typeof value==='string'&&value.startsWith(prefix);
  function getPath(ref){
   if(!marker(ref))return null;
