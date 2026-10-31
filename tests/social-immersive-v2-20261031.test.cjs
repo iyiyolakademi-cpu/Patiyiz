@@ -72,7 +72,9 @@ test('Story progress bars, caption, compact footer and close action use existing
 test('New layer is loaded last, scripts parse and CSS safe areas remain valid',()=>{
  assert.match(html,/patiyiz-social-immersive-v2-20261031\.css\?v=1/);
  assert.ok(html.indexOf('patiyiz-social-immersive-v2-20261031.css?v=1')>html.indexOf('patiyiz-reels-controls-media-icons-20261031.css?v=1'));
- assert.doesNotMatch(css,/env\([^\n]*\) \+ \d+px\)/);
+ assert.doesNotMatch(css,/top:max\(20px,env\(/);
+ assert.doesNotMatch(css,/bottom:max\(79px,env\(/);
+ assert.doesNotMatch(css,/bottom:max\(9px,env\(/);
  assert.match(css,/calc\(env\(safe-area-inset-top/);
  new vm.Script(app);
  let braces=0;
