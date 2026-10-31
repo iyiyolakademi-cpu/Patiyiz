@@ -1808,8 +1808,8 @@ function setupReelsViewer(){
   if(next){next.preload=lowData?'metadata':'auto';attach(next)}
  };
  const loadNearEnd=()=>{
-  const state=patiReelsFeed;
-  if(view!=='reels'||!state?.ready||state.loading||!state.hasMore||!viewport?.clientHeight)return;
+  const state=typeof patiReelsFeed!=='undefined'?patiReelsFeed:null;
+  if(typeof view==='undefined'||view!=='reels'||!state?.ready||state.loading||!state.hasMore||!viewport?.clientHeight)return;
   const idx=Math.max(0,Math.min(videos.length-1,Math.round(viewport.scrollTop/viewport.clientHeight)));
   if(idx+4>=videos.length)void patiLoadMoreReels();
  };
@@ -2072,7 +2072,8 @@ async function patiLoadMoreReels(reset=false){
   }
  }
 }
-function reelsPage(append=false){
+function reelsPage(){
+ const append=arguments[0]===true;
  const nativeReels=typeof window!=='undefined'&&window.PatiyizNative?.isNative===true;
  const selfId=typeof me!=='undefined'?me?.id:'';
  const isFollowing=id=>typeof followed!=='undefined'&&followed.has(id);
