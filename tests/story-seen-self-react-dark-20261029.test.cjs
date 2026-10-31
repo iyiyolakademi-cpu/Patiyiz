@@ -1,6 +1,7 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
+const activeCSS=require('./helpers/active-css.cjs');
 const vm=require('node:vm');
 const js=fs.readFileSync('app.js','utf8'),html=fs.readFileSync('index.html','utf8');
 const css=fs.readFileSync('patiyiz-story-seen-dark-final-20261029.css','utf8');
@@ -108,7 +109,7 @@ test('Final dark mode owns all common surfaces, text and forms without mutating 
   '.stories-section','input:not([type="checkbox"])','.pati-reel-item','filter:none!important'])
   assert.ok(css.includes(token),'Missing theme rule: '+token);
  const styles=[...html.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map(m=>m[1]);
- assert.ok(styles.some(x=>x.includes('patiyiz-crop-insights-mobile-final-20261029.css')));
+ assert.ok(activeCSS(html,'patiyiz-crop-insights-mobile-final-20261029.css'));
  assert.match(native,/'patiyiz-story-seen-dark-final-20261029\.css'/);
  assert.doesNotThrow(()=>new vm.Script(js));
 });
