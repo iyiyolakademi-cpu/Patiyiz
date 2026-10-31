@@ -100,7 +100,7 @@ test('Main menu avoids home duplicates but Patiler remains discoverable in menu'
  assert.doesNotMatch(nav,/\['pets','Patiler','heart'\]/);
  const menu=between('function openMobileFeaturesMenu(){','const patiCoinTasks=');
  assert.doesNotMatch(menu,/\['messages','Mesajlar','message'\]/);
- assert.match(menu,/\['pets','Patileri keşfet','paw'\]/);
+ assert.doesNotMatch(menu,/\['pets','Patileri keşfet','paw'\]/);
 });
 test('Final dark mode owns all common surfaces, text and forms without mutating media',()=>{
  for(const token of ['--pui-paper:#1a1c21','--pui-text:#f7f8fb',
