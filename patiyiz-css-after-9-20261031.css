@@ -1,0 +1,1543 @@
+/* Patiyiz CSS bundle: original order. */
+/* patiyiz-weekly-leaders-20261031.css */
+
+/* Weekly Pati League. Bronze is intentionally the second-place frame. */
+#main-content .pati-weekly-board{
+ box-sizing:border-box;margin:19px 0 25px;padding:20px;
+ border-radius:21px;border:1px solid #dfe3e8;
+ background:var(--pati-card,#fff);color:var(--pati-text,#17191e);
+ box-shadow:0 7px 25px rgba(20,25,36,.045);
+}
+#main-content .pati-weekly-head{
+ display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;
+}
+#main-content .pati-weekly-head>div{min-width:0}
+#main-content .pati-weekly-head span{
+ font-size:10px;letter-spacing:.1em;font-weight:850;color:inherit;opacity:.75;
+}
+#main-content .pati-weekly-head h2{
+ font-size:clamp(18px,3.5vw,23px);letter-spacing:-.6px;line-height:1.2;
+ margin:5px 0 4px;font-weight:850;color:inherit;
+}
+#main-content .pati-weekly-head p{
+ font-size:12px;margin:0;line-height:1.5;opacity:.7;color:inherit;
+}
+#main-content .pati-weekly-head button{
+ flex:0 0 auto;display:inline-flex!important;align-items:center;
+ gap:5px;min-height:36px;padding:8px 11px!important;
+ border:1px solid #c8cbd2!important;border-radius:10px!important;
+ color:inherit!important;background:transparent!important;
+ font-weight:750!important;font-size:11px!important;
+ cursor:pointer;
+}
+#main-content .pati-weekly-status{
+ margin:9px 0;padding:8px 12px;border-radius:10px;
+ font-size:12px;color:inherit;background:rgba(126,137,159,.1);
+}
+#main-content .pati-weekly-podium{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;align-items:stretch;
+}
+#main-content .pati-weekly-person{
+ position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;
+ box-sizing:border-box;min-width:0;min-height:238px;
+ padding:17px 13px 14px;border-radius:17px;overflow:hidden;
+ border:2px solid transparent;
+}
+#main-content .pati-weekly-person.is-gold{
+ border-color:#c39122;
+ background:linear-gradient(145deg,#fff6d7 0%,#f4d782 48%,#f9eac1 100%);
+ color:#4d330a;
+ box-shadow:0 8px 24px rgba(163,110,17,.11),inset 0 0 0 1px #fff6;
+}
+#main-content .pati-weekly-person.is-bronze{
+ border-color:#a05c39;
+ background:linear-gradient(145deg,#f9e8dd 0%,#d7a68b 48%,#f6d9c7 100%);
+ color:#563020;
+ box-shadow:0 8px 24px rgba(120,73,43,.1),inset 0 0 0 1px #fff7;
+}
+#main-content .pati-weekly-person::after{
+ content:"";position:absolute;top:-75px;right:-45px;transform:rotate(34deg);
+ width:75px;height:200px;background:linear-gradient(90deg,transparent,#ffffff45,transparent);
+ pointer-events:none;
+}
+#main-content .pati-weekly-place{
+ text-align:center;white-space:normal;font-size:10px;letter-spacing:.055em;
+ font-weight:900;color:inherit;line-height:1.4;
+}
+#main-content .pati-weekly-profile{
+ width:100%;display:flex!important;flex:1;flex-direction:column;
+ align-items:center;justify-content:center;gap:5px;padding:0!important;
+ background:transparent!important;border:0!important;color:inherit!important;
+ cursor:pointer;text-align:center;min-width:0;
+}
+#main-content .pati-weekly-profile:focus-visible,
+#main-content .pati-weekly-head button:focus-visible{
+ outline:3px solid #285ad3!important;outline-offset:3px;
+}
+#main-content .pati-weekly-avatar-ring{
+ display:grid;place-items:center;width:88px;height:88px;padding:5px;
+ border-radius:50%;box-sizing:border-box;
+ border:4px solid #c69726;
+ background:linear-gradient(145deg,#fff4c3,#c69125);
+ box-shadow:0 4px 11px #704b1b2a;
+}
+#main-content .is-bronze .pati-weekly-avatar-ring{
+ border-color:#9e6347;background:linear-gradient(145deg,#f4ceb5,#a46d4c);
+}
+#main-content .pati-weekly-avatar{
+ display:grid;place-items:center;width:100%;height:100%;
+ border-radius:50%;object-fit:cover;background:#fff;
+ font-size:29px;overflow:hidden;color:#6b5032;
+}
+#main-content .pati-weekly-person-name{
+ display:block;max-width:100%;font-size:14px;font-weight:850;
+ overflow-wrap:anywhere;line-height:1.3;color:inherit;
+}
+#main-content .pati-weekly-handle{
+ display:block;max-width:100%;font-size:11px;font-weight:600;
+ overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.8;color:inherit;
+}
+#main-content .pati-weekly-bottom{
+ width:100%;margin-top:auto;border-top:1px solid #6c541d33;
+ padding-top:9px;display:flex;flex-direction:column;gap:5px;
+ text-align:center;align-items:center;color:inherit;
+}
+#main-content .pati-weekly-bottom span{font-size:11px;font-weight:700;color:inherit}
+#main-content .pati-weekly-bottom strong{
+ display:flex;align-items:center;gap:4px;font-size:12px;font-weight:850;
+ color:inherit;line-height:1.35;
+}
+#main-content .pati-weekly-bottom img{width:15px;height:15px;object-fit:contain}
+#main-content .pati-weekly-empty{
+ flex:1;display:grid;place-items:center;font-size:12px;
+ text-align:center;opacity:.75;color:inherit;
+}
+#main-content .pati-weekly-previous{
+ display:flex;gap:8px;flex-wrap:wrap;align-items:center;
+ padding:12px 4px 0;font-size:12px;line-height:1.6;color:inherit;
+}
+#main-content .pati-weekly-previous>strong{font-size:11px;margin-right:4px}
+#main-content .pati-weekly-previous>span{
+ border:1px solid #8d91992d;padding:5px 8px;border-radius:999px;
+ background:#8d91990d;font-size:11px;
+}
+#main-content .pati-weekly-rules{
+ margin:15px 0 0;font-size:11px;line-height:1.65;opacity:.74;color:inherit;
+}
+html[data-pati-theme="dark"] #main-content .pati-weekly-board{
+ border-color:#3d4049;background:#1b1d24;color:#f7f8fb;
+}
+html[data-pati-theme="dark"] #main-content .pati-weekly-person.is-gold{
+ background:linear-gradient(145deg,#423014,#8d621e 55%,#4d3916);
+ color:#fff0c5;border-color:#d5ad51;
+}
+html[data-pati-theme="dark"] #main-content .pati-weekly-person.is-bronze{
+ background:linear-gradient(145deg,#492d28,#7d4f39 55%,#4f302b);
+ color:#ffe5d1;border-color:#b17c62;
+}
+@media(max-width:510px){
+ #main-content .pati-weekly-board{padding:13px;border-radius:16px;margin:14px 0 22px}
+ #main-content .pati-weekly-podium{gap:8px}
+ #main-content .pati-weekly-person{padding:13px 8px 11px;min-height:218px;gap:8px}
+ #main-content .pati-weekly-avatar-ring{width:72px;height:72px;padding:4px;border-width:3px}
+ #main-content .pati-weekly-place{font-size:9px}
+ #main-content .pati-weekly-person-name{font-size:12px}
+ #main-content .pati-weekly-bottom strong{font-size:11px}
+ #main-content .pati-weekly-head button{padding:6px 8px!important;min-height:34px}
+ #main-content .pati-weekly-head p{font-size:11px}
+}
+@media(max-width:340px){#main-content .pati-weekly-avatar-ring{width:62px;height:62px}#main-content .pati-weekly-place{font-size:8px}}
+@media(prefers-reduced-motion:reduce){#main-content .pati-weekly-person::after{display:none}}
+
+/* Compact placements 3-5 follow the two featured medal cards. */
+#main-content .pati-weekly-runners{
+ margin-top:12px;display:flex;flex-direction:column;gap:7px;
+}
+#main-content .pati-weekly-compact-row{
+ display:flex;align-items:center;gap:10px;min-height:60px;
+ padding:6px 10px;border:1px solid #e3e5ea;border-radius:13px;
+ box-sizing:border-box;min-width:0;background:rgba(137,145,159,.045);
+ color:inherit;
+}
+#main-content .pati-weekly-compact-rank{
+ flex:0 0 31px;display:grid;place-items:center;
+ height:31px;border-radius:10px;
+ background:rgba(105,111,123,.12);color:inherit;
+ font-size:12px;font-weight:850;
+}
+#main-content .pati-weekly-compact-profile{
+ flex:1;min-width:0;display:flex!important;align-items:center!important;
+ gap:10px!important;padding:0!important;text-align:left!important;
+ border:0!important;background:transparent!important;
+ color:inherit!important;cursor:pointer;
+}
+#main-content .pati-weekly-compact-profile:focus-visible{
+ outline:3px solid #5c86df!important;outline-offset:4px;
+ border-radius:8px;
+}
+#main-content .pati-weekly-mini-avatar{
+ display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;
+ box-sizing:border-box;border:2px solid #c5cad3;
+ background:#eef0f3;border-radius:50%;overflow:hidden;
+ font-size:19px;color:#5d6573;
+}
+#main-content .pati-weekly-mini-avatar .pati-weekly-avatar{
+ width:100%;height:100%;object-fit:cover;font-size:17px;
+ border-radius:50%;background:transparent;
+}
+#main-content .pati-weekly-compact-name{
+ flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;
+}
+#main-content .pati-weekly-compact-name strong{
+ color:inherit;font-size:12px;font-weight:800;
+ overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+#main-content .pati-weekly-compact-name small{
+ font-size:10px;opacity:.7;color:inherit;
+ overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+#main-content .pati-weekly-compact-score{
+ flex:0 0 auto;display:flex;flex-direction:column;gap:1px;
+ text-align:right;color:inherit;padding-left:5px;
+}
+#main-content .pati-weekly-compact-score strong{
+ color:inherit;font-size:12px;font-weight:850;font-variant-numeric:tabular-nums;
+}
+#main-content .pati-weekly-compact-score small{
+ color:inherit;font-size:10px;opacity:.65;
+}
+#main-content .pati-weekly-compact-placeholder{
+ flex:1;display:flex;align-items:center;gap:10px;
+ min-width:0;font-size:11px;opacity:.7;color:inherit;
+}
+#main-content .pati-weekly-compact-row.is-empty .pati-weekly-compact-rank{
+ opacity:.75;
+}
+html[data-pati-theme="dark"] #main-content .pati-weekly-compact-row{
+ border-color:#3b3f49;background:#252832;color:#f7f8fa;
+}
+html[data-pati-theme="dark"] #main-content .pati-weekly-mini-avatar{
+ border-color:#676d79;background:#383d48;color:#e7e8eb;
+}
+@media(max-width:510px){
+ #main-content .pati-weekly-runners{margin-top:9px;gap:6px}
+ #main-content .pati-weekly-compact-row{
+  gap:7px;min-height:55px;padding:5px 8px;border-radius:12px;
+ }
+ #main-content .pati-weekly-compact-rank{
+  flex-basis:27px;height:27px;font-size:11px;border-radius:8px;
+ }
+ #main-content .pati-weekly-mini-avatar{
+  flex-basis:36px;width:36px;height:36px;font-size:16px;
+ }
+ #main-content .pati-weekly-compact-profile{gap:7px!important}
+ #main-content .pati-weekly-compact-name strong{font-size:11px}
+ #main-content .pati-weekly-compact-name small{font-size:9px}
+ #main-content .pati-weekly-compact-score strong{font-size:11px}
+}
+
+
+/* patiyiz-mobile-auth-redesign-20261030.css */
+/* Mobile-first sign-in and registration; desktop keeps the existing split layout.
+   The hero now contains the ACTUAL Patiyiz logo asset, never a generic paw SVG. */
+.auth-story-top .auth-story-icon{display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff!important;border:1px solid #ffffffcc!important;border-radius:13px!important;padding:5px!important;flex:0 0 45px!important;width:45px!important;height:45px!important}
+.auth-story-top .auth-story-icon img{display:block;width:100%!important;height:100%!important;object-fit:contain!important;filter:none!important}
+.auth-pane .auth-brand .patiyiz-chosen-logo{width:100%!important;height:100%!important;object-fit:contain!important}
+.auth-pane .pati-auth-password-field{display:flex;position:relative;width:100%;min-width:0;align-items:center}
+.auth-pane .pati-auth-password-field input{width:100%;min-width:0;padding-right:53px!important}
+.auth-pane .pati-auth-eye{position:absolute;right:7px;top:50%;transform:translateY(-50%);width:42px;height:42px;display:grid;place-items:center;border:0;border-radius:11px;background:transparent;color:#6a7078;cursor:pointer}
+.auth-pane .pati-auth-eye:focus-visible{outline:2px solid #202126!important;outline-offset:1px}
+.auth-pane .pati-auth-terms{display:block!important;line-height:1.55!important;margin:10px 0!important}
+.auth-pane .pati-auth-terms label{display:flex!important;gap:8px!important;align-items:flex-start!important;font-size:12px!important;line-height:1.65!important;padding:5px 0!important;cursor:pointer!important}
+.auth-pane .pati-auth-terms input[type="checkbox"]{flex:0 0 18px!important;width:18px!important;min-width:18px!important;height:18px!important;margin:1px 0!important;accent-color:#151619!important}
+@media(max-width:680px){
+ html:has(#auth-root:not(.hidden)),body:has(#auth-root:not(.hidden)){overflow-x:hidden!important}
+ #auth-root.auth-root:not(.hidden){display:block!important;min-height:100dvh!important;height:auto!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding:0!important;background:#fff!important;overflow-x:hidden!important}
+ #auth-root .auth-shell{display:flex!important;flex-direction:column!important;min-height:100dvh!important;height:auto!important;overflow:visible!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:#fff!important}
+ #auth-root .auth-story{display:flex!important;flex:0 0 auto!important;position:relative!important;box-sizing:border-box!important;min-height:228px!important;height:clamp(228px,36dvh,320px)!important;width:100%!important;max-width:100%!important;border:0!important;overflow:hidden!important;justify-content:space-between!important;padding:calc(16px + env(safe-area-inset-top,0px)) 23px 41px!important;background-position:center 44%!important;background-size:cover!important;background-color:#202025!important}
+ #auth-root .auth-story::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(10,12,15,.45) 0%,rgba(10,12,15,.02) 35%,rgba(10,12,15,.55) 100%);pointer-events:none}
+ #auth-root .auth-story-top{gap:10px!important;align-items:center!important;min-width:0!important}
+ #auth-root .auth-story-top .auth-story-icon{width:44px!important;height:44px!important;min-width:44px!important;flex:0 0 44px!important}
+ #auth-root .auth-story-top>strong{font-size:25px!important;color:#fff!important;line-height:1.1!important;letter-spacing:-1px!important}
+ #auth-root .auth-story-topline{display:none!important}
+ #auth-root .auth-story-bottom{position:relative;z-index:2;max-width:360px}
+ #auth-root .auth-story-label{display:none!important}
+ #auth-root .auth-story h2{font-size:clamp(22px,6.2vw,30px)!important;letter-spacing:-.9px!important;line-height:1.14!important;margin:0 0 8px!important;text-wrap:balance!important;color:#fff!important}
+ #auth-root .auth-story h2 em{color:#fff!important}
+ #auth-root .auth-story-bottom>p{font-size:11.5px!important;line-height:1.5!important;color:#f8f8f9!important;max-width:290px!important;opacity:.96!important;margin:0!important}
+ #auth-root .auth-pane{display:block!important;flex:1 0 auto!important;position:relative!important;z-index:5!important;box-sizing:border-box!important;min-height:0!important;width:100%!important;max-width:100%!important;margin:-22px 0 0!important;padding:23px clamp(18px,5vw,28px) max(29px,env(safe-area-inset-bottom,0px))!important;border:0!important;border-radius:25px 25px 0 0!important;background:#fff!important;color:#17191d!important;box-shadow:0 -13px 25px #0000000a!important;overflow:visible!important}
+ #auth-root .auth-pane .auth-card{box-sizing:border-box!important;min-width:0!important;width:100%!important;max-width:450px!important;margin:0 auto!important;padding:0!important;background:#fff!important;color:#17191d!important;border:0!important;box-shadow:none!important}
+ #auth-root .auth-pane .auth-brand{display:none!important}
+ #auth-root .auth-pane .auth-tabs{display:grid!important;grid-template-columns:1fr 1fr!important;gap:4px!important;padding:4px!important;border-radius:14px!important;margin:0 0 21px!important;border:1px solid #e9eaea!important;background:#f4f5f4!important}
+ #auth-root .auth-pane .auth-tabs button{display:flex!important;align-items:center!important;justify-content:center!important;min-width:0!important;width:100%!important;min-height:42px!important;padding:8px 10px!important;border-radius:10px!important;font-size:13px!important;color:#777b80!important;background:transparent!important}
+ #auth-root .auth-pane .auth-tabs button.active{background:#fff!important;color:#151619!important;box-shadow:0 2px 9px #00000012!important}
+ #auth-root .auth-pane .auth-eyebrow{display:none!important}
+ #auth-root .auth-pane .auth-card h2{font-size:clamp(25px,6.6vw,32px)!important;letter-spacing:-1px!important;font-weight:850!important;line-height:1.2!important;margin:0 0 7px!important;color:#151619!important}
+ #auth-root .auth-pane .auth-sub{font-size:12px!important;line-height:1.55!important;margin:0 0 19px!important;color:#858b93!important;max-width:360px!important}
+ #auth-root .auth-pane .pati-field{margin:0 0 14px!important;gap:7px!important}
+ #auth-root .auth-pane .pati-field label{font-size:12px!important;font-weight:800!important;color:#24262a!important}
+ #auth-root .auth-pane .pati-field input:not([type="checkbox"]){display:block!important;box-sizing:border-box!important;width:100%!important;max-width:100%!important;min-width:0!important;min-height:49px!important;height:49px!important;margin:0!important;padding:11px 13px!important;border-radius:12px!important;border:1px solid #dfe3e0!important;background:#fff!important;color:#17191d!important;font-size:16px!important;outline-offset:2px!important;-webkit-appearance:none!important;appearance:none!important}
+ #auth-root .auth-pane .pati-auth-password-field input{padding-right:50px!important}
+ #auth-root .auth-pane .pati-field input::placeholder{color:#9ca2aa!important}
+ #auth-root .auth-pane .pati-field input:focus{border-color:#151619!important;box-shadow:0 0 0 3px #15161914!important;outline:none!important}
+ #auth-root .auth-pane .pati-auth-eye{color:#5e646c!important}
+ #auth-root .auth-pane .auth-submit{display:flex!important;align-items:center!important;justify-content:space-between!important;box-sizing:border-box!important;width:100%!important;min-height:52px!important;margin:13px 0 0!important;padding:0 18px!important;border-radius:13px!important;background:#161719!important;color:#fff!important;font-size:14px!important;font-weight:800!important;box-shadow:0 9px 23px #00000012!important}
+ #auth-root .auth-pane .auth-bottom{margin:11px 0!important;text-align:center!important}
+ #auth-root .auth-pane .auth-bottom .btn-link{min-height:41px!important;padding:10px!important;font-size:12px!important;color:#151619!important}
+ #auth-root .auth-pane .small-note{font-size:11px!important;line-height:1.5!important;color:#878c94!important;padding-top:13px!important;border-top:1px solid #e9e9ec!important;margin-top:13px!important}
+ #auth-root .auth-pane .pati-auth-terms{font-size:11px!important;color:#5e6268!important}
+ #auth-root .auth-pane .pati-auth-terms a{color:#17191d!important;text-decoration:underline!important;text-underline-offset:2px!important}
+ #auth-root .auth-pane .pati-note{margin:0 0 12px!important}
+}
+@media(max-width:370px){
+ #auth-root .auth-story{height:215px!important;min-height:215px!important;padding-inline:18px!important}
+ #auth-root .auth-pane{padding-left:17px!important;padding-right:17px!important}
+ #auth-root .auth-pane .auth-card h2{font-size:24px!important}
+ #auth-root .auth-pane .auth-tabs{margin-bottom:15px!important}
+ #auth-root .auth-pane .pati-field{margin-bottom:10px!important}
+}
+@media(max-height:700px) and (max-width:680px){
+ #auth-root .auth-story{height:205px!important;min-height:205px!important;padding-bottom:28px!important}
+ #auth-root .auth-story h2{font-size:21px!important}
+ #auth-root .auth-story-bottom>p{font-size:10.5px!important}
+ #auth-root .auth-pane{padding-top:17px!important}
+}
+
+/* Auth screen must fully disappear after a successful login at every viewport width. */
+#auth-root.auth-root.hidden{display:none!important;visibility:hidden!important}
+
+
+/* Separate first-name and surname inputs for Patiyiz registration. */
+#auth-root #auth-form .pati-auth-name-fields{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ column-gap:12px;
+ align-items:start;
+ width:100%;
+ min-width:0;
+ box-sizing:border-box;
+}
+#auth-root #auth-form .pati-auth-name-fields .pati-field{
+ min-width:0;
+ width:100%;
+ box-sizing:border-box;
+}
+#auth-root #auth-form .pati-auth-name-fields input{
+ box-sizing:border-box;
+ width:100%!important;
+ min-width:0;
+ max-width:100%;
+}
+@media(max-width:520px){
+ #auth-root #auth-form .pati-auth-name-fields{
+  grid-template-columns:minmax(0,1fr);
+  gap:0;
+ }
+}
+
+
+/* patiyiz-clean-story-dm-shares-20261030.css */
+/* Story reshares: source author's REAL avatar left, clearly readable CTA.
+   Normal camera stories retain their original fullscreen behavior. */
+#story-overlay.pati-story-has-source .pati-story-share-card{
+ padding:0!important;gap:0!important;
+ border-radius:16px!important;overflow:hidden!important;
+ border:0!important;
+ width:min(79vw,326px)!important;max-height:100%!important;
+ background:#fff!important;box-shadow:0 16px 45px #0006!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-card-heading{
+ display:flex!important;align-items:center!important;
+ padding:10px 11px!important;margin:0!important;
+ gap:9px!important;min-width:0!important;min-height:58px!important;
+ background:#fff!important;color:#181a1e!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-profile{
+ display:flex!important;align-items:center!important;gap:9px!important;
+ min-width:0!important;width:100%!important;max-width:100%!important;
+ padding:0!important;margin:0!important;border:0!important;
+ background:transparent!important;color:#181a1e!important;text-align:left!important;
+ cursor:pointer!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-profile>.avatar,
+#story-overlay.pati-story-has-source .pati-story-share-profile>.avatar.s,
+#story-overlay.pati-story-has-source .pati-story-share-default-avatar{
+ display:grid!important;place-items:center!important;
+ width:35px!important;height:35px!important;min-width:35px!important;
+ flex:0 0 35px!important;border-radius:50%!important;overflow:hidden!important;
+ background:#222!important;color:#fff!important;font-size:14px!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-profile .avatar img{
+ width:100%!important;height:100%!important;object-fit:cover!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-profile>span:last-child{
+ display:flex!important;flex-direction:column!important;min-width:0!important;gap:3px!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-profile strong{
+ display:block!important;min-width:0!important;font-weight:850!important;
+ color:#1b1b1e!important;font-size:13px!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-profile small{
+ display:block!important;color:#71747a!important;font-size:11px!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-media{
+ width:100%!important;min-height:110px!important;
+ height:min(35dvh,315px)!important;max-height:min(35dvh,315px)!important;
+ border-radius:0!important;margin:0!important;background:#f2f2f3!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-media>img,
+#story-overlay.pati-story-has-source .pati-story-share-media>video{
+ border-radius:0!important;background:#f2f2f3!important;
+ width:100%!important;height:100%!important;object-fit:contain!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-post-caption{
+ padding:8px 13px 0!important;margin:0!important;color:#4b4d53!important;
+ font-size:12px!important;line-height:1.4!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-card>.pati-story-shared-source{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ position:relative!important;inset:auto!important;
+ width:calc(100% - 20px)!important;margin:10px!important;
+ max-width:100%!important;min-height:44px!important;height:44px!important;
+ flex:0 0 44px!important;box-sizing:border-box!important;
+ padding:9px 13px!important;border:0!important;border-radius:11px!important;
+ background:#111216!important;color:#fff!important;opacity:1!important;
+ font-size:13px!important;line-height:1.3!important;letter-spacing:0!important;
+ font-weight:850!important;text-shadow:none!important;
+ box-shadow:0 4px 12px #00000024!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-card>.pati-story-shared-source>span{
+ font-size:19px!important;line-height:1!important;color:#fff!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-sound{z-index:12!important}
+@media(max-width:740px){
+ #story-overlay.pati-story-has-source .pati-story-share-card{width:min(80vw,326px)!important}
+}
+@media(max-height:670px){
+ #story-overlay.pati-story-has-source .pati-story-share-media{height:min(29dvh,225px)!important;max-height:min(29dvh,225px)!important}
+ #story-overlay.pati-story-has-source .pati-story-share-card>.pati-story-shared-source{min-height:39px!important;height:39px!important;flex-basis:39px!important}
+}
+/* Tagged/shared post cards in DM: no black outer bubble or black bands around media. 
+   Text-only outgoing messages remain black as chosen by the user. */
+#main-content .pati-dm-layout .chat-window .chat-history .bubble-chat.pati-dm-shared-message,
+#main-content .pati-dm-layout .chat-window .chat-history .bubble-chat.mine.pati-dm-shared-message,
+html[data-pati-theme="dark"] #main-content .pati-dm-layout .chat-window .chat-history .bubble-chat.mine.pati-dm-shared-message{
+ box-sizing:border-box!important;
+ width:min(84vw,375px)!important;max-width:min(88vw,375px)!important;min-width:0!important;
+ padding:0!important;margin:0!important;overflow:hidden!important;
+ background:transparent!important;border:0!important;box-shadow:none!important;
+ color:inherit!important;border-radius:14px!important;
+}
+#main-content .pati-dm-layout .chat-history .bubble-chat.pati-dm-shared-message>.pati-dm-shared-card{
+ width:100%!important;box-sizing:border-box!important;border-radius:14px!important;
+ overflow:hidden!important;background:#fff!important;color:#1a1c21!important;
+ border:1px solid #e9e9eb!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-dm-layout .chat-history .bubble-chat.pati-dm-shared-message>.pati-dm-shared-card{
+ background:#26272b!important;color:#f3f3f4!important;border-color:#41444c!important;
+}
+#main-content .pati-dm-layout .pati-dm-shared-media,
+#main-content .pati-dm-layout .pati-dm-shared-video-wrap{
+ background:transparent!important;
+}
+#main-content .pati-dm-layout .pati-dm-shared-video{
+ object-fit:contain!important;background:transparent!important;
+}
+#main-content .pati-dm-layout .pati-dm-shared-footer{
+ min-height:40px!important;padding:10px 12px!important;
+ font-size:13px!important;font-weight:850!important;color:#1683f6!important;
+}
+#main-content .pati-dm-layout .bubble-chat.pati-dm-shared-message>small{
+ background:transparent!important;color:#777e88!important;font-size:10px!important;
+ padding:3px 7px!important;text-align:right!important;
+}
+
+
+/* patiyiz-pan-zoom-photos-20261030.css */
+/* Touch-driven photo navigation: pan across the whole zoomed image. */
+.pati-dm-lightbox .pati-dm-lightbox-stage{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ position:relative!important;overflow:hidden!important;
+ width:100%!important;max-width:100%!important;min-width:0!important;
+ touch-action:none!important;overscroll-behavior:contain!important;
+ user-select:none!important;-webkit-user-select:none!important;
+ cursor:zoom-in!important;
+}
+.pati-dm-lightbox .pati-dm-lightbox-stage.pati-zoomed{
+ cursor:grab!important;
+}
+.pati-dm-lightbox .pati-dm-lightbox-stage.pati-zoomed:active{cursor:grabbing!important}
+.pati-dm-lightbox .pati-dm-lightbox-stage img{
+ display:block!important;position:relative!important;
+ max-width:100%!important;max-height:calc(100dvh - 120px)!important;
+ width:auto!important;height:auto!important;object-fit:contain!important;
+ transform-origin:center center!important;
+ transition:none!important;will-change:transform!important;
+ user-select:none!important;-webkit-user-select:none!important;
+ -webkit-user-drag:none!important;pointer-events:none!important;
+}
+.pati-dm-lightbox .pati-dm-lightbox-actions [data-dm-zoom]{
+ min-width:37px!important;min-height:37px!important;
+}
+.pati-dm-lightbox .pati-dm-lightbox-stage:focus-visible{outline:2px solid #2388fa!important;outline-offset:-3px!important}
+#main-content .pati-carousel-slide .pati-photo img.pati-pinching,
+#main-content .pati-doubletap-photo .pati-photo img.pati-pinching{
+ position:relative!important;z-index:12!important;
+ will-change:transform!important;transition:none!important;
+ pointer-events:none!important;user-select:none!important;
+}
+#main-content .pati-carousel-slide:has(.pati-pinching){scroll-snap-align:none!important}
+@media(max-width:740px){
+ .pati-dm-lightbox .pati-dm-lightbox-stage{height:auto!important;min-height:45dvh!important;max-height:calc(100dvh - 110px)!important}
+ .pati-dm-lightbox .pati-dm-lightbox-stage img{max-height:calc(100dvh - 125px)!important}
+}
+
+
+/* patiyiz-crop-insights-mobile-final-20261029.css */
+/* 2026-10-29 • Final photo editor / private insights mobile repairs.
+   Deliberately uses existing secure Supabase metrics; no fabricated profile activity. */
+.pati-full-crop-dialog{overscroll-behavior:contain;overflow:hidden!important}
+.pati-full-crop-shell{min-height:0;height:100dvh;display:grid!important;grid-template-rows:auto minmax(0,1fr) auto}
+.pati-full-crop-head{padding-top:max(12px,env(safe-area-inset-top));padding-bottom:12px;background:var(--pui-paper,#f9f9fa);z-index:1;min-width:0}
+.pati-full-crop-head>strong{overflow:hidden;text-overflow:ellipsis}
+.pati-full-crop-stage{min-height:0;width:100%;padding:clamp(8px,2vw,18px);overflow:hidden;aspect-ratio:auto!important;background:#242528!important}
+.pati-full-crop-stage canvas{
+ width:auto!important;height:auto!important;
+ max-width:min(100%,720px)!important;max-height:100%!important;
+ object-fit:contain!important;touch-action:none!important;
+ box-sizing:border-box!important;user-select:none;
+ box-shadow:0 0 0 3px #fff9,0 8px 35px #0006!important
+}
+.pati-full-crop-guide{border:0!important}
+.pati-full-crop-controls{
+ background:var(--pui-paper,#fafafa);
+ min-height:0;max-height:min(43dvh,390px);
+ overscroll-behavior:contain;
+ gap:10px;padding-bottom:max(15px,env(safe-area-inset-bottom));
+}
+.pati-crop-top-controls button{flex:0 1 110px;min-width:64px;max-width:110px}
+.pati-crop-ratios{scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.pati-crop-ratios button{scroll-snap-align:center}
+.pati-full-crop-zoom input{min-width:0}
+.pati-crop-status:not(:empty){color:#a13631;font-weight:750;text-align:center}
+.pati-creator-dashboard{isolation:isolate;overscroll-behavior:contain}
+.pati-creator-dashboard .pati-creator-scroll{scrollbar-gutter:stable;touch-action:pan-y}
+.pati-creator-dashboard .pati-creator-container{max-width:760px}
+.pati-creator-dashboard .pati-creator-ranges button,
+.pati-creator-dashboard .pati-creator-tabs button{cursor:pointer}
+.pati-creator-dashboard .pati-creator-stat,
+.pati-creator-dashboard .pati-creator-profile-moves button{transition:background .15s ease}
+.pati-creator-dashboard .pati-creator-stat:hover,
+.pati-creator-dashboard .pati-creator-profile-moves button:hover{background:var(--pui-raised,#f2f3f5)}
+.pati-creator-dashboard .pati-creator-stat:focus-visible,
+.pati-creator-dashboard .pati-creator-visitor:focus-visible{outline:3px solid #6486cb;outline-offset:2px}
+.pati-creator-dashboard .pati-creator-visitor{min-width:0;flex-wrap:wrap}
+.pati-creator-dashboard .pati-creator-visitor time{white-space:nowrap}
+.pati-profile-insights-preview{width:calc(100% - 24px)!important;margin:13px 12px!important;min-width:0!important}
+.pati-profile-insights-preview .pati-profile-insights-value{white-space:nowrap}
+.pati-profile-insights-preview .pati-profile-insights-arrow.increase{color:#15945b!important}
+.pati-profile-insights-preview .pati-profile-insights-arrow.decrease{color:#d33e48!important}
+html[data-pati-theme="dark"] .pati-full-crop-head,
+html[data-pati-theme="dark"] .pati-full-crop-controls{background:#17181e!important;color:#f8f8fa!important}
+html[data-pati-theme="dark"] .pati-full-crop-stage{background:#090a0d!important}
+html[data-pati-theme="dark"] .pati-creator-dashboard .pati-creator-scroll,
+html[data-pati-theme="dark"] .pati-creator-dashboard .pati-creator-head,
+html[data-pati-theme="dark"] .pati-creator-dashboard{background:#17181e!important;color:#f8f8fa!important}
+html[data-pati-theme="dark"] .pati-creator-dashboard :is(.pati-creator-stat,.pati-creator-detail-grid article,.pati-creator-audience-count,.pati-creator-breakdown){
+ background:#252730!important;color:#f8f8fa!important;border-color:#444752!important}
+html[data-pati-theme="dark"] .pati-creator-dashboard :is(h2,h3,strong,.pati-creator-detail-head button){
+ color:#f8f8fa!important}
+html[data-pati-theme="dark"] .pati-creator-dashboard :is(p,small,.pati-creator-footnote,.pati-creator-private){
+ color:#c7c9d4!important}
+@media(max-width:600px){
+ .pati-full-crop-dialog{width:100vw!important;max-width:100vw!important}
+ .pati-full-crop-head{min-height:58px;gap:7px;padding-inline:12px}
+ .pati-full-crop-head button{padding:8px 11px;min-height:40px;flex-shrink:0}
+ .pati-full-crop-stage{padding:7px}
+ .pati-full-crop-controls{max-height:44dvh;padding:10px 13px max(14px,env(safe-area-inset-bottom));gap:8px}
+ .pati-crop-top-controls{gap:7px}
+ .pati-crop-top-controls button{min-height:48px}
+ .pati-creator-dashboard .pati-creator-container{padding:12px 12px max(48px,env(safe-area-inset-bottom))}
+ .pati-creator-dashboard .pati-creator-kpis,.pati-creator-dashboard .pati-creator-detail-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .pati-creator-dashboard .pati-creator-stat{min-width:0}
+}
+@media(max-height:610px) and (orientation:landscape){
+ .pati-full-crop-controls{max-height:39dvh;gap:5px;padding-block:6px}
+ .pati-crop-top-controls button{min-height:35px;font-size:17px}
+ .pati-crop-ratios button{min-height:34px;padding:6px 12px}
+ .pati-full-crop-controls>p:not(.pati-crop-status){display:none}
+}
+
+
+/* 2026-10-30: publish buttons must remain reachable on every phone height. */
+#modal-root .pati-mobile-full-page-form:has(#post-form),
+#modal-root .pati-mobile-full-page-form:has(#story-form){min-height:0!important;max-height:100dvh!important}
+#modal-root .pati-mobile-full-page-form #post-form .modal-footer,
+#modal-root .pati-mobile-full-page-form #story-form .modal-footer{
+ display:flex!important;visibility:visible!important;opacity:1!important;
+ flex:0 0 auto!important;position:relative!important;
+ min-height:72px!important;padding:10px 14px max(13px,env(safe-area-inset-bottom,0px))!important;
+ z-index:20!important;background:var(--pui-paper,#fff)!important;
+}
+#modal-root #post-form .modal-footer button[type="submit"],
+#modal-root #story-form .modal-footer button[type="submit"]{
+ display:inline-flex!important;visibility:visible!important;opacity:1!important;
+ min-width:110px!important;min-height:49px!important;
+ align-items:center!important;justify-content:center!important;
+ font-size:16px!important;font-weight:800!important;
+ background:#17191d!important;color:#fff!important;border-radius:13px!important;
+}
+#modal-root #post-form .modal-footer button[type="submit"]::after{
+ content:none!important;display:none!important
+}
+#patiyiz-system-media .pati-system-head{
+ position:sticky;top:0;z-index:15;padding:8px 10px;
+ background:#141519;box-sizing:border-box;max-width:100%;
+}
+#patiyiz-system-media .pati-system-head .pati-system-head-publish{
+ display:inline-flex;align-items:center;justify-content:center;
+ width:auto!important;max-width:112px;min-width:70px;height:auto!important;min-height:43px!important;
+ padding:8px 10px!important;border:0!important;border-radius:12px!important;
+ background:#fff!important;color:#17181b!important;font-size:13px!important;font-weight:850!important;
+ text-align:center;white-space:normal;line-height:1.2!important;
+}
+#patiyiz-system-media .pati-system-head .pati-system-head-publish[hidden]{display:none!important}
+#patiyiz-system-media .pati-system-head .pati-system-head-publish:disabled{opacity:.5!important;cursor:wait}
+#patiyiz-system-media .pati-system-publish-actions{
+ position:sticky!important;bottom:0!important;z-index:12!important;
+ background:#141519!important;
+ margin:12px 0 0!important;padding:12px 8px max(12px,env(safe-area-inset-bottom,0px))!important;
+ border-top:1px solid #42444c!important;box-sizing:border-box!important;
+}
+#patiyiz-system-media #pati-system-publish{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ visibility:visible!important;min-height:50px!important;
+ background:#fff!important;color:#17181b!important;
+}
+#patiyiz-system-media #pati-system-publish:disabled{opacity:.55!important}
+html[data-pati-theme="dark"] #modal-root .pati-mobile-full-page-form :is(#post-form,#story-form) .modal-footer{
+ background:#17191d!important;
+}
+html[data-pati-theme="dark"] #modal-root :is(#post-form,#story-form) .modal-footer button[type="submit"]{
+ background:#f5f6f8!important;color:#17191d!important;border-color:#f5f6f8!important;
+}
+/* One timeline: vaccination, veterinarian and ordinary care tasks. */
+.pati-care-calendar{
+ margin:14px 12px 20px;padding:15px 12px 12px;
+ border:1px solid var(--pui-border,#e6e6ec);border-radius:17px;
+ background:var(--pui-raised,#f8f8fa);color:var(--pui-text,#17191d);
+ box-sizing:border-box;min-width:0;
+}
+.pati-care-calendar-head{display:grid;grid-template-columns:42px minmax(0,1fr) 42px;align-items:center;gap:8px;margin-bottom:13px}
+.pati-care-calendar-head strong{text-align:center;text-transform:capitalize;font-size:15px;font-weight:850}
+.pati-care-calendar-head button{
+ width:42px;height:42px;border:1px solid var(--pui-border,#d8d8df);border-radius:12px;
+ background:var(--pui-paper,#fff);color:inherit;font-size:25px;cursor:pointer;
+}
+.pati-care-calendar-days,.pati-care-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.pati-care-calendar-days span{text-align:center;font-size:10px;font-weight:800;opacity:.7;padding:4px 0 8px}
+.pati-care-calendar-grid button{
+ display:flex;flex-direction:column;align-items:center;justify-content:center;
+ gap:1px;min-width:0;min-height:48px;padding:3px 1px;
+ border:1px solid transparent;background:transparent;color:inherit;border-radius:12px;
+ font-size:12px;font-weight:740;cursor:pointer;
+}
+.pati-care-calendar-grid button.is-outside{opacity:.35}
+.pati-care-calendar-grid button.is-today{border-color:var(--pui-border,#babcc6)}
+.pati-care-calendar-grid button.is-selected{
+ background:#20232a!important;color:white!important;border-color:#20232a!important;
+}
+.pati-care-calendar-grid button i{
+ display:grid;place-items:center;width:18px;height:17px;border-radius:7px;
+ background:#e2e5f5;color:#1c233a;font-size:10px;font-weight:850;font-style:normal;
+}
+.pati-care-calendar-foot{display:flex;justify-content:space-between;align-items:center;gap:9px;margin-top:12px}
+.pati-care-calendar-foot small{font-size:10px;line-height:1.5;color:var(--pui-secondary,#747780)}
+.pati-care-calendar-foot button{
+ flex:0 0 auto;min-height:35px;padding:7px 12px;border-radius:10px;border:1px solid var(--pui-border,#ddd);
+ background:var(--pui-paper,#fff);color:inherit;font-size:12px;font-weight:750;
+}
+html[data-pati-theme="dark"] .pati-care-calendar{background:#24262d!important;border-color:#444751!important;color:#f6f7f9!important}
+html[data-pati-theme="dark"] .pati-care-calendar-head button,
+html[data-pati-theme="dark"] .pati-care-calendar-foot button{background:#181a20!important;color:#f6f7f9!important;border-color:#4c505b!important}
+@media(max-width:390px){
+ .pati-care-calendar{margin-inline:7px;padding-inline:7px}
+ .pati-care-calendar-grid{gap:2px}
+ .pati-care-calendar-grid button{min-height:43px}
+ .pati-care-calendar-grid button i{width:16px;height:15px}
+}
+
+/* Own story hearts: visible above delete, without covering activity or swipe controls. */
+#story-overlay .pati-story-like.pati-story-like-own{
+ position:absolute!important;
+ right:14px!important;
+ bottom:calc(78px + env(safe-area-inset-bottom,0px))!important;
+ z-index:14!important;
+ width:45px!important;height:45px!important;
+ display:grid!important;place-items:center!important;
+ background:#15171dbb!important;color:#fff!important;
+ border:1px solid #ffffff88!important;border-radius:50%!important;
+ font-size:30px!important;line-height:1!important;
+}
+#story-overlay .pati-story-like.pati-story-like-own.active{
+ color:#ff335d!important;background:#fff!important;
+}
+#story-overlay.pati-story-viewers-open .pati-story-like-own{display:none!important}
+
+
+/* 30 Oct 2026 — story/reels composer layout repair.
+ * One Share action in the lower control card, never a second action in the header.
+ * This layer is intentionally scoped to the OS gallery/camera composer only. */
+#patiyiz-system-media{
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  -webkit-overflow-scrolling:touch;
+  padding:max(14px,env(safe-area-inset-top,0px)) clamp(12px,3.2vw,22px)
+    max(20px,env(safe-area-inset-bottom,0px))!important;
+}
+#patiyiz-system-media .pati-system-panel{
+  width:min(100%,580px)!important;
+  min-height:100%!important;
+  max-height:none!important;
+  overflow:visible!important;
+  padding-inline:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:clamp(12px,2.2vw,18px)!important;
+}
+#patiyiz-system-media .pati-system-head{
+  display:grid!important;
+  grid-template-columns:48px minmax(0,1fr) 48px!important;
+  align-items:center!important;
+  gap:8px!important;
+  min-height:58px!important;
+  padding:7px 2px 10px!important;
+  margin:0!important;
+  background:#08090c!important;
+  border-bottom:1px solid #262932!important;
+}
+#patiyiz-system-media .pati-system-head strong{
+  text-align:center!important;
+  font-size:clamp(17px,4.5vw,21px)!important;
+  line-height:1.2!important;
+  letter-spacing:-.03em!important;
+  white-space:normal!important;
+}
+#patiyiz-system-media .pati-system-head [data-system="close"]{
+  display:grid!important;
+  place-items:center!important;
+  width:44px!important;
+  height:44px!important;
+  line-height:1!important;
+  font-size:33px!important;
+  padding:0!important;
+  text-align:center!important;
+}
+#patiyiz-system-media .pati-system-head-spacer{
+  display:block!important;width:44px!important;height:44px!important;
+}
+#patiyiz-system-media .pati-system-head .pati-system-head-publish{
+  display:none!important;
+}
+#patiyiz-system-media #pati-system-preview{
+  width:100%!important;
+  min-width:0!important;
+  display:flex;
+  flex-direction:column;
+  gap:13px;
+}
+#patiyiz-system-media #pati-system-preview[hidden]{display:none!important}
+#patiyiz-system-media .pati-system-preview-wrap{
+  flex:none!important;
+  width:100%!important;
+  overflow:hidden!important;
+  border-radius:20px!important;
+  background:#15161b!important;
+}
+#patiyiz-system-media .pati-system-preview-media{
+  border-radius:18px!important;
+  background:#15161b!important;
+  overscroll-behavior-x:contain;
+}
+#patiyiz-system-media[data-mode="story"] .pati-system-preview-media,
+#patiyiz-system-media[data-mode="reels"] .pati-system-preview-media{
+  width:min(100%,355px)!important;
+  max-width:100%!important;
+  max-height:min(49dvh,550px)!important;
+  margin-inline:auto!important;
+}
+#patiyiz-system-media .pati-system-preview-media :is(img,video){
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  background:#15161b!important;
+}
+#patiyiz-system-media .pati-system-summary{
+  margin:1px 0!important;
+  color:#b8bbc4!important;
+  text-align:center!important;
+  line-height:1.4!important;
+  font-size:13px!important;
+}
+#patiyiz-system-media .pati-system-edit-panel{
+  width:100%;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:13px;
+  border:1px solid #343741;
+  background:#14161b;
+  border-radius:20px;
+  padding:clamp(12px,3vw,18px);
+  margin:2px 0 0;
+  box-shadow:0 8px 26px rgba(0,0,0,.12);
+}
+#patiyiz-system-media .pati-system-crop-entry{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:10px!important;
+  min-height:53px!important;
+  margin:0!important;
+  padding:13px 14px!important;
+  border:1px solid #343741!important;
+  border-radius:14px!important;
+  background:#272a32!important;
+  color:#f7f7f9!important;
+  font-size:clamp(13px,3.7vw,15px)!important;
+  font-weight:750!important;
+  line-height:1.3!important;
+  white-space:normal!important;
+  text-align:left!important;
+  overflow-wrap:anywhere;
+}
+#patiyiz-system-media .pati-system-crop-entry[hidden]{display:none!important}
+#patiyiz-system-media .pati-system-crop-chevron{
+  font-size:26px;
+  font-weight:400;
+  line-height:1;
+  margin-inline-start:auto;
+  color:#adb1bb;
+  flex:none;
+}
+#patiyiz-system-media .pati-system-edit-panel :is(.pati-system-audience,.pati-system-caption-label){
+  margin:0!important;
+  max-width:100%;
+}
+#patiyiz-system-media .pati-system-edit-panel .pati-system-audience{
+  display:grid;
+  gap:7px;
+  line-height:1.35;
+}
+#patiyiz-system-media .pati-system-edit-panel :is(#pati-system-caption,.pati-system-audience select){
+  width:100%!important;
+  max-width:100%;
+  min-width:0;
+  margin:0!important;
+  border-radius:12px!important;
+}
+#patiyiz-system-media .pati-system-publish-actions{
+  position:static!important;
+  bottom:auto!important;
+  z-index:auto!important;
+  margin:0!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  gap:12px!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+#patiyiz-system-media[data-mode="story"] .pati-system-publish-actions,
+#patiyiz-system-media[data-mode="reels"] .pati-system-publish-actions{
+  grid-template-columns:minmax(0,1fr)!important;
+}
+#patiyiz-system-media[data-mode="story"] .pati-system-publish-actions button,
+#patiyiz-system-media[data-mode="reels"] .pati-system-publish-actions button{
+  grid-column:1 / -1!important;
+}
+#patiyiz-system-media .pati-system-publish-actions button{
+  min-height:52px!important;
+  margin:0!important;
+  padding:13px 14px!important;
+  font-size:14px!important;
+  font-weight:750!important;
+  border-radius:14px!important;
+  white-space:normal!important;
+}
+#patiyiz-system-media .pati-system-publish-actions [data-system="rechoose"]{
+  background:#292c33!important;
+  color:#fff!important;
+  border:1px solid #656a74!important;
+}
+#patiyiz-system-media #pati-system-publish{
+  min-height:56px!important;
+  border:0!important;
+  background:#fff!important;
+  color:#121318!important;
+  font-size:16px!important;
+  font-weight:850!important;
+}
+#patiyiz-system-media .pati-system-modes{
+  flex:none!important;
+  position:static!important;
+  display:flex!important;
+  justify-content:center!important;
+  flex-wrap:wrap!important;
+  gap:8px!important;
+  width:100%!important;
+  margin-top:auto!important;
+  padding:17px 0 max(12px,env(safe-area-inset-bottom,0px))!important;
+}
+#patiyiz-system-media .pati-system-modes button{
+  min-height:44px!important;
+  padding:10px 14px!important;
+  border-radius:999px!important;
+}
+@media(max-width:420px){
+ #patiyiz-system-media .pati-system-panel{
+   padding-inline:0!important;
+   overflow:visible!important;
+ }
+ #patiyiz-system-media .pati-system-edit-panel{gap:11px;padding:12px}
+ #patiyiz-system-media .pati-system-publish-actions button{
+   font-size:14px!important;
+ }
+ #patiyiz-system-media[data-mode="story"] .pati-system-preview-media,
+ #patiyiz-system-media[data-mode="reels"] .pati-system-preview-media{
+   max-height:43dvh!important;
+ }
+}
+@media(max-height:680px){
+ #patiyiz-system-media .pati-system-panel{overflow:visible!important}
+ #patiyiz-system-media[data-mode="story"] .pati-system-preview-media,
+ #patiyiz-system-media[data-mode="reels"] .pati-system-preview-media{max-height:34dvh!important}
+}
+
+/* Story visibility control — white, readable labels on the dark media composer.
+ * Applies to the existing selector; access rules and publish behavior stay unchanged. */
+#patiyiz-system-media[data-mode="story"] .pati-system-edit-panel label.pati-system-audience{
+  color:#ffffff!important;
+  font-weight:750!important;
+  font-size:14px!important;
+  line-height:1.45!important;
+}
+#patiyiz-system-media[data-mode="story"] .pati-system-edit-panel #pati-system-audience{
+  color:#ffffff!important;
+  background:#272a32!important;
+  border:1px solid #555964!important;
+  padding:11px 13px!important;
+  min-height:46px!important;
+  color-scheme:dark;
+  font:inherit!important;
+}
+#patiyiz-system-media[data-mode="story"] #pati-system-audience option{
+  background:#272a32;
+  color:#ffffff;
+}
+html[data-pati-theme="dark"] #modal-root #post-form .pati-field:has(select[name="story_audience"]) label,
+html[data-pati-theme="dark"] #modal-root #story-form .pati-field:has(select[name="story_audience"]) label{
+  color:#ffffff!important;
+}
+html[data-pati-theme="dark"] #modal-root #post-form select[name="story_audience"],
+html[data-pati-theme="dark"] #modal-root #story-form select[name="story_audience"]{
+  color:#fff!important;background:#272a32!important;border-color:#555964!important;color-scheme:dark;
+}
+
+
+/* 30 Oct 2026 | True circle-fill avatars, without a double inset frame. */
+#main-content .pati-ig-profile .pati-ig-avatar{
+ padding:0!important;
+ overflow:visible!important;
+ border-radius:50%!important;
+ box-sizing:border-box!important;
+}
+#main-content .pati-ig-profile .pati-ig-avatar.pati-profile-story-seen{
+ padding:0!important;
+ border:2px solid #a6a9af!important;
+}
+#main-content .pati-ig-profile .pati-ig-avatar.pati-profile-has-story{
+ padding:0!important;
+}
+#main-content .pati-ig-profile .pati-ig-avatar > .avatar,
+#main-content .pati-ig-profile .pati-ig-avatar > .pati-profile-story-view,
+#main-content .pati-ig-profile .pati-ig-avatar .pati-profile-story-view > .avatar{
+ display:block!important;
+ width:100%!important;
+ height:100%!important;
+ max-width:none!important;
+ min-width:0!important;
+ aspect-ratio:1/1!important;
+ padding:0!important;
+ margin:0!important;
+ box-sizing:border-box!important;
+ border:0!important;
+ border-radius:50%!important;
+ overflow:hidden!important;
+}
+#main-content .pati-ig-profile .pati-ig-avatar .avatar img,
+#main-content .pati-ig-profile .pati-ig-avatar .pati-profile-story-view img{
+ display:block!important;
+ width:100%!important;
+ height:100%!important;
+ max-width:none!important;
+ border-radius:50%!important;
+ border:0!important;
+ object-fit:cover!important;
+ object-position:center!important;
+ transform:none!important;
+}
+/* Profile editor follows the same framing. */
+#modal-root .pati-profile-edit-modal .pati-edit-avatar{
+ display:grid;place-items:center;
+ border-radius:50%!important;overflow:hidden!important;
+ padding:0!important;
+}
+#modal-root .pati-profile-edit-modal .pati-edit-avatar img{
+ display:block;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;
+ border-radius:50%!important;
+}
+
+/* 30 Oct 2026 | Story photo extends fully to the bottom action, never a black unused strip. */
+#story-overlay .story-player .story-big-photo,
+#story-overlay .story-player .story-big-video{
+ display:block!important;
+ width:100%!important;
+ height:100%!important;
+ object-fit:cover!important;
+ object-position:center!important;
+ background:#08090c!important;
+}
+#story-overlay.pati-story-own .story-player::after{
+ content:'';
+ position:absolute;
+ inset:auto 0 0;
+ height:min(47%,420px);
+ background:linear-gradient(transparent,rgba(0,0,0,.2) 35%,rgba(0,0,0,.58));
+ pointer-events:none;
+ z-index:7;
+}
+/* Actual story actions live in a single ordered vertical container.
+   Override previously absolute-positioned caption / viewer / heart / delete styles. */
+#story-overlay.pati-story-own .pati-own-story-stack{
+ position:absolute!important;
+ z-index:19!important;
+ /* Raise neither caption nor activity: shift the stack down while
+    respecting iPhone's home-indicator safe area and keeping Sil visible. */
+ bottom:calc(4px + env(safe-area-inset-bottom,0px))!important;
+ left:14px!important;
+ right:14px!important;
+ box-sizing:border-box!important;
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:stretch!important;
+ gap:6px!important;
+ max-height:min(53dvh,470px);
+ pointer-events:none;
+}
+#story-overlay.pati-story-own .pati-own-story-stack > *,
+#story-overlay.pati-story-own .pati-own-story-stack button{pointer-events:auto}
+#story-overlay.pati-story-own .pati-own-story-stack > .story-caption{
+ position:relative!important;
+ top:auto!important;bottom:auto!important;left:auto!important;right:auto!important;
+ width:100%!important;
+ box-sizing:border-box!important;
+ margin:0!important;
+ padding:13px 17px!important;
+ text-align:center!important;
+ font-size:14px!important;
+ line-height:1.5!important;
+ border-radius:17px!important;
+ color:white!important;
+ background:#090a0bc7!important;
+ max-height:min(18dvh,138px)!important;
+ overflow-y:auto!important;
+ overflow-wrap:anywhere!important;
+ white-space:pre-wrap!important;
+ flex:0 1 auto;
+}
+#story-overlay.pati-story-own .pati-own-story-stack > .pati-story-shared-source{
+ position:relative!important;
+ inset:auto!important;
+ margin:0!important;
+ width:100%!important;
+ max-width:none!important;
+ flex:0 0 auto;
+}
+#story-overlay.pati-story-own .pati-own-story-actions{
+ display:flex!important;
+ align-items:flex-end!important;
+ justify-content:space-between!important;
+ gap:12px!important;
+ min-width:0!important;
+ flex:0 0 auto;
+}
+#story-overlay.pati-story-own .pati-own-story-actions > .story-viewers-button,
+#story-overlay.pati-story-own .pati-own-story-actions > .pati-story-like-own{
+ position:relative!important;
+ top:auto!important;bottom:auto!important;left:auto!important;right:auto!important;
+ z-index:20!important;
+ margin:0!important;
+ float:none!important;
+ transform:none!important;
+}
+#story-overlay.pati-story-own .pati-own-story-actions > .story-viewers-button{
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:flex-start!important;
+ gap:5px!important;
+ width:min(64vw,180px)!important;
+ min-width:0!important;
+ min-height:110px!important;
+ max-height:155px!important;
+ padding:12px 14px!important;
+ box-sizing:border-box!important;
+ flex:0 1 auto;
+ border-radius:22px!important;
+ background:rgba(15,15,20,.78)!important;
+ color:#fff!important;
+}
+#story-overlay.pati-story-own .pati-own-story-actions > .pati-story-like-own{
+ flex:0 0 52px!important;
+ display:grid!important;
+ place-items:center!important;
+ width:52px!important;height:52px!important;
+ border-radius:50%!important;
+ align-self:flex-end!important;
+}
+#story-overlay.pati-story-own .pati-own-story-footer{
+ display:flex!important;
+ justify-content:flex-end!important;
+ flex:0 0 auto;
+}
+#story-overlay.pati-story-own .pati-own-story-footer > .story-delete{
+ position:relative!important;
+ inset:auto!important;
+ margin:0!important;
+ z-index:20!important;
+ min-height:48px!important;
+ min-width:104px!important;
+ border-radius:22px!important;
+}
+#story-overlay.pati-story-viewers-open .pati-own-story-stack{display:none!important}
+@media(max-height:690px){
+ #story-overlay.pati-story-own .pati-own-story-stack{gap:5px!important;max-height:54dvh}
+ #story-overlay.pati-story-own .pati-own-story-actions > .story-viewers-button{min-height:82px!important}
+ #story-overlay.pati-story-own .pati-own-story-stack > .story-caption{max-height:12dvh!important}
+}
+
+/* 30 Oct 2026 | Real square editor: 4 resizable corners, image pan and pinch zoom. */
+body.pati-avatar-crop-open{overflow:hidden!important}
+#pati-avatar-crop-overlay{
+ position:fixed;inset:0;z-index:260000;
+ background:#0c0d10;color:#fff;
+ display:flex;justify-content:center;align-items:stretch;
+ overflow:hidden;overscroll-behavior:contain;
+}
+#pati-avatar-crop-overlay *{box-sizing:border-box}
+#pati-avatar-crop-overlay .pati-avatar-crop-panel{
+ width:min(100%,680px);
+ height:100dvh;min-height:0;
+ display:flex;flex-direction:column;
+ padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+ background:#111216;
+}
+#pati-avatar-crop-overlay header{
+ display:grid;grid-template-columns:80px 1fr 80px;
+ align-items:center;gap:5px;
+ min-height:66px;padding:10px 12px;
+ border-bottom:1px solid #303136;
+}
+#pati-avatar-crop-overlay header strong{font-size:15px;text-align:center;line-height:1.35}
+#pati-avatar-crop-overlay header button{
+ border:0;color:#fff;background:transparent;
+ min-height:42px;padding:8px 5px;
+ border-radius:10px;font:inherit;font-size:14px;
+}
+#pati-avatar-crop-overlay header .pati-avatar-crop-save{
+ background:#fff;color:#131417;font-weight:800;
+}
+#pati-avatar-crop-overlay header button:disabled{opacity:.55}
+#pati-avatar-crop-overlay .pati-avatar-crop-help{
+ margin:0;padding:12px 24px 14px;
+ text-align:center;color:#b9bcc4;
+ font-size:12px;line-height:1.5;
+}
+#pati-avatar-crop-overlay .pati-avatar-crop-stage{
+ position:relative;flex:1 1 auto;min-height:170px;min-width:0;
+ background:#0c0d0f;
+ overflow:hidden;touch-action:none;
+ user-select:none;-webkit-user-select:none;
+}
+#pati-avatar-crop-overlay canvas{
+ width:100%;height:100%;
+ display:block;touch-action:none;
+}
+#pati-avatar-crop-overlay .pati-avatar-crop-square{
+ position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+ border:2px solid #fff;outline:1px solid #151515;
+ box-shadow:0 0 0 100vmax rgba(0,0,0,.48);
+ pointer-events:none;touch-action:none;
+}
+#pati-avatar-crop-overlay .pati-avatar-crop-grid{
+ position:absolute;inset:0;
+ background:linear-gradient(to right,transparent calc(33.333% - .5px),#ffffff70 33.333%,transparent calc(33.333% + .5px),transparent calc(66.666% - .5px),#ffffff70 66.666%,transparent calc(66.666% + .5px)),
+ linear-gradient(to bottom,transparent calc(33.333% - .5px),#ffffff70 33.333%,transparent calc(33.333% + .5px),transparent calc(66.666% - .5px),#ffffff70 66.666%,transparent calc(66.666% + .5px));
+}
+#pati-avatar-crop-overlay .pati-avatar-crop-square .corner{
+ position:absolute;width:32px;height:32px;
+ border:4px solid #fff;
+ pointer-events:auto;touch-action:none;
+ border-radius:2px;
+}
+#pati-avatar-crop-overlay .corner.top-left{top:-4px;left:-4px;border-right:0;border-bottom:0}
+#pati-avatar-crop-overlay .corner.top-right{top:-4px;right:-4px;border-left:0;border-bottom:0}
+#pati-avatar-crop-overlay .corner.bottom-left{bottom:-4px;left:-4px;border-top:0;border-right:0}
+#pati-avatar-crop-overlay .corner.bottom-right{bottom:-4px;right:-4px;border-top:0;border-left:0}
+#pati-avatar-crop-overlay footer{
+ flex:0 0 auto;
+ display:grid;gap:9px;
+ padding:18px 20px max(18px,env(safe-area-inset-bottom,0px));
+ font-size:13px;color:#e8e9eb;
+}
+#pati-avatar-crop-overlay footer input{width:100%;height:28px;accent-color:#fff}
+#pati-avatar-crop-overlay footer small{color:#a8acb5;font-size:11px}
+@media(max-height:650px){
+ #pati-avatar-crop-overlay header{min-height:51px}
+ #pati-avatar-crop-overlay .pati-avatar-crop-help{padding:7px 18px}
+ #pati-avatar-crop-overlay footer{padding-block:10px}
+}
+@media(prefers-reduced-motion:reduce){#pati-avatar-crop-overlay *{animation:none!important;transition:none!important}}
+
+/* 30 Oct 2026 | Own-story bottom-left activity aligned with the Sil action.
+   The personal story has no like button; other people's heart stays as before. */
+#story-overlay.pati-story-own .pati-own-story-footer{
+ display:flex!important;
+ flex-direction:row!important;
+ align-items:flex-end!important;
+ justify-content:space-between!important;
+ gap:12px!important;
+ width:100%!important;
+ min-width:0!important;
+}
+#story-overlay.pati-story-own .pati-own-story-footer > .story-viewers-button{
+ position:relative!important;
+ inset:auto!important;
+ transform:none!important;
+ float:none!important;
+ margin:0!important;
+ display:flex!important;
+ flex:0 1 min(50vw,190px)!important;
+ flex-direction:column!important;
+ align-items:flex-start!important;
+ justify-content:center!important;
+ gap:6px!important;
+ width:min(50vw,190px)!important;
+ min-width:0!important;
+ max-width:190px!important;
+ min-height:104px!important;
+ max-height:144px!important;
+ overflow:hidden!important;
+ box-sizing:border-box!important;
+ padding:12px 13px!important;
+ background:rgba(13,13,18,.78)!important;
+ color:#fff!important;
+ border:1px solid rgba(255,255,255,.44)!important;
+ border-radius:21px!important;
+ z-index:20!important;
+ text-align:left!important;
+}
+#story-overlay.pati-story-own .pati-own-story-footer > .story-viewers-button .pati-story-viewer-preview-label{
+ font-size:16px!important;
+ font-weight:800!important;
+ line-height:1.2!important;
+}
+#story-overlay.pati-story-own .pati-own-story-footer > .story-viewers-button .pati-story-viewer-preview-status{
+ font-size:12px!important;
+ line-height:1.3!important;
+}
+#story-overlay.pati-story-own .pati-own-story-footer > .story-delete{
+ align-self:flex-end!important;
+ flex:0 0 auto!important;
+}
+#story-overlay.pati-story-own .pati-own-story-stack > .story-caption{
+ margin-bottom:6px!important;
+}
+#story-overlay.pati-story-own .pati-story-like-own{display:none!important}
+@media(max-width:350px){
+ #story-overlay.pati-story-own .pati-own-story-footer{gap:8px!important}
+ #story-overlay.pati-story-own .pati-own-story-footer > .story-viewers-button{
+  width:min(49vw,170px)!important;
+  min-height:88px!important;
+  padding:9px 10px!important;
+ }
+ #story-overlay.pati-story-own .pati-own-story-footer > .story-delete{min-width:88px!important}
+}
+
+
+/* patiyiz-profile-professional-title-20261031.css */
+/* Patiyiz profile: editable bold professional title, immediately above biography. */
+#main-content .pati-ig-profile .pati-ig-about{
+ box-sizing:border-box;
+ width:100%;
+ min-width:0;
+ padding:2px clamp(16px,5vw,48px) 10px!important;
+ text-align:left;
+ color:#212126;
+}
+#main-content .pati-ig-profile .pati-ig-about .pati-ig-profession{
+ display:block!important;
+ width:100%;
+ min-width:0;
+ font-family:inherit;
+ font-size:15px!important;
+ line-height:1.38!important;
+ font-weight:850!important;
+ letter-spacing:-.012em;
+ color:#17181d!important;
+ opacity:1!important;
+ white-space:normal!important;
+ overflow-wrap:anywhere;
+ margin:0!important;
+ padding:0!important;
+}
+#main-content .pati-ig-profile .pati-ig-about .pati-ig-bio{
+ box-sizing:border-box;
+ margin:0!important;
+ padding:4px 0 0!important;
+ font-size:14px!important;
+ line-height:1.53!important;
+ font-weight:400!important;
+ letter-spacing:normal;
+ color:#36383e!important;
+ white-space:pre-line!important;
+ overflow-wrap:anywhere;
+}
+#main-content .pati-ig-profile .pati-ig-about .pati-ig-bio:first-child{
+ padding-top:0!important;
+}
+#modal-root #profile-form .pati-profile-title-field{
+ min-width:0;
+}
+#modal-root #profile-form .pati-profile-title-field input{
+ box-sizing:border-box;
+ max-width:100%;
+ width:100%;
+ font-family:inherit;
+ font-size:16px;
+}
+#modal-root #profile-form .pati-profile-title-field small{
+ display:block;
+ margin-top:6px;
+ font-size:12px;
+ line-height:1.45;
+ color:#60636c;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-about,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-about .pati-ig-profession{
+ color:#f4f4f6!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-about .pati-ig-bio{
+ color:#dedee4!important;
+}
+html[data-pati-theme="dark"] #modal-root #profile-form .pati-profile-title-field small{
+ color:#c0c2cb;
+}
+@media(max-width:740px){
+ #main-content .pati-ig-profile .pati-ig-about{
+  padding:5px 15px 9px!important;
+ }
+ #main-content .pati-ig-profile .pati-ig-about .pati-ig-profession{
+  font-size:14px!important;
+  line-height:1.35!important;
+  font-weight:850!important;
+ }
+ #main-content .pati-ig-profile .pati-ig-about .pati-ig-bio{
+  padding-top:3px!important;
+  font-size:13px!important;
+ }
+}
+@media(max-width:350px){
+ #main-content .pati-ig-profile .pati-ig-about{padding-inline:12px!important}
+}
+
+
+/* patiyiz-profile-title-picker-20261031.css */
+/* Fullscreen selectable profile titles + legible profile text */
+#modal-root #profile-form .pati-profile-title-open{box-sizing:border-box;display:flex!important;align-items:center;justify-content:space-between;width:100%;min-height:52px;gap:14px;padding:12px 15px!important;text-align:left;border-radius:14px!important;border:1px solid #cfd1d7!important;background:#fafafd!important;color:#222329!important;font:inherit;font-size:15px!important;font-weight:650!important;cursor:pointer}
+#modal-root #profile-form .pati-profile-title-open [data-pati-profile-title-current]{flex:1;overflow-wrap:anywhere;color:inherit!important}
+#modal-root #profile-form .pati-profile-title-chevron{flex:none;font-size:26px;font-weight:300;line-height:1;color:inherit}
+#modal-root #profile-form .pati-profile-title-open:focus-visible{outline:3px solid #5c80ce!important;outline-offset:3px}
+html[data-pati-theme="dark"] #modal-root #profile-form .pati-profile-title-open{background:#25262e!important;color:#fff!important;border-color:#555763!important}
+body.pati-title-picker-open{overflow:hidden!important}
+.pati-title-picker,.pati-title-picker *{box-sizing:border-box}
+.pati-title-picker{position:fixed!important;inset:0!important;z-index:2147483000!important;display:flex!important;flex-direction:column;width:100%;height:100dvh;overflow:hidden;background:#fff!important;color:#17181d!important;font-family:inherit}
+.pati-title-picker-shell{width:100%;height:100%;max-height:100%;min-height:0;display:flex;flex-direction:column;background:inherit;color:inherit}
+.pati-title-picker-header{display:flex;align-items:center;gap:13px;flex:0 0 auto;border-bottom:1px solid #ebedf0;padding:max(14px,env(safe-area-inset-top)) 18px 14px;background:inherit;color:inherit}
+.pati-title-picker-header>div{flex:1;min-width:0}
+.pati-title-picker-header span{font-size:10px!important;font-weight:800!important;letter-spacing:.1em;color:inherit!important;opacity:.7}
+.pati-title-picker-header h2{font-size:19px!important;line-height:1.35!important;font-weight:850!important;color:inherit!important;margin:2px 0 0!important}
+.pati-title-picker button{color:inherit;cursor:pointer;font-family:inherit}
+.pati-title-picker-back{flex:none;width:40px;height:40px;background:#f0f1f4!important;border:0!important;border-radius:12px!important;display:grid;place-items:center;font-size:22px!important;color:inherit!important}
+.pati-title-picker-apply-top{font-size:13px!important;font-weight:850!important;min-height:40px;padding:8px 13px!important;border-radius:11px!important;border:0!important;background:#17181d!important;color:#fff!important}
+.pati-title-picker-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:18px clamp(16px,4vw,32px) 28px;scrollbar-width:thin}
+.pati-title-picker-scroll>*{max-width:850px;margin-left:auto;margin-right:auto}
+.pati-title-picker-intro p{font-size:13px;line-height:1.6;color:inherit;opacity:.8;margin:0 0 12px}
+.pati-title-picker-selected{display:flex;flex-wrap:wrap;gap:7px;align-items:center;min-height:33px}
+.pati-title-picked{display:inline-flex;align-items:center;gap:7px;padding:5px 6px 5px 11px;border-radius:999px;background:#222329!important;color:#fff!important;font-size:12px;font-weight:750}
+.pati-title-picked button{width:24px;height:24px;border:0!important;border-radius:50%!important;display:grid;place-items:center;background:#ffffff30!important;color:#fff!important;font-size:17px!important;line-height:1}
+.pati-title-picker-no-selection{color:inherit;opacity:.72;font-size:12px}
+.pati-title-picker-counter{margin-top:8px;font-size:11px;color:inherit;opacity:.72;font-variant-numeric:tabular-nums}
+.pati-title-picker-search{display:flex;align-items:center;gap:10px;min-height:51px;width:100%;border:1px solid #d3d6db;background:#f5f6f8;color:#242630;border-radius:14px;margin-top:19px;margin-bottom:18px;padding:0 15px}
+.pati-title-picker-search>span{font-size:26px;line-height:1;color:inherit;opacity:.75}
+.pati-title-picker-search input{display:block;flex:1;min-width:0;width:100%;min-height:46px;padding:0;background:transparent!important;border:0!important;box-shadow:none!important;outline:none!important;color:inherit!important;font:inherit;font-size:16px!important}
+.pati-title-picker-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:18px;row-gap:16px}
+.pati-title-picker-category{min-width:0}
+.pati-title-picker-category h3,.pati-title-picker-custom h3{margin:0 0 9px!important;font-size:13px!important;font-weight:850!important;color:inherit!important;line-height:1.4}
+.pati-title-picker-options{display:flex;flex-direction:column;gap:5px;min-width:0}
+.pati-title-picker-item{display:flex;align-items:center;gap:12px;min-width:0;min-height:46px;cursor:pointer;padding:10px 12px;border-radius:11px;border:1px solid #e8eaee;background:#f7f8fa;color:#222329}
+.pati-title-picker-item.is-selected{border-color:#17181d;background:#e8eaef}
+.pati-title-picker-item input[type="checkbox"]{flex:0 0 18px;width:18px;height:18px;margin:0;accent-color:#222329}
+.pati-title-picker-item-name{flex:1;min-width:0;overflow-wrap:anywhere;font-size:13px!important;font-weight:650!important;line-height:1.4;color:inherit!important}
+.pati-title-picker-check{width:21px;flex:none;text-align:center;font-size:18px;color:inherit;font-weight:900}
+.pati-title-picker-custom{margin-top:19px;border-top:1px solid #dddfe5;padding-top:17px}
+.pati-title-picker-custom-row{display:flex;gap:8px}
+.pati-title-picker-custom input{flex:1;min-width:0;min-height:46px;max-width:100%;border-radius:12px;border:1px solid #cfd2d9!important;background:transparent!important;color:inherit!important;padding:10px 12px;font-family:inherit;font-size:16px!important}
+.pati-title-picker-custom-row button{min-height:46px;flex:none;border:0!important;border-radius:12px!important;padding:9px 15px!important;color:#fff!important;background:#222329!important;font-size:12px!important;font-weight:850!important}
+.pati-title-picker-no-result{font-size:13px;line-height:1.6;opacity:.8;color:inherit}
+.pati-title-picker-error{min-height:16px;margin:10px 0 0;color:#a3202e;font-size:12px;line-height:1.5}
+.pati-title-picker-footer{flex:none;width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px solid #e5e7eb;background:inherit;padding:12px clamp(16px,4vw,32px) max(13px,env(safe-area-inset-bottom))}
+.pati-title-picker-footer button{display:grid;place-items:center;min-height:48px;padding:12px 18px!important;border-radius:13px!important;font-weight:850!important;font-size:13px!important}
+.pati-title-picker-clear{border:1px solid #c7cbd2!important;color:inherit!important;background:transparent!important}
+.pati-title-picker-save{border:1px solid #17181d!important;color:#fff!important;background:#17181d!important;flex:1;max-width:340px}
+.pati-title-picker button:focus-visible,.pati-title-picker input:focus-visible{outline:3px solid #6c8ef2!important;outline-offset:2px!important}
+html[data-pati-theme="dark"] .pati-title-picker{background:#15161b!important;color:#fff!important}
+html[data-pati-theme="dark"] .pati-title-picker-header,html[data-pati-theme="dark"] .pati-title-picker-footer{border-color:#353741}
+html[data-pati-theme="dark"] .pati-title-picker-back{background:#2b2c33!important;color:#fff!important}
+html[data-pati-theme="dark"] .pati-title-picker-search{background:#26282f!important;border-color:#444750;color:#fff}
+html[data-pati-theme="dark"] .pati-title-picker-item{background:#23252b;border-color:#3b3e47;color:#fff}
+html[data-pati-theme="dark"] .pati-title-picker-item.is-selected{background:#33363e;border-color:#eef0f4}
+html[data-pati-theme="dark"] .pati-title-picker-item input{accent-color:#fff}
+html[data-pati-theme="dark"] .pati-title-picked{background:#eaecef!important;color:#17181d!important}
+html[data-pati-theme="dark"] .pati-title-picked button{background:#0002!important;color:#17181d!important}
+html[data-pati-theme="dark"] .pati-title-picker-custom{border-color:#444750}
+html[data-pati-theme="dark"] .pati-title-picker-apply-top,html[data-pati-theme="dark"] .pati-title-picker-custom-row button,html[data-pati-theme="dark"] .pati-title-picker-save{background:#f5f5f6!important;color:#17181d!important;border-color:#f5f5f6!important}
+html[data-pati-theme="dark"] .pati-title-picker-error{color:#ff99a5}
+html[data-pati-theme="dark"] .pati-title-picker-search input::placeholder,html[data-pati-theme="dark"] .pati-title-picker-custom input::placeholder{color:#b9bbc3!important}
+@media(max-width:670px){.pati-title-picker-results{grid-template-columns:minmax(0,1fr)}.pati-title-picker-header{padding-left:14px;padding-right:14px}.pati-title-picker-scroll{padding:14px 14px 22px}.pati-title-picker-footer{padding-left:14px;padding-right:14px}}
+@media(prefers-reduced-motion:reduce){.pati-title-picker-item{transition:none}}
+/* All profile text should remain equally bright and legible in dark mode. */
+html[data-pati-theme="dark"] #main-content .pati-ig-profile,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-summary{background:#16171b!important;color:#fff!important}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-info,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-handle,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-handle-row,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-name,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-stats,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-stats b,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-stats small,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-stats span,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-stats button,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-about,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-profession,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-bio,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-mutual-followers,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-links,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-links a,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-tabs button{color:#fff!important;opacity:1!important}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-about .pati-ig-bio{color:#fff!important;opacity:1!important}
+html:not([data-pati-theme="dark"]) #main-content .pati-ig-profile .pati-ig-about .pati-ig-bio{color:#17181d!important;opacity:1!important}
+
+/* Surface-specific contrast so white profile text never lands on white cards. */
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-links .pati-profile-link,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-links .pati-profile-link:hover{
+ background:#25262e!important;border-color:#444650!important;color:#fff!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-link-label,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-link-domain,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-link-arrow{
+ color:#fff!important;opacity:1!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-tabs{
+ background:#16171b!important;border-color:#42434b!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-tabs button{
+ background:transparent!important;color:#fff!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-tabs button.active{
+ background:#2e3039!important;color:#fff!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-private-message,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-empty{
+ background:#25262e!important;color:#fff!important;
+}
+
+
+/* patiyiz-story-text-contrast-20261031.css */
+/* Story sharing contrast: text-only posts are readable instead of black-on-black. */
+#story-overlay.pati-story-has-source .pati-story-share-card .pati-story-share-media.pati-story-share-media-text{
+ display:flex!important;align-items:center!important;justify-content:flex-start!important;
+ min-height:145px!important;height:auto!important;max-height:min(44dvh,340px)!important;
+ padding:19px 18px!important;box-sizing:border-box!important;
+ overflow-y:auto!important;overscroll-behavior:contain;
+ background:#f7f8fa!important;color:#15161a!important;
+ text-align:left!important;border:0!important;border-radius:0!important;
+ white-space:normal!important;word-break:normal!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-card .pati-story-share-text-content{
+ display:block!important;width:100%!important;max-width:100%!important;
+ white-space:pre-line!important;overflow-wrap:anywhere!important;
+ margin:0!important;padding:0!important;opacity:1!important;
+ font-family:inherit!important;font-size:clamp(13px,2.8vw,16px)!important;
+ font-weight:650!important;line-height:1.55!important;
+ color:#15161a!important;-webkit-text-fill-color:#15161a!important;
+ text-shadow:none!important;mix-blend-mode:normal!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-card .pati-story-share-post-caption{
+ background:#fff!important;color:#17181c!important;
+ -webkit-text-fill-color:#17181c!important;opacity:1!important;text-shadow:none!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-card .pati-story-share-profile strong{
+ color:#17181c!important;-webkit-text-fill-color:#17181c!important;opacity:1!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-card>.pati-story-shared-source{
+ color:#fff!important;-webkit-text-fill-color:#fff!important;opacity:1!important;
+ background:#111216!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-card>.pati-story-shared-source>span{
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+/* A normal story caption always stays readable on the dark story viewer. */
+#story-overlay .story-player>.story-caption,
+#story-overlay .story-player .pati-own-story-stack>.story-caption{
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ opacity:1!important;text-shadow:0 2px 7px rgba(0,0,0,.85)!important;
+ background:rgba(9,10,14,.58)!important;border-radius:13px!important;
+ padding:9px 12px!important;box-sizing:border-box!important;
+ overflow-wrap:anywhere!important;white-space:pre-line!important;
+}
+@media(max-width:540px){
+ #story-overlay.pati-story-has-source .pati-story-share-card .pati-story-share-media.pati-story-share-media-text{
+  padding:14px 13px!important;max-height:min(38dvh,290px)!important;
+ }
+ #story-overlay.pati-story-has-source .pati-story-share-card .pati-story-share-text-content{
+  font-size:13px!important;line-height:1.5!important;
+ }
+}
+/* Guard against legacy story dark-theme rules dimming the shared card. */
+#story-overlay.pati-story-has-source .pati-story-share-card{
+ background:#fff!important;color:#15161a!important;mix-blend-mode:normal!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-media:not(.pati-story-share-media-text){
+ background:#f5f5f7!important;color:#15161a!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-empty{
+ display:grid!important;place-items:center!important;
+ width:100%!important;height:100%!important;color:#191a1e!important;
+ background:#f5f5f7!important;opacity:1!important;
+}
+#story-overlay .story-player>.story-caption,
+#story-overlay .story-player .pati-own-story-stack>.story-caption{
+ mix-blend-mode:normal!important;filter:none!important;opacity:1!important;
+}
+
