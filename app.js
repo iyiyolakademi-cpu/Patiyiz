@@ -1800,18 +1800,28 @@ function setupReelsViewer(){
  const attach=video=>{const url=video?.dataset?.patiVideoSrc;if(url&&!video.getAttribute?.('src')){video.src=url;return true}return false};
  const network=typeof navigator!=='undefined'?navigator.connection||navigator.mozConnection||navigator.webkitConnection:null;
  const lowData=!!network?.saveData||/^(slow-2g|2g)$/.test(String(network?.effectiveType||''));
+ let lastPreparedIndex=-1;
  const prepareNext=video=>{
-  const position=videos.indexOf(video);if(position<0)return;
+  const position=videos.indexOf(video);
+  if(position<0||position===lastPreparedIndex)return;
+  lastPreparedIndex=position;
   video.preload='auto';attach(video);
-  // Warm only the next Reel, never fetch every video simultaneously.
+  // Keep the next Reel ready, and warm one more on fast connections.
+  // Do not start fetching the entire feed on mobile or metered networks.
   const next=videos[position+1];
   if(next){next.preload=lowData?'metadata':'auto';attach(next)}
+  if(!lowData){
+   const afterNext=videos[position+2];
+   if(afterNext){afterNext.preload='metadata';attach(afterNext)}
+   const previous=videos[position-1];
+   if(previous&&!previous.getAttribute?.('src')){previous.preload='metadata';attach(previous)}
+  }
  };
  const loadNearEnd=()=>{
   const state=typeof patiReelsFeed!=='undefined'?patiReelsFeed:null;
   if(typeof view==='undefined'||view!=='reels'||!state?.ready||state.loading||!state.hasMore||state.error||!viewport?.clientHeight)return;
   const idx=Math.max(0,Math.min(videos.length-1,Math.round(viewport.scrollTop/viewport.clientHeight)));
-  if(idx+4>=videos.length)void patiLoadMoreReels();
+  if(idx+6>=videos.length)void patiLoadMoreReels();
  };
  const playVideo=video=>{
   if(document.getElementById?.('story-overlay')){video?.pause();return}
@@ -1903,11 +1913,12 @@ function setupReelsViewer(){
   const deferBuffer=()=>{
    if(pendingBuffer!==null)clearTimeout(pendingBuffer);
    busy(false);
-   // Typical short seeks or stalls no longer flash a loading card.
+   // Keep the poster visible during brief network stalls or decoder seeks.
+   // A visible buffering overlay is reserved for sustained waits.
    pendingBuffer=setTimeout(()=>{
     pendingBuffer=null;
     if(v.isConnected!==false&&isSelectedReel()&&!v.paused&&v.readyState<3)busy(true);
-   },850);
+   },1500);
   };
   for(const event of ['loadstart','waiting','stalled','seeking'])v.addEventListener?.(event,deferBuffer);
   for(const event of ['playing','canplay','seeked','pause'])v.addEventListener?.(event,cancelBuffer);
