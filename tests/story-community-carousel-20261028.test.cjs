@@ -56,7 +56,7 @@ test('Positive, negative and undo question ratings are mutually exclusive and pe
    };
   }}
  };
- const rate=vm.runInNewContext(app.slice(start,end)+'\npatiRateQuestion',ctx);
+ const rate=vm.runInNewContext('const patiQuestionVotePending=new Set();function patiQuestionVotePaint(){};\n'+app.slice(start,end)+'\npatiRateQuestion',ctx);
  await rate('q1',true);
  assert.equal(rows.length,1);assert.equal(rows[0].is_helpful,true);
  await rate('q1',false);
