@@ -1,0 +1,251 @@
+/* Patiyiz CSS bundle: original order. */
+/* patiyiz-shared-create-studio-20261025.css */
+/* Patiyiz shared create studio — posts, stories and Reels use the same gallery/crop layout. */
+#post-form .pati-composer-flow{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:10px 12px;background:#f6f6f8;border:1px solid #e9e9ed;border-radius:13px;margin:0 0 12px;overflow-x:auto;scrollbar-width:none}
+#post-form .pati-composer-flow span{font-size:11px;font-weight:800;color:#666971;white-space:nowrap;display:flex;align-items:center;gap:5px}
+#post-form .pati-composer-flow span b{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:#1d1f25;color:#fff;font-size:10px}
+#post-form .pati-composer-flow>i{font-size:10px;color:#bbbcc3;font-style:normal}
+#post-form[data-mode="story"] .pati-media-gallery{aspect-ratio:9/16;max-height:46dvh;min-height:200px;max-width:300px;margin:0 auto;border-radius:15px;overflow:hidden}
+#post-form[data-mode="story"] .pati-media-gallery img,#post-form[data-mode="story"] .pati-media-gallery video{width:100%;height:100%;object-fit:contain}
+#post-form[data-mode="story"] .pati-media-controls{margin-top:12px}
+#post-form[data-mode="story"] .pati-crop-preview{max-width:100%;overflow:hidden}
+#post-form[data-mode="story"] #pati-crop-canvas{max-width:100%;max-height:40dvh;object-fit:contain}
+#story-overlay .story-big-video,.story-fullscreen .story-big-video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#09090d;z-index:1}
+#story-overlay .pati-story-sound{position:absolute;right:60px;top:42px;z-index:10015;background:#0009;color:#fff;padding:7px 12px;border:1px solid #ffffff45;border-radius:22px;font-size:12px;font-weight:780;cursor:pointer}
+#story-overlay .story-player-head{z-index:10010}
+#story-overlay .story-progress{z-index:10012}
+#story-overlay .story-caption{z-index:10012;pointer-events:none}
+#story-overlay .story-hit{z-index:5}
+@media(max-width:640px){#post-form .pati-composer-flow{padding:9px;gap:3px}#post-form .pati-composer-flow span{font-size:10px}#post-form .pati-composer-flow span b{width:18px;height:18px}#post-form[data-mode="story"] .pati-media-gallery{max-height:43dvh}}
+@media(prefers-reduced-motion:reduce){#post-form .pati-composer-flow *,#story-overlay .pati-story-sound{transition:none!important}}
+
+
+/* release-ux-polish-20261028.css */
+/* Patiyiz release UX polish — additive, preserves existing layout and features. */
+:root{--pati-tap-size:44px}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{overscroll-behavior-y:contain}
+button,input,textarea,select{font:inherit}
+button,[role="button"],a{-webkit-tap-highlight-color:transparent}
+button:not(:disabled),[role="button"]{touch-action:manipulation}
+button:disabled,[aria-disabled="true"]{cursor:not-allowed;opacity:.55}
+:where(button,a,input,textarea,select,[role="button"],[tabindex]):focus-visible{outline:3px solid #737b8c!important;outline-offset:3px!important}
+:where(input,textarea,select){max-width:100%}
+:where(textarea){resize:vertical}
+:where(img,video){max-width:100%}
+#main-content,#modal-root,.pati-create-modal{min-width:0}
+#main-content .empty-state{max-width:100%;padding:clamp(22px,5vw,42px) 18px;line-height:1.55}
+#main-content .empty-state h3{font-size:clamp(16px,4vw,20px);line-height:1.3}
+.toast-stack{pointer-events:none}
+.toast-stack .toast{pointer-events:auto;line-height:1.45;overflow-wrap:anywhere;max-width:min(440px,calc(100vw - 24px))}
+#pati-create-sheet:not([hidden]){overscroll-behavior:contain}
+#pati-create-sheet .pati-create-choice{transition:background-color .16s ease,border-color .16s ease,transform .16s ease}
+#pati-create-sheet .pati-create-choice:active{transform:scale(.985)}
+#pati-create-sheet .pati-create-choice:focus-visible{outline-color:#b8c4de!important}
+@media(hover:hover){#pati-create-sheet .pati-create-choice:hover{border-color:#a5a9b3}}
+@media(max-width:740px){
+  #app-root>.mobile-bottom{padding-bottom:max(env(safe-area-inset-bottom,0px),5px)!important}
+  #app-root>.mobile-bottom button,#app-root>.mobile-bottom a{min-height:44px;min-width:44px}
+  #main-content{overflow-wrap:break-word}
+  #main-content>.page-intro .top-actions button{min-height:44px}
+  #pati-create-sheet .pati-create-choice{min-height:68px}
+  #modal-root :where(input:not([type="checkbox"]),textarea,select){font-size:16px!important}
+  .toast-stack{left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+}
+@media(prefers-reduced-motion:reduce){
+  html:focus-within{scroll-behavior:auto!important}
+  #pati-create-sheet .pati-create-choice{transition:none!important}
+  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+
+
+/* profile-instagram-polish-20261028.css */
+/* Patiyiz profile refinement 2026-10-28. Existing functions and tabs remain unchanged. */
+#main-content .pati-ig-profile{width:100%;max-width:935px;margin-inline:auto;background:#fff;color:#17191d;overflow:hidden}
+#main-content .pati-ig-profile .pati-ig-summary{display:flex;align-items:center;gap:clamp(16px,5vw,56px);padding:26px clamp(16px,5vw,48px) 12px;background:#fff!important;border-radius:0!important}
+#main-content .pati-ig-profile .pati-ig-avatar{flex:0 0 clamp(88px,20vw,150px);width:clamp(88px,20vw,150px);height:clamp(88px,20vw,150px);display:grid;place-items:center;min-width:0}
+#main-content .pati-ig-profile .pati-ig-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+#main-content .pati-ig-profile .pati-ig-info{min-width:0;flex:1;display:flex;flex-direction:column;gap:9px}
+#main-content .pati-ig-profile .pati-ig-handle-row{display:flex;align-items:center;flex-wrap:wrap;gap:8px;min-width:0}
+#main-content .pati-ig-profile .pati-ig-handle{font-size:clamp(17px,3.7vw,22px);font-weight:600;letter-spacing:-.035em;overflow-wrap:anywhere}
+#main-content .pati-ig-profile .pati-ig-name{font-size:14px;line-height:1.35;font-weight:700;overflow-wrap:anywhere}
+#main-content .pati-ig-profile .pati-ig-stats{display:flex;align-items:center;gap:clamp(12px,3vw,38px);flex-wrap:wrap;margin-top:5px}
+#main-content .pati-ig-profile .pati-ig-stats>span,#main-content .pati-ig-profile .pati-ig-stats>button{display:flex;align-items:baseline;gap:5px;min-height:44px;padding:8px 0;background:transparent;border:0;color:#17191d;cursor:pointer}
+#main-content .pati-ig-profile .pati-ig-stats b{font-size:16px;font-weight:750;font-variant-numeric:tabular-nums}
+#main-content .pati-ig-profile .pati-ig-stats small{font-size:13px;color:#454750}
+#main-content .pati-ig-profile .pati-ig-bio{padding:0 clamp(16px,5vw,48px) 10px!important;line-height:1.55;white-space:pre-line;overflow-wrap:anywhere;font-size:14px}
+#main-content .pati-ig-profile .pati-mutual-followers{margin:0 clamp(16px,5vw,48px) 10px}
+#main-content .pati-ig-profile .pati-ig-actions{display:flex;gap:8px;padding:10px clamp(16px,5vw,48px) 22px!important;flex-wrap:wrap}
+#main-content .pati-ig-profile .pati-ig-actions button{flex:1 1 130px;min-height:38px;border-radius:9px;font-size:13px;font-weight:700;box-shadow:none;max-width:330px}
+#main-content .pati-ig-profile .pati-ig-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid #ededf0;border-bottom:1px solid #f2f2f4;gap:0;padding:0!important;margin:0!important}
+#main-content .pati-ig-profile .pati-ig-tabs button{position:relative;min-height:49px;border-radius:0!important;background:transparent!important;color:#777b83!important;font-size:21px;display:grid;place-items:center}
+#main-content .pati-ig-profile .pati-ig-tabs button.active{color:#151515!important}
+#main-content .pati-ig-profile .pati-ig-tabs button.active:before{content:"";position:absolute;top:0;left:17%;width:66%;height:2px;background:#151515}
+#main-content .pati-ig-profile .pati-ig-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:2px!important;padding:0!important;margin:0!important;background:#fff!important}
+#main-content .pati-ig-profile .pati-profile-tile{position:relative;aspect-ratio:1/1;min-width:0;min-height:0;overflow:hidden;border:0;border-radius:0!important;padding:0}
+#main-content .pati-ig-profile .pati-profile-tile img,#main-content .pati-ig-profile .pati-profile-tile video{width:100%;height:100%;object-fit:cover;display:block}
+#main-content .pati-ig-profile .pati-profile-tile:focus-visible{outline:3px solid #737b8c!important;outline-offset:-3px!important;z-index:2}
+#main-content .pati-ig-profile .pati-ig-empty{grid-column:1/-1;text-align:center;padding:50px 16px}
+@media(max-width:740px){
+ #main-content .pati-ig-profile .pati-ig-summary{padding:18px 14px 8px;gap:15px;align-items:center}
+ #main-content .pati-ig-profile .pati-ig-avatar{flex-basis:86px;width:86px;height:86px}
+ #main-content .pati-ig-profile .pati-ig-info{gap:4px}
+ #main-content .pati-ig-profile .pati-ig-handle{font-size:17px}
+ #main-content .pati-ig-profile .pati-ig-stats{gap:13px;margin-top:2px}
+ #main-content .pati-ig-profile .pati-ig-stats>span,#main-content .pati-ig-profile .pati-ig-stats>button{flex-direction:column;align-items:center;gap:2px;justify-content:center;padding:4px 0}
+ #main-content .pati-ig-profile .pati-ig-stats b{font-size:15px}
+ #main-content .pati-ig-profile .pati-ig-stats small{font-size:11px;white-space:nowrap}
+ #main-content .pati-ig-profile .pati-ig-bio{padding:8px 15px 6px!important}
+ #main-content .pati-ig-profile .pati-ig-actions{padding:8px 14px 16px!important;gap:7px}
+ #main-content .pati-ig-profile .pati-ig-actions button{max-width:none;flex-basis:110px}
+}
+@media(max-width:350px){#main-content .pati-ig-profile .pati-ig-summary{gap:10px}#main-content .pati-ig-profile .pati-ig-avatar{flex-basis:72px;width:72px;height:72px}#main-content .pati-ig-profile .pati-ig-stats{gap:9px}}
+
+
+/* menu-color-polish-20261028.css */
+/* Patiyiz menu v2 — colorful categories without changing global branding */
+.pati-color-menu{display:grid;gap:14px;padding:2px 0 12px}
+.pati-color-menu .pati-feature-intro{margin:0 0 2px;color:#687080;font-size:13px}
+.pati-color-menu .pati-feature-group{--menu-accent:#6757cf;--menu-bg:#f1efff;background:var(--menu-bg);border:1px solid color-mix(in srgb,var(--menu-accent) 13%,white);border-radius:18px;padding:14px 12px;min-width:0}
+.pati-color-menu .pati-menu-tone-green{--menu-accent:#23805d;--menu-bg:#eaf8f1}
+.pati-color-menu .pati-menu-tone-orange{--menu-accent:#bd6a21;--menu-bg:#fff2e5}
+.pati-color-menu .pati-menu-tone-blue{--menu-accent:#3475ad;--menu-bg:#eaf4ff}
+.pati-color-menu .pati-feature-group h3{margin:0 0 10px;padding:0 4px;font-size:14px;font-weight:800;color:var(--menu-accent);letter-spacing:.01em}
+.pati-color-menu .pati-mobile-menu-list{display:grid;gap:7px}
+.pati-color-menu .pati-mobile-menu-item{display:flex!important;align-items:center;gap:11px;min-height:52px;width:100%;border-radius:12px!important;padding:8px 11px!important;background:#fff!important;border:1px solid rgba(25,30,42,.055)!important;color:#20242c!important;text-align:left;font-weight:650;font-size:14px;box-shadow:0 2px 6px rgba(15,20,30,.025);min-width:0}
+.pati-color-menu .pati-mobile-menu-item>span:nth-child(2){flex:1;min-width:0}
+.pati-color-menu .pati-menu-icon{flex:0 0 34px;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:var(--menu-accent);background:var(--menu-bg)}
+.pati-color-menu .pati-menu-icon svg{width:19px;height:19px}
+.pati-color-menu .pati-menu-arrow{color:#9ba2ae;display:grid;place-items:center}
+.pati-color-menu .pati-menu-arrow svg{width:15px;height:15px}
+.pati-color-menu .pati-feature-add-pet{--menu-accent:#23805d;--menu-bg:#eaf8f1}
+.pati-color-menu .pati-feature-add-pet .pati-mobile-menu-item{border:1px dashed #80bda1!important;background:#f2fbf6!important}
+@media(hover:hover){.pati-color-menu .pati-mobile-menu-item:hover{filter:brightness(.975);transform:translateY(-1px)}}
+@media(max-width:740px){.pati-color-menu{gap:11px}.pati-color-menu .pati-feature-group{padding:12px 10px}.pati-color-menu .pati-mobile-menu-item{min-height:54px}}
+@media(prefers-reduced-motion:reduce){.pati-color-menu .pati-mobile-menu-item{transition:none!important;transform:none!important}}
+
+
+/* section-colors-20261028.css */
+/* Patiyiz section accent refresh: restrained colors, original interaction intact */
+#main-content .lost-v2{--sec-accent:#b94b57;--sec-soft:#fff0f1;--sec-border:#f3c9ce}
+#main-content .adopt-v2{--sec-accent:#ba6a34;--sec-soft:#fff4e8;--sec-border:#f2d5b6}
+#main-content .care-v2{--sec-accent:#278566;--sec-soft:#eaf8f2;--sec-border:#c8eadc}
+#main-content .pati-edu-v2{--sec-accent:#7755bb;--sec-soft:#f3effe;--sec-border:#dcd0f8}
+#main-content .kb-v2{--sec-accent:#3179a9;--sec-soft:#edf7ff;--sec-border:#c9e4f8}
+#main-content :is(.lost-v2,.adopt-v2,.care-v2,.pati-edu-v2,.kb-v2) :is(.lost-v2-heading,.adopt-v2-heading,.care-v2-heading) small{color:var(--sec-accent);font-weight:800;letter-spacing:.075em}
+#main-content .lost-v2 .lost-v2-hero{background:linear-gradient(120deg,#fff1f2,#ffe5e7)!important;border:1px solid #f3c9ce!important;color:#682e37!important}
+#main-content .adopt-v2 .adopt-v2-hero{background:linear-gradient(120deg,#fff4e8,#ffe7cf)!important;border:1px solid #f2d5b6!important;color:#75451e!important}
+#main-content .care-v2 .care-v2-hero{background:linear-gradient(120deg,#ecfbf2,#d9f4e8)!important;border:1px solid #c8eadc!important;color:#175943!important}
+#main-content :is(.lost-v2,.adopt-v2,.care-v2) :is(.lost-v2-hero,.adopt-v2-hero,.care-v2-hero) h2{color:inherit!important}
+#main-content :is(.lost-v2,.adopt-v2,.care-v2) :is(.lost-v2-hero,.adopt-v2-hero,.care-v2-hero) p{color:inherit!important;opacity:.9}
+#main-content .lost-v2 .lost-v2-stats>div{background:#fff4f5!important;border-color:#f3c9ce!important}
+#main-content .adopt-v2 .adopt-v2-stats>div{background:#fff7ed!important;border-color:#f2d5b6!important}
+#main-content .care-v2 .care-v2-metrics>div{background:#f0faf5!important;border-color:#c8eadc!important}
+#main-content :is(.lost-v2,.adopt-v2,.care-v2) :is(.lost-v2-stats,.adopt-v2-stats,.care-v2-metrics) b{color:var(--sec-accent)!important}
+#main-content :is(.lost-v2,.adopt-v2,.care-v2) :is(.lost-v2-create,.adopt-v2-create,.care-v2-add){background:var(--sec-accent)!important;border-color:var(--sec-accent)!important;color:#fff!important;min-height:44px}
+#main-content .pati-edu-v2 :is(.edu-v2-hero,.edu-v2-progress,.edu-v2-lesson-meta){border-color:#dcd0f8}
+#main-content .pati-edu-v2 :is(.edu-v2-hero,.edu-v2-progress){background:linear-gradient(135deg,#f8f5ff,#f0eafe)}
+#main-content .pati-edu-v2 :is(.edu-v2-complete,.edu-v2-lesson-track span){color:#7755bb}
+#main-content .kb-v2 :is(.kb-v2-article-head,.kb-v2-hero){background:linear-gradient(130deg,#f4faff,#eaf5ff);border-color:#c9e4f8}
+#main-content .kb-v2 :is(.kb-v2-eyebrow,.kb-v2-detail-save.is-saved){color:#3179a9}
+@media(max-width:740px){#main-content :is(.lost-v2,.adopt-v2,.care-v2,.pati-edu-v2,.kb-v2){overflow-wrap:anywhere}}
+
+
+/* hayvanim-hub-20261028.css */
+/* Hayvanim Merkezi — visual hub, independent of existing data modules */
+#main-content .pati-pet-center-head{max-width:960px;margin:0 auto!important;padding:8px 14px!important;background:#fff}
+#main-content .pati-pet-center-tabs{display:flex;overflow-x:auto;gap:8px;padding:7px 0 12px;scrollbar-width:none}
+#main-content .pati-pet-center-tabs button{white-space:nowrap;min-height:42px;padding:10px 16px;border-radius:999px;background:#f3f4f7;color:#525662;border:1px solid #e9eaf0;font-weight:700}
+#main-content .pati-pet-center-tabs button.active{background:#17191d!important;color:white!important;border-color:#17191d}
+#main-content .pati-pet-hub{max-width:960px;margin:0 auto;padding:0 14px 28px;color:#1a1b21}
+#main-content .pati-hub-hero{background:linear-gradient(117deg,#dff2ff 0%,#f4e9fb 62%,#ffe8ef 100%);border-radius:24px;padding:25px 21px;display:flex;align-items:center;min-height:170px;overflow:hidden;gap:12px}
+#main-content .pati-hub-copy{flex:1;min-width:0;z-index:1}
+#main-content .pati-hub-copy small{font-size:11px;letter-spacing:.09em;color:#526b8c;font-weight:800}
+#main-content .pati-hub-copy h1{font-size:clamp(22px,4vw,31px);letter-spacing:-.035em;line-height:1.12;margin:10px 0}
+#main-content .pati-hub-copy p{max-width:350px;font-size:13px;line-height:1.55;color:#4d5566}
+#main-content .pati-hub-pet-photo{width:clamp(100px,24vw,195px);height:clamp(110px,25vw,190px);border-radius:45% 45% 20px 20px;background:#fff9;display:grid;place-items:center;overflow:hidden;font-size:65px;flex-shrink:0}
+#main-content .pati-hub-pet-photo img{width:100%;height:100%;object-fit:cover}
+#main-content .pati-hub-pet-strip{display:flex;align-items:center;gap:12px;background:white;border:1px solid #ececf1;padding:11px 13px;border-radius:18px;margin:12px 0 24px;box-shadow:0 5px 20px #1b24300b}
+#main-content .pati-hub-pet-strip>span{width:49px;height:49px;border-radius:50%;background:#e5f5ff;display:grid;place-items:center;overflow:hidden;font-size:26px;flex-shrink:0}
+#main-content .pati-hub-pet-strip>span img{width:100%;height:100%;object-fit:cover}
+#main-content .pati-hub-pet-strip>div{flex:1;display:flex;flex-direction:column;gap:3px;min-width:0}
+#main-content .pati-hub-pet-strip strong{font-size:15px;overflow-wrap:anywhere}
+#main-content .pati-hub-pet-strip small{font-size:12px;color:#717786}
+#main-content .pati-hub-pet-strip button{background:#f4f6fa;color:#242830;padding:10px 12px;border-radius:11px;font-weight:700;min-height:42px;font-size:12px}
+#main-content .pati-hub-section-title{font-size:19px;letter-spacing:-.03em;margin:0 0 15px}
+#main-content .pati-hub-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#main-content .pati-hub-card{--hub-bg:#eff5ff;--hub-ink:#2873b8;position:relative;display:flex;flex-direction:column;align-items:flex-start;text-align:left;min-width:0;min-height:155px;border:1px solid #ffffff9a!important;border-radius:20px;padding:16px;background:var(--hub-bg)!important;color:#20232b!important;gap:9px;box-shadow:none}
+#main-content .pati-hub-mint{--hub-bg:#e4f8ed;--hub-ink:#219961}
+#main-content .pati-hub-sky{--hub-bg:#e4f3ff;--hub-ink:#2481d6}
+#main-content .pati-hub-sun{--hub-bg:#fff0d8;--hub-ink:#e17c22}
+#main-content .pati-hub-rose{--hub-bg:#ffe5ed;--hub-ink:#de4c80}
+#main-content .pati-hub-lilac{--hub-bg:#f1e5ff;--hub-ink:#8f51ce}
+#main-content .pati-hub-blue{--hub-bg:#e3f2ff;--hub-ink:#327ec6}
+#main-content .pati-hub-icon{width:45px;height:45px;border-radius:14px;background:var(--hub-ink);display:grid;place-items:center;color:white}
+#main-content .pati-hub-icon svg{width:23px;height:23px}
+#main-content .pati-hub-card strong{font-size:15px;letter-spacing:-.015em}
+#main-content .pati-hub-card small{max-width:95%;font-size:12px;line-height:1.4;color:#515764}
+#main-content .pati-hub-chevron{position:absolute;top:21px;right:16px;font-size:27px;color:var(--hub-ink)}
+#main-content .pati-hub-foot{margin:21px 0 3px;padding:18px;border-radius:17px;background:#fff3df;text-align:center;color:#805d31;font-size:13px;font-weight:650}
+@media(min-width:760px){#main-content .pati-hub-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:380px){#main-content .pati-hub-hero{padding:18px 14px}.pati-hub-pet-photo{width:85px!important;height:105px!important}#main-content .pati-hub-grid{gap:9px}#main-content .pati-hub-card{padding:12px;min-height:158px}#main-content .pati-hub-card strong{font-size:13px}}
+@media(hover:hover){#main-content .pati-hub-card:hover{filter:saturate(1.1) brightness(.985);transform:translateY(-2px)}}
+@media(prefers-reduced-motion:reduce){#main-content .pati-hub-card{transition:none;transform:none!important}}
+
+/* Hub navigation v2: all features grouped, no top tabs */
+#main-content .pati-hub-sections{display:grid;gap:25px}
+#main-content .pati-hub-category{min-width:0}
+#main-content .pati-hub-section-title{margin:0 0 13px;font-size:19px;font-weight:800;letter-spacing:-.03em}
+#main-content .pati-hub-other-pets{display:flex;gap:8px;overflow-x:auto;padding:0 0 14px}
+#main-content .pati-hub-mini-pet{flex:none;padding:7px 12px;border-radius:999px;background:#f4f2fc;color:#504685;font-size:12px;font-weight:700}
+#main-content .pati-hub-detail-back{padding:10px 14px 0;max-width:960px;margin:auto}
+#main-content .pati-hub-detail-back button{border:0;background:#edf3ff;color:#225d9d;border-radius:13px;min-height:43px;padding:10px 15px;font-weight:800}
+#main-content .pati-hub-hero .pati-hub-pet-photo{border:3px solid #ffffffab;box-shadow:0 12px 26px #1b24301c}
+
+
+/* simple-pet-pages-20261028.css */
+/* Patiyiz simple screens — retain all actions, forms and saved data. */
+#main-content :is(.care-v2,.lost-v2,.adopt-v2,.pati-edu-v2,.kb-v2,.wellness-v2){max-width:960px;margin-inline:auto;overflow-wrap:anywhere}
+#main-content :is(.care-v2,.lost-v2,.adopt-v2) :is(.care-v2-hero,.lost-v2-hero,.adopt-v2-hero){display:none!important}
+#main-content :is(.care-v2,.lost-v2,.adopt-v2) :is(.care-v2-heading,.lost-v2-heading,.adopt-v2-heading){background:#fff!important;border:0!important;border-radius:0!important;padding:15px 6px 16px!important;display:flex!important;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+#main-content :is(.care-v2,.lost-v2,.adopt-v2) :is(.care-v2-heading,.lost-v2-heading,.adopt-v2-heading) h1{font-size:clamp(23px,5vw,30px)!important;letter-spacing:-.04em}
+#main-content :is(.care-v2,.lost-v2,.adopt-v2) :is(.care-v2-heading,.lost-v2-heading,.adopt-v2-heading) p{font-size:13px!important;color:#697281}
+#main-content .care-v2 .care-v2-metrics>div:nth-child(1),#main-content .care-v2 .care-v2-metrics>div:nth-child(3){display:none!important}
+#main-content .care-v2 .care-v2-metrics,#main-content .lost-v2 .lost-v2-stats,#main-content .adopt-v2 .adopt-v2-stats{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px!important;margin:8px 0 18px!important}
+#main-content .care-v2 .care-v2-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+#main-content :is(.care-v2,.lost-v2,.adopt-v2) :is(.care-v2-metrics,.lost-v2-stats,.adopt-v2-stats)>div{padding:14px 8px!important;border-radius:17px!important;min-width:0;text-align:center}
+#main-content :is(.care-v2,.lost-v2,.adopt-v2) :is(.care-v2-metrics,.lost-v2-stats,.adopt-v2-stats) span{font-size:12px!important;overflow-wrap:anywhere}
+#main-content .care-v2 .care-v2-shortcut{border-radius:16px;padding:12px!important;margin:8px 0!important}
+#main-content .care-v2 .care-v2-shortcut p{display:none}
+#main-content .care-v2 .care-v2-filter-title,#main-content .lost-v2 .lost-v2-row,#main-content .adopt-v2 .adopt-v2-row{display:none!important}
+#main-content .care-v2 .care-v2-filters,#main-content .lost-v2 .lost-v2-filters,#main-content .adopt-v2 .adopt-v2-filters{display:flex!important;flex-wrap:nowrap!important;gap:8px!important;overflow-x:auto;scrollbar-width:none;padding:4px 1px 12px!important}
+#main-content :is(.care-v2,.lost-v2,.adopt-v2) :is(.care-v2-filters,.lost-v2-filters,.adopt-v2-filters) button{flex-shrink:0;min-height:41px!important;border-radius:999px!important;padding:9px 13px!important}
+#main-content :is(.care-v2,.lost-v2,.adopt-v2) :is(.care-v2-search,.lost-v2-search,.adopt-v2-search){border-radius:13px!important;margin-bottom:12px!important}
+#main-content :is(.care-v2,.lost-v2,.adopt-v2) :is(.care-v2-grid,.lost-v2-grid,.adopt-v2-grid){gap:12px!important}
+#main-content :is(.care-v2,.lost-v2,.adopt-v2) :is(.care-v2-notice,.lost-v2-privacy,.adopt-v2-safety){font-size:12px;line-height:1.5;border-radius:12px;padding:10px 12px}
+#main-content .pati-edu-v2:not(.edu-v2-detail) .edu-v2-hero{padding:18px!important;border-radius:20px!important}
+#main-content .pati-edu-v2:not(.edu-v2-detail) :is(.edu-v2-metrics,.edu-v2-statistics){display:none!important}
+#main-content .kb-v2:not(.kb-v2-detail) .kb-v2-hero{display:none!important}
+#main-content .kb-v2:not(.kb-v2-detail) .kb-v2-title{padding:15px 0!important}
+#main-content .wellness-v2 .pati-wellness-heading{border-radius:20px!important;padding:17px!important;background:linear-gradient(125deg,#e6f9ee,#e8f3ff)!important}
+#main-content .wellness-v2 :is(.wellness-v2-event,.pati-wellness-event){border-radius:16px!important;box-shadow:none!important}
+#main-content :is(.care-v2,.lost-v2,.adopt-v2,.pati-edu-v2,.kb-v2,.wellness-v2) button:focus-visible{outline:3px solid #5685b8!important;outline-offset:2px}
+@media(max-width:740px){#main-content :is(.care-v2,.lost-v2,.adopt-v2,.pati-edu-v2,.kb-v2,.wellness-v2){padding-inline:12px!important}#main-content :is(.care-v2,.lost-v2,.adopt-v2) :is(.care-v2-heading,.lost-v2-heading,.adopt-v2-heading) button{min-height:44px}}
+
+
+/* pet-center-linked-polish-20261028.css */
+/* Pet Center connected pages — restrained premium accents */
+#main-content .pati-pet-hub-return{position:relative;margin:0 0 15px;display:flex;align-items:center;padding:6px 0 9px}
+#main-content .pati-pet-hub-return button{min-height:44px;padding:11px 16px;border:1px solid #dce7f4;border-radius:14px;background:linear-gradient(115deg,#e8f5ff,#f5ecff);font-size:13px;font-weight:800;color:#294d73;box-shadow:0 2px 10px #7da5cd13}
+#main-content .pati-pet-hub-linked{padding-top:10px}
+#main-content .pati-pet-hub-linked :is(.lost-v2-heading,.adopt-v2-heading,.kb-v2-title,.pati-edu-hero){border-radius:20px!important;padding:16px!important;background:linear-gradient(120deg,#f1f7ff,#f6f0ff)!important}
+#main-content .pati-pet-hub-linked.lost-v2 .lost-v2-heading{background:linear-gradient(120deg,#fff0f3,#f4edff)!important}
+#main-content .pati-pet-hub-linked.adopt-v2 .adopt-v2-heading{background:linear-gradient(120deg,#fff5e9,#ffebf2)!important}
+#main-content .pati-pet-hub-linked.kb-v2 .kb-v2-title{background:linear-gradient(120deg,#ecf7ff,#f2eeff)!important}
+#main-content .pati-pet-hub-linked.pati-edu-v2 .pati-edu-hero{background:linear-gradient(120deg,#fff1d9,#f6eeff)!important}
+#main-content .pati-pet-hub-linked :is(.lost-v2-filters,.adopt-v2-filters){max-width:100%;scrollbar-width:none}
+#main-content .pati-pet-hub .pati-hub-card{min-height:146px!important;box-shadow:0 5px 16px rgba(30,44,65,.045)!important}
+#main-content .pati-pet-hub .pati-hub-section-title{margin-top:4px}
+#main-content .pati-pet-hub .pati-hub-category{padding-top:2px}
+@media(max-width:740px){#main-content .pati-pet-hub-return{margin:0 0 10px}#main-content .pati-pet-hub-linked{padding-top:4px}#main-content .pati-pet-hub .pati-hub-card{min-height:145px!important}}
+
