@@ -50,7 +50,7 @@ test('Mobil üst menü düğmesi tüm gerçek bölümlere erişim sağlar',()=>{
  assert.match(header,/data-action="tools"/);
  assert.match(header,/aria-label="Tüm Özellikler menüsünü aç"/);
  const fragment=excerpt('function openMobileFeaturesMenu(){','function side(){');
- const known=['community','pets','my-pet','shop','saved-posts','settings','blocked'];
+ const known=['community','my-pet','shop','saved-posts','settings','blocked'];
  let rendered='';
  let type='',removed=false;
  const fn=vm.runInNewContext(fragment+'\nopenMobileFeaturesMenu',{
