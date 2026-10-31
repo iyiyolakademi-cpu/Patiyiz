@@ -9,7 +9,7 @@ test('Six-improvement changes preserve valid app JS',()=>{assert.doesNotThrow(()
 test('Reels pauses every other video and surfaces a buffering indicator',()=>{
  assert.match(app,/for\(const other of videos\)if\(other!==video&&!other\.paused\)other\.pause\(\)/);
  assert.match(app,/pati-reel-buffering/);
- assert.match(app,/v\.addEventListener\('progress',updateBuffer\)/);
+ assert.ok(app.includes("v.addEventListener?.('progress',updateBuffer)"));
  assert.match(app,/if\(viewport\?\.clientHeight\)/);
 });
 test('Home feed keeps real photo aspect and easily switches to followed accounts',()=>{
