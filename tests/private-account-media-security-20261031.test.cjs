@@ -56,3 +56,10 @@ test('Migration uses real JWT verification, recovery manifest and deletes old pu
  assert.match(server,/\.remove\(\[item\.source_path\]\)/);
  assert.match(server,/update\(\{is_private:true\}\)/);
 });
+
+test('Pet profile pictures use the same private upload and signed read path',()=>{
+ assert.match(helper,/fields=\['image_url','video_url','video_cover_url','images','media_videos','photo_url'\]/);
+ assert.match(app,/const image=f\.get\('photo'\)\?\.size\?await uploadPrivatePublicationMedia\(f\.get\('photo'\),'image'\)/);
+ assert.match(app,/\['posts','stories','pets'\]\.includes\(k\)/);
+ assert.match(server,/pets:\['photo_url'\]/);
+});
