@@ -11,7 +11,7 @@
  function getPath(ref){
   if(!marker(ref))return null;
   const p=ref.slice(prefix.length);
-  if(!/^[0-9a-f-]{36}\/[0-9a-f-]{36}\.(jpg|png|webp|mp4|webm|mov)$/i.test(p)||p.includes('..'))return null;
+  if(!/^[0-9a-f-]{36}\/[0-9a-f-]{36}\.(jpg|jpeg|png|webp|gif|mp4|webm|mov)$/i.test(p)||p.includes('..'))return null;
   return p;
  }
  function signedRefUrl(ref,user,sb){
