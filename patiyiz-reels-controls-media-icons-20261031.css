@@ -1,0 +1,183 @@
+/* Patiyiz – Reels visibility + fresh capture choice icons.
+   Overlay-only visuals; video playback, gestures, and publication controls unchanged. */
+
+/* Right-hand Reels controls: true contrast against any light or dark video,
+   clear silhouettes, consistent spacing, and larger touch surfaces. */
+#main-content .pati-reel-item .pati-reel-rail{
+ --pati-reel-ctl-bg:rgba(9,13,23,.84);
+ --pati-reel-ctl-outline:rgba(255,255,255,.52);
+ --pati-reel-ctl-shadow:0 4px 17px rgba(0,0,0,.4);
+ display:flex!important;flex-direction:column!important;
+ align-items:center!important;justify-content:flex-end!important;
+ width:57px!important;gap:6px!important;
+ right:max(9px,env(safe-area-inset-right,0px))!important;
+ bottom:max(43px,env(safe-area-inset-bottom,0px))!important;
+ z-index:10!important;
+}
+#main-content .pati-reel-item .pati-reel-rail>button{
+ position:relative!important;display:flex!important;
+ flex-direction:column!important;align-items:center!important;justify-content:center!important;
+ flex:0 0 auto!important;box-sizing:border-box!important;
+ width:55px!important;min-width:55px!important;max-width:55px!important;
+ min-height:52px!important;height:auto!important;
+ margin:0!important;padding:6px 4px!important;gap:3px!important;
+ border:1.3px solid var(--pati-reel-ctl-outline)!important;
+ border-radius:16px!important;background:var(--pati-reel-ctl-bg)!important;
+ color:#fff!important;box-shadow:var(--pati-reel-ctl-shadow)!important;
+ text-shadow:0 1px 5px rgba(0,0,0,.85)!important;
+ backdrop-filter:blur(14px) saturate(120%)!important;
+ -webkit-backdrop-filter:blur(14px) saturate(120%)!important;
+ touch-action:manipulation;
+ transition:background-color .16s ease,border-color .16s ease,transform .16s ease,box-shadow .16s ease;
+}
+#main-content .pati-reel-item .pati-reel-rail>button.pati-reel-tool{
+ width:47px!important;min-width:47px!important;max-width:47px!important;
+ min-height:42px!important;
+ border-radius:14px!important;
+ background:rgba(11,16,28,.9)!important;
+ padding:5px 3px!important;
+}
+#main-content .pati-reel-item .pati-reel-rail>button svg.icon,
+#main-content .pati-reel-item .pati-reel-rail>button svg:not(.pati-coin-icon){
+ display:block!important;flex:0 0 auto!important;
+ width:26px!important;height:26px!important;
+ stroke:#fff!important;stroke-width:2.2!important;
+ filter:drop-shadow(0 1px 2px rgba(0,0,0,.45));
+}
+#main-content .pati-reel-item .pati-reel-rail>button.pati-reel-tool svg.icon{
+ width:22px!important;height:22px!important;
+ stroke-width:2.1!important;
+}
+#main-content .pati-reel-item .pati-reel-rail .pati-reel-count,
+#main-content .pati-reel-item .pati-reel-rail .pati-engagement-metric,
+#main-content .pati-reel-item .pati-reel-rail .pati-reel-tool-label{
+ display:block!important;max-width:100%!important;
+ margin:0!important;padding:0!important;
+ font-size:11px!important;line-height:1.2!important;font-weight:850!important;
+ letter-spacing:0!important;white-space:nowrap!important;
+ color:#fff!important;opacity:1!important;
+ text-align:center!important;
+ text-shadow:0 1px 3px rgba(0,0,0,.9)!important;
+}
+#main-content .pati-reel-item .pati-reel-rail .pati-reel-action-label{display:none!important}
+#main-content .pati-reel-item .pati-reel-rail>button[data-action="reel-sound"] .pati-reel-tool-label{
+ position:absolute!important;width:1px!important;height:1px!important;
+ overflow:hidden!important;clip-path:inset(50%)!important;
+ white-space:nowrap!important;opacity:0!important;
+}
+#main-content .pati-reel-item .pati-reel-rail>button:is(:hover,:focus-visible){
+ border-color:#fff!important;background:rgba(32,39,55,.96)!important;
+ box-shadow:0 4px 18px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.13)!important;
+}
+#main-content .pati-reel-item .pati-reel-rail>button:focus-visible{
+ outline:2px solid #fff!important;outline-offset:3px!important;
+}
+#main-content .pati-reel-item .pati-reel-rail>button:active{
+ transform:scale(.95)!important;
+}
+#main-content .pati-reel-item .pati-reel-rail>button.active[data-action="like"]{
+ border-color:#ff8eac!important;background:rgba(66,18,39,.93)!important;
+}
+#main-content .pati-reel-item .pati-reel-rail>button.active[data-action="like"] svg.icon{
+ fill:#ff4b72!important;stroke:#ff587a!important;
+}
+#main-content .pati-reel-item .pati-reel-rail>button.active[data-action="save"]{
+ border-color:#f9df9c!important;background:rgba(47,38,24,.95)!important;
+}
+#main-content .pati-reel-item .pati-reel-rail>button.active[data-action="save"] svg.icon{
+ fill:#f7d879!important;stroke:#f7d879!important;
+}
+#main-content .pati-reel-item .pati-reel-rail>button.active[data-action="pati-repost"]{
+ border-color:#6be4c3!important;background:rgba(8,51,46,.95)!important;
+}
+#main-content .pati-reel-item .pati-reel-rail>button.active[data-action="pati-repost"] svg{
+ stroke:#70e6c8!important;
+}
+#main-content .pati-reel-item .pati-reel-rail :is(.pati-reel-likers-trigger,.pati-engagement-metric){
+ cursor:pointer;
+}
+
+/* Compact on low-height devices without covering the video author and subtitle. */
+@media(max-height:690px){
+ #main-content .pati-reel-item .pati-reel-rail{width:52px!important;gap:4px!important}
+ #main-content .pati-reel-item .pati-reel-rail>button{
+  width:51px!important;min-width:51px!important;max-width:51px!important;
+  min-height:47px!important;padding:4px 3px!important;gap:2px!important;
+ }
+ #main-content .pati-reel-item .pati-reel-rail>button.pati-reel-tool{
+  width:45px!important;min-width:45px!important;max-width:45px!important;min-height:39px!important;
+ }
+ #main-content .pati-reel-item .pati-reel-rail>button svg.icon{width:24px!important;height:24px!important}
+ #main-content .pati-reel-item .pati-reel-rail .pati-reel-count{font-size:10px!important}
+}
+@media(max-height:530px){
+ #main-content .pati-reel-item .pati-reel-rail{gap:2px!important;bottom:max(28px,env(safe-area-inset-bottom,0px))!important}
+ #main-content .pati-reel-item .pati-reel-rail>button{
+  min-height:41px!important;border-radius:12px!important;padding:3px 2px!important;
+ }
+ #main-content .pati-reel-item .pati-reel-rail>button.pati-reel-tool{min-height:34px!important}
+ #main-content .pati-reel-item .pati-reel-rail>button svg.icon{width:21px!important;height:21px!important}
+}
+@media(max-width:360px){
+ #main-content .pati-reel-item .pati-reel-rail{
+  right:max(5px,env(safe-area-inset-right,0px))!important;
+ }
+ #main-content .pati-reel-item .pati-reel-caption,
+ #main-content .pati-reel-item .pati-reel-author{right:70px!important}
+}
+
+/* Reimagined LEFT media-choice tiles: light-catching, modern, three distinct
+   icon families. Do not recolor the option rows, labels or publishing form. */
+#patiyiz-system-media .pati-system-options .pati-system-option-icon{
+ position:relative!important;isolation:isolate!important;overflow:hidden!important;
+ width:55px!important;height:55px!important;flex:0 0 55px!important;
+ display:grid!important;place-items:center!important;
+ border:1px solid rgba(255,255,255,.56)!important;
+ border-radius:18px!important;box-sizing:border-box!important;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 5px 13px rgba(0,0,0,.29)!important;
+ transform:none!important;
+}
+#patiyiz-system-media .pati-system-options .pati-system-option-icon::before{
+ content:"";position:absolute;pointer-events:none;
+ z-index:-1;width:75px;height:75px;top:-43px;right:-37px;
+ border-radius:50%;background:rgba(255,255,255,.26)!important;
+ filter:blur(1px);
+}
+#patiyiz-system-media .pati-system-options .pati-system-option-icon::after{
+ content:"";position:absolute;pointer-events:none;
+ z-index:-1;left:5px;bottom:5px;
+ width:9px;height:9px;border-radius:50%;
+ background:rgba(255,255,255,.22);
+}
+#patiyiz-system-media .pati-system-options .pati-system-option-photo{
+ background:linear-gradient(145deg,#26d9d0 0%,#1488d6 56%,#2c52d7 100%)!important;
+ color:#fff!important;
+}
+#patiyiz-system-media .pati-system-options .pati-system-option-video{
+ background:linear-gradient(145deg,#ff9877 0%,#f24681 53%,#9938c6 100%)!important;
+ color:#fff!important;
+}
+#patiyiz-system-media .pati-system-options .pati-system-option-gallery{
+ background:linear-gradient(145deg,#bd99ff 0%,#765be9 56%,#3e55bb 100%)!important;
+ color:#fff!important;
+}
+#patiyiz-system-media .pati-system-options .pati-system-option-icon svg{
+ position:relative;z-index:1;display:block!important;
+ width:28px!important;height:28px!important;flex:0 0 auto!important;
+ stroke:#fff!important;stroke-width:2!important;
+ color:#fff!important;filter:drop-shadow(0 1px 2px #17203a55);
+}
+@media(max-width:380px){
+ #patiyiz-system-media .pati-system-options .pati-system-option-icon{
+  width:49px!important;height:49px!important;flex-basis:49px!important;border-radius:16px!important;
+ }
+ #patiyiz-system-media .pati-system-options .pati-system-option-icon svg{
+  width:26px!important;height:26px!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ #main-content .pati-reel-item .pati-reel-rail>button,
+ #patiyiz-system-media .pati-system-options .pati-system-option-icon{
+  transition:none!important;
+ }
+}
