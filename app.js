@@ -2222,7 +2222,7 @@ function patiHomeQuestionCard(q){
  '<h3>'+esc(q.title||'Topluluk sorusu')+'</h3><p>'+esc(cut(q.body||'',280))+'</p>'+
  '<div class="pati-home-question-actions"><button type="button" data-action="vote" data-id="'+esc(q.id)+'" aria-label="Soruyu faydalı bul">'+ico('heart')+' <span>'+helpful+'</span></button>'+
  '<button type="button" data-action="replies" data-id="'+esc(q.id)+'" aria-label="Soruya yanıtları aç">'+ico('message-circle')+' <span>'+replies+' yanıt</span></button>'+
- '<button type="button" data-view="community">Soru & Cevap'a git ›</button></div></article>';
+ '<button type="button" data-view="community">Soru ve Cevap ›</button></div></article>';
 }
 function patiHomeCombinedFeed(posts){
  const questions=(patiHomeQuestionsState.owner===me?.id&&patiHomeQuestionsState.ready?patiHomeQuestionsState.rows:[])
