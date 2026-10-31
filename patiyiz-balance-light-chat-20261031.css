@@ -1,0 +1,42 @@
+/* 31 Oct 2026 — one light theme, clear reward balance, discreet story actions and full-screen chat composers. */
+html[data-pati-theme="light"]{color-scheme:light}
+#pati-header-coins,#pati-desktop-coins{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:5px!important}
+#pati-header-coins .pati-balance-title,
+#pati-desktop-coins .pati-balance-title{display:inline!important;white-space:nowrap!important;font-size:11px!important;font-weight:750!important;line-height:1.15!important}
+#pati-header-coins .pati-balance-money,
+#pati-desktop-coins .pati-balance-money{display:inline-flex!important;align-items:center!important;justify-content:center!important;line-height:1!important;font-size:18px!important;flex:0 0 auto!important}
+#pati-header-coins strong,#pati-desktop-coins strong{font-size:13px!important;font-weight:850!important;white-space:nowrap}
+.pati-balance-money{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;line-height:1;font-size:1.15em}
+.pati-profile-coin-icon .pati-balance-money{font-size:22px}
+.pati-coin-icon:where(img){display:none!important}
+#story-overlay .pati-story-viewer-preview .pati-story-viewer-preview-stack,
+#story-overlay .pati-story-viewer-preview .pati-story-viewer-preview-status{display:none!important}
+#story-overlay .pati-story-viewer-preview{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:0!important;min-width:106px!important}
+#story-overlay .pati-story-viewer-preview .pati-story-viewer-preview-label{display:block!important;white-space:nowrap!important;font-weight:800!important}
+#modal-root #dm-new-form .modal-footer{display:none!important}
+#modal-root #dm-new-form .pati-dm-new-person,
+#modal-root #pati-group-create-form .pati-social-person{width:100%!important;min-height:58px!important;box-sizing:border-box}
+#modal-root #dm-new-form .pati-dm-new-list{display:flex;flex-direction:column;gap:4px;min-width:0}
+#modal-root #pati-group-create-form .pati-group-people{width:100%;max-height:none!important;overflow:visible!important}
+#modal-root #pati-group-create-form .modal-content{min-height:0}
+.pati-streak-sixty{display:flex;flex-direction:column;gap:12px;margin:20px 0 10px;padding:20px;border-radius:22px;background:#fff;border:1px solid #e4e5e8;color:#17181c;box-shadow:0 8px 22px #161b2310}
+.pati-streak-sixty-kicker{font-size:11px;font-weight:900;letter-spacing:.07em;color:#8a510b}
+.pati-streak-sixty h2{margin:0;font-size:22px;font-weight:850;line-height:1.2}
+.pati-streak-sixty p{margin:0;font-size:14px;line-height:1.5}
+.pati-streak-sixty small{color:#666a72;font-size:12px}
+.pati-streak-sixty .pati-streak-progress{height:9px;margin-top:4px;border-radius:20px;overflow:hidden;background:#e8e9ec}
+.pati-streak-sixty .pati-streak-progress span{display:block;height:100%;background:#d79b29;border-radius:20px}
+.pati-streak-sixty button{display:flex;align-items:center;justify-content:center;min-height:48px;padding:12px 15px;border:0;border-radius:14px;font-weight:850;background:#17181c;color:#fff}
+.pati-streak-sixty button:disabled{background:#e8e9ec;color:#686d77;cursor:not-allowed}
+.pati-streak-sixty-status{display:block;padding:12px 13px;background:#f4f7ef;border-radius:12px;color:#305333;font-size:13px}
+@media(max-width:740px){
+ #pati-header-coins{padding:5px 6px!important;min-width:0!important;max-width:128px!important}
+ #pati-header-coins .pati-balance-title{font-size:10px!important}
+ #pati-header-coins .pati-balance-money{font-size:16px!important}
+ #pati-header-coins strong{font-size:12px!important}
+ #modal-root .pati-full-page-form-backdrop:has(#dm-new-form,#pati-group-create-form){z-index:480!important}
+ #modal-root .pati-mobile-full-page-form:has(#dm-new-form,#pati-group-create-form) .modal-content{padding-bottom:20px!important;scrollbar-width:thin}
+ #modal-root .pati-mobile-full-page-form:has(#dm-new-form) .modal-header{border-bottom:1px solid #ececf0!important}
+ .pati-streak-sixty{padding:16px;border-radius:17px}
+ .pati-streak-sixty h2{font-size:20px}
+}
