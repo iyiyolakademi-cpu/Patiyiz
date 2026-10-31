@@ -34,37 +34,20 @@ test('Compact Reels layout cannot collide with seek line on supported viewport h
  assert.match(reel,/\[data-action="save"\]/);
 });
 
-test('Dark mode centralizes theme tokens and covers screenshots and major screens',()=>{
- assert.match(app,/document\.documentElement\.dataset\.patiTheme=value/);
- assert.match(index,/localStorage\.getItem\("patiyiz_theme"\)/);
- assert.match(dark,/html\[data-pati-theme="dark"\]/);
- for(const name of ['pati-ig-profile','pati-ig-summary','pati-profile-coin-balance',
-  'pati-feed-card','pati-social-actions','pati-settings-row','pati-mobile-menu-item',
-  'pati-alerts','pati-notifications-simple','pati-dm-layout','pati-insights',
-  'pati-search-screen','pati-explore-media-screen','pati-community-card',
-  'modal-backdrop','pati-share-preview','pati-share-quick','story-viewers-sheet']){
-  assert.ok(dark.includes(name),name);
- }
- assert.match(dark,/--pati-social-surface:#1b1d23/);
- assert.match(dark,/--pui-paper:#1b1d23/);
- assert.match(dark,/\.pati-profile-menu-trigger svg/);
-});
-
-test('Dark mode retains media, reactions and colored story overlays',()=>{
- assert.match(dark,/filter:none!important;opacity:1!important/);
- assert.match(dark,/pati-reel-video/);
- assert.match(dark,/story-big-photo/);
- assert.match(dark,/story-big-video/);
- assert.match(dark,/\.pati-social-actions>button\.active\[data-action="like"\]/);
- assert.match(dark,/\.pati-social-actions>button\.active\[data-action="save"\]/);
- assert.doesNotMatch(dark,/filter:invert\(/);
- assert.doesNotMatch(dark,/background-color:#1b1d23!important[\s\S]*?\.pati-reel-video\{/);
+test('Light-only theme removes the dark-mode toggle without affecting video and story features',()=>{
+ assert.match(app,/document\.documentElement\.dataset\.patiTheme='light'/);
+ assert.doesNotMatch(app,/case 'theme-set':/);
+ assert.doesNotMatch(index,/patiyiz-dark-mode-all-screens-20261031\.css\?v=1/);
+ assert.match(index,/patiyiz-balance-light-chat-20261031\.css\?v=1/);
+ assert.match(app,/pati-reel-video/);
+ assert.match(app,/story-big-video/);
+ assert.match(app,/pati-social-actions/);
 });
 
 test('Final CSS files are both loaded in the correct order, with valid script and bracket syntax',()=>{
  const a=index.indexOf('patiyiz-social-immersive-v2-20261031.css?v=1');
  const b=index.indexOf('patiyiz-reels-compact-controls-20261031.css?v=1');
- const c=index.indexOf('patiyiz-dark-mode-all-screens-20261031.css?v=1');
+ const c=index.indexOf('patiyiz-balance-light-chat-20261031.css?v=1');
  assert.ok(a>0&&b>a&&c>b);
  new vm.Script(app);
  for(const [name,css] of [['Reels',reel],['Dark',dark]]){
