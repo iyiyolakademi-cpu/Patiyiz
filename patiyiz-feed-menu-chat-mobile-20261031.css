@@ -1,0 +1,93 @@
+/* Patiyiz 31.10.2026 — mobile-first feed, menu, DM, and typography polish. */
+/* Accessible text increase without zooming image grids or native videos. */
+#app-root{font-size:15px;line-height:1.48}
+#app-root .pati-post-caption,#app-root .pati-home-question p,#app-root .chat-person-info small{font-size:13.5px;line-height:1.55}
+#app-root .pati-feed-card-header strong,#app-root .pati-home-question h3,#app-root .chat-person-info strong{font-size:15.5px;line-height:1.4}
+#app-root .pati-mobile-menu-item,#app-root .pati-menu-mobile-20261031 button{font-size:14.5px}
+/* Compact, Instagram-like actions: all controls remain individually tappable. */
+#main-content .pati-feed-card .pati-social-actions{display:flex!important;justify-content:flex-start!important;align-items:center!important;gap:3px!important;padding:6px 8px!important;flex-wrap:nowrap!important}
+#main-content .pati-feed-card .pati-social-actions>button{display:inline-flex!important;align-items:center;justify-content:center;gap:3px;min-width:40px!important;min-height:43px!important;margin:0!important;padding:5px 7px!important;flex:0 0 auto!important}
+#main-content .pati-feed-card .pati-social-actions>button.pati-save-action{margin-left:2px!important;order:5!important}
+#main-content .pati-feed-card .pati-social-actions>button[data-action="share-post"]{order:4!important}
+#main-content .pati-feed-card .pati-social-actions>button[data-action="like"]{order:1!important}
+#main-content .pati-feed-card .pati-social-actions>button[data-action="comment"]{order:2!important}
+#main-content .pati-feed-card .pati-social-actions>button[data-action="pati-repost"]{order:3!important}
+#main-content .pati-feed-card .pati-social-actions>button svg{width:21px;height:21px}
+#main-content .pati-feed-card .pati-social-actions>button span{font-size:12px}
+@media(max-width:375px){#main-content .pati-feed-card .pati-social-actions>button{padding:4px!important;min-width:38px!important}}
+/* Feed reel: visible preview and a direct, accessible link to the fullscreen viewer. */
+#main-content .pati-feed-reel-card .pati-video-frame{position:relative;background:#111;overflow:hidden}
+#main-content .pati-feed-reel-card .pati-feed-reel-open{position:absolute;z-index:6;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:11px;border:0;background:linear-gradient(0deg,rgba(0,0,0,.34),rgba(0,0,0,.03) 50%,rgba(0,0,0,.16));color:#fff;cursor:pointer}
+#main-content .pati-feed-reel-open>span{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:rgba(0,0,0,.51);backdrop-filter:blur(6px);font-size:24px;padding-left:4px}
+#main-content .pati-feed-reel-open>small{font-weight:800;font-size:12px;letter-spacing:.02em;text-shadow:0 1px 4px #000}
+#main-content .pati-feed-reel-card .pati-video-sound{z-index:8;position:absolute}
+/* Native Q&A cards, placed between existing post cards without opening a new filter. */
+#main-content .pati-home-question{margin:12px auto!important;padding:13px 14px!important;border-radius:15px!important;background:var(--paper,#fff);color:var(--ink,#181818)}
+#main-content .pati-home-question-tag{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+#main-content .pati-home-question-tag>span{font-size:10px;letter-spacing:.1em;font-weight:850;border:1px solid currentColor;border-radius:999px;padding:4px 8px}
+#main-content .pati-home-question-tag>button{border:0;background:none;color:inherit;font-size:12px;font-weight:800;padding:8px}
+#main-content .pati-home-question-author{margin-bottom:8px}
+#main-content .pati-home-question h3{margin:8px 0 6px;font-weight:850;overflow-wrap:anywhere}
+#main-content .pati-home-question p{margin:3px 0 12px;overflow-wrap:anywhere}
+#main-content .pati-home-question-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+#main-content .pati-home-question-actions>button{min-height:42px;border:1px solid var(--border,#e8e8e8);border-radius:10px;background:transparent;color:inherit;padding:6px 10px;display:inline-flex;gap:5px;align-items:center;font-weight:700;font-size:12px}
+#main-content .pati-home-question-actions>button:last-child{margin-left:auto}
+/* Keep only one visible "back" surface at mobile widths. Global header back owns navigation. */
+@media(max-width:740px){
+ #main-content>.pati-page-back,
+ #main-content .pati-streaks-back,
+ #main-content .pati-dm-inbox-back,
+ #main-content .pati-profile-back,
+ #main-content .pati-pet-hub-return,
+ #main-content .pati-detail-toolbar>button[data-action="post-back"]{display:none!important}
+ #pati-global-back:not([hidden]){display:inline-flex!important;min-width:52px;gap:4px}
+}
+/* A proper mobile menu: almost edge to edge, large touch rows, single scrolling surface. */
+@media(max-width:740px){
+ #modal-root:has(#tools-form) .modal-backdrop{display:flex!important;align-items:stretch!important;justify-content:center!important;padding:7px 6px calc(6px + env(safe-area-inset-bottom))!important;box-sizing:border-box}
+ #modal-root:has(#tools-form) .modal{width:100%!important;max-width:none!important;max-height:calc(100dvh - 13px - env(safe-area-inset-bottom))!important;min-height:min(570px,87dvh)!important;margin:0!important;border-radius:20px!important;overflow:hidden!important;display:flex!important;flex-direction:column!important}
+ #modal-root:has(#tools-form) .modal-header{flex:none;padding:16px 18px!important;border-bottom:1px solid var(--border,#e4e4e7)}
+ #modal-root:has(#tools-form) .modal-header h2{font-size:20px!important;font-weight:850!important}
+ #modal-root:has(#tools-form) #tools-form{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+ #modal-root:has(#tools-form) #tools-form .modal-content{flex:1!important;overflow-y:auto!important;max-height:none!important;padding:13px 15px calc(88px + env(safe-area-inset-bottom))!important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+}
+#tools-form .pati-menu-mobile-20261031{gap:12px!important}
+#tools-form .pati-menu-mobile-20261031 .pati-feature-group{background:var(--paper,#fff)!important;border:1px solid var(--border,#e7e7e7)!important;border-radius:17px!important;padding:9px 10px 10px!important;box-shadow:none!important}
+#tools-form .pati-menu-mobile-20261031 .pati-feature-group h3{padding:4px 8px!important;font-size:12px!important;letter-spacing:.02em;font-weight:850!important;color:var(--muted,#6a6a6a)!important}
+#tools-form .pati-menu-mobile-20261031 .pati-mobile-menu-list{display:flex!important;flex-direction:column!important;gap:0!important}
+#tools-form .pati-menu-mobile-20261031 .pati-mobile-menu-item{min-height:52px!important;width:100%!important;border:0!important;border-bottom:1px solid var(--border,#efefef)!important;border-radius:0!important;background:transparent!important;text-align:left!important;padding:10px 9px!important;font-weight:700!important;line-height:1.35!important}
+#tools-form .pati-menu-mobile-20261031 .pati-mobile-menu-item:last-child{border-bottom:0!important}
+#tools-form .pati-menu-mobile-20261031 .pati-menu-icon{width:36px;height:36px;min-width:36px;border-radius:11px;display:inline-flex;align-items:center;justify-content:center;background:var(--surface,#f4f4f4)}
+#tools-form .pati-menu-mobile-20261031 .pati-menu-arrow{margin-left:auto;opacity:.65}
+#tools-form .pati-menu-mobile-20261031 .pati-feature-intro{font-size:12px!important;font-weight:700;opacity:.7;margin:1px 5px!important}
+#tools-form .pati-feature-notifications{border:1px solid var(--border,#e5e5e5)!important;background:var(--paper,#fff)!important;border-radius:17px!important;padding:12px!important}
+#tools-form .pati-menu-notifications-top{display:flex!important;align-items:center;justify-content:space-between;gap:8px}
+#tools-form .pati-menu-notifications-top h3{margin:0!important;font-size:14px!important;font-weight:850!important}
+#tools-form .pati-menu-notifications-all{border:1px solid var(--border,#d2d2d2)!important;border-radius:999px!important;padding:8px 14px!important;min-width:60px!important;min-height:38px!important;background:transparent!important;color:inherit!important;font-size:12px!important;font-weight:800!important}
+#tools-form .pati-menu-notifications-list{margin:8px 0 0!important;max-height:90px;overflow:hidden}
+#tools-form .pati-menu-notifications-list .pati-alert-row{margin:0!important;padding:5px!important;border:0!important;max-width:100%}
+#tools-form .pati-menu-notifications-list .pati-alert-title{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+/* Completely white compact profile-insights shortcut on the same visual plane as the profile. */
+#main-content .pati-ig-profile .pati-profile-insights-preview{background:#fff!important;background-image:none!important;color:#111!important;border:1px solid #ededed!important;box-shadow:none!important;opacity:1!important}
+#main-content .pati-profile-insights-preview strong,#main-content .pati-profile-insights-preview small,#main-content .pati-profile-insights-preview .pati-profile-insights-value,#main-content .pati-profile-insights-preview .pati-profile-insights-arrow{color:#111!important;opacity:1!important}
+#main-content .pati-profile-insights-preview small{color:#555!important}
+/* Widen messaging toward both phone edges, account for keyboard and safe area. */
+@media(max-width:740px){
+ #main-content:has(.pati-dm-layout){width:100%!important;max-width:none!important;min-width:0!important;margin:0!important;padding:0 6px!important;box-sizing:border-box!important;overflow-x:hidden!important}
+ #main-content .pati-dm-top{margin:0!important;padding:12px 8px 8px!important;gap:8px;max-width:100%;box-sizing:border-box}
+ #main-content .pati-dm-top-actions{gap:5px!important;flex-wrap:wrap;justify-content:flex-end}
+ #main-content .pati-dm-top-actions button{min-height:37px!important;padding:6px 8px!important;font-size:12px!important}
+ #main-content .pati-dm-filters{padding:0 4px!important;margin:4px 0 8px!important}
+ #main-content .pati-dm-searchbar{display:flex!important;width:calc(100% - 8px)!important;max-width:none!important;margin:0 4px 9px!important;box-sizing:border-box}
+ #main-content .pati-dm-layout{width:100%!important;max-width:none!important;min-width:0!important;margin:0!important;padding:0!important;border-radius:13px!important;box-sizing:border-box!important}
+ #main-content .pati-dm-layout .chat-people,#main-content .pati-dm-layout .chat-window{width:100%!important;max-width:none!important;min-width:0!important;box-sizing:border-box!important}
+ #main-content .pati-dm-layout .chat-people{padding:6px 5px!important}
+ #main-content .pati-dm-layout .pati-dm-list-row{width:100%!important;min-width:0!important;margin:0!important;padding:7px 6px!important;box-sizing:border-box!important}
+ #main-content .pati-dm-layout .chat-person{width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
+ #main-content .pati-dm-layout .chat-history{padding:12px 9px!important;max-width:100%!important;box-sizing:border-box}
+ #main-content .pati-dm-layout .chat-compose,#main-content .pati-dm-layout .chat-input-area{width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding-left:7px!important;padding-right:7px!important}
+ #main-content .pati-dm-layout .bubble-chat{max-width:min(85%,380px)!important;overflow-wrap:anywhere}
+ #main-content .pati-dm-layout.mobile-chat-open .chat-people{display:none!important}
+ #main-content .pati-dm-layout.mobile-chat-list .chat-window{display:none!important}
+}
+@media(prefers-reduced-motion:reduce){#main-content .pati-feed-reel-open{transition:none!important}}
