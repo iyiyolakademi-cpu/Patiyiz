@@ -60,7 +60,7 @@ if(tab==='activity')html=records.map(x=>item(niceDate(x.day),x.total+' yeni kull
 $('#results').innerHTML=html||'<p class="muted">Bu bölümde henüz kayıt yok.</p>'}
 
 function rewardStatus(status){
- return ({pending:'Beklemede',approved:'Onaylandı',preparing:'Hazırlanıyor',fulfilled:'Teslim edildi / bağış tamamlandı',cancelled:'İptal · PatiCoin iade edildi'})[status]||status;
+ return ({pending:'Beklemede',approved:'Onaylandı',preparing:'Hazırlanıyor',fulfilled:'Teslim edildi / bağış tamamlandı',cancelled:'İptal · mağaza bakiyesi iade edildi'})[status]||status;
 }
 
 function renderEngagement(){
@@ -134,7 +134,7 @@ function renderRewards(){
   out='<p class="muted">Stoklar yalnız gerçek ürün sayımından sonra güncellenmelidir. Sipariş onaylandığında 1 adet ayrılır; iptalde stoğa geri döner.</p>';
   out+='<div class="reward-stock-grid">'+(rewardDb.stock||[]).map(item=>
    '<article class="reward-admin-card"><div class="reward-admin-head"><strong>'+esc(item.emoji)+' '+esc(item.name)+'</strong><span class="reward-stock-pill">Mevcut: '+Number(item.stock_available||0)+'</span></div>'+
-   '<small>'+Number(item.coins||0)+' PatiCoin · '+(item.enabled?'Ürün aktif':'Ürün pasif')+'</small>'+
+   '<small>'+Number(item.coins||0)+' mağaza bakiyesi · '+(item.enabled?'Ürün aktif':'Ürün pasif')+'</small>'+
    '<label class="reward-stock-field">Gerçek kullanılabilir stok adedi<input type="number" min="0" max="100000" step="1" inputmode="numeric" value="'+Number(item.stock_available||0)+'" data-reward-stock-input="'+esc(item.id)+'"></label>'+
    '<button class="btn primary" type="button" data-reward-action="stock" data-item="'+esc(item.id)+'">Stoku kaydet</button></article>').join('')+'</div>';
   const events=rewardDb.inventory_events||[];
@@ -155,7 +155,7 @@ function renderRewards(){
    const link=o.proof_url?'<a href="'+esc(o.proof_url)+'" target="_blank" rel="noopener noreferrer">Teslimat kanıtını aç ↗</a>':'';
    return '<article class="reward-admin-card" data-reward-order="'+esc(o.id)+'"><div class="reward-admin-head"><strong>'+esc(o.emoji)+' '+esc(o.product_name)+'</strong><span class="reward-status reward-'+esc(o.status)+'">'+esc(rewardStatus(o.status))+'</span></div>'+
     '<small>'+esc(o.display_name)+' · @'+esc(o.handle||'üye')+' · '+esc(niceDate(o.created_at))+'</small>'+
-    '<p>'+(o.destination==='environment'?'🌱 Doğa için fidan':o.destination==='street_animals'?'🐾 Sokak hayvanlarına':('🐶 '+esc(o.pet_name||'Kendi hayvanına')))+' · '+Number(o.coins_spent)+' PatiCoin</p>'+
+    '<p>'+(o.destination==='environment'?'🌱 Doğa için fidan':o.destination==='street_animals'?'🐾 Sokak hayvanlarına':('🐶 '+esc(o.pet_name||'Kendi hayvanına')))+' · '+Number(o.coins_spent)+' mağaza bakiyesi</p>'+
     (o.admin_note?'<p class="reward-note">Not: '+esc(o.admin_note)+'</p>':'')+link+tools+
     (history.length?'<details><summary>İşlem geçmişi ('+history.length+')</summary><div class="reward-events">'+history.map(e=>
      '<p>'+esc(rewardStatus(e.previous_status))+' → '+esc(rewardStatus(e.next_status))+' · '+esc(niceDate(e.created_at))+(e.note?' · '+esc(e.note):'')+'</p>').join('')+'</div></details>':'')+
@@ -183,7 +183,7 @@ $('#results').addEventListener('click',async e=>{
  }else if(kind==='transition'){
   if(next==='cancelled'&&!note)return toast('İptal gerekçesi zorunlu.');
   if(next==='fulfilled'&&!/^https:\/\//i.test(proof))return toast('Teslimat kanıtı HTTPS bağlantısı gerekli.');
-  if(!confirm(next==='cancelled'?'Talebi iptal edip PatiCoin bakiyesini iade etmek istiyor musun?':
+  if(!confirm(next==='cancelled'?'Talebi iptal edip mağaza bakiyesi bakiyesini iade etmek istiyor musun?':
    next==='fulfilled'?'Teslimatın gerçekten tamamlandığını kanıt bağlantısıyla doğruluyor musun?':'Talebi bir sonraki duruma geçirmek istiyor musun?'))return;
   operation='patiyiz_admin_reward_transition';
   args={p_redemption_id:id,p_next_status:next,p_note:note||null,p_proof_url:proof||null};
