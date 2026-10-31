@@ -185,3 +185,77 @@
 .pati-mission-progress strong,.pati-mission-progress span{display:block;font-size:12px}.pati-mission-progress span{margin:4px 0 8px;color:var(--muted,#666)}
 .pati-mission-progress progress{display:block;width:100%;height:9px;accent-color:var(--ink,#202127)}
 @media(max-width:600px){.pati-city-alert{align-items:stretch;flex-direction:column}.pati-city-alert button{align-self:stretch}.pati-care-quick{grid-template-columns:repeat(2,minmax(0,1fr))}.pati-mission-progress{grid-template-columns:1fr}}
+
+
+/* 2026-11-01 — The logo itself opens a compact, two-choice feed picker. */
+#app-root .pati-feed-brand-selector{
+  appearance:none;-webkit-appearance:none;border:0!important;background:transparent!important;
+  color:inherit!important;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;
+}
+#app-root .pati-feed-brand-selector:focus-visible{
+  outline:2px solid #434c59!important;outline-offset:4px;border-radius:12px;
+}
+#pati-feed-menu-trigger::after,#pati-feed-desktop-trigger::after{
+  content:"";position:static;display:block;flex:none;
+  width:7px;height:7px;margin:0 0 3px 6px;
+  border-right:2px solid currentColor;border-bottom:2px solid currentColor;
+  transform:rotate(45deg);pointer-events:none;
+}
+#pati-feed-menu-trigger[aria-expanded="true"]::after,
+#pati-feed-desktop-trigger[aria-expanded="true"]::after{
+  transform:translateY(3px) rotate(225deg);
+}
+#pati-feed-menu,#pati-feed-desktop-menu{
+  box-sizing:border-box;width:min(292px,calc(100vw - 20px));max-height:calc(100dvh - 94px);
+  overflow-y:auto;padding:7px;border:1px solid #e6e7ea;border-radius:17px;
+  background:#fff;color:#18191f;
+  box-shadow:0 13px 38px rgba(13,20,32,.19);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+}
+#pati-feed-menu[hidden],#pati-feed-desktop-menu[hidden]{display:none!important}
+#pati-feed-menu>button,#pati-feed-desktop-menu>button{
+  appearance:none;-webkit-appearance:none;display:flex!important;align-items:center;
+  gap:11px;width:100%;min-height:62px;margin:0;padding:10px 11px!important;
+  border:0!important;border-radius:11px!important;background:transparent!important;
+  color:#18191f!important;font:inherit;font-size:14px;text-align:left;cursor:pointer;
+}
+#pati-feed-menu>button[aria-checked="true"],
+#pati-feed-desktop-menu>button[aria-checked="true"]{background:#f1f2f5!important}
+#pati-feed-menu>button:focus-visible,
+#pati-feed-desktop-menu>button:focus-visible{
+  outline:2px solid #303943!important;outline-offset:-3px;
+}
+#pati-feed-menu>button .icon,#pati-feed-desktop-menu>button .icon{
+  display:block;flex:none;width:23px;height:23px;color:#222!important;
+  fill:none!important;stroke:currentColor!important;
+}
+#pati-feed-menu .pati-feed-menu-label,#pati-feed-desktop-menu .pati-feed-menu-label{
+  display:flex;flex:1;flex-direction:column;align-items:flex-start;gap:3px;min-width:0;
+}
+#pati-feed-menu .pati-feed-menu-label strong,#pati-feed-desktop-menu .pati-feed-menu-label strong{
+  font-size:14px;line-height:1.25;font-weight:800;color:#18191f;
+}
+#pati-feed-menu .pati-feed-menu-label small,#pati-feed-desktop-menu .pati-feed-menu-label small{
+  font-size:11px;line-height:1.35;font-weight:500;color:#626b76;
+}
+#pati-feed-menu .pati-feed-selected,#pati-feed-desktop-menu .pati-feed-selected{
+  visibility:hidden;font-size:17px;font-weight:800;color:#111;
+}
+#pati-feed-menu>button[aria-checked="true"] .pati-feed-selected,
+#pati-feed-desktop-menu>button[aria-checked="true"] .pati-feed-selected{visibility:visible}
+@media(max-width:740px){
+  #app-root:not(.hidden)>.mobile-header>.brand.pati-feed-brand-selector{z-index:4;max-width:calc(100% - 172px)!important}
+  #app-root:not(.hidden)>.mobile-header>#pati-feed-menu{
+    position:absolute;top:calc(100% + 7px);left:50%;transform:translateX(-50%);
+    z-index:700;background:#fff!important;border:1px solid #e6e7ea!important;
+    color:#18191f!important;box-shadow:0 13px 38px rgba(13,20,32,.19)!important;
+  }
+  #pati-feed-desktop-menu{display:none!important}
+}
+@media(min-width:741px){
+  #app-root .sidebar>.brand.pati-feed-brand-selector{
+    display:flex;align-items:center;justify-content:flex-start;gap:7px;
+    width:100%;text-align:left;
+  }
+  #pati-feed-desktop-menu{position:fixed;z-index:12000}
+}
