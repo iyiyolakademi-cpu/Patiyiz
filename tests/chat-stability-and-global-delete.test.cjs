@@ -29,7 +29,7 @@ test('Chat remembers position and does not re-render when marking message read',
  assert.match(page,/oldChatId!==personId/);
  assert.match(page,/requestAnimationFrame\(restore\)/);
  const read=section('async function markConversationRead(){','function unreadCounts(){');
- assert.match(read,/unread\.forEach\(x=>x\.read_at=now\);navRender\(\)/);
+ assert.match(read,/confirmed\.has\(x\.id\)/); assert.match(read,/\.select\('id,read_at'\)/);
  assert.doesNotMatch(read,/render\(\);/);
  const live=section('function queueLiveUpdate(){','function startLive(){');
  assert.match(live,/x\.edited_at/);assert.match(live,/x\.body/);
