@@ -92,3 +92,5 @@ Kaynaklar: https://capacitorjs.com/docs/getting-started · https://capacitorjs.c
 - Android Reels video alanı object-fit:cover kullanır. Ekranı doldurmak için yatay veya farklı oranlı videoların kenarları kırpılabilir; sistem durum çubukları uygulama alanının dışında kalabilir.
 - Sesli otomatik oynatma için yalnız Capacitor WebView içinde setMediaPlaybackRequiresUserGesture(false) etkinleştirilir. Gerçek cihaz ses seviyesi ve medya davranışı ayrıca test edilmelidir.
 - Canlı web sitesi, Supabase verisi ve AAB bu aşamada değiştirilmedi. Düzeltmeleri doğrulamak için yeni debug APK gerekir; eski APK otomatik güncellenmez. Mevcut sürümü kaldırmadan önce yerel taslakları yedekleyin.
+
+<!-- APK QA build from current main: 2026-10-31; temporary PR only, not for merging. -->
