@@ -7001,6 +7001,9 @@ case 'pati-settings-notifications':navigate('notifications');break;case 'pati-pr
  if(r.error)throw r.error;
  data.profiles=data.profiles.map(p=>p.id===owner?r.data:p);
  globalThis.PatiyizPrivateMedia?.clear();
+ if(typeof patiReelsFeed!=='undefined')patiReelsFeed={owner:'',rows:[],offset:0,hasMore:true,loading:false,ready:false,error:''};
+ if(typeof patiExploreMedia!=='undefined')patiExploreMedia={owner:'',sort:'popular',rows:[],offset:0,hasMore:true,loading:false,ready:false,error:''};
+ if(typeof patiFollowingState!=='undefined')patiFollowingState={owner:'',rows:[],ready:false,loading:false,hasMore:true,cursor:null,error:''};
  await load('feed');
  patiSafetyState.loaded=false;render();
 },'Hesap gizliliği güncellendi.');break;
@@ -7577,6 +7580,13 @@ globalThis.PatiyizPrivateMedia?.onRefresh(async()=>{
  const uid=me.id;
  data.posts=await globalThis.PatiyizPrivateMedia.hydrateRows(data.posts,uid,sb);
  data.stories=await globalThis.PatiyizPrivateMedia.hydrateRows(data.stories,uid,sb);
+ if(patiReelsFeed?.owner===uid)patiReelsFeed.rows=await globalThis.PatiyizPrivateMedia.hydrateRows(patiReelsFeed.rows,uid,sb);
+ if(patiExploreMedia?.owner===uid)patiExploreMedia.rows=await globalThis.PatiyizPrivateMedia.hydrateRows(patiExploreMedia.rows,uid,sb);
+ if(patiFollowingState?.owner===uid)patiFollowingState.rows=await globalThis.PatiyizPrivateMedia.hydrateRows(patiFollowingState.rows,uid,sb);
+ if(patiDmSharedPosts?.size){
+  const refs=await globalThis.PatiyizPrivateMedia.hydrateRows([...patiDmSharedPosts.values()],uid,sb);
+  for(const post of refs)patiDmSharedPosts.set(post.id,post);
+ }
  if(me?.id===uid)render();
 });
 async function boot(){if(!ready){showSetup();return}
