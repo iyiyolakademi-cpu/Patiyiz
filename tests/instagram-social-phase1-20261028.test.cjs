@@ -17,10 +17,10 @@ test('App code parses, new styles are bundled on web and native',()=>{
  assert.match(native,/patiyiz-social-phase1-20261028\.css/);
  assert.match(css,/grid-template-columns:repeat\(4,minmax\(0,1fr\)\)!important/);
 });
-test('Repost keeps original ownership, prevents own reposts and supports undo',()=>{
+test('Repost keeps original ownership, allows own reposts and supports undo',()=>{
  const social=between('/* Social features: repost and pinned profile posts. */','function postCard(');
  assert.match(social,/patiyiz_reposts/);
- assert.match(social,/Kendi gönderini yeniden paylaşamazsın/);
+ assert.doesNotMatch(social,/Kendi gönderini yeniden paylaşamazsın/);
  assert.match(social,/user_id:owner,post_id:postId/);
  assert.match(social,/\.delete\(\)\.eq\('user_id',owner\)\.eq\('post_id',postId\)/);
  const card=between('function postCard(','function patiDetailCandidates(');
@@ -57,7 +57,7 @@ test('DM reaction table only exposes authorized message participants',()=>{
  assert.match(dm,/patiDmSetReaction/);
  assert.match(dm,/update\(\{emoji\}\)/);
  assert.doesNotMatch(dm,/\.upsert\(\{message_id:messageId,user_id:owner,emoji\}/);
- assert.match(app,/case 'dm-react-set':run\(\(\)=>patiDmSetReaction/);
+ assert.match(app,/case 'dm-react-set':\{const emoji=target\.dataset\.emoji/);
 });
 test('Story share attributes original, retains source link and original media',()=>{
  const story=between('/* Share an existing public post to a story','function showStoryFrame(){');
