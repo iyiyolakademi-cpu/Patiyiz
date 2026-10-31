@@ -195,3 +195,123 @@ html[data-pati-view]:not([data-pati-view="home"]) #app-root .pati-desktop-action
  #main-content button[data-action="vote"],
  #main-content button[data-action="vote-negative"]{transition:none!important}
 }
+
+
+/* 31 Oct refinement: voting result majority and natural button counters. */
+#main-content .pati-home-question button[data-action="vote"].active,
+#main-content .pati-home-question button[data-action="vote"].pati-vote-leading,
+#main-content .pati-community-card button[data-action="vote"].active,
+#main-content .pati-community-card button[data-action="vote"].pati-vote-leading{
+ color:#148447!important;
+ border-color:rgba(19,150,83,.45)!important;
+ background:rgba(24,167,93,.10)!important;
+}
+#main-content .pati-home-question button[data-action="vote-negative"].active,
+#main-content .pati-home-question button[data-action="vote-negative"].pati-vote-leading,
+#main-content .pati-community-card button[data-action="vote-negative"].active,
+#main-content .pati-community-card button[data-action="vote-negative"].pati-vote-leading{
+ color:#d93243!important;
+ border-color:rgba(215,53,66,.4)!important;
+ background:rgba(219,48,65,.09)!important;
+}
+#main-content .pati-question-vote-up.pati-vote-leading,
+#main-content .pati-question-vote-down.pati-vote-leading{
+ box-shadow:inset 0 0 0 1px currentColor!important;
+}
+#main-content .pati-social-actions{display:flex!important;align-items:center!important;gap:clamp(5px,1.7vw,14px)!important;flex-wrap:nowrap!important;min-width:0}
+#main-content .pati-social-actions>button{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:4px!important;min-width:0!important;padding:6px 3px!important;font-variant-numeric:tabular-nums}
+#main-content .pati-social-actions .pati-engagement-metric{
+ display:inline!important;min-width:10px;font-size:11px!important;color:inherit!important;
+ font-weight:650;line-height:1!important;white-space:nowrap;
+}
+#main-content .pati-social-actions>button svg{flex:none}
+#main-content .pati-social-actions>button[data-action="save"]{margin-left:auto!important}
+@media(max-width:385px){#main-content .pati-social-actions>button{gap:3px!important;font-size:11px!important}}
+/* Reply sheet reuses exactly the established post comments layout. */
+#modal-root .pati-question-comments .pati-question-reply-summary{padding:12px 15px!important;margin:0!important}
+#modal-root .pati-question-comments .pati-question-reply-summary h3{
+ margin:0 0 5px!important;font-size:14px!important;font-weight:800!important;
+ line-height:1.42!important;color:inherit!important
+}
+#modal-root .pati-question-comments .pati-question-reply-summary p{margin:0!important;font-size:12px!important;line-height:1.5!important;opacity:.78}
+#modal-root .pati-question-comments .comment-list{flex:1!important;min-height:0!important;overflow-y:auto!important;padding:9px 14px 24px!important}
+#modal-root .pati-question-comments .pati-question-reply-row{margin-bottom:14px!important;border:0!important;background:transparent!important}
+#modal-root .pati-question-comments .pati-question-reply-row .pati-sheet-comment-main p{overflow-wrap:anywhere}
+#modal-root .pati-question-comments .modal-footer{flex:none!important}
+#modal-root .pati-question-comments .pati-comment-editor-row textarea{min-width:0!important;flex:1!important;resize:none!important}
+/* The surface behind and beside the DM header is white, not black bands. */
+html[data-pati-view="messages"] body,
+html[data-pati-view="messages"] #app-root,
+html[data-pati-view="messages"] #app-root .app-shell,
+html[data-pati-view="messages"] #app-root .mobile-header,
+html[data-pati-view="messages"] #main-content:has(.pati-dm-layout),
+html[data-pati-view="messages"] #main-content .pati-dm-top,
+html[data-pati-view="messages"] #main-content .pati-dm-layout,
+html[data-pati-view="messages"] #main-content .pati-dm-layout .chat-window,
+html[data-pati-view="messages"] #main-content .pati-dm-layout .chat-history,
+html[data-pati-view="messages"] #main-content .pati-dm-layout .chat-people{
+ background:#fff!important;background-image:none!important;
+}
+html[data-pati-view="messages"] #main-content .pati-dm-top,
+html[data-pati-view="messages"] #main-content .pati-dm-title,
+html[data-pati-view="messages"] #main-content .chat-window header,
+html[data-pati-view="messages"] #main-content .chat-person-info,
+html[data-pati-view="messages"] #main-content .pati-dm-list-row{color:#15171c!important}
+html[data-pati-view="messages"] #main-content .chat-window header{background:#fff!important;border-color:#ebedf0!important}
+html[data-pati-view="messages"] #main-content .pati-dm-layout .chat-form,
+html[data-pati-view="messages"] #main-content .pati-dm-layout .chat-compose{background:#fff!important}
+html[data-pati-view="messages"] #main-content .chat-people{border-color:#edf0f3!important}
+@media(max-width:740px){
+ html[data-pati-view="messages"] #main-content:has(.pati-dm-layout){padding-inline:0!important}
+ html[data-pati-view="messages"] #main-content .pati-dm-top{padding-left:13px!important;padding-right:13px!important}
+ html[data-pati-view="messages"] #main-content .pati-dm-layout{border:0!important;border-radius:0!important}
+ html[data-pati-view="messages"] #main-content .chat-history{padding:13px 14px!important}
+}
+/* Gentle inset text and headers, without moving full-bleed videos or image cards. */
+#main-content .pati-post-caption,
+#main-content .pati-post-details,
+#main-content .pati-feed-text-content,
+#main-content .pati-home-question-author,
+#main-content .pati-home-question h3,
+#main-content .pati-home-question p,
+#main-content .pati-ig-info{padding-left:clamp(3px,1.5vw,8px)!important}
+#main-content .pati-post-details{padding-right:10px!important}
+#main-content .pati-home-question .pati-home-question-actions{padding-left:3px!important}
+/* Clear back navigation with the original single-back-per-page behavior. */
+#pati-global-back:not([hidden]),#main-content>.pati-page-back{
+ align-items:center!important;justify-content:center!important;gap:6px!important;
+ border:1px solid #e8eaf0!important;border-radius:13px!important;
+ background:#f3f5f7!important;color:#22272e!important;
+ min-height:38px!important;padding:6px 10px!important;
+ font-size:12px!important;font-weight:760!important;line-height:1!important;
+ box-shadow:none!important;white-space:nowrap!important;
+}
+#pati-global-back svg,#main-content>.pati-page-back svg{display:block;width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:740px){
+ #pati-global-back:not([hidden]){margin-left:8px!important;min-width:39px!important;min-height:39px!important;max-width:84px!important;position:relative!important;inset:auto!important}
+}
+html[data-pati-theme="dark"]:not([data-pati-view="messages"]) #pati-global-back:not([hidden]){
+ background:#22252d!important;color:#f5f5f6!important;border-color:#343943!important;
+}
+/* Video shows play / pause feedback only after an explicit single tap. */
+#main-content .pati-reel-item .pati-reel-play-feedback{
+ display:grid!important;place-items:center!important;
+ position:absolute!important;left:50%!important;top:48%!important;transform:translate(-50%,-50%) scale(.82);
+ width:72px;height:72px;pointer-events:none!important;z-index:15!important;
+ border-radius:50%;background:rgba(0,0,0,.47);color:#fff!important;
+ font-size:39px;font-weight:720;line-height:1;opacity:0;
+}
+#main-content .pati-reel-item .pati-reel-play-feedback.pati-reel-play-flash{
+ animation:patiReelPlaybackFlash .78s ease-out both;
+}
+@keyframes patiReelPlaybackFlash{
+ 0%{opacity:0;transform:translate(-50%,-50%) scale(.8)}
+ 24%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+ 75%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+ 100%{opacity:0;transform:translate(-50%,-50%) scale(1.08)}
+}
+@media(prefers-reduced-motion:reduce){
+ #main-content .pati-reel-item .pati-reel-play-feedback.pati-reel-play-flash{
+ animation:patiReelPlaybackFlash .15s linear both!important;
+ }
+}
