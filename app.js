@@ -3170,8 +3170,36 @@ async function routePendingLost(){
  if(card){card.classList.add('is-linked');card.scrollIntoView({block:'center',behavior:'smooth'})}
  else notify('İlan bulunamadı veya artık görüntülenemiyor.',true);
 }
+let patiLostAlert={loaded:false,loading:false,enabled:false,city:''};
+async function patiLostAlertLoad(){
+ if(!me?.id||!sb||patiLostAlert.loading||patiLostAlert.loaded)return;
+ const owner=me.id;patiLostAlert.loading=true;
+ try{const r=await sb.from('patiyiz_lost_city_alerts').select('city,enabled').eq('user_id',owner).maybeSingle();
+  if(r.error)throw r.error;if(me?.id!==owner)return;
+  patiLostAlert={loaded:true,loading:false,city:r.data?.city||'',enabled:!!r.data?.enabled};
+ }catch(e){console.warn('Şehir bildirimi okunamadı:',e?.message||e)}
+ finally{patiLostAlert.loading=false;if(view==='lost')patiLostAlertRefresh()}
+}
+function patiLostAlertMarkup(){
+ const city=String(current()?.city||'').trim(),active=patiLostAlert.enabled&&patiLostAlert.city.toLocaleLowerCase('tr-TR')===city.toLocaleLowerCase('tr-TR');
+ return '<section class="pati-city-alert"><div><strong>🔔 Şehrimdeki kayıp hayvanlar</strong><p>'+(city?esc(city)+' için yeni ilanlar. Konum izni ve açık adres kullanılmaz.':'Bildirimleri açmak için profilinde şehir belirt.')+'</p></div><button type="button" data-action="lost-city-alert-toggle" '+(!city||patiLostAlert.loading?'disabled':'')+' aria-pressed="'+active+'">'+(patiLostAlert.loading?'Yükleniyor…':active?'Bildirimleri kapat':'Bildirimleri aç')+'</button></section>';
+}
+function patiLostAlertRefresh(){const target=document.getElementById('pati-lost-alert-subscribe');if(target)target.innerHTML=patiLostAlertMarkup()}
+async function patiLostAlertToggle(){
+ if(!me?.id||patiLostAlert.loading)return;
+ const owner=me.id,city=String(current()?.city||'').trim();
+ if(city.length<2||city.length>80)return notify('Profiline geçerli bir şehir ekle.',true);
+ const enabled=patiLostAlert.enabled&&patiLostAlert.city.toLocaleLowerCase('tr-TR')===city.toLocaleLowerCase('tr-TR');
+ patiLostAlert.loading=true;patiLostAlertRefresh();
+ try{const r=await sb.from('patiyiz_lost_city_alerts').upsert({user_id:owner,city,enabled:!enabled,updated_at:new Date().toISOString()},{onConflict:'user_id'});
+  if(r.error)throw r.error;if(me?.id!==owner)return;
+  patiLostAlert={loaded:true,loading:false,city,enabled:!enabled};
+  notify(enabled?'Kayıp hayvan bildirimleri kapatıldı.':'Yeni kayıp ilanlarını uygulama içinde göreceksin. Telefon bildirimi için ayrıca izin vermelisin.');
+ }catch(e){notify(friendly(e),true)}finally{patiLostAlert.loading=false;patiLostAlertRefresh()}
+}
 let lostPhotoObjectUrl='';
 function lostPage(){
+ if(!patiLostAlert.loaded&&!patiLostAlert.loading)void patiLostAlertLoad();
  const detail=data.lost.find(x=>x.id===(typeof patiLostDetailId==='string'?patiLostDetailId:'')&&!blocked.has(x.owner_id));
  if(detail){patiListingDetail('lost',detail);return}
  const safe=data.lost.filter(x=>!blocked.has(x.owner_id));
@@ -3182,6 +3210,7 @@ function lostPage(){
  +'<div class="lost-v2-hero"><div><small>TOPLULUK DESTEĞİ</small><h2>Bir paylaşım, bir kavuşma olabilir.</h2><p>Kayıp hayvanları bulmak için birlikte hareket edelim.</p></div><span>🐾</span></div>'
  +'<div class="lost-v2-stats"><div><b>'+counts.missing+'</b><span>Aranıyor</span></div><div><b>'+counts.found+'</b><span>Bulundu</span></div><div><b>'+counts.mine+'</b><span>İlanlarım</span></div></div>'
  +'<p class="lost-v2-privacy">🔒 Açık adres veya telefon numarası paylaşma. Yalnızca şehir / ilçe belirt; iletişim uygulama içi mesajlarla yapılsın.</p>'
+ +'<div id="pati-lost-alert-subscribe">'+patiLostAlertMarkup()+'</div>'
  +'<div class="p4-list-tabs" role="group" aria-label="Kayıp ilanı durumları">'+[['missing','Aranıyor'],['found','Bulundu'],['mine','İlanlarım']].map(([k,t])=>'<button type="button" data-action="lost-status" data-id="'+k+'" class="'+(lostStatus===k?'active':'')+'" aria-pressed="'+(lostStatus===k)+'">'+t+'</button>').join('')+'</div>'+'<details class="pati-ref-listing-filters"><summary>⌕ Ara ve filtrele</summary><label for="lost-search">İlanlarda ara</label><div class="lost-v2-search"><input id="lost-search" type="search" value="'+esc(lostSearch)+'" placeholder="Hayvan adı, tür, şehir veya ilçe..." autocomplete="off" aria-controls="lost-results"><button type="button" data-action="lost-clear">Temizle</button></div>'
  +'<div class="lost-v2-row"><strong>Durum</strong><button type="button" data-action="lost-refresh"'+(lostLoading?' disabled':'')+'>'+(lostLoading?'Yenileniyor…':'↻ Yenile')+'</button></div>'
 
@@ -4321,6 +4350,7 @@ async function openNotification(id){const n=data.notifications.find(x=>x.id===id
  if(n.kind==='mentions'&&n.post_id){await patiOpenMentionNotification(n);return}
  if(['comments','post_likes'].includes(n.kind)&&n.post_id){openPost(n.post_id);return}
  if(n.kind==='messages'&&n.actor_id&&n.actor_id!==me.id&&!blocked.has(n.actor_id)){personId=n.actor_id;mobileChatOpen=true;navigate('messages');return}
+ if(n.kind==='lost_city'){lostStatus='missing';lostSpecies='Tümü';lostSearch='';navigate('lost');await lostRefresh();return}
  if(n.kind==='pet_reminder'){navigate('wellness');return}
  if(n.actor_id&&!blocked.has(n.actor_id)){profileId=n.actor_id;navigate('profile');return}
  navigate('notifications')}
@@ -6781,7 +6811,7 @@ case 'pati-lost-open':patiLostDetailId=id;render();window.scrollTo(0,0);break;ca
 case 'lost-species':lostSpecies=id;lostPage();break;
 case 'lost-clear':lostSearch='';lostPage();document.getElementById('lost-search')?.focus();break;
 case 'lost-reset':lostSearch='';lostStatus='missing';lostSpecies='Tümü';lostPage();break;
-case 'lost-refresh':void lostRefresh();break;
+case 'lost-refresh':void lostRefresh();break;case 'lost-city-alert-toggle':void patiLostAlertToggle();break;
 case 'lost-gallery':document.querySelector('#lost-form input[name="photo"]')?.click();break;
 case 'lost-camera':document.querySelector('#lost-form input[name="photo_camera"]')?.click();break;
 case 'lost-edit':{const a=data.lost.find(x=>x.id===id&&x.owner_id===me.id);if(a)composeLost(a);break;}
