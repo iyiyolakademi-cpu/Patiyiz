@@ -1,6 +1,7 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
+const activeCSS=require('./helpers/active-css.cjs');
 const app=fs.readFileSync('app.js','utf8');
 const css=fs.readFileSync('patiyiz-mobile-rewards-shop-20261025.css','utf8');
 const html=fs.readFileSync('index.html','utf8');
@@ -44,5 +45,5 @@ test('Kalıcı hikâye rafı gizlenir, Keşfet popüler ve yeniler arasında ge�
  assert.match(app,/\['views','Çok izlenen'\]/);
  assert.match(app,/\['likes','Çok beğenilen'\]/);
  assert.match(app,/case 'explore-sort'/);
- assert.match(html,/patiyiz-mobile-rewards-shop-20261025\.css/);
+ assert.ok(activeCSS(html,'patiyiz-mobile-rewards-shop-20261025.css'));
 });
