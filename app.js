@@ -886,7 +886,8 @@ function patiGoBack(){
  profileId='';selectedPostId='';patiNavigatingBack=true;navigate(dest);
 }
 function patiEnsurePageBack(){
- if((view==='home'&&!selectedPostId)||view==='messages')return;
+ if(view==='home'&&!selectedPostId)return;
+ if(view==='messages')return;
  // Inner pages hide the global brand header on mobile; keep a standalone back button.
  if(main.querySelector('.pati-page-back')||main.querySelector('.pati-streaks-back'))return;
  const btn=document.createElement('button');btn.type='button';btn.className='pati-page-back';btn.dataset.action='pati-page-back';btn.innerHTML='‹ <span>Geri</span>';
@@ -5301,6 +5302,8 @@ function patiBindProfileLinkEditor(form){
   if(remove){event.preventDefault();remove.closest('.pati-profile-link-row')?.remove();patiUpdateProfileLinkEditor(form)}
  });
 }
+document.addEventListener('click',event=>{const menu=document.querySelector('#main-content .pati-profile-more-wrap[open]');if(menu&&!menu.contains(event.target))menu.open=false;});
+document.addEventListener('keydown',event=>{if(event.key!=='Escape')return;const menu=document.querySelector('#main-content .pati-profile-more-wrap[open]');if(menu){menu.open=false;menu.querySelector('summary')?.focus();}});
 function profilePage(){
  const p=profile(profileId||me.id),own=p.id===me.id,pets=data.pets.filter(x=>x.owner_id===p.id);
  void patiSafetyRefresh();if(!own)patiRecordProfileVisit(p.id);
@@ -5376,8 +5379,6 @@ function profilePage(){
  void syncProfileCounts(p.id);
  if(own&&typeof patiCreatorPreviewLoad==='function')void patiCreatorPreviewLoad();
 }
-document.addEventListener('click',event=>{const menu=document.querySelector('#main-content .pati-profile-more-wrap[open]');if(menu&&!menu.contains(event.target))menu.open=false;});
-document.addEventListener('keydown',event=>{if(event.key!=='Escape')return;const menu=document.querySelector('#main-content .pati-profile-more-wrap[open]');if(menu){menu.open=false;menu.querySelector('summary')?.focus();}});
 function formField(name,label,type='text',val='',required=false){return `<div class="pati-field"><label for="f-${name}">${esc(label)}</label><input id="f-${name}" name="${name}" type="${type}" ${required?'required':''} value="${esc(val)}"></div>`}
 function selectField(name,label,options,val=''){return `<div class="pati-field"><label>${esc(label)}</label><select name="${name}">${options.map(x=>`<option ${x===val?'selected':''}>${esc(x)}</option>`).join('')}</select></div>`}
 function textField(name,label,val='',required=true,max=1500){return `<div class="pati-field"><label>${esc(label)}</label><textarea name="${name}" maxlength="${max}" ${required?'required':''}>${esc(val)}</textarea></div>`}
