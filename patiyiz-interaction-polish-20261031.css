@@ -1,0 +1,116 @@
+/* Patiyiz / 31 Ekim: compact story actions, touch-first DM and premium compose. */
+
+/* Keep story controls thumb-friendly without covering the story. */
+#story-overlay .pati-own-story-footer .story-viewers-button.pati-story-viewer-preview{
+  display:inline-flex!important;align-items:center!important;justify-content:flex-start!important;
+  flex:0 1 auto!important;width:auto!important;min-width:0!important;max-width:min(178px,52vw)!important;
+  min-height:34px!important;padding:5px 9px!important;gap:5px!important;
+  border-radius:13px!important;font-size:11px!important;line-height:1.15!important;
+  box-sizing:border-box!important;
+}
+#story-overlay .pati-story-viewer-preview .pati-story-viewer-preview-stack{
+  flex:none!important;max-width:41px!important;transform:scale(.82);transform-origin:left center;
+}
+#story-overlay .pati-story-viewer-preview .pati-story-viewer-preview-label{
+  font-size:11px!important;line-height:1.2!important;white-space:nowrap!important;
+}
+#story-overlay .pati-story-viewer-preview .pati-story-viewer-preview-status{
+  font-size:10px!important;line-height:1.15!important;max-width:64px!important;
+  overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+}
+@media(max-width:390px){
+  #story-overlay .pati-own-story-footer .pati-story-viewer-preview{max-width:142px!important;min-height:32px!important;padding:4px 7px!important}
+  #story-overlay .pati-story-viewer-preview .pati-story-viewer-preview-status{max-width:42px!important}
+}
+
+/* Remove old always-visible buttons; reactions and options live on long press. */
+#main-content .pati-dm-layout .pati-dm-msg-tools{display:none!important}
+#main-content .pati-dm-layout .bubble-chat[data-message-id]{touch-action:pan-y;user-select:text;-webkit-user-select:text}
+#main-content .pati-dm-layout .bubble-chat.pati-dm-swiping{
+ transform:translate3d(var(--pati-dm-swipe-x,0),0,0)!important;
+ transition:none!important;will-change:transform;
+}
+#main-content .pati-dm-layout .bubble-chat[data-message-id] .pati-dm-reaction-summary{
+  pointer-events:none;
+}
+#message-options-form .pati-dm-press-emojis{
+ display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:center;
+ gap:5px;padding:8px;background:rgba(128,128,128,.08);
+ border:1px solid rgba(128,128,128,.16);border-radius:18px;margin-bottom:12px;
+}
+#message-options-form .pati-dm-press-emojis button{
+ min-height:45px;border:0;border-radius:13px;background:transparent;color:inherit;
+ font-size:26px;cursor:pointer;transition:transform .14s ease,background .14s ease;
+}
+#message-options-form .pati-dm-press-emojis button:hover,
+#message-options-form .pati-dm-press-emojis button:focus-visible{
+ transform:scale(1.09);background:rgba(128,128,128,.13);outline-offset:2px;
+}
+#message-options-form .pati-dm-press-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#message-options-form .pati-dm-press-actions button{
+ border:1px solid rgba(128,128,128,.2);border-radius:12px;padding:12px 9px;
+ color:inherit;background:rgba(128,128,128,.07);font-size:13px;font-weight:650;
+}
+#message-options-form .pati-dm-press-actions button.pati-msg-delete{color:#ef6868}
+#message-options-form .pati-dm-press-hint{font-size:11px;opacity:.7;margin:11px 0 0;text-align:center}
+#main-content .pati-dm-layout .pati-dm-reply-compose:not([hidden]){
+ border-left:3px solid #888!important;border-radius:8px;
+}
+
+/* Reposted: white check, never red. */
+#main-content [data-action="pati-repost"].active{
+ color:#fff!important;-webkit-text-fill-color:#fff!important;position:relative!important;
+}
+#main-content [data-action="pati-repost"].active .pati-repost-symbol{
+ color:#fff!important;stroke:#fff!important;
+}
+#main-content [data-action="pati-repost"].active::after{
+ content:"✓";position:absolute;top:0;right:1px;
+ width:14px;height:14px;display:grid;place-items:center;
+ color:#fff!important;background:#16181c;border:1px solid rgba(255,255,255,.45);
+ border-radius:50%;font-size:10px;font-weight:900;line-height:1;
+ box-shadow:0 1px 5px rgba(0,0,0,.35);pointer-events:none;
+}
+#main-content .pati-reel-repost.active::after{right:0;top:0}
+#main-content .pati-engagement-stats{
+ display:flex;gap:5px 13px;align-items:center;flex-wrap:wrap;
+ padding:3px 13px 7px;margin:0;color:var(--muted,#93979e);
+ font-size:10px;line-height:1.4;font-weight:550;
+}
+#main-content .pati-engagement-metric{white-space:nowrap;letter-spacing:.01em}
+#main-content .pati-reel-rail .pati-engagement-metric{
+ display:block;font-size:10px;min-height:10px;line-height:1.1;
+ color:#fff;font-variant-numeric:tabular-nums;
+}
+#main-content .pati-reel-rail .pati-reel-action{gap:1px!important}
+#main-content .pati-video-frame .pati-video-heart-burst{
+ position:absolute;z-index:7;inset:50% auto auto 50%;transform:translate(-50%,-50%);
+ color:#fff;font-size:72px;text-shadow:0 3px 18px rgba(0,0,0,.5);
+ opacity:0;pointer-events:none;
+}
+
+/* Premium but controlled color on the *icons*, rather than garish cards. */
+#pati-create-sheet .pati-create-choices{gap:9px!important}
+#pati-create-sheet .pati-create-choice{
+ border-radius:16px!important;border:1px solid rgba(255,255,255,.11)!important;
+ background:linear-gradient(116deg,#202126,#17181c)!important;
+ min-height:71px!important;padding:11px 13px!important;
+ box-shadow:0 5px 18px rgba(0,0,0,.12)!important;
+}
+#pati-create-sheet .pati-create-choice .pati-choice-icon{
+ width:46px!important;height:46px!important;flex:0 0 46px!important;
+ display:grid!important;place-items:center!important;border-radius:14px!important;
+ color:#fff!important;border:1px solid rgba(255,255,255,.22)!important;
+ box-shadow:inset 0 1px 1px rgba(255,255,255,.15),0 5px 13px rgba(0,0,0,.21)!important;
+}
+#pati-create-sheet .pati-create-choice .pati-choice-icon svg{color:#fff!important;stroke:#fff!important;fill:none}
+#pati-create-sheet .pati-create-choice[data-action="pati-create-post"] .pati-choice-icon{background:linear-gradient(145deg,#468cff,#5363e9)!important}
+#pati-create-sheet .pati-create-choice[data-action="pati-create-text"] .pati-choice-icon{background:linear-gradient(145deg,#21b8ac,#12807f)!important}
+#pati-create-sheet .pati-create-choice[data-action="pati-create-story"] .pati-choice-icon{background:linear-gradient(145deg,#f4846d,#cf5099)!important}
+#pati-create-sheet .pati-create-choice[data-action="pati-create-reels"] .pati-choice-icon{background:linear-gradient(145deg,#be5af2,#eb618a)!important}
+#pati-create-sheet .pati-create-choice[data-action="pati-create-question"] .pati-choice-icon{background:linear-gradient(145deg,#f0ac49,#db7142)!important}
+#pati-create-sheet .pati-create-choice:hover{border-color:rgba(255,255,255,.3)!important;background:linear-gradient(110deg,#2b2c32,#222329)!important}
+@media(prefers-reduced-motion:reduce){
+ #pati-create-sheet .pati-create-choice,
+ #message-options-form .pati-dm-press-emojis button{transition:none!important}
+}
