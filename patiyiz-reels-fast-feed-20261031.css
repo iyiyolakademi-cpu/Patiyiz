@@ -1,3 +1,10 @@
+/* Never show buffering UI before playback actually needs it.
+   The [hidden] attribute must win over this file's display:flex!important rules. */
+#main-content .pati-reel-item .pati-reel-buffering[hidden],
+#main-content .pati-reels-viewport>.pati-reels-load-more[hidden]{
+ display:none!important;
+}
+
 /* Reels loading should be rare and subtle, not a large repeated dialog.
    Actual decoding/preload/pagination logic lives in app.js. */
 #main-content .pati-reel-item .pati-reel-buffering:not(.pati-reel-buffering-error){
