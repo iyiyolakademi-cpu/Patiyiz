@@ -37,11 +37,11 @@ test('Other-profile safety actions only appear in the accessible overflow menu',
  const end=app.indexOf('function formField(',begin);
  assert.ok(begin>=0&&end>begin);
  const profile=app.slice(begin,end);
- assert.match(profile,/<details class=\\"pati-profile-more-wrap\\"/);
+ assert.match(profile,/<details class="pati-profile-more-wrap"/);
  assert.match(profile,/button\('Hesabı bildir','report'/);
  assert.match(profile,/button\(patiSafetyState\.restrictions\.has\(p\.id\)\?'Kısıtlamayı kaldır':'Kısıtla','pati-restrict'/);
  assert.match(profile,/\+button\('Mesaj gönder','chat'/);
- const actions=profile.slice(profile.indexOf("'<div class=\\"pati-ig-actions\\"'>"),profile.indexOf("'</div>'+(own&&typeof patiCreatorPreviewHTML"));
+ const actions=profile.slice(profile.indexOf("pati-ig-actions"),profile.indexOf("patiCreatorPreviewHTML"));
  assert.ok(actions.length>0&&actions.length<600);
  assert.doesNotMatch(actions,/Hesabı bildir|Kısıtla|pati-restrict/);
  assert.match(profile,/menu\.open=false/);
