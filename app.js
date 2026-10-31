@@ -764,7 +764,7 @@ function navigate(to){
  if(!allowed.includes(to))to='home';
  if(to==='my-pet')patiPetHubOrigin=false;
  else if(!hubScreens.has(to))patiPetHubOrigin=false;
- const enteringFocusedReel=to==='reels'&&!!patiFeedReelTarget;
+ const enteringFocusedReel=to==='reels'&&typeof patiFeedReelTarget!=='undefined'&&!!patiFeedReelTarget;
  const previous=view;if(previous!==to){patiPreviousView=previous;if(!patiNavigatingBack){patiViewTrail.push(previous);if(patiViewTrail.length>25)patiViewTrail.shift();}patiNavigatingBack=false;}const primary=['home','explore','reels'],reselect=previous===to&&primary.includes(to);
  if(to==='education'&&previous!=='education'){educationCategory='Tümü';educationLesson='';educationSearch='';educationStatus='Tümü';patiAcademyBrowseAll=false}
  if(to==='messages'&&previous!=='messages')patiDmReturnView=previous;
@@ -2025,7 +2025,7 @@ function reelsPage(){
  const followsMe=id=>typeof data!=='undefined'&&data.follows?.some(f=>f.follower_id===id&&f.followee_id===selfId);
  const soundOn=(nativeReels||(typeof patiIsIOSStandaloneReels==='function'&&patiIsIOSStandaloneReels()))&&patiyizReelsSoundEnabled;
  const page=typeof patiReelsFeed!=='undefined'&&patiReelsFeed.owner===selfId?patiReelsFeed:null;
- const focusReelId=(typeof patiFeedReelTarget==='string'&&patiFeedReelTarget)||(patiReelsCarry?.id||'');
+ const focusReelId=(typeof patiFeedReelTarget==='string'&&patiFeedReelTarget)||((typeof patiReelsCarry!=='undefined'&&patiReelsCarry?.id)||'');
  const source=page?.ready?[...page.rows,...data.posts]:data.posts;
  const items=[...new Map(source.map(p=>[p.id,p])).values()]
   .filter(x=>x.video_url&&!blocked.has(x.author_id))
@@ -2057,7 +2057,7 @@ function reelsPage(){
    if(area?.clientHeight&&nodes.length>1)area.scrollTop=nodes.indexOf(focused)*area.clientHeight;
    else if(typeof focused.scrollIntoView==='function')focused.scrollIntoView({block:'start',behavior:'instant'});
    if(patiFeedReelTarget===focusReelId)patiFeedReelTarget='';
-   const carry=patiReelsCarry;
+   const carry=typeof patiReelsCarry!=='undefined'?patiReelsCarry:null;
    if(carry?.id===focusReelId){
     const video=focused.querySelector('video');
     if(video){
@@ -2070,7 +2070,7 @@ function reelsPage(){
    }
   }
  }
- patiReelsCarry=null;
+ if(typeof patiReelsCarry!=='undefined')patiReelsCarry=null;
 }
 
 function closePatiCreate(){const el=$('#pati-create-sheet');if(el)el.hidden=true;document.body.classList.remove('pati-create-open')}
