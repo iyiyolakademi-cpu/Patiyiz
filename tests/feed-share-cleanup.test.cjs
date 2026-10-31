@@ -26,7 +26,7 @@ test('Ana sayfada hikâyelerden hemen sonra bütün gönderi türleri gelir, sek
  const home=vm.runInNewContext(block('function homePage(){','function explorePage()')+'\nhomePage',ctx);
  home();
  assert.match(main.innerHTML,/<div id="stories"><\/div><div class="pati-feed-posts"><article data-post="image1"><\/article><article data-post="video1"><\/article>/);
- assert.match(main.innerHTML,/pati-home-feed-tabs/); assert.doesNotMatch(main.innerHTML,/pati-active5|pati-feed-switch|Fotoğraf &amp; Video|Yazılar/);
+ assert.doesNotMatch(main.innerHTML,/pati-home-feed-tabs|pati-active5|pati-feed-switch|Fotoğraf &amp; Video|Yazılar/);
  assert.deepEqual([...main.innerHTML.matchAll(/data-post="([^"]+)"/g)].map(x=>x[1]),['image1','video1','text1']);
  assert.doesNotMatch(block('function homePage(){','function explorePage()'),/feedMediaMode|feedFilter/);
  assert.match(block('function homePage(){','function explorePage()'),/friendReposts/);

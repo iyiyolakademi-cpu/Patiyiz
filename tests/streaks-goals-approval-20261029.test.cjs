@@ -4,6 +4,7 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 const app=fs.readFileSync('app.js','utf8');
 const sql=fs.readFileSync('supabase/patiyiz-streak-goals-20261029.sql','utf8');
+const currentSQL=fs.readFileSync('supabase/patiyiz-streak-explicit-claim-20261031.sql','utf8');
 const picker=fs.readFileSync('patiyiz-collab-picker-20261029.js','utf8');
 const delight=fs.readFileSync('patiyiz-delight-20261029.js','utf8');
 const css=fs.readFileSync('patiyiz-polish-collab-dm-story-20261029.css','utf8');
@@ -14,12 +15,12 @@ test('Existing app, live collaborator picker and streak animation compile',()=>{
 test('Menu and desktop nav contain Seriler and selecting it renders a permanent card',()=>{
  assert.match(app,/const allowed=\[[^\]]*'streaks'/);
  assert.match(app,/\['streaks','Seriler','calendar'\]/);
- assert.match(app,/items:\[\['streaks','Seriler','calendar'\]/);
+ assert.match(app,/items:\[\['rewards','PatiCoin Merkezi','grid'\],\['streaks','Seriler','calendar'\]/);
  assert.match(app,/streaks:patiStreaksPage/);
  assert.match(app,/function patiStreaksPage\(\)/);
  assert.match(app,/window\.PatiyizDelight\?\.streakPanel\(\{count:days,best\},patiStreakToday\(\)\)/);
  assert.match(delight,/function streakPanel\(state=\{\},day=''\)/);
- assert.match(app,/Günlük serin hedefe ulaşınca ödül otomatik kazanılır/);
+ assert.match(app,/Serini tamamladığında Puanı topla butonuyla ödülünü hesabına ekle/);
  assert.doesNotMatch(app,/window\.PatiyizDelight\?\.showStreakOnce\(patiStreakState/);
 });
 test('Exactly four fixed targets and rewards; progress follows only server-confirmed streak',()=>{
@@ -30,7 +31,7 @@ test('Exactly four fixed targets and rewards; progress follows only server-confi
  }
  assert.match(app,/\.rpc\('patiyiz_streak_goal',\{p_target:target\}\)/);
  assert.match(app,/patiStreakGoalState\.earned/);
- assert.match(app,/data-action="pati-streak-goal"/);
+ assert.match(app,/data-action="'\+\(claimable\?'pati-streak-collect':'pati-streak-goal'\)/);
  assert.match(css,/\.pati-streak-goal-grid/);
  assert.match(css,/\.pati-streak-progress/);
 });
@@ -43,18 +44,21 @@ test('Server-controlled PatiCoin reward is idempotent, user-specific and privile
  assert.match(sql,/grant select on public\.patiyiz_streak_goals to authenticated/);
  assert.match(sql,/uid uuid := \(select auth\.uid\(\)\)/);
 });
-test('Reward only given after checked-in actual streak, once per goal, and wallet updated atomically',()=>{
- assert.match(sql,/select s\.current_streak,s\.longest_streak,s\.last_visit_on/);
- assert.match(sql,/when 3 then 10 when 7 then 25 when 14 then 60 when 30 then 150/);
- assert.match(sql,/if target is not null and streak>=target and last_day >= today-1 then/);
- assert.match(sql,/on conflict\(user_id,task_code\) do nothing returning id into inserted/);
- assert.match(sql,/if inserted is not null then/);
- assert.match(sql,/balance=balance\+coins,lifetime_earned=lifetime_earned\+coins/);
- assert.match(sql,/perform 1 from public\.patiyiz_reward_wallets w where w\.user_id=uid for update/);
- assert.match(sql,/revoke all on function public\.patiyiz_streak_goal\(integer\) from public,anon/);
- assert.match(sql,/grant execute on function public\.patiyiz_streak_goal\(integer\) to authenticated/);
- assert.match(app,/patiCoinAnimation\(Number\(value\.awarded_coins\)/);
+test('Streak awards are credited only by verified, explicit one-time claim',()=>{
+ assert.match(currentSQL,/CREATE OR REPLACE FUNCTION public\.patiyiz_claim_streak_reward\(p_target integer\)/i);
+ assert.match(currentSQL,/if selected_target is distinct from p_target/i);
+ assert.match(currentSQL,/coalesce\(streak,0\)<p_target/i);
+ assert.match(currentSQL,/on conflict\(user_id,task_code\) do nothing returning id into inserted/i);
+ assert.match(currentSQL,/balance=balance\+coins,lifetime_earned=lifetime_earned\+coins/i);
+ assert.match(currentSQL,/perform 1 from public\.patiyiz_reward_wallets where user_id=uid for update/i);
+ assert.match(currentSQL,/revoke all on function public\.patiyiz_claim_streak_reward\(integer\) from public,anon/i);
+ assert.match(currentSQL,/grant execute on function public\.patiyiz_claim_streak_reward\(integer\) to authenticated/i);
+ assert.match(app,/sb\.rpc\('patiyiz_claim_streak_reward'/);
+ assert.match(app,/patiCoinAnimation\(coins,\['Seri ödülün toplandı'\]\)/);
  assert.match(app,/patiCoinSync\(false\)/);
+ const old=currentSQL.split('CREATE OR REPLACE FUNCTION public.patiyiz_streak_goal')[1];
+ assert.ok(old);
+ assert.doesNotMatch(old,/insert into public\.patiyiz_reward_ledger/);
 });
 test('Right-side Onayla button is the only pointer click selection trigger',()=>{
  assert.match(picker,/class="pati-collab-approve"/);

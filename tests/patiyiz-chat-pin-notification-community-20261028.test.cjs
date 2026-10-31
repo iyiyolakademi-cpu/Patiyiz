@@ -12,7 +12,8 @@ test('New social features keep full app script syntactically correct',()=>new vm
 test('Header puts add before branded logo and removes its message icon',()=>{
  const header=html.slice(html.indexOf('<header class="mobile-header">'),html.indexOf('</header>',html.indexOf('<header class="mobile-header">')));
  assert.ok(header.indexOf('id="pati-header-share"')>=0);
- assert.ok(header.indexOf('id="pati-header-share"')<header.indexOf('id="pati-feed-menu-trigger"'));
+ assert.ok(header.indexOf('id="pati-header-share"')<header.indexOf('class="brand"'));
+ assert.doesNotMatch(header,/id="pati-feed-menu-trigger"/);
  assert.match(header,/data-action="pati-create-open"/);
  assert.doesNotMatch(header,/id="pati-header-messages"/);
  assert.doesNotMatch(header,/id="pati-header-notifications"/);
