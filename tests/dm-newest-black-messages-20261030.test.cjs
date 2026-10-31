@@ -34,7 +34,7 @@ test('Chat re-opens at newest message including tagged content after async redra
  assert.match(page,/const pinIntent=patiDmShouldPinLatest\(personId\)/);
  assert.match(page,/const pinBottom=openLatest\|\|pinIntent/);
  assert.match(page,/if\(openLatest\|\|pinIntent\|\|!oldHistory/);
- assert.match(page,/sort\\(patiDmCompareRows\\)/);
+ assert.ok(page.includes('.sort(patiDmCompareRows)'));
  assert.match(app,/\.order\('created_at',\{ascending:false\}\)\.limit\(PATI_DM_THREAD_PAGE\)/);
  assert.match(app,/patiDmOpenAtLatest\(id\);personId=id;mobileChatOpen=true/);
 });
