@@ -194,3 +194,20 @@ html[data-pati-screen="inner"] #app-root:not(.hidden)>.mobile-header{
   transition:none!important;
  }
 }
+
+/* The desktop Reels viewer follows the same immersive layout. */
+@media(min-width:741px){
+ html[data-pati-view="reels"] #app-root:not(.hidden)>.app-shell{padding:0!important}
+ html[data-pati-view="reels"] #main-content>.pati-reels-head{display:none!important}
+ html[data-pati-view="reels"] #main-content>.pati-page-back:not([hidden]){
+  position:fixed!important;z-index:200!important;
+  top:16px;left:16px;margin:0!important;
+  background:#11151bba!important;color:#fff!important;
+  border:1px solid #ffffff66!important;
+  box-shadow:0 5px 18px #0008;backdrop-filter:blur(12px);
+ }
+ html[data-pati-view="reels"] #main-content .pati-reels-viewport,
+ html[data-pati-view="reels"] #main-content .pati-reel-item{
+  width:100%!important;max-width:100%!important;height:100dvh!important;min-height:0!important;max-height:none!important;
+ }
+}
