@@ -20,11 +20,11 @@ test('Updated JavaScript parses and CSS is loaded last after previous desktop/mo
  assert.match(css,/left:50%!important/);
  assert.match(css,/transform:translate\(-50%,-50%\)!important/);
 });
-test('Only own profile avatar has a plus button that opens existing story create action',()=>{
+test('Profile avatar stays clean: sharing plus is on the feed only',()=>{
  const src=segment('function profilePage(){','function formField(');
- assert.match(src,/pati-profile-story-plus/);
- assert.match(src,/own\?'<button type="button" class="pati-profile-story-plus"/);
- assert.match(src,/data-action="story-create"/);
+ assert.doesNotMatch(src,/pati-profile-story-plus/);
+ assert.match(app,/function openPatiCreate\(\)\{if\(view!=='home'\)return;/);
+ assert.doesNotMatch(src,/data-action="story-create"/);
  assert.match(app,/case 'story-create':startPatiCameraStory\(\)/);
  assert.match(css,/\.pati-ig-profile \.pati-ig-summary \.pati-ig-avatar/);
  assert.match(css,/\.pati-ig-avatar>\.avatar\.l/);
