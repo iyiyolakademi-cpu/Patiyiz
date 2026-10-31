@@ -64,7 +64,7 @@ test('Message delete is global, single Sil button, no local hiding',()=>{
  assert.match(deletion,/data\.messages=data\.messages\.filter\(x=>x\.id!==m\.id\)/);
  assert.doesNotMatch(deletion,/message_hidden'\)\.insert/);
  assert.match(app,/data-action="message-delete"/);
- assert.match(app,/🗑️ Sil/);
+ assert.match(app,/class="pati-msg-delete" data-action="message-delete"/);
  assert.doesNotMatch(app,/🗑️ Benden sil/);
  assert.doesNotMatch(app,/yalnızca kendi sohbetinden kaldırabilirsin/);
 });
