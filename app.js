@@ -5464,7 +5464,7 @@ function patiMentionsHTML(body){
 }
 function patiOpenProfileOnly(userId){
  if(!me||!userId||blocked.has(userId))return;
- const fromComments=Boolean(document.getElementById('comment-form'));
+ const fromComments=Boolean(document.getElementById('comment-form')||document.getElementById('reply-form'));
  const fromLikers=Boolean(document.getElementById('pati-post-likers-form'));
  if(fromComments||fromLikers){
   // The comment sheet lives outside #main-content; it must be removed
@@ -6923,17 +6923,31 @@ function editPet(p){
  }
 }
 function questionReplies(id){
- const q=data.questions.find(x=>x.id===id);if(!q)return;
+ const q=data.questions.find(x=>x.id===id);if(!q||!me)return;
  const state=typeof patiCommunityReplyPages!=='undefined'?patiCommunityReplyPages.get(me.id+':'+id):null;
- const previous=$('#reply-form'),draft=previous?.dataset.question===id?previous.querySelector('[name="body"]')?.value||'':'';
+ const previous=document.getElementById('reply-form'),same=previous?.dataset.question===id;
+ const draft=same?previous.querySelector('[name="body"]')?.value||'':'';
+ const scroll=same?previous.querySelector('.comment-list')?.scrollTop||0:0;
  const source=state?.ready?state.rows:data.replies.filter(r=>r.question_id===id);
  const replies=[...source].filter(r=>!blocked.has(r.author_id)).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
- const top='<section class="pati-comment-post-summary pati-question-reply-summary"><h3>'+esc(q.title)+'</h3><p class="pati-community-question-description">'+esc(q.body||'')+'</p></section>';
+ const owner=profile(q.author_id);
+ const top='<section class="pati-comment-post-summary pati-question-reply-summary">'+
+  '<div class="pati-comment-post-user">'+
+  '<button type="button" class="pati-comment-profile-avatar" data-action="view-user" data-id="'+esc(q.author_id)+'" aria-label="'+esc(displayName(owner))+' profiline git">'+avatar(owner,'s')+'</button>'+
+  '<button type="button" class="pati-comment-profile-name" data-action="view-user" data-id="'+esc(q.author_id)+'">'+displayName(owner)+'</button>'+
+  '</div><h3>'+esc(q.title||'Topluluk sorusu')+'</h3><p class="pati-community-question-description">'+esc(q.body||'')+'</p></section>';
  const entries=replies.map(x=>{
-  const person=profile(x.author_id),name=displayName(person);
-  return '<div class="comment-item pati-sheet-comment pati-question-reply-row"><div class="pati-sheet-comment-avatar">'+
-   '<button type="button" class="pati-comment-profile-avatar" data-action="view-user" data-id="'+esc(x.author_id)+'" aria-label="'+esc(name)+' profiline git">'+avatar(person,'s')+'</button></div>'+
-   '<div class="pati-sheet-comment-main"><div class="pati-sheet-comment-line"><button type="button" class="pati-comment-profile-name" data-action="view-user" data-id="'+esc(x.author_id)+'">'+name+'</button><time>'+patiCommentAge(x.created_at)+'</time></div><p>'+esc(x.body||'')+'</p></div></div>';
+  const person=profile(x.author_id),name=displayName(person),mine=x.author_id===me.id;
+  return '<div class="comment-item pati-sheet-comment pati-question-reply-row" data-reply-id="'+esc(x.id)+'">'+
+   '<div class="pati-sheet-comment-avatar"><button type="button" class="pati-comment-profile-avatar" data-action="view-user" data-id="'+esc(x.author_id)+'" aria-label="'+esc(name)+' profiline git">'+avatar(person,'s')+'</button></div>'+
+   '<div class="pati-sheet-comment-main"><div class="pati-sheet-comment-line">'+
+   '<button type="button" class="pati-comment-profile-name" data-action="view-user" data-id="'+esc(x.author_id)+'">'+name+'</button>'+
+   '<time datetime="'+esc(x.created_at||'')+'">'+patiCommentAge(x.created_at)+'</time></div>'+
+   '<p>'+patiMentionsHTML(x.body||'')+'</p>'+
+   '<div class="comment-actions"><button type="button" data-action="question-reply-to" data-id="'+esc(x.author_id)+'">Yanıtla</button>'+
+   (mine?'<button type="button" data-action="question-reply-delete" data-id="'+esc(x.id)+'">Sil</button>':
+    '<button type="button" data-action="report" data-kind="reply" data-id="'+esc(x.id)+'">Bildir</button>')+
+   '</div></div></div>';
  }).join('');
  modal('Yanıtlar',top+
  '<div class="comment-list pati-question-reply-list" role="list" aria-label="Soruya verilen yanıtlar">'+
@@ -6941,18 +6955,18 @@ function questionReplies(id){
  (state?.loading?'<p class="pati-note" role="status">Yanıtlar yükleniyor…</p>':'')+
  (state?.hasMore||state?.error?'<div class="pati-load-more">'+button(state.error?'Yeniden dene':'Önceki cevapları yükle','community-replies-more','data-id="'+esc(id)+'"')+'</div>':'')+
  (entries||(!state?.loading?'<p class="pati-comments-empty">Henüz yanıt yok. İlk yanıtı sen yazabilirsin.</p>':''))+
- '</div>'+textField('body','Cevabın',draft,true,1000),'reply-form');
- const form=$('#reply-form');if(!form)return;
+ '</div>','reply-form');
+ const form=document.getElementById('reply-form');if(!form)return;
  form.dataset.question=id;
  const dialog=form.closest('.modal');dialog?.classList.add('pati-instagram-comments','pati-question-comments');
  const backdrop=form.closest('.modal-backdrop');backdrop?.classList.add('pati-instagram-comments-backdrop');
- form.querySelector('.modal-content [name="body"]')?.closest('.pati-field')?.remove();
  const footer=form.querySelector('.modal-footer');
  if(footer)footer.innerHTML='<div class="pati-comment-quick">'+['❤️','🙌','🔥','👏','🥹','😍','😂'].map(e=>'<button type="button" data-action="question-reply-emoji" data-emoji="'+e+'">'+e+'</button>').join('')+'</div>'+
  '<div class="pati-comment-editor-row"><div class="pati-comment-me">'+avatar(current(),'s')+'</div>'+
  '<textarea name="body" aria-label="Yanıt yaz" rows="1" maxlength="1000" required placeholder="Yanıt yaz..."></textarea>'+
  '<button type="submit" class="pati-comment-send">Gönder</button></div>';
- const input=form.querySelector('.modal-footer [name="body"]');if(input)input.value=draft;
+ const input=footer?.querySelector('textarea[name="body"]');if(input)input.value=draft;
+ const list=form.querySelector('.comment-list');if(list)list.scrollTop=scroll;
 }
 /* Never display a confirmed heart until Supabase has persisted and verified it.
  * One in-flight mutation per post; a concurrent bootstrap cannot overwrite the result. */
@@ -7384,7 +7398,27 @@ case 'dm-reply':patiDmBeginReply(id);break;case 'dm-edit':{const m=patiDmFindMes
   render();
  },'Mesaj iki tarafın sohbetinden silindi.');
  break;
-}case 'comment':showComments(id);void patiFetchPostComments(id);break;case 'comment-more':void patiFetchPostComments(id,true);break;case 'question-reply-emoji':{const ta=document.querySelector('#reply-form textarea[name="body"]');if(ta){ta.value+=target.dataset.emoji||'';ta.focus()}break;}case 'comment-emoji':{const ta=document.querySelector('#comment-form textarea[name="body"]');if(ta){ta.value+=target.dataset.emoji||'';ta.focus()}break;}case 'comment-reply':{const f=$('#comment-form');if(f){f.dataset.parent=id;const who=profile(data.comments.find(x=>x.id===id)?.author_id).display_name;const hint=$('#comment-reply-hint');if(hint)hint.innerHTML='↳ '+esc(who)+' kullanıcısına yanıt <button type="button" data-action="comment-reply-cancel">× Vazgeç</button>';f.querySelector('textarea')?.focus()}break}case 'comment-reply-cancel':{const f=$('#comment-form');if(f)f.dataset.parent='';const hint=$('#comment-reply-hint');if(hint)hint.textContent='';break}case 'comment-thread-toggle':{const form=$('#comment-form');const postId=form?.dataset.post;if(!postId)break;if(patiyizCommentExpandedReplies.has(id))patiyizCommentExpandedReplies.delete(id);else patiyizCommentExpandedReplies.add(id);showComments(postId);break;}case 'comment-pin':run(()=>patiCommentPinToggle(id));break;
+}case 'comment':showComments(id);void patiFetchPostComments(id);break;case 'comment-more':void patiFetchPostComments(id,true);break;case 'question-reply-emoji':{const ta=document.querySelector('#reply-form textarea[name="body"]');if(ta){ta.value+=target.dataset.emoji||'';ta.focus()}break;}case 'question-reply-to':{
+ const form=document.getElementById('reply-form'),input=form?.querySelector('textarea[name="body"]');
+ if(input){const person=profile(id),handle=String(person.handle||'').trim();
+  const prefix=handle?'@'+handle+' ':'';
+  if(prefix&&!input.value.includes(prefix))input.value=(input.value.trim()?input.value.trim()+' ':'')+prefix;
+  input.focus({preventScroll:true});input.setSelectionRange(input.value.length,input.value.length);
+ }break;
+}case 'question-reply-delete':{
+ const form=document.getElementById('reply-form'),questionId=form?.dataset.question;
+ const row=(patiCommunityReplyPages.get(me.id+':'+questionId)?.rows||data.replies).find(r=>r.id===id&&r.question_id===questionId);
+ if(!row||row.author_id!==me.id||!confirm('Yanıtın silinsin mi?'))break;
+ run(async()=>{
+  const result=await sb.from('replies').delete().eq('id',id).eq('author_id',me.id).select('id');
+  if(result.error)throw result.error;
+  if(!result.data?.length)throw Error('Bu yanıtı silme yetkin yok.');
+  data.replies=data.replies.filter(r=>r.id!==id);
+  const state=patiCommunityReplyPages.get(me.id+':'+questionId);
+  if(state){state.rows=state.rows.filter(r=>r.id!==id);state.offset=Math.max(0,state.offset-1);}
+  questionReplies(questionId);
+ },'Yanıt silindi.');break;
+}case 'comment-emoji':{const ta=document.querySelector('#comment-form textarea[name="body"]');if(ta){ta.value+=target.dataset.emoji||'';ta.focus()}break;}case 'comment-reply':{const f=$('#comment-form');if(f){f.dataset.parent=id;const who=profile(data.comments.find(x=>x.id===id)?.author_id).display_name;const hint=$('#comment-reply-hint');if(hint)hint.innerHTML='↳ '+esc(who)+' kullanıcısına yanıt <button type="button" data-action="comment-reply-cancel">× Vazgeç</button>';f.querySelector('textarea')?.focus()}break}case 'comment-reply-cancel':{const f=$('#comment-form');if(f)f.dataset.parent='';const hint=$('#comment-reply-hint');if(hint)hint.textContent='';break}case 'comment-thread-toggle':{const form=$('#comment-form');const postId=form?.dataset.post;if(!postId)break;if(patiyizCommentExpandedReplies.has(id))patiyizCommentExpandedReplies.delete(id);else patiyizCommentExpandedReplies.add(id);showComments(postId);break;}case 'comment-pin':run(()=>patiCommentPinToggle(id));break;
 case 'pati-mention-open':patiMentionOpen(id==='comment'?'comment':'post');break;
 case 'pati-mention-profile':e.preventDefault();void patiOpenMentionProfile(target.dataset.handle,target.dataset.id||'');break;
 case 'pati-mention-select':{const picker=target.closest('.pati-mention-picker'),form=picker?.closest('form'),textarea=form?.querySelector('textarea[name="body"]');if(textarea){const name='@'+(target.dataset.handle||'');textarea.setRangeText(name+' ',textarea.selectionStart||textarea.value.length,textarea.selectionEnd||textarea.value.length,'end');textarea.focus();}picker?.remove();break}
@@ -7963,7 +7997,10 @@ case 'reply-form':{
  if(!data.replies.some(r=>r.id===result.data.id))data.replies.push(result.data);
  const state=patiCommunityReplyPages.get(uid+':'+questionId);
  if(state?.ready&&!state.rows.some(r=>r.id===result.data.id))state.rows.push(result.data);
- questionReplies(questionId);notify('Cevap yayınlandı.');break}
+ const editor=form.querySelector('textarea[name="body"]');if(editor)editor.value='';
+ questionReplies(questionId);
+ const list=document.querySelector('#reply-form .comment-list');if(list)list.scrollTop=list.scrollHeight;
+ notify('Cevap yayınlandı.');break}
 case 'comment-form':{
  const postId=form.dataset.post,body=str('body').trim();
  if(!postId||!body)throw Error('Yorum boş olamaz.');
