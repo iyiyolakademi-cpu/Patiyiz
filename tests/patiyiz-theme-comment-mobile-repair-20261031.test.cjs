@@ -9,8 +9,8 @@ const native=fs.readFileSync('native-capacitor/scripts/build-web.mjs','utf8');
 
 test('Patiyiz application parses and loads updated CSS/JS cache keys',()=>{
  new vm.Script(app,{filename:'app.js'});
- assert.match(html,/patiyiz-interaction-polish-20261031\.css\?v=5-question-theme-mobile/);
- assert.match(html,/comment_theme_mobile_fix=20261031v1/);
+ assert.match(html,/patiyiz-interaction-polish-20261031\.css\?v=6-responsive-reels-stability/);
+ assert.match(html,/comment_theme_mobile_fix=20261031v2-reels-retry/);
  assert.match(native,/Include every referenced same-origin CSS\/JS\/image automatically/);
 });
 
