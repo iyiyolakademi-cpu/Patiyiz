@@ -1809,7 +1809,7 @@ function setupReelsViewer(){
  };
  const loadNearEnd=()=>{
   const state=typeof patiReelsFeed!=='undefined'?patiReelsFeed:null;
-  if(typeof view==='undefined'||view!=='reels'||!state?.ready||state.loading||!state.hasMore||!viewport?.clientHeight)return;
+  if(typeof view==='undefined'||view!=='reels'||!state?.ready||state.loading||!state.hasMore||state.error||!viewport?.clientHeight)return;
   const idx=Math.max(0,Math.min(videos.length-1,Math.round(viewport.scrollTop/viewport.clientHeight)));
   if(idx+4>=videos.length)void patiLoadMoreReels();
  };
@@ -2048,7 +2048,7 @@ async function patiLoadMoreReels(reset=false){
  const state=patiReelsFeed;if(state.loading||!state.hasMore)return;
  const keepPlaying=view==='reels'&&!!document.querySelector('#main-content .pati-reels-viewport .pati-reel-item');
  state.loading=true;state.error='';
- if(view==='reels'&&!state.ready)reelsPage();
+ if(view==='reels'&&!state.ready&&!keepPlaying)reelsPage();
  try{
   const response=await sb.from('posts').select('*').not('video_url','is',null)
    .order('created_at',{ascending:false}).order('id',{ascending:false})
@@ -2112,7 +2112,8 @@ function reelsPage(){
   '</div><div class="pati-reel-utility" role="group" aria-label="Video kontrol seçenekleri"><button type="button" data-action="reel-speed" class="pati-reel-tool" aria-label="Oynatma hızı 1×">'+ico('gauge')+'<span class="pati-reel-tool-label">1×</span></button>'+
   '<button type="button" data-action="reel-sound" class="pati-reel-tool" aria-label="'+(soundOn?'Sesi kapat':'Sesi aç')+'" aria-pressed="'+soundOn+'">'+ico(soundOn?'volume':'volume-x')+'<span class="pati-reel-tool-label pati-reel-sound-label">'+(soundOn?'Sesi kapat':'Sesi aç')+'</span></button></div></article>'
  }).join(''):existingViewport?'':'<div class="pati-reels-empty">'+(page?.loading?'Reels videoları hazırlanıyor…':'Henüz Reels yok. İlk videoyu sen paylaş!')+'</div>');
- const footerHTML=page?.error?'<div class="pati-reels-load-more"><p role="alert">'+esc(page.error)+'</p><button type="button" data-action="reels-more">Tekrar dene</button></div>':page?.hasMore?'<div class="pati-reels-load-more" aria-label="Daha fazla Reels yüklenebilir" hidden></div>':'';
+ const noAutoPaging=typeof window==='undefined'||!('IntersectionObserver' in window)||(!nativeReels&&window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
+ const footerHTML=page?.error?'<div class="pati-reels-load-more"><p role="alert">'+esc(page.error)+'</p><button type="button" data-action="reels-more">Tekrar dene</button></div>':page?.hasMore?(noAutoPaging?'<div class="pati-reels-load-more"><button type="button" data-action="reels-more">Daha fazla Reels yükle</button></div>':'<div class="pati-reels-load-more" aria-label="Daha fazla Reels yüklenebilir" hidden></div>'):'';
  if(existingViewport){
   existingViewport.querySelector('.pati-reels-load-more')?.remove();
   existingViewport.insertAdjacentHTML('beforeend',cardsHTML+footerHTML);
