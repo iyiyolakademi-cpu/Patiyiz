@@ -1,5 +1,5 @@
 # Patiyiz – App Store, Google Play ve KVKK yayın dosyası
-31 Ekim 2026. Durum: taslak, hukuken veya mağaza açısından onaylanmış değildir.
+1 Kasım 2026. Durum: kimlik ve destek kanalı kullanıcı tarafından bildirildi; e-posta alımı ve hukuk değerlendirmesi henüz doğrulanmadı. Metin taslaktır, mağaza açısından onaylanmış değildir.
 
 ## Mağaza açıklaması taslağı
 **Uygulama adı:** Patiyiz
@@ -7,7 +7,8 @@
 **Açıklama:** Patiyiz ile gönderi, hikâye ve kısa videolar paylaşabilir, diğer hayvanseverlerle iletişim kurabilir, evcil hayvanının aşı, veteriner, ilaç ve beslenme hatırlatmalarını takip edebilirsin. Kayıp hayvan ilanlarını inceleyebilir, isteğe bağlı olarak profilinde yazan şehirdeki yeni kayıp ilanları için bildirim alabilirsin. Hayvan bakım kayıtları kişisel bilgi amaçlıdır ve veteriner hekim hizmetinin yerini almaz.
 
 ## Yayın engelleri: hepsi doğrulanmalı
-- [ ] Veri sorumlusunun gerçek kimliği (kurulu tüzel kişi veya gerçek kişi) ve resmî iletişim kanalları doğrulandı; hiçbir şirket unvanı varsayılmadı.
+- [x] Kullanıcı, işletmecinin ve veri sorumlusunun gerçek kişi Berke Deniz Yüksekdağ olduğunu bildirdi; tescilsiz şirket adı kullanılmadı.
+- [ ] iyiyolakademi@gmail.com adresinin gönderme/alma testi, hesap silme talebi takibi ve Play Console geliştirici iletişimi tamamlandı.
 - [ ] KVKK aydınlatma metni: veri kategorileri, amaçlar, her kategorinin hukuki sebebi, aktarım yapılan taraflar/ülkeler, saklama ve başvuru süreleri doğrulandı.
 - [ ] KVKK aydınlatması ve gerekli hallerde ayrı açık rıza tercihleri birbirinden ayrıldı.
 - [ ] Kullanım Şartları ve Gizlilik Politikası uygulamadan ve mağazadan erişilebilir; destek ve şikâyet iletişim kanalı çalışıyor.
@@ -23,12 +24,14 @@
 - [ ] Android AAB/SDK, iOS uygulama imzası, ikonlar, ekran görüntüleri, sürüm ve yayın kanalı test edildi.
 
 ## KVKK aydınlatma metni: doldurulması gereken bilgiler
-**Veri sorumlusu:** [DOĞRULANMADI – gerçek kişi veya tescilli şirket unvanı].
-**İletişim ve başvuru kanalı:** [DOĞRULANMADI].
+**Veri sorumlusu ve işletmeci (gerçek kişi, kullanıcı beyanı):** Berke Deniz Yüksekdağ.
+**Destek, şikâyet ve kişisel veri talepleri:** iyiyolakademi@gmail.com (kullanıcının sağladığı adres; alım testi bekleniyor).
+**Web sitesi:** https://patiyiz.com/
+**Google Play hesabında kontrol:** Kişisel geliştirici adı, yasal ad, adres ve doğrulanan geliştirici iletişim bilgileri Play Console üzerinden kontrol edilmeli. Özel ev adresi repoya eklenmedi.
 **İşleme envanteri:** hesap bilgileri, profil ve paylaşım, foto/video/hikâye, özel mesajlar, hayvan bakım notları, PatiCoin kayıtları, şehir bazında isteğe bağlı kayıp ilanı bildirim aboneliği, cihaz bildirim tokenları, teknik hata sayaçları.
 **Ayrı değerlendirme:** Her veri kategorisi için işleme amacı, hukuki sebep, aktarım tarafı, ülkesi, saklama süresi, veri sahibi başvuru yolu; varsa açık rızanın ayrı alınması.
 
-Bu belgede bilinmeyen kimlik veya adresler uydurulmamıştır. Hukuk incelemesi olmadan bu dosyayı tamamlama veya yayın uygunluğu kanıtı olarak kullanmayın.
+Kimlik ve e-posta kullanıcı beyanına dayanır; adres uydurulmamıştır. Hukuki sebepler, veri aktarımı ve saklama süreleri ayrıca doğrulanmadan bu dosyayı tam yayın uygunluğu kanıtı olarak kullanmayın.
 
 ## Resmî kaynaklar
 https://developer.apple.com/app-store/review/guidelines/
