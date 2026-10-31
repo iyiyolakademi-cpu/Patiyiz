@@ -47,7 +47,7 @@ test('Light-only theme removes the dark-mode toggle without affecting video and 
 test('Final CSS files are both loaded in the correct order, with valid script and bracket syntax',()=>{
  const a=index.indexOf('patiyiz-social-immersive-v2-20261031.css?v=1');
  const b=index.indexOf('patiyiz-reels-compact-controls-20261031.css?v=1');
- const c=index.indexOf('patiyiz-balance-light-chat-20261031.css?v=1');
+ const c=index.indexOf('patiyiz-balance-light-chat-20261031.css?v=2-paticoin');
  assert.ok(a>0&&b>a&&c>b);
  new vm.Script(app);
  for(const [name,css] of [['Reels',reel],['Dark',dark]]){
