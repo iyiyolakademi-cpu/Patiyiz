@@ -82,7 +82,11 @@ Deno.serve(async(request)=>{
    const {data:blob,error:readError}=await admin.storage.from(item.bucket).download(item.path);
    if(readError||!blob)throw Error("Eski dosya okunamadı; gizli hesaba geçiş durduruldu.");
    const {error:writeError}=await admin.storage.from("patiyiz-private-posts").upload(item.path,blob,{
-    contentType:blob.type||(/\.(mp4|mov|webm)$/i.test(item.path)?"video/mp4":"image/jpeg"),upsert:false,cacheControl:"60"
+    contentType:(()=>{
+      const ext=item.path.split(".").pop()?.toLowerCase();
+      return ({jpg:"image/jpeg",jpeg:"image/jpeg",png:"image/png",webp:"image/webp",gif:"image/gif",
+       heic:"image/heic",heif:"image/heif",mp4:"video/mp4",webm:"video/webm",mov:"video/quicktime"})[ext||""]||"application/octet-stream";
+    })(),upsert:false,cacheControl:"60"
    });
    if(writeError){
     const check=await admin.storage.from("patiyiz-private-posts").info(item.path);
