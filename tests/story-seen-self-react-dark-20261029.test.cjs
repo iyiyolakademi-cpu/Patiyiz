@@ -90,8 +90,8 @@ test('Own post and Reels likes remain; self story and own DM reactions are disab
  assert.ok(!js.includes('class="pati-story-like pati-story-like-own"'));
  assert.ok(js.includes('story.author_id===me?.id)return'));
  assert.ok(js.includes('msg.sender_id===me.id||msg.receiver_id!==me.id'));
- assert.ok(js.includes('x.sender_id!==me.id?'));
- assert.ok(js.includes('data-action="dm-react-open"'));
+ assert.ok(js.includes('const emoji=!mine?'));
+ assert.ok(js.includes('pati-dm-press-emojis'));
  assert.ok(js.includes('data-action="dm-react-set"'));
  assert.ok(js.includes('data-action="story-like"'));
 });
