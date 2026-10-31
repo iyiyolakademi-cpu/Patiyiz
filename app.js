@@ -5447,7 +5447,7 @@ async function patiCloseFriendToggle(friendId){
 async function patiHydrateCloseStories(){
  if(!me||!Array.isArray(data.stories))return;
  const owner=me.id;
- const close=data.stories.filter(x=>x.audience==='close_friends'&&x.private_image_path);
+ const close=data.stories.filter(x=>x.private_image_path&&(x.audience==='close_friends'||profile(x.author_id)?.is_private));
  await Promise.all(close.map(async story=>{
   const image=await sb.storage.from('patiyiz-close-stories').createSignedUrl(story.private_image_path,300);
   if(image.error){console.warn('Özel hikâye kapağı açılamadı:',image.error.message);return;}
@@ -5459,7 +5459,7 @@ async function patiHydrateCloseStories(){
   story.patiSignedAt=Date.now();
  }));
 }
-async function patiCreateCloseFriendStory(form,f,str){
+async function patiCreateCloseFriendStory(form,f,str,privateAudience='close_friends'){
  if(!me)throw Error('Önce giriş yap.');
  const owner=me.id,photo=form.querySelector('input[name="photo"]')?.files?.[0];
  const video=form.querySelector('input[name="video"]')?.files?.[0];
@@ -5484,7 +5484,7 @@ async function patiCreateCloseFriendStory(form,f,str){
   }
   const result=await sb.from('patiyiz_stories').insert({
    author_id:owner,image_url:'',video_url:null,private_image_path:imagePath,
-   private_video_path:videoPath,audience:'close_friends',
+   private_video_path:videoPath,audience:privateAudience,
    caption:str('body').slice(0,300),is_highlight:false,
    selfie_mirrored:!!videoPath&&form.dataset.selfieMirror==='true'
   }).select('*').single();
@@ -6442,6 +6442,7 @@ async function patiFallbackStoryPoster(){
 async function createStoryPublication(form,f,str){
  const audience=form.dataset.storyAudience||str('story_audience')||'everyone';
  if(audience==='close_friends')return patiCreateCloseFriendStory(form,f,str);
+ if(current()?.is_private)return patiCreateCloseFriendStory(form,f,str,'everyone');
  const shared=form?.dataset?.mode==='story';
  const files=[...(form.querySelector('input[name="photo"]')?.files||[])];
  const video=form.querySelector('input[name="video"]')?.files?.[0];
