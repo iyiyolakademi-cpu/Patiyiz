@@ -906,7 +906,8 @@ function patiGoBack(){
 }
 function patiEnsurePageBack(){
  if(view==='home'&&!selectedPostId)return;
- if(view==='messages'||view==='profile')return;
+ if(view==='messages')return;
+ if(view==='profile')return;
  // Inner pages hide the global brand header on mobile; keep a standalone back button.
  if(main.querySelector('.pati-page-back')||main.querySelector('.pati-streaks-back'))return;
  const btn=document.createElement('button');btn.type='button';btn.className='pati-page-back';btn.dataset.action='pati-page-back';btn.innerHTML='‹ <span>Geri</span>';
@@ -5390,7 +5391,7 @@ function profilePage(){
     (p.bio?'<div class="pati-ig-bio">'+esc(p.bio)+'</div>':'')+'</div>':'')+
  patiProfileLinksHTML(p)+mutualMarkup+
  
- '<div class="pati-ig-actions">'+(own?button('Profili düzenle','edit-profile')+'<button type="button" class="pati-profile-coin-balance" data-action="paticoin-rewards" aria-label="PatiCoin bakiyen; ödülleri ve görevleri aç"><img src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true"><span><small>PatiCoin bakiyen</small><strong id="pati-profile-balance">'+Number(patiCoinState.balance||0).toLocaleString('tr-TR')+'</strong></span></button>':button(followed.has(p.id)?'Takiptesin':patiIsFollowRequested(p.id)?'İstek gönderildi':followBack?'Sen de takip et':'Takip et','follow','data-id="'+esc(p.id)+'"'+(followBack?' data-follow-back="true"':''))+button('Mesaj gönder','chat','data-id="'+esc(p.id)+'"'))+'</div>'+(own&&typeof patiCreatorPreviewHTML==='function'?patiCreatorPreviewHTML():'')+(own?patiVerificationProfileAction():'')+
+ '<div class="pati-ig-actions">'+(own?button('Profili düzenle','edit-profile')+'<button type="button" class="pati-profile-coin-balance" data-action="paticoin-rewards" aria-label="PatiCoin bakiyen; ödülleri ve görevleri aç"><img src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true"><span><small>PatiCoin bakiyen</small><strong id="pati-profile-balance">'+Number((typeof patiCoinState!=='undefined'?patiCoinState.balance:0)||0).toLocaleString('tr-TR')+'</strong></span></button>':button(followed.has(p.id)?'Takiptesin':patiIsFollowRequested(p.id)?'İstek gönderildi':followBack?'Sen de takip et':'Takip et','follow','data-id="'+esc(p.id)+'"'+(followBack?' data-follow-back="true"':''))+button('Mesaj gönder','chat','data-id="'+esc(p.id)+'"'))+'</div>'+(own&&typeof patiCreatorPreviewHTML==='function'?patiCreatorPreviewHTML():'')+(own?patiVerificationProfileAction():'')+
  '<div class="pati-ig-tabs" role="tablist" aria-label="Profil gönderileri">'+iconTabs.map(x=>'<button type="button" role="tab" aria-selected="'+(profilePostsTab===x[0])+'" class="'+(profilePostsTab===x[0]?'active':'')+'" data-action="profile-posts-tab" data-id="'+x[0]+'" aria-label="'+x[2]+'">'+x[1]+'</button>').join('')+'</div>'+
  profileContent+
  '</div>';
