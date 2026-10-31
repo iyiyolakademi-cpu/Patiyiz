@@ -928,7 +928,8 @@ async function patiEnsureRepostSources(ownerId){
   if(result.error)throw result.error;
   if(me?.id!==viewer||patiyizLoadToken!==token)return;
   const seen=new Set(data.posts.map(p=>p.id));
-  for(const post of result.data||[])if(!seen.has(post.id)){data.posts.push(post);seen.add(post.id)}
+  const visible=window.PatiyizPrivateMedia?await window.PatiyizPrivateMedia.hydrateRows(result.data||[],viewer,sb):result.data||[];
+  for(const post of visible)if(!seen.has(post.id)){data.posts.push(post);seen.add(post.id)}
   if(view==='profile'&&(profileId||me.id)===ownerId&&profilePostsTab==='reposts')render();
  }catch(e){
   ids.forEach(id=>patiRepostMissingAttempted.delete(viewer+':'+id));
@@ -1843,7 +1844,8 @@ async function patiLoadMoreReels(reset=false){
    .range(state.offset,state.offset+PATI_REELS_PAGE-1);
   if(response.error)throw response.error;
   if(me?.id!==uid||patiyizLoadToken!==token||patiReelsFeed!==state)return;
-  const rows=response.data||[],seen=new Set(state.rows.map(p=>p.id));
+  const rows=window.PatiyizPrivateMedia?await window.PatiyizPrivateMedia.hydrateRows(response.data||[],uid,sb):response.data||[];
+  const seen=new Set(state.rows.map(p=>p.id));
   for(const p of rows)if(!seen.has(p.id)){state.rows.push(p);seen.add(p.id)}
   state.offset+=rows.length;state.hasMore=rows.length===PATI_REELS_PAGE;state.ready=true;
   const known=new Set(data.posts.map(p=>p.id));
@@ -1985,7 +1987,8 @@ async function patiCollabHydrate(rows){
   if(r.error)throw r.error;
   if(me?.id!==uid)return;
   const known=new Set(data.posts.map(p=>p.id));
-  for(const p of r.data||[])if(!known.has(p.id)){data.posts.push(p);known.add(p.id)}
+  const visible=window.PatiyizPrivateMedia?await window.PatiyizPrivateMedia.hydrateRows(r.data||[],uid,sb):r.data||[];
+  for(const p of visible)if(!known.has(p.id)){data.posts.push(p);known.add(p.id)}
  }
 }
 async function patiCollabRefresh(){
@@ -2091,7 +2094,7 @@ async function patiFollowingFetch(more=false){
   const r=await sb.rpc('patiyiz_following_feed',{p_limit:40,p_before:cursor?.created_at||null,p_before_id:cursor?.id||null});
   if(r.error)throw r.error;
   if(me?.id!==uid)return;
-  const rows=r.data||[];
+  const rows=window.PatiyizPrivateMedia?await window.PatiyizPrivateMedia.hydrateRows(r.data||[],uid,sb):r.data||[];
   const map=new Map((more?patiFollowingState.rows:[]).map(p=>[p.id,p]));
   rows.forEach(p=>map.set(p.id,p));
   patiFollowingState.rows=[...map.values()];
@@ -2139,7 +2142,8 @@ async function fetchMissingSavedPosts(){
   const r=await sb.from('posts').select('*').in('id',ids);
   if(r.error)throw r.error;
   if(me?.id!==uid)return;
-  ids.forEach(id=>savedMissingAttempted.add(id));for(const post of r.data||[])if(!data.posts.some(p=>p.id===post.id))data.posts.push(post);
+  ids.forEach(id=>savedMissingAttempted.add(id));const visible=window.PatiyizPrivateMedia?await window.PatiyizPrivateMedia.hydrateRows(r.data||[],uid,sb):r.data||[];
+  for(const post of visible)if(!data.posts.some(p=>p.id===post.id))data.posts.push(post);
   if(view==='saved-posts')render();
  }catch(e){console.warn('Kaydedilen gönderilerin yüklenmesi:',e)}
  finally{savedPostsLoading=false}
@@ -2198,7 +2202,8 @@ async function patiExploreLoadMedia(reset=false){
   }
   if(result.error)throw result.error;
   if(me?.id!==uid||token!==patiyizLoadToken||patiExploreMedia!==state)return;
-  const rows=result.data||[],existing=new Set(state.rows.map(p=>p.id));
+  const rows=window.PatiyizPrivateMedia?await window.PatiyizPrivateMedia.hydrateRows(result.data||[],uid,sb):result.data||[];
+  const existing=new Set(state.rows.map(p=>p.id));
   for(const p of rows)if(!existing.has(p.id)){state.rows.push(p);existing.add(p.id)}
   state.offset+=rows.length;state.hasMore=rows.length===PATI_EXPLORE_MEDIA_PAGE;state.ready=true;
   const known=new Set(data.posts.map(p=>p.id));
@@ -4339,7 +4344,8 @@ async function patiOpenMentionNotification(n){
   if(response.error){console.warn('Etiketli içerik erişimi:',response.error.message);notify('Bu paylaşıma şu anda erişilemiyor.');return}
   if(!response.data||blocked.has(response.data.author_id)){notify('Bu paylaşım artık görüntülenemiyor.');return}
   if(me?.id!==owner)return;
-  data.posts.push(response.data);
+  const shown=window.PatiyizPrivateMedia?(await window.PatiyizPrivateMedia.hydrateRows([response.data],owner,sb))[0]:response.data;
+  data.posts.push(shown);
  }
  openPost(id);
  if(n.comment_id){
