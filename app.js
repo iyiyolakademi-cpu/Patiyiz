@@ -839,7 +839,7 @@ const fetchSpec=async([table,key,limit])=>{const chunks=[];const size=250,cap=Ma
   const last=val[val.length-1];patiHomeFeedCursor=last?{created_at:last.created_at,id:last.id}:null;
   patiHomeLoadError='';
  }
- if(k==='likes'&&likesEpoch!==(typeof likesChangeEpoch==='number'?likesChangeEpoch:0))continue;if(k==='saves'&&savesEpoch!==(typeof savesChangeEpoch==='number'?savesChangeEpoch:0))continue;data[k]=(['posts','stories'].includes(k)&&globalThis.PatiyizPrivateMedia)?await globalThis.PatiyizPrivateMedia.hydrateRows(val,userId,sb):val;if(ok)patiyizLoadedTables.add(({profiles:'profiles',pets:'pets',posts:'posts',likes:'post_likes',saves:'post_saves',comments:'comments',commentLikes:'comment_likes',follows:'follows',questions:'questions',replies:'replies',votes:'question_votes',lost:'lost_reports',adoption:'adoption_listings',stories:'patiyiz_stories',storyResponses:'patiyiz_story_responses',reposts:'patiyiz_reposts',pins:'patiyiz_post_pins',dmReactions:'patiyiz_dm_reactions',highlightAlbums:'patiyiz_highlight_albums',highlightItems:'patiyiz_highlight_items',care:'care_tasks',messages:'messages',messageHidden:'message_hidden',notifications:'notifications',bookmarks:'kb_bookmarks',blocks:'user_blocks'})[k])}if(typeof patiHydrateCloseStories==='function')await patiHydrateCloseStories();liked=new Set(data.likes.filter(x=>x.user_id===me.id).map(x=>x.post_id));saved=new Set(data.saves.filter(x=>x.user_id===me.id).map(x=>x.post_id));followed=new Set(data.follows.filter(x=>x.follower_id===me.id).map(x=>x.followee_id));voted=new Set(data.votes.filter(x=>x.user_id===me.id).map(x=>x.question_id));favorites=new Set(data.bookmarks.filter(x=>x.user_id===me.id).map(x=>x.article_id));blocked=new Set(data.blocks.filter(x=>x.blocker_id===me.id).map(x=>x.blocked_id))}
+ if(k==='likes'&&likesEpoch!==(typeof likesChangeEpoch==='number'?likesChangeEpoch:0))continue;if(k==='saves'&&savesEpoch!==(typeof savesChangeEpoch==='number'?savesChangeEpoch:0))continue;data[k]=(['posts','stories','pets'].includes(k)&&globalThis.PatiyizPrivateMedia)?await globalThis.PatiyizPrivateMedia.hydrateRows(val,userId,sb):val;if(ok)patiyizLoadedTables.add(({profiles:'profiles',pets:'pets',posts:'posts',likes:'post_likes',saves:'post_saves',comments:'comments',commentLikes:'comment_likes',follows:'follows',questions:'questions',replies:'replies',votes:'question_votes',lost:'lost_reports',adoption:'adoption_listings',stories:'patiyiz_stories',storyResponses:'patiyiz_story_responses',reposts:'patiyiz_reposts',pins:'patiyiz_post_pins',dmReactions:'patiyiz_dm_reactions',highlightAlbums:'patiyiz_highlight_albums',highlightItems:'patiyiz_highlight_items',care:'care_tasks',messages:'messages',messageHidden:'message_hidden',notifications:'notifications',bookmarks:'kb_bookmarks',blocks:'user_blocks'})[k])}if(typeof patiHydrateCloseStories==='function')await patiHydrateCloseStories();liked=new Set(data.likes.filter(x=>x.user_id===me.id).map(x=>x.post_id));saved=new Set(data.saves.filter(x=>x.user_id===me.id).map(x=>x.post_id));followed=new Set(data.follows.filter(x=>x.follower_id===me.id).map(x=>x.followee_id));voted=new Set(data.votes.filter(x=>x.user_id===me.id).map(x=>x.question_id));favorites=new Set(data.bookmarks.filter(x=>x.user_id===me.id).map(x=>x.article_id));blocked=new Set(data.blocks.filter(x=>x.blocker_id===me.id).map(x=>x.blocked_id))}
 async function refreshKeys(specs){
  const userId=me?.id,loadToken=patiyizLoadToken;if(!userId)return;
  const results=await Promise.all(specs.map(async([table,key])=>{const r=await sb.from(table).select('*').order('created_at',{ascending:false}).limit(key==='messages'?400:key==='notifications'?150:200);if(r.error)throw r.error;return[key,r.data||[]]}));
@@ -7004,7 +7004,7 @@ case 'pati-settings-notifications':navigate('notifications');break;case 'pati-pr
  if(typeof patiReelsFeed!=='undefined')patiReelsFeed={owner:'',rows:[],offset:0,hasMore:true,loading:false,ready:false,error:''};
  if(typeof patiExploreMedia!=='undefined')patiExploreMedia={owner:'',sort:'popular',rows:[],offset:0,hasMore:true,loading:false,ready:false,error:''};
  if(typeof patiFollowingState!=='undefined')patiFollowingState={owner:'',rows:[],ready:false,loading:false,hasMore:true,cursor:null,error:''};
- await load('feed');
+ await load();
  patiSafetyState.loaded=false;render();
 },'Hesap gizliliği güncellendi.');break;
 case 'pati-dm-policy':run(async()=>{
@@ -7437,7 +7437,7 @@ case 'pet-form':{
  const type=str('species'),choice=str('breed_choice');const customBreed=str('breed');
  const chosenBreed=patiPetBreedOptions(type).length&&choice&&choice!=='Diğer'?choice:customBreed;
  const o={name,species:type,gender:str('gender')||'Belirtilmedi',age:str('age').slice(0,60),breed:chosenBreed.slice(0,90),personality:str('personality').slice(0,180),notes:str('notes').slice(0,500)};
- const image=await upload(f.get('photo'));if(image)o.photo_url=image;
+ const image=f.get('photo')?.size?await uploadPrivatePublicationMedia(f.get('photo'),'image'):null;if(image)o.photo_url=image;
  if(!editId)o.owner_id=owner;
  const savedPet=await save('pets',o,editId);
  if(!editId&&me?.id===owner&&savedPet?.id){
@@ -7580,6 +7580,7 @@ globalThis.PatiyizPrivateMedia?.onRefresh(async()=>{
  const uid=me.id;
  data.posts=await globalThis.PatiyizPrivateMedia.hydrateRows(data.posts,uid,sb);
  data.stories=await globalThis.PatiyizPrivateMedia.hydrateRows(data.stories,uid,sb);
+ data.pets=await globalThis.PatiyizPrivateMedia.hydrateRows(data.pets,uid,sb);
  if(patiReelsFeed?.owner===uid)patiReelsFeed.rows=await globalThis.PatiyizPrivateMedia.hydrateRows(patiReelsFeed.rows,uid,sb);
  if(patiExploreMedia?.owner===uid)patiExploreMedia.rows=await globalThis.PatiyizPrivateMedia.hydrateRows(patiExploreMedia.rows,uid,sb);
  if(patiFollowingState?.owner===uid)patiFollowingState.rows=await globalThis.PatiyizPrivateMedia.hydrateRows(patiFollowingState.rows,uid,sb);
