@@ -2,6 +2,7 @@
 
 ## Yapı
 - Yeni gönderiler, Reels videoları, kapakları ve standart hikâyelerin foto/video dosyaları, hesabın o an açık veya gizli olmasından bağımsız şekilde `patiyiz-private-posts` özel depoya yüklenir.
+- Hayvan profilinin fotoğrafı da aynı özel depoya gider; gizli hesapların hayvan profili ve fotoğrafları yalnız hesap sahibi veya onaylanmış takipçiler tarafından görüntülenebilir.
 - Veritabanında açık URL yerine `patiyiz-private-posts:<owner-id>/<object-id>.<ext>` kaydedilir.
 - Gönderiler ve hikâyeler sunucu tarafındaki mevcut RLS politikasınca erişilebilir olduğunda medya depolama politikası süreli görüntüleme bağlantısı verir.
 - Dosyanın ait olduğu hesapla gönderi sahibinin aynı olması zorunludur. Engellenen kullanıcı veya onaysız takipçi için bağlantı oluşturma isteği reddedilir.
