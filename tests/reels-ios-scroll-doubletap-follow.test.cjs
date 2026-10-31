@@ -51,22 +51,23 @@ test('Reels profile label is replaced by follow and clickable avatar',()=>{
  assert.match(css,/\.pati-reel-avatar-link/);
  assert.match(css,/\.pati-reel-heart-burst\.pop/);
 });
-test('Double tap likes once without pausing, single tap pauses normally',()=>{
+test('Single tap pauses immediately; double tap likes once and restores playback',()=>{
  const p=harness();
  const video=p.videos[0];video.paused=false;
  const heart={classList:{remove(){},add(){}},offsetWidth:3};
  const item={dataset:{post:'post0'},querySelector:key=>key==='video'?video:heart};
  const button={isConnected:true,closest:()=>item};
  p.api.reelHandleTap(button);
- assert.equal(p.timers.size,1);
+ assert.equal(video.paused,true,'single touch pauses immediately');
+ assert.equal(p.timers.size,0,'no delayed UI action');
  p.clock(1170);p.api.reelHandleTap(button);
- assert.equal(p.timers.size,0);assert.equal(p.likes(),1);
- assert.equal(video.pauseCount,0);
+ assert.equal(p.likes(),1,'second tap likes exactly once');
+ assert.equal(video.paused,false,'double-tap resumes the previous playing state');
  p.clock(2000);p.api.reelHandleTap(button);
- assert.equal(p.timers.size,1);
- for(const fn of p.timers.values())fn();
  assert.equal(video.paused,true);
+ assert.equal(p.timers.size,0);
 });
+
 test('iPhone scroll-snap activates next and previous video even without observer threshold callback',()=>{
  const p=harness();p.api.setupReelsViewer();
  assert.equal(p.videos[0].paused,false);
