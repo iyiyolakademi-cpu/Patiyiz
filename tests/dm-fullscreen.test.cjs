@@ -31,9 +31,13 @@ test('Fullscreen message inbox has a real exit action back to the prior screen',
 
 test('Chat keeps existing media, typing, receipts, reply and composer',()=>{
  const page=section('function messagesPage(){','function pushKeyBytes(');
- for(const expected of ['data-action="dm-new"','data-action="dm-record"','data-action="pati-dm-gallery-open"','data-action="dm-reply"','data-action="dm-edit"','data-private-path','read_at','pati-dm-typing-indicator','form id="message-form"','chat-history']) {
+ for(const expected of ['data-action="dm-new"','data-action="dm-record"','data-action="pati-dm-gallery-open"','data-private-path','read_at','pati-dm-typing-indicator','form id="message-form"','chat-history']) {
   assert.ok(page.includes(expected),expected);
  }
+ assert.match(app,/function patiDmBeginReply\(id\)/);
+ assert.match(app,/data-action="dm-reply"/);
+ assert.match(app,/patiDmSwipe/);
+ assert.doesNotMatch(page,/pati-dm-msg-tools/);
  assert.match(css,/\.chat-history[\s\S]*?overflow-y:auto!important/);
  assert.match(css,/html\.pati-keyboard-open[\s\S]*?\.chat-form/);
  assert.match(app,/visualViewport\?\.addEventListener\('scroll',patiResizeChatViewport\)/);
