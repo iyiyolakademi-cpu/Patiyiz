@@ -1,14 +1,5 @@
 /* 31 Oct 2026 — one light theme, clear reward balance, discreet story actions and full-screen chat composers. */
 html[data-pati-theme="light"]{color-scheme:light}
-#pati-header-coins,#pati-desktop-coins{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:5px!important}
-#pati-header-coins .pati-balance-title,
-#pati-desktop-coins .pati-balance-title{display:inline!important;white-space:nowrap!important;font-size:11px!important;font-weight:750!important;line-height:1.15!important}
-#pati-header-coins .pati-balance-money,
-#pati-desktop-coins .pati-balance-money{display:inline-flex!important;align-items:center!important;justify-content:center!important;line-height:1!important;font-size:18px!important;flex:0 0 auto!important}
-#pati-header-coins strong,#pati-desktop-coins strong{font-size:13px!important;font-weight:850!important;white-space:nowrap}
-.pati-balance-money{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;line-height:1;font-size:1.15em}
-.pati-profile-coin-icon .pati-balance-money{font-size:22px}
-.pati-coin-icon:where(img){display:none!important}
 #story-overlay .pati-story-viewer-preview .pati-story-viewer-preview-stack,
 #story-overlay .pati-story-viewer-preview .pati-story-viewer-preview-status{display:none!important}
 #story-overlay .pati-story-viewer-preview{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:0!important;min-width:106px!important}
@@ -30,13 +21,12 @@ html[data-pati-theme="light"]{color-scheme:light}
 .pati-streak-sixty button:disabled{background:#e8e9ec;color:#686d77;cursor:not-allowed}
 .pati-streak-sixty-status{display:block;padding:12px 13px;background:#f4f7ef;border-radius:12px;color:#305333;font-size:13px}
 @media(max-width:740px){
- #pati-header-coins{padding:5px 6px!important;min-width:0!important;max-width:128px!important}
- #pati-header-coins .pati-balance-title{font-size:10px!important}
- #pati-header-coins .pati-balance-money{font-size:16px!important}
- #pati-header-coins strong{font-size:12px!important}
  #modal-root .pati-full-page-form-backdrop:has(#dm-new-form,#pati-group-create-form){z-index:480!important}
  #modal-root .pati-mobile-full-page-form:has(#dm-new-form,#pati-group-create-form) .modal-content{padding-bottom:20px!important;scrollbar-width:thin}
  #modal-root .pati-mobile-full-page-form:has(#dm-new-form) .modal-header{border-bottom:1px solid #ececf0!important}
  .pati-streak-sixty{padding:16px;border-radius:17px}
  .pati-streak-sixty h2{font-size:20px}
 }
+
+/* Akışta eski yeni-bakiye rozeti de görünmesin; PatiCoin merkezine menüden erişilir. */
+html[data-pati-view="home"] #pati-header-coins {display:none!important}
