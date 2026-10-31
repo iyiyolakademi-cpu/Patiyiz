@@ -71,7 +71,7 @@ test('DM opens a conversation at the last message, even after async fetch',()=>{
 test('DM thread fetch is newest first on server, ascending inside conversation',()=>{
  assert.match(app,/\.order\('created_at',\{ascending:false\}\)\.limit\(PATI_DM_THREAD_PAGE\)/);
  assert.match(app,/let conv=\[\.\.\.\(hiddenState\.ready\?/);
- assert.match(app,/sort\\(patiDmCompareRows\\)/);
+ assert.ok(app.includes('.sort(patiDmCompareRows)'));
  assert.match(app,/next\.scrollTop=Math\.max\(0,anchor\.top\+next\.scrollHeight-anchor\.height\)/);
 });
 test('Text-only posts keep author details and readable X-like text layout',()=>{
