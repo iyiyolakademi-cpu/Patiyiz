@@ -229,7 +229,12 @@ function patiStreaksPage(){
  if(!patiStreakGoalState.ready&&!patiStreakGoalState.loading&&!patiStreakGoalState.error&&!patiStreakState.loading)void patiStreakGoalLoad();
 }
 
-function showApp(){starter();if(me)window.setTimeout(()=>patiStreakCheckin(),550);if(me)window.setTimeout(()=>patiInviteLoad(),1700);if(me){window.setTimeout(()=>patiPublicActivityInit(),750);window.setTimeout(()=>patiWellnessFetch(true),1300)}if(me)window.setTimeout(()=>patiCoinSync(true),1600);if(me)window.setTimeout(()=>educationCloudLoad(),1200);authRoot.classList.add('hidden');appRoot.classList.remove('hidden');navigate(view);startLive();routePendingNotification();if(typeof routePendingLost==='function')void routePendingLost();if(typeof routePendingAdoption==='function')void routePendingAdoption();checkAdmin();
+function showApp(){starter();
+ if(me&&Array.isArray(window.__patiEarlyErrors)&&window.__patiEarlyErrors.length){
+  const kinds=[...new Set(window.__patiEarlyErrors)];
+  window.__patiEarlyErrors.length=0;
+  window.setTimeout(()=>{if(me)for(const kind of kinds)patiTrackClientError(kind)},900);
+ }if(me)window.setTimeout(()=>patiStreakCheckin(),550);if(me)window.setTimeout(()=>patiInviteLoad(),1700);if(me){window.setTimeout(()=>patiPublicActivityInit(),750);window.setTimeout(()=>patiWellnessFetch(true),1300)}if(me)window.setTimeout(()=>patiCoinSync(true),1600);if(me)window.setTimeout(()=>educationCloudLoad(),1200);authRoot.classList.add('hidden');appRoot.classList.remove('hidden');navigate(view);startLive();routePendingNotification();if(typeof routePendingLost==='function')void routePendingLost();if(typeof routePendingAdoption==='function')void routePendingAdoption();checkAdmin();
  if(!patiyizDeferredLoading){
   const userId=me.id;
   const signature=()=>data.posts.map(x=>x.id).join(',')+'|'+data.stories.map(x=>x.id).join(',');
@@ -7530,7 +7535,7 @@ document.addEventListener('change',event=>{
  const file=input.files[0];input.value='';void patiGroupAvatarCropOpen(id,file).catch(error=>notify(friendly(error),true));
 });
 /* Privacy-safe telemetry: no messages, URLs, stack traces or form contents. */
- const PATI_ERROR_RELEASE='20261031-audit1',patiReportedErrors=new Map();
+ const PATI_ERROR_RELEASE='20261031-audit2',patiReportedErrors=new Map();
  let patiLastUiAction='unknown';
  function patiSafeErrorLabel(value){
   const str=String(value||'unknown').toLowerCase();
