@@ -5,11 +5,17 @@ const app=fs.readFileSync('app.js','utf8');
 const html=fs.readFileSync('index.html','utf8');
 const css=fs.readFileSync('patiyiz-clean-release-20261031.css','utf8');
 const streakSQL=fs.readFileSync('supabase/patiyiz-streak-explicit-claim-20261031.sql','utf8');
-test('One clean feed without duplicate for-you/following tabs or top coin badge',()=>{
+test('One home route with two logo menu categories, without duplicate feed tabs or top coin badge',()=>{
  assert.match(app,/function homePage\(\)\{\s*\/\/ The existing central feed stays unified; duplicated feed selector is removed\.\s*patiHomeTab='all'/);
  assert.doesNotMatch(app,/<div class="pati-home-feed-tabs"/);
- assert.doesNotMatch(html,/id="pati-feed-menu"/);
- assert.doesNotMatch(html,/id="pati-feed-menu-trigger"/);
+ assert.match(html,/id="pati-feed-menu"/);
+ assert.match(html,/id="pati-feed-menu-trigger"[^>]*aria-expanded="false"/);
+ assert.match(html,/data-pati-feed-choice="media"/);
+ assert.match(html,/data-pati-feed-choice="text"/);
+ assert.match(html,/patiyiz-mobile-feed-switch-20261101\.css/);
+ assert.match(app,/let patiHomeContentMode=/);
+ assert.match(app,/patiHomeContentMode==='media'\?storiesStrip\(\):''/);
+ assert.match(app,/localStorage\.getItem\('patiyiz-home-feed-mode'\)/);
  assert.match(css,/#pati-header-coins,#pati-desktop-coins\{display:none!important\}/);
  assert.match(app,/\['rewards','PatiCoin Merkezi','grid'\]/);
 });
