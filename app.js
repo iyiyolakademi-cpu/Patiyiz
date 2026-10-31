@@ -619,7 +619,10 @@ function patiFeedSoundButton(video){
 }
 // Size feed videos and photos to their own original width-to-height ratios.
 function setupFeedMediaRatios(){
- const set=(frame,w,h)=>{if(frame&&Number.isFinite(w)&&Number.isFinite(h)&&w>0&&h>0)frame.style.setProperty('--pati-feed-aspect',w+' / '+h)};
+ const set=(frame,w,h)=>{if(frame&&Number.isFinite(w)&&Number.isFinite(h)&&w>0&&h>0){
+   const ratio=w+' / '+h;
+   if(frame.style.getPropertyValue('--pati-feed-aspect')!==ratio)frame.style.setProperty('--pati-feed-aspect',ratio);
+  }};
  document.querySelectorAll('#main-content .pati-feed-card .pati-video-frame').forEach(frame=>{
   const v=frame.querySelector('video');if(!v)return;
   const update=()=>set(frame,v.videoWidth,v.videoHeight);
@@ -646,6 +649,7 @@ function setupFeedVideos(){
  if(patiyizFeedActiveVideo){patiyizFeedActiveVideo.pause();patiyizFeedActiveVideo=null}
  const videos=[...document.querySelectorAll('#main-content .pati-video-frame video')];
  if(!videos.length)return;
+ videos.forEach(video=>{video.preload='none';video.setAttribute('playsinline','');});
  const native=typeof window!=='undefined'&&window.PatiyizNative?.isNative===true;
  const iosHome=typeof document!=='undefined'&&document.documentElement?.classList?.contains('patiyiz-ios-reels');
  const permitted=()=>!document.hidden&&!document.getElementById?.('story-overlay')&&!(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches&&!native&&!iosHome);
@@ -1663,6 +1667,8 @@ function setupReelsViewer(){
   attach(video);
   if(video?.preload==='none')video.preload='metadata';
   if(activeVideo!==video){activeVideo?.pause();activeVideo=video}
+  // Only one visible Reels video may play, including after browser autoplay retries.
+  for(const other of videos)if(other!==video&&!other.paused)other.pause();
   if(video.paused!==false)video.muted=!soundOn();
   if(video.paused!==false){
    const playing=video.play();
@@ -1705,7 +1711,7 @@ function setupReelsViewer(){
   for(const [video,ratio] of ratios){
    if(ratio>maxRatio){maxRatio=ratio;nextVideo=video}
   }
-  if(iosHome&&viewport?.clientHeight){
+  if(viewport?.clientHeight){
    const index=Math.max(0,Math.min(videos.length-1,Math.round(viewport.scrollTop/viewport.clientHeight)));
    nextVideo=videos[index]||nextVideo;
   }
@@ -1718,6 +1724,24 @@ function setupReelsViewer(){
   }else if(activeVideo){activeVideo.pause();activeVideo=null}
  },{root:viewport,rootMargin:'70% 0px 70% 0px',threshold:[0,.25,.65,.9]});
  videos.forEach(v=>{
+  // The poster remains visible while the active video loads or buffers.
+  const item=v.closest('.pati-reel-item');
+  if(item&&!item.querySelector('.pati-reel-buffering')){
+   item.insertAdjacentHTML('beforeend','<div class="pati-reel-buffering" role="status" aria-live="polite" hidden><span class="pati-reel-spinner" aria-hidden="true"></span><span class="pati-reel-loading-label">Video yükleniyor…</span><progress value="0" max="100" aria-label="Video yükleme ilerlemesi"></progress></div>');
+  }
+  const indicator=item?.querySelector('.pati-reel-buffering');
+  const progress=indicator?.querySelector('progress');
+  const busy=state=>{if(indicator)indicator.hidden=!state};
+  const updateBuffer=()=>{
+   if(!progress||!Number.isFinite(v.duration)||v.duration<=0||!v.buffered?.length)return;
+   try{progress.value=Math.max(0,Math.min(100,Math.round(v.buffered.end(v.buffered.length-1)/v.duration*100)))}catch(_){}
+  };
+  for(const event of ['loadstart','waiting','stalled','seeking'])v.addEventListener(event,()=>busy(true));
+  v.addEventListener('playing',()=>{busy(false);for(const other of videos)if(other!==v&&!other.paused)other.pause()});
+  v.addEventListener('canplay',()=>busy(false));
+  v.addEventListener('progress',updateBuffer);
+  v.addEventListener('loadedmetadata',updateBuffer);
+  v.addEventListener('error',()=>{busy(true);const label=indicator?.querySelector('.pati-reel-loading-label');if(label)label.textContent='Video açılamadı'});
   if(typeof patiWatchReelAttach==='function')patiWatchReelAttach(v);
   patiyizReelsObserver.observe(v);
   const range=v.closest?.('.pati-reel-item')?.querySelector?.('[data-action="reel-seek"]');
@@ -1734,7 +1758,7 @@ function setupReelsViewer(){
  });
  // On iPhone, scroll-snap can settle without a new IntersectionObserver threshold.
  // Use the actual snapped slide as the authoritative active video.
- if(iosHome&&viewport?.addEventListener){
+ if(viewport?.addEventListener){
   let frame=0;
   const activate=()=>{
    if(document.hidden||!viewport.clientHeight||!videos.length)return;
@@ -2125,6 +2149,8 @@ function homePage(){
  +(following&&patiFollowingState.ready&&patiFollowingState.hasMore?'<div class="pati-load-more">'+button('Daha fazla paylaşım yükle','home-following-more')+'</div>':'')
  +(pageMore.posts&&!following&&!((typeof patiHomeLoadError!=='undefined'&&patiHomeLoadError))&&
   patiyizLoadedTables.has('posts')?'<div class="pati-load-more">'+button('Daha fazla paylaşım yükle','load-more','data-id="posts"')+'</div>':'')+'</div>';
+ const shortcut=document.getElementById('pati-header-following-btn');
+ if(shortcut){shortcut.textContent=following?'Senin İçin':'Takip Ettiklerim';shortcut.dataset.id=following?'all':'following';shortcut.setAttribute('aria-pressed',String(following));}
  if(typeof patiSyncHomePostCounts==='function')void patiSyncHomePostCounts(selectedPostId?list.filter(p=>p.id===selectedPostId):visiblePosts);
 }
 
