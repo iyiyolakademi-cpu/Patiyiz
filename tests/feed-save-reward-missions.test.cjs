@@ -8,7 +8,7 @@ const sql=fs.readFileSync('supabase/patiyiz-reward-missions-20261024.sql','utf8'
 const piece=(a,b)=>{const i=app.indexOf(a),j=app.indexOf(b,i+a.length);assert.ok(i>=0&&j>i,a);return app.slice(i,j)};
 test('En Aktif 5 Pati appears immediately after the second feed post',()=>{
  const home=piece('function homePage(){','function savedPostsPage(){');
- assert.match(home,/pati-home-feed-tabs/);
+ assert.doesNotMatch(home,/pati-home-feed-tabs/);
  assert.match(home,/storiesStrip\(\)/);
  assert.doesNotMatch(home,/patiLeaderBoard\(\)/); assert.match(app,/function patiWeeklyBoard\(\)/);
 });
