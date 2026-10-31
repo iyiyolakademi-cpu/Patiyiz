@@ -56,7 +56,7 @@ test('Ana sayfa kaydedilmiş ama akışa yüklenmemiş başka gönderiyi yanlı�
  const data={posts:[
   {id:'newest',created_at:'2026-10-25T12:00:00Z'},
   {id:'saved-ancient',created_at:'2020-01-01T12:00:00Z'}]};
- const ctx={data,blocked:new Set(),selectedPostId:'',main:{innerHTML:''},
+ const ctx={data,patiHomeContentMode:'media',blocked:new Set(),selectedPostId:'',main:{innerHTML:''},
   patiHomeFeedIds:new Set(['newest']),patiHomeLoadError:'',
   patiyizProgressCard:()=>'',storiesStrip:()=>'<section id="stories"></section>',patiLeaderBoard:()=>'',postCard:p=>'<article>'+p.id+'</article>',
   pageMore:{posts:false},patiyizLoadedTables:new Set(['posts']),empty:()=>'',button:()=>'',header:()=>''};
