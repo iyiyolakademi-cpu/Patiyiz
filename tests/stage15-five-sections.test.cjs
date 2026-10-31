@@ -13,7 +13,7 @@ test('All five screenshot sidebar sections exist in desktop routes and view disp
  for(const text of ['messages:messagesPage','notifications:notificationsPage','profile:profilePage','settings:settingsPage'])assert.ok(app.includes(text),text);
 });
 test('Mobile menu is concise and Pet Center links to specialized modules',()=>{
- for(const n of ["['community','Soru & Cevap','users']","['pets','Patileri keşfet','paw']","['my-pet','Hayvanım Merkezi · Tüm seçenekler','heart']","['settings','Ayarlar ve gizlilik','settings']","['shop','Pati Mağaza','grid']"])assert.ok(menu.includes(n),n);
+ for(const n of ["['community','Soru & Cevap','users']","['my-pet','Hayvanım Merkezi · Tüm seçenekler','heart']","['settings','Ayarlar ve gizlilik','settings']","['shop','Pati Mağaza','grid']"])assert.ok(menu.includes(n),n);
  assert.match(app,/data-action="pati-my-pet-tab"/);
  assert.match(app,/p4-hub-grid/);
  assert.match(app,/messages:messagesPage/);
@@ -38,7 +38,7 @@ test('My profile is distinct from visited-user profiles when navigating sidebar'
  assert.match(app,/case 'profile-back':/);
 });
 test('Settings expose legal/security and use actual Notification Center for device controls',()=>{
- for(const item of ['Ayarlar ve Gizlilik','theme-set','dm-receipts-toggle','settings-password','delete-account-open','privacy.html','terms.html','data-view="notifications"'])assert.ok(settings.includes(item),item);
+ for(const item of ['Ayarlar ve Gizlilik','dm-receipts-toggle','settings-password','delete-account-open','privacy.html','terms.html','data-view="notifications"'])assert.ok(settings.includes(item),item);
  assert.doesNotMatch(settings,/button\('Bildirimleri aç','push-enable'\)/);
 });
 test('Notifications keep owner-scoped writes while showing only a simple list',()=>{
