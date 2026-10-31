@@ -1798,10 +1798,25 @@ function setupReelsViewer(){
  const ratios=new Map();
  // Non-active slides cannot fetch MOV metadata.
  const attach=video=>{const url=video?.dataset?.patiVideoSrc;if(url&&!video.getAttribute?.('src')){video.src=url;return true}return false};
+ const network=typeof navigator!=='undefined'?navigator.connection||navigator.mozConnection||navigator.webkitConnection:null;
+ const lowData=!!network?.saveData||/^(slow-2g|2g)$/.test(String(network?.effectiveType||''));
+ const prepareNext=video=>{
+  const position=videos.indexOf(video);if(position<0)return;
+  video.preload='auto';attach(video);
+  // Warm only the next Reel, never fetch every video simultaneously.
+  const next=videos[position+1];
+  if(next){next.preload=lowData?'metadata':'auto';attach(next)}
+ };
+ const loadNearEnd=()=>{
+  const state=patiReelsFeed;
+  if(view!=='reels'||!state?.ready||state.loading||!state.hasMore||!viewport?.clientHeight)return;
+  const idx=Math.max(0,Math.min(videos.length-1,Math.round(viewport.scrollTop/viewport.clientHeight)));
+  if(idx+4>=videos.length)void patiLoadMoreReels();
+ };
  const playVideo=video=>{
   if(document.getElementById?.('story-overlay')){video?.pause();return}
-  attach(video);
-  if(video?.preload==='none')video.preload='metadata';
+  if(!video)return;
+  prepareNext(video);
   if(activeVideo!==video){activeVideo?.pause();activeVideo=video}
   // Only one visible Reels video may play, including after browser autoplay retries.
   for(const other of videos)if(other!==video&&!other.paused)other.pause();
@@ -1860,6 +1875,10 @@ function setupReelsViewer(){
   }else if(activeVideo){activeVideo.pause();activeVideo=null}
  },{root:viewport,rootMargin:'70% 0px 70% 0px',threshold:[0,.25,.65,.9]});
  videos.forEach(v=>{
+  // Re-observe appended slides without binding event listeners twice.
+  patiyizReelsObserver.observe(v);
+  if(v.dataset.patiReelsBound==='1')return;
+  v.dataset.patiReelsBound='1';
   // The poster remains visible while the active video loads or buffers.
   const item=v.closest?.('.pati-reel-item');
   if(item&&typeof item.querySelector==='function'&&typeof item.insertAdjacentHTML==='function'&&!item.querySelector('.pati-reel-buffering')){
@@ -1867,19 +1886,29 @@ function setupReelsViewer(){
   }
   const indicator=item?.querySelector?.('.pati-reel-buffering');
   const progress=indicator?.querySelector?.('progress');
+  let pendingBuffer=null;
   const busy=state=>{if(indicator)indicator.hidden=!state};
+  const cancelBuffer=()=>{if(pendingBuffer!==null){clearTimeout(pendingBuffer);pendingBuffer=null}busy(false)};
   const updateBuffer=()=>{
    if(!progress||!Number.isFinite(v.duration)||v.duration<=0||!v.buffered?.length)return;
    try{progress.value=Math.max(0,Math.min(100,Math.round(v.buffered.end(v.buffered.length-1)/v.duration*100)))}catch(_){}
   };
-  for(const event of ['loadstart','waiting','stalled','seeking'])v.addEventListener?.(event,()=>busy(true));
-  v.addEventListener?.('playing',()=>{busy(false);for(const other of videos)if(other!==v&&!other.paused)other.pause()});
-  v.addEventListener?.('canplay',()=>busy(false));
+  const deferBuffer=()=>{
+   if(pendingBuffer!==null)clearTimeout(pendingBuffer);
+   busy(false);
+   // Typical short seeks or stalls no longer flash a loading card.
+   pendingBuffer=setTimeout(()=>{
+    pendingBuffer=null;
+    if(v.isConnected&&activeVideo===v&&!v.paused&&v.readyState<3)busy(true);
+   },850);
+  };
+  for(const event of ['loadstart','waiting','stalled','seeking'])v.addEventListener?.(event,deferBuffer);
+  for(const event of ['playing','canplay','seeked','pause'])v.addEventListener?.(event,cancelBuffer);
+  v.addEventListener?.('playing',()=>{for(const other of videos)if(other!==v&&!other.paused)other.pause()});
   v.addEventListener?.('progress',updateBuffer);
   v.addEventListener?.('loadedmetadata',updateBuffer);
-  v.addEventListener?.('error',()=>{busy(true);const label=indicator?.querySelector?.('.pati-reel-loading-label');if(label)label.textContent='Video açılamadı'});
+  v.addEventListener?.('error',()=>{cancelBuffer();if(activeVideo!==v)return;busy(true);const label=indicator?.querySelector?.('.pati-reel-loading-label');if(label)label.textContent='Video açılamadı'});
   if(typeof patiWatchReelAttach==='function')patiWatchReelAttach(v);
-  patiyizReelsObserver.observe(v);
   const range=v.closest?.('.pati-reel-item')?.querySelector?.('[data-action="reel-seek"]');
   if(!range)return;
   const update=()=>{
@@ -1905,11 +1934,12 @@ function setupReelsViewer(){
     if(video!==selected)delete video.dataset.manualPause;
    }
    attach(selected);
-   if(selected.preload==='none'){selected.preload='metadata';if(selected.readyState===0)selected.load()}
+   if(selected.preload==='none')selected.preload='auto';
    if(selected.dataset.manualPause){selected.pause();activeVideo=selected;return}
    playVideo(selected);
   };
   const onScroll=()=>{
+   loadNearEnd();
    if(frame)return;
    if(typeof window.requestAnimationFrame==='function'){
     frame=window.requestAnimationFrame(()=>{frame=0;activate()});
