@@ -38,7 +38,7 @@ test('Light-only theme removes the dark-mode toggle without affecting video and 
  assert.match(app,/document\.documentElement\.dataset\.patiTheme='light'/);
  assert.doesNotMatch(app,/case 'theme-set':/);
  assert.doesNotMatch(index,/patiyiz-dark-mode-all-screens-20261031\.css\?v=1/);
- assert.match(index,/patiyiz-balance-light-chat-20261031\.css\?v=1/);
+ assert.match(index,/patiyiz-balance-light-chat-20261031\.css\?v=2-paticoin/);
  assert.match(app,/pati-reel-video/);
  assert.match(app,/story-big-video/);
  assert.match(app,/pati-social-actions/);
