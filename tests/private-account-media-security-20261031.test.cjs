@@ -61,5 +61,6 @@ test('Pet profile pictures use the same private upload and signed read path',()=
  assert.match(helper,/fields=\['image_url','video_url','video_cover_url','images','media_videos','photo_url'\]/);
  assert.match(app,/const image=f\.get\('photo'\)\?\.size\?await uploadPrivatePublicationMedia\(f\.get\('photo'\),'image'\)/);
  assert.match(app,/\['posts','stories','pets'\]\.includes\(k\)/);
- assert.match(server,/pets:\['photo_url'\]/);
+ assert.match(server,/pets:\s*\[['\"]photo_url['\"]\]/);
+ assert.match(server,/transformed:[^\n]+pets:\[\]/);
 });
