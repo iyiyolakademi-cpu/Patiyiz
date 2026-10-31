@@ -1,6 +1,7 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
+const activeCSS=require('./helpers/active-css.cjs');
 const vm=require('node:vm');
 const app=fs.readFileSync('app.js','utf8');
 const css=fs.readFileSync('patiyiz-story-media-mentions-20261030.css','utf8');
@@ -10,7 +11,7 @@ const sql=fs.readFileSync('supabase/patiyiz-content-mentions-20261030.sql','utf8
 
 test('App parses and PWA/native include new asset',()=>{
  new vm.Script(app);
- assert.match(html,/patiyiz-story-media-mentions-20261030\.css\?v=1/);
+ assert.ok(activeCSS(html,'patiyiz-story-media-mentions-20261030.css'));
  assert.match(html,/story_frame_sound_mentions=20261030/);
  assert.match(native,/'patiyiz-story-media-mentions-20261030\.css'/);
 });
