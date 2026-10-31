@@ -6275,7 +6275,7 @@ async function uploadVideo(file){
  if(!['video/mp4','video/webm','video/quicktime'].includes(mime))throw Error('MP4, WebM veya MOV video seç.');
  const ext=mime==='video/quicktime'?'mov':mime==='video/webm'?'webm':'mp4';
  const key=me.id+'/'+crypto.randomUUID()+'.'+ext;
- if(current()?.is_private){uploadStatus('Özel video güvenli depoya yükleniyor…');return patiPrivateMediaUpload(file,'video');}
+ if(typeof current==='function'&&current()?.is_private){uploadStatus('Özel video güvenli depoya yükleniyor…');return patiPrivateMediaUpload(file,'video');}
  uploadStatus('Video yükleniyor…');
  let result;
  for(let attempt=0;attempt<3;attempt++){
@@ -6295,7 +6295,7 @@ async function uploadVideo(file){
  if(result?.error)throw result.error;
  return sb.storage.from('patiyiz-videos').getPublicUrl(key).data.publicUrl;
 }
-async function upload(file){if(!file||!file.size)return null;if(navigator.onLine===false)throw Error('İnternet bağlantısı yok. Fotoğrafı bağlantı geldiğinde yükle.');if(file.size>30*1024*1024)throw Error('Fotoğraf en fazla 30 MB olabilir.');uploadStatus('Fotoğraf hazırlanıyor…');const prepared=await preparePhoto(file);const ext=prepared.type==='image/png'?'png':prepared.type==='image/webp'?'webp':'jpg';const key=me.id+'/'+crypto.randomUUID()+'.'+ext;if(current()?.is_private){uploadStatus('Özel fotoğraf güvenli depoya yükleniyor…');return patiPrivateMediaUpload(prepared,'image')}uploadStatus('Fotoğraf yükleniyor…');let up;for(let attempt=0;attempt<2;attempt++){try{up=(typeof window!=='undefined'&&window.PatiyizReliableUpload?.upload)?await window.PatiyizReliableUpload.upload({sb,projectUrl:cfg.supabaseUrl,bucket:'patiyiz-media',key,file:prepared,contentType:prepared.type,onProgress:p=>uploadStatus('Fotoğraf yükleniyor… %'+p)}):await sb.storage.from('patiyiz-media').upload(key,prepared,{contentType:prepared.type,cacheControl:'86400',upsert:false});if(!up.error)break;if(await patiStorageUploadConfirmed('patiyiz-media',key,prepared.size)){up={error:null};break}if(attempt===1||!patiUploadRetryable(up.error))throw up.error}catch(err){if(await patiStorageUploadConfirmed('patiyiz-media',key,prepared.size)){up={error:null};break}if(attempt===1||!patiUploadRetryable(err))throw err}uploadStatus('Bağlantı yeniden deneniyor…');await new Promise(r=>setTimeout(r,900))}if(up?.error)throw up.error;uploadStatus('Paylaşım hazırlanıyor…');return sb.storage.from('patiyiz-media').getPublicUrl(key).data.publicUrl}
+async function upload(file){if(!file||!file.size)return null;if(navigator.onLine===false)throw Error('İnternet bağlantısı yok. Fotoğrafı bağlantı geldiğinde yükle.');if(file.size>30*1024*1024)throw Error('Fotoğraf en fazla 30 MB olabilir.');uploadStatus('Fotoğraf hazırlanıyor…');const prepared=await preparePhoto(file);const ext=prepared.type==='image/png'?'png':prepared.type==='image/webp'?'webp':'jpg';const key=me.id+'/'+crypto.randomUUID()+'.'+ext;if(typeof current==='function'&&current()?.is_private){uploadStatus('Özel fotoğraf güvenli depoya yükleniyor…');return patiPrivateMediaUpload(prepared,'image')}uploadStatus('Fotoğraf yükleniyor…');let up;for(let attempt=0;attempt<2;attempt++){try{up=(typeof window!=='undefined'&&window.PatiyizReliableUpload?.upload)?await window.PatiyizReliableUpload.upload({sb,projectUrl:cfg.supabaseUrl,bucket:'patiyiz-media',key,file:prepared,contentType:prepared.type,onProgress:p=>uploadStatus('Fotoğraf yükleniyor… %'+p)}):await sb.storage.from('patiyiz-media').upload(key,prepared,{contentType:prepared.type,cacheControl:'86400',upsert:false});if(!up.error)break;if(await patiStorageUploadConfirmed('patiyiz-media',key,prepared.size)){up={error:null};break}if(attempt===1||!patiUploadRetryable(up.error))throw up.error}catch(err){if(await patiStorageUploadConfirmed('patiyiz-media',key,prepared.size)){up={error:null};break}if(attempt===1||!patiUploadRetryable(err))throw err}uploadStatus('Bağlantı yeniden deneniyor…');await new Promise(r=>setTimeout(r,900))}if(up?.error)throw up.error;uploadStatus('Paylaşım hazırlanıyor…');return sb.storage.from('patiyiz-media').getPublicUrl(key).data.publicUrl}
 /* Publication transaction: protect against duplicate posts and clean up only unreferenced, owned media. */
 function publicationMediaReference(url,owner){
  try{
@@ -6355,7 +6355,7 @@ async function publishMediaRecord(table,form,createRecord){
   const response=await sb.from(table).insert({...record,id,author_id:owner}).select('*').single();
   if(response.error)throw response.error;
   if(!response.data)throw Error('Paylaşım kaydı doğrulanamadı.');
-  if(table==='posts')await patiHydratePrivatePosts([response.data]);
+  if(table==='posts'&&typeof patiHydratePrivatePosts==='function')await patiHydratePrivatePosts([response.data]);
   recordMetric('success');return response.data;
  }catch(error){
   const checked=await checkPublishedRecord(table,id,owner);
@@ -6447,7 +6447,7 @@ async function patiFallbackStoryPoster(){
 async function createStoryPublication(form,f,str){
  const audience=form.dataset.storyAudience||str('story_audience')||'everyone';
  if(audience==='close_friends')return patiCreateCloseFriendStory(form,f,str);
- if(current()?.is_private)return patiCreateCloseFriendStory(form,f,str,'everyone');
+ if(typeof current==='function'&&current()?.is_private)return patiCreateCloseFriendStory(form,f,str,'everyone');
  const shared=form?.dataset?.mode==='story';
  const files=[...(form.querySelector('input[name="photo"]')?.files||[])];
  const video=form.querySelector('input[name="video"]')?.files?.[0];
