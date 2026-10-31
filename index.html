@@ -1,5 +1,13 @@
 <!doctype html>
-<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<html lang="tr"><head><meta charset="utf-8"><script id="patiyiz-early-error-monitor">(function(){
+ /* Capture only error categories before the main app is ready; never store URLs or messages. */
+ var queue=window.__patiEarlyErrors=window.__patiEarlyErrors||[];
+ function note(kind){if(queue.length<10)queue.push(kind)}
+ window.addEventListener('error',function(event){
+  note((event.target instanceof HTMLImageElement||event.target instanceof HTMLVideoElement)?'asset':'script');
+ },true);
+ window.addEventListener('unhandledrejection',function(){note('promise')});
+})();</script><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#000000"><script>(function(){try{var ua=navigator.userAgent||'';var ios=/iPhone|iPad|iPod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);var standalone=navigator.standalone===true||(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches);if(ios&&standalone)document.documentElement.classList.add('patiyiz-ios-reels')}catch(e){}})();</script><script>try{document.documentElement.dataset.patiTheme=localStorage.getItem("patiyiz_theme")==="dark"?"dark":"light"}catch(e){document.documentElement.dataset.patiTheme="light"}</script><link rel="manifest" href="manifest.webmanifest?v=20261024-new-p-logo-1"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="apple-touch-icon" sizes="180x180" href="patiyiz-apple-touch-icon.png?v=20261024-new-p-logo-1"><meta name="description" content="Patiyiz: hayvan sahiplerinin buluştuğu topluluk ve hayvan bilgi merkezi.">
 <title>Patiyiz — Patili dostlar bir arada</title>
 <link rel="canonical" href="https://patiyiz.com/">
