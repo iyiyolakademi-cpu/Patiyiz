@@ -61,6 +61,10 @@
  color:#fff!important;border:1px solid #ffffff65!important;
  box-shadow:0 5px 16px #0000003a;
 }
+#patiyiz-system-media .pati-system-options .pati-system-option-photo{
+ background:linear-gradient(140deg,#62bdff,#3374ea)!important;
+ color:#fff!important;
+}
 #patiyiz-system-media .pati-system-options .pati-system-option-video{
  background:linear-gradient(140deg,#ff9d84,#eb477b)!important;
 }
