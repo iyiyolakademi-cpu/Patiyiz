@@ -2441,17 +2441,43 @@ function patiHomeQuestionCard(q){
  '<button type="button" data-action="replies" data-id="'+esc(q.id)+'" aria-label="Soruya yanıtları aç">'+ico('message-circle')+' <span>'+replies+' yanıt</span></button>'+
  '</div></article>';
 }
+/* Separate social media from tweet-like text and Q&A in the home timeline. */
+let patiHomeContentMode='media';
+const patiHomeIsMediaPost=p=>p.post_format==='reels'||!!(
+ p.image_url||p.video_url||
+ (Array.isArray(p.images)&&p.images.some(Boolean))||
+ (Array.isArray(p.media_videos)&&p.media_videos.some(Boolean))
+);
 function patiHomeCombinedFeed(posts){
- const questions=(patiHomeQuestionsState.owner===me?.id&&patiHomeQuestionsState.ready?patiHomeQuestionsState.rows:[])
-  .filter(q=>!blocked.has(q.author_id)).slice(0,Math.max(2,Math.ceil(posts.length/4)));
- let questionIndex=0;
- const cards=posts.map((p,i)=>{
-  const row=postCard(p,i<5);
-  if((i+1)%3===0&&questionIndex<questions.length)return row+patiHomeQuestionCard(questions[questionIndex++]);
-  return row;
- }).join('');
- return cards+(questions.length&&questionIndex===0?patiHomeQuestionCard(questions[0]):'');
+ if(patiHomeContentMode==='media'){
+  const mediaPosts=posts.filter(patiHomeIsMediaPost);
+  return mediaPosts.length?mediaPosts.map((p,i)=>postCard(p,i<5)).join(''):
+   empty(patiyizLoadedTables.has('posts')?'Henüz fotoğraf, video veya Reels paylaşımı yok.':'Gönderiler yükleniyor…',
+    patiyizLoadedTables.has('posts')?'Yeni bir gönderi paylaşarak başlayabilirsin.':'');
+ }
+ const preview=patiHomeQuestionsState.owner===me?.id?patiHomeQuestionsState.rows:[];
+ const questions=[...new Map([...(data.questions||[]),...preview].filter(q=>q?.id).map(q=>[q.id,q])).values()]
+  .filter(q=>!blocked.has(q.author_id));
+ const mixed=[
+  ...posts.filter(p=>!patiHomeIsMediaPost(p)).map(item=>({kind:'text',item})),
+  ...questions.map(item=>({kind:'question',item}))
+ ].sort((a,b)=>new Date(b.item.created_at)-new Date(a.item.created_at));
+ return mixed.length?mixed.map((entry,i)=>entry.kind==='question'
+  ?patiHomeQuestionCard(entry.item):postCard(entry.item,i<5)).join(''):
+  empty(patiHomeQuestionsState.loading||!patiyizLoadedTables.has('posts')?'Yazılar ve sorular yükleniyor…':'Henüz yazı veya soru paylaşımı yok.',
+   patiHomeQuestionsState.loading?'':'İlk yazını yazabilir veya topluluğa soru sorabilirsin.');
 }
+window.addEventListener('patiyiz:feed-mode',event=>{
+ const next=event?.detail?.mode;
+ if(next!=='media'&&next!=='text')return;
+ patiHomeContentMode=next;
+ selectedPostId='';
+ patiDetailState=null;
+ if(view==='home'){render();window.scrollTo({top:0,behavior:'instant'});}
+ else navigate('home');
+ window.dispatchEvent(new CustomEvent('patiyiz:feed-mode-changed',{detail:{mode:patiHomeContentMode}}));
+});
+
 let patiFeedReelTarget='';
 function patiOpenFeedReel(postId){
  if(!postId||!me?.id)return;
@@ -2462,7 +2488,7 @@ function patiOpenFeedReel(postId){
 function homePage(){
  // The existing central feed stays unified; duplicated feed selector is removed.
  patiHomeTab='all';
- if(!selectedPostId&&typeof patiLoadHomeQuestions==='function')void patiLoadHomeQuestions();
+ if(!selectedPostId&&patiHomeContentMode==='text'&&typeof patiLoadHomeQuestions==='function')void patiLoadHomeQuestions();
  if(selectedPostId&&patiDetailState){patiDetailPage();return}
  const list=[...data.posts].filter(p=>!blocked.has(p.author_id)&&
   (typeof patiHomeFeedIds==='undefined'||!patiHomeFeedIds||patiHomeFeedIds.has(p.id)))
@@ -2477,7 +2503,7 @@ function homePage(){
  if(following&&typeof patiFollowingFetch==='function'&&!patiFollowingState.loading&&(!patiFollowingState.ready||patiFollowingState.owner!==me?.id))void patiFollowingFetch(false);
  main.innerHTML=selectedPostId
   ?header('Paylaşım','Bildirimin ilgili olduğu paylaşım.',button('← Ana sayfaya dön','post-back'))+(data.posts.some(p=>p.id===selectedPostId&&!blocked.has(p.author_id))?postCard(data.posts.find(p=>p.id===selectedPostId)):empty('Paylaşım bulunamadı'))
-  :storiesStrip()+'<div class="pati-feed-posts">'+(typeof patiCollabInvites==='function'?patiCollabInvites():'')+(following?(patiFollowingState.loading&&!patiFollowingState.ready?'<p class="pati-following-state">Takip edilenlerin gönderileri yükleniyor…</p>':visiblePosts.length?visiblePosts.map((p,i)=>(p._patiRepostActor?'<div class="pati-repost-context">↻ '+esc(profile(p._patiRepostActor).display_name||'Bir kullanıcı')+' yeniden paylaştı</div>':'')+postCard(p,i<5)).join(''):'<div class="pati-following-empty"><strong>Takip ettiklerin burada görünecek</strong><p>Henüz yeni gönderi yok. Keşfet’ten yeni hesaplar bulabilir veya akışı yenileyebilirsin.</p><button type="button" data-view="explore">Keşfet</button><button type="button" data-action="home-following-refresh">Yenile</button></div>') :(list.length?(typeof patiHomeCombinedFeed==='function'?patiHomeCombinedFeed(list):list.map((p,i)=>postCard(p,i<5)).join('')):(typeof patiHomeCombinedFeed==='function'&&typeof patiHomeQuestionsState!=='undefined'&&patiHomeQuestionsState.rows.length?patiHomeCombinedFeed([]):empty(patiyizLoadedTables.has('posts')?'Henüz paylaşım yok':'Gönderiler yükleniyor…',patiyizLoadedTables.has('posts')?'İlk gönderiyi sen paylaş!':'Paylaşımların yeniden getiriliyor.'))))+((typeof patiHomeLoadError!=='undefined'&&patiHomeLoadError)?'<div class="pati-load-more" role="alert">'+
+  :(patiHomeContentMode==='media'?storiesStrip():'')+'<div class="pati-feed-posts">'+(typeof patiCollabInvites==='function'?patiCollabInvites():'')+(following?(patiFollowingState.loading&&!patiFollowingState.ready?'<p class="pati-following-state">Takip edilenlerin gönderileri yükleniyor…</p>':visiblePosts.length?visiblePosts.map((p,i)=>(p._patiRepostActor?'<div class="pati-repost-context">↻ '+esc(profile(p._patiRepostActor).display_name||'Bir kullanıcı')+' yeniden paylaştı</div>':'')+postCard(p,i<5)).join(''):'<div class="pati-following-empty"><strong>Takip ettiklerin burada görünecek</strong><p>Henüz yeni gönderi yok. Keşfet’ten yeni hesaplar bulabilir veya akışı yenileyebilirsin.</p><button type="button" data-view="explore">Keşfet</button><button type="button" data-action="home-following-refresh">Yenile</button></div>') :(list.length?(typeof patiHomeCombinedFeed==='function'?patiHomeCombinedFeed(list):list.map((p,i)=>postCard(p,i<5)).join('')):(typeof patiHomeCombinedFeed==='function'&&(patiHomeContentMode==='text'||(typeof patiHomeQuestionsState!=='undefined'&&patiHomeQuestionsState.rows.length))?patiHomeCombinedFeed([]):empty(patiyizLoadedTables.has('posts')?'Henüz paylaşım yok':'Gönderiler yükleniyor…',patiyizLoadedTables.has('posts')?'İlk gönderiyi sen paylaş!':'Paylaşımların yeniden getiriliyor.'))))+((typeof patiHomeLoadError!=='undefined'&&patiHomeLoadError)?'<div class="pati-load-more" role="alert">'+
   esc(patiHomeLoadError)+' '+button('Tekrar dene','home-retry')+'</div>':'')
  +(following&&patiFollowingState.error?'<div class="pati-following-error" role="alert">'+esc(patiFollowingState.error)+' '+button('Yeniden dene','home-following-refresh')+'</div>':'')
  +(following&&patiFollowingState.ready&&patiFollowingState.hasMore?'<div class="pati-load-more">'+button('Daha fazla paylaşım yükle','home-following-more')+'</div>':'')
