@@ -1,0 +1,796 @@
+/* original order maintained */
+/* patiyiz-profile-white-story-cta-fix-20261031.css */
+/*
+  Patiyiz profile surface consistency and story CTA readability.
+  The user wants one LIGHT WHITE profile canvas (including profession, biography,
+  website links) even when the surrounding app uses dark mode.
+  Keep story photos, avatar and the rest of the app's theme unchanged.
+*/
+
+/* White profile canvas: statistics header, profession/bio, links, tabs all match. */
+#main-content .pati-ig-profile,
+#main-content .pati-ig-profile .pati-ig-summary,
+#main-content .pati-ig-profile .pati-ig-info,
+#main-content .pati-ig-profile .pati-ig-stats,
+#main-content .pati-ig-profile .pati-ig-about,
+#main-content .pati-ig-profile .pati-ig-profession,
+#main-content .pati-ig-profile .pati-ig-bio,
+#main-content .pati-ig-profile .pati-profile-links,
+#main-content .pati-ig-profile .pati-mutual-followers,
+#main-content .pati-ig-profile .pati-ig-actions,
+#main-content .pati-ig-profile .pati-ig-tabs,
+#main-content .pati-ig-profile .pati-ig-grid,
+#main-content .pati-ig-profile .pati-ig-empty,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-summary,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-info,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-stats,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-about,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-profession,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-bio,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-links,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-mutual-followers,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-actions,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-tabs,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-grid,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-empty{
+ background:#fff!important;
+ background-color:#fff!important;
+ color:#17191d!important;
+}
+
+/* All the information directly around the profile photo uses dark ink on white. */
+#main-content .pati-ig-profile .pati-ig-handle,
+#main-content .pati-ig-profile .pati-ig-name,
+#main-content .pati-ig-profile .pati-ig-handle-row,
+#main-content .pati-ig-profile .pati-ig-stats,
+#main-content .pati-ig-profile .pati-ig-stats b,
+#main-content .pati-ig-profile .pati-ig-stats span,
+#main-content .pati-ig-profile .pati-ig-stats button,
+#main-content .pati-ig-profile .pati-ig-stats small,
+#main-content .pati-ig-profile .pati-ig-about .pati-ig-profession,
+#main-content .pati-ig-profile .pati-ig-about .pati-ig-bio,
+#main-content .pati-ig-profile .pati-mutual-followers,
+#main-content .pati-ig-profile .pati-profile-links .pati-profile-link,
+#main-content .pati-ig-profile .pati-profile-links .pati-profile-link-label,
+#main-content .pati-ig-profile .pati-profile-links .pati-profile-link-domain,
+#main-content .pati-ig-profile .pati-profile-links .pati-profile-link-arrow,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-handle,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-name,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-handle-row,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-stats,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-stats b,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-stats span,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-stats button,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-stats small,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-about .pati-ig-profession,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-about .pati-ig-bio,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-mutual-followers,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-links .pati-profile-link,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-links .pati-profile-link-label,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-links .pati-profile-link-domain,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-links .pati-profile-link-arrow{
+ color:#17191d!important;
+ -webkit-text-fill-color:#17191d!important;
+ opacity:1!important;
+ text-shadow:none!important;
+}
+
+/* The biography should not have a shaded strip or disconnected card. */
+#main-content .pati-ig-profile .pati-ig-about,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-about{
+ box-shadow:none!important;
+ border:0!important;
+}
+#main-content .pati-ig-profile .pati-profile-links .pati-profile-link,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-links .pati-profile-link{
+ background:#fff!important;
+ background-color:#fff!important;
+ border:1px solid #e7e8ec!important;
+ box-shadow:none!important;
+}
+#main-content .pati-ig-profile .pati-ig-tabs button,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-tabs button{
+ background:transparent!important;
+ color:#44474e!important;
+ -webkit-text-fill-color:#44474e!important;
+ opacity:1!important;
+}
+#main-content .pati-ig-profile .pati-ig-tabs button.active,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-tabs button.active{
+ background:#f4f5f7!important;
+ color:#17191d!important;
+ -webkit-text-fill-color:#17191d!important;
+}
+#main-content .pati-ig-profile .pati-ig-tabs{
+ border-color:#ededf0!important;
+}
+#main-content .pati-ig-profile .pati-private-message,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-private-message{
+ background:#fff!important;color:#17191d!important;
+}
+
+/* Story shared-post CTA: the label to the LEFT of the arrow was invisible.
+   Give label its own explicitly white text, no inherited dark text fill. */
+#story-overlay.pati-story-has-source .pati-story-share-card>.pati-story-shared-source{
+ /* Earlier social-phase1 CSS applied translateX(-50%), pushing the CTA label
+    outside the overflow-hidden story card. Reset that inherited transform. */
+ -webkit-transform:none!important;
+ transform:none!important;
+ translate:none!important;
+ left:auto!important;
+ right:auto!important;
+ position:relative!important;
+ inset:auto!important;
+ display:flex!important;
+ align-items:center!important;
+ justify-content:space-between!important;
+ gap:10px!important;
+ box-sizing:border-box!important;
+ width:calc(100% - 20px)!important;
+ max-width:calc(100% - 20px)!important;
+ min-width:0!important;
+ min-height:44px!important;
+ height:auto!important;
+ margin:10px!important;
+ padding:10px 14px!important;
+ background:#111216!important;
+ background-color:#111216!important;
+ border:0!important;
+ border-radius:11px!important;
+ color:#fff!important;
+ -webkit-text-fill-color:#fff!important;
+ text-shadow:none!important;
+ opacity:1!important;
+ visibility:visible!important;
+ filter:none!important;
+ font-size:13px!important;
+ font-weight:850!important;
+ line-height:1.3!important;
+ white-space:normal!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-card>.pati-story-shared-source>.pati-story-source-label,
+#story-overlay.pati-story-has-source .pati-story-share-card>.pati-story-shared-source>.pati-story-source-arrow{
+ display:inline-block!important;
+ position:relative!important;
+ z-index:1!important;
+ flex:0 1 auto!important;
+ color:#fff!important;
+ -webkit-text-fill-color:#fff!important;
+ opacity:1!important;
+ visibility:visible!important;
+ text-shadow:none!important;
+ filter:none!important;
+ mix-blend-mode:normal!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-card>.pati-story-shared-source>.pati-story-source-label{
+ flex:1 1 auto!important;
+ min-width:0!important;
+ font-size:13px!important;
+ font-weight:850!important;
+ text-align:left!important;
+}
+#story-overlay.pati-story-has-source .pati-story-share-card>.pati-story-shared-source>.pati-story-source-arrow{
+ flex:0 0 auto!important;
+ font-size:19px!important;
+ line-height:1!important;
+}
+@media(max-width:500px){
+ #story-overlay.pati-story-has-source .pati-story-share-card>.pati-story-shared-source{
+  min-height:44px!important;
+  margin:9px!important;
+  width:calc(100% - 18px)!important;
+  max-width:calc(100% - 18px)!important;
+ }
+}
+
+/* patiyiz-story-upload-age-20261031.css */
+/* Compact Instagram-style story age beside username.
+   Applies to photo, video, reposted post and Reels stories. */
+#story-overlay .story-player-head .pati-story-owner-name{
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:flex-start!important;
+ min-width:0!important;
+ flex:1 1 auto!important;
+ max-width:100%!important;
+ gap:4px!important;
+}
+#story-overlay .story-player-head .pati-story-owner-top{
+ display:flex!important;
+ flex-direction:row!important;
+ align-items:center!important;
+ gap:8px!important;
+ width:100%!important;
+ max-width:100%!important;
+ min-width:0!important;
+ line-height:1.3!important;
+}
+#story-overlay .story-player-head .pati-story-owner-top>strong{
+ flex:0 1 auto!important;
+ display:inline-block!important;
+ width:auto!important;
+ min-width:0!important;
+ max-width:100%!important;
+ overflow:hidden!important;
+ text-overflow:ellipsis!important;
+ white-space:nowrap!important;
+ color:#fff!important;
+ -webkit-text-fill-color:#fff!important;
+ opacity:1!important;
+}
+#story-overlay .story-player-head .pati-story-upload-age{
+ display:inline-block!important;
+ position:relative!important;
+ z-index:1!important;
+ flex:0 0 auto!important;
+ max-width:80px!important;
+ white-space:nowrap!important;
+ font-family:inherit!important;
+ font-size:11px!important;
+ line-height:1.4!important;
+ font-weight:650!important;
+ letter-spacing:0!important;
+ color:#f1f2f5!important;
+ -webkit-text-fill-color:#f1f2f5!important;
+ opacity:1!important;
+ background:rgba(0,0,0,.32)!important;
+ border-radius:6px!important;
+ padding:2px 5px!important;
+ text-shadow:0 1px 3px #0009!important;
+ user-select:none;
+}
+@media(max-width:420px){
+ #story-overlay .story-player-head .pati-story-owner-top{gap:5px!important}
+ #story-overlay .story-player-head .pati-story-upload-age{font-size:10px!important;padding:2px 4px!important}
+}
+
+/* patiyiz-home-feed-compact-20261031.css */
+/* 2026-10-31 — Mobile home-feed spacing.
+   Keep Patiyiz styling, story rings and native media ratios intact.
+   Only the home timeline (with its two feed tabs) is affected. */
+@media (max-width:740px) {
+  /* The tab switch stays comfortably tappable, without a tall empty panel. */
+  #main-content:has(>.pati-home-feed-tabs)>.pati-home-feed-tabs {
+    gap:6px!important;
+    margin:6px 9px 4px!important;
+    padding-bottom:4px!important;
+  }
+  #main-content:has(>.pati-home-feed-tabs)>.pati-home-feed-tabs>button {
+    box-sizing:border-box;
+    min-height:44px!important;
+    padding:9px 6px!important;
+    font-size:13px!important;
+    line-height:1.2!important;
+  }
+
+  /* The story strip sits right above the first post, as in a compact feed.
+     Do not resize the story avatar or reposition its plus badge. */
+  #main-content:has(>.pati-home-feed-tabs)>.stories-section {
+    box-sizing:border-box!important;
+    margin:0!important;
+    padding:7px 9px 5px!important;
+    border-top:0!important;
+    border-bottom:1px solid var(--pui-border,#e9e9ec)!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+  }
+  #main-content:has(>.pati-home-feed-tabs)>.stories-section .stories-strip {
+    gap:13px!important;
+    margin:0!important;
+    padding:4px 2px 5px!important;
+    scroll-padding-inline:8px;
+  }
+  #main-content:has(>.pati-home-feed-tabs)>.stories-section .story-person {
+    gap:5px!important;
+  }
+  #main-content:has(>.pati-home-feed-tabs)>.stories-section .story-person small {
+    margin:0!important;
+    line-height:1.25!important;
+  }
+
+  /* Zero artificial separator height above the first post. */
+  #main-content:has(>.pati-home-feed-tabs)>.pati-feed-posts {
+    margin-top:0!important;
+    padding-top:0!important;
+  }
+  #main-content:has(>.pati-home-feed-tabs)>.pati-feed-posts>.pati-feed-card:first-child {
+    margin-top:0!important;
+  }
+}
+
+
+/* Instagram-style feed chooser: screen opens directly on stories + posts.
+   Only mobile timeline, brand and menu are affected. */
+@media (max-width:740px) {
+  #main-content > .pati-home-feed-tabs {
+    display:none!important;
+  }
+  #main-content:has(>.pati-home-feed-tabs)>.stories-section {
+    margin:0!important;
+    padding:6px 9px 5px!important;
+  }
+  #main-content:has(>.pati-home-feed-tabs)>.pati-feed-posts {
+    margin:0!important;
+    padding:0!important;
+  }
+  #app-root:not(.hidden)>.mobile-header {
+    overflow:visible!important;
+  }
+  #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger {
+    appearance:none!important;
+    -webkit-appearance:none!important;
+    pointer-events:auto!important;
+    cursor:pointer!important;
+    background:transparent!important;
+    border:0!important;
+    box-shadow:none!important;
+    color:inherit!important;
+    font:inherit!important;
+    -webkit-tap-highlight-color:transparent;
+  }
+  #pati-feed-menu-trigger::after {
+    content:"";
+    position:absolute;
+    top:calc(50% - 4px);
+    right:-12px;
+    width:7px;
+    height:7px;
+    border-right:2px solid currentColor;
+    border-bottom:2px solid currentColor;
+    transform:rotate(45deg);
+    pointer-events:none;
+  }
+  #pati-feed-menu-trigger[aria-expanded="true"]::after {
+    transform:translateY(3px) rotate(225deg);
+  }
+  #app-root:not(.hidden)>.mobile-header>.pati-feed-menu {
+    position:absolute;
+    z-index:200;
+    top:calc(100% + 7px);
+    left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    flex-direction:column;
+    box-sizing:border-box;
+    width:min(286px,calc(100vw - 24px));
+    padding:7px;
+    border-radius:19px;
+    border:1px solid rgba(255,255,255,.22);
+    color:#fff;
+    background:rgba(33,35,42,.94);
+    box-shadow:0 14px 38px rgba(0,0,0,.26);
+    -webkit-backdrop-filter:blur(18px);
+    backdrop-filter:blur(18px);
+  }
+  #app-root:not(.hidden)>.mobile-header>.pati-feed-menu[hidden] {
+    display:none!important;
+  }
+  #app-root:not(.hidden)>.mobile-header>.pati-feed-menu>button {
+    appearance:none;
+    display:flex;
+    align-items:center;
+    gap:13px;
+    width:100%;
+    min-height:53px;
+    padding:11px 12px;
+    border:0;
+    border-radius:12px;
+    background:transparent;
+    color:inherit!important;
+    font:inherit;
+    font-size:14px;
+    font-weight:650;
+    text-align:left;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  #app-root:not(.hidden)>.mobile-header>.pati-feed-menu>button:active,
+  #app-root:not(.hidden)>.mobile-header>.pati-feed-menu>button[aria-checked="true"] {
+    background:rgba(255,255,255,.13);
+  }
+  #app-root:not(.hidden)>.mobile-header>.pati-feed-menu>button .icon {
+    display:block;
+    width:23px;
+    height:23px;
+    flex:none;
+    color:#fff!important;
+    stroke:currentColor!important;
+    fill:none;
+  }
+  #app-root:not(.hidden)>.mobile-header>.pati-feed-menu>button .pati-feed-menu-label {
+    flex:1;
+    min-width:0;
+  }
+  #app-root:not(.hidden)>.mobile-header>.pati-feed-menu>button .pati-feed-selected {
+    visibility:hidden;
+    font-size:17px;
+    font-weight:800;
+    color:#fff;
+  }
+  #app-root:not(.hidden)>.mobile-header>.pati-feed-menu>button[aria-checked="true"] .pati-feed-selected {
+    visibility:visible;
+  }
+  #pati-feed-menu-trigger:focus-visible,
+  #app-root:not(.hidden)>.mobile-header>.pati-feed-menu>button:focus-visible {
+    outline:2px solid #9ebafc!important;
+    outline-offset:2px;
+  }
+}
+
+/* patiyiz-saved-priority-20261031.css */
+/* Patiyiz saved library • Instagram-inspired clean, three-column grid.
+   Works in both light and dark appearance; affects only the Saved route. */
+#main-content > .pati-saved-screen {
+  --save-paper:#ffffff;
+  --save-ink:#15171b;
+  --save-muted:#747982;
+  --save-line:#e8e9ed;
+  --save-chip:#f2f3f5;
+  display:block!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-height:55vh;
+  padding:0 0 calc(92px + env(safe-area-inset-bottom,0px))!important;
+  margin:0!important;
+  background:var(--save-paper)!important;
+  color:var(--save-ink)!important;
+  overflow:hidden!important;
+}
+html[data-pati-theme="dark"] #main-content > .pati-saved-screen {
+  --save-paper:#0b1014;
+  --save-ink:#fafafa;
+  --save-muted:#aeb3bd;
+  --save-line:#222a30;
+  --save-chip:#252b31;
+}
+#main-content .pati-saved-page-header {
+  display:grid!important;
+  grid-template-columns:48px 1fr 48px!important;
+  align-items:center!important;
+  min-height:64px!important;
+  margin:0!important;
+  padding:8px 11px!important;
+  border:0!important;
+  border-bottom:1px solid var(--save-line)!important;
+  border-radius:0!important;
+  background:var(--save-paper)!important;
+  color:var(--save-ink)!important;
+  box-sizing:border-box!important;
+}
+#main-content .pati-saved-page-header h1 {
+  font-size:19px!important;
+  font-weight:800!important;
+  text-align:center!important;
+  line-height:1.2!important;
+  letter-spacing:-.35px!important;
+  margin:0!important;
+  color:var(--save-ink)!important;
+}
+#main-content .pati-saved-back {
+  display:grid!important;
+  place-items:center!important;
+  width:44px!important;
+  height:44px!important;
+  margin:0!important;
+  padding:8px!important;
+  border:0!important;
+  background:transparent!important;
+  color:var(--save-ink)!important;
+  cursor:pointer!important;
+}
+#main-content .pati-saved-back svg{width:28px!important;height:28px!important;stroke:currentColor!important}
+#main-content .pati-saved-filters {
+  display:flex!important;
+  align-items:center!important;
+  flex-wrap:nowrap!important;
+  gap:7px!important;
+  width:100%!important;
+  padding:12px 12px 9px!important;
+  margin:0!important;
+  overflow-x:auto!important;
+  scroll-snap-type:x proximity;
+  scrollbar-width:none!important;
+  background:var(--save-paper)!important;
+  box-sizing:border-box!important;
+}
+#main-content .pati-saved-filters::-webkit-scrollbar{display:none}
+#main-content .pati-saved-filter {
+  display:inline-flex!important;
+  justify-content:center!important;
+  align-items:center!important;
+  flex:0 0 auto!important;
+  gap:6px!important;
+  box-sizing:border-box!important;
+  min-width:64px!important;
+  min-height:42px!important;
+  padding:9px 13px!important;
+  margin:0!important;
+  border:1px solid var(--save-line)!important;
+  border-radius:99px!important;
+  background:var(--save-paper)!important;
+  color:var(--save-ink)!important;
+  font-family:inherit!important;
+  font-size:12px!important;
+  font-weight:750!important;
+  line-height:1.1!important;
+  white-space:nowrap!important;
+  cursor:pointer!important;
+}
+#main-content .pati-saved-filter.active {
+  background:var(--save-chip)!important;
+  border-color:var(--save-chip)!important;
+}
+#main-content .pati-saved-color-dot {
+  display:inline-block!important;
+  flex:0 0 auto!important;
+  width:10px!important;
+  height:10px!important;
+  border-radius:50%!important;
+  box-shadow:0 0 0 1px #00000012!important;
+}
+.pati-saved-color-dot.green,#main-content .pati-saved-tile[data-importance="green"] .pati-saved-level>span{background:#24ac64!important}
+.pati-saved-color-dot.orange,#main-content .pati-saved-tile[data-importance="orange"] .pati-saved-level>span{background:#f39a22!important}
+.pati-saved-color-dot.red,#main-content .pati-saved-tile[data-importance="red"] .pati-saved-level>span{background:#ee4650!important}
+#main-content .pati-saved-subhead{
+  display:flex!important;
+  justify-content:space-between!important;
+  align-items:center!important;
+  gap:10px!important;
+  min-height:54px!important;
+  margin:0!important;
+  padding:7px 14px 8px!important;
+  box-sizing:border-box!important;
+  background:var(--save-paper)!important;
+}
+#main-content .pati-saved-subhead h2 {
+  margin:0!important;
+  font-size:17px!important;
+  line-height:1.2!important;
+  font-weight:800!important;
+  color:var(--save-ink)!important;
+}
+#main-content .pati-saved-subhead>span {
+  color:var(--save-muted)!important;
+  font-size:12px!important;
+  font-weight:650!important;
+}
+#main-content .pati-saved-grid {
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:2px!important;
+  width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  background:var(--save-line)!important;
+  box-sizing:border-box!important;
+}
+#main-content .pati-saved-tile {
+  display:block!important;
+  position:relative!important;
+  isolation:isolate;
+  min-width:0!important;
+  width:100%!important;
+  aspect-ratio:1/1.36!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:#1b2026!important;
+  overflow:hidden!important;
+}
+#main-content .pati-saved-tile-open {
+  position:absolute!important;
+  inset:0!important;
+  display:block!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  height:100%!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:#22272d!important;
+  color:white!important;
+  cursor:pointer!important;
+}
+#main-content .pati-saved-tile-open>img,
+#main-content .pati-saved-tile-open>video {
+  display:block!important;
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  border:0!important;
+  border-radius:0!important;
+  margin:0!important;
+  pointer-events:none!important;
+}
+#main-content .pati-saved-text-tile{
+  display:grid!important;
+  position:absolute!important;
+  inset:0!important;
+  place-items:center!important;
+  padding:10px!important;
+  background:linear-gradient(145deg,#373d49,#17191e)!important;
+  color:#fff!important;
+  text-align:center!important;
+  font-size:clamp(10px,2.6vw,15px)!important;
+  font-weight:750!important;
+  line-height:1.4!important;
+  overflow:hidden!important;
+  word-break:break-word!important;
+}
+#main-content .pati-saved-kind{
+  position:absolute!important;
+  z-index:2!important;
+  top:8px!important;
+  right:9px!important;
+  display:grid!important;
+  place-items:center!important;
+  min-width:19px!important;
+  height:19px!important;
+  font-size:14px!important;
+  font-weight:900!important;
+  text-shadow:0 1px 4px #000c!important;
+  color:#fff!important;
+  pointer-events:none!important;
+}
+#main-content .pati-saved-level {
+  position:absolute!important;
+  z-index:3!important;
+  right:5px!important;
+  bottom:5px!important;
+  display:grid!important;
+  place-items:center!important;
+  width:34px!important;
+  height:34px!important;
+  padding:0!important;
+  border:1px solid #ffffff75!important;
+  border-radius:50%!important;
+  background:#111b!important;
+  box-shadow:0 2px 8px #0008!important;
+  cursor:pointer!important;
+}
+#main-content .pati-saved-level>span {
+  display:block!important;
+  width:14px!important;
+  height:14px!important;
+  border-radius:50%!important;
+  border:1px solid #fff7!important;
+}
+#main-content .pati-saved-hint {
+  font-size:12px!important;
+  line-height:1.5!important;
+  margin:0!important;
+  padding:18px 15px!important;
+  color:var(--save-muted)!important;
+  text-align:center!important;
+}
+#main-content .pati-saved-empty {
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:9px!important;
+  min-height:225px!important;
+  padding:25px!important;
+  text-align:center!important;
+  color:var(--save-muted)!important;
+}
+#main-content .pati-saved-empty svg{
+  width:40px!important;
+  height:40px!important;
+  color:var(--save-muted)!important;
+  stroke:currentColor!important;
+}
+#main-content .pati-saved-empty p {
+  color:var(--save-ink)!important;
+  margin:0!important;
+  font-size:14px!important;
+  font-weight:750!important;
+}
+#main-content .pati-saved-empty small {
+  color:var(--save-muted)!important;
+  font-size:12px!important;
+  line-height:1.5!important;
+}
+.pati-saved-choice-overlay {
+  position:fixed!important;
+  inset:0!important;
+  z-index:2000!important;
+  display:flex!important;
+  align-items:flex-end!important;
+  justify-content:center!important;
+  box-sizing:border-box!important;
+  color:#181a1e!important;
+}
+.pati-saved-choice-scrim {
+  position:absolute!important;
+  inset:0!important;
+  background:#090a0cc2!important;
+}
+.pati-saved-choice-panel {
+  position:relative!important;
+  display:block!important;
+  width:min(100%,500px)!important;
+  max-height:80dvh!important;
+  padding:17px 14px calc(16px + env(safe-area-inset-bottom,0px))!important;
+  background:#fff!important;
+  color:#181a1e!important;
+  border-radius:24px 24px 0 0!important;
+  box-shadow:0 -8px 35px #0003!important;
+  overflow:auto!important;
+  box-sizing:border-box!important;
+}
+.pati-saved-choice-panel header{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+}
+.pati-saved-choice-panel h2{margin:0!important;font-size:20px!important;color:#15171b!important}
+.pati-saved-choice-panel header button{
+  width:40px!important;height:40px!important;
+  background:#f0f0f2!important;color:#222!important;
+  border:0!important;border-radius:50%!important;
+  font-size:25px!important;cursor:pointer!important;
+}
+.pati-saved-choice-panel>p{
+  margin:2px 0 13px!important;
+  color:#6a6f78!important;font-size:13px!important;line-height:1.4!important;
+}
+.pati-saved-choice-panel .pati-saved-choice-row{
+  display:flex!important;
+  align-items:center!important;
+  width:100%!important;
+  min-height:66px!important;
+  padding:9px 11px!important;
+  gap:12px!important;
+  border:1px solid #e8eaee!important;
+  border-radius:13px!important;
+  margin:7px 0!important;
+  background:#fff!important;
+  color:#17191e!important;
+  font-family:inherit!important;
+  text-align:left!important;
+  cursor:pointer!important;
+}
+.pati-saved-choice-panel .pati-saved-choice-row[aria-pressed="true"] {
+  background:#f4f5f7!important;border-color:#bec2c8!important;
+}
+.pati-saved-choice-row .pati-saved-color-dot{width:18px!important;height:18px!important}
+.pati-saved-choice-row span{display:flex!important;flex:1!important;flex-direction:column!important;gap:4px!important}
+.pati-saved-choice-row strong{color:#17191e!important;font-size:14px!important}
+.pati-saved-choice-row small{color:#696e78!important;font-size:12px!important}
+.pati-saved-choice-row b{color:#1b1e25!important;font-size:18px!important}
+.pati-saved-choice-row:disabled{opacity:.6!important;cursor:progress!important}
+#main-content .pati-saved-screen button:focus-visible,
+.pati-saved-choice-panel button:focus-visible{outline:2px solid #397af4!important;outline-offset:2px}
+@media(max-width:740px){
+  /* Hide the global (+/coin/menu) header on Saved ONLY.
+     The saved screen owns its centered title and back action. */
+  #app-root:not(.hidden):has(#main-content > .pati-saved-screen) > .mobile-header {
+    display:none!important;
+  }
+  #app-root:not(.hidden):has(#main-content > .pati-saved-screen) > .app-shell {
+    padding-top:env(safe-area-inset-top,0px)!important;
+    margin-top:0!important;
+  }
+  #app-root:not(.hidden):has(#main-content > .pati-saved-screen) > .app-shell > .main {
+    padding:0!important;margin:0!important;
+    width:100%!important;max-width:100%!important;
+  }
+  #main-content .pati-saved-page-header {
+    position:sticky!important;
+    top:env(safe-area-inset-top,0px)!important;
+    z-index:5!important;
+  }
+  #main-content .pati-saved-filter {min-height:40px!important;padding:9px 12px!important}
+}
+
