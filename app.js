@@ -6540,6 +6540,11 @@ async function togglePostSave(id){
    btn.title=stored?'Kaydedildi':'Kaydet';
   });
   notify(stored?'Gönderi kaydedildi. Kaydettiklerim bölümünde bulabilirsin.':'Gönderi kayıtlardan kaldırıldı.');
+  if(stored && window.PatiyizSavedV2 && view!=='saved-posts'){
+   window.PatiyizSavedV2.choose(id,{
+    data,me,saved,blocked,sb,navigate,openPost,fetchMissingSavedPosts,notify,rerender:render
+   });
+  }
   if(view==='saved-posts')render();
  }catch(e){
   console.warn('Kaydetme sunucu onayı:',e);
