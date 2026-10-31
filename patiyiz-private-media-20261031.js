@@ -62,12 +62,16 @@
  }
  function clear(){cache.clear();owner='';lastRefresh=0;}
  function onRefresh(cb){refreshCallback=cb;}
- // Refresh after prior links expire without saving bearer links in persistent storage.
- if(global.document&&global.setInterval)global.setInterval(async()=>{
-  if(global.document.hidden||!refreshCallback||refreshBusy||!cache.size)return;
-  if(Date.now()-lastRefresh<240000)return;
+ // Refresh expiring links; mobile webviews can stay suspended for a long time.
+ async function refreshSignedMedia(force=false){
+  if(!refreshCallback||refreshBusy||!cache.size||global.document?.hidden)return;
+  if(!force&&Date.now()-lastRefresh<240000)return;
   lastRefresh=Date.now();refreshBusy=true;cache.clear();
   try{await refreshCallback()}catch(e){console.warn('Özel medya yenilenemedi.')}finally{refreshBusy=false}
- },60000);
+ }
+ if(global.document&&global.setInterval)
+  global.setInterval(()=>{void refreshSignedMedia()},60000);
+ if(global.document?.addEventListener)
+  global.document.addEventListener('visibilitychange',()=>{if(!global.document.hidden)void refreshSignedMedia(true)});
  global.PatiyizPrivateMedia={bucket,prefix,marker,getPath,upload,hydrateRows,clear,onRefresh};
 })(window);
