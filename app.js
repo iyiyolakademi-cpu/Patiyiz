@@ -370,8 +370,8 @@ function refreshOnReturn(){
 }
 async function markConversationRead(){
  // Mark seen only when the conversation is actually visible.
- if(!me||view!=='messages'||!personId||document.hidden)return;
- if(window.matchMedia?.('(max-width:740px)').matches&&!mobileChatOpen)return;
+ if(!me||view!=='messages'||!personId||(typeof document!=='undefined'&&document.hidden))return;
+ if(typeof window!=='undefined'&&window.matchMedia?.('(max-width:740px)').matches&&!mobileChatOpen)return;
  const unread=data.messages.filter(x=>x.sender_id===personId&&x.receiver_id===me.id&&!x.read_at&&!patiDmSeenIds().has(x.id));
  const backendUnread=typeof patiDmInbox!=='undefined'&&patiDmReadReceiptsEnabled()?(patiDmInbox.rows.find(x=>x.peer_id===personId)?.unread_count||0):0;
  if(!unread.length&&!backendUnread)return;
@@ -660,7 +660,7 @@ function setupFeedVideos(){
  if(patiyizFeedActiveVideo){patiyizFeedActiveVideo.pause();patiyizFeedActiveVideo=null}
  const videos=[...document.querySelectorAll('#main-content .pati-video-frame video')];
  if(!videos.length)return;
- videos.forEach(video=>{video.preload='none';video.setAttribute('playsinline','');});
+ videos.forEach(video=>{video.preload='none';video.setAttribute?.('playsinline','');});
  const native=typeof window!=='undefined'&&window.PatiyizNative?.isNative===true;
  const iosHome=typeof document!=='undefined'&&document.documentElement?.classList?.contains('patiyiz-ios-reels');
  const permitted=()=>!document.hidden&&!document.getElementById?.('story-overlay')&&!(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches&&!native&&!iosHome);
@@ -1736,12 +1736,12 @@ function setupReelsViewer(){
  },{root:viewport,rootMargin:'70% 0px 70% 0px',threshold:[0,.25,.65,.9]});
  videos.forEach(v=>{
   // The poster remains visible while the active video loads or buffers.
-  const item=v.closest('.pati-reel-item');
-  if(item&&!item.querySelector('.pati-reel-buffering')){
+  const item=v.closest?.('.pati-reel-item');
+  if(item&&typeof item.querySelector==='function'&&typeof item.insertAdjacentHTML==='function'&&!item.querySelector('.pati-reel-buffering')){
    item.insertAdjacentHTML('beforeend','<div class="pati-reel-buffering" role="status" aria-live="polite" hidden><span class="pati-reel-spinner" aria-hidden="true"></span><span class="pati-reel-loading-label">Video yükleniyor…</span><progress value="0" max="100" aria-label="Video yükleme ilerlemesi"></progress></div>');
   }
-  const indicator=item?.querySelector('.pati-reel-buffering');
-  const progress=indicator?.querySelector('progress');
+  const indicator=item?.querySelector?.('.pati-reel-buffering');
+  const progress=indicator?.querySelector?.('progress');
   const busy=state=>{if(indicator)indicator.hidden=!state};
   const updateBuffer=()=>{
    if(!progress||!Number.isFinite(v.duration)||v.duration<=0||!v.buffered?.length)return;
@@ -1752,7 +1752,7 @@ function setupReelsViewer(){
   v.addEventListener('canplay',()=>busy(false));
   v.addEventListener('progress',updateBuffer);
   v.addEventListener('loadedmetadata',updateBuffer);
-  v.addEventListener('error',()=>{busy(true);const label=indicator?.querySelector('.pati-reel-loading-label');if(label)label.textContent='Video açılamadı'});
+  v.addEventListener('error',()=>{busy(true);const label=indicator?.querySelector?.('.pati-reel-loading-label');if(label)label.textContent='Video açılamadı'});
   if(typeof patiWatchReelAttach==='function')patiWatchReelAttach(v);
   patiyizReelsObserver.observe(v);
   const range=v.closest?.('.pati-reel-item')?.querySelector?.('[data-action="reel-seek"]');
@@ -2160,7 +2160,7 @@ function homePage(){
  +(following&&patiFollowingState.ready&&patiFollowingState.hasMore?'<div class="pati-load-more">'+button('Daha fazla paylaşım yükle','home-following-more')+'</div>':'')
  +(pageMore.posts&&!following&&!((typeof patiHomeLoadError!=='undefined'&&patiHomeLoadError))&&
   patiyizLoadedTables.has('posts')?'<div class="pati-load-more">'+button('Daha fazla paylaşım yükle','load-more','data-id="posts"')+'</div>':'')+'</div>';
- const shortcut=document.getElementById('pati-header-following-btn');
+ const shortcut=typeof document!=='undefined'?document.getElementById('pati-header-following-btn'):null;
  if(shortcut){shortcut.textContent=following?'Senin İçin':'Takip Ettiklerim';shortcut.dataset.id=following?'all':'following';shortcut.setAttribute('aria-pressed',String(following));}
  if(typeof patiSyncHomePostCounts==='function')void patiSyncHomePostCounts(selectedPostId?list.filter(p=>p.id===selectedPostId):visiblePosts);
 }
@@ -6522,7 +6522,8 @@ function composeCare(a){
  form.querySelector('[name="title"]').maxLength=110;
  form.querySelector('.modal-footer button[type="submit"]').textContent=a?'Değişiklikleri kaydet':'Görev ekle';
 }
-function careValidateRecord(record,editId=''){
+function careValidateRecord(record){
+ const editId=typeof arguments[1]==='string'?arguments[1]:'';
  if(record.title.length<2||record.title.length>110)throw Error('Görev adı 2–110 karakter arasında olmalı.');
  if(!CARE_CATEGORIES.includes(record.category))throw Error('Geçerli bakım kategorisi seç.');
  if(!careDateValid(record.due_date))throw Error('Geçerli görev tarihi seç.');
