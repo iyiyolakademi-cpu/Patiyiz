@@ -1070,9 +1070,14 @@ function postCard(p,priority=false){
  const indexed=typeof patiPostRenderStats!=='undefined'&&patiPostRenderStats;
  const collaborator=typeof patiCollabAccepted==='function'?patiCollabAccepted(p.id):null;
  const own=p.author_id===me.id,commentCount=indexed?(indexed.get(p.id)?.comments||0):data.comments.filter(x=>x.post_id===p.id&&!blocked.has(x.author_id)).length,count=indexed?(indexed.get(p.id)?.likes||0):data.likes.filter(x=>x.post_id===p.id).length,pet=data.pets.find(x=>x.id===p.pet_id);
- const images=(p.images?.length?p.images:[p.image_url]).filter(Boolean),hasMedia=!!(images.length||p.video_url||p.media_videos?.length),isPriority=priority===true,body=String(p.body||'').trim();
- const multiVideos=Array.isArray(p.media_videos)?[...new Set(p.media_videos.filter(Boolean))]:[];
- const defaultVideo=p.video_url||multiVideos[0]||'';
+ const privateUnresolved=[p.image_url,p.video_url,...(p.images||[]),...(p.media_videos||[])].some(x=>patiPrivateMediaPath(x));
+ if(privateUnresolved&&!p._patiPrivateResolving){
+  p._patiPrivateResolving=true;
+  void patiHydratePrivatePosts([p]).then(()=>{if(me&&view)render()}).finally(()=>{p._patiPrivateResolving=false});
+ }
+ const images=(p.images?.length?p.images:[p.image_url]).filter(Boolean).filter(x=>!patiPrivateMediaPath(x)),hasMedia=!!(images.length||p.video_url||p.media_videos?.length),isPriority=priority===true,body=String(p.body||'').trim();
+ const multiVideos=Array.isArray(p.media_videos)?[...new Set(p.media_videos.filter(x=>x&&!patiPrivateMediaPath(x)))]:[];
+ const defaultVideo=(patiPrivateMediaPath(p.video_url)?'':p.video_url)||multiVideos[0]||'';
  const feedAudible=(typeof patiyizFeedSoundEnabled==='boolean'&&patiyizFeedSoundEnabled);
  const defaultMedia=defaultVideo?'<div class="pati-video-frame"><video class="pati-post-video'+(p.selfie_mirrored?' pati-selfie-mirrored':'')+'" playsinline webkit-playsinline'+(feedAudible?'':' muted')+' loop preload="none"'+(p.video_cover_url?' poster="'+esc(p.video_cover_url)+'"':'')+' data-pati-video-src="'+esc(defaultVideo)+'" aria-label="Paylaşım videosu"></video><button type="button" class="pati-video-sound" data-action="video-sound" aria-label="'+(feedAudible?'Sesi kapat':'Sesi aç')+'" aria-pressed="'+feedAudible+'">'+ico(feedAudible?'volume':'volume-x')+'</button></div>':
  images.length?'<div class="pati-carousel" data-post-id="'+esc(p.id)+'"><div class="pati-carousel-track">'+images.map((url,i)=>'<div class="pati-carousel-slide pati-doubletap-photo" data-post-id="'+esc(p.id)+'">'+photo(url,'🐾',isPriority&&i===0)+'<span class="pati-heart-burst" aria-hidden="true">♥</span></div>').join('')+'</div>'+(images.length>1?'<span class="pati-carousel-count">1 / '+images.length+'</span><button type="button" data-action="carousel-prev" class="pati-carousel-arrow prev" aria-label="Önceki fotoğraf">‹</button><button type="button" data-action="carousel-next" class="pati-carousel-arrow next" aria-label="Sonraki fotoğraf">›</button>':'')+'</div>':'';
