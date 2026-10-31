@@ -37,7 +37,7 @@ test('PatiCoin card is balanced with edit action and still uses live rewards rou
  assert.match(profile,/Profili düzenle/);
  assert.match(profile,/pati-profile-coin-icon/);
  assert.match(profile,/pati-profile-coin-copy/);
- assert.match(profile,/PatiCoin bakiyen/);
+ assert.match(profile,/Bakiyen/);
  assert.match(profile,/id="pati-profile-balance"/);
  assert.match(profile,/data-action="paticoin-rewards"/);
  assert.match(app,/profileBalance\.textContent=Number\(patiCoinState\.balance/);
