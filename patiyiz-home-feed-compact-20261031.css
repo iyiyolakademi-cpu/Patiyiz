@@ -169,3 +169,19 @@
     outline-offset:2px;
   }
 }
+
+
+/* Patiyiz 2026-10-31: accessible care shortcuts, lost city opt-in and mission progress */
+.pati-city-alert{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:16px 0;padding:17px;border:1px solid var(--border,#dedee1);border-radius:16px;background:var(--paper,#fff);color:var(--ink,#202127)}
+.pati-city-alert strong{font-size:14px}.pati-city-alert p{margin:6px 0 0;color:var(--muted,#666);font-size:12px;line-height:1.5}
+.pati-city-alert button{flex-shrink:0;border:1px solid currentColor;border-radius:12px;background:var(--ink,#202127);color:var(--paper,#fff);padding:10px 12px;font-weight:700;font-size:12px}
+.pati-city-alert button[aria-pressed="true"]{background:transparent;color:inherit}
+.pati-city-alert button:disabled{opacity:.6;cursor:not-allowed}
+.pati-care-quick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:15px 0 18px}
+.pati-care-quick button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:88px;padding:10px 6px;border:1px solid var(--border,#dedee1);background:var(--paper,#fff);color:var(--ink,#202127);border-radius:14px}
+.pati-care-quick button span{font-size:22px}.pati-care-quick button strong{font-size:12px}.pati-care-quick button small{font-size:10px;color:var(--muted,#666);text-align:center}
+.pati-mission-progress{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0;padding:0}
+.pati-mission-progress>div{border-radius:14px;padding:14px;border:1px solid var(--border,#dedee1);background:var(--paper,#fff);color:var(--ink,#202127)}
+.pati-mission-progress strong,.pati-mission-progress span{display:block;font-size:12px}.pati-mission-progress span{margin:4px 0 8px;color:var(--muted,#666)}
+.pati-mission-progress progress{display:block;width:100%;height:9px;accent-color:var(--ink,#202127)}
+@media(max-width:600px){.pati-city-alert{align-items:stretch;flex-direction:column}.pati-city-alert button{align-self:stretch}.pati-care-quick{grid-template-columns:repeat(2,minmax(0,1fr))}.pati-mission-progress{grid-template-columns:1fr}}
