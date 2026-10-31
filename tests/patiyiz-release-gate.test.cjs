@@ -10,7 +10,9 @@ test('Release audit produces structured evidence without changing live data',()=
  const report=JSON.parse(run.stdout);
  assert.equal(report.ready,false);
  assert.ok(report.total>=12);
- assert.ok(report.blocked.some(x=>x.name.includes('support contacts')));
+ assert.equal(report.checks.find(x=>x.name==='Legal operator name and email documented')?.passed,true);
+ assert.equal(report.checks.find(x=>x.name==='Legal contact consistent in terms and deletion')?.passed,true);
+ assert.ok(report.blocked.some(x=>x.name.includes('support_contact_and_data_controller_legal_review')));
  assert.ok(report.blocked.some(x=>x.name.includes('private_media_two_account_negative_test')));
  assert.ok(report.checks.find(x=>x.name.includes('private-media helper')).passed);
  assert.ok(report.checks.find(x=>x.name.includes('Private content migration')).passed);
