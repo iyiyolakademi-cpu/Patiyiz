@@ -42,7 +42,7 @@ test('Topluluk: soru, kategori, oy, cevap ve bildir eylemleri korunur',()=>{
  assert.match(s,/data-action="vote-negative"/);
  const replies=part('function questionReplies(id){','/* Never display');
  assert.match(replies,/community-replies-more/);
- assert.match(replies,/const previous=\$\('#reply-form'\)/);
+ assert.match(replies,/const previous=(?:\$\('#reply-form'\)|document\.getElementById\('reply-form'\))/);
  assert.match(s,/case 'community-more':void patiLoadCommunity\(\)/);
  assert.match(s,/case 'replies':questionReplies\(id\);void patiLoadQuestionReplies\(id\)/);
  assert.match(s,/case 'community-filter':communityCategory=id;render\(\);void patiLoadCommunity\(true\)/);
