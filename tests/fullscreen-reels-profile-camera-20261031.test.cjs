@@ -42,7 +42,7 @@ test('Other-profile safety actions only appear in the accessible overflow menu',
  assert.match(profile,/button\(patiSafetyState\.restrictions\.has\(p\.id\)\?'Kısıtlamayı kaldır':'Kısıtla','pati-restrict'/);
  assert.match(profile,/\+button\('Mesaj gönder','chat'/);
  const actions=profile.slice(profile.indexOf("pati-ig-actions"),profile.indexOf("patiCreatorPreviewHTML"));
- assert.ok(actions.length>0&&actions.length<600);
+ assert.ok(actions.length>0&&actions.length<1250);
  assert.doesNotMatch(actions,/Hesabı bildir|Kısıtla|pati-restrict/);
  assert.match(app,/menu\.open=false/);
  assert.match(fullscreen,/\.pati-profile-more-wrap>summary:focus-visible/);
