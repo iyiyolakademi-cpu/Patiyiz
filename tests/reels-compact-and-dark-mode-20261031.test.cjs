@@ -11,7 +11,7 @@ test('Reels contains five social actions and separate playback utility toolbar',
  const start=app.indexOf('function reelsPage(){'),end=app.indexOf('function closePatiCreate()',start);
  assert.ok(start>=0&&end>start);
  const source=app.slice(start,end);
- const rail=source.slice(source.indexOf("'<div class=\"pati-reel-rail\""),source.indexOf("'<div class=\"pati-reel-rail\"")+2600);
+ const rail=source.slice(source.indexOf("'<div class=\"pati-reel-rail\""),source.indexOf("'</div><div class=\"pati-reel-utility\""));
  const utility=source.slice(source.indexOf('pati-reel-utility'),source.indexOf('pati-reel-utility')+520);
  assert.match(source,/pati-reel-utility/);
  for(const action of ['like','comment','pati-repost','share-post','save'])assert.ok(rail.includes('data-action="'+action+'"'),action);
