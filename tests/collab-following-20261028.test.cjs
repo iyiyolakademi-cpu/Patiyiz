@@ -25,7 +25,8 @@ test('following feed is a real server-side query scoped to authenticated follows
  assert.match(sql,/p_before is null/);
  assert.match(sql,/c\.status='accepted'/);
  assert.match(app,/sb\.rpc\('patiyiz_following_feed'/);
- assert.match(app,/sb\.rpc\('patiyiz_following_feed'/);\n assert.doesNotMatch(app,/data-action="home-feed-tab"/);
+ assert.match(app,/sb\.rpc\('patiyiz_following_feed'/);
+ assert.doesNotMatch(app,/data-action="home-feed-tab"/);
  assert.match(app,/patiHomeTab='all';/);
  assert.match(app,/case 'home-following-more':void patiFollowingFetch\(true\)/);
 });
