@@ -556,3 +556,24 @@ html[data-pati-theme="dark"] #main-content .pati-profile-insights-preview :is(st
 @media(prefers-reduced-motion:reduce){
  #main-content :is(.pati-home-question,.pati-community-card) button:is([data-action="vote"],[data-action="vote-negative"]){transition:none!important}
 }
+
+/* Preserve visible mentions and follow controls in the light comment sheet. */
+html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .pati-mention-link{
+ color:#2377ef!important;-webkit-text-fill-color:#2377ef!important;
+}
+html[data-pati-theme="light"] #modal-root #comment-form .pati-comment-follow{
+ color:#262b33!important;-webkit-text-fill-color:#262b33!important;
+ border-color:#9ca3ae!important;
+}
+html[data-pati-theme="light"] #main-content [data-action="pati-repost"].active{
+ color:#252931!important;-webkit-text-fill-color:#252931!important;
+}
+html[data-pati-theme="light"] #main-content [data-action="pati-repost"].active .pati-repost-symbol{
+ color:#252931!important;stroke:#252931!important;
+}
+html[data-pati-theme="light"] #main-content [data-action="pati-repost"].active::after{
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+html[data-pati-theme="dark"][data-pati-view="messages"] #main-content :is(.pati-dm-top,.pati-dm-title,.chat-person-info,.pati-dm-list-row) :is(strong,small){
+ color:var(--pati-repair-text)!important;
+}
