@@ -15,7 +15,7 @@ test('Existing app, live collaborator picker and streak animation compile',()=>{
 test('Menu and desktop nav contain Seriler and selecting it renders a permanent card',()=>{
  assert.match(app,/const allowed=\[[^\]]*'streaks'/);
  assert.match(app,/\['streaks','Seriler','calendar'\]/);
- assert.match(app,/items:\[\['rewards','PatiCoin Merkezi','grid'\],\['streaks','Seriler','calendar'\]/);
+ assert.match(app,/items:\[\['rewards','Kazandığın bakiye','grid'\],\['streaks','Seriler','calendar'\]/);
  assert.match(app,/streaks:patiStreaksPage/);
  assert.match(app,/function patiStreaksPage\(\)/);
  assert.match(app,/window\.PatiyizDelight\?\.streakPanel\(\{count:days,best\},patiStreakToday\(\)\)/);
