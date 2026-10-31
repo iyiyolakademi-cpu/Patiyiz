@@ -5302,8 +5302,6 @@ function patiBindProfileLinkEditor(form){
   if(remove){event.preventDefault();remove.closest('.pati-profile-link-row')?.remove();patiUpdateProfileLinkEditor(form)}
  });
 }
-document.addEventListener('click',event=>{const menu=document.querySelector('#main-content .pati-profile-more-wrap[open]');if(menu&&!menu.contains(event.target))menu.open=false;});
-document.addEventListener('keydown',event=>{if(event.key!=='Escape')return;const menu=document.querySelector('#main-content .pati-profile-more-wrap[open]');if(menu){menu.open=false;menu.querySelector('summary')?.focus();}});
 function profilePage(){
  const p=profile(profileId||me.id),own=p.id===me.id,pets=data.pets.filter(x=>x.owner_id===p.id);
  void patiSafetyRefresh();if(!own)patiRecordProfileVisit(p.id);
@@ -8202,5 +8200,7 @@ document.addEventListener('change',event=>{
   patiTrackClientError(event.target instanceof HTMLImageElement||event.target instanceof HTMLVideoElement?'asset':'script');
  },true);
  window.addEventListener('unhandledrejection',()=>patiTrackClientError('promise'));
+document.addEventListener('click',event=>{const menu=document.querySelector('#main-content .pati-profile-more-wrap[open]');if(menu&&!menu.contains(event.target))menu.open=false;});
+document.addEventListener('keydown',event=>{if(event.key!=='Escape')return;const menu=document.querySelector('#main-content .pati-profile-more-wrap[open]');if(menu){menu.open=false;menu.querySelector('summary')?.focus();}});
  boot();
 })();
