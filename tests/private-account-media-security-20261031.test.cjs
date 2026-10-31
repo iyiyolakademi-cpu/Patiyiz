@@ -63,4 +63,6 @@ test('Pet profile pictures use the same private upload and signed read path',()=
  assert.match(app,/\['posts','stories','pets'\]\.includes\(k\)/);
  assert.match(server,/pets:\s*\[['\"]photo_url['\"]\]/);
  assert.match(server,/transformed:[^\n]+pets:\[\]/);
+ assert.match(server,/const origin=project\?new URL\(project\)\.origin:/);
+ assert.equal(init().getPath('patiyiz-private-posts:'+owner+'/22222222-2222-2222-2222-222222222222.gif'),owner+'/22222222-2222-2222-2222-222222222222.gif');
 });
