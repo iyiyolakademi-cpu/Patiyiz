@@ -18,7 +18,8 @@ const checks=[
  check('Private media fallback exists',exists('patiyiz-private-media-20261031.js')&&read('patiyiz-private-media-20261031.js').includes('createSignedUrl'),'Private media signing is missing'),
  check('Message attachment recovery is enabled',app.includes('patiDmSigningPending')&&app.includes('patiDmMediaNotice'),'Private message recovery is missing'),
  check('Data controller and support contacts are filled',/mailto:[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i.test(privacy)&&!/(Resmî başvuru iletişim bilgileri yayına çıkmadan|işletmeci iletişim bilgileri ve hukuki değerlendirme ayrıca tamamlanmalıdır)/i.test(privacy),'Privacy policy is still a draft and has no confirmed contact'),
- check('Terms specify a verified operator',!/(işletmeci bilgileriyle tamamlanmalıdır)/i.test(terms),'Terms still contain draft operator placeholders')
+ check('Terms specify a verified operator',!/(işletmeci bilgileriyle tamamlanmalıdır)/i.test(terms),'Terms still contain draft operator placeholders'),
+ check('Legal identity and contact placeholders cleared',!(/\[DOGRULANAC_/i.test(privacy)||/\[DOGRULANAC_/i.test(terms)||/\[DOGRULANAC_/i.test(read('delete-account.html'))),'Verified operator name, email and contact address still missing')
 ];
 for(const [name,value] of Object.entries(evidence.manual_gates||{}))
  checks.push(check('MANUAL '+name,value===true,'A real device/owner/legal check has not been recorded'));
