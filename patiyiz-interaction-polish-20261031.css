@@ -114,3 +114,84 @@
  #pati-create-sheet .pati-create-choice,
  #message-options-form .pati-dm-press-emojis button{transition:none!important}
 }
+
+
+/* 31 Oct follow-up: iPhone selection handles are never part of message UI. */
+#main-content .pati-dm-layout .bubble-chat[data-message-id],
+#main-content .pati-dm-layout .bubble-chat[data-message-id] *,
+#modal-root #message-options-form,
+#modal-root #message-options-form *,
+#pati-creator-dashboard,
+#pati-creator-dashboard * {
+ -webkit-user-select:none!important;
+ user-select:none!important;
+ -webkit-touch-callout:none!important;
+}
+#main-content .pati-dm-layout .bubble-chat[data-message-id]::selection,
+#pati-creator-dashboard *::selection,
+#modal-root #message-options-form *::selection{background:transparent!important;color:inherit!important}
+#modal-root #message-options-form button,
+#main-content .pati-dm-layout .bubble-chat button{touch-action:manipulation}
+#pati-creator-dashboard input,
+#pati-creator-dashboard textarea,
+#modal-root #message-options-form input,
+#modal-root #message-options-form textarea{
+ -webkit-user-select:text!important;user-select:text!important;-webkit-touch-callout:default!important;
+}
+/* Only the main feed offers the global share plus. */
+html[data-pati-view]:not([data-pati-view="home"]) #pati-header-share,
+html[data-pati-view]:not([data-pati-view="home"]) #app-root .nav-create,
+html[data-pati-view]:not([data-pati-view="home"]) #app-root .pati-desktop-action-button.primary[data-action="pati-create-open"],
+#pati-header-share[hidden],
+#app-root .nav-create[hidden]{display:none!important}
+/* Invisible open target: single tap enters the already fullscreen vertical Reels player. */
+#main-content .pati-feed-reel-card .pati-feed-reel-open{
+ inset:0!important;position:absolute!important;z-index:6!important;
+ width:100%!important;height:100%!important;border:0!important;border-radius:0!important;
+ padding:0!important;display:block!important;
+ background:transparent!important;box-shadow:none!important;
+ backdrop-filter:none!important;color:transparent!important;
+ -webkit-tap-highlight-color:transparent!important;
+}
+#main-content .pati-feed-reel-card .pati-feed-reel-open .pati-feed-reel-open-hit{display:none!important}
+#main-content .pati-feed-reel-card .pati-video-sound{
+ position:absolute!important;z-index:10!important;pointer-events:auto!important;
+}
+/* A quick, native-looking helpful / not-helpful choice, no duplicate shortcut. */
+#main-content .pati-home-question .pati-home-question-actions,
+#main-content .pati-community-card .pati-actionbar{display:flex!important;gap:8px!important;flex-wrap:wrap!important;align-items:center!important}
+#main-content .pati-home-question .pati-home-question-actions>button,
+#main-content .pati-community-card .pati-actionbar>button{
+ min-height:40px!important;border-radius:12px!important;
+ padding:8px 10px!important;line-height:1.15!important;font-size:12px!important;
+}
+#main-content .pati-home-question-actions>button[data-action="vote"],
+#main-content .pati-home-question-actions>button[data-action="vote-negative"],
+#main-content .pati-community-card .pati-actionbar>button[data-action="vote"],
+#main-content .pati-community-card .pati-actionbar>button[data-action="vote-negative"]{
+ display:inline-flex!important;align-items:center!important;gap:4px!important;
+ border:1px solid var(--border,#ddd)!important;
+ background:transparent!important;color:inherit!important;
+ font-weight:730!important;transition:background .12s,border-color .12s,transform .12s!important;
+}
+#main-content button[data-action="vote"] svg,
+#main-content button[data-action="vote-negative"] svg{width:17px!important;height:17px!important}
+#main-content .pati-home-question button[data-action="vote"].active,
+#main-content .pati-community-card button[data-action="vote"].active{
+ color:#ed444f!important;border-color:rgba(237,68,79,.35)!important;
+ background:rgba(237,68,79,.09)!important;
+}
+#main-content .pati-home-question button[data-action="vote-negative"].active,
+#main-content .pati-community-card button[data-action="vote-negative"].active{
+ color:var(--ink,#202020)!important;border-color:rgba(120,120,120,.4)!important;
+ background:rgba(128,128,128,.13)!important;
+}
+#main-content .pati-home-question button[data-action="vote"]:disabled,
+#main-content .pati-home-question button[data-action="vote-negative"]:disabled,
+#main-content .pati-community-card button[data-action="vote"]:disabled,
+#main-content .pati-community-card button[data-action="vote-negative"]:disabled{opacity:1!important}
+#main-content .pati-home-question-actions>button[data-action="replies"]{margin-left:auto!important}
+@media (prefers-reduced-motion:reduce){
+ #main-content button[data-action="vote"],
+ #main-content button[data-action="vote-negative"]{transition:none!important}
+}
