@@ -315,3 +315,244 @@ html[data-pati-theme="dark"]:not([data-pati-view="messages"]) #pati-global-back:
  animation:patiReelPlaybackFlash .15s linear both!important;
  }
 }
+
+
+/* 31 Oct Q&A, mobile and theme regression repair.
+   One final, scoped cascade rather than more global overrides. */
+html[data-pati-theme="light"]{
+ --pati-repair-panel:#fff;--pati-repair-text:#20242a;
+ --pati-repair-muted:#626b76;--pati-repair-line:#e7e9ee;
+ --pati-repair-field:#f2f4f7;--pati-repair-quote:#f7f8fa;
+}
+html[data-pati-theme="dark"]{
+ --pati-repair-panel:#1c1e24;--pati-repair-text:#f6f7f9;
+ --pati-repair-muted:#b4b9c4;--pati-repair-line:#414550;
+ --pati-repair-field:#292c35;--pati-repair-quote:#252832;
+}
+/* Both Q&A replies and post comments now use the same sheet surfaces. */
+html[data-pati-theme] #modal-root .modal.pati-instagram-comments,
+html[data-pati-theme] #modal-root .pati-instagram-comments :is(.modal-header,.modal-content,.modal-footer),
+html[data-pati-theme] #modal-root :is(#comment-form,#reply-form),
+html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) :is(.comment-list,.pati-comment-post-summary){
+ background:var(--pati-repair-panel)!important;
+ background-image:none!important;color:var(--pati-repair-text)!important;
+}
+html[data-pati-theme] #modal-root .pati-instagram-comments .modal-header,
+html[data-pati-theme] #modal-root .pati-instagram-comments .modal-footer,
+html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .pati-comment-post-summary{
+ border-color:var(--pati-repair-line)!important;
+}
+html[data-pati-theme] #modal-root .pati-instagram-comments .modal-header h2,
+html[data-pati-theme] #modal-root .pati-instagram-comments .close-modal{
+ color:var(--pati-repair-text)!important;
+}
+html[data-pati-theme] #modal-root .pati-instagram-comments .close-modal{
+ background:var(--pati-repair-field)!important;
+}
+html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .pati-comment-post-summary :is(h3,p,strong,small),
+html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .pati-comment-post-user,
+html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .pati-sheet-comment,
+html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .pati-sheet-comment :is(p,strong),
+html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .pati-comment-profile-name{
+ color:var(--pati-repair-text)!important;
+ -webkit-text-fill-color:var(--pati-repair-text)!important;
+}
+html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) :is(.pati-sheet-comment-line time,.comment-actions button,.pati-comments-empty,.pati-question-reply-summary p,.pati-comment-post-summary>small){
+ color:var(--pati-repair-muted)!important;
+ -webkit-text-fill-color:var(--pati-repair-muted)!important;
+}
+html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .comment-actions button{
+ background:none!important;border:0!important;
+ font-size:11px!important;font-weight:700!important;
+ padding:4px 0!important;min-height:28px;
+}
+html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .comment-actions{
+ display:flex!important;align-items:center!important;flex-wrap:wrap!important;
+ gap:4px 15px!important;margin:2px 0 0!important;padding:0!important;
+}
+html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .comment-list{
+ flex:1 1 auto!important;min-height:0!important;
+ overflow-y:auto!important;overscroll-behavior:contain;
+ -webkit-overflow-scrolling:touch;
+ padding:8px 14px 22px!important;
+}
+html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .pati-sheet-comment{
+ display:grid!important;grid-template-columns:35px minmax(0,1fr) 37px!important;
+ gap:0 10px!important;align-items:start!important;
+ border:0!important;margin-bottom:0!important;
+ padding:12px 2px!important;box-sizing:border-box!important;min-width:0;
+}
+html[data-pati-theme] #modal-root #reply-form .pati-question-reply-row{
+ grid-template-columns:35px minmax(0,1fr)!important;
+ margin:0!important;
+}
+html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .pati-sheet-comment-avatar .avatar{
+ width:34px!important;height:34px!important;min-width:34px!important;
+ border-radius:50%!important;object-fit:cover!important;
+}
+html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .pati-sheet-comment-main{
+ min-width:0!important;max-width:100%!important;
+}
+html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .pati-sheet-comment-line{
+ display:flex!important;flex-wrap:wrap!important;align-items:baseline!important;gap:4px 8px!important;
+}
+html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .pati-sheet-comment p{
+ margin:4px 0 5px!important;line-height:1.46!important;
+ font-size:14px!important;overflow-wrap:anywhere!important;white-space:pre-wrap;
+}
+html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .pati-comment-profile-name{
+ background:none!important;border:0!important;text-align:left!important;
+ font-size:13px!important;font-weight:800!important;min-width:0;
+ padding:0!important;overflow-wrap:anywhere!important;
+}
+html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .pati-comment-post-user{
+ display:flex;align-items:center;gap:9px;min-height:36px;margin-bottom:9px;
+}
+html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .pati-comment-post-summary{
+ flex:none!important;max-height:30%!important;overflow-y:auto!important;
+ padding:13px 16px!important;border-bottom:1px solid var(--pati-repair-line)!important;
+}
+html[data-pati-theme] #modal-root #reply-form .pati-question-reply-summary h3{
+ margin:5px 0!important;line-height:1.4!important;font-weight:800!important;
+}
+html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .pati-comment-quick{
+ display:flex!important;overflow-x:auto!important;gap:8px!important;
+ flex-wrap:nowrap!important;scrollbar-width:none!important;
+}
+html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .pati-comment-quick>button{
+ flex:0 0 35px!important;min-width:35px!important;min-height:35px!important;
+ border:0!important;background:transparent!important;font-size:20px!important;
+}
+html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .pati-comment-editor-row{
+ display:flex!important;align-items:center!important;min-width:0!important;width:100%!important;
+ gap:8px!important;
+}
+html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .pati-comment-editor-row textarea{
+ display:block!important;flex:1 1 0!important;min-width:0!important;
+ min-height:44px!important;max-height:96px!important;
+ font-size:16px!important;line-height:1.35!important;resize:none!important;
+ padding:10px 12px!important;box-sizing:border-box!important;
+ color:var(--pati-repair-text)!important;
+ background:var(--pati-repair-field)!important;border:1px solid var(--pati-repair-line)!important;
+ border-radius:21px!important;-webkit-text-fill-color:var(--pati-repair-text)!important;
+}
+html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .pati-comment-editor-row textarea::placeholder{
+ color:var(--pati-repair-muted)!important;-webkit-text-fill-color:var(--pati-repair-muted)!important;opacity:1;
+}
+html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .pati-comment-editor-row .pati-comment-send{
+ flex:0 0 auto!important;min-height:42px!important;border:0!important;
+ padding:8px 12px!important;border-radius:11px!important;
+ color:#fff!important;background:#2377ef!important;
+ -webkit-text-fill-color:#fff!important;
+ font-size:12px!important;font-weight:800!important;
+}
+html[data-pati-theme] #modal-root .pati-instagram-comments .modal-footer{
+ padding-bottom:calc(12px + env(safe-area-inset-bottom,0px))!important;
+}
+html[data-pati-theme] #modal-root .pati-instagram-comments :is(#comment-form,#reply-form){
+ display:flex!important;flex-direction:column!important;flex:1 1 auto!important;min-height:0!important;
+}
+html[data-pati-theme] #modal-root .modal.pati-instagram-comments{
+ height:min(82dvh,860px)!important;
+ max-height:calc(100dvh - var(--pati-keyboard-inset,0px) - 12px)!important;
+}
+html[data-pati-theme="light"] #modal-root #comment-form .pati-comment-heart svg.icon{stroke:#747984!important}
+html[data-pati-theme="light"] #modal-root #comment-form .pati-comment-heart small{color:#747984!important}
+html[data-pati-theme="light"] #modal-root #comment-form .pati-comment-reply-hint{
+ background:#f1f3f7!important;color:#444b56!important;
+}
+/* The vote result is colored by the majority only. A minority selection gets a check, not a competing color. */
+#main-content :is(.pati-home-question,.pati-community-card) button[data-action="vote"].active:not(.pati-vote-leading),
+#main-content :is(.pati-home-question,.pati-community-card) button[data-action="vote-negative"].active:not(.pati-vote-leading){
+ color:var(--ink,var(--pui-text,#3b414a))!important;
+ border-color:var(--border,var(--pui-border,#aeb4bf))!important;
+ background:var(--surface,var(--pui-raised,#e5e7eb))!important;
+}
+#main-content :is(.pati-home-question,.pati-community-card) button:is([data-action="vote"],[data-action="vote-negative"]).active:not(.pati-vote-leading)::after{
+ content:"✓";font-size:11px;font-weight:900;line-height:1;
+ margin-left:1px;color:inherit;
+}
+html[data-pati-theme="dark"] #main-content :is(.pati-home-question,.pati-community-card) button:is([data-action="vote"],[data-action="vote-negative"]).active:not(.pati-vote-leading){
+ color:#e6e8ef!important;border-color:#646877!important;background:#383c46!important;
+}
+/* Dark mode respects the user's theme in chat and profile stats; no permanent white surfaces. */
+html[data-pati-theme="dark"][data-pati-view="messages"] :is(body,#app-root,#main-content),
+html[data-pati-theme="dark"][data-pati-view="messages"] #app-root :is(.app-shell,.mobile-header),
+html[data-pati-theme="dark"][data-pati-view="messages"] #main-content :is(.pati-dm-top,.pati-dm-layout,.chat-window,.chat-history,.chat-people,.chat-compose,.chat-form),
+html[data-pati-theme="dark"][data-pati-view="messages"] #main-content .chat-window header{
+ background:var(--pati-repair-panel)!important;background-image:none!important;
+ color:var(--pati-repair-text)!important;
+}
+html[data-pati-theme="dark"][data-pati-view="messages"] #main-content :is(.pati-dm-title,.pati-dm-top,.chat-person-info,.pati-dm-list-row){
+ color:var(--pati-repair-text)!important;
+}
+html[data-pati-theme="dark"][data-pati-view="messages"] #main-content :is(.chat-window header,.chat-people){
+ border-color:var(--pati-repair-line)!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-insights-preview{
+ background:var(--pati-repair-panel)!important;background-image:none!important;
+ border-color:var(--pati-repair-line)!important;color:var(--pati-repair-text)!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-profile-insights-preview :is(strong,small,.pati-profile-insights-value,.pati-profile-insights-arrow){
+ color:var(--pati-repair-text)!important;
+}
+/* Mobile layout: no clipped action rows, sheets, menus or keyboard composer. */
+@media(max-width:740px){
+ html[data-pati-theme] #modal-root .modal.pati-instagram-comments{
+  width:100%!important;max-width:none!important;
+  height:min(83dvh,850px)!important;max-height:calc(100dvh - var(--pati-keyboard-inset,0px) - 8px)!important;
+  border-radius:22px 22px 0 0!important;
+ }
+ html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .comment-list{
+  padding:6px 12px 15px!important;
+ }
+ html[data-pati-theme] #modal-root .pati-instagram-comments .modal-footer{
+  padding:8px 10px calc(12px + env(safe-area-inset-bottom,0px))!important;
+ }
+ #main-content .pati-feed-card .pati-social-actions{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  flex-wrap:nowrap!important;gap:clamp(1px,1vw,7px)!important;
+  width:100%!important;max-width:100%!important;min-width:0!important;
+  box-sizing:border-box!important;padding:5px 6px!important;
+ }
+ #main-content .pati-feed-card .pati-social-actions>button{
+  flex:0 1 auto!important;min-width:0!important;min-height:42px!important;
+  padding:5px 2px!important;gap:2px!important;margin:0!important;
+ }
+ #main-content .pati-feed-card .pati-social-actions>button svg{
+  width:clamp(17px,4.4vw,21px)!important;height:clamp(17px,4.4vw,21px)!important;
+ }
+ #main-content .pati-feed-card .pati-social-actions :is(span,.pati-engagement-metric){
+  font-size:clamp(10px,2.7vw,12px)!important;white-space:nowrap!important;
+ }
+ #main-content .pati-home-question-actions{
+  display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:7px!important;
+ }
+ #main-content .pati-home-question-actions>button{
+  margin:0!important;min-width:0!important;justify-content:center!important;
+  padding:8px 5px!important;white-space:normal!important;
+ }
+ #main-content .pati-home-question-actions>button[data-action="replies"]{
+  grid-column:1/-1!important;
+ }
+ #app-root .mobile-header{min-width:0;gap:5px;box-sizing:border-box}
+ #app-root .mobile-header .brand{min-width:0;flex:0 1 auto}
+ #app-root .mobile-header .brand-word,
+ #app-root .mobile-header .brand-caption{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ #modal-root:has(#tools-form) .modal,
+ #modal-root:has(#tools-form) #tools-form{min-width:0!important}
+ #modal-root:has(#tools-form) .modal-content{overflow-x:hidden!important}
+ #main-content .pati-dm-layout :is(.chat-people,.chat-window,.chat-history,.chat-compose,.chat-input-area){
+  min-width:0!important;max-width:100%!important;box-sizing:border-box!important;
+ }
+ #main-content .pati-dm-layout .bubble-chat{max-width:min(85vw,380px)!important;overflow-wrap:anywhere!important}
+}
+@media(max-width:360px){
+ html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .pati-comment-editor-row{gap:5px!important}
+ html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .pati-comment-editor-row .pati-comment-me{display:none}
+ html[data-pati-theme] #modal-root :is(#comment-form,#reply-form) .pati-comment-editor-row .pati-comment-send{padding-inline:8px!important}
+ #main-content .pati-feed-card .pati-social-actions>button{padding-inline:1px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #main-content :is(.pati-home-question,.pati-community-card) button:is([data-action="vote"],[data-action="vote-negative"]){transition:none!important}
+}
