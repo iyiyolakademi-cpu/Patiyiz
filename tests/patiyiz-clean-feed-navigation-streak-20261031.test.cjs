@@ -11,7 +11,7 @@ test('One clean feed without duplicate for-you/following tabs or top coin badge'
  assert.doesNotMatch(html,/id="pati-feed-menu"/);
  assert.doesNotMatch(html,/id="pati-feed-menu-trigger"/);
  assert.match(css,/#pati-header-coins,#pati-desktop-coins\{display:none!important\}/);
- assert.match(app,/\['rewards','PatiCoin Merkezi','grid'\]/);
+ assert.match(app,/\['rewards','Kazandığın bakiye','grid'\]/);
 });
 test('Profile completion is fully optional and hide preference is per user',()=>{
  assert.match(app,/patiyiz-profile-optional-hidden-v2:/);
