@@ -8,7 +8,7 @@ const ui=fs.readFileSync('patiyiz-share-profile-story-polish-20261031.css','utf8
 const media=fs.readFileSync('patiyiz-system-media.js','utf8');
 
 test('Profile does not show extra back buttons and holds live PatiCoin by Edit profile',()=>{
- assert.match(app,/if\(view==='messages'\|\|view==='profile'\)return/);
+ assert.match(app,/if\(view==='messages'\)return;\s*if\(view==='profile'\)return/);
  const profile=app.slice(app.indexOf('function profilePage(){'),app.indexOf('function formField('));
  assert.doesNotMatch(profile,/class="pati-profile-back"/);
  assert.match(profile,/Profili düzenle/);
