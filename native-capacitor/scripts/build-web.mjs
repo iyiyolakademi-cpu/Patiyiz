@@ -60,8 +60,8 @@ app=app.replaceAll('redirectTo:location.origin+location.pathname',"redirectTo:'h
 app=app.replaceAll('emailRedirectTo:location.origin+location.pathname',"emailRedirectTo:'https://patiyiz.com/'");
 app=replace(app,"function showApp(){starter();","function showApp(){starter();if(window.PatiyizNative?.isNative)window.PatiyizNative.setSession(me?.id,sb);",'native auth session');
 app=replace(app,"authRoot.classList.add('hidden');appRoot.classList.remove('hidden');navigate(view);","authRoot.classList.add('hidden');appRoot.classList.remove('hidden');navigate(window.PatiyizNative?.consumeScreen()||view);",'native initial route');
-app=replace(app,"case 'logout':run(async()=>{globalThis.PatiyizPrivateMedia?.clear();const r=await sb.auth.signOut();",
- "case 'logout':run(async()=>{globalThis.PatiyizPrivateMedia?.clear();if(window.PatiyizNative?.isNative)await window.PatiyizNative.nativeLogout();const r=await sb.auth.signOut();",'native safe signout');
+app=replace(app,"case 'logout':run(async()=>{globalThis.PatiyizPrivateMedia?.clear();",
+ "case 'logout':run(async()=>{globalThis.PatiyizPrivateMedia?.clear();if(window.PatiyizNative?.isNative)await window.PatiyizNative.nativeLogout();",'native safe signout');
 app=replace(app,"async function disablePhonePush(){if(!me)throw Error('Önce giriş yapmalısın.');",
  "async function disablePhonePush(){if(!me)throw Error('Önce giriş yapmalısın.');if(window.PatiyizNative?.isNative){await window.PatiyizNative.disablePush();return}",'native opt-out');
 app=replace(app,"const input=form.querySelector('input[name=\"'+(reel?'video':'photo')+'\"]');if(!input)return;",
