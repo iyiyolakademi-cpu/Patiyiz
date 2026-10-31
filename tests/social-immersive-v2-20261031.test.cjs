@@ -20,7 +20,7 @@ test('Profile header shows @username for own and public profiles without losing 
  assert.match(profile,/class="pati-profile-menu-trigger" data-action="tools"/);
  assert.match(profile,/class="pati-profile-more-wrap"/);
  assert.match(profile,/button\('Hesabı bildir','report'/);
- assert.match(profile,/Bakiyen/);
+ assert.match(profile,/PatiCoin bakiyen/);
  assert.match(css,/\.pati-ig-profile :is\(\.pati-profile-topbar,\.pati-profile-visitor-topbar\)/);
 });
 test('Profile is white, three-column portrait grid is 3:4 with clean tile gaps',()=>{
