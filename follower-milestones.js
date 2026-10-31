@@ -1,4 +1,4 @@
-/* Patiyiz follower milestones: presentation only. All eligibility and Bakiye
+/* Patiyiz follower milestones: presentation only. All eligibility and PatiCoin
  * balances are verified server-side; no browser code can award currency. */
 (()=>{
  'use strict';
@@ -27,18 +27,18 @@
   const hasCount=followerCount!==null&&followerCount!==undefined;
   const c=countOf(followerCount),earned=new Set(Array.isArray(claims)?claims:[]),cashByTier=new Map((Array.isArray(cashClaims)?cashClaims:[]).map(x=>[Number(x.threshold),x]));
   const next=nextTarget(c);
-  const head='<div class="pati-follower-header"><span class="pati-follower-eyebrow">🏆 TOPLULUK BAŞARILARI</span><h2>Takipçi ödülleri</h2><p>Gerçek takipçi hedefine ulaşınca rozet ve mağaza bakiyesi kazanırsın. 10 bin, 50 bin ve 100 bin takipçi hedefleri ayrıca nakit ödül başvurusuna açıktır. Mavi tik ödüllere dahil değildir.</p></div>';
+  const head='<div class="pati-follower-header"><span class="pati-follower-eyebrow">🏆 TOPLULUK BAŞARILARI</span><h2>Takipçi ödülleri</h2><p>Gerçek takipçi hedefine ulaşınca rozet ve Pati Coin kazanırsın. 10 bin, 50 bin ve 100 bin takipçi hedefleri ayrıca nakit ödül başvurusuna açıktır. Mavi tik ödüllere dahil değildir.</p></div>';
   const banner=hasCount?'<div class="pati-follower-summary"><strong>'+number(c)+'</strong><span>Güncel takipçin</span><small>'+(next?'Sıradaki hedef: '+number(next.need)+' takipçi':'Bütün hedefleri tamamladın!')+'</small></div>':'<p class="pati-follower-loading">Takipçi sayın doğrulanıyor…</p>';
   const cards=tiers.map(t=>{
     const won=earned.has('followers_'+t.need);
     const pct=hasCount?Math.min(100,c/t.need*100):0;
-    const status=won?'✓ Bakiye kazanıldı':hasCount&&c>=t.need?'Doğrulanıyor':'Hedefe '+number(Math.max(0,t.need-c))+' kaldı';
+    const status=won?'✓ Coin kazanıldı':hasCount&&c>=t.need?'Doğrulanıyor':'Hedefe '+number(Math.max(0,t.need-c))+' kaldı';
     const cashClaim=cashByTier.get(t.need),cashStatus=cashClaim?.status;
     const cash=Number(t.cash||0);
     const cashInfo=cash?'<div class="pati-follower-cash"><strong>'+number(cash)+' TL nakit ödül</strong><small>'+(cashStatus==='paid'?'✓ Ödendi':cashStatus==='approved'?'Onaylandı · ödeme bekliyor':cashStatus==='pending'?'Başvurun inceleniyor':cashStatus==='rejected'?'Başvuru reddedildi':c>=t.need?'Takipçi doğrulaması ve başvuru sonrası':'Bu hedefe ulaşınca başvurabilirsin')+'</small>'+(hasCount&&c>=t.need&&!cashClaim?'<button type="button" data-action="pati-follower-cash-claim" data-id="'+t.need+'">Nakit ödül için başvur</button>':'')+'</div>':'';
-    return '<article class="pati-follower-tier '+(won?'is-earned':'')+'"><div class="pati-follower-tier-icon" aria-hidden="true">'+t.icon+'</div><div class="pati-follower-tier-copy"><span>'+t.kind+' rozet</span><h3>'+number(t.need)+' takipçi</h3><strong>'+t.title+'</strong></div><span class="pati-follower-coin">'+(won?'✓':'+'+number(t.coins))+' <span class="pati-balance-money" aria-hidden="true">💰</span></span><div class="pati-follower-track"><i style="width:'+pct.toFixed(2)+'%"></i></div><small>'+status+'</small>'+cashInfo+'</article>';
+    return '<article class="pati-follower-tier '+(won?'is-earned':'')+'"><div class="pati-follower-tier-icon" aria-hidden="true">'+t.icon+'</div><div class="pati-follower-tier-copy"><span>'+t.kind+' rozet</span><h3>'+number(t.need)+' takipçi</h3><strong>'+t.title+'</strong></div><span class="pati-follower-coin">'+(won?'✓':'+'+number(t.coins))+' <img class="pati-coin-icon" src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true"></span><div class="pati-follower-track"><i style="width:'+pct.toFixed(2)+'%"></i></div><small>'+status+'</small>'+cashInfo+'</article>';
   }).join('');
-  return '<section class="pati-follower-milestones" aria-label="Takipçi başarı ödülleri">'+head+banner+'<div class="pati-follower-grid">'+cards+'</div><p class="pati-follower-terms">mağaza bakiyesi ödülleri sunucuda doğrulanıp bir kez verilir. Nakit ödüller otomatik ödenmez; her hedef için bir kez başvurulur, gerçek takipçiler doğrulanır, uygun başvurular manuel incelenir ve ödeme onaylanır. Sahte takipçilik ödül hakkı oluşturmaz. Rozetler kimlik doğrulaması yerine geçmez.</p></section>';
+  return '<section class="pati-follower-milestones" aria-label="Takipçi başarı ödülleri">'+head+banner+'<div class="pati-follower-grid">'+cards+'</div><p class="pati-follower-terms">Pati Coin ödülleri sunucuda doğrulanıp bir kez verilir. Nakit ödüller otomatik ödenmez; her hedef için bir kez başvurulur, gerçek takipçiler doğrulanır, uygun başvurular manuel incelenir ve ödeme onaylanır. Sahte takipçilik ödül hakkı oluşturmaz. Rozetler kimlik doğrulaması yerine geçmez.</p></section>';
  }
  window.PatiyizFollowerMilestones={tiers,renderPanel,profileHint};
 })();
