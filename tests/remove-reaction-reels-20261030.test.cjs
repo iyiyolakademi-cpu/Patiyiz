@@ -9,7 +9,7 @@ test('Reaction Reels sharing feature is removed while ordinary posting and share
  assert.doesNotMatch(app,/Bu gönderiye tepki Reels çek/);
  assert.doesNotMatch(app,/if\(form\.dataset\.sourcePost\)/);
  assert.match(app,/function openPatiShareModal\(postId\)/);
- assert.match(app,/modal\('Paylaş',preview\+search/);
+ assert.match(app,/modal\('Paylaş',preview\+shareQuick\+search/);
  assert.match(app,/data-action="send-post-dm"/);
  assert.match(app,/function patiSharePostToStory\(postId\)|async function patiSharePostToStory\(postId\)/);
  assert.match(app,/function reelsPage\(\)/);
