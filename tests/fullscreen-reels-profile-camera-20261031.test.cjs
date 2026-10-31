@@ -44,7 +44,7 @@ test('Other-profile safety actions only appear in the accessible overflow menu',
  const actions=profile.slice(profile.indexOf("pati-ig-actions"),profile.indexOf("patiCreatorPreviewHTML"));
  assert.ok(actions.length>0&&actions.length<600);
  assert.doesNotMatch(actions,/Hesabı bildir|Kısıtla|pati-restrict/);
- assert.match(profile,/menu\.open=false/);
+ assert.match(app,/menu\.open=false/);
  assert.match(fullscreen,/\.pati-profile-more-wrap>summary:focus-visible/);
  assert.match(fullscreen,/\.pati-profile-more-menu button/);
 });
