@@ -1069,6 +1069,7 @@ function postCard(p,priority=false){
  controls+'<div class="pati-post-details"><button type="button" class="pati-post-like-summary" data-action="post-likers" data-id="'+esc(p.id)+'" aria-label="'+count+' beğeni, beğenenleri gör">'+count+' beğeni</button>'+(hasMedia?caption:'')+'<time class="pati-post-time">'+esc(day(p.created_at))+'</time></div></article>';
 }
 function patiDetailCandidates(source){
+ if(source==='saved-posts')return window.PatiyizSavedV2?.visiblePosts()||[];
  if(source==='profile'){
   const author=profileId||me.id;
   if(profilePostsTab==='reposts')return patiRepostedPosts(author);
@@ -1109,7 +1110,7 @@ function patiDetailPage(){
 }
 function openPost(id){
  const origin=view;
- const options=(origin==='profile'||origin==='explore')?patiDetailCandidates(origin):[];
+ const options=(origin==='profile'||origin==='explore'||origin==='saved-posts')?patiDetailCandidates(origin):[];
  const post=options.find(p=>p.id===id)||data.posts.find(p=>p.id===id);
  if(!post){notify('Bu paylaşım artık bulunamıyor.',true);return}
  if(blocked.has(post.author_id)){notify('Bu paylaşım görüntülenemiyor.',true);return}
@@ -2135,10 +2136,16 @@ async function fetchMissingSavedPosts(){
  finally{savedPostsLoading=false}
 }
 function savedPostsPage(){
- const list=[...data.posts].filter(p=>saved.has(p.id)&&!blocked.has(p.author_id))
-  .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
- main.innerHTML='<section class="pati-saved-posts"><div class="pati-saved-heading"><span>🔖 KİŞİSEL ARŞİV</span><h1>Kaydettiklerim</h1><p>Kaydettiğin gönderiler yalnızca hesabında görünür ve çıkış yapıp tekrar girdiğinde de saklanır.</p><small>'+saved.size+' kayıtlı paylaşım</small></div>'+
- '<div class="pati-feed-posts">'+(list.length?list.map((p,i)=>postCard(p,i<3)).join(''):'<p class="pati-saved-empty">Henüz kayıtlı gönderin yok. Akışta yer imi simgesine basarak bir paylaşımı kaydedebilirsin.</p>')+'</div></section>';
+ if(window.PatiyizSavedV2){
+  window.PatiyizSavedV2.render({
+   data,me,saved,blocked,sb,navigate,openPost,fetchMissingSavedPosts,
+   notify,rerender:render
+  });
+  return;
+ }
+ const list=data.posts.filter(p=>saved.has(p.id)&&!blocked.has(p.author_id));
+ main.innerHTML='<section class="pati-saved-posts"><h1>Kaydedildi</h1>'+
+  '<div class="pati-feed-posts">'+list.map(p=>postCard(p)).join('')+'</div></section>';
  void fetchMissingSavedPosts();
 }
 
