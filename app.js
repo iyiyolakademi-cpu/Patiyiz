@@ -2003,12 +2003,13 @@ function patiReelsCapture(){
  return card&&video?{id:card.dataset.post,time:Number.isFinite(video.currentTime)?video.currentTime:0,manual:video.dataset.manualPause==='1'}:null;
 }
 let patiReelsFeed={owner:'',rows:[],offset:0,hasMore:true,loading:false,ready:false,error:''};
-const PATI_REELS_PAGE=30;
+const PATI_REELS_PAGE=16;
 async function patiLoadMoreReels(reset=false){
  if(!me||!sb)return;
  const uid=me.id,token=patiyizLoadToken;
  if(reset||patiReelsFeed.owner!==uid)patiReelsFeed={owner:uid,rows:[],offset:0,hasMore:true,loading:false,ready:false,error:''};
  const state=patiReelsFeed;if(state.loading||!state.hasMore)return;
+ const keepPlaying=view==='reels'&&!!document.querySelector('#main-content .pati-reels-viewport .pati-reel-item');
  state.loading=true;state.error='';
  if(view==='reels'&&!state.ready)reelsPage();
  try{
@@ -2035,10 +2036,13 @@ async function patiLoadMoreReels(reset=false){
   if(me?.id===uid&&patiReelsFeed===state){state.error='Videolar yüklenemedi. Tekrar dene.';console.warn('Reels yükleme:',error?.message||error)}
  }finally{
   state.loading=false;
-  if(me?.id===uid&&patiReelsFeed===state&&view==='reels'){render()}
+  if(me?.id===uid&&patiReelsFeed===state&&view==='reels'){
+   if(keepPlaying&&document.querySelector('#main-content .pati-reels-viewport'))reelsPage(true);
+   else render();
+  }
  }
 }
-function reelsPage(){
+function reelsPage(append=false){
  const nativeReels=typeof window!=='undefined'&&window.PatiyizNative?.isNative===true;
  const selfId=typeof me!=='undefined'?me?.id:'';
  const isFollowing=id=>typeof followed!=='undefined'&&followed.has(id);
@@ -2050,10 +2054,14 @@ function reelsPage(){
  const items=[...new Map(source.map(p=>[p.id,p])).values()]
   .filter(x=>x.video_url&&!blocked.has(x.author_id))
   .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)||String(b.id).localeCompare(String(a.id)));
- main.innerHTML='<section class="pati-reels-head"><h1>Reels</h1></section><div class="pati-reels-viewport">'+(items.length?items.map((p,index)=>{
+ const existingViewport=append?document.querySelector('#main-content .pati-reels-viewport'):null;
+ const existingIds=new Set([...(existingViewport?.querySelectorAll('.pati-reel-item[data-post]')||[])].map(el=>String(el.dataset.post)));
+ const remaining=existingViewport?items.filter(p=>!existingIds.has(String(p.id))):items;
+ const cardsHTML=(remaining.length?remaining.map((p,index)=>{
+  const absoluteIndex=existingViewport?items.findIndex(row=>row.id===p.id):index;
   const cached=typeof patiPostRenderStats!=='undefined'&&patiPostRenderStats;
   const author=profile(p.author_id),count=cached?(cached.get(p.id)?.likes||0):data.likes.filter(x=>x.post_id===p.id).length,commentCount=cached?(cached.get(p.id)?.comments||0):data.comments.filter(x=>x.post_id===p.id).length,likedPost=liked.has(p.id),savedPost=saved.has(p.id);
-  return '<article class="pati-reel-item" data-post="'+esc(p.id)+'"><video class="pati-reel-video'+(p.selfie_mirrored?' pati-selfie-mirrored':'')+'" '+((focusReelId?p.id===focusReelId:index===0)?'src="':'data-pati-video-src="')+esc(p.video_url)+'"'+(p.video_cover_url?' poster="'+esc(p.video_cover_url)+'"':'')+' playsinline webkit-playsinline'+(nativeReels?'':' muted')+' loop preload="'+((focusReelId?p.id===focusReelId:index===0)?'auto':index===1?'metadata':'none')+'" aria-label="'+esc(author.display_name)+' videosu"></video>'+
+  return '<article class="pati-reel-item" data-post="'+esc(p.id)+'"><video class="pati-reel-video'+(p.selfie_mirrored?' pati-selfie-mirrored':'')+'" '+((focusReelId?p.id===focusReelId:absoluteIndex===0)?'src="':'data-pati-video-src="')+esc(p.video_url)+'"'+(p.video_cover_url?' poster="'+esc(p.video_cover_url)+'"':'')+' playsinline webkit-playsinline'+(nativeReels?'':' muted')+' loop preload="'+((focusReelId?p.id===focusReelId:absoluteIndex===0)?'auto':'none')+'" aria-label="'+esc(author.display_name)+' videosu"></video>'+
   '<button type="button" class="pati-reel-tap" data-action="reel-play" aria-label="Videoyu oynat veya durdur, çift dokunarak beğen"><span class="pati-reel-heart-burst" aria-hidden="true">'+ico('heart')+'</span></button>'+
   '<div class="pati-reel-author"><button type="button" class="pati-reel-avatar-link" data-action="view-user" data-id="'+esc(author.id)+'" aria-label="'+esc(author.display_name)+' profiline git">'+avatar(author,'s')+'</button><span><strong>'+displayName(author)+'</strong><small>@'+esc(author.handle||'patiyiz')+'</small></span>'+(p.author_id!==selfId?'<button type="button" class="pati-reel-follow" data-action="follow" data-id="'+esc(author.id)+'" aria-pressed="'+isFollowing(author.id)+'"'+(!isFollowing(author.id)&&followsMe(author.id)?' data-follow-back="true"':'')+'>'+(isFollowing(author.id)?'Takiptesin':followsMe(author.id)?'Sen de takip et':'Takip et')+'</button>':'')+'</div>'+
   '<div class="pati-reel-caption">'+esc(cut(p.video_subtitle||p.body||'',220))+(p.source_post_id?'<button type="button" class="pati-reel-source-credit" data-action="profile-open-post" data-id="'+esc(p.source_post_id)+'">↪ Orijinal gönderiyi gör</button>':'')+'</div>'+
@@ -2065,9 +2073,15 @@ function reelsPage(){
   '<button type="button" class="pati-reel-action '+(savedPost?'active':'')+'" data-action="save" data-id="'+esc(p.id)+'" aria-label="Kaydet" aria-pressed="'+savedPost+'">'+ico('bookmark')+'<span class="pati-reel-action-label">Kaydet</span>'+(typeof patiSocialMetric==='function'?patiSocialMetric(p.id,'saved',''):'')+'</button>'+
   '</div><div class="pati-reel-utility" role="group" aria-label="Video kontrol seçenekleri"><button type="button" data-action="reel-speed" class="pati-reel-tool" aria-label="Oynatma hızı 1×">'+ico('gauge')+'<span class="pati-reel-tool-label">1×</span></button>'+
   '<button type="button" data-action="reel-sound" class="pati-reel-tool" aria-label="'+(soundOn?'Sesi kapat':'Sesi aç')+'" aria-pressed="'+soundOn+'">'+ico(soundOn?'volume':'volume-x')+'<span class="pati-reel-tool-label pati-reel-sound-label">'+(soundOn?'Sesi kapat':'Sesi aç')+'</span></button></div></article>'
- }).join(''):'<div class="pati-reels-empty">'+(page?.loading?'Reels videoları yükleniyor…':'Henüz Reels yok. İlk videoyu sen paylaş!')+'</div>')+
- (page?.loading?'<div class="pati-reels-load-more" role="status">Videolar yükleniyor…</div>':
- page?.hasMore||page?.error?'<div class="pati-reels-load-more">'+(page?.error?'<p role="alert">'+esc(page.error)+'</p>':'')+'<button type="button" data-action="reels-more">'+(page?.error?'Tekrar dene':'Daha fazla Reels yükle')+'</button>'+'</div>':'')+'</div>';
+ }).join(''):existingViewport?'':'<div class="pati-reels-empty">'+(page?.loading?'Reels videoları hazırlanıyor…':'Henüz Reels yok. İlk videoyu sen paylaş!')+'</div>');
+ const footerHTML=page?.error?'<div class="pati-reels-load-more"><p role="alert">'+esc(page.error)+'</p><button type="button" data-action="reels-more">Tekrar dene</button></div>':page?.hasMore?'<div class="pati-reels-load-more" aria-label="Daha fazla Reels yüklenebilir" hidden></div>':'';
+ if(existingViewport){
+  existingViewport.querySelector('.pati-reels-load-more')?.remove();
+  existingViewport.insertAdjacentHTML('beforeend',cardsHTML+footerHTML);
+  setupReelsViewer();
+  return;
+ }
+ main.innerHTML='<section class="pati-reels-head"><h1>Reels</h1></section><div class="pati-reels-viewport">'+cardsHTML+footerHTML+'</div>';
  if(focusReelId){
   const area=main.querySelector('.pati-reels-viewport');
   const nodes=[...(area?.querySelectorAll('.pati-reel-item[data-post]')||[])];
