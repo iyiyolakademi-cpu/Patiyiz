@@ -6889,14 +6889,31 @@ function questionReplies(id){
  const previous=$('#reply-form'),draft=previous?.dataset.question===id?previous.querySelector('[name="body"]')?.value||'':'';
  const source=state?.ready?state.rows:data.replies.filter(r=>r.question_id===id);
  const replies=[...source].filter(r=>!blocked.has(r.author_id)).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
- modal('Soruya cevaplar','<h3>'+esc(q.title)+'</h3><p class="pati-community-question-description">'+esc(q.body)+'</p>'+
-  '<div class="pati-list">'+
-  (state?.error?'<p class="pati-note" role="alert">'+esc(state.error)+'</p>':'')+
-  (state?.loading?'<p class="pati-note" role="status">Cevaplar yükleniyor…</p>':'')+
-  (state?.hasMore||state?.error?'<div class="pati-load-more">'+button(state.error?'Yeniden dene':'Önceki cevapları yükle','community-replies-more','data-id="'+esc(id)+'"')+'</div>':'')+
-  (replies.map(x=>'<div class="pati-card">'+userRow(x.author_id,day(x.created_at))+'<p>'+esc(x.body)+'</p></div>').join('')||(!state?.loading?'<p>Henüz cevap yok.</p>':''))+
-  '</div>'+textField('body','Cevabın',draft,true,1000),'reply-form');
- $('#reply-form').dataset.question=id;
+ const top='<section class="pati-comment-post-summary pati-question-reply-summary"><h3>'+esc(q.title)+'</h3><p class="pati-community-question-description">'+esc(q.body||'')+'</p></section>';
+ const entries=replies.map(x=>{
+  const person=profile(x.author_id),name=displayName(person);
+  return '<div class="comment-item pati-sheet-comment pati-question-reply-row"><div class="pati-sheet-comment-avatar">'+
+   '<button type="button" class="pati-comment-profile-avatar" data-action="view-user" data-id="'+esc(x.author_id)+'" aria-label="'+esc(name)+' profiline git">'+avatar(person,'s')+'</button></div>'+
+   '<div class="pati-sheet-comment-main"><div class="pati-sheet-comment-line"><button type="button" class="pati-comment-profile-name" data-action="view-user" data-id="'+esc(x.author_id)+'">'+name+'</button><time>'+patiCommentAge(x.created_at)+'</time></div><p>'+esc(x.body||'')+'</p></div></div>';
+ }).join('');
+ modal('Yanıtlar',top+
+ '<div class="comment-list pati-question-reply-list" role="list" aria-label="Soruya verilen yanıtlar">'+
+ (state?.error?'<p class="pati-note" role="alert">'+esc(state.error)+'</p>':'')+
+ (state?.loading?'<p class="pati-note" role="status">Yanıtlar yükleniyor…</p>':'')+
+ (state?.hasMore||state?.error?'<div class="pati-load-more">'+button(state.error?'Yeniden dene':'Önceki cevapları yükle','community-replies-more','data-id="'+esc(id)+'"')+'</div>':'')+
+ (entries||(!state?.loading?'<p class="pati-comments-empty">Henüz yanıt yok. İlk yanıtı sen yazabilirsin.</p>':''))+
+ '</div>'+textField('body','Cevabın',draft,true,1000),'reply-form');
+ const form=$('#reply-form');if(!form)return;
+ form.dataset.question=id;
+ const dialog=form.closest('.modal');dialog?.classList.add('pati-instagram-comments','pati-question-comments');
+ const backdrop=form.closest('.modal-backdrop');backdrop?.classList.add('pati-instagram-comments-backdrop');
+ form.querySelector('.modal-content [name="body"]')?.closest('.pati-field')?.remove();
+ const footer=form.querySelector('.modal-footer');
+ if(footer)footer.innerHTML='<div class="pati-comment-quick">'+['❤️','🙌','🔥','👏','🥹','😍','😂'].map(e=>'<button type="button" data-action="question-reply-emoji" data-emoji="'+e+'">'+e+'</button>').join('')+'</div>'+
+ '<div class="pati-comment-editor-row"><div class="pati-comment-me">'+avatar(current(),'s')+'</div>'+
+ '<textarea name="body" aria-label="Yanıt yaz" rows="1" maxlength="1000" required placeholder="Yanıt yaz..."></textarea>'+
+ '<button type="submit" class="pati-comment-send">Gönder</button></div>';
+ const input=form.querySelector('.modal-footer [name="body"]');if(input)input.value=draft;
 }
 /* Never display a confirmed heart until Supabase has persisted and verified it.
  * One in-flight mutation per post; a concurrent bootstrap cannot overwrite the result. */
@@ -7328,7 +7345,7 @@ case 'dm-reply':patiDmBeginReply(id);break;case 'dm-edit':{const m=patiDmFindMes
   render();
  },'Mesaj iki tarafın sohbetinden silindi.');
  break;
-}case 'comment':showComments(id);void patiFetchPostComments(id);break;case 'comment-more':void patiFetchPostComments(id,true);break;case 'comment-emoji':{const ta=document.querySelector('#comment-form textarea[name="body"]');if(ta){ta.value+=target.dataset.emoji||'';ta.focus()}break;}case 'comment-reply':{const f=$('#comment-form');if(f){f.dataset.parent=id;const who=profile(data.comments.find(x=>x.id===id)?.author_id).display_name;const hint=$('#comment-reply-hint');if(hint)hint.innerHTML='↳ '+esc(who)+' kullanıcısına yanıt <button type="button" data-action="comment-reply-cancel">× Vazgeç</button>';f.querySelector('textarea')?.focus()}break}case 'comment-reply-cancel':{const f=$('#comment-form');if(f)f.dataset.parent='';const hint=$('#comment-reply-hint');if(hint)hint.textContent='';break}case 'comment-thread-toggle':{const form=$('#comment-form');const postId=form?.dataset.post;if(!postId)break;if(patiyizCommentExpandedReplies.has(id))patiyizCommentExpandedReplies.delete(id);else patiyizCommentExpandedReplies.add(id);showComments(postId);break;}case 'comment-pin':run(()=>patiCommentPinToggle(id));break;
+}case 'comment':showComments(id);void patiFetchPostComments(id);break;case 'comment-more':void patiFetchPostComments(id,true);break;case 'question-reply-emoji':{const ta=document.querySelector('#reply-form textarea[name="body"]');if(ta){ta.value+=target.dataset.emoji||'';ta.focus()}break;}case 'comment-emoji':{const ta=document.querySelector('#comment-form textarea[name="body"]');if(ta){ta.value+=target.dataset.emoji||'';ta.focus()}break;}case 'comment-reply':{const f=$('#comment-form');if(f){f.dataset.parent=id;const who=profile(data.comments.find(x=>x.id===id)?.author_id).display_name;const hint=$('#comment-reply-hint');if(hint)hint.innerHTML='↳ '+esc(who)+' kullanıcısına yanıt <button type="button" data-action="comment-reply-cancel">× Vazgeç</button>';f.querySelector('textarea')?.focus()}break}case 'comment-reply-cancel':{const f=$('#comment-form');if(f)f.dataset.parent='';const hint=$('#comment-reply-hint');if(hint)hint.textContent='';break}case 'comment-thread-toggle':{const form=$('#comment-form');const postId=form?.dataset.post;if(!postId)break;if(patiyizCommentExpandedReplies.has(id))patiyizCommentExpandedReplies.delete(id);else patiyizCommentExpandedReplies.add(id);showComments(postId);break;}case 'comment-pin':run(()=>patiCommentPinToggle(id));break;
 case 'pati-mention-open':patiMentionOpen(id==='comment'?'comment':'post');break;
 case 'pati-mention-profile':e.preventDefault();void patiOpenMentionProfile(target.dataset.handle,target.dataset.id||'');break;
 case 'pati-mention-select':{const picker=target.closest('.pati-mention-picker'),form=picker?.closest('form'),textarea=form?.querySelector('textarea[name="body"]');if(textarea){const name='@'+(target.dataset.handle||'');textarea.setRangeText(name+' ',textarea.selectionStart||textarea.value.length,textarea.selectionEnd||textarea.value.length,'end');textarea.focus();}picker?.remove();break}
