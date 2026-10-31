@@ -3954,7 +3954,7 @@ async function loadDmMedia(){
    if(!imageUrl){
     let download=patiDmPhotoPending.get(key);
     if(!download){
-     download=fetch(signed.url,{cache:'force-cache'})
+     download=(typeof fetch==='function'?fetch(signed.url,{cache:'force-cache'}):Promise.reject(Error('Görsel önbelleği desteklenmiyor')))
       .then(response=>{if(!response.ok)throw Error('Görsel indirilemedi');return response.blob()})
       .then(blob=>{
        if(!blob.type.startsWith('image/'))throw Error('Görsel biçimi geçersiz');
