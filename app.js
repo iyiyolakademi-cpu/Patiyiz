@@ -3519,21 +3519,68 @@ function patiDmRecordTimerStart(){
 }
 async function uploadDmFile(file,type,receiver){if(!file?.size||file.size>8388608)throw Error('Dosya en fazla 8 MB olabilir.');const mime=file.type.split(';')[0];if(type==='image'&&!['image/jpeg','image/png','image/webp','image/gif'].includes(mime))throw Error('JPG, PNG, WebP veya GIF seç.');if(type==='audio'&&!['audio/webm','audio/mp4','audio/ogg','audio/mpeg'].includes(mime))throw Error('Ses biçimi desteklenmiyor.');const ext=type==='image'?(mime==='image/gif'?'gif':mime==='image/png'?'png':mime==='image/webp'?'webp':'jpg'):(mime==='audio/mp4'?'m4a':mime==='audio/ogg'?'ogg':mime==='audio/mpeg'?'mp3':'webm');const author=me?.id;if(!author)throw Error('Mesaj göndermek için giriş yap.');const path=author+'/'+crypto.randomUUID()+'.'+ext;const up=await sb.storage.from('patiyiz-private-messages').upload(path,file,{contentType:mime});if(up.error)throw up.error;try{if(me?.id!==author)throw Error('Oturum değişti. Mesaj gönderilmedi.');const m=await sb.from('messages').insert({sender_id:author,receiver_id:receiver,body:type==='audio'?'🎤 Sesli mesaj':mime==='image/gif'?'🎞️ GIF':'📷 Fotoğraf',attachment_type:type,attachment_path:path}).select('*').single();if(m.error)throw m.error;return m.data}catch(error){try{await sb.storage.from('patiyiz-private-messages').remove([path])}catch(cleanup){console.warn('Gönderilemeyen medya temizlenemedi',cleanup)}throw error}}
 const patiDmSignedCache=new Map();
+const patiDmSigningPending=new Map();
+function patiDmMediaNotice(el,failed){
+ if(!el?.isConnected)return;
+ const box=el.closest?.('.bubble-chat');
+ if(!box)return;
+ let note=box.querySelector('.pati-dm-media-error');
+ if(!failed){note?.remove();return}
+ if(note)return;
+ note=document.createElement('div');
+ note.className='pati-dm-media-error';
+ note.setAttribute('role','status');
+ const label=document.createElement('span');label.textContent='Medya yüklenemedi.';
+ const retry=document.createElement('button');retry.type='button';retry.textContent='Yeniden dene';
+ retry.addEventListener('click',()=>{
+  const path=el.dataset.privatePath;
+  if(!path||!me?.id)return;
+  patiDmSignedCache.delete(me.id+':'+path);
+  el.dataset.patiDmMediaRetry='0';
+  note?.remove();
+  el.removeAttribute?.('src');
+  void loadDmMedia();
+ });
+ note.append(label,retry);box.appendChild(note);
+}
 async function loadDmMedia(){
  const items=[...document.querySelectorAll('[data-private-path]')],userId=me?.id;
- if(!userId)return;
+ if(!userId||!sb)return;
  await Promise.all(items.map(async el=>{
   const path=el.dataset.privatePath;if(!path)return;
   const key=userId+':'+path,now=Date.now();
   let signed=patiDmSignedCache.get(key);
   if(!signed||signed.expires<=now){
-   const res=await sb.storage.from('patiyiz-private-messages').createSignedUrl(path,1800);
-   if(res.error||!res.data?.signedUrl)return;
-   signed={url:res.data.signedUrl,expires:Date.now()+20*60*1000};
-   if(patiDmSignedCache.size>150)patiDmSignedCache.clear();
-   patiDmSignedCache.set(key,signed);
+   let pending=patiDmSigningPending.get(key);
+   if(!pending){
+    pending=Promise.resolve().then(()=>sb.storage.from('patiyiz-private-messages').createSignedUrl(path,1800))
+     .then(({data,error})=>{
+      if(error||!data?.signedUrl)return null;
+      const result={url:data.signedUrl,expires:Date.now()+20*60*1000};
+      if(patiDmSignedCache.size>150)patiDmSignedCache.clear();
+      patiDmSignedCache.set(key,result);
+      return result;
+     }).catch(()=>null).finally(()=>patiDmSigningPending.delete(key));
+    patiDmSigningPending.set(key,pending);
+   }
+   signed=await pending;
   }
   if(!el.isConnected||me?.id!==userId)return;
+  if(!signed?.url){patiDmMediaNotice(el,true);return}
+  if(!el.dataset.patiDmMediaBound){
+   el.dataset.patiDmMediaBound='1';
+   el.addEventListener?.('load',()=>patiDmMediaNotice(el,false));
+   el.addEventListener?.('loadeddata',()=>patiDmMediaNotice(el,false));
+   el.addEventListener?.('error',()=>{
+    if(el.dataset.patiDmMediaRetry!=='1'){
+     el.dataset.patiDmMediaRetry='1';
+     patiDmSignedCache.delete(key);
+     el.removeAttribute?.('src');
+     void loadDmMedia();
+    }else patiDmMediaNotice(el,true);
+   });
+  }
+  patiDmMediaNotice(el,false);
   if(el.src!==signed.url)el.src=signed.url;
   if(el.tagName==='IMG')el.decoding='async';
  }));

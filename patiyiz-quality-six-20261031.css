@@ -39,3 +39,8 @@
  .pati-coin-spent-overview>div{padding:12px}
 }
 @media(prefers-reduced-motion:reduce){.pati-reel-spinner{animation:none}}
+
+/* Recoverable private message media errors: never reveal signed URLs to the UI. */
+.pati-dm-media-error{display:flex;align-items:center;justify-content:space-between;gap:9px;padding:8px 10px;margin-top:6px;border:1px solid var(--border,#ddd);border-radius:10px;font-size:12px;line-height:1.4;color:var(--ink,#222);background:var(--paper,#fff)}
+.pati-dm-media-error>button{min-height:36px;padding:5px 10px;border:1px solid currentColor;border-radius:8px;background:transparent;color:inherit;font-weight:700;white-space:nowrap}
+@media(max-width:400px){.pati-dm-media-error{flex-wrap:wrap}}

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "last_checked": "2026-10-31",
+  "manual_gates": {
+    "private_media_two_account_negative_test": false,
+    "android_two_accounts_media_messaging_push": false,
+    "ios_pwa_camera_reels_messaging_push": false,
+    "account_deletion_and_storage_cleanup": false,
+    "paticoin_double_claim_and_concurrent_request": false,
+    "lost_alert_opt_in_and_found_closure": false,
+    "moderation_report_block_abuse": false,
+    "support_contact_and_data_controller_legal_review": false,
+    "supabase_leaked_password_protection_verified": false,
+    "android_signed_aab_play_console_testing": false,
+    "ios_testflight_app_store_review": false,
+    "backup_restore_and_capacity_test": false
+  },
+  "notes": "Never mark a gate true without dated, real-world verification; a passing unit test is not device or legal verification."
+}
