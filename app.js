@@ -3826,6 +3826,27 @@ function patiDmRecordTimerStart(){
 async function uploadDmFile(file,type,receiver){if(!file?.size||file.size>8388608)throw Error('Dosya en fazla 8 MB olabilir.');const mime=file.type.split(';')[0];if(type==='image'&&!['image/jpeg','image/png','image/webp','image/gif'].includes(mime))throw Error('JPG, PNG, WebP veya GIF seç.');if(type==='audio'&&!['audio/webm','audio/mp4','audio/ogg','audio/mpeg'].includes(mime))throw Error('Ses biçimi desteklenmiyor.');const ext=type==='image'?(mime==='image/gif'?'gif':mime==='image/png'?'png':mime==='image/webp'?'webp':'jpg'):(mime==='audio/mp4'?'m4a':mime==='audio/ogg'?'ogg':mime==='audio/mpeg'?'mp3':'webm');const author=me?.id;if(!author)throw Error('Mesaj göndermek için giriş yap.');const path=author+'/'+crypto.randomUUID()+'.'+ext;const up=await sb.storage.from('patiyiz-private-messages').upload(path,file,{contentType:mime});if(up.error)throw up.error;try{if(me?.id!==author)throw Error('Oturum değişti. Mesaj gönderilmedi.');const m=await sb.from('messages').insert({sender_id:author,receiver_id:receiver,body:type==='audio'?'🎤 Sesli mesaj':mime==='image/gif'?'🎞️ GIF':'📷 Fotoğraf',attachment_type:type,attachment_path:path}).select('*').single();if(m.error)throw m.error;return m.data}catch(error){try{await sb.storage.from('patiyiz-private-messages').remove([path])}catch(cleanup){console.warn('Gönderilemeyen medya temizlenemedi',cleanup)}throw error}}
 const patiDmSignedCache=new Map();
 const patiDmSigningPending=new Map();
+// Reuse previously opened authenticated images while this browser tab is active.
+const patiDmPhotoCache=new Map(),patiDmPhotoPending=new Map();
+let patiDmPhotoOwner='';
+function patiDmPhotoClear(){
+ for(const item of patiDmPhotoCache.values())try{URL.revokeObjectURL(item.url)}catch(_){}
+ patiDmPhotoCache.clear();patiDmPhotoPending.clear();patiDmPhotoOwner='';
+}
+function patiDmPhotoRemember(owner,key,url,bytes=0){
+ if(patiDmPhotoOwner&&patiDmPhotoOwner!==owner)patiDmPhotoClear();
+ patiDmPhotoOwner=owner;
+ const old=patiDmPhotoCache.get(key);
+ if(old&&old.url!==url)try{URL.revokeObjectURL(old.url)}catch(_){}
+ patiDmPhotoCache.delete(key);patiDmPhotoCache.set(key,{url,bytes});
+ let total=[...patiDmPhotoCache.values()].reduce((n,x)=>n+x.bytes,0);
+ while(patiDmPhotoCache.size>24||total>48*1024*1024){
+  const k=patiDmPhotoCache.keys().next().value;
+  if(k===key&&patiDmPhotoCache.size===1)break;
+  const evicted=patiDmPhotoCache.get(k);patiDmPhotoCache.delete(k);
+  total-=evicted.bytes;try{URL.revokeObjectURL(evicted.url)}catch(_){}
+ }
+}
 function patiDmMediaNotice(el,failed){
  if(!el?.isConnected)return;
  const box=el.closest?.('.bubble-chat');
@@ -3887,8 +3908,27 @@ async function loadDmMedia(){
    });
   }
   patiDmMediaNotice(el,false);
-  if(el.src!==signed.url)el.src=signed.url;
-  if(el.tagName==='IMG')el.decoding='async';
+  if(el.tagName==='IMG'){
+   let imageUrl=patiDmPhotoCache.get(key)?.url;
+   if(!imageUrl){
+    let download=patiDmPhotoPending.get(key);
+    if(!download){
+     download=fetch(signed.url,{cache:'force-cache'})
+      .then(response=>{if(!response.ok)throw Error('Görsel indirilemedi');return response.blob()})
+      .then(blob=>{
+       if(!blob.type.startsWith('image/'))throw Error('Görsel biçimi geçersiz');
+       const blobUrl=URL.createObjectURL(blob);
+       if(me?.id!==userId){URL.revokeObjectURL(blobUrl);return ''}
+       patiDmPhotoRemember(userId,key,blobUrl,blob.size);return blobUrl;
+      }).catch(()=>signed.url).finally(()=>patiDmPhotoPending.delete(key));
+     patiDmPhotoPending.set(key,download);
+    }
+    imageUrl=await download;
+   }
+   if(!el.isConnected||me?.id!==userId)return;
+   if(imageUrl&&el.src!==imageUrl)el.src=imageUrl;
+   el.decoding='async';
+  }else if(el.src!==signed.url)el.src=signed.url;
  }));
 }
 async function sendDmImage(file){
@@ -3896,6 +3936,7 @@ async function sendDmImage(file){
  const recipient=personId,uid=me.id;dmMediaSending=true;
  const history=document.querySelector('.chat-history');
  const pending=document.createElement('div'),local=URL.createObjectURL(file);
+ let retained=false;
  pending.className='bubble-chat mine pati-dm-pending';
  pending.innerHTML='<img class="pati-dm-image" alt="Gönderilen fotoğraf"><small>Fotoğraf gönderiliyor…</small>';
  pending.querySelector('img').src=local;
@@ -3904,13 +3945,17 @@ async function sendDmImage(file){
  try{
   const record=await uploadDmFile(file,'image',recipient);
   if(!record)throw new Error('Fotoğraf sunucuda doğrulanamadı.');
+  if(me?.id===uid&&record.attachment_path){
+   patiDmPhotoRemember(uid,uid+':'+record.attachment_path,local,file.size);
+   retained=true;
+  }
   if(me?.id===uid&&personId===recipient){
    data.messages=data.messages.filter(x=>x.id!==record.id);
    data.messages.push(record);
    pending.remove();navRender();if(view==='messages')render();
   }else pending.remove();
  }catch(e){pending.remove();throw e}
- finally{URL.revokeObjectURL(local);dmMediaSending=false}
+ finally{if(!retained)URL.revokeObjectURL(local);dmMediaSending=false}
 }
 async function startDmRecord(){
  if(!personId||!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder)throw Error('Bu cihaz ses kaydını desteklemiyor.');
@@ -7528,7 +7573,7 @@ case 'edit-post':compose(data.posts.find(p=>p.id===id));break;case 'delete-post'
   if(result.error)throw result.error;
   if(!result.data?.length)throw Error('Görev silinemedi veya yetkin yok.');
   data.care=data.care.filter(x=>x.id!==id);if(view==='care'||(view==='my-pet'&&patiMyPetTab==='care'))render();
- },'Bakım görevi silindi.');break;}case 'logout':run(async()=>{globalThis.PatiyizPrivateMedia?.clear();const r=await sb.auth.signOut();if(r.error)throw r.error;me=null;isAdmin=false;authMode='login';showAuth()},'Çıkış yapıldı');break;
+ },'Bakım görevi silindi.');break;}case 'logout':run(async()=>{globalThis.PatiyizPrivateMedia?.clear();patiDmPhotoClear();const r=await sb.auth.signOut();if(r.error)throw r.error;me=null;isAdmin=false;authMode='login';showAuth()},'Çıkış yapıldı');break;
 case 'post-likers-more':void patiLoadPostLikers();break;case 'post-likers':patiOpenPostLikers(id);break;case 'like':void togglePostLike(id);break;case 'share-post':openPatiShareModal(id);break;case 'pati-copy-post':{const link=location.origin+location.pathname+'#post-'+id;if(navigator.clipboard?.writeText)navigator.clipboard.writeText(link).then(()=>notify('Paylaşım bağlantısı kopyalandı.'),()=>notify('Bağlantı kopyalanamadı.',true));else notify(link);break}case 'pati-share-system':{const link=location.origin+location.pathname+'#post-'+id;if(navigator.share)navigator.share({title:'Patiyiz paylaşımı',url:link}).catch(()=>{});else if(navigator.clipboard?.writeText)navigator.clipboard.writeText(link).then(()=>notify('Bağlantı kopyalandı.'));break}case 'dm-story-open':{if(!patiDmHasActiveStory(id))return notify('Bu kullanıcının aktif hikâyesi bulunmuyor.',true);openStory(id);break}case 'dm-open-shared-post':run(()=>patiDmOpenSharedPost(id,target.dataset.comment||''));break;case 'send-post-dm':{const post=data.posts.find(x=>x.id===target.dataset.post);if(!post||id===me.id)break;run(async()=>{const r=await sb.from('messages').insert({sender_id:me.id,receiver_id:id,body:'📨 Paylaşım: '+location.origin+location.pathname+'#post-'+post.id});if(r.error)throw r.error;if(typeof patiEngagementCounts!=='undefined'&&typeof patiScheduleEngagement==='function'){patiEngagementCounts.delete(post.id);patiScheduleEngagement();}closeModal();},'Paylaşım mesajla gönderildi.');break;}case 'save':void togglePostSave(id);break;case 'follow':run(()=>doToggle('follows',{follower_id:me.id,followee_id:id},followed.has(id)||patiFollowPageState.viewerFollowing.has(id)));break;
 case 'pati-follow-accept':run(()=>patiFollowDecision(id,true));break;
 case 'pati-follow-decline':run(()=>patiFollowDecision(id,false));break;
