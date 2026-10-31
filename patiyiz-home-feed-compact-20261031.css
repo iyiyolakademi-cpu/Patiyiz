@@ -1,0 +1,52 @@
+/* 2026-10-31 — Mobile home-feed spacing.
+   Keep Patiyiz styling, story rings and native media ratios intact.
+   Only the home timeline (with its two feed tabs) is affected. */
+@media (max-width:740px) {
+  /* The tab switch stays comfortably tappable, without a tall empty panel. */
+  #main-content:has(>.pati-home-feed-tabs)>.pati-home-feed-tabs {
+    gap:6px!important;
+    margin:6px 9px 4px!important;
+    padding-bottom:4px!important;
+  }
+  #main-content:has(>.pati-home-feed-tabs)>.pati-home-feed-tabs>button {
+    box-sizing:border-box;
+    min-height:44px!important;
+    padding:9px 6px!important;
+    font-size:13px!important;
+    line-height:1.2!important;
+  }
+
+  /* The story strip sits right above the first post, as in a compact feed.
+     Do not resize the story avatar or reposition its plus badge. */
+  #main-content:has(>.pati-home-feed-tabs)>.stories-section {
+    box-sizing:border-box!important;
+    margin:0!important;
+    padding:7px 9px 5px!important;
+    border-top:0!important;
+    border-bottom:1px solid var(--pui-border,#e9e9ec)!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+  }
+  #main-content:has(>.pati-home-feed-tabs)>.stories-section .stories-strip {
+    gap:13px!important;
+    margin:0!important;
+    padding:4px 2px 5px!important;
+    scroll-padding-inline:8px;
+  }
+  #main-content:has(>.pati-home-feed-tabs)>.stories-section .story-person {
+    gap:5px!important;
+  }
+  #main-content:has(>.pati-home-feed-tabs)>.stories-section .story-person small {
+    margin:0!important;
+    line-height:1.25!important;
+  }
+
+  /* Zero artificial separator height above the first post. */
+  #main-content:has(>.pati-home-feed-tabs)>.pati-feed-posts {
+    margin-top:0!important;
+    padding-top:0!important;
+  }
+  #main-content:has(>.pati-home-feed-tabs)>.pati-feed-posts>.pati-feed-card:first-child {
+    margin-top:0!important;
+  }
+}
