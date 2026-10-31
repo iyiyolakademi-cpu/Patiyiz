@@ -1,0 +1,305 @@
+/* Patiyiz dark-mode repair – screen-wide semantic surfaces, 31 October 2026.
+ * Loaded AFTER older light-only layouts. Never recolor user photos/videos,
+ * full-screen story media, or intentional red/green vote and reaction states. */
+html[data-pati-theme="dark"]{
+ color-scheme:dark!important;
+ --pati-dark-bg:#0f1014;--pati-dark-panel:#1b1d23;
+ --pati-dark-raised:#252730;--pati-dark-input:#292c34;
+ --pati-dark-line:#373b46;--pati-dark-text:#f4f5f8;
+ --pati-dark-muted:#c2c6d1;--pati-dark-subtle:#a5abb9;
+ --pati-dark-hover:#2c3039;
+ --pati-social-page:#0f1014;
+ --pati-social-surface:#1b1d23;
+ --pati-social-ink:#f4f5f8;
+ --pati-social-secondary:#c2c6d1;
+ --pati-social-line:#373b46;
+ --pati-social-pressed:#2d3039;
+ --pui-page:#0f1014;--pui-paper:#1b1d23;
+ --pui-raised:#252730;--pui-input:#292c34;
+ --pui-text:#f4f5f8;--pui-secondary:#c2c6d1;
+ --pui-border:#373b46;
+ background:#0f1014!important;
+}
+html[data-pati-theme="dark"] body,
+html[data-pati-theme="dark"] #app-root:not(.hidden),
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.app-shell,
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.app-shell>#main-content{
+ background:#0f1014!important;color:#f4f5f8!important;
+}
+html[data-pati-theme="dark"] #app-root>.mobile-header,
+html[data-pati-theme="dark"] #app-root .sidebar,
+html[data-pati-theme="dark"] #right-rail,
+html[data-pati-theme="dark"] #app-root .sidebar-bottom{
+ background:#1b1d23!important;color:#f4f5f8!important;
+ border-color:#373b46!important;
+}
+html[data-pati-theme="dark"] #app-root>.mobile-header :is(.brand,.brand-word,.brand-caption),
+html[data-pati-theme="dark"] #app-root .sidebar :is(.nav-link,.nav-caption,.sidebar-label),
+html[data-pati-theme="dark"] #right-rail :is(h2,h3,strong,p,small){
+ color:#f4f5f8!important;
+}
+html[data-pati-theme="dark"] #app-root .sidebar .nav-link.active{
+ background:#30343d!important;color:#fff!important;
+}
+html[data-pati-theme="dark"] #app-root>.mobile-header :is(.pati-header-menu,.pati-header-messages,.pati-header-notifications){
+ background:#30333c!important;color:#fff!important;border-color:#454955!important;
+}
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.mobile-bottom{
+ background:#1b1d23!important;color:#f4f5f8!important;
+ border-color:#373b46!important;
+}
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.mobile-bottom .mobile-nav-btn:not(.active){
+ color:#c5c9d2!important;background:transparent!important;
+}
+html[data-pati-theme="dark"] #app-root:not(.hidden)>.mobile-bottom .mobile-nav-btn.active{
+ color:#fff!important;background:#333641!important;
+}
+/* Feed and social cards – do not darken image/video media. */
+html[data-pati-theme="dark"] #main-content :is(
+ .stories-section,.pati-home-feed-tabs,.pati-feed-posts,.pati-feed-card,
+ .pati-feed-card-header,.pati-card:not(.pati-reel-item),.pati-post-details,
+ .pati-feed-text-content,.pati-home-question,.pati-home-question-card,
+ .pati-post-caption,.pati-post-like-summary,.pati-home-question-actions,
+ .pati-home-question-title,.pati-home-question-body
+){
+ background-color:#1b1d23!important;
+ color:#f4f5f8!important;border-color:#373b46!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-feed-card :is(
+ .pati-feed-card-header,.pati-post-details,.pati-post-caption,
+ .pati-post-like-summary,.pati-post-more,.pati-feed-pet,.pati-post-time
+){color:#f4f5f8!important}
+html[data-pati-theme="dark"] #main-content .pati-feed-card .pati-post-time,
+html[data-pati-theme="dark"] #main-content .pati-feed-card :is(small,time,.muted){
+ color:#bcc0cd!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-feed-card .pati-social-actions{
+ background:transparent!important;border-color:#373b46!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-feed-card .pati-social-actions>button{
+ background:transparent!important;color:#f4f5f8!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-feed-card .pati-social-actions>button svg.icon{
+ color:#f4f5f8!important;stroke:currentColor!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-feed-card .pati-social-actions>button.active[data-action="like"] svg.icon{
+ color:#ff4f6b!important;stroke:#ff4f6b!important;fill:#ff4f6b!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-feed-card .pati-social-actions>button.active[data-action="save"] svg.icon{
+ color:#fff!important;stroke:#fff!important;fill:#fff!important;
+}
+/* Profile, across all tabs – previous visual CSS explicitly forced white. */
+html[data-pati-theme="dark"] #main-content .pati-ig-profile,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile :is(
+ .pati-profile-topbar,.pati-profile-visitor-topbar,.pati-ig-summary,
+ .pati-ig-info,.pati-ig-about,.pati-profile-links,.pati-ig-tabs,
+ .pati-ig-grid,.pati-ig-highlights,.pati-ig-actions,.pati-ig-bio,
+ .pati-ig-profession,.pati-ig-name,.pati-ig-stats,.pati-ig-handle-row
+){
+ background-color:#1b1d23!important;color:#f4f5f8!important;
+ border-color:#373b46!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile :is(
+ .pati-profile-topbar-title,.pati-profile-visitor-username,
+ .pati-ig-handle,.pati-ig-name,.pati-ig-profession,.pati-ig-bio,
+ .pati-ig-stats b,.pati-ig-stats strong,.pati-ig-about strong,
+ .pati-ig-tabs>button,.pati-profile-links a,.pati-profile-links span
+){color:#f4f5f8!important;-webkit-text-fill-color:currentColor!important}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-stats small,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile :is(small,.pati-ig-handle-secondary){
+ color:#c2c6d1!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-avatar{
+ background:#1b1d23!important;border-color:#414550!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-menu-trigger,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-more-wrap>summary,
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-more-menu{
+ background:#282b34!important;color:#f4f5f8!important;
+ border-color:#454853!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-profile-menu-trigger svg{
+ stroke:#f4f5f8!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-more-menu button{
+ color:#f4f5f8!important;background:transparent!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-profile-more-menu button:hover{
+ background:#363a45!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-tabs>button.active{
+ background:#2b2e38!important;color:#fff!important;
+ border-color:#f4f5f8!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-tabs>button .icon{
+ stroke:currentColor!important;color:inherit!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-grid{
+ background:#111318!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-grid>.pati-profile-tile{
+ background:#2b2e36!important;border-color:#373b46!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-actions>button[data-action="edit-profile"]{
+ background:#343842!important;border-color:#4b4f5c!important;color:#fff!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-ig-profile .pati-ig-actions>button.pati-profile-coin-balance{
+ background:#292c35!important;color:#f4f5f8!important;border-color:#454955!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-profile-coin-icon{
+ background:#3a3e48!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-profile-coin-copy strong{
+ color:#fff!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-profile-coin-copy small{
+ color:#c2c6d1!important;
+}
+/* Settings, features menu, user search, statistics, notifications. */
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-settings-list,.pati-settings-section,.pati-settings-items,
+ .pati-settings-line,.pati-settings-row,.pati-settings-choice,
+ .pati-theme-card,.pati-theme-options,.pati-feature-group,
+ .pati-mobile-menu-list,.pati-mobile-menu-item,.pati-mobile-menu,
+ .pati-search-screen,.pati-search-top,.pati-explore-media-screen,
+ .pati-explore-search-launch,.pati-search-field,.pati-search-results,
+ .pati-insights,.pati-insights-screen,.pati-insights-panel,
+ .pati-insights-card,.pati-insights-hero,.pati-stat-card,
+ .pati-alerts,.pati-notifications-simple,.pati-notifications-simple-head,
+ .notification-v2-list,.notification-v2-row,.pati-saved-posts,
+ .pati-saved-heading,.pati-community-card,.pati-community-head,
+ .pati-question-list,.pati-question-card,.pati-question-item
+){
+ background-color:#1b1d23!important;color:#f4f5f8!important;
+ border-color:#373b46!important;
+}
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-settings-list,.pati-feature-group,.pati-community-card,
+ .pati-insights,.pati-alerts,.pati-notifications-simple,
+ .pati-search-screen,.pati-explore-media-screen
+) :is(h1,h2,h3,h4,strong,label,p){
+ color:#f4f5f8!important;
+}
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-settings-list,.pati-feature-group,.pati-community-card,
+ .pati-insights,.pati-alerts,.pati-notifications-simple
+) :is(small,.muted,.pati-settings-copy small,.pati-notification-time,.pati-feature-description){
+ color:#c2c6d1!important;
+}
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-settings-row,.pati-feature-group,.pati-feature-add-pet,
+ .pati-search-field,.pati-explore-search-launch,.pati-dm-filters button,
+ .pati-mobile-menu-item
+) :is(button,.pati-settings-icon,.pati-settings-arrow,.icon,svg){
+ color:#f4f5f8!important;stroke:currentColor!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-theme-options button{
+ background:#282c35!important;color:#f4f5f8!important;
+ border-color:#454955!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-theme-options button.active{
+ background:#f4f5f8!important;color:#16181e!important;
+ border-color:#f4f5f8!important;
+}
+/* Conversations – avoid touching colored outgoing message bubbles or media. */
+html[data-pati-theme="dark"] #main-content :is(
+ .pati-dm-top,.pati-dm-layout,.pati-dm-list-row,.chat-people,
+ .chat-window,.chat-window>header,.chat-history,
+ .pati-dm-filters,.chat-composer,.pati-dm-inbox,.pati-dm-inbox-header,
+ .pati-dm-inbox-search,.pati-dm-inbox-empty
+){
+ background-color:#1b1d23!important;color:#f4f5f8!important;
+ border-color:#373b46!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-dm-layout :is(.chat-person-info strong,.chat-window header strong,.pati-dm-top h1){
+ color:#f4f5f8!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-dm-layout :is(.chat-person-info small,.chat-person-meta,.chat-window header small){
+ color:#c2c6d1!important;
+}
+html[data-pati-theme="dark"] #main-content .pati-dm-filters button:not(.active){
+ background:#282c35!important;color:#cbd0da!important;
+ border-color:#414551!important;
+}
+/* Fullscreen share, comments and other modal workflows. */
+html[data-pati-theme="dark"] #modal-root :is(
+ .modal-backdrop,.modal,.modal-header,.modal-content,
+ .pati-instagram-comments,.comment-list,.pati-comments-list,
+ .pati-share-preview,.pati-share-person,.pati-share-quick,
+ .pati-profile-edit-modal,.pati-comment-editor
+){
+ background-color:#1b1d23!important;color:#f4f5f8!important;
+ border-color:#373b46!important;
+}
+html[data-pati-theme="dark"] #modal-root :is(
+ .modal-header h2,.modal-content h2,.modal-content h3,
+ .pati-share-preview b,.pati-share-person strong,.pati-comment-author,
+ .comment-list strong,.pati-share-recipient-title
+){color:#f4f5f8!important}
+html[data-pati-theme="dark"] #modal-root :is(
+ .pati-share-preview small,.pati-share-person small,.pati-comment-time,
+ .pati-share-empty,.pati-comment-meta
+){color:#c2c6d1!important}
+html[data-pati-theme="dark"] #modal-root :is(
+ .close-modal,.modal-footer button,.pati-share-quick button,
+ .pati-comment-actions button,.pati-share-person
+){
+ background:#292c35!important;color:#f4f5f8!important;
+ border-color:#454955!important;
+}
+html[data-pati-theme="dark"] #modal-root:has(#share-post-form) .modal-backdrop,
+html[data-pati-theme="dark"] #modal-root:has(#share-post-form) .modal,
+html[data-pati-theme="dark"] #modal-root:has(#share-post-form) .modal-header,
+html[data-pati-theme="dark"] #modal-root:has(#share-post-form) #share-post-form>.modal-content{
+ background:#1b1d23!important;color:#f4f5f8!important;
+ border-color:#373b46!important;
+}
+html[data-pati-theme="dark"] #modal-root:has(#share-post-form) .modal-header h2{
+ color:#f4f5f8!important;
+}
+html[data-pati-theme="dark"] #share-post-form .pati-share-quick>button,
+html[data-pati-theme="dark"] #share-post-form .pati-share-to-story{
+ background:#292c35!important;color:#f4f5f8!important;
+ border-color:#454955!important;
+}
+/* Inputs, selects and readable placeholders. Avoid checkboxes, radio,
+   file inputs, video seek sliders and media previews. */
+html[data-pati-theme="dark"] :is(#main-content,#modal-root,#tools-form,#auth-root) :is(
+ input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]),
+ textarea,select
+){
+ color-scheme:dark!important;color:#f4f5f8!important;
+ background-color:#292c35!important;
+ border-color:#545966!important;
+}
+html[data-pati-theme="dark"] :is(#main-content,#modal-root,#tools-form,#auth-root) :is(input,textarea)::placeholder{
+ color:#c1c5d0!important;opacity:1!important;
+}
+/* Keep full-screen media/viewers accessible in either color scheme. */
+html[data-pati-theme="dark"] #story-overlay.pati-story-viewers-open .story-viewers-sheet{
+ background:#191b21!important;color:#f4f5f8!important;
+}
+html[data-pati-theme="dark"] #story-overlay.pati-story-viewers-open .pati-story-activity-top{
+ background:#242730!important;color:#fff!important;
+}
+html[data-pati-theme="dark"] #story-overlay.pati-story-viewers-open :is(
+ .story-view-user,.pati-story-activity-person,.pati-story-activity-section
+){border-color:#393d48!important;color:#f4f5f8!important}
+html[data-pati-theme="dark"] #story-overlay .story-player :is(.story-big-photo,.story-big-video),
+html[data-pati-theme="dark"] #main-content :is(.pati-reel-video,.pati-post-video),
+html[data-pati-theme="dark"] #main-content :is(.pati-ig-grid,.pati-carousel,.pati-photo) :is(img,video){
+ filter:none!important;opacity:1!important;
+}
+/* A dark-mode return button should contrast; a Reels return button stays white-on-black. */
+html[data-pati-theme="dark"] #main-content>.pati-page-back{
+ background:#282c35!important;color:#f4f5f8!important;
+ border-color:#545966!important;
+}
+html[data-pati-theme="dark"][data-pati-view="reels"] #main-content>.pati-page-back{
+ background:#111822c9!important;color:#fff!important;border-color:#ffffff6a!important;
+}
+@media(prefers-contrast:more){
+ html[data-pati-theme="dark"] #main-content :is(.pati-feed-card,.pati-ig-profile,.pati-settings-section){
+  border-color:#656b79!important;
+ }
+}
