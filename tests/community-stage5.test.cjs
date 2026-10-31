@@ -36,7 +36,10 @@ test('Topluluk: yükleme hatası kayıtları silmez ve tekrar denenebilir',async
 });
 test('Topluluk: soru, kategori, oy, cevap ve bildir eylemleri korunur',()=>{
  const page=part('function communityPage(){','const knowledge=');
- for(const k of ["data-action=\"vote\"","data-action=\"replies\"","data-action=\"report\"","community-filter","community-more"])assert.ok(page.includes(k),k);
+ for(const k of ["data-action=\"replies\"","data-action=\"report\"","community-filter","community-more","patiQuestionVoteButtons(q)"])assert.ok(page.includes(k),k);
+ assert.match(s,/function patiQuestionVoteButtons\(q\)/);
+ assert.match(s,/data-action="vote"/);
+ assert.match(s,/data-action="vote-negative"/);
  const replies=part('function questionReplies(id){','/* Never display');
  assert.match(replies,/community-replies-more/);
  assert.match(replies,/const previous=\$\('#reply-form'\)/);
