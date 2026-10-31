@@ -1,7 +1,7 @@
 /* Patiyiz Motion: presentation-only feedback after confirmed app operations. */
 (function(){
  'use strict';
-
+ const coinAsset='pati-coin.svg?v=20261025-brand-1';
  const reduce=()=>!!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
  const pawHTML='<span class="pati-motion-paws" aria-hidden="true"><span>🐾</span><span>🐾</span><span>🐾</span></span>';
  const queue=cb=>window.requestAnimationFrame?requestAnimationFrame(()=>requestAnimationFrame(cb)):setTimeout(cb,30);
@@ -17,9 +17,9 @@
   document.querySelectorAll('.pati-motion-coin-toast,.pati-motion-flying-coin').forEach(el=>el.remove());
   const toast=document.createElement('div');
   toast.className='pati-motion-coin-toast';toast.setAttribute('role','status');
-  const img=document.createElement('span');img.textContent='💰';img.setAttribute('aria-hidden','true');
+  const img=document.createElement('img');img.src=coinAsset;img.alt='';
   const detail=document.createElement('div'),heading=document.createElement('strong'),info=document.createElement('span');
-  heading.textContent='+'+value.toLocaleString('tr-TR')+' bakiye';
+  heading.textContent='+'+value.toLocaleString('tr-TR')+' PatiCoin';
   info.textContent=Array.isArray(titles)&&titles.length?titles.filter(Boolean).slice(0,2).join(' · '):'Görev ödülün hesabına eklendi';
   detail.append(heading,info);toast.append(img,detail);document.body.append(toast);
   setTimeout(()=>toast.remove(),2200);
@@ -28,7 +28,7 @@
   const dest=targets.map(s=>document.querySelector(s)).find(el=>el?.getClientRects().length&&getComputedStyle(el).visibility!=='hidden');
   if(!dest)return;
   const end=dest.getBoundingClientRect();
-  const flying=document.createElement('span');flying.className='pati-motion-flying-coin';flying.textContent='💰';flying.setAttribute('aria-hidden','true');
+  const flying=document.createElement('img');flying.className='pati-motion-flying-coin';flying.src=coinAsset;flying.alt='';flying.setAttribute('aria-hidden','true');
   const start=toast.getBoundingClientRect();const sx=start.left+21,sy=start.top+start.height/2;
   flying.style.left=sx-14+'px';flying.style.top=sy-14+'px';document.body.append(flying);
   const dx=end.left+end.width/2-sx,dy=end.top+end.height/2-sy;
