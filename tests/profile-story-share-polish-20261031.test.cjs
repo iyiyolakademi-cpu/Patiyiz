@@ -12,7 +12,7 @@ test('Profile does not show extra back buttons and holds live PatiCoin by Edit p
  const profile=app.slice(app.indexOf('function profilePage(){'),app.indexOf('function formField('));
  assert.doesNotMatch(profile,/class="pati-profile-back"/);
  assert.match(profile,/Profili düzenle/);
- assert.match(profile,/PatiCoin bakiyen/);
+ assert.match(profile,/Bakiyen/);
  assert.match(profile,/pati-profile-balance/);
  assert.match(profile,/patiCoinState\.balance/);
  assert.match(app,/profileBalance\.textContent=Number\(patiCoinState\.balance/);
