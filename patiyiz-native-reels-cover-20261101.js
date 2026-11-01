@@ -51,7 +51,7 @@ document.addEventListener('click',e=>{
  const el=editor(currentRoot);if(!el)return;
  const name=btn.dataset.nativeCover;
  if(name==='gallery')$(el,'input[type="file"]')?.click();
- if(name==='frame'){mode='frame';update();const v=$(el,'video');if(v){v.pause();if(v.readyState<1)v.load();$(el,'.pati-native-cover-status').textContent='Zaman çubuğunu kaydır ve Bu kareyi kapak yap seçeneğine bas.';}}
+ if(name==='frame'){mode='frame';update();const v=$(el,'video');if(v){v.controls=true;v.muted=true;v.playsInline=true;v.preload='auto';if(!v.src&&videoUrl)v.src=videoUrl;v.load();v.play().catch(()=>{$(el,'.pati-native-cover-status').textContent='Videoyu oynatmak için oynat simgesine dokun.'});}}
  if(name==='use-frame'){const v=$(el,'video');v?.pause();if(v?.seeking)v.addEventListener('seeked',capture,{once:true});else capture()}
 },true);
 document.addEventListener('change',e=>{
@@ -64,7 +64,7 @@ document.addEventListener('input',e=>{
  const el=editor(currentRoot);if(!el||e.target!==$(el,'input[type="range"]'))return;
  const v=$(el,'video');if(v&&Number.isFinite(v.duration)&&v.duration>0){v.pause();v.currentTime=Math.min(Math.max(0,Number(e.target.value)/1000*v.duration),Math.max(0,v.duration-.03))}
 },true);
-const observer=new MutationObserver(()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;sync()})});
+const observer=new MutationObserver(records=>{if(!records.some(r=>r.addedNodes.length||r.target?.id==='pati-system-preview'))return;if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;sync()})});
 observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden']});
 sync();
 })();
