@@ -57,7 +57,7 @@ test('Photo adjustment controls are available on mobile, preview and export',()=
  assert.match(app,/cropPostPhoto\(selected,'original'\)/);
  assert.match(css,/\.pati-crop-adjustments/);
  assert.match(css,/\.pati-crop-filter-tile\.active/);
- assert.match(html,/patiyiz-photo-filters-right-menu-20261101\.css\?v=1/);
+ assert.match(html,/patiyiz-photo-filters-right-menu-20261101\.css\?v=2/);
 });
 test('Right-side ball opens a fullscreen page on tap only',()=>{
  assert.match(app,/id='pati-right-menu-handle'/);
