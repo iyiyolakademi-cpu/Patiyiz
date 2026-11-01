@@ -279,6 +279,7 @@ async function patiStreak60Claim(){
  }catch(error){if(me?.id===uid)notify('60 günlük seri talebi oluşturulamadı: '+friendly(error),true)}
  finally{patiStreak60ClaimBusy=false}
 }
+function patiWeeklyBoardSafe(){try{return patiWeeklyBoard()}catch(error){console.warn('Haftalık sıralama hatası:',error);return '<section class="pati-weekly-fallback"><h2>Haftalık sıralama</h2><p>Sıralama yüklenemedi. Günlük serilerin aşağıda kullanılabilir.</p></section>'}}
 function patiStreaksPage(){
  const goal=patiStreakGoalState.goal,days=patiStreakState.count||0,
    best=patiStreakState.best||0,earned=new Set(patiStreakGoalState.earned||[]);
@@ -315,8 +316,8 @@ function patiStreaksPage(){
  const retry=patiStreakGoalState.error?'<button type="button" class="pati-streaks-retry" data-action="pati-streak-refresh">Yeniden dene</button>':'';
  main.innerHTML='<div class="pati-streaks-page">'+
    '<header class="pati-streaks-top"><button type="button" class="pati-streaks-back" data-action="pati-streak-back" aria-label="Önceki sayfaya dön">←</button><div class="pati-streak-title"><span class="pati-streak-kicker">GÜNLÜK SERİLER</span><h1>Serilerim</h1><p>Her gün giriş yap, hedeflerini tamamla, puan kazan.</p></div></header>'+
-   (window.PatiyizDelight?.streakPanel({count:days,best},patiStreakToday())||'')+
-   patiWeeklyBoard()+
+   (function(){try{return window.PatiyizDelight?.streakPanel?.({count:days,best},patiStreakToday())||''}catch(error){console.warn('Seri görseli:',error);return ''}})()+
+   patiWeeklyBoardSafe()+
    '<section class="pati-streak-goal-section"><div class="pati-streak-goals-header"><h2>Seri hedefini belirle</h2><p>'+esc(label)+'</p>'+(goal?'<div class="pati-streak-goal-current"><span aria-hidden="true"></span>Aktif hedef: '+goal+' gün</div>':'')+'</div>'+
    retry+'<div class="pati-streak-goal-grid">'+cards+'</div>'+bonus60+
    '<p class="pati-streak-rules">Ödüller yalnızca seçtiğin ve tamamladığın hedef için bir kez alınabilir. Puanı topla butonuna bastığında sunucu ödülü doğrular. Gün değişimi Türkiye saatine göre hesaplanır.</p></section></div>';
@@ -523,10 +524,10 @@ function patiCloseRightMenu(){
 function patiOpenRightMenu(markup){
  patiCloseRightMenu();
  const popup=document.createElement('dialog');
- popup.className='pati-right-menu-drawer';
+ popup.className='pati-right-menu-drawer';popup.dataset.fullscreen='true';
  popup.setAttribute('aria-label','Patiyiz menüsü');
  popup.innerHTML='<div class="pati-right-menu-panel">'+
-  '<header class="pati-right-menu-head"><div><small>PATİYİZ</small><h2>Menü</h2></div><button type="button" data-drawer-close aria-label="Menüyü kapat">×</button></header>'+
+  '<header class="pati-right-menu-head"><div><small>UYGULAMA</small><h2>Menü</h2></div><button type="button" data-drawer-close aria-label="Menüyü kapat">×</button></header>'+
   '<div class="pati-right-menu-content">'+markup+'</div></div>';
  document.body.appendChild(popup);
  patiRightMenuDialog=popup;
@@ -552,7 +553,7 @@ function openMobileFeaturesMenu(){
   {title:'Topluluk',tone:'purple',items:[['community','Soru & Cevap','users']]},
    {title:'101 Eğitim Serileri',tone:'blue',items:[['education','10 seri · Her biri 101 ders','library']]},
   {title:'Hayvanım',tone:'green',items:[['my-pet','Hayvanım Merkezi · Tüm seçenekler','heart']]},
-  {title:'Puanlarım ve ödüllerim',tone:'orange',items:[['rewards','Puan ve Görevler','grid'],['streaks','Günlük Seriler','calendar'],['shop','Ödül Mağazası','grid'],['saved-posts','Kaydettiğim gönderiler','bookmark']]},
+  {title:'Sosyal Puan ve ödüller',tone:'orange',items:[['rewards','Sosyal Puan ve Görevler','grid'],['streaks','Günlük Seriler','calendar'],['shop','Ödül Mağazası','grid'],['saved-posts','Kaydettiğim gönderiler','bookmark']]},
   {title:'Hesabım',tone:'blue',items:[['settings','Ayarlar ve gizlilik','settings'],['blocked','Engellediğim kişiler','shield']]}
  ];
  const sections=groups.map(group=>'<section class="pati-feature-group pati-menu-tone-'+group.tone+'"><h3>'+esc(group.title)+'</h3><div class="pati-mobile-menu-list">'+
@@ -6724,7 +6725,7 @@ function patiCropApplyPixelFilter(ctx,width,height,state){
   soft:[.74,0,.91,1.08,0,0,0],
   cinema:[.77,.08,1.16,1,0,0,0]
  }[name]||[1,0,1,1,0,0,0];
- const image=ctx.getImageData(0,0,width,height),bytes=image.data;
+ let image;try{image=ctx.getImageData(0,0,width,height)}catch(error){console.warn('Piksel filtresi desteklenmiyor:',error);return false}const bytes=image.data;
  const [saturation,sepia,presetContrast,presetBrightness,redShift,greenShift,blueShift]=config;
  const finalContrast=contrast*presetContrast,finalBrightness=brightness*presetBrightness;
  for(let i=0;i<bytes.length;i+=4){
@@ -6748,6 +6749,7 @@ function patiCropApplyPixelFilter(ctx,width,height,state){
   bytes[i+2]=Math.max(0,Math.min(255,((blue+blueShift)*finalBrightness-128)*finalContrast+128));
  }
  ctx.putImageData(image,0,0);
+ return true;
 }
 function patiCropPaint(canvas,img,state){
  const [w,h]=patiCropSize(state.ratio,img,state.rotation);
@@ -6759,11 +6761,13 @@ function patiCropPaint(canvas,img,state){
  const scale=Math.max(w/rw,h/rh)*state.zoom;
  const extraX=rw*scale-w,extraY=rh*scale-h;
  const cx=w/2+extraX*(.5-state.x),cy=h/2+extraY*(.5-state.y);
- ctx.save();ctx.filter='none';ctx.translate(cx,cy);ctx.rotate(state.rotation*Math.PI/180);
+ ctx.save();ctx.filter=patiCropFilterCSS(state);ctx.translate(cx,cy);ctx.rotate(state.rotation*Math.PI/180);
  if(state.flip)ctx.scale(-1,1);
  ctx.drawImage(img,-img.naturalWidth*scale/2,-img.naturalHeight*scale/2,img.naturalWidth*scale,img.naturalHeight*scale);
  ctx.restore();
- patiCropApplyPixelFilter(ctx,w,h,state);
+ if(typeof ctx.getImageData==='function'){
+  try{ctx.clearRect(0,0,w,h);ctx.save();ctx.filter='none';ctx.translate(cx,cy);ctx.rotate(state.rotation*Math.PI/180);if(state.flip)ctx.scale(-1,1);ctx.drawImage(img,-img.naturalWidth*scale/2,-img.naturalHeight*scale/2,img.naturalWidth*scale,img.naturalHeight*scale);ctx.restore();const success=patiCropApplyPixelFilter(ctx,w,h,state);if(success===false){ctx.clearRect(0,0,w,h);ctx.save();ctx.filter=patiCropFilterCSS(state);ctx.translate(cx,cy);ctx.rotate(state.rotation*Math.PI/180);if(state.flip)ctx.scale(-1,1);ctx.drawImage(img,-img.naturalWidth*scale/2,-img.naturalHeight*scale/2,img.naturalWidth*scale,img.naturalHeight*scale);ctx.restore()}}catch(error){console.warn('Fotoğraf filtresi:',error)}
+ }
  return {extraX:Math.max(0,extraX),extraY:Math.max(0,extraY)};
 }
 async function patiCropOpen(options={}){
