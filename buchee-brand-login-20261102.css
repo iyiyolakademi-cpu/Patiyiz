@@ -15,3 +15,13 @@
 #app-root .pati-feed-brand-selector .brand-icon img{width:100%!important;height:100%!important;object-fit:contain!important}
 #app-root .pati-origin-flag{display:none!important}
 @media(max-width:740px){#auth-root .auth-shell{padding-top:calc(18px + env(safe-area-inset-top,0px))!important;padding-bottom:calc(18px + env(safe-area-inset-bottom,0px))!important}#app-root .pati-feed-brand-selector .brand-icon{width:60px!important;min-width:60px!important;flex-basis:60px!important}}
+
+/* Actual authentication markup uses .auth-pane and .auth-card. */
+#auth-root .auth-pane{width:100%!important;max-width:460px!important;margin:0 auto!important;min-width:0!important}
+#auth-root .auth-pane>.auth-card{width:100%!important;max-width:440px!important;margin:0 auto!important;box-sizing:border-box!important}
+#auth-root .auth-brand{display:flex!important;flex-direction:column!important;align-items:center!important;text-align:center!important;gap:10px!important}
+#auth-root .auth-brand .brand-icon{width:min(76vw,275px)!important;height:76px!important;border:0!important;background:transparent!important}
+#auth-root .auth-brand .brand-icon img{content:url("buchee-wordmark.svg")!important;width:100%!important;height:100%!important;object-fit:contain!important}
+#auth-root .auth-brand h1{display:none!important}
+#auth-root .auth-story{display:none!important}
+#auth-root .auth-eyebrow{color:#007957!important}
