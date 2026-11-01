@@ -5168,7 +5168,7 @@ function blockedPage(){const ids=[...blocked];main.innerHTML=header('Engellenenl
 async function patiLoadFollowPage(reset=false){
  if(!me||!sb)return;
  const owner=followListId||me.id,followers=followListMode==='followers';
- const key=me.id+':'+owner+':'+followListMode,previous=patiFollowPageState;
+ const key=me.id+':'+owner+':'+followListMode+(!followers?':'+patiFollowSortOrder:''),previous=patiFollowPageState;
  if(reset||previous.key!==key){
   patiFollowPageState={key,rows:[],next:0,hasMore:true,loading:false,error:'',viewerFollowing:new Set()};
  }
@@ -5180,8 +5180,8 @@ async function patiLoadFollowPage(reset=false){
  try{
   const result=await sb.from('follows').select('follower_id,followee_id,created_at')
    .eq(followers?'followee_id':'follower_id',owner)
-   .order('created_at',{ascending:false})
-   .order(followers?'follower_id':'followee_id',{ascending:false})
+   .order('created_at',{ascending:!followers&&patiFollowSortOrder==='oldest'})
+   .order(followers?'follower_id':'followee_id',{ascending:!followers&&patiFollowSortOrder==='oldest'})
    .range(offset,offset+PATI_FOLLOW_PAGE_SIZE-1);
   if(result.error)throw result.error;
   if(me?.id!==uid||loadToken!==patiyizLoadToken||patiFollowPageState!==state)return;
@@ -5218,9 +5218,9 @@ async function patiLoadFollowPage(reset=false){
 }
 function followListPage(){
  const owner=followListId||me.id,followers=followListMode==='followers';
- const key=me.id+':'+owner+':'+followListMode,state=patiFollowPageState;
+ const key=me.id+':'+owner+':'+followListMode+(!followers?':'+patiFollowSortOrder:''),state=patiFollowPageState;
  const scoped=state.key===key,records=scoped?state.rows:[];
- const orderedRecords=!followers&&patiFollowSortOrder==='oldest'?[...records].reverse():records;
+ const orderedRecords=records;
  const ids=[...new Set(orderedRecords.map(f=>followers?f.follower_id:f.followee_id))].filter(id=>!blocked.has(id));
  const isFollowing=id=>followed.has(id)||(scoped&&state.viewerFollowing.has(id));
  const title=followers?'Takipçiler':'Takip edilenler';
@@ -8056,7 +8056,7 @@ case 'notifications-delete-all':if(confirm('Tüm bildirimlerin kalıcı olarak s
  data.notifications=data.notifications.filter(x=>!ids.has(x.id));
  navRender();if(view==='notifications')notificationsPage();
 },'Tüm bildirimlerin silindi.');break;
-case 'blocked-list':navigate('blocked');break;case 'follow-load-more':void patiLoadFollowPage();break;case 'pati-follow-tab':if(['followers','following'].includes(id)){followListMode=id;patiFollowPageState.key='';followListPage();void patiLoadFollowPage(true)}break;case 'pati-follow-sort':if(['newest','oldest'].includes(id)){patiFollowSortOrder=id;followListPage()}break;case 'followers-list':followReturnList=false;followListId=id;followListMode=target.dataset.mode==='following'?'following':'followers';navigate('follows-list');break;case 'followers-back':profileId=followListId;followReturnList=false;navigate('profile');break;case 'return-follow-list':followReturnList=false;navigate('follows-list');break;case 'delete-account-open':modal('Hesabımı kalıcı olarak sil',`<div class="pati-delete-warning"><strong>⚠️ Bu işlem geri alınamaz.</strong><p>Profilin, gönderilerin, hikâyelerin, mesajların, sesli yorumların ve yüklediğin dosyalar silinir. Başka kullanıcıların seninle yazışmalarındaki mesajlar da etkilenebilir. Yönetici hesapları buradan silinemez.</p></div><div class="pati-field"><label>Mevcut şifren</label><input type="password" name="delete_password" autocomplete="current-password" required></div><div class="pati-field"><label>Onaylamak için HESABIMI SIL yaz</label><input name="delete_confirm" autocomplete="off" required placeholder="HESABIMI SIL"></div>`,'delete-account-form');break;case 'settings-password':modal('Şifremi değiştir',formField('new_password','Yeni şifre (en az 8 karakter)','password','',true),'settings-password-form');break;case 'push-disable':run(async()=>{await disablePhonePush();if(view==='notifications')void notificationCheckPush()},'Bu cihazda telefon bildirimleri kapatıldı.');break;case 'block':{const isBlocked=blocked.has(id);const question=isBlocked?'Bu kişinin engelini kaldırmak istiyor musun?':'Bu kullanıcıyı engellemek istiyor musun?';if(confirm(question))run(async()=>{await doToggle('user_blocks',{blocker_id:me.id,blocked_id:id},isBlocked);if($('#blocked-form'))closeModal();notify(isBlocked?'Engel kaldırıldı.':'Kullanıcı engellendi.');},null);break}
+case 'blocked-list':navigate('blocked');break;case 'follow-load-more':void patiLoadFollowPage();break;case 'pati-follow-tab':if(['followers','following'].includes(id)){followListMode=id;patiFollowPageState.key='';followListPage();void patiLoadFollowPage(true)}break;case 'pati-follow-sort':if(['newest','oldest'].includes(id)){patiFollowSortOrder=id;patiFollowPageState.key='';followListPage();void patiLoadFollowPage(true)}break;case 'followers-list':followReturnList=false;followListId=id;followListMode=target.dataset.mode==='following'?'following':'followers';navigate('follows-list');break;case 'followers-back':profileId=followListId;followReturnList=false;navigate('profile');break;case 'return-follow-list':followReturnList=false;navigate('follows-list');break;case 'delete-account-open':modal('Hesabımı kalıcı olarak sil',`<div class="pati-delete-warning"><strong>⚠️ Bu işlem geri alınamaz.</strong><p>Profilin, gönderilerin, hikâyelerin, mesajların, sesli yorumların ve yüklediğin dosyalar silinir. Başka kullanıcıların seninle yazışmalarındaki mesajlar da etkilenebilir. Yönetici hesapları buradan silinemez.</p></div><div class="pati-field"><label>Mevcut şifren</label><input type="password" name="delete_password" autocomplete="current-password" required></div><div class="pati-field"><label>Onaylamak için HESABIMI SIL yaz</label><input name="delete_confirm" autocomplete="off" required placeholder="HESABIMI SIL"></div>`,'delete-account-form');break;case 'settings-password':modal('Şifremi değiştir',formField('new_password','Yeni şifre (en az 8 karakter)','password','',true),'settings-password-form');break;case 'push-disable':run(async()=>{await disablePhonePush();if(view==='notifications')void notificationCheckPush()},'Bu cihazda telefon bildirimleri kapatıldı.');break;case 'block':{const isBlocked=blocked.has(id);const question=isBlocked?'Bu kişinin engelini kaldırmak istiyor musun?':'Bu kullanıcıyı engellemek istiyor musun?';if(confirm(question))run(async()=>{await doToggle('user_blocks',{blocker_id:me.id,blocked_id:id},isBlocked);if($('#blocked-form'))closeModal();notify(isBlocked?'Engel kaldırıldı.':'Kullanıcı engellendi.');},null);break}
 case 'report':closeStory();modal('İçeriği bildir',textField('reason','Şikâyet nedeni (en az 5 karakter)','',true,500),'report-form');$('#report-form').dataset.kind=target.dataset.kind;$('#report-form').dataset.record=id;break;
 case 'tools':openMobileFeaturesMenu();break;default:break}}
 let messagePressTimer=null,messagePressOrigin=null,messageLongPressed=false;
