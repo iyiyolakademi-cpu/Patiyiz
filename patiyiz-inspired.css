@@ -777,7 +777,7 @@ body.pati-create-open{overflow:hidden}
 #main-content .pati-feed-card .pati-social-actions button .icon{
  width:25px!important;height:25px!important;stroke-width:1.8;
 }
-#main-content .pati-feed-card .pati-social-actions .pati-save-action{margin-left:auto!important}
+#main-content .pati-feed-card .pati-social-actions .pati-save-action{margin-left:0!important}
 #main-content .pati-feed-card .pati-social-actions button.active{color:#e53956!important}
 #main-content .pati-post-details{padding:0 15px 14px;display:grid;gap:5px;min-width:0}
 #main-content .pati-post-like-summary{font-size:12px;color:#17181c;font-weight:850}
