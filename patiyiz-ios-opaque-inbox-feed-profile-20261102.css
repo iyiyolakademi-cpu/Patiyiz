@@ -1,0 +1,104 @@
+/* Patiyiz iOS mobile restoration: independent, opaque headers and reachable inbox tabs. */
+@media(max-width:740px){
+ html,body{max-width:100%!important;overflow-x:hidden!important}
+ #app-root:not(.hidden){isolation:isolate!important}
+ /* Old frost/glass rules must not obscure feed/profile/message controls. */
+ #app-root:not(.hidden)>.mobile-header,
+ #app-root:not(.hidden)>.app-shell,
+ #app-root:not(.hidden) #main-content,
+ #app-root:not(.hidden) #main-content .pati-dm-layout,
+ #app-root:not(.hidden) #main-content .pati-dm-top,
+ #app-root:not(.hidden) #main-content .pati-dm-filters,
+ #app-root:not(.hidden) #main-content .pati-dm-searchbar,
+ #app-root:not(.hidden) #main-content .pati-ig-profile{
+   -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+   filter:none!important;
+ }
+ #app-root:not(.hidden)>.mobile-header{
+   background:#fff!important;opacity:1!important;
+   -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+   box-shadow:none!important;border-bottom:1px solid #eceef1!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header{
+   z-index:100!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden) #main-content{
+   position:relative!important;min-width:0!important;
+   background:#fff!important;filter:none!important;
+ }
+ /* Inbox uses its own toolbar; never inherit the absolute feed brand geometry. */
+ #app-root:not(.hidden):has(#main-content .pati-dm-layout.mobile-chat-list)>.mobile-header{
+   display:none!important;
+ }
+ #app-root:not(.hidden):has(#main-content .pati-dm-layout.mobile-chat-list)>.app-shell{
+   box-sizing:border-box!important;
+   padding-top:env(safe-area-inset-top,0px)!important;
+   margin-top:0!important;min-height:0!important;height:auto!important;
+   overflow:visible!important;
+ }
+ #app-root:not(.hidden) #main-content:has(.pati-dm-layout.mobile-chat-list){
+   position:relative!important;inset:auto!important;transform:none!important;
+   box-sizing:border-box!important;padding:0!important;margin:0!important;
+   min-height:0!important;overflow:visible!important;
+   background:#fff!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-list{
+   position:relative!important;top:auto!important;left:auto!important;right:auto!important;
+   transform:none!important;display:flex!important;flex-direction:column!important;
+   margin:0!important;padding:0!important;width:100%!important;min-width:0!important;
+   max-width:100%!important;height:auto!important;min-height:0!important;
+   overflow:visible!important;background:#fff!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-list .pati-dm-top{
+   position:relative!important;inset:auto!important;transform:none!important;
+   display:flex!important;align-items:center!important;flex-wrap:wrap!important;
+   margin:0!important;padding:10px 12px!important;gap:8px!important;
+   min-height:60px!important;width:100%!important;box-sizing:border-box!important;
+   opacity:1!important;visibility:visible!important;background:#fff!important;
+   z-index:2!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-list .pati-dm-top-actions{
+   display:flex!important;align-items:center!important;gap:6px!important;
+   margin-left:auto!important;min-width:0!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-list .pati-dm-filters{
+   position:relative!important;top:auto!important;inset:auto!important;
+   transform:none!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+   gap:6px!important;min-height:60px!important;box-sizing:border-box!important;
+   width:100%!important;margin:0!important;padding:8px 12px!important;
+   background:#fff!important;opacity:1!important;visibility:visible!important;
+   z-index:2!important;pointer-events:auto!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-list .pati-dm-filters button{
+   position:relative!important;display:flex!important;align-items:center!important;
+   justify-content:center!important;min-height:44px!important;width:100%!important;
+   max-width:100%!important;min-width:0!important;margin:0!important;
+   border-radius:14px!important;pointer-events:auto!important;opacity:1!important;
+   visibility:visible!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-list .pati-dm-searchbar{
+   position:relative!important;inset:auto!important;transform:none!important;
+   box-sizing:border-box!important;display:block!important;margin:0!important;
+   width:100%!important;padding:8px 12px 12px!important;background:#fff!important;
+   opacity:1!important;visibility:visible!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-list .chat-people{
+   position:relative!important;inset:auto!important;margin:0!important;
+   padding:0 8px 90px!important;background:#fff!important;
+ }
+ /* Profile must scroll normally under an opaque non-glass top area. */
+ html[data-pati-view="profile"] #app-root:not(.hidden)>.mobile-header{
+   background:#fff!important;box-shadow:none!important;
+ }
+ html[data-pati-view="profile"] #main-content,
+ html[data-pati-view="profile"] #main-content .pati-ig-profile{
+   background:#fff!important;overflow-x:hidden!important;
+   opacity:1!important;visibility:visible!important;
+ }
+ /* Any translucent top pseudo-layer from legacy mobile cosmetics. */
+ #app-root:not(.hidden)>.mobile-header::before,
+ #app-root:not(.hidden)>.mobile-header::after{
+   -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+   filter:none!important;
+ }
+}
