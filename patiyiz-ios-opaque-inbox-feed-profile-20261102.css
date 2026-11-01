@@ -102,3 +102,51 @@
    filter:none!important;
  }
 }
+
+/* Mobile usability pass: preserve behavior; enlarge hit areas without covering content. */
+@media(max-width:740px){
+ #main-content .pati-dm-layout.mobile-chat-list .pati-dm-top-actions button,
+ #main-content .pati-dm-layout.mobile-chat-list .pati-dm-new,
+ #main-content .pati-dm-layout.mobile-chat-list .pati-dm-filters button,
+ #main-content .pati-dm-layout.mobile-chat-list .chat-person,
+ #main-content .pati-ig-profile .pati-ig-tabs button,
+ #main-content .pati-feed-card .pati-social-actions button,
+ #main-content .pati-detail-toolbar button,
+ #main-content .pati-page-back,
+ #main-content .paticoin-page button{
+   touch-action:manipulation!important;
+   -webkit-tap-highlight-color:transparent!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-list .pati-dm-top-actions button,
+ #main-content .pati-dm-layout.mobile-chat-list .pati-dm-filters button,
+ #main-content .pati-feed-card .pati-social-actions button,
+ #main-content .pati-detail-toolbar button,
+ #main-content .pati-page-back{
+   min-height:44px!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-list .chat-person{
+   min-height:64px!important;position:relative!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-list .pati-dm-top,
+ #main-content .pati-dm-layout.mobile-chat-list .pati-dm-filters,
+ #main-content .pati-dm-layout.mobile-chat-list .pati-dm-searchbar{
+   pointer-events:auto!important;
+ }
+ #main-content .pati-ig-profile .pati-ig-tabs button{
+   min-height:46px!important;
+ }
+ #main-content .pati-feed-card .pati-social-actions{
+   display:flex!important;align-items:center!important;flex-wrap:nowrap!important;
+   overflow-x:auto!important;scrollbar-width:none!important;
+ }
+ #main-content .pati-feed-card .pati-social-actions::-webkit-scrollbar{display:none!important}
+ #main-content .pati-feed-card .pati-social-actions button{
+   flex-shrink:0!important;min-width:42px!important;
+ }
+ /* Support iPhone's home indicator without letting the bottom menu mask the final item. */
+ #main-content .paticoin-page,
+ #main-content .pati-ig-profile,
+ #main-content .pati-dm-layout.mobile-chat-list .chat-people{
+   scroll-padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))!important;
+ }
+}
