@@ -1,0 +1,189 @@
+/* Patiyiz v20261101 · consistent media editing + redesigned affordable points shop. */
+#post-form #pati-post-media-gallery:not(:empty){
+ width:100%!important;max-width:min(100%,450px)!important;
+ margin-inline:auto!important;border-radius:16px!important;
+ aspect-ratio:var(--pati-compose-ratio,4/5)!important;
+ overflow:hidden!important;position:relative!important;
+ background:#15161a!important;display:flex!important;align-items:center!important;justify-content:center!important;
+}
+#post-form #pati-post-media-gallery[data-ratio="4:5"]{--pati-compose-ratio:4 / 5}
+#post-form #pati-post-media-gallery[data-ratio="1:1"]{--pati-compose-ratio:1 / 1}
+#post-form #pati-post-media-gallery[data-ratio="1.91:1"]{--pati-compose-ratio:1.91 / 1}
+#post-form #pati-post-media-gallery[data-ratio="9:16"]{
+ --pati-compose-ratio:9 / 16;max-width:min(100%,295px)!important;max-height:min(65dvh,640px)!important
+}
+#post-form #pati-post-media-gallery.has-media :is(img,video){
+ display:block!important;width:100%!important;height:100%!important;max-height:none!important;
+ object-fit:cover!important;object-position:center!important;border-radius:0!important;
+}
+#post-form #pati-post-media-gallery .pati-media-count{
+ position:absolute!important;top:12px!important;right:12px!important;
+ background:rgba(20,21,25,.76)!important;color:#fff!important;padding:6px 11px!important;border-radius:999px!important;
+ font-size:11px!important;font-weight:800!important
+}
+#main-content .pati-feed-card .pati-carousel,
+#main-content .pati-feed-card .pati-video-frame{
+ width:100%!important;aspect-ratio:var(--pati-feed-aspect,4 / 5)!important;
+ max-height:min(78dvh,800px)!important;min-height:0!important;overflow:hidden!important;
+ background:#141519!important;border-radius:0!important;
+}
+#main-content .pati-feed-card .pati-carousel .pati-carousel-track,
+#main-content .pati-feed-card .pati-carousel .pati-carousel-slide{
+ height:100%!important;min-height:0!important
+}
+#main-content .pati-feed-card .pati-carousel-slide img,
+#main-content .pati-feed-card .pati-video-frame video.pati-post-video{
+ width:100%!important;height:100%!important;max-width:100%!important;max-height:none!important;
+ object-fit:cover!important;object-position:center!important;display:block!important;background:transparent!important
+}
+#main-content .pati-feed-card.pati-feed-reel-card .pati-video-frame{
+ aspect-ratio:9/16!important;max-height:min(82dvh,900px)!important
+}
+#main-content .pati-reels-viewport .pati-reel-item video,
+#main-content .pati-reels-viewport .pati-reel-video{
+ width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;
+}
+#story-overlay :is(img,video):not(.avatar):not(.pati-story-avatar){
+ object-position:center!important;
+}
+#post-form .pati-media-edit-entry:not([hidden]){display:flex!important}
+#post-form .pati-media-edit-entry button{font-size:14px!important}
+#pati-full-crop-dialog .pati-crop-ratios{scroll-snap-type:x proximity!important}
+#pati-full-crop-dialog .pati-crop-ratios button{min-height:44px!important;white-space:nowrap!important}
+#pati-full-crop-dialog .pati-full-crop-stage{min-height:120px!important}
+#pati-full-crop-dialog .pati-full-crop-stage canvas{max-width:100%!important;max-height:100%!important;object-fit:contain!important}
+#main-content .pati-store-page{
+ width:min(100%,1140px)!important;max-width:1140px!important;margin:0 auto!important;
+ padding:20px clamp(12px,3.5vw,30px) 65px!important;background:#f8f9fb!important;
+ color:#181a20!important;box-sizing:border-box!important
+}
+#main-content .pati-store-hero{
+ border-radius:25px!important;padding:clamp(22px,4.5vw,38px)!important;
+ background:linear-gradient(135deg,#171a22 0%,#282d3b 100%)!important;color:white!important;
+ display:flex!important;align-items:flex-start!important;justify-content:space-between!important;
+ gap:20px!important;box-shadow:none!important;margin-bottom:26px!important;
+}
+#main-content .pati-store-eyebrow{font-size:11px!important;letter-spacing:.16em!important;font-weight:800!important;color:#bdc6d4!important}
+#main-content .pati-store-hero-copy h1{margin:10px 0!important;font-size:clamp(29px,5vw,40px)!important;line-height:1.12!important;letter-spacing:-.04em!important;color:#fff!important}
+#main-content .pati-store-hero-copy p{font-size:14px!important;line-height:1.7!important;color:#d1d5df!important;max-width:45ch!important}
+#main-content .pati-store-hero-tip{display:inline-block!important;margin-top:10px!important;color:#dce1ec!important;font-size:11px!important;font-weight:700!important}
+#main-content .pati-store-balance{
+ flex:0 0 auto!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;
+ min-width:138px!important;min-height:110px!important;border:1px solid #ffffff3b!important;
+ border-radius:19px!important;padding:17px!important;background:#ffffff13!important;color:#fff!important;
+ text-align:left!important;box-shadow:none!important
+}
+#main-content .pati-store-balance small{font-size:10px!important;letter-spacing:.09em!important;color:#cbd2df!important}
+#main-content .pati-store-balance strong{color:#fff!important;font-size:31px!important;line-height:1.3!important;font-variant-numeric:tabular-nums!important}
+#main-content .pati-store-balance span{font-size:12px!important;font-weight:750!important;color:#e0e6f0!important}
+#main-content .pati-store-section,#main-content .pati-store-history{margin-top:20px!important}
+#main-content .pati-store-section-head{
+ display:flex!important;align-items:end!important;justify-content:space-between!important;gap:12px!important;
+ margin:0 0 15px!important;color:#20232a!important
+}
+#main-content .pati-store-section-head small{font-size:10px!important;letter-spacing:.12em!important;color:#818794!important;font-weight:800!important}
+#main-content .pati-store-section-head h2{font-size:22px!important;letter-spacing:-.025em!important;margin:4px 0 0!important;color:#1d2028!important}
+#main-content .pati-store-section-head>span{font-size:12px!important;color:#747982!important;font-weight:800!important}
+#main-content .pati-store-filterbar{
+ display:flex!important;gap:8px!important;padding:3px 0 14px!important;margin:0 0 6px!important;
+ overflow-x:auto!important;overscroll-behavior-x:contain!important;scrollbar-width:none!important;
+ -webkit-overflow-scrolling:touch!important
+}
+#main-content .pati-store-filterbar::-webkit-scrollbar{display:none}
+#main-content .pati-store-filterbar button{
+ flex:0 0 auto!important;min-height:39px!important;white-space:nowrap!important;
+ padding:8px 16px!important;background:#fff!important;color:#454b54!important;
+ font-size:12px!important;font-weight:750!important;border:1px solid #e0e3e9!important;
+ border-radius:999px!important;box-shadow:none!important
+}
+#main-content .pati-store-filterbar button.is-active{
+ background:#1c2029!important;color:#fff!important;border-color:#1c2029!important
+}
+#main-content .pati-store-grid{
+ display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:16px!important;
+ align-items:stretch!important;min-width:0!important
+}
+#main-content .pati-store-product{
+ min-width:0!important;display:flex!important;flex-direction:column!important;background:#fff!important;
+ border:1px solid #e5e8ee!important;border-radius:21px!important;overflow:hidden!important;
+ box-shadow:0 3px 15px #1e293b08!important
+}
+#main-content .pati-store-art{
+ position:relative!important;display:grid!important;place-items:center!important;min-height:152px!important;
+ aspect-ratio:1.38 / 1!important;background:linear-gradient(135deg,#ebedf3,#d9dde8)!important
+}
+#main-content .pati-store-product:nth-child(4n+2) .pati-store-art{background:linear-gradient(135deg,#e6edeb,#d2e4df)!important}
+#main-content .pati-store-product:nth-child(4n+3) .pati-store-art{background:linear-gradient(135deg,#f2ebe5,#e7d9cc)!important}
+#main-content .pati-store-product:nth-child(4n) .pati-store-art{background:linear-gradient(135deg,#ede8f3,#dfd8ea)!important}
+#main-content .pati-store-art-emoji{font-size:57px!important;line-height:1!important;filter:drop-shadow(0 9px 10px #0001)!important}
+#main-content .pati-store-category{
+ position:absolute!important;top:10px!important;left:11px!important;border-radius:999px!important;
+ font-size:10px!important;font-weight:800!important;padding:6px 11px!important;
+ background:#ffffffdc!important;color:#383c44!important
+}
+#main-content .pati-store-product-body{
+ flex:1!important;display:flex!important;flex-direction:column!important;gap:10px!important;
+ padding:15px!important;min-width:0!important
+}
+#main-content .pati-store-product h3{margin:0!important;color:#20232a!important;font-size:16px!important;line-height:1.3!important;letter-spacing:-.02em!important}
+#main-content .pati-store-product p{
+ margin:0!important;color:#727783!important;font-size:12px!important;line-height:1.6!important;
+ min-height:37px!important
+}
+#main-content .pati-store-stock{font-size:11px!important;color:#21805d!important;font-weight:800!important}
+#main-content .pati-store-stock.is-out{color:#8b8f98!important}
+#main-content .pati-store-purchase{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;gap:9px!important;
+ margin-top:auto!important;padding-top:9px!important;border-top:1px solid #edf0f3!important
+}
+#main-content .pati-store-price strong{display:block!important;color:#1b1f29!important;font-size:23px!important;font-weight:850!important;line-height:1.1!important;font-variant-numeric:tabular-nums!important}
+#main-content .pati-store-price small{display:block!important;font-size:10px!important;color:#7d828c!important;margin-top:4px!important}
+#main-content .pati-store-purchase button{
+ min-width:101px!important;min-height:43px!important;padding:10px 12px!important;
+ border:0!important;border-radius:11px!important;background:#1c2029!important;
+ color:white!important;font-size:12px!important;font-weight:800!important;white-space:nowrap!important
+}
+#main-content .pati-store-purchase button:disabled{
+ background:#eff0f3!important;color:#9599a2!important;cursor:not-allowed!important
+}
+#main-content .pati-store-guidance{
+ display:block!important;border:1px solid #e0e5ec!important;background:#fff!important;
+ border-radius:18px!important;padding:18px 20px!important;margin-top:25px!important
+}
+#main-content .pati-store-guidance strong{color:#212530!important;font-size:14px!important}
+#main-content .pati-store-guidance p{color:#606774!important;font-size:12px!important;line-height:1.7!important;margin:8px 0 0!important}
+#main-content .pati-store-history{margin-top:30px!important}
+#main-content .pati-store-history .pati-store-section-head button{
+ min-height:38px!important;border-radius:10px!important;border:1px solid #dce0e6!important;
+ background:#fff!important;color:#424752!important;font-size:12px!important;padding:8px 14px!important
+}
+#main-content .pati-store-orders{display:grid!important;gap:10px!important}
+#main-content .pati-store-order{display:flex!important;flex-wrap:wrap!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;padding:15px!important;background:#fff!important;border:1px solid #e2e5ea!important;border-radius:14px!important}
+#main-content .pati-store-order>div{display:grid!important;gap:4px!important}
+#main-content .pati-store-order strong{font-size:13px!important;color:#24272e!important}
+#main-content .pati-store-order small{font-size:11px!important;color:#868a94!important}
+#main-content .pati-store-order-status{font-size:11px!important;font-weight:800!important;background:#f1f2f5!important;color:#505663!important;border-radius:999px!important;padding:7px 10px!important}
+#main-content .pati-store-order p,#main-content .pati-store-order details{flex-basis:100%!important;font-size:12px!important;color:#5e6470!important}
+#main-content .pati-store-no-results{grid-column:1/-1!important;background:#fff!important;padding:22px!important;border-radius:15px!important;color:#666c76!important;font-size:13px!important}
+@media(max-width:850px){#main-content .pati-store-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:540px){
+ #main-content .pati-store-page{padding:12px 12px calc(90px + env(safe-area-inset-bottom,0px))!important}
+ #main-content .pati-store-hero{padding:22px 18px!important;flex-direction:column!important;border-radius:20px!important;gap:18px!important}
+ #main-content .pati-store-balance{width:100%!important;min-height:75px!important;flex-direction:row!important;justify-content:space-between!important;align-items:center!important}
+ #main-content .pati-store-balance strong{font-size:27px!important}
+ #main-content .pati-store-hero-copy h1{font-size:31px!important}
+ #main-content .pati-store-grid{gap:10px!important}
+ #main-content .pati-store-art{min-height:111px!important}
+ #main-content .pati-store-art-emoji{font-size:43px!important}
+ #main-content .pati-store-product{border-radius:16px!important}
+ #main-content .pati-store-product-body{padding:11px!important;gap:8px!important}
+ #main-content .pati-store-product h3{font-size:13px!important}
+ #main-content .pati-store-product p{font-size:11px!important;line-height:1.4!important;min-height:47px!important}
+ #main-content .pati-store-purchase{flex-direction:column!important;align-items:stretch!important;gap:8px!important}
+ #main-content .pati-store-purchase button{width:100%!important;min-height:42px!important}
+ #main-content .pati-store-price{display:flex!important;align-items:baseline!important;gap:5px!important}
+ #main-content .pati-store-price strong{font-size:20px!important}
+ #main-content .pati-store-price small{font-size:10px!important}
+ #main-content .pati-store-section-head h2{font-size:18px!important}
+}
+@media(prefers-reduced-motion:reduce){#main-content .pati-store-product{animation:none!important}}
