@@ -19,9 +19,11 @@ function arrange(section){
   const hash=id=>{let h=seed;for(const ch of id)h=(Math.imul(h,31)+ch.charCodeAt(0))|0;return (h>>>0)/4294967295};
   ranked.sort((a,b)=>a.n-b.n||hash(a.id)-hash(b.id));
  }
- internal=true;
- for(const row of ranked)gallery.appendChild(row.el);
- internal=false;
+ const changed=ranked.some((row,i)=>row.el!==tiles[i]);
+ if(changed){internal=true;
+  for(const row of ranked)gallery.appendChild(row.el);
+  internal=false;
+ }
 }
 function enhance(){
  scheduled=false;
@@ -56,6 +58,10 @@ document.addEventListener('click',event=>{
  if(tile)mark(tile.dataset.id);
  if(menuOpen&&!event.target.closest('.pati-explore-custom-menu-wrap')){menuOpen=false;schedule()}
 },true);
-new MutationObserver(records=>{if(!internal&&records.some(r=>r.addedNodes.length))schedule()}).observe(main,{childList:true,subtree:true});
+new MutationObserver(records=>{
+ // Ignore reordering within the gallery: re-appending existing tiles is not new data.
+ if(internal)return;
+ if(records.some(r=>r.addedNodes.length&&!(r.target instanceof Element&&r.target.matches('.pati-explore-gallery'))))schedule();
+}).observe(main,{childList:true,subtree:true});
 schedule();
 })();
