@@ -6578,18 +6578,7 @@ function postMediaField(mode){
  '<div class="pati-media-thumbs" id="pati-post-media-thumbs" hidden></div>'+ 
  '<div class="pati-media-edit-entry" id="pati-media-edit-entry" hidden><button type="button" data-action="post-crop-open">🎚 Filtreler ve fotoğraf düzenleme</button><small>Renk filtresi, parlaklık, kontrast ve kırpma</small></div>'+
  '<div class="pati-media-picker-actions"><button type="button" class="pati-media-pick-primary" data-action="pati-media-gallery">▧ Galeriyi aç</button><button type="button" class="pati-media-pick-secondary" data-action="pati-media-camera">◎ '+(reel?'Video çek':'Fotoğraf çek')+'</button>'+(!reel?'<button type="button" class="pati-media-pick-secondary" data-action="pati-media-video">▷ Video seç</button>':'')+'</div>'+
- (reel?'<div class="pati-reels-editor pati-reels-cover-editor" data-pati-cover-root data-cover-mode="auto">'+
- '<div class="pati-cover-title"><strong>Reels kapağını seç</strong><small>Galeriden fotoğraf yükle veya videoyu ilerleterek istediğin kareyi kapak yap.</small></div>'+
- '<div class="pati-cover-workspace"><div class="pati-reel-cover-visual"><img class="pati-reel-cover-image" alt="Seçilen Reels kapağı" hidden><span class="pati-reel-cover-placeholder">Kapak önizlemesi</span></div>'+
- '<div class="pati-reel-cover-buttons"><button type="button" data-pati-cover-action="gallery" aria-pressed="false">Galeriden fotoğraf seç</button><button type="button" data-pati-cover-action="frame" aria-pressed="false">Videodan kare seç</button></div></div>'+
- '<div class="pati-reel-cover-frame-panel" hidden><video class="pati-reel-cover-player" muted playsinline preload="metadata" aria-label="Reels video kapağı için kare seç"></video>'+
- '<div class="pati-reel-cover-scrub"><button type="button" data-pati-cover-action="play">Oynat / Dur</button><input class="pati-reel-cover-timeline" type="range" min="0" max="1000" step="1" value="0" aria-label="Kapak için video karesini belirle"></div></div>'+
- '<p class="pati-cover-message" role="status">Önce videonu seç, ardından kapağı belirle. Seçmezsen kapak otomatik oluşturulur.</p>'+
- '<label class="pati-cover-subtitle">Video altyazısı<input name="video_subtitle" maxlength="220" placeholder="Video için altyazı"></label>'+
- '<input type="file" name="cover_photo" accept="image/*,.heic,.heif" class="pati-reel-cover-input" aria-label="Galeriden Reels kapağı seç"></div>':
- story?'<div class="pati-reels-editor"><label>Video kapağı (isteğe bağlı) <input type="file" name="cover_photo" accept="image/*" aria-label="Hikâye video kapağı seç"></label></div>':
- '<div class="pati-reels-editor"><label>Gönderi video kapağı (isteğe bağlı) <input type="file" name="cover_photo" accept="image/*" aria-label="Gönderi video kapağı seç"></label></div>')+
- '<div class="pati-cover-crop-row"><button type="button" data-action="post-crop-open">Kapak görselini kırp · 9:16 / 4:5</button><small>Video kapağı seçtiğinde düzenleyebilirsin.</small></div>'+
+ (!reel?(story?'<div class="pati-reels-editor"><label>Video kapağı (isteğe bağlı) <input type="file" name="cover_photo" accept="image/*" aria-label="Hikâye video kapağı seç"></label></div>':'<div class="pati-reels-editor"><label>Gönderi video kapağı (isteğe bağlı) <input type="file" name="cover_photo" accept="image/*" aria-label="Gönderi video kapağı seç"></label></div>')+'<div class="pati-cover-crop-row"><button type="button" data-action="post-crop-open">Kapak görselini kırp · 9:16 / 4:5</button><small>Video kapağı seçtiğinde düzenleyebilirsin.</small></div>':'')+
  '<p class="pati-media-help">'+(reel?'MP4, WebM veya MOV · 50 MB altı; büyük klipler uygun cihazlarda sıkıştırılır.':story?'Fotoğraf ya da 50 MB altı video · 24 saatlik hikâye.':'JPG, PNG, HEIC ve desteklenen videolar.')+'</p>'+
  '<input type="file" name="photo" accept="image/*,.heic,.heif" '+(!story&&!reel?'multiple':'')+' class="pati-native-input" aria-label="Fotoğraf seç"><input type="file" name="video" accept="video/mp4,video/webm,video/quicktime,.mov"'+(reel?' multiple':!story?' multiple':'')+' class="pati-native-input" aria-label="Video seç"></section>';
 }
@@ -7199,9 +7188,7 @@ async function createPostPublication(form,f,str){
   if(video?.size){
    record.video_subtitle=str('video_subtitle').slice(0,220)||null;
    const cover=form.querySelector('input[name="cover_photo"]')?.files?.[0];
-   const chosenCover=form.dataset.mode==='reels'&&window.PatiyizReelsCover
-     ?await window.PatiyizReelsCover.getSelectedCover(form):cover;
-   const selectedCover=chosenCover?.size?chosenCover:cover?.size?cover:await patiGenerateVideoCover(video);
+   const selectedCover=form.dataset.mode==='reels'?await patiGenerateVideoCover(video):(cover?.size?cover:await patiGenerateVideoCover(video));
    if(selectedCover?.size){
     uploadStatus('Video kapağı kaydediliyor…');
     record.video_cover_url=await send(await cropPostPhoto(selectedCover,form.dataset.mode==='reels'?'9:16':'4:5'),'image');
