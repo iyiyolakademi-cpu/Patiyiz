@@ -697,38 +697,49 @@ function patiRewardsPage(){
 }
 let patiShopFilter='all';
 function patiShopPage(){
- const filter=patiShopFilter||'all',products=Array.isArray(patiCoinState.items)?patiCoinState.items:[],orders=patiCoinState.orders||[];
- const categories=[['all','Tümü'],['available','Stokta'],['budget','450 puan altı'],['supply','Ürünler'],['food','Destek'],['donation','Doğa']];
- const filtered=products.filter(p=>filter==='all'||(filter==='available'?Number(p.stock_available)>0:filter==='budget'?Number(p.coins)<=450:p.kind===filter))
-  .sort((a,b)=>Number(Number(b.stock_available)>0)-Number(Number(a.stock_available)>0)||Number(a.coins)-Number(b.coins));
- const labels={pending:'Talep alındı',approved:'Onaylandı',preparing:'Hazırlanıyor',fulfilled:'Tamamlandı',cancelled:'İptal edildi'};
- const cards=filtered.map(p=>{
-  const stock=Math.max(0,Number(p.stock_available)||0),pending=orders.some(o=>o.item_id===p.id&&['pending','approved','preparing'].includes(o.status));
-  const affordable=Number(patiCoinState.balance)>=Number(p.coins),available=stock>0&&!pending;
-  const status=pending?'Talebin işlemde':stock===0?'Stok bekleniyor':stock<=3?'Son '+stock+' adet':'Stokta · '+stock+' adet';
-  const btn=pending?'İşlem sürüyor':!stock?'Stok bekleniyor':!affordable?'Puan kazan':'Satın Al';
-  const icon=({'mama-mini':'🥣','mama-kilo':'📦','mama-kabi':'💧','mama-destek':'🤝','fidan-bagisi':'🌱'}[p.id]||p.emoji||'🎁');
-  return '<article class="pati-store-product" aria-label="'+esc(p.name)+'"><div class="pati-store-art"><span class="pati-store-art-emoji" aria-hidden="true">'+esc(icon)+'</span>'+
-   '<span class="pati-store-category">'+(p.kind==='donation'?'Doğa':p.kind==='food'?'Destek':'Ürün')+'</span></div>'+
-   '<div class="pati-store-product-body"><h3>'+esc(p.name)+'</h3><p>'+esc(p.description)+'</p><span class="pati-store-stock '+(stock?'':'is-out')+'">'+esc(status)+'</span>'+
-   '<div class="pati-store-purchase"><div class="pati-store-price"><strong>'+Number(p.coins).toLocaleString('tr-TR')+'</strong><small>Sosyal Puan</small></div>'+
-   '<button type="button" data-action="'+(!affordable?'paticoin-rewards':'paticoin-buy')+'" data-id="'+esc(p.id)+'" '+(!available?'disabled aria-disabled="true"':'')+'>'+btn+'</button></div></div></article>';
+ // The shop intentionally has one short catalog, without tabs or category filters.
+ const ids=['kedi-mamasi-250','kopek-mamasi-250','mama-destek','fidan-bagisi'];
+ const items=ids.map(id=>patiCoinState.items.find(item=>item.id===id)).filter(Boolean);
+ const cashTarget=10000,cashAmount=1000;
+ const balance=Math.max(0,Math.floor(Number(patiCoinState.balance)||0));
+ const pointsLeft=Math.max(0,cashTarget-balance),progress=Math.min(100,Math.round(balance/cashTarget*100));
+ const orders=patiCoinState.orders||[];
+ const meta={
+  'kedi-mamasi-250':{emoji:'🐈',tag:'KEDİ',subtitle:'Kediler için 250 g kuru mama'},
+  'kopek-mamasi-250':{emoji:'🐕',tag:'KÖPEK',subtitle:'Köpekler için 250 g kuru mama'},
+  'mama-destek':{emoji:'🤝',tag:'DESTEK',subtitle:'Sokak hayvanlarının beslenmesine katkı'},
+  'fidan-bagisi':{emoji:'🌱',tag:'DOĞA',subtitle:'Bir fidan için bağış talebi'}
+ };
+ const cards=items.map(item=>{
+  const m=meta[item.id],stock=Math.max(0,Number(item.stock_available)||0);
+  const pending=orders.some(order=>order.item_id===item.id&&['pending','approved','preparing'].includes(order.status));
+  const enough=balance>=Number(item.coins),ready=stock>0&&!pending;
+  const stateText=pending?'Talebin işleniyor':stock===0?'Stok doğrulanıyor':stock<=3?'Son '+stock+' talep':'Talebe açık';
+  const caption=stock===0?'Ürün stok doğrulamasından sonra açılır.':'Teslimat veya destek, onay sonrasında gerçekleşir.';
+  return '<article class="pati-calm-item"><div class="pati-calm-item-art"><span role="img" aria-label="'+esc(m.tag)+'">'+m.emoji+'</span><small>'+m.tag+'</small></div>'+
+   '<div class="pati-calm-item-content"><h3>'+esc(item.name)+'</h3><p>'+esc(m.subtitle)+'</p><div class="pati-calm-item-state '+(ready?'is-open':'')+'">'+esc(stateText)+'</div>'+
+   '<div class="pati-calm-item-bottom"><span class="pati-calm-cost"><strong>'+Number(item.coins).toLocaleString('tr-TR')+'</strong><small>puan</small></span>'+
+   '<button type="button" data-action="'+(enough?'paticoin-buy':'paticoin-rewards')+'" data-id="'+esc(item.id)+'" '+(!ready?'disabled aria-disabled="true"':'')+'>'+
+    (pending?'İşlem sürüyor':!stock?'Stok bekleniyor':enough?'Puanla Al':'Puan kazan')+'</button></div>'+
+   '<small class="pati-calm-item-foot">'+esc(caption)+'</small></div></article>';
  }).join('');
- const history=orders.map(o=>{
-  const item=products.find(p=>p.id===o.item_id),steps=(patiCoinState.history||[]).filter(x=>x.redemption_id===o.id);
-  const proof=o.status==='fulfilled'&&/^https:\/\//i.test(o.proof_url||'')?'<a href="'+esc(o.proof_url)+'" rel="noopener noreferrer" target="_blank">Teslimat belgesi</a>':'';
-  return '<article class="pati-store-order"><div><strong>'+esc(item?.name||'Ürün')+'</strong><small>'+Number(o.coins_spent).toLocaleString('tr-TR')+' puan · '+day(o.created_at)+'</small></div><span class="pati-store-order-status">'+esc(labels[o.status]||'Beklemede')+'</span>'+
-   (o.admin_note?'<p>'+esc(o.admin_note)+'</p>':'')+proof+
-   (steps.length?'<details><summary>Sipariş hareketleri</summary>'+steps.map(e=>'<p>'+esc(labels[e.next_status]||e.next_status)+' · '+day(e.created_at)+'</p>').join('')+'</details>':'')+'</article>';
+ const status={pending:'Beklemede',approved:'Onaylandı',preparing:'Hazırlanıyor',fulfilled:'Tamamlandı',cancelled:'İptal edildi'};
+ const history=orders.slice(0,30).map(o=>{
+  const item=patiCoinState.items.find(x=>x.id===o.item_id);
+  const proof=o.status==='fulfilled'&&/^https:\/\//i.test(o.proof_url||'')?'<a href="'+esc(o.proof_url)+'" target="_blank" rel="noopener noreferrer">Teslimat kanıtı</a>':'';
+  return '<div class="pati-calm-order"><div><strong>'+esc(item?.name||'Eski katalog ürünü')+'</strong><small>'+Number(o.coins_spent).toLocaleString('tr-TR')+' puan · '+day(o.created_at)+'</small></div><span>'+esc(status[o.status]||'İşlemde')+'</span>'+(o.admin_note?'<p>'+esc(o.admin_note)+'</p>':'')+proof+'</div>';
  }).join('');
- main.innerHTML='<section class="pati-store-page"><header class="pati-store-hero"><div class="pati-store-hero-copy"><span class="pati-store-eyebrow">SOSYAL PUAN MAĞAZASI</span><h1>Mağaza</h1><p>Küçük ödüller, sade alışveriş. Görevlerinden kazandığın puanlarla ödül talebi oluştur.</p><span class="pati-store-hero-tip">Puanla alınır · TL ile ödeme yapılmaz</span></div>'+
- '<button type="button" class="pati-store-balance" data-action="paticoin-rewards"><small>BAKİYEN</small><strong>'+Number(patiCoinState.balance||0).toLocaleString('tr-TR')+'</strong><span>Sosyal Puan ↗</span></button></header>'+
- '<section class="pati-store-section"><div class="pati-store-section-head"><div><small>KEŞFET</small><h2>Senin için seçtiklerimiz</h2></div><span>'+products.length+' ürün</span></div>'+
- '<div class="pati-store-filterbar" role="group" aria-label="Mağaza kategorileri">'+categories.map(([id,label])=>'<button type="button" data-action="paticoin-shop-filter" data-id="'+id+'" class="'+(id===filter?'is-active':'')+'" aria-pressed="'+(id===filter)+'">'+label+'</button>').join('')+'</div>'+
- '<div class="pati-store-grid">'+(cards||'<p class="pati-store-no-results">Bu kategoride ürün bulunamadı.</p>')+'</div></section>'+
- '<section class="pati-store-guidance"><strong>Alışveriş nasıl çalışıyor?</strong><p>Satın Al, mevcut puanlarınla sipariş talebi oluşturur. Bu bir banka/kart ödemesi değildir. Stok ve uygunluk sunucuda doğrulanır; onaylanmadan teslimat yapılmış sayılmaz. Hesabın en az 7 günlük olmalı, son 30 günde 3 farklı gün aktif olmalısın; 14 günde bir talep sınırı geçerlidir.</p></section>'+
- '<section class="pati-store-history"><div class="pati-store-section-head"><div><small>SİPARİŞLERİM</small><h2>Talep geçmişim</h2></div><button type="button" data-action="paticoin-refresh">Yenile ↻</button></div>'+
- '<div class="pati-store-orders">'+(history||'<p class="pati-store-no-results">Henüz sipariş talebin bulunmuyor.</p>')+'</div></section></section>';
+ main.innerHTML='<section class="pati-calm-shop" aria-label="Puan mağazası">'+
+  '<header class="pati-calm-header"><span>MAĞAZA</span><h1>İyiliğe dönüştür</h1><p>Dört seçenek, tek ekran. Puanlarınla mama desteği veya fidan talebi oluştur.</p></header>'+
+  '<section class="pati-calm-wallet" aria-label="Puan bakiyesi ve ödül hedefi"><div class="pati-calm-wallet-top"><div><small>PUAN BAKİYEN</small><strong>'+balance.toLocaleString('tr-TR')+'</strong></div><button type="button" data-action="paticoin-rewards">Puan kazanma yolları <span aria-hidden="true">›</span></button></div>'+
+   '<div class="pati-calm-cash"><div><span class="pati-calm-cash-label">PLANLANAN NAKİT ÖDÜL</span><h2>10.000 puan <span aria-hidden="true">→</span> 1.000 TL</h2></div><span class="pati-calm-planned">Hazırlıkta</span></div>'+
+   '<div class="pati-calm-progress" role="progressbar" aria-label="10.000 puan nakit hedefi ilerlemesi" aria-valuemin="0" aria-valuemax="10000" aria-valuenow="'+Math.min(cashTarget,balance)+'"><span style="width:'+progress+'%"></span></div>'+
+   '<div class="pati-calm-progress-meta"><span>%'+progress+' tamamlandı</span><strong>'+(pointsLeft?pointsLeft.toLocaleString('tr-TR')+' puan kaldı':'Puan hedefine ulaştın')+'</strong></div>'+
+   '<p class="pati-calm-program-note">Nakit ödül programı henüz başlatılmadı. 10.000 puan hedefi bilgilendirme amaçlıdır; puanlar şu an nakde çevrilemez. Ödeme koşulları, mali kaynak ve hukuki inceleme tamamlandığında ayrıca duyurulacaktır.</p></section>'+
+  '<section class="pati-calm-products"><div class="pati-calm-section-head"><h2>Mağazadakiler</h2><span>4 seçenek</span></div><div class="pati-calm-grid">'+(cards||'<p class="pati-calm-empty">Ürünler yükleniyor. Yenile butonuyla tekrar dene.</p>')+'</div></section>'+
+  '<p class="pati-calm-rules"><strong>Nasıl çalışır?</strong> “Puanla Al” bir talep başlatır; doğrudan fiziksel teslimat veya bağış gerçekleşmiş sayılmaz. Stok ve uygunluk sunucu tarafından kontrol edilir. Hesabın en az 7 günlük olması, son 30 günde en az 3 gün aktif olman ve 14 günlük talep sınırı geçerlidir.</p>'+
+  '<details class="pati-calm-history"><summary><span>Talep geçmişim</span><span>'+orders.length+' kayıt</span></summary><div class="pati-calm-orders">'+(history||'<p>Henüz bir talebin yok.</p>')+'</div></details>'+
+  '<button type="button" class="pati-calm-refresh" data-action="paticoin-refresh">Bakiyeyi ve ürünleri yenile</button></section>';
 }
 function patiCoinShowCheckout(id){
  const product=patiCoinState.items.find(p=>p.id===id);
@@ -737,11 +748,13 @@ function patiCoinShowCheckout(id){
  if(patiCoinState.orders.some(o=>o.item_id===product.id&&['pending','approved','preparing'].includes(o.status)))return notify('Bu ürün için bekleyen bir talebin var. Talep geçmişini kontrol et.',true);
  if(patiCoinState.balance<product.coins)return notify('Yetersiz Puan. Önce görevlerini tamamla.',true);
  patiCoinCheckoutItem=product.id;
- const pets=data.pets.filter(p=>p.owner_id===me.id),donation=product.kind==='donation';
+ const pets=data.pets.filter(p=>p.owner_id===me.id),donation=product.kind==='donation',streetOnly=product.id==='mama-destek';
  const coin='';
  const destination=donation?
-  '<div class="pati-shop-tree-destination"><label><input type="radio" name="paticoin-destination" value="environment" checked> 🌱 Doğa için 1 fidan</label><p>Talep gönderildiğinde coin bakiyenden düşer. Fidan dikimi ancak yönetici onayı ve bağış kanıtı sonrası tamamlandı sayılır.</p></div>':
-  '<h3>Ürünü kimin için alıyorsun?</h3><label><input type="radio" name="paticoin-destination" value="own_pet" '+(pets.length?'checked':'disabled')+'> 🐶 Kendi hayvanım için</label><label><input type="radio" name="paticoin-destination" value="street_animals" '+(!pets.length?'checked':'')+'> 🐾 Sokak hayvanları için</label>'+
+  '<div class="pati-shop-tree-destination"><p>🌱 Doğa için bir fidan bağışı talebi. Yönetici onayı ve bağış kanıtı sonrasında tamamlanır.</p><label><input type="radio" name="paticoin-destination" value="environment" checked> Doğa için bağışla</label></div>':
+  streetOnly?
+  '<div class="pati-shop-tree-destination"><p>🤝 Bu destek sokak hayvanları için kullanılacaktır.</p><label><input type="radio" name="paticoin-destination" value="street_animals" checked> Sokak hayvanlarına mama desteği</label></div>':
+  '<h3>Kimler için?</h3><label><input type="radio" name="paticoin-destination" value="street_animals" '+(!pets.length?'checked':'')+'> Sokak hayvanları için</label><label><input type="radio" name="paticoin-destination" value="own_pet" '+(pets.length?'checked':'disabled')+'> Kendi hayvanım için</label>'+
   '<div class="paticoin-pet-selector"><label for="paticoin-pet-id">Hayvanını seç</label><select id="paticoin-pet-id">'+pets.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('')+'</select></div>';
  const content='<div class="paticoin-checkout"><div class="paticoin-checkout-item">'+esc(product.emoji)+' <b>'+esc(product.name)+'</b><span>'+coin+product.coins+'</span></div>'+destination+
   '<p class="paticoin-disclaimer">Onayladığında talebin beklemeye alınır. Anında bağış veya teslimat gerçekleşmiş sayılmaz.</p><button type="button" class="paticoin-confirm" data-action="paticoin-confirm">'+coin+product.coins+' puan kullan · Satın Al</button></div>';
