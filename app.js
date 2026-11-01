@@ -8397,6 +8397,7 @@ document.addEventListener('click',e=>{const el=e.target.closest('.pati-doubletap
 const patiSwipeTabs=['home','explore','reels','profile'];
 let patiPageSwipe=null;
 function patiCanSwipePage(target){
+ return false; // Mobil sayfalar arasında yatay kaydırmayla geçiş kapatıldı.
  if(!me||!patiSwipeTabs.includes(view)||!target?.closest?.('#main-content'))return false;
  if(view==='profile'&&profileId&&profileId!==me.id)return false;
  if(view==='explore'&&exploreTab==='users')return false;
