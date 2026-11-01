@@ -19,7 +19,7 @@
  function context(lesson){return frames[lesson.cat]||frames['101 Bilim ve Genel Kültür']}
  function sections(lesson){
   var p=(lesson.parts||[]).map(clean), t=topic(lesson), lead=clean(lesson.desc), f=context(lesson);
-  return [
+  var chapters=[
    {name:'Konuyu derinlemesine anla',duration:2,
     text:[lead+'. Bu ifade bir başlangıç noktasıdır: '+t+' konusunu gerçekten öğrenmek için kavramın hangi sorunu açıkladığını, hangi koşullarda geçerli olduğunu ve nerede yetersiz kaldığını da anlamak gerekir.',
     (p[0]||lead)+' Bu ilkenin neyi değiştirdiğini düşün. Bir karar vermeden önce elindeki bilgi ile yalnızca tahmin ettiğin şeyleri iki ayrı grupta toplamak, hatalı kesinlikten kaçınmanı sağlar.',
@@ -51,6 +51,13 @@
     'Bu dersin sonunda mutlaka üç çıktı oluştur: bir ana fikir, bir gerçek yaşam örneği ve uygulayacağın bir küçük adım. Ardından mini sınava geç. Öğrenme, testi bitirince değil bilgiyi hayata aktarınca pekişir.'],
     task:'Öğrendiğin üç noktayı ve ertesi gün uygulayacağın bir adımı tek cümlelik birer notla toparla.'}
   ];
+  // Retain every long, topic-specific lesson section from the existing 101 curriculum.
+  // These are extra core readings, not replacements for guided examples and practice.
+  if(p.length>3)p.forEach(function(detail,i){
+   var chapter=Math.min(chapters.length-1,Math.floor(i*chapters.length/p.length));
+   chapters[chapter].text.splice(1,0,detail);
+  });
+  return chapters;
  }
  function key(id,uid){return 'patiyiz-101-study-v2-'+(uid||'guest')+'-'+id}
  function seconds(id,uid){try{return Math.min(72000,Math.max(0,Number(localStorage.getItem(key(id,uid)))||0))}catch(_){return 0}}
