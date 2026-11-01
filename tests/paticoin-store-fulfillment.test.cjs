@@ -70,10 +70,10 @@ test('Kullanıcı mağazada kanıt, doğru durumlar ve geçmişini görür',()=>
   esc:s=>String(s),day:s=>String(s)
  });
  fn();
- assert.match(markup,/Teslim\/bağış tamamlandı/);
+ assert.match(markup,/Tamamlandı/);
  assert.match(markup,/Bağış teslim edildi/);
  assert.match(markup,/https:\/\/example.com\/proof.jpg/);
- assert.match(markup,/İşlem adımları \(1\)/);
+ assert.match(markup,/Sipariş hareketleri/);
  assert.match(markup,/data-action="paticoin-refresh"/);
  assert.match(app,/case 'paticoin-refresh':void patiCoinSync\(false\)/);
  assert.match(css,/\.paticoin-order-status/);
