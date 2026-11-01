@@ -1,0 +1,73 @@
+/* Patiyiz mobile design v2: three independent screen layouts. */
+@media(max-width:740px){
+  html[data-pati-view="messages"] #main-content .pati-dm-layout.mobile-chat-list{
+    width:100%!important;max-width:100%!important;background:#fff!important;
+  }
+  html[data-pati-view="messages"] #main-content .pati-dm-layout.mobile-chat-list .pati-dm-top{
+    display:flex!important;align-items:center!important;flex-wrap:wrap!important;
+    min-height:65px!important;padding:9px 12px!important;gap:8px!important;
+    background:#fff!important;backdrop-filter:none!important;
+  }
+  html[data-pati-view="messages"] #main-content .pati-dm-layout.mobile-chat-list .pati-dm-top-actions{
+    display:flex!important;gap:6px!important;align-items:center!important;
+    margin-left:auto!important;
+  }
+  html[data-pati-view="messages"] #main-content .pati-dm-layout.mobile-chat-list .pati-dm-top-actions button{
+    min-height:42px!important;border-radius:14px!important;
+    background:#191a1e!important;color:#fff!important;border:0!important;
+  }
+  html[data-pati-view="messages"] #main-content .pati-dm-layout.mobile-chat-list .pati-dm-filters{
+    display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    padding:9px 12px!important;gap:6px!important;background:#fff!important;
+  }
+  html[data-pati-view="messages"] #main-content .pati-dm-layout.mobile-chat-list .pati-dm-filters button{
+    min-width:0!important;min-height:46px!important;border-radius:15px!important;
+  }
+  html[data-pati-view="messages"] #main-content .pati-dm-layout.mobile-chat-list .pati-dm-searchbar{
+    padding:10px 12px!important;background:#fff!important;
+  }
+  html[data-pati-view="messages"] #main-content .pati-dm-layout.mobile-chat-open .chat-window{
+    display:flex!important;flex-direction:column!important;
+    height:100%!important;min-height:0!important;max-height:100%!important;
+  }
+  html[data-pati-view="messages"] #main-content .pati-dm-layout.mobile-chat-open .chat-window>header{
+    flex:0 0 auto!important;position:relative!important;top:auto!important;
+    min-height:60px!important;padding:8px 10px!important;
+    background:#fff!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+  }
+  html[data-pati-view="messages"] #main-content .pati-dm-layout.mobile-chat-open .chat-history{
+    flex:1 1 0!important;min-height:0!important;height:auto!important;
+    max-height:none!important;overflow-y:auto!important;overflow-x:hidden!important;
+    padding:12px 10px!important;
+  }
+  html[data-pati-view="messages"] #main-content .pati-dm-layout.mobile-chat-open .chat-form{
+    flex:0 0 auto!important;position:relative!important;inset:auto!important;
+    margin:0!important;min-height:60px!important;padding:7px 9px!important;
+    background:#fff!important;
+  }
+  html[data-pati-view="messages"] #main-content .pati-dm-layout.mobile-chat-open .pati-dm-image-open{
+    display:block!important;max-width:min(260px,75vw)!important;
+    padding:0!important;border-radius:15px!important;overflow:hidden!important;
+    background:#f4f5f7!important;
+  }
+  html[data-pati-view="messages"] #main-content .pati-dm-layout.mobile-chat-open .pati-dm-image-open img{
+    display:block!important;width:100%!important;height:auto!important;
+    max-height:320px!important;object-fit:contain!important;
+  }
+  html[data-pati-view="profile"] #main-content .pati-ig-profile{
+    box-sizing:border-box!important;width:100%!important;max-width:100%!important;
+    background:#fff!important;color:#191a1e!important;
+  }
+  html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-ig-tabs{
+    display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    width:100%!important;max-width:100%!important;min-width:0!important;
+    overflow:visible!important;gap:2px!important;background:#fff!important;
+  }
+  html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-ig-tabs>button{
+    min-width:0!important;max-width:100%!important;box-sizing:border-box!important;
+  }
+  html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-profile-insights-preview{
+    background:#fff!important;border:1px solid #e7e8ec!important;
+    box-shadow:0 2px 6px #00000008!important;border-radius:20px!important;
+  }
+}

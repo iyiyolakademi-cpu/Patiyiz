@@ -53,6 +53,13 @@
     button.setAttribute('aria-label', expanded ? 'Video açıklamasını daralt' : 'Video açıklamasının tamamını göster');
   }, true);
 
+  // Pause Reel playback when the application is backgrounded or another page takes focus.
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) for (const video of main.querySelectorAll('.pati-reel-video')) {
+      if (!video.paused) video.pause();
+    }
+  });
+
   // A second video starting to play must immediately silence the prior Reel.
   // The app's own observer still determines which slide should autoplay.
   document.addEventListener('play', event => {
