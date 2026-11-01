@@ -61,7 +61,7 @@ html[data-pati-theme="dark"] #app-root{
 }
 #main-content .pati-feed-card .pati-social-actions{
   display:flex!important;align-items:center!important;
-  justify-content:space-between!important;gap:2px!important;
+  justify-content:flex-start!important;gap:4px!important;
   width:100%;min-width:0;box-sizing:border-box;
 }
 #main-content .pati-feed-card .pati-social-actions>button{
