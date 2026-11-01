@@ -225,7 +225,7 @@ html[data-pati-view]:not([data-pati-view="home"]) #app-root .pati-desktop-action
  font-weight:650;line-height:1!important;white-space:nowrap;
 }
 #main-content .pati-social-actions>button svg{flex:none}
-#main-content .pati-social-actions>button[data-action="save"]{margin-left:auto!important}
+#main-content .pati-feed-card .pati-social-actions>button[data-action="save"]{margin-left:0!important}
 @media(max-width:385px){#main-content .pati-social-actions>button{gap:3px!important;font-size:11px!important}}
 /* Reply sheet reuses exactly the established post comments layout. */
 #modal-root .pati-question-comments .pati-question-reply-summary{padding:12px 15px!important;margin:0!important}
@@ -510,7 +510,7 @@ html[data-pati-theme="dark"] #main-content .pati-profile-insights-preview :is(st
   padding:8px 10px calc(12px + env(safe-area-inset-bottom,0px))!important;
  }
  #main-content .pati-feed-card .pati-social-actions{
-  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  display:flex!important;align-items:center!important;justify-content:flex-start!important;
   flex-wrap:nowrap!important;gap:clamp(1px,1vw,7px)!important;
   width:100%!important;max-width:100%!important;min-width:0!important;
   box-sizing:border-box!important;padding:5px 6px!important;
