@@ -254,3 +254,31 @@ html[data-pati-view="reels"] #main-content .pati-reel-item
     font-weight:800!important;font-size:11px!important;line-height:1.05!important;
   }
 }
+
+/* Bottom tabs also use stronger, slightly larger strokes, with safe phone
+   hit targets. Keep the familiar labels and the existing five destinations. */
+@media(max-width:740px){
+  #app-root:not(.hidden)>.mobile-bottom{
+    box-sizing:border-box!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    align-items:stretch!important;
+    min-height:70px!important;
+    padding:6px 4px max(8px,env(safe-area-inset-bottom,0px))!important;
+  }
+  #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn{
+    box-sizing:border-box!important;min-width:0!important;max-width:none!important;
+    min-height:56px!important;padding:5px 2px!important;
+    gap:4px!important;border-radius:12px!important;
+  }
+  #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn .pati-mobile-nav-glyph{
+    display:grid!important;place-items:center!important;
+    flex:0 0 30px!important;width:32px!important;height:30px!important;
+  }
+  #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn .pati-mobile-nav-glyph>.icon{
+    width:27px!important;height:27px!important;
+    stroke-width:2.35!important;stroke-linecap:round!important;
+    stroke-linejoin:round!important;
+  }
+  #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn>small{
+    font-size:10.5px!important;line-height:1.1!important;font-weight:730!important;
+  }
+}
