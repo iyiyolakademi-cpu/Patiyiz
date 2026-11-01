@@ -1033,7 +1033,7 @@ function patiEnsurePageBack(){
  if(view==='messages')return;
  if(view==='profile')return;
  // Inner pages hide the global brand header on mobile; keep a standalone back button.
- if(main.querySelector('.pati-page-back')||main.querySelector('.pati-streaks-back'))return;
+ if(main.querySelector('.pati-page-back,.pati-streaks-back,.pati-detail-toolbar [data-action="post-back"]'))return;
  const btn=document.createElement('button');btn.type='button';btn.className='pati-page-back';btn.dataset.action='pati-page-back';btn.innerHTML='‹ <span>Geri</span>';
  btn.setAttribute('aria-label','Önceki ekrana dön');main.prepend(btn);
 }
