@@ -53,5 +53,5 @@ test('Shop shows real stock and point checkout, while unavailable new items stay
  assert.match(app,/patiyiz_redeem_reward/);
  assert.match(css,/\.pati-store-grid/);
  assert.match(css,/@media\(max-width:540px\)/);
- assert.match(html,/patiyiz-media-store-refresh-20261101\.css\?v=1/);
+ assert.match(html,/patiyiz-media-store-refresh-20261101\.css\?v=2/);
 });
