@@ -94,3 +94,65 @@
   .pati-dm-context-item{min-height:45px!important}
 }
 @media(prefers-reduced-motion:reduce){.pati-dm-context-reactions button{transition:none!important}}
+
+
+/* The selected message stays visually anchored; do not turn this into a
+   generic centered dialog or a bottom sheet. */
+.pati-dm-context-menu[open]{
+ display:block!important;overflow:hidden!important;
+ padding:0!important;background:transparent!important;
+}
+.pati-dm-context-menu .pati-dm-context-content{
+ position:fixed!important;
+ left:var(--dm-popup-left,12px)!important;
+ top:var(--dm-popup-top,80px)!important;
+ width:var(--dm-popup-width,min(350px,calc(100vw - 24px)))!important;
+ margin:0!important;transform-origin:70% 25%!important;
+ max-height:calc(100dvh - 24px)!important;
+ border:0!important;border-radius:0!important;padding:0!important;
+ overflow:auto!important;gap:8px!important;
+ background:transparent!important;box-shadow:none!important;
+ animation:pati-ig-press-in .16s cubic-bezier(.22,1,.36,1) both!important;
+}
+.pati-dm-context-menu .pati-dm-context-reactions{
+ background:#fff!important;box-shadow:0 6px 25px rgba(0,0,0,.13)!important;
+ border:0!important;border-radius:999px!important;
+ gap:0!important;padding:6px 5px!important;
+}
+.pati-dm-context-menu .pati-dm-context-preview{
+ margin:0 0 1px!important;padding:13px 15px!important;
+ border:0!important;border-radius:17px 17px 17px 5px!important;
+ background:#f4f5f7!important;color:#22242a!important;
+ box-shadow:0 5px 17px rgba(0,0,0,.10)!important;
+ white-space:pre-wrap!important;max-height:175px!important;
+}
+.pati-dm-context-menu .pati-dm-context-preview.is-mine{
+ background:#303137!important;color:#fff!important;
+ border-radius:17px 17px 5px 17px!important;
+}
+.pati-dm-context-menu .pati-dm-context-actions{
+ background:#fff!important;border:0!important;
+ border-radius:17px!important;
+ box-shadow:0 9px 24px rgba(0,0,0,.14)!important;
+}
+.pati-dm-context-menu .pati-dm-context-item{
+ min-height:49px!important;padding:11px 16px!important;
+ font-size:14px!important;gap:13px!important;
+}
+.pati-dm-context-menu .pati-dm-context-top{display:none!important}
+@keyframes pati-ig-press-in{
+ from{opacity:.35;transform:scale(.95) translateY(7px)}
+ to{opacity:1;transform:scale(1) translateY(0)}
+}
+@media(max-width:400px){
+ .pati-dm-context-menu .pati-dm-context-content{
+  max-height:calc(100dvh - 16px)!important;
+ }
+ .pati-dm-context-menu .pati-dm-context-reactions button{
+  min-height:42px!important;height:42px!important;
+  width:calc((100% - 20px)/5)!important;max-width:48px!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .pati-dm-context-menu .pati-dm-context-content{animation:none!important}
+}
