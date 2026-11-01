@@ -126,55 +126,7 @@
  #main-content .pati-reel-item .pati-reel-author{right:70px!important}
 }
 
-/* Reimagined LEFT media-choice tiles: light-catching, modern, three distinct
-   icon families. Do not recolor the option rows, labels or publishing form. */
-#patiyiz-system-media .pati-system-options .pati-system-option-icon{
- position:relative!important;isolation:isolate!important;overflow:hidden!important;
- width:55px!important;height:55px!important;flex:0 0 55px!important;
- display:grid!important;place-items:center!important;
- border:1px solid rgba(255,255,255,.56)!important;
- border-radius:18px!important;box-sizing:border-box!important;
- box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 5px 13px rgba(0,0,0,.29)!important;
- transform:none!important;
-}
-#patiyiz-system-media .pati-system-options .pati-system-option-icon::before{
- content:"";position:absolute;pointer-events:none;
- z-index:-1;width:75px;height:75px;top:-43px;right:-37px;
- border-radius:50%;background:rgba(255,255,255,.26)!important;
- filter:blur(1px);
-}
-#patiyiz-system-media .pati-system-options .pati-system-option-icon::after{
- content:"";position:absolute;pointer-events:none;
- z-index:-1;left:5px;bottom:5px;
- width:9px;height:9px;border-radius:50%;
- background:rgba(255,255,255,.22);
-}
-#patiyiz-system-media .pati-system-options .pati-system-option-photo{
- background:linear-gradient(145deg,#26d9d0 0%,#1488d6 56%,#2c52d7 100%)!important;
- color:#fff!important;
-}
-#patiyiz-system-media .pati-system-options .pati-system-option-video{
- background:linear-gradient(145deg,#ff9877 0%,#f24681 53%,#9938c6 100%)!important;
- color:#fff!important;
-}
-#patiyiz-system-media .pati-system-options .pati-system-option-gallery{
- background:linear-gradient(145deg,#bd99ff 0%,#765be9 56%,#3e55bb 100%)!important;
- color:#fff!important;
-}
-#patiyiz-system-media .pati-system-options .pati-system-option-icon svg{
- position:relative;z-index:1;display:block!important;
- width:28px!important;height:28px!important;flex:0 0 auto!important;
- stroke:#fff!important;stroke-width:2!important;
- color:#fff!important;filter:drop-shadow(0 1px 2px #17203a55);
-}
-@media(max-width:380px){
- #patiyiz-system-media .pati-system-options .pati-system-option-icon{
-  width:49px!important;height:49px!important;flex-basis:49px!important;border-radius:16px!important;
- }
- #patiyiz-system-media .pati-system-options .pati-system-option-icon svg{
-  width:26px!important;height:26px!important;
- }
-}
+/* Obsolete glossy creator icons removed. Neutral creator owns icon colors. */
 @media(prefers-reduced-motion:reduce){
  #main-content .pati-reel-item .pati-reel-rail>button,
  #patiyiz-system-media .pati-system-options .pati-system-option-icon{

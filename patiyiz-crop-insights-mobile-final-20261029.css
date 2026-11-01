@@ -95,8 +95,8 @@ html[data-pati-theme="dark"] .pati-creator-dashboard :is(p,small,.pati-creator-f
  content:none!important;display:none!important
 }
 #patiyiz-system-media .pati-system-head{
- position:sticky;top:0;z-index:15;padding:8px 10px;
- background:#141519;box-sizing:border-box;max-width:100%;
+ position:relative;top:auto;z-index:15;padding:8px 10px;
+ background:#f7f7f8;box-sizing:border-box;max-width:100%;
 }
 #patiyiz-system-media .pati-system-head .pati-system-head-publish{
  display:inline-flex;align-items:center;justify-content:center;
@@ -109,7 +109,7 @@ html[data-pati-theme="dark"] .pati-creator-dashboard :is(p,small,.pati-creator-f
 #patiyiz-system-media .pati-system-head .pati-system-head-publish:disabled{opacity:.5!important;cursor:wait}
 #patiyiz-system-media .pati-system-publish-actions{
  position:sticky!important;bottom:0!important;z-index:12!important;
- background:#141519!important;
+ background:#f7f7f8!important;
  margin:12px 0 0!important;padding:12px 8px max(12px,env(safe-area-inset-bottom,0px))!important;
  border-top:1px solid #42444c!important;box-sizing:border-box!important;
 }
@@ -217,10 +217,11 @@ html[data-pati-theme="dark"] .pati-care-calendar-foot button{background:#181a20!
   min-height:58px!important;
   padding:7px 2px 10px!important;
   margin:0!important;
-  background:#08090c!important;
-  border-bottom:1px solid #262932!important;
+  background:#f7f7f8!important;
+  border-bottom:1px solid #e4e5e9!important;
 }
 #patiyiz-system-media .pati-system-head strong{
+  color:#17191d!important;
   text-align:center!important;
   font-size:clamp(17px,4.5vw,21px)!important;
   line-height:1.2!important;
@@ -289,12 +290,12 @@ html[data-pati-theme="dark"] .pati-care-calendar-foot button{background:#181a20!
   display:flex;
   flex-direction:column;
   gap:13px;
-  border:1px solid #343741;
-  background:#14161b;
+  border:1px solid #e2e4e9;
+  background:#fff;
   border-radius:20px;
   padding:clamp(12px,3vw,18px);
   margin:2px 0 0;
-  box-shadow:0 8px 26px rgba(0,0,0,.12);
+  box-shadow:none;
 }
 #patiyiz-system-media .pati-system-crop-entry{
   display:flex!important;
@@ -304,10 +305,10 @@ html[data-pati-theme="dark"] .pati-care-calendar-foot button{background:#181a20!
   min-height:53px!important;
   margin:0!important;
   padding:13px 14px!important;
-  border:1px solid #343741!important;
+  border:1px solid #dfe2e7!important;
   border-radius:14px!important;
-  background:#272a32!important;
-  color:#f7f7f9!important;
+  background:#f7f7f8!important;
+  color:#17191d!important;
   font-size:clamp(13px,3.7vw,15px)!important;
   font-weight:750!important;
   line-height:1.3!important;
@@ -370,15 +371,15 @@ html[data-pati-theme="dark"] .pati-care-calendar-foot button{background:#181a20!
   white-space:normal!important;
 }
 #patiyiz-system-media .pati-system-publish-actions [data-system="rechoose"]{
-  background:#292c33!important;
-  color:#fff!important;
-  border:1px solid #656a74!important;
+  background:#f2f3f5!important;
+  color:#17191d!important;
+  border:1px solid #dfe1e6!important;
 }
 #patiyiz-system-media #pati-system-publish{
   min-height:56px!important;
   border:0!important;
-  background:#fff!important;
-  color:#121318!important;
+  background:#17191d!important;
+  color:#fff!important;
   font-size:16px!important;
   font-weight:850!important;
 }

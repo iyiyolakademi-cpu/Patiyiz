@@ -13,6 +13,9 @@
 #patiyiz-system-media .pati-system-head{
   min-height:56px!important;border-bottom:1px solid #e2e4e8!important;
   padding:0 0 8px!important;flex:0 0 auto!important;
+
+ position:relative!important;top:auto!important;
+ background:#f7f7f8!important;color:#17191d!important;box-shadow:none!important;
 }
 #patiyiz-system-media .pati-system-head strong{
   color:#191b20!important;font-size:18px!important;font-weight:800!important;letter-spacing:-.03em!important;
@@ -149,3 +152,8 @@
 @media(prefers-reduced-motion:reduce){
   #patiyiz-system-media .pati-system-options button[data-system]{transition:none!important}
 }
+
+/* Suppress any legacy decoration on creator icons. */
+#patiyiz-system-media .pati-system-options .pati-system-option-icon::before,
+#patiyiz-system-media .pati-system-options .pati-system-option-icon::after{content:none!important;display:none!important}
+#patiyiz-system-media .pati-system-options .pati-system-option-icon svg{filter:none!important}
