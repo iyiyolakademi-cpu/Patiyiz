@@ -23,11 +23,14 @@ test('Photo filter model exposes eight presets and correct neutral defaults',()=
  assert.match(preset,/brightness\(120%\)/);
  assert.match(preset,/contrast\(90%\)/);
 });
-test('Filters are painted into canvas pixels used for actual uploads',()=>{
+test('Filters use pixel-level image processing on iPhones and match upload output',()=>{
  const context={};vm.createContext(context);vm.runInContext(app.slice(first,last),context);
- const log=[],fake2d={
-  clearRect(){},save(){},restore(){},translate(){},rotate(){},scale(){},
-  drawImage(){log.push({filter:this.filter})}
+ const original=Uint8ClampedArray.from([225,80,40,255,15,205,115,255]);
+ let output=null;
+ const fake2d={
+  clearRect(){},save(){},restore(){},translate(){},rotate(){},scale(){},drawImage(){},
+  getImageData(){return {data:Uint8ClampedArray.from(original)}},
+  putImageData(image){output=Uint8ClampedArray.from(image.data)}
  };
  const canvas={width:0,height:0,getContext:()=>fake2d};
  const img={naturalWidth:1600,naturalHeight:1200};
@@ -35,11 +38,12 @@ test('Filters are painted into canvas pixels used for actual uploads',()=>{
  context.renderFilter(canvas,img,{ratio:'1:1',zoom:1,x:.5,y:.5,rotation:0,flip:false,filter:'mono',brightness:95,contrast:125});
  assert.equal(canvas.width,720);
  assert.equal(canvas.height,720);
- assert.equal(log.length,1);
- assert.match(log[0].filter,/grayscale\(1\)/);
- assert.match(log[0].filter,/brightness\(95%\)/);
- assert.match(log[0].filter,/contrast\(125%\)/);
- assert.match(app,/patiCropPaint\(canvas,img,state\)/);
+ assert.ok(output,'output bytes should be exported on canvas');
+ assert.equal(output[0],output[1]);
+ assert.equal(output[1],output[2]);
+ assert.notDeepEqual([...output],[...original]);
+ assert.match(app,/patiCropApplyPixelFilter\(ctx,w,h,state\)/);
+ assert.match(app,/ctx\.putImageData\(image,0,0\)/);
  assert.match(app,/async function cropPostPhoto\(file,aspect\)/);
  assert.match(app,/patiCropEdits\.has\(photoFiles\[i\]\)/);
 });
@@ -55,13 +59,26 @@ test('Photo adjustment controls are available on mobile, preview and export',()=
  assert.match(css,/\.pati-crop-filter-tile\.active/);
  assert.match(html,/patiyiz-photo-filters-right-menu-20261101\.css\?v=1/);
 });
-test('Right-side ball and swipe-left menu preserve carousel gestures',()=>{
+test('Right-side ball opens a fullscreen page on tap only',()=>{
  assert.match(app,/id='pati-right-menu-handle'/);
  assert.match(app,/function patiOpenRightMenu\(markup\)/);
- assert.match(app,/if\(view==='home'&&dx<0\)\{openMobileFeaturesMenu\(\);return;\}/);
+ assert.doesNotMatch(app,/if\(view==='home'&&dx<0\)\{openMobileFeaturesMenu\(\);return;\}/);
  assert.match(app,/target\.closest\('input,textarea,select,\[contenteditable\],\.pati-carousel/);
- assert.match(app,/if\(dx>75&&Math\.abs\(dx\)>Math\.abs\(dy\)\*1\.4\)/);
- assert.match(css,/\.pati-right-menu-panel/);
- assert.match(css,/html\[data-pati-view="home"\]/);
- assert.match(html,/photo_filters_right_menu=20261101v1/);
+ assert.match(css,/dialog\.pati-right-menu-drawer\[open\]/);
+ assert.match(css,/width:100vw!important;max-width:100vw!important;height:100dvh!important/);
+ assert.match(css,/animation:none!important;transform:none!important;transition:none!important/);
+ assert.match(html,/photo_filters_right_menu=20261101v2/);
+});
+test('Reward label is Puan, no paw icon beside balance, and daily streak page does not reference undefined state',()=>{
+ assert.match(app,/let patiStreak60State=/);
+ assert.match(app,/async function patiStreak60Load\(/);
+ assert.match(app,/async function patiStreak60Claim\(/);
+ assert.match(app,/patiyiz_streak60_reward/);
+ assert.match(app,/p_claim:false/);
+ assert.match(app,/p_claim:true/);
+ assert.match(app,/Serilerim/);
+ assert.match(app,/Puan ve Görevler/);
+ assert.doesNotMatch(app,/PatiCoin/);
+ assert.match(app,/counter\.innerHTML='<span class="pati-balance-title">Bakiyen<\/span>/);
+ assert.match(app,/case 'pati-streak-60-claim':void patiStreak60Claim\(\)/);
 });
