@@ -6588,8 +6588,25 @@ async function preparePhoto(file){if(!file||!file.size)return null;if(!file.type
 /* Full-screen, photo-by-photo crop editor. Drafts are applied only on Bitti,
    so cancel never changes the media that will be uploaded. */
 const patiCropEdits=new WeakMap();
+// Filter definitions apply to the actual exported pixels, not only CSS previews.
+const patiCropFilters={
+ original:{name:'Orijinal',css:'',tint:'#dce0e5'},
+ vibrant:{name:'Canlı',css:'saturate(1.38) contrast(1.08)',tint:'#e78b47'},
+ warm:{name:'Sıcak',css:'sepia(.2) saturate(1.2) hue-rotate(-9deg)',tint:'#e0a66d'},
+ cool:{name:'Soğuk',css:'saturate(.92) hue-rotate(16deg)',tint:'#89b2ce'},
+ mono:{name:'Siyah Beyaz',css:'grayscale(1) contrast(1.12)',tint:'#909090'},
+ vintage:{name:'Vintage',css:'sepia(.36) saturate(.75) contrast(.96)',tint:'#b6a27a'},
+ soft:{name:'Pastel',css:'saturate(.74) contrast(.91) brightness(1.08)',tint:'#e7bfd0'},
+ cinema:{name:'Sinematik',css:'contrast(1.16) saturate(.77) sepia(.08)',tint:'#777e99'}
+};
 function patiCropDefault(file,ratio){
- return {ratio:ratio||'original',zoom:1,x:.5,y:.5,rotation:0,flip:false};
+ return {ratio:ratio||'original',zoom:1,x:.5,y:.5,rotation:0,flip:false,filter:'original',brightness:100,contrast:100};
+}
+function patiCropFilterCSS(state){
+ const preset=patiCropFilters[state.filter]||patiCropFilters.original;
+ const bright=Math.max(50,Math.min(150,Number(state.brightness)||100));
+ const contrast=Math.max(50,Math.min(150,Number(state.contrast)||100));
+ return [preset.css,'brightness('+bright+'%)','contrast('+contrast+'%)'].filter(Boolean).join(' ');
 }
 function patiCropSize(ratio,img,rotation=0){
  const sizes={'9:16':[720,1280],'4:5':[720,900],'1:1':[720,720],'1.91:1':[720,377]};
@@ -6608,7 +6625,7 @@ function patiCropPaint(canvas,img,state){
  const scale=Math.max(w/rw,h/rh)*state.zoom;
  const extraX=rw*scale-w,extraY=rh*scale-h;
  const cx=w/2+extraX*(.5-state.x),cy=h/2+extraY*(.5-state.y);
- ctx.save();ctx.translate(cx,cy);ctx.rotate(state.rotation*Math.PI/180);
+ ctx.save();ctx.filter=patiCropFilterCSS(state);ctx.translate(cx,cy);ctx.rotate(state.rotation*Math.PI/180);
  if(state.flip)ctx.scale(-1,1);
  ctx.drawImage(img,-img.naturalWidth*scale/2,-img.naturalHeight*scale/2,img.naturalWidth*scale,img.naturalHeight*scale);
  ctx.restore();
@@ -6638,6 +6655,11 @@ async function patiCropOpen(options={}){
   '</div><div class="pati-crop-ratios" role="group" aria-label="Kırpma oranı">'+
   [['original','Orijinal'],['1:1','Kare'],['4:5','4:5'],['9:16','9:16'],['1.91:1','Yatay']].map(([ratio,label])=>
   '<button type="button" data-crop-action="ratio" data-ratio="'+ratio+'">'+label+'</button>').join('')+'</div>'+
+  '<section class="pati-crop-color-panel" aria-label="Renk filtreleri ve fotoğraf ayarları"><div class="pati-crop-color-heading"><strong>Renk filtreleri</strong><button type="button" data-crop-action="reset-color">Sıfırla</button></div>'+
+  '<div class="pati-crop-filter-strip" role="group" aria-label="Fotoğraf filtreleri">'+Object.entries(patiCropFilters).map(([key,preset])=>
+  '<button type="button" class="pati-crop-filter-tile" data-crop-action="filter" data-filter="'+key+'" aria-pressed="false"><span class="pati-crop-filter-swatch" style="--pati-filter-tint:'+preset.tint+'"></span><small>'+preset.name+'</small></button>').join('')+'</div>'+
+  '<div class="pati-crop-adjustments"><label for="pati-crop-brightness">Parlaklık <output id="pati-crop-brightness-value" for="pati-crop-brightness">100%</output></label><input type="range" id="pati-crop-brightness" min="50" max="150" value="100" step="1" aria-label="Parlaklık">'+
+  '<label for="pati-crop-contrast">Kontrast <output id="pati-crop-contrast-value" for="pati-crop-contrast">100%</output></label><input type="range" id="pati-crop-contrast" min="50" max="150" value="100" step="1" aria-label="Kontrast"></div></section>'+
   '<label class="pati-full-crop-zoom">Yakınlaştır <input type="range" min="1" max="3" step=".01" value="1" id="pati-full-crop-zoom"></label>'+
   (files.length>1?'<div class="pati-crop-pagination"><button type="button" data-crop-action="prev">‹ Önceki</button><button type="button" data-crop-action="next">Sonraki ›</button></div>':'')+
   '<p>Fotoğrafı sürükleyerek kadrajı ayarla. İstersen oranını değiştir.</p><p class="pati-crop-status" role="status" aria-live="polite"></p></div></div>';
@@ -6661,6 +6683,11 @@ async function patiCropOpen(options={}){
    popup.querySelector('.pati-full-crop-stage').style.setProperty('--pati-crop-aspect',canvas.width+' / '+canvas.height);
    popup.querySelector('#pati-full-crop-counter').textContent=files.length>1?(index+1)+' / '+files.length:'Fotoğraf';
    popup.querySelector('#pati-full-crop-zoom').value=String(state.zoom);
+   for(const key of ['brightness','contrast']){
+    const control=popup.querySelector('#pati-crop-'+key);
+    if(control){control.value=String(state[key]??100);popup.querySelector('#pati-crop-'+key+'-value').textContent=control.value+'%'}
+   }
+   popup.querySelectorAll('[data-crop-action="filter"]').forEach(b=>{b.classList.toggle('active',b.dataset.filter===(state.filter||'original'));b.setAttribute('aria-pressed',String(b.dataset.filter===(state.filter||'original')))});
    popup.querySelectorAll('[data-crop-action="ratio"]').forEach(b=>{b.classList.toggle('active',b.dataset.ratio===state.ratio);b.setAttribute('aria-pressed',String(b.dataset.ratio===state.ratio))});
    status.textContent='';
   }catch(e){status.textContent='Fotoğraf açılamadı. Galeriden JPG olarak yeniden deneyebilirsin.';console.warn('Kırpma önizlemesi:',e)}
@@ -6675,6 +6702,8 @@ async function patiCropOpen(options={}){
    postCropIndex=index;popup.close();updatePostMediaPreview();options.onDone?.();return;
   }
   if(action==='prev'||action==='next'){index=(index+(action==='next'?1:-1)+files.length)%files.length;await draw();return}
+  if(action==='filter'){if(!patiCropFilters[btn.dataset.filter])return;state.filter=btn.dataset.filter;await draw();return}
+  if(action==='reset-color'){state.filter='original';state.brightness=100;state.contrast=100;await draw();return}
   if(action==='flip')state.flip=!state.flip;
   if(action==='rotate'){state.rotation=(state.rotation+90)%360;state.x=.5;state.y=.5}
   if(action==='ratio'){state.ratio=btn.dataset.ratio;state.x=.5;state.y=.5;state.zoom=1}
@@ -6683,6 +6712,13 @@ async function patiCropOpen(options={}){
  popup.querySelector('#pati-full-crop-zoom').addEventListener('input',event=>{
   getState(index).zoom=Number(event.target.value)||1;void draw();
  });
+ for(const property of ['brightness','contrast']){
+  popup.querySelector('#pati-crop-'+property).addEventListener('input',event=>{
+   getState(index)[property]=Number(event.target.value);
+   popup.querySelector('#pati-crop-'+property+'-value').textContent=event.target.value+'%';
+   void draw();
+  });
+ }
  const endDrag=()=>{drag=null};
  canvas.addEventListener('pointerdown',event=>{
   if(event.button!==0)return;event.preventDefault();
