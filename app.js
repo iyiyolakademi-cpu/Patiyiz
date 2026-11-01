@@ -727,7 +727,11 @@ function patiShopPage(){
  const history=orders.slice(0,30).map(o=>{
   const item=patiCoinState.items.find(x=>x.id===o.item_id);
   const proof=o.status==='fulfilled'&&/^https:\/\//i.test(o.proof_url||'')?'<a href="'+esc(o.proof_url)+'" target="_blank" rel="noopener noreferrer">Teslimat kanıtı</a>':'';
-  return '<div class="pati-calm-order"><div><strong>'+esc(item?.name||'Eski katalog ürünü')+'</strong><small>'+Number(o.coins_spent).toLocaleString('tr-TR')+' puan · '+day(o.created_at)+'</small></div><span>'+esc(status[o.status]||'İşlemde')+'</span>'+(o.admin_note?'<p>'+esc(o.admin_note)+'</p>':'')+proof+'</div>';
+  return '<div class="pati-calm-order"><div><strong>'+esc(item?.name||'Eski katalog ürünü')+'</strong><small>'+Number(o.coins_spent).toLocaleString('tr-TR')+' puan · '+day(o.created_at)+'</small></div><span>'+esc(status[o.status]||'İşlemde')+'</span>'+(o.admin_note?'<p>'+esc(o.admin_note)+'</p>':'')+proof+
+   (Array.isArray(patiCoinState.history)&&patiCoinState.history.some(e=>e.redemption_id===o.id)?
+   '<details><summary>Sipariş hareketleri</summary>'+
+   patiCoinState.history.filter(e=>e.redemption_id===o.id).map(e=>'<p>'+esc(status[e.next_status]||e.next_status)+' · '+day(e.created_at)+'</p>').join('')+
+   '</details>':'')+'</div>';
  }).join('');
  main.innerHTML='<section class="pati-calm-shop" aria-label="Puan mağazası">'+
   '<header class="pati-calm-header"><span>MAĞAZA</span><h1>İyiliğe dönüştür</h1><p>Dört seçenek, tek ekran. Puanlarınla mama desteği veya fidan talebi oluştur.</p></header>'+
