@@ -47,7 +47,7 @@ test('Message long-press presents a modal reaction row and functional compact ac
  assert.match(app,/dm-context-copy/);
  assert.match(app,/option\('dm-reply','Yanıtla'/);
  assert.match(app,/option\('message-delete','Sil'/);
- assert.match(app,/if\(msg\.sender_id===owner\)/);
+ assert.match(app,/msg\.sender_id===owner\|\|msg\.receiver_id!==owner/);
  assert.match(html,/patiyiz-dm-longpress-20261101\.css\?v=1/);
  const css=fs.readFileSync('patiyiz-dm-longpress-20261101.css','utf8');
  assert.match(css,/\.pati-dm-context-menu::backdrop/);
