@@ -47,3 +47,66 @@
   transition:none!important;
  }
 }
+
+
+/* Physical top-edge media strip correction — iPhone feed.
+ * Uploaded media sometimes already has a ~2% dark band at its top edge.
+ * Changing wrapper background cannot remove pixels baked into the media.
+ * Crop a small 3.2% safety margin at display-time; never edit original files.
+ * Only regular feed cards are affected (not story editor, detail or Reels).
+ */
+#main-content .pati-feed-posts > .pati-feed-card .pati-carousel,
+#main-content .pati-feed-posts > .pati-feed-card .pati-carousel-track,
+#main-content .pati-feed-posts > .pati-feed-card .pati-carousel-slide,
+#main-content .pati-feed-posts > .pati-feed-card .pati-photo,
+#main-content .pati-feed-posts > .pati-feed-card .pati-video-frame{
+ box-sizing:border-box!important;
+ margin:0!important;padding:0!important;border:0!important;
+ box-shadow:none!important;line-height:0!important;
+ overflow:hidden!important;
+}
+#main-content .pati-feed-posts > .pati-feed-card .pati-carousel-track,
+#main-content .pati-feed-posts > .pati-feed-card .pati-carousel-slide{
+ height:100%!important;
+ background:transparent!important;
+}
+#main-content .pati-feed-posts > .pati-feed-card .pati-carousel-slide .pati-photo{
+ position:relative!important;
+ height:100%!important;min-height:0!important;
+ background:#f3f4f6!important;
+}
+#main-content .pati-feed-posts > .pati-feed-card .pati-carousel-slide .pati-photo > img{
+ position:absolute!important;
+ top:-3.2%!important;left:0!important;
+ width:100%!important;height:106.4%!important;
+ max-height:none!important;
+ object-fit:cover!important;object-position:center center!important;
+ content-visibility:visible!important;
+ border:0!important;margin:0!important;padding:0!important;
+}
+/* Video media uses the same edge treatment, but keep the camera mirroring. */
+#main-content .pati-feed-posts > .pati-feed-card .pati-video-frame{
+ position:relative!important;
+ background:#f3f4f6!important;
+}
+#main-content .pati-feed-posts > .pati-feed-card .pati-video-frame > video.pati-post-video{
+ position:absolute!important;
+ top:-3.2%!important;left:0!important;
+ width:100%!important;height:106.4%!important;
+ max-height:none!important;
+ object-fit:cover!important;object-position:center center!important;
+ transform:none!important;
+ margin:0!important;padding:0!important;border:0!important;
+}
+#main-content .pati-feed-posts > .pati-feed-card .pati-video-frame > video.pati-post-video.pati-selfie-mirrored{
+ transform:scaleX(-1)!important;
+}
+/* Keep overlays, carousel arrows and audio control interactive. */
+#main-content .pati-feed-posts > .pati-feed-card .pati-video-frame > :is(button,.pati-video-heart-burst){
+ z-index:6;
+}
+/* Never show a pseudo-element separator above the visible media. */
+#main-content .pati-feed-posts > .pati-feed-card :is(.pati-carousel,.pati-video-frame)::before,
+#main-content .pati-feed-posts > .pati-feed-card :is(.pati-carousel,.pati-video-frame)::after{
+ border-top:0!important;box-shadow:none!important;
+}
