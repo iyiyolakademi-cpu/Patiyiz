@@ -17,7 +17,7 @@ test('Animated original dog mascot has safe motion reduction and no external dep
  assert.match(mascot,/<svg [^>]*viewBox="0 0 240 240"/);
  for(const key of ['blink','wave','wag','tilt','prefers-reduced-motion'])assert.ok(mascot.includes(key),key);
  assert.doesNotMatch(mascot,/(?:href|src)=["']https?:\/\/|<script\b/i);
- assert.match(html,/patiyiz-delight-20261029\.js\?v=4/);
+ assert.match(html,/patiyiz-delight-20261029\.js\?v=5-streak-tamam/);
  assert.match(native,/'patiyiz-mascot\.svg'/);
 });
 test('Streak is database-owned, private and synchronized between devices',()=>{
@@ -78,13 +78,14 @@ test('Web and Capacitor bundles both include every new asset',()=>{
 
 test('Streak popup displays only once per user and local calendar day after server check-in',()=>{
  assert.match(app,/sb\.rpc\('patiyiz_checkin_streak'\)/);
- assert.doesNotMatch(app,/showStreakOnce\(patiStreakState,\{userId:uid,day:today\}\)/);
+ assert.match(app,/showStreakOnce\(patiStreakState,\{userId:uid,day:today\}\)/);
  assert.match(app,/streakPanel\(\{count:days,best\},patiStreakToday\(\)\)/);
  assert.doesNotMatch(app,/patiStreakMarkup\(\)/);
  assert.match(js,/seenInPage\.has\(key\)/);
  assert.match(js,/localStorage\.getItem\(key\)==='1'/);
  assert.match(js,/localStorage\.setItem\(key,'1'\)/);
- assert.match(js,/window\.setTimeout\(closeStreak,5100\)/);
+ assert.doesNotMatch(js,/window\.setTimeout\(closeStreak,5100\)/);
+ assert.match(js,/pati-streak-done/);
  assert.match(js,/function streakWeekdays\(state,day\)/);
  assert.match(js,/Pzt','Sal','Çar','Per','Cum','Cmt','Paz/);
  assert.match(js,/el\.className='pati-streak-overlay'/);
@@ -92,7 +93,7 @@ test('Streak popup displays only once per user and local calendar day after serv
  assert.match(style,/\.pati-streak-dialog\{/);
  assert.match(style,/\.pati-streak-flame/);
  assert.match(style,/prefers-reduced-motion:reduce/);
- assert.match(html,/patiyiz-streak-popup-20261029\.css\?v=2/);
+ assert.match(html,/patiyiz-streak-popup-20261029\.css\?v=3-streak-tamam/);
 });
 test('Upgraded mascot includes premium gradients, blush, waving paw and reduced-motion fallback',()=>{
  assert.match(mascot,/<linearGradient id="fur"/);
