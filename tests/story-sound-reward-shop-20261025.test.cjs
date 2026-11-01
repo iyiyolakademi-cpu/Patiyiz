@@ -32,7 +32,8 @@ test('Tamamlanan coin görevleri listenin altına ayrılır ve mağaza fidan ba�
  assert.match(tasks,/missionList\(group,true\)/);
  assert.match(tasks,/paticoin-done-zone/);
  assert.match(app,/patiShopFilter='all'/);
- assert.match(app,/p\.kind==='donation'/);
+ assert.match(app,/const pets=data\.pets\.filter/);
+ assert.match(app,/donation=product\.kind==='donation'/);
  assert.match(app,/value="environment" checked/);
  assert.match(sql,/fidan-bagisi/);
  assert.match(sql,/stock_available\)/);
