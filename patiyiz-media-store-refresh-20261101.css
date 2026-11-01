@@ -1,5 +1,6 @@
+#post-form #pati-post-media-gallery:not(.has-media){min-height:150px!important;max-height:240px!important;aspect-ratio:auto!important;}
 /* Patiyiz v20261101 · consistent media editing + redesigned affordable points shop. */
-#post-form #pati-post-media-gallery:not(:empty){
+#post-form #pati-post-media-gallery.has-media{
  width:100%!important;max-width:min(100%,450px)!important;
  margin-inline:auto!important;border-radius:16px!important;
  aspect-ratio:var(--pati-compose-ratio,4/5)!important;
