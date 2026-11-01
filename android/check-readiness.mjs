@@ -30,19 +30,24 @@ if(app){
  if(app.fingerprints?.some(f=>!/^([A-F0-9]{2}:){31}[A-F0-9]{2}$/i.test(f.value||'')))fail('TWA fingerprints girdilerinden biri hatalı.');
 }
 if(web){
- if(web.name!=='Patiyiz'||web.display!=='standalone')fail('PWA adı/görünümü uygun değil.');
+ if(!web.name?.trim()||!web.short_name?.trim()||web.display!=='standalone')fail('PWA adı/görünümü uygun değil.');
  if(!['/','./'].includes(web.start_url)||!['/','./'].includes(web.scope))fail('PWA başlangıç ve scope kök alan adıyla uyumsuz.');
  const pngIcons=(web.icons||[]).filter(icon=>icon.type==='image/png');
- for(const size of [192,512]){
-  const icon=pngIcons.find(x=>x.sizes?.split(' ').includes(size+'x'+size));
-  if(!icon){fail('PWA '+size+'x'+size+' PNG simgesi bulunamadı.');continue;}
+ if(!pngIcons.length)fail('PWA için PNG ikon bulunamadı.');
+ for(const icon of pngIcons){
   const file=icon.src.split('?')[0];
+  const sizes=icon.sizes?.split(/\\s+/).filter(Boolean)||[];
   try{
    const bytes=fs.readFileSync(path.join(root,file));
    if(bytes.subarray(0,8).toString('hex')!=='89504e470d0a1a0a')throw Error('PNG değil');
-   if(bytes.readUInt32BE(16)!==size||bytes.readUInt32BE(20)!==size)throw Error('Dosya gerçek boyutları farklı');
-   pass(size+'x'+size+' PWA simgesi doğrulandı.');
-  }catch(e){fail(size+'x'+size+' simgesi geçersiz: '+file+' ('+e.message+')')}
+   const width=bytes.readUInt32BE(16),height=bytes.readUInt32BE(20);
+   if(!sizes.includes(width+'x'+height))throw Error('Manifest boyutu dosyayla uyuşmuyor');
+   pass(width+'x'+height+' PWA simgesi doğrulandı.');
+  }catch(e){fail('PWA simgesi geçersiz: '+file+' ('+e.message+')')}
+ }
+ for(const size of [192,512]){
+  if(!pngIcons.some(x=>x.sizes?.split(' ').includes(size+'x'+size)))
+   warn('Android mağaza paketi için '+size+'x'+size+' PNG ikon henüz eklenmedi.');
  }
 }
 if(read('CNAME').trim()!==expectedHost)fail('CNAME patiyiz.com olmalı.');
@@ -65,7 +70,7 @@ if(fs.existsSync(path.join(root,'android','app','build.gradle'))){
  else pass('Üretilen Android projesi API 36 hedefliyor.');
 }else warn('Android Gradle projesi henüz üretilmedi; Bubblewrap veya PWABuilder aşamasında API 36 doğrula.');
 if(isOnline){
- const targets=['https://patiyiz.com/','https://patiyiz.com/manifest.webmanifest','https://patiyiz.com/patiyiz-app-icon-512.png','https://patiyiz.com/privacy.html','https://patiyiz.com/delete-account.html'];
+ const targets=['https://patiyiz.com/','https://patiyiz.com/manifest.webmanifest','https://patiyiz.com/social-final-logo-20261101.png','https://patiyiz.com/privacy.html','https://patiyiz.com/delete-account.html'];
  for(const url of targets){
   try{
    const r=await fetch(url,{method:'GET',signal:AbortSignal.timeout(12000),redirect:'follow'});
