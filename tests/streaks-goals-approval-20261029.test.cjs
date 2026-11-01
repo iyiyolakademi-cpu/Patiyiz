@@ -21,7 +21,7 @@ test('Menu and desktop nav contain Seriler and selecting it renders a permanent 
  assert.match(app,/window\.PatiyizDelight\?\.streakPanel\(\{count:days,best\},patiStreakToday\(\)\)/);
  assert.match(delight,/function streakPanel\(state=\{\},day=''\)/);
  assert.match(app,/Serini tamamladığında Puanı topla butonuyla ödülünü hesabına ekle/);
- assert.doesNotMatch(app,/window\.PatiyizDelight\?\.showStreakOnce\(patiStreakState/);
+ assert.match(app,/window\.PatiyizDelight\?\.showStreakOnce\(patiStreakState,\{userId:uid,day:today\}\)/);
 });
 test('Exactly four fixed targets and rewards; progress follows only server-confirmed streak',()=>{
  const area=app.slice(app.indexOf('const patiStreakGoals='),app.indexOf('async function patiStreakGoalLoad'));
