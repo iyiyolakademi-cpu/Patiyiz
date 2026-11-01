@@ -6738,9 +6738,8 @@ function startPatiCameraStory(){
  mountPatiyizCamera('story');
 }
 function startPatiCameraReels(){
- // Open the full native-responsive composer so users can pick a cover,
- // scrub a video frame and confirm it before publishing.
  compose(null,'reels',false);
+ mountPatiyizCamera('reels');
 }
 
 function compose(post,mode='post',autoPick=true){
