@@ -65,7 +65,7 @@ function patiWatchPostViews(){
 }
 
 const allowed=['home','explore','pets','reels','streaks','rewards','shop','saved-posts','community','knowledge','education','lost','adoption','care','wellness','healthfile','my-pet','messages','notifications','profile','blocked','settings','follows-list'];
-const nav=[['home','Ana sayfa','home'],['explore','Keşfet','compass'],['reels','Reels','up'],['streaks','Seriler','calendar'],['community','Topluluk','users'],['knowledge','Bilgi Merkezi','library'],['education','Eğitim','library'],['lost','Kayıp İlanları','location'],['adoption','Sahiplendirme','heart'],['my-pet','Hayvanım','heart'],['messages','Mesajlar','message'],['notifications','Bildirimler','bell'],['profile','Profilim','user'],['settings','Ayarlar ve Gizlilik','settings']];
+const nav=[['home','Ana sayfa','home'],['explore','Keşfet','compass'],['reels','Reels','up'],['streaks','Seriler','calendar'],['community','Topluluk','users'],['knowledge','Bilgi Merkezi','library'],['education','101 Eğitim Serileri','library'],['lost','Kayıp İlanları','location'],['adoption','Sahiplendirme','heart'],['my-pet','Hayvanım','heart'],['messages','Mesajlar','message'],['notifications','Bildirimler','bell'],['profile','Profilim','user'],['settings','Ayarlar ve Gizlilik','settings']];
 const cfg=window.PATIYIZ_CONFIG||{};
 const ready=String(cfg.supabaseUrl||'').startsWith('https://')&&!String(cfg.supabaseUrl).includes('BURAYA_')&&!!cfg.supabasePublishableKey&&!String(cfg.supabasePublishableKey).includes('BURAYA_')&&!!window.supabase?.createClient;
 let liveChannel=null,liveReloadTimer=null,liveReconnectTimer=null,liveUserId=null,liveInitialized=false,pushPublicKey='',lastForegroundSync=0;
@@ -2989,7 +2989,8 @@ function educationTopicNext(topic,done){
 }
 function educationTopicArtwork(topic){
  const files={Kedi:'pati-illustration-cat.svg',Köpek:'pati-illustration-dog.svg',Kuş:'pati-illustration-bird.svg',Balık:'pati-illustration-fish.svg'};
- const symbols=Object.fromEntries((window.PATIYIZ_SERIES_CATALOG||[]).map(x=>[x.title,x.icon]));
+ const catalog=typeof window!=='undefined'?(window.PATIYIZ_SERIES_CATALOG||[]):[];
+  const symbols=Object.fromEntries(catalog.map(x=>[x.title,x.icon]));
  return files[topic]?'<img src="'+files[topic]+'" alt="'+esc(topic)+' illüstrasyonu" loading="lazy" decoding="async">':
   '<span class="pati-academy-topic-art-icon" aria-hidden="true">'+esc(symbols[topic]||'📚')+'</span>';
 }
