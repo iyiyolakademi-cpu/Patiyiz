@@ -1091,7 +1091,7 @@ function patiEnsurePageBack(){
  if(view==='messages')return;
  if(view==='profile')return;
  // Inner pages hide the global brand header on mobile; keep a standalone back button.
- if(main.querySelector('.pati-page-back')||main.querySelector('.pati-streaks-back'))return;
+ if(main.querySelector('.pati-page-back')||main.querySelector('.pati-streaks-back')||main.querySelector('.pati-detail-toolbar [data-action="post-back"]')||main.querySelector('[data-action="post-back"]'))return;
  const btn=document.createElement('button');btn.type='button';btn.className='pati-page-back';btn.dataset.action='pati-page-back';btn.innerHTML='‹ <span>Geri</span>';
  btn.setAttribute('aria-label','Önceki ekrana dön');main.prepend(btn);
 }
@@ -1447,7 +1447,7 @@ function openPost(id){
   origin,rows:options,initialId:id,positioned:false,
   profileId,profilePostsTab,returnScroll:window.scrollY||0
  }:null;
- patiExploreReturnTo=view==='explore';selectedPostId=id;navigate('home');
+ patiExploreReturnTo=view==='explore';selectedPostId=id;navigate('home');requestAnimationFrame(()=>{if(selectedPostId===id)window.scrollTo(0,0)});
 }
 let storyItems=[],storyIndex=0,storyTimer=null,storyLikes=[];
 /* Story rings track unseen ACTIVE story IDs, never story deletion.
