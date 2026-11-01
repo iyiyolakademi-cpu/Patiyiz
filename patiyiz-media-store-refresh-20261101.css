@@ -188,3 +188,8 @@
  #main-content .pati-store-section-head h2{font-size:18px!important}
 }
 @media(prefers-reduced-motion:reduce){#main-content .pati-store-product{animation:none!important}}
+
+/* Clear cover editing action, shared with the full-screen image editor. */
+#post-form .pati-cover-crop-row{display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:8px!important;margin:11px 0!important;padding:10px 12px!important;border:1px solid #e5e8ed!important;border-radius:13px!important;background:#f9fafb!important}
+#post-form .pati-cover-crop-row button{min-height:43px!important;padding:10px 15px!important;border:1px solid #dfe2e7!important;border-radius:11px!important;background:#fff!important;color:#222630!important;font-size:12px!important;font-weight:800!important}
+#post-form .pati-cover-crop-row small{color:#777e88!important;font-size:11px!important;line-height:1.4!important}
