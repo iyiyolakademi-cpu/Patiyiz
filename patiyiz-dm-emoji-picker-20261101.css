@@ -1,0 +1,57 @@
+/* Full emoji keyboard-style bottom sheet: mobile first, light/dark independent. */
+.pati-emoji-dialog{
+ position:fixed!important;inset:auto 0 0!important;
+ width:100%!important;max-width:100%!important;
+ height:min(84dvh,850px)!important;max-height:calc(100dvh - 36px)!important;
+ margin:0!important;padding:0!important;border:0!important;
+ background:#191b20!important;color:#f9fafb!important;
+ border-radius:26px 26px 0 0!important;
+ box-shadow:0 -12px 50px rgba(0,0,0,.32)!important;
+ z-index:2147483640!important;overflow:hidden!important;
+}
+.pati-emoji-dialog:not([open]){display:none!important}
+.pati-emoji-dialog::backdrop{
+ background:rgba(10,12,18,.66)!important;
+ -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+}
+.pati-emoji-sheet{height:100%;display:flex;flex-direction:column;box-sizing:border-box;padding:0 12px env(safe-area-inset-bottom,0px);min-height:0}
+.pati-emoji-grip{height:5px;width:40px;background:#aaadb6;border-radius:10px;margin:10px auto 12px;flex:none}
+.pati-emoji-search-wrap{display:flex;align-items:center;gap:10px;background:#2c3037;border-radius:18px;min-height:48px;padding:0 14px;flex:none}
+.pati-emoji-search-wrap>span{font-size:28px;color:#ececf0;line-height:1;flex:none}
+.pati-emoji-search{min-height:44px!important;flex:1;min-width:0;width:100%;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;color:#fff!important;font-size:16px!important;font-weight:400!important;outline:none!important;appearance:none}
+.pati-emoji-search::placeholder{color:#afb1ba!important;opacity:1}
+.pati-emoji-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:20px 3px 12px}
+.pati-emoji-heading strong{font-size:18px;color:#f6f7f9;font-weight:750}
+.pati-emoji-customize{border:0!important;background:transparent!important;box-shadow:none!important;color:#8badff!important;font-size:14px!important;font-weight:700!important;min-height:40px!important;padding:0 4px!important;white-space:nowrap}
+.pati-emoji-quick{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:3px;flex:none}
+.pati-emoji-quick button{display:grid;place-items:center;min-width:0;height:48px;min-height:48px;border:2px solid transparent!important;border-radius:13px!important;background:transparent!important;box-shadow:none!important;font-size:30px!important;line-height:1!important;padding:0!important;touch-action:manipulation}
+.pati-emoji-quick button.is-selected{border-color:#7da6ff!important;background:#353e58!important}
+.pati-emoji-hint{margin:7px 1px!important;background:#30343d!important;padding:9px 10px!important;border-radius:12px!important;color:#e0e4ee!important;font-size:12px!important;line-height:1.4!important}
+.pati-emoji-hint[hidden]{display:none!important}
+.pati-emoji-list{flex:1;overflow-y:auto;overflow-x:hidden;min-height:0;scrollbar-width:thin;scrollbar-color:#6f7580 transparent;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-top:12px}
+.pati-emoji-list h3{font-size:17px!important;color:#f8f8fa!important;font-weight:750!important;line-height:1.4!important;margin:7px 3px 12px!important}
+.pati-emoji-grid{display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;column-gap:0!important;row-gap:5px!important;margin-bottom:12px!important}
+.pati-emoji-cell{display:grid!important;place-items:center!important;width:100%!important;min-width:0!important;height:45px!important;min-height:45px!important;padding:0!important;margin:0!important;border:0!important;border-radius:12px!important;background:transparent!important;box-shadow:none!important;color:inherit!important;font-size:29px!important;line-height:1!important;white-space:nowrap!important;touch-action:manipulation!important}
+.pati-emoji-cell:active,.pati-emoji-cell:hover{background:#343942!important;transform:none!important}
+.pati-emoji-empty{font-size:14px;color:#b8bcc7;text-align:center;padding:28px 0}
+.pati-emoji-tabs{flex:none;display:flex;justify-content:space-between;gap:1px;padding:10px 0 4px;background:#191b20;border-top:1px solid #373a41;overflow-x:auto;scrollbar-width:none;min-height:52px}
+.pati-emoji-tabs::-webkit-scrollbar{display:none}
+.pati-emoji-tab{flex:1 0 32px!important;min-width:32px!important;max-width:48px!important;height:40px!important;min-height:40px!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important;border-radius:11px!important;color:#e7eaf2!important;box-shadow:none!important;font-size:21px!important;line-height:1!important;touch-action:manipulation!important}
+.pati-emoji-tab.is-active{background:#3d434c!important}
+.pati-emoji-dialog button:focus-visible{outline:2px solid #86a6ff!important;outline-offset:1px!important}
+.pati-origin-flag{display:inline-flex!important;align-items:center;justify-content:center;vertical-align:middle;flex:0 0 auto;font-size:13px!important;line-height:1!important;margin-left:5px!important;white-space:nowrap!important;max-width:20px!important;max-height:18px!important}
+#app-root>.mobile-header .brand-word{display:flex!important;align-items:center!important;gap:0!important;white-space:nowrap!important}
+#app-root>.mobile-header .pati-origin-flag{font-size:12px!important;margin-left:5px!important}
+@media (min-width:700px){
+ .pati-emoji-dialog{inset:auto 16px 14px auto!important;width:min(420px,calc(100vw - 32px))!important;height:min(650px,calc(100dvh - 40px))!important;border-radius:25px!important}
+ .pati-emoji-sheet{padding-bottom:8px}
+}
+@media (max-width:365px){
+ .pati-emoji-sheet{padding-left:9px;padding-right:9px}
+ .pati-emoji-grid{grid-template-columns:repeat(7,minmax(0,1fr))!important}
+ .pati-emoji-cell{font-size:26px!important;height:42px!important;min-height:42px!important}
+ .pati-emoji-quick button{font-size:27px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .pati-emoji-cell,.pati-emoji-quick button{transition:none!important}
+}
