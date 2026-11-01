@@ -1,0 +1,152 @@
+/* Patiyiz unified mobile web design (2026-11-02).
+   Match the user's reference iPhone web recording across the installed PWA.
+   Presentation-only: do not change navigation, account, posts or wallet logic. */
+@media(max-width:740px){
+ html,body{background:#fff!important;color:#191b20!important;overflow-x:hidden!important}
+ #app-root:not(.hidden),#app-root:not(.hidden)>.app-shell,
+ #app-root:not(.hidden) #main-content{
+  box-sizing:border-box!important;min-width:0!important;max-width:100%!important;
+  background:#fff!important;color:#191b20!important;
+ }
+ #app-root:not(.hidden) #main-content{
+  padding-left:0!important;padding-right:0!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;filter:none!important;
+ }
+ /* Universal white web surfaces, no duplicated frosted layers. */
+ #app-root:not(.hidden)>.mobile-header,
+ #main-content .pati-dm-top,#main-content .pati-dm-filters,
+ #main-content .pati-dm-searchbar,
+ #main-content .pati-detail-toolbar,
+ #main-content .pati-profile-topbar,
+ #main-content .pati-ig-profile,
+ #main-content .pati-dm-layout{
+  background:#fff!important;-webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;filter:none!important;box-shadow:none!important;
+ }
+ /* In feed, keep the black plus, compact branding and both right-hand controls. */
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header{
+  grid-template-columns:44px minmax(0,1fr) 88px!important;
+  background:#fff!important;border-bottom:1px solid #eff0f3!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header #pati-header-share{
+  background:#1c1d22!important;color:#fff!important;border-radius:12px!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header #pati-feed-menu-trigger{
+  color:#191b20!important;min-width:0!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header .pati-header-actions{
+  gap:2px!important;min-width:0!important;
+ }
+ /* Feed and posts use the same full-width white content framing as the recording. */
+ #main-content .stories-section,#main-content .pati-feed-posts,
+ #main-content .pati-feed-card,#main-content .pati-detail-screen,
+ #main-content .pati-detail-item{
+  box-sizing:border-box!important;width:100%!important;max-width:100%!important;
+  background:#fff!important;
+ }
+ #main-content .pati-feed-card{
+  border-left:0!important;border-right:0!important;border-radius:0!important;
+  box-shadow:none!important;
+ }
+ #main-content .pati-feed-card .pati-social-actions{
+  display:flex!important;flex-flow:row nowrap!important;align-items:center!important;
+  gap:4px!important;overflow-x:auto!important;scrollbar-width:none!important;
+  min-height:50px!important;padding:3px 9px!important;
+ }
+ #main-content .pati-feed-card .pati-social-actions button{
+  min-height:44px!important;min-width:42px!important;flex:0 0 auto!important;
+  touch-action:manipulation!important;
+ }
+ /* Compact four-answer poll from the reference. */
+ html[data-pati-view="home"] #main-content .pati-daily-poll{
+  padding:10px 11px!important;margin:6px 8px!important;
+  min-height:0!important;background:#fff!important;border:1px solid #f0f0f2!important;
+  border-radius:13px!important;box-shadow:none!important;
+ }
+ #main-content .pati-daily-poll .pati-daily-top{margin-bottom:6px!important}
+ #main-content .pati-daily-poll button{min-height:40px!important}
+ /* Detail has exactly one visible back navigation row. */
+ #app-root:not(.hidden):has(#main-content .pati-detail-screen)>.mobile-header{display:none!important}
+ #main-content:has(.pati-detail-screen)>.pati-page-back{display:none!important}
+ #main-content .pati-detail-toolbar{min-height:56px!important;padding:7px 11px!important}
+ #main-content .pati-detail-toolbar [data-action="post-back"]{
+  min-width:44px!important;min-height:44px!important;touch-action:manipulation!important;
+ }
+ /* Messages replicate website order: back/title -> CTAs -> tabs -> search -> list. */
+ #main-content:has(.pati-dm-layout.mobile-chat-list)>.pati-dm-top{
+  position:relative!important;display:grid!important;
+  grid-template-columns:44px minmax(0,1fr)!important;
+  gap:7px 9px!important;width:100%!important;padding:10px 12px 8px!important;
+  box-sizing:border-box!important;
+ }
+ #main-content>.pati-dm-top>.pati-dm-inbox-back{
+  grid-column:1!important;grid-row:1!important;min-width:44px!important;
+  min-height:44px!important;display:flex!important;align-items:center!important;
+  justify-content:center!important;opacity:1!important;visibility:visible!important;
+ }
+ #main-content>.pati-dm-top>.pati-dm-title{grid-column:2!important;grid-row:1!important;min-width:0!important}
+ #main-content>.pati-dm-top>.pati-dm-top-actions{
+  grid-column:1/-1!important;grid-row:2!important;width:100%!important;
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:7px!important;
+ }
+ #main-content>.pati-dm-top>.pati-dm-top-actions>span{
+  grid-column:1/-1!important;font-size:11px!important;line-height:1.2!important;
+ }
+ #main-content>.pati-dm-top>.pati-dm-top-actions>.pati-dm-new{
+  width:100%!important;min-width:0!important;max-width:100%!important;
+  min-height:44px!important;border-radius:11px!important;white-space:normal!important;
+ }
+ #main-content:has(.pati-dm-layout.mobile-chat-list)>.pati-dm-filters{
+  width:100%!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:7px!important;padding:8px 12px!important;position:relative!important;
+ }
+ #main-content>.pati-dm-filters button{
+  min-height:44px!important;min-width:0!important;width:100%!important;
+  border-radius:11px!important;touch-action:manipulation!important;
+ }
+ #main-content:has(.pati-dm-layout.mobile-chat-list)>.pati-dm-searchbar{
+  display:flex!important;box-sizing:border-box!important;width:100%!important;
+  padding:6px 12px 11px!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-list .chat-people{
+  background:#fff!important;padding-bottom:calc(86px + env(safe-area-inset-bottom,0px))!important;
+ }
+ /* Chat: preserve native typing, keyboard, attachments and voice controls. */
+ #main-content .pati-dm-layout.mobile-chat-open .chat-window{
+  min-height:0!important;max-width:100%!important;background:#fff!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-open .chat-form{
+  background:#fff!important;box-sizing:border-box!important;width:100%!important;
+  padding:7px 9px max(8px,env(safe-area-inset-bottom,0px))!important;
+  gap:6px!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-open .chat-form input[name="body"]{
+  min-width:0!important;flex:1 1 0!important;font-size:16px!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-open .chat-form :is(button,.pati-dm-attach>summary){
+  min-height:44px!important;min-width:40px!important;touch-action:manipulation!important;
+ }
+ /* Profile reference: white background, dark edit button, five visible content tabs. */
+ #main-content .pati-ig-profile{background:#fff!important;max-width:100%!important}
+ #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"]{
+  display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:2px!important;width:100%!important;
+ }
+ #main-content .pati-ig-profile .pati-ig-tabs button{
+  min-height:46px!important;min-width:0!important;padding:6px 2px!important;
+  touch-action:manipulation!important;
+ }
+ #main-content .pati-ig-profile .pati-profile-menu-trigger{min-height:44px!important;min-width:44px!important}
+ /* Explore and wallet: avoid offscreen horizontal overflow. */
+ #main-content :is(.pati-explore-grid,.explore-grid,.paticoin-page,.pati-cashout-page){
+  box-sizing:border-box!important;max-width:100%!important;min-width:0!important;
+ }
+ #main-content .paticoin-page{
+  padding-bottom:calc(82px + env(safe-area-inset-bottom,0px))!important;
+ }
+ /* Keep existing bottom navigation tap targets and home-indicator clearance. */
+ #app-root:not(.hidden) :is(.mobile-bottom-nav,.bottom-nav,.mobile-nav) button{
+  min-height:44px!important;touch-action:manipulation!important;
+ }
+}
