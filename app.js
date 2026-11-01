@@ -781,8 +781,12 @@ function patiFeedSoundButton(video){
 // Size feed videos and photos to their own original width-to-height ratios.
 function setupFeedMediaRatios(){
  const set=(frame,w,h)=>{if(frame&&Number.isFinite(w)&&Number.isFinite(h)&&w>0&&h>0){
-   const ratio=w+' / '+h;
+   const aspect=w/h;
+   const reel=!!frame.closest('.pati-feed-reel-card');
+   // Clamp irregular legacy uploads to consistent frames while respecting explicit square/landscape crop choices.
+   const ratio=reel?'9 / 16':aspect>1.48?'1.91 / 1':aspect>.94&&aspect<1.08?'1 / 1':'4 / 5';
    if(frame.style.getPropertyValue('--pati-feed-aspect')!==ratio)frame.style.setProperty('--pati-feed-aspect',ratio);
+   frame.dataset.mediaRatio=ratio.replaceAll(' ','');
   }};
  document.querySelectorAll('#main-content .pati-feed-card .pati-video-frame').forEach(frame=>{
   const v=frame.querySelector('video');if(!v)return;
