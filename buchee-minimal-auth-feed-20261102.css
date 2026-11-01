@@ -1,0 +1,33 @@
+/* BucheeSocial: selected minimalist white auth, isolated home wordmark. */
+#auth-root.auth-root:not(.hidden){display:block!important;min-height:100dvh!important;height:auto!important;overflow-x:hidden!important;overflow-y:auto!important;background:#fff!important}
+#auth-root .auth-shell{display:flex!important;min-height:100dvh!important;height:auto!important;overflow:visible!important;align-items:flex-start!important;justify-content:center!important;background:#fff!important}
+#auth-root .auth-story{display:none!important}
+#auth-root .auth-pane{display:block!important;position:relative!important;flex:0 1 480px!important;width:100%!important;max-width:480px!important;height:auto!important;min-height:0!important;overflow:visible!important;margin:0 auto!important;padding:clamp(30px,7vh,64px) 22px 28px!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:#fff!important}
+#auth-root .auth-card{width:100%!important;max-width:430px!important;margin:0 auto!important;padding:0!important;background:#fff!important;box-shadow:none!important}
+#auth-root .auth-pane .auth-brand{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;margin:0 0 15px!important;gap:0!important}
+#auth-root .auth-pane .auth-brand .auth-matching-logo{display:block!important;position:static!important;width:min(82vw,350px)!important;height:auto!important;aspect-ratio:1226/195!important;padding:0!important;margin:0 auto!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;overflow:visible!important}
+#auth-root .auth-pane .auth-brand .auth-matching-logo img{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important;max-width:100%!important;border:0!important;border-radius:0!important;background:transparent!important}
+#auth-root .auth-pane .auth-brand h1{display:none!important}
+#auth-root .auth-pane .auth-tabs{display:grid!important;position:relative!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:4px!important;width:100%!important;margin:12px 0 20px!important;padding:4px!important;border-radius:28px!important;border:1px solid #e8e2f1!important;background:#f6f3fa!important}
+#auth-root .auth-pane .auth-tabs button{display:flex!important;align-items:center!important;justify-content:center!important;min-height:45px!important;border-radius:24px!important;background:transparent!important;color:#24202c!important;font-size:15px!important;font-weight:700!important}
+#auth-root .auth-pane .auth-tabs button.active{background:#5c00bd!important;color:#fff!important;box-shadow:none!important}
+#auth-root .auth-pane .auth-eyebrow{display:block!important;text-align:center!important;color:#5c00bd!important;font-weight:800!important;letter-spacing:.04em!important;font-size:11px!important;margin:0 0 8px!important}
+#auth-root .auth-pane .auth-card h2{text-align:center!important;font-size:clamp(21px,5vw,26px)!important;color:#18131e!important}
+#auth-root .auth-pane .auth-sub{text-align:center!important;margin:0 auto 20px!important;max-width:360px!important;color:#71717b!important}
+#auth-root .auth-pane .pati-field input:not([type="checkbox"]){min-height:49px!important;border-radius:14px!important;background:#fff!important;border:1px solid #dfdce8!important}
+#auth-root .auth-pane .pati-field input:focus{border-color:#6900c9!important;box-shadow:0 0 0 3px #6500c915!important}
+#auth-root .auth-pane .auth-submit{display:flex!important;justify-content:center!important;gap:12px!important;border-radius:25px!important;background:#5d00bd!important;color:#fff!important;box-shadow:none!important;min-height:52px!important}
+#auth-root .auth-pane .auth-bottom .btn-link,#auth-root .auth-pane .pati-auth-terms a{color:#5d00bd!important}
+#app-root>.mobile-header #pati-feed-menu-trigger .brand-icon{display:none!important}
+#app-root>.mobile-header #pati-feed-menu-trigger .brand-word{display:flex!important;align-items:center!important;gap:4px!important;min-width:0!important}
+#app-root>.mobile-header #pati-feed-menu-trigger .buchee-feed-wordmark{display:block!important;flex:0 1 auto!important;width:min(100%,148px)!important;height:auto!important;max-height:29px!important;object-fit:contain!important;object-position:left center!important}
+#app-root>.mobile-header #pati-feed-menu-trigger .pati-origin-flag{display:inline-block!important;flex:0 0 auto!important;font-size:15px!important;line-height:1!important}
+@media(max-width:740px){
+ #auth-root .auth-shell{display:block!important;min-height:100dvh!important;overflow:visible!important}
+ #auth-root .auth-pane{flex:none!important;box-sizing:border-box!important;width:100%!important;max-width:100%!important;min-height:100dvh!important;margin:0!important;padding:calc(34px + env(safe-area-inset-top,0px)) clamp(18px,5vw,26px) calc(22px + env(safe-area-inset-bottom,0px))!important}
+ #auth-root .auth-card{max-width:420px!important}
+ #auth-root .auth-pane .auth-brand{display:flex!important}
+ #auth-root .auth-pane .auth-tabs{display:grid!important}
+ #app-root>.mobile-header #pati-feed-menu-trigger .buchee-feed-wordmark{width:100%!important;max-width:140px!important;max-height:25px!important}
+}
+@media(max-width:390px){#app-root>.mobile-header #pati-feed-menu-trigger .buchee-feed-wordmark{max-width:110px!important}#app-root>.mobile-header #pati-feed-menu-trigger .pati-origin-flag{font-size:13px!important}}
