@@ -1053,6 +1053,7 @@ async function refreshKeys(specs){
  navRender();render();
 }
 async function refresh(){const userId=me?.id,loadToken=patiyizLoadToken;if(!userId)return;await load();if(me?.id!==userId||patiyizLoadToken!==loadToken)return;navRender();render();if(view==='blocked')loadBlockedNames()}
+window.addEventListener('patiyiz:pull-refresh',()=>{if(me&&['home','explore','community'].includes(view))void refresh().catch(error=>console.warn('Akış yenileme:',error?.message||error))});
 // Only fetch the requested older rows instead of reloading 25+ unrelated tables.
 async function loadMore(key){pageLimits[key]=(pageLimits[key]||40)+50;
  if(key==='posts'){
