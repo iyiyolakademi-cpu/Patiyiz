@@ -411,49 +411,66 @@ body #pati-create-sheet .pati-create-dismiss:focus-visible{
 }
 </style>
 <style id="social-new-logo-20261101">
-/* Stable logo integration: do not mutate application text or DOM. */
 #startup .pati-splash-icon{background:transparent!important;border-radius:22%!important;object-fit:contain!important}
-#app-root .brand-icon:has(img[src*="social-final-logo"]){transform:none!important;background:transparent!important;border:0!important;box-shadow:none!important;overflow:visible!important;padding:0!important}
-#app-root .brand-icon img[src*="social-final-logo"]{display:block!important;object-fit:contain!important;aspect-ratio:1/1!important;transform:none!important;clip-path:none!important}
+#app-root .brand-icon:has(img[src*="social-final-logo"]){transform:none!important;background:transparent!important;box-shadow:none!important;padding:0!important}
+#app-root .brand-icon img[src*="social-final-logo"]{display:block!important;object-fit:contain!important;aspect-ratio:1!important;transform:none!important}
 @media(max-width:740px){
- #app-root:not(.hidden)>.mobile-header{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important;overflow:visible!important;box-sizing:border-box!important;padding-inline:12px!important}
- #app-root:not(.hidden)>.mobile-header>#pati-header-share{position:relative!important;flex:0 0 auto!important;margin:0!important}
- #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand{
-  display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:7px!important;
-  position:relative!important;inset:auto!important;transform:none!important;
-  flex:0 1 auto!important;min-width:0!important;max-width:none!important;width:auto!important;
-  height:auto!important;margin:0!important;padding:0!important;overflow:visible!important
+ #app-root:not(.hidden)>.mobile-header{
+  display:grid!important;grid-template-columns:44px minmax(0,1fr) auto!important;
+  align-items:center!important;column-gap:8px!important;justify-content:initial!important;
+  width:100%!important;min-width:0!important;max-width:100%!important;
+  box-sizing:border-box!important;padding-left:12px!important;padding-right:12px!important;
+  min-height:62px!important;overflow:visible!important;background:#fff!important;
+  filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important
  }
- #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand>.brand-icon,
- #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand>.brand-icon>img{
-  display:block!important;position:static!important;flex:0 0 44px!important;
+ #app-root:not(.hidden)>.mobile-header>#pati-header-share{
+  grid-column:1!important;position:relative!important;inset:auto!important;transform:none!important;
+  display:grid!important;place-items:center!important;
   width:44px!important;height:44px!important;min-width:44px!important;max-width:44px!important;
-  min-height:44px!important;max-height:44px!important;
-  margin:0!important;padding:0!important;border:0!important;border-radius:9px!important;
-  transform:none!important;object-fit:contain!important;overflow:visible!important
+  margin:0!important;padding:0!important;visibility:visible!important;opacity:1!important
+ }
+ #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand{
+  grid-column:2!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;
+  gap:7px!important;position:relative!important;inset:auto!important;transform:none!important;
+  width:100%!important;min-width:0!important;max-width:100%!important;height:48px!important;
+  margin:0!important;padding:0!important;overflow:visible!important;visibility:visible!important
+ }
+ #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand>.brand-icon{
+  display:block!important;flex:0 0 44px!important;position:static!important;
+  width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;
+  max-width:44px!important;max-height:44px!important;padding:0!important;margin:0!important;
+  overflow:hidden!important;border-radius:10px!important;box-shadow:none!important
+ }
+ #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand>.brand-icon>img{
+  display:block!important;width:100%!important;height:100%!important;
+  max-width:100%!important;max-height:100%!important;min-width:0!important;min-height:0!important;
+  position:static!important;transform:none!important;object-fit:contain!important;border-radius:10px!important
  }
  #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand>div:not(.brand-icon){
-  display:block!important;position:static!important;flex:0 1 auto!important;min-width:0!important;
-  margin:0!important;padding:0!important;transform:none!important
+  flex:0 1 auto!important;min-width:0!important;max-width:100%!important;
+  display:block!important;position:static!important;transform:none!important;overflow:hidden!important
  }
  #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger .pati-feed-current{
-  display:block!important;position:static!important;font-size:12px!important;white-space:nowrap!important;
-  line-height:1.2!important;margin:0!important;transform:none!important
+  display:block!important;position:static!important;font-size:12px!important;
+  line-height:1.2!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+  opacity:1!important;color:#17191d!important
  }
  #app-root:not(.hidden)>.mobile-header>.pati-header-actions{
-  display:flex!important;align-items:center!important;visibility:visible!important;
-  margin-left:auto!important;flex:0 0 auto!important;min-width:0!important;gap:6px!important
+  grid-column:3!important;position:relative!important;inset:auto!important;transform:none!important;
+  display:flex!important;align-items:center!important;justify-content:flex-end!important;
+  gap:5px!important;flex:0 0 auto!important;min-width:0!important;width:auto!important;
+  margin:0!important;visibility:visible!important;opacity:1!important
  }
- #app-root:not(.hidden)>.mobile-header>#pati-feed-menu{z-index:120!important}
+ #app-root:not(.hidden)>.mobile-header>.pati-header-actions>*{display:flex!important;align-items:center!important;justify-content:center!important;opacity:1!important;visibility:visible!important}
+ #app-root:not(.hidden)>.mobile-header>#pati-feed-menu{z-index:150!important}
 }
 @media(max-width:390px){
- #app-root:not(.hidden)>.mobile-header{gap:5px!important;padding-inline:8px!important}
+ #app-root:not(.hidden)>.mobile-header{grid-template-columns:40px minmax(0,1fr) auto!important;column-gap:5px!important;padding-inline:7px!important}
+ #app-root:not(.hidden)>.mobile-header>#pati-header-share{width:40px!important;height:40px!important;min-width:40px!important}
  #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand{gap:4px!important}
- #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand>.brand-icon,
- #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand>.brand-icon>img{
-  flex-basis:40px!important;width:40px!important;height:40px!important;min-width:40px!important;max-width:40px!important;min-height:40px!important;max-height:40px!important
- }
+ #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand>.brand-icon{width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important;max-width:38px!important;max-height:38px!important;flex-basis:38px!important}
  #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger .pati-feed-current{font-size:11px!important}
+ #app-root:not(.hidden)>.mobile-header>.pati-header-actions{gap:3px!important}
 }
 </style>
 
