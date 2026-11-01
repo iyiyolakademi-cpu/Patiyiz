@@ -1,0 +1,14 @@
+/* Explore mobile-first toolbar matching saved and overflow navigation */
+#main-content .pati-explore-media-screen .pati-explore-custom-top{box-sizing:border-box;display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px 12px;background:#fff;color:#181b20;position:relative;z-index:10}
+#main-content .pati-explore-custom-search{min-width:0;flex:1 1 auto;display:flex;align-items:center;gap:12px;background:#f0f1f3;border:0;border-radius:30px;min-height:47px;padding:0 16px;color:#6d747c;text-align:left;font-size:20px}
+#main-content .pati-explore-custom-search span{font-size:16px}
+#main-content .pati-explore-custom-icon{width:42px;min-width:42px;height:44px;border:0;background:transparent;color:#202329;display:grid;place-items:center;padding:8px;border-radius:10px}
+#main-content .pati-explore-custom-icon svg{width:27px;height:27px}
+#main-content .pati-explore-custom-menu-wrap{position:relative}
+#main-content .pati-explore-custom-menu{position:absolute;right:0;top:calc(100% + 7px);width:min(270px,calc(100vw - 30px));z-index:100;background:#fff;border:1px solid #e0e3e8;border-radius:15px;padding:6px;box-shadow:0 12px 38px #0002}
+#main-content .pati-explore-custom-menu[hidden]{display:none!important}
+#main-content .pati-explore-custom-menu button{display:flex;flex-direction:column;align-items:flex-start;width:100%;padding:11px 12px;border:0;border-radius:10px;background:#fff;text-align:left;font-size:14px;font-weight:750;color:#23252b}
+#main-content .pati-explore-custom-menu button small{font-size:11px;font-weight:500;color:#6b7079;margin-top:3px}
+#main-content .pati-explore-custom-menu button.is-selected{background:#f0f1f4}
+#main-content .pati-explore-media-screen>.pati-explore-search-launch[hidden],#main-content .pati-explore-media-screen>.pati-explore-sort[hidden]{display:none!important}
+@media(max-width:370px){#main-content .pati-explore-media-screen .pati-explore-custom-top{gap:5px;padding:7px}#main-content .pati-explore-custom-icon{width:39px;min-width:39px}}
