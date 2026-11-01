@@ -7799,7 +7799,6 @@ function openMessageOptions(el){
  dialog.className='pati-dm-context-menu';
  dialog.setAttribute('aria-label','Mesaj işlemleri');
  dialog.innerHTML='<div class="pati-dm-context-content">'+
-  '<div class="pati-dm-context-top"><span>Mesaj seçenekleri</span><button type="button" data-action="dm-context-close" aria-label="Kapat">×</button></div>'+
   reaction+
   '<div class="pati-dm-context-preview '+(mine?'is-mine':'')+'"><span>'+esc(cut(preview,190))+'</span><small>'+esc(clock(msg.created_at))+'</small></div>'+
   '<div class="pati-dm-context-actions">'+options+'</div>'+
@@ -7820,6 +7819,21 @@ function openMessageOptions(el){
  });
  if(typeof dialog.showModal==='function')dialog.showModal();
  else dialog.setAttribute('open','');
+ // Anchor the Instagram-like reaction row + message + action menu to the
+ // actual long-pressed bubble, not the screen center. Fit within the safe area.
+ const bubbleRect=el.getBoundingClientRect(),panel=dialog.querySelector('.pati-dm-context-content');
+ if(panel){
+  const vw=window.visualViewport?.width||window.innerWidth;
+  const vh=window.visualViewport?.height||window.innerHeight;
+  const width=Math.min(350,vw-24),height=panel.offsetHeight;
+  const desiredLeft=mine?bubbleRect.right-width:bubbleRect.left;
+  const left=Math.min(Math.max(12,desiredLeft),Math.max(12,vw-width-12));
+  const desiredTop=bubbleRect.top-62;
+  const top=Math.min(Math.max(12,desiredTop),Math.max(12,vh-height-12));
+  panel.style.setProperty('--dm-popup-left',Math.round(left)+'px');
+  panel.style.setProperty('--dm-popup-top',Math.round(top)+'px');
+  panel.style.setProperty('--dm-popup-width',Math.round(width)+'px');
+ }
 }
 document.addEventListener('contextmenu',e=>{
  const bubble=e.target.closest('.bubble-chat[data-message-id]');
