@@ -22,7 +22,7 @@ self.addEventListener('notificationclick',event=>{
 /* Small same-origin static cache: faster return visits without storing API/user data.
    Bump the cache version whenever this worker changes. URLs keep their release
    query parameters, so updated CSS/JS assets are distinct cache entries. */
-const PATIYIZ_STATIC_CACHE='patiyiz-static-v20261101-mobile-feed-controls-fix';
+const PATIYIZ_STATIC_CACHE='patiyiz-static-v20261101-ios-post-detail-isolation';
 const PATIYIZ_STATIC_PREFIX='patiyiz-static-v';
 self.addEventListener('install',event=>{
  event.waitUntil((async()=>{
