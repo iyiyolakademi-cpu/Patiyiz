@@ -1632,7 +1632,7 @@ async function patiSharePostToStory(postId){
  const post=patiFindSocialPost(postId);
  if(!post||blocked.has(post.author_id))throw Error('Bu gönderi artık görüntülenemiyor.');
  const image=post.images?.[0]||post.image_url||post.video_cover_url||'';
- if(!image&&!post.video_url&&!String(post.body||'').trim())throw Error('Hikâyede paylaşılabilecek içerik bulunamadı.');
+ if(!image&&!post.video_url&&!post.media_videos?.length&&!String(post.body||'').trim())throw Error('Hikâyede paylaşılabilecek içerik bulunamadı.');
  const owner=me.id,original=profile(post.author_id);
  // A follower may view a private post, but must not republish it in a
  // story accessible to a different audience. Always check the source owner.
@@ -1707,7 +1707,7 @@ function patiStorySharedPostCard(x){
   ||data.posts.find(item=>item.id===x.shared_post_id);
  const original=post?profile(post.author_id):null;
  const authorLabel=original?(original.handle?'@'+original.handle:(original.display_name||'Kullanıcı')):String(x.caption||'Paylaşılan gönderi').replace(/\s+kullanıcısının gönderisi$/,'');
- const video=String(x.video_url||post?.video_url||'');
+ const video=String(x.video_url||post?.video_url||post?.media_videos?.[0]||'');
  const cover=x.image_url||post?.video_cover_url||post?.images?.[0]||post?.image_url||'';
  const content=video?
   '<video class="story-big-video pati-story-share-media-video'+(x.selfie_mirrored?' pati-selfie-mirrored':'')+'" src="'+esc(video)+'"'+(cover?' poster="'+esc(cover)+'"':'')+(patiyizStorySoundEnabled?'':' muted')+' autoplay playsinline webkit-playsinline preload="metadata" aria-label="Paylaşılan Reels önizlemesi"></video>':
@@ -2341,7 +2341,7 @@ function openPatiShareModal(postId){
  const preview='<div class="pati-share-preview">'+(cover?'<img src="'+esc(cover)+'" alt="Gönderi önizlemesi" loading="lazy">':'<span class="pati-share-preview-icon">'+ico(post.video_url?'up':'image')+'</span>')+'<span><b>'+displayName(author)+'</b><small>'+esc(summary)+'</small></span></div>';
  const search='<label class="pati-share-search"><span class="sr-only">Kişi ara</span>'+ico('search')+'<input id="pati-share-search" type="search" placeholder="Kişi ara" autocomplete="off" aria-label="Paylaşılacak kişiyi ara"></label>';
  const recipients=people.map(p=>'<button type="button" class="pati-share-person" data-action="send-post-dm" data-id="'+esc(p.id)+'" data-post="'+esc(postId)+'" data-name="'+esc((p.display_name||'')+' '+(p.handle||''))+'" aria-label="'+esc(p.display_name||'Patiyiz üyesi')+' kullanıcısına gönder"><span class="pati-share-avatar">'+avatar(p,'l')+'</span><span class="pati-share-person-name">'+esc(p.display_name||'Patiyiz üyesi')+'</span><small>@'+esc(p.handle||'patiyiz')+'</small></button>').join('');
- const shareQuick='<div class="pati-share-quick">'+((post.image_url||(post.images||[]).length||post.video_url||post.video_cover_url||String(post.body||'').trim())?'<button type="button" class="pati-share-to-story" data-action="pati-share-story" data-id="'+esc(postId)+'">'+ico('story-create')+' Hikâyemde paylaş</button>':'')+'<button type="button" data-action="pati-copy-post" data-id="'+esc(postId)+'">'+ico('bookmark')+' Bağlantıyı kopyala</button><button type="button" data-action="pati-share-system" data-id="'+esc(postId)+'">'+ico('send')+' Diğer uygulamalarda paylaş</button></div>';
+ const shareQuick='<div class="pati-share-quick">'+((post.image_url||(post.images||[]).length||post.video_url||post.media_videos?.length||post.video_cover_url||String(post.body||'').trim())?'<button type="button" class="pati-share-to-story" data-action="pati-share-story" data-id="'+esc(postId)+'">'+ico('story-create')+' Hikâyemde paylaş</button>':'')+'<button type="button" data-action="pati-copy-post" data-id="'+esc(postId)+'">'+ico('bookmark')+' Bağlantıyı kopyala</button><button type="button" data-action="pati-share-system" data-id="'+esc(postId)+'">'+ico('send')+' Diğer uygulamalarda paylaş</button></div>';
  modal('Paylaş',preview+shareQuick+search+'<div class="pati-share-recipient-title">Kişilere gönder</div><div class="pati-share-people-grid">'+(recipients||'<p class="pati-share-empty">Henüz paylaşabileceğin kullanıcı yok.</p>')+'</div><p class="pati-share-no-match" hidden>Bu isimle kullanıcı bulunamadı.</p>','share-post-form');
  const searchField=document.getElementById('pati-share-search');
  searchField?.addEventListener('input',()=>{
