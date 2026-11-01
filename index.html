@@ -188,7 +188,7 @@
   <header class="mobile-header"><button type="button" id="pati-global-back" class="pati-global-back" data-action="pati-global-back" aria-label="Önceki ekrana dön" hidden><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M19 12H5m7-7-7 7 7 7"/></svg><span>Geri</span></button><button type="button" id="pati-header-share" class="pati-header-share" data-action="pati-create-open" aria-label="Paylaşım oluştur" title="Paylaşım oluştur"><svg class="icon" aria-hidden="true"><use href="#i-plus"></use></svg></button><button type="button" id="pati-feed-menu-trigger" class="brand pati-feed-brand-selector" aria-label="Akış seç: Gönderiler ve Reels veya Tweet ve Sorular" aria-haspopup="menu" aria-controls="pati-feed-menu" aria-expanded="false" title="Akışı değiştir"><div class="brand-icon"><img class="patiyiz-chosen-logo" src="logo-social-20261101.svg?v=1" alt=""></div><div><span class="pati-feed-current" aria-hidden="true">Gönderiler</span></div></button><div class="pati-header-actions"><button type="button" id="pati-header-coins" class="pati-header-coins" data-action="paticoin-rewards" aria-label="PatiCoin görevlerini aç"><span aria-hidden="true"><img class="pati-coin-icon" src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true"></span><strong>0</strong></button><button type="button" id="pati-header-notifications" class="pati-header-notifications" data-view="notifications" aria-label="Bildirimler" title="Bildirimler"><svg class="icon" aria-hidden="true"><use href="#i-bell"></use></svg></button></div><div id="pati-feed-menu" class="pati-feed-menu pati-feed-category-menu" role="menu" aria-label="Akış türü" hidden><button type="button" role="menuitemradio" data-pati-feed-choice="media" aria-checked="true"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" style="color:#17191d!important;stroke:#17191d!important;fill:none!important"><rect x="3" y="3" width="18" height="18" rx="3" style="stroke:#17191d!important;fill:none!important"></rect><circle cx="9" cy="9" r="1.5" style="stroke:#17191d!important;fill:none!important"></circle><path d="m21 16-5-5L5 21" style="stroke:#17191d!important;fill:none!important"></path></svg><span class="pati-feed-menu-label"><strong>Gönderiler ve Reels</strong><small>Fotoğraf, video ve Reels</small></span><span class="pati-feed-selected" aria-hidden="true">✓</span></button><button type="button" role="menuitemradio" data-pati-feed-choice="text" aria-checked="false"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" style="color:#17191d!important;stroke:#17191d!important;fill:none!important"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.5 0-2.9-.4-4.1-1.1L3 21l2.1-5.4A8.5 8.5 0 1 1 21 11.5z" style="stroke:#17191d!important;fill:none!important"></path></svg><span class="pati-feed-menu-label"><strong>Tweet ve Sorular</strong><small>Yazılı paylaşımlar ve soru-cevaplar</small></span><span class="pati-feed-selected" aria-hidden="true">✓</span></button></div></header>
   <div class="app-shell">
     <aside class="sidebar" aria-label="Ana menü">
-      <div class="brand"><div class="brand-icon"><img class="patiyiz-chosen-logo" src="logo-social-20261101.svg?v=1" alt="Patiyiz"></div><div><div class="brand-word">patiyiz</div><div class="brand-caption">birlikte daha güzel</div></div></div>
+      <div class="brand"><div class="brand-icon"><img class="patiyiz-chosen-logo" src="logo-social-20261101.svg?v=1" alt="Patiyiz"></div><div><div class="brand-caption">birlikte daha güzel</div></div></div>
       <button class="pati-desktop-coins" id="pati-desktop-coins" data-action="paticoin-rewards" type="button" aria-label="PatiCoin görevlerini aç"><span aria-hidden="true"><img class="pati-coin-icon" src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true"></span><strong>0</strong><small>PatiCoin</small></button><div class="nav-caption">TOPLULUĞUMUZ</div><nav class="side-nav" id="desktop-nav"></nav>
       <div class="pati-desktop-actions" aria-label="Hızlı işlemler">
         <button type="button" class="pati-desktop-action-button primary" data-action="pati-create-open" aria-label="Yeni paylaşım oluştur"><svg class="icon" aria-hidden="true"><use href="#i-plus"></use></svg> Paylaş</button>
@@ -201,7 +201,7 @@
         <button type="button" data-action="pati-close-friends-open">Yakın Arkadaşlar</button>
       </div>
       <button type="button" class="nav-create" data-action="compose"><svg class="icon"><use href="#i-plus"></use></svg> Yeni paylaşım</button>
-      <div class="sidebar-bottom"><div class="sidebar-foot">© 2026 Patiyiz · Sosyal topluluk</div></div>
+      <div class="sidebar-bottom"><div class="sidebar-foot">© 2026 · Sosyal topluluk</div></div>
     </aside>
     <main class="main" id="main-content" aria-live="polite"></main>
     <aside class="right-rail" id="right-rail" aria-label="Topluluk önerileri"></aside>
@@ -420,7 +420,7 @@ body #pati-create-sheet .pati-create-dismiss:focus-visible{
 </style>
 <script id="social-new-logo-runtime-20261101">
 (()=>{'use strict';
-const logo='logo-social-20261101.svg?v=1', old=/patiyiz/ig;
+const logo='logo-social-20261101.svg?v=1', old=/patiyiz/i;
 function sync(root){
  if(!root)return;
  root.querySelectorAll?.('img').forEach(img=>{
