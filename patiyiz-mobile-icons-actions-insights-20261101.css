@@ -282,3 +282,134 @@ html[data-pati-view="reels"] #main-content .pati-reel-item
     font-size:10.5px!important;line-height:1.1!important;font-weight:730!important;
   }
 }
+
+/* 2026-11-01: profile detail adjustments and the two Reels icon swap.
+   Applies after the existing mobile layout rules, with no duplicate screens. */
+@media(max-width:740px){
+  /* Make each icon explain its category even on a small phone.
+     Retain the original 5-column grid and its 5 working tab actions. */
+  #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"]{
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    min-height:75px!important;
+    padding:0 4px!important;
+    align-items:stretch!important;
+  }
+  #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"]>button[role="tab"]{
+    box-sizing:border-box!important;
+    display:flex!important;
+    flex-flow:column nowrap!important;
+    align-items:center!important;justify-content:center!important;
+    gap:5px!important;
+    height:74px!important;min-height:74px!important;max-height:74px!important;
+    min-width:0!important;width:100%!important;
+    padding:6px 2px 5px!important;
+    overflow:hidden!important;
+    -webkit-tap-highlight-color:transparent!important;
+  }
+  #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"]>button[role="tab"] :is(.pati-profile-tab-icon,svg.icon){
+    box-sizing:border-box!important;
+    display:block!important;flex:0 0 27px!important;
+    width:27px!important;min-width:27px!important;max-width:27px!important;
+    height:27px!important;min-height:27px!important;max-height:27px!important;
+    fill:none;
+    stroke:currentColor!important;stroke-width:2.35px!important;
+    stroke-linejoin:round!important;stroke-linecap:round!important;
+    opacity:1!important;
+  }
+  #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"]>button[role="tab"] .pati-profile-grid-icon{
+    stroke:none!important;fill:currentColor!important;
+  }
+  #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"] .pati-profile-tab-caption{
+    display:block!important;position:static!important;
+    padding:0!important;margin:0!important;
+    flex:0 0 auto!important;
+    max-width:100%!important;min-width:0!important;
+    color:inherit!important;-webkit-text-fill-color:currentColor!important;
+    font-size:clamp(9px,2.65vw,11px)!important;line-height:1.15!important;
+    font-weight:750!important;letter-spacing:-.01em!important;
+    white-space:nowrap!important;text-align:center!important;
+    text-overflow:ellipsis!important;overflow:hidden!important;
+  }
+
+  /* Main stats: larger labels; numbers and ordering stay unchanged. */
+  #main-content .pati-ig-profile .pati-ig-stats :is(span,button){
+    min-width:0!important;text-align:center!important;
+    align-items:center!important;
+  }
+  #main-content .pati-ig-profile .pati-ig-stats :is(span,button)>small{
+    display:block!important;
+    font-size:clamp(12px,3.55vw,14px)!important;
+    font-weight:720!important;line-height:1.19!important;
+    letter-spacing:-.012em!important;
+    white-space:normal!important;
+    overflow-wrap:normal!important;
+    color:#4d535c!important;
+    opacity:1!important;
+  }
+
+  /* Return the statistics card to a compact, but still legible size. */
+  #main-content .pati-ig-profile .pati-profile-insights-preview{
+    box-sizing:border-box!important;
+    width:calc(100% - 24px)!important;
+    height:auto!important;min-height:83px!important;max-height:none!important;
+    margin:7px 12px 6px!important;padding:11px 14px!important;
+    gap:8px!important;border-radius:15px!important;
+  }
+  #main-content .pati-ig-profile .pati-profile-insights-preview>span:first-child{
+    gap:2px!important;
+  }
+  #main-content .pati-ig-profile .pati-profile-insights-preview strong{
+    font-size:17px!important;line-height:1.2!important;
+  }
+  #main-content .pati-ig-profile .pati-profile-insights-preview small{
+    font-size:11px!important;line-height:1.22!important;
+  }
+  #main-content .pati-ig-profile .pati-profile-insights-preview .pati-profile-insights-value{
+    font-size:22px!important;
+  }
+  #main-content .pati-ig-profile .pati-profile-insights-preview .pati-profile-insights-arrow{
+    font-size:23px!important;
+  }
+
+  /* The own profile has one black full-width Edit button, with no balance
+     card. Visitors retain their existing Follow / Message action layout. */
+  #main-content .pati-ig-profile .pati-ig-actions.pati-own-profile-actions{
+    box-sizing:border-box!important;
+    display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+    align-items:stretch!important;
+    width:100%!important;min-width:0!important;max-width:100%!important;
+    gap:0!important;
+    margin:0!important;padding:9px 12px 12px!important;
+  }
+  #main-content .pati-ig-profile .pati-ig-actions.pati-own-profile-actions>button[data-action="edit-profile"]{
+    box-sizing:border-box!important;grid-column:1/-1!important;
+    display:flex!important;align-items:center!important;justify-content:center!important;
+    width:100%!important;min-width:0!important;max-width:100%!important;
+    height:62px!important;min-height:62px!important;max-height:62px!important;
+    margin:0!important;padding:10px 15px!important;
+    background:#202126!important;color:#fff!important;
+    -webkit-text-fill-color:#fff!important;
+    border:1px solid #202126!important;
+    border-radius:15px!important;box-shadow:none!important;
+    font-size:16px!important;font-weight:820!important;line-height:1.2!important;
+  }
+  #main-content .pati-ig-profile .pati-own-profile-actions .pati-profile-coin-balance,
+  #main-content .pati-ig-profile .pati-own-profile-actions #pati-profile-balance{
+    display:none!important;
+  }
+
+  /* Swap completed in app.js: bottom Reels is the vertical-play device. */
+  #app-root:not(.hidden)>.mobile-bottom .pati-mobile-reels-icon{
+    width:27px!important;height:27px!important;min-width:27px!important;
+    stroke:currentColor!important;stroke-width:2.5px!important;
+    fill:none!important;opacity:1!important;
+  }
+}
+@media(max-width:350px){
+  #main-content .pati-ig-profile .pati-ig-stats :is(span,button)>small{
+    font-size:12px!important;
+  }
+  #main-content .pati-ig-profile .pati-ig-tabs .pati-profile-tab-caption{
+    font-size:9px!important;letter-spacing:-.025em!important;
+  }
+}
