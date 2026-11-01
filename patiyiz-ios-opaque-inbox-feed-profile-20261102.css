@@ -150,3 +150,98 @@
    scroll-padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))!important;
  }
 }
+
+/* Real DOM repair: inbox controls are DIRECT #main-content children, not inside .pati-dm-layout. */
+@media(max-width:740px){
+ #app-root:not(.hidden):has(#main-content .pati-dm-layout)>.mobile-header{display:none!important}
+ #app-root:not(.hidden):has(#main-content .pati-dm-layout)>.app-shell{
+  padding-top:env(safe-area-inset-top,0px)!important;margin-top:0!important;
+ }
+ #app-root:not(.hidden) #main-content:has(.pati-dm-layout.mobile-chat-list){
+  display:flex!important;flex-direction:column!important;
+  box-sizing:border-box!important;width:100%!important;max-width:100%!important;
+  min-width:0!important;padding:0!important;margin:0!important;overflow-x:hidden!important;
+ }
+ #app-root:not(.hidden) #main-content:has(.pati-dm-layout.mobile-chat-list)>.pati-dm-top{
+  position:relative!important;top:auto!important;inset:auto!important;transform:none!important;
+  display:flex!important;flex-wrap:wrap!important;align-items:center!important;
+  min-height:62px!important;padding:9px 11px!important;margin:0!important;
+  width:100%!important;box-sizing:border-box!important;gap:8px!important;
+  background:#fff!important;opacity:1!important;visibility:visible!important;
+  filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+  z-index:3!important;
+ }
+ #main-content>.pati-dm-top>.pati-dm-inbox-back{
+  display:inline-flex!important;justify-content:center!important;align-items:center!important;
+  position:relative!important;inset:auto!important;transform:none!important;
+  flex:0 0 44px!important;width:44px!important;height:44px!important;min-height:44px!important;
+  padding:0!important;margin:0!important;visibility:visible!important;opacity:1!important;
+  color:#17191d!important;background:#f4f5f7!important;border-radius:14px!important;
+  z-index:4!important;pointer-events:auto!important;
+ }
+ #main-content>.pati-dm-top>.pati-dm-title{
+  display:flex!important;flex-direction:column!important;flex:1 1 auto!important;
+  min-width:105px!important;max-width:calc(100% - 60px)!important;
+ }
+ #main-content>.pati-dm-top>.pati-dm-top-actions{
+  display:flex!important;align-items:center!important;justify-content:flex-start!important;
+  flex-wrap:wrap!important;gap:6px!important;min-width:0!important;max-width:100%!important;
+  margin:0!important;
+ }
+ #main-content>.pati-dm-top>.pati-dm-top-actions>.pati-dm-new{
+  position:relative!important;inset:auto!important;transform:none!important;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  min-height:44px!important;min-width:102px!important;max-width:calc(50vw - 15px)!important;
+  padding:7px 10px!important;white-space:normal!important;border-radius:13px!important;
+  pointer-events:auto!important;
+ }
+ #app-root:not(.hidden) #main-content:has(.pati-dm-layout.mobile-chat-list)>.pati-dm-filters{
+  position:relative!important;inset:auto!important;transform:none!important;
+  display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  width:100%!important;min-height:62px!important;padding:8px 11px!important;margin:0!important;
+  box-sizing:border-box!important;gap:6px!important;background:#fff!important;
+  opacity:1!important;visibility:visible!important;z-index:3!important;
+  filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+ }
+ #main-content>.pati-dm-filters>button{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  position:relative!important;min-width:0!important;width:100%!important;
+  min-height:44px!important;margin:0!important;padding:8px 5px!important;
+  border-radius:13px!important;visibility:visible!important;opacity:1!important;
+  pointer-events:auto!important;touch-action:manipulation!important;
+ }
+ #app-root:not(.hidden) #main-content:has(.pati-dm-layout.mobile-chat-list)>.pati-dm-searchbar{
+  display:flex!important;align-items:center!important;position:relative!important;
+  inset:auto!important;transform:none!important;width:100%!important;box-sizing:border-box!important;
+  margin:0!important;padding:8px 12px 12px!important;background:#fff!important;
+  opacity:1!important;visibility:visible!important;z-index:2!important;
+ }
+ #main-content:has(.pati-dm-layout.mobile-chat-open)>.pati-dm-top,
+ #main-content:has(.pati-dm-layout.mobile-chat-open)>.pati-dm-filters,
+ #main-content:has(.pati-dm-layout.mobile-chat-open)>.pati-dm-searchbar{display:none!important}
+ #main-content .pati-dm-layout.mobile-chat-open .chat-window>header{
+  position:relative!important;inset:auto!important;transform:none!important;
+  flex:0 0 auto!important;min-height:60px!important;background:#fff!important;
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-open .chat-window>header button{
+  min-width:44px!important;min-height:44px!important;pointer-events:auto!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-open .chat-history{
+  flex:1 1 0!important;min-height:0!important;overflow-y:auto!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-open .chat-form{
+  position:relative!important;bottom:auto!important;flex:0 0 auto!important;
+  width:100%!important;box-sizing:border-box!important;
+  padding-bottom:max(7px,env(safe-area-inset-bottom,0px))!important;background:#fff!important;
+ }
+ html.pati-keyboard-open #main-content .pati-dm-layout.mobile-chat-open .chat-form{
+  padding-bottom:7px!important;
+ }
+ #main-content .pati-ig-profile .pati-ig-tabs button,
+ #main-content .pati-feed-card .pati-social-actions button,
+ #main-content .paticoin-page button,
+ #main-content .pati-detail-toolbar button{touch-action:manipulation!important;min-height:44px!important}
+ #main-content .paticoin-page{padding-bottom:max(90px,calc(72px + env(safe-area-inset-bottom,0px)))!important}
+ #main-content .pati-ig-profile{padding-bottom:calc(75px + env(safe-area-inset-bottom,0px))!important}
+}
