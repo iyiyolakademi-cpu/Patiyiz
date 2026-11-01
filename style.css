@@ -694,7 +694,7 @@
 .pati-social-actions button{display:inline-flex;align-items:center;gap:5px;color:#202b23!important;flex:0 0 auto;padding:9px 5px!important;border:0;background:transparent;cursor:pointer}
 .pati-social-actions button .icon{width:24px;height:24px;stroke-width:1.9}
 .pati-social-actions button.active{color:#e53956!important}
-.pati-social-actions .pati-save-action{margin-left:auto}
+.pati-social-actions .pati-save-action{margin-left:0}
 .pati-share-list{display:grid;gap:5px;max-height:65dvh;overflow:auto}
 .pati-share-list button{width:100%;display:flex;align-items:center;gap:12px;text-align:left;background:#fff;border:0;border-bottom:1px solid #ebf0eb;padding:12px;font:inherit;cursor:pointer}
 .pati-share-list button span{flex:1;font-size:13px;font-weight:700}
