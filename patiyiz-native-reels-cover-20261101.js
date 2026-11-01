@@ -38,7 +38,7 @@ function commit(file){
 }
 function capture(){
  const el=editor(currentRoot),v=$(el,'video');
- if(!v||!v.videoWidth||!v.videoHeight){$(el,'.pati-native-cover-status').textContent='Video henüz hazır değil. Bir kez daha dene.';return}
+ if(!v||!v.videoWidth||!v.videoHeight){$(el,'.pati-native-cover-status').textContent='Video karesi yüklenmedi. Videoyu başka bir saniyeye kaydırıp tekrar dene.';return}
  const canvas=document.createElement('canvas');canvas.width=540;canvas.height=960;
  const w=v.videoWidth,h=v.videoHeight,ratio=9/16,sw=w/h>ratio?h*ratio:w,sh=w/h>ratio?h:w/ratio;
  const ctx=canvas.getContext('2d');if(!ctx)return;
@@ -51,8 +51,8 @@ document.addEventListener('click',e=>{
  const el=editor(currentRoot);if(!el)return;
  const name=btn.dataset.nativeCover;
  if(name==='gallery')$(el,'input[type="file"]')?.click();
- if(name==='frame'){mode='frame';update();const v=$(el,'video');if(v?.paused)v.play().catch(()=>{});}
- if(name==='use-frame'){const v=$(el,'video');v?.pause();capture()}
+ if(name==='frame'){mode='frame';update();const v=$(el,'video');if(v){v.pause();if(v.readyState<1)v.load();$(el,'.pati-native-cover-status').textContent='Zaman çubuğunu kaydır ve Bu kareyi kapak yap seçeneğine bas.';}}
+ if(name==='use-frame'){const v=$(el,'video');v?.pause();if(v?.seeking)v.addEventListener('seeked',capture,{once:true});else capture()}
 },true);
 document.addEventListener('change',e=>{
  const el=editor(currentRoot);if(!el)return;
