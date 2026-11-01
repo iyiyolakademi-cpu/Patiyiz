@@ -74,6 +74,7 @@ const ready=String(cfg.supabaseUrl||'').startsWith('https://')&&!String(cfg.supa
 let liveChannel=null,liveReloadTimer=null,liveReconnectTimer=null,liveUserId=null,liveInitialized=false,pushPublicKey='',lastForegroundSync=0;
 let communityCategory='Tümü',careFilter='all',followReturnList=false,blockedProfiles=[];let lastDetailView='',mobileKeyboardOpen=false;let mobileChatOpen=false,patiDmReturnView='home',chatFilter='primary',profilePostsTab='media';let followListId='',followListMode='followers',phonePushActive=null;
 let patiFollowPageState={key:'',rows:[],next:0,hasMore:true,loading:false,error:'',viewerFollowing:new Set()};
+let patiFollowSortOrder='newest';
 const PATI_FOLLOW_PAGE_SIZE=40;let patiExploreMedia={owner:'',rows:[],offset:0,hasMore:true,ready:false,loading:false,error:''},patiExploreUsers={owner:'',query:'',rows:[],ready:false,loading:false,error:''},patiExploreSearchTimer=null;
 const PATI_EXPLORE_MEDIA_PAGE=45;
 let patiExploreSort='popular';const patiExploreMetrics=new Map();
@@ -1197,12 +1198,12 @@ function patiRenderPostLikers(){
  if(!state.postId||!me||state.owner!==me.id)return;
  const list=document.getElementById('pati-post-likers-list');
  if(!list)return;
- const visible=state.rows.filter(id=>!blocked.has(id)&&data.profiles.some(p=>p.id===id));
+ const visible=state.rows.filter(id=>!blocked.has(id)&&data.profiles.some(p=>p.id===id)).sort((a,b)=>Number(state.followerIds?.has(b))-Number(state.followerIds?.has(a)));
  list.innerHTML=visible.map(id=>{
   const person=profile(id);
   return '<button type="button" class="pati-post-liker-person" data-action="view-user" data-id="'+esc(id)+'" aria-label="'+esc(person.display_name||person.handle||'Kullanıcı')+' profiline git">'+avatar(person,'s')+
    '<span class="pati-post-liker-identity"><strong>'+displayName(person)+'</strong><small>@'+esc(person.handle||'patiyiz')+'</small></span>'+
-   ico('chevron-right')+'</button>';
+   '<span class="pati-liker-follow-tag '+(state.followerIds?.has(id)?'is-follower':'is-not-follower')+'">'+(state.followerIds?.has(id)?'Seni takip ediyor':'Seni takip etmiyor')+'</span></button>';
  }).join('')||(!state.loading?'<p class="pati-post-likers-empty">Henüz beğenen kimse yok.</p>':'');
  const more=document.getElementById('pati-post-likers-more');
  if(more){more.hidden=!state.hasMore;more.disabled=state.loading;more.textContent=state.loading?'Yükleniyor…':'Daha fazla göster';}
@@ -1222,6 +1223,9 @@ async function patiLoadPostLikers(){
   if(res.error)throw res.error;
   if(me?.id!==uid||patiPostLikersState!==state)return;
   const page=res.data||[];
+  state.followerIds ||= new Set();
+  const newIds=page.map(x=>x.user_id).filter(Boolean);
+  if(newIds.length){const reverse=await sb.from('follows').select('follower_id').eq('followee_id',uid).in('follower_id',newIds);if(!reverse.error)for(const f of reverse.data||[])state.followerIds.add(f.follower_id)}
   const missing=[...new Set(page.map(x=>x.user_id).filter(id=>id&&!data.profiles.some(p=>p.id===id)&&!blocked.has(id)))];
   if(missing.length){
    const found=await sb.from('profiles').select('id,display_name,handle,avatar_url,is_verified,is_private').in('id',missing);
@@ -1248,7 +1252,7 @@ function patiOpenPostLikers(postId){
  const post=patiFindSocialPost(postId)||data.posts.find(p=>p.id===postId);
  if(!post||blocked.has(post.author_id)){notify('Bu gönderinin beğenileri görüntülenemiyor.');return}
  if(document.getElementById('comment-form'))closeModal(true);
- patiPostLikersState={postId,owner:me.id,rows:[],next:0,hasMore:true,loading:false};
+ patiPostLikersState={postId,owner:me.id,rows:[],next:0,hasMore:true,loading:false,followerIds:new Set()};
  modal('Beğenenler','<div id="pati-post-likers-status" class="pati-post-likers-status" role="status">Beğenenler yükleniyor…</div>'+
   '<div id="pati-post-likers-list" class="pati-post-likers-list" role="list" aria-label="Gönderiyi beğenen kullanıcılar"></div>'+
   '<button type="button" id="pati-post-likers-more" class="pati-post-likers-more" data-action="post-likers-more" hidden>Daha fazla göster</button>',
@@ -5216,11 +5220,12 @@ function followListPage(){
  const owner=followListId||me.id,followers=followListMode==='followers';
  const key=me.id+':'+owner+':'+followListMode,state=patiFollowPageState;
  const scoped=state.key===key,records=scoped?state.rows:[];
- const ids=[...new Set(records.map(f=>followers?f.follower_id:f.followee_id))].filter(id=>!blocked.has(id));
+ const orderedRecords=!followers&&patiFollowSortOrder==='oldest'?[...records].reverse():records;
+ const ids=[...new Set(orderedRecords.map(f=>followers?f.follower_id:f.followee_id))].filter(id=>!blocked.has(id));
  const isFollowing=id=>followed.has(id)||(scoped&&state.viewerFollowing.has(id));
  const title=followers?'Takipçiler':'Takip edilenler';
  main.innerHTML=`<div class="pati-follow-backbar"><button type="button" class="pati-follow-back" data-action="followers-back" aria-label="Profile geri dön">←</button><span>Profile dön</span></div>`+
- header(title,'Kullanıcı profillerini görüntüleyebilirsin.')+
+ '<div class="pati-follow-tabs"><button type="button" data-action="pati-follow-tab" data-id="followers" class="'+(followers?'active':'')+'">Takipçiler</button><button type="button" data-action="pati-follow-tab" data-id="following" class="'+(!followers?'active':'')+'">Takip edilenler</button></div>'+(!followers?'<div class="pati-follow-sort"><span>Sıralama</span><button type="button" data-action="pati-follow-sort" data-id="newest" class="'+(patiFollowSortOrder==='newest'?'active':'')+'">En yeni</button><button type="button" data-action="pati-follow-sort" data-id="oldest" class="'+(patiFollowSortOrder==='oldest'?'active':'')+'">En eski</button></div>':'')+
  `<div class="pati-list">${ids.map(id=>`<div class="pati-card pati-follow-person">${userRow(id)}${id!==me.id?button(isFollowing(id)?'Takiptesin':followers&&owner===me.id?'Sen de takip et':'Takip et','follow',`data-id="${esc(id)}"`):''}</div>`).join('')}`+
  (!ids.length&&scoped&&!state.loading&&!state.error?empty('Bu listede henüz kimse yok.'):'')+
  (scoped&&state.error?'<p class="pati-note" role="alert">'+esc(state.error)+'</p>':'')+
@@ -8051,7 +8056,7 @@ case 'notifications-delete-all':if(confirm('Tüm bildirimlerin kalıcı olarak s
  data.notifications=data.notifications.filter(x=>!ids.has(x.id));
  navRender();if(view==='notifications')notificationsPage();
 },'Tüm bildirimlerin silindi.');break;
-case 'blocked-list':navigate('blocked');break;case 'follow-load-more':void patiLoadFollowPage();break;case 'followers-list':followReturnList=false;followListId=id;followListMode=target.dataset.mode==='following'?'following':'followers';navigate('follows-list');break;case 'followers-back':profileId=followListId;followReturnList=false;navigate('profile');break;case 'return-follow-list':followReturnList=false;navigate('follows-list');break;case 'delete-account-open':modal('Hesabımı kalıcı olarak sil',`<div class="pati-delete-warning"><strong>⚠️ Bu işlem geri alınamaz.</strong><p>Profilin, gönderilerin, hikâyelerin, mesajların, sesli yorumların ve yüklediğin dosyalar silinir. Başka kullanıcıların seninle yazışmalarındaki mesajlar da etkilenebilir. Yönetici hesapları buradan silinemez.</p></div><div class="pati-field"><label>Mevcut şifren</label><input type="password" name="delete_password" autocomplete="current-password" required></div><div class="pati-field"><label>Onaylamak için HESABIMI SIL yaz</label><input name="delete_confirm" autocomplete="off" required placeholder="HESABIMI SIL"></div>`,'delete-account-form');break;case 'settings-password':modal('Şifremi değiştir',formField('new_password','Yeni şifre (en az 8 karakter)','password','',true),'settings-password-form');break;case 'push-disable':run(async()=>{await disablePhonePush();if(view==='notifications')void notificationCheckPush()},'Bu cihazda telefon bildirimleri kapatıldı.');break;case 'block':{const isBlocked=blocked.has(id);const question=isBlocked?'Bu kişinin engelini kaldırmak istiyor musun?':'Bu kullanıcıyı engellemek istiyor musun?';if(confirm(question))run(async()=>{await doToggle('user_blocks',{blocker_id:me.id,blocked_id:id},isBlocked);if($('#blocked-form'))closeModal();notify(isBlocked?'Engel kaldırıldı.':'Kullanıcı engellendi.');},null);break}
+case 'blocked-list':navigate('blocked');break;case 'follow-load-more':void patiLoadFollowPage();break;case 'pati-follow-tab':if(['followers','following'].includes(id)){followListMode=id;patiFollowPageState.key='';followListPage();void patiLoadFollowPage(true)}break;case 'pati-follow-sort':if(['newest','oldest'].includes(id)){patiFollowSortOrder=id;followListPage()}break;case 'followers-list':followReturnList=false;followListId=id;followListMode=target.dataset.mode==='following'?'following':'followers';navigate('follows-list');break;case 'followers-back':profileId=followListId;followReturnList=false;navigate('profile');break;case 'return-follow-list':followReturnList=false;navigate('follows-list');break;case 'delete-account-open':modal('Hesabımı kalıcı olarak sil',`<div class="pati-delete-warning"><strong>⚠️ Bu işlem geri alınamaz.</strong><p>Profilin, gönderilerin, hikâyelerin, mesajların, sesli yorumların ve yüklediğin dosyalar silinir. Başka kullanıcıların seninle yazışmalarındaki mesajlar da etkilenebilir. Yönetici hesapları buradan silinemez.</p></div><div class="pati-field"><label>Mevcut şifren</label><input type="password" name="delete_password" autocomplete="current-password" required></div><div class="pati-field"><label>Onaylamak için HESABIMI SIL yaz</label><input name="delete_confirm" autocomplete="off" required placeholder="HESABIMI SIL"></div>`,'delete-account-form');break;case 'settings-password':modal('Şifremi değiştir',formField('new_password','Yeni şifre (en az 8 karakter)','password','',true),'settings-password-form');break;case 'push-disable':run(async()=>{await disablePhonePush();if(view==='notifications')void notificationCheckPush()},'Bu cihazda telefon bildirimleri kapatıldı.');break;case 'block':{const isBlocked=blocked.has(id);const question=isBlocked?'Bu kişinin engelini kaldırmak istiyor musun?':'Bu kullanıcıyı engellemek istiyor musun?';if(confirm(question))run(async()=>{await doToggle('user_blocks',{blocker_id:me.id,blocked_id:id},isBlocked);if($('#blocked-form'))closeModal();notify(isBlocked?'Engel kaldırıldı.':'Kullanıcı engellendi.');},null);break}
 case 'report':closeStory();modal('İçeriği bildir',textField('reason','Şikâyet nedeni (en az 5 karakter)','',true,500),'report-form');$('#report-form').dataset.kind=target.dataset.kind;$('#report-form').dataset.record=id;break;
 case 'tools':openMobileFeaturesMenu();break;default:break}}
 let messagePressTimer=null,messagePressOrigin=null,messageLongPressed=false;
