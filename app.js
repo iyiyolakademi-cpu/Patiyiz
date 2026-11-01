@@ -492,14 +492,8 @@ function unreadCounts(){const hidden=new Set(data.messageHidden.filter(x=>x.user
 function unreadMessageSources(){const hidden=new Set(data.messageHidden.filter(x=>x.user_id===me?.id).map(x=>x.message_id));const messages=data.messages.filter(x=>x.receiver_id===me?.id&&!x.read_at&&!patiDmSeenIds().has(x.id)&&!blocked.has(x.sender_id)&&!hidden.has(x.id));const tally=new Map();for(const m of messages)tally.set(m.sender_id,(tally.get(m.sender_id)||0)+1);return [...tally].sort((a,b)=>b[1]-a[1]).map(([id,count])=>({id,count,name:profile(id).display_name}))}
 const countBadge=n=>n?`<span class="pati-count-badge" aria-label="${n} okunmamış">${n>99?'99+':n}</span>`:'';
 function navRender(){
- const appRoot=document.getElementById('app-root');
- if(appRoot&&!document.getElementById('pati-right-menu-handle')){
-  const handle=document.createElement('button');
-  handle.type='button';handle.id='pati-right-menu-handle';handle.dataset.action='tools';
-  handle.setAttribute('aria-label','Sağdaki menüyü aç');handle.title='Menüyü sağdan aç';
-  handle.textContent='‹';
-  appRoot.appendChild(handle);
- }
+ // Use only the profile feature menu, not a duplicate edge drawer.
+ document.getElementById('pati-right-menu-handle')?.remove();
  const fab=$('#app-root>.mobile-fab');if(fab){fab.hidden=true;fab.style.display='none'}const sideCreate=$('.nav-create');if(sideCreate){const action=view==='home'?'compose':'';sideCreate.hidden=!action;sideCreate.style.display=action?'':'none';if(action){sideCreate.dataset.action=action;sideCreate.innerHTML=ico('plus')+(view==='community'?' Soru sor':view==='care'?' Görev ekle':view==='lost'?' İlan oluştur':view==='adoption'?' Sahiplendirme ilanı':' Yeni paylaşım')}}const shareAllowed=view==='home';
  if(typeof document!=='undefined'){
   document.querySelectorAll?.('#pati-header-share, .pati-desktop-action-button.primary[data-action="pati-create-open"]')?.forEach(el=>{el.hidden=!shareAllowed;el.style.display=shareAllowed?'':'none';});
@@ -5724,11 +5718,11 @@ function profilePage(){
   profilePostsTab==='videos'?posts.filter(x=>x.post_format!=='reels'&&!!(x.video_url||x.media_videos?.length)):
   profilePostsTab==='text'?posts.filter(x=>!x.image_url&&!x.images?.length&&!x.video_url&&!x.media_videos?.length):
   posts.filter(x=>x.post_format!=='reels'&&!!(x.image_url||x.images?.length||x.video_url||x.media_videos?.length));
- const gridTabIcon='<svg class="pati-profile-tab-icon pati-profile-grid-icon" viewBox="0 0 24 24" aria-hidden="true">'+[3,10,17].flatMap(y=>[3,10,17].map(x=>'<rect x="'+x+'" y="'+y+'" width="4.6" height="4.6" rx=".7"/>')).join('')+'</svg>';
- const reelsTabIcon='<svg class="pati-profile-tab-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="2.5" width="16" height="19" rx="4" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="m10 7.8 6 4.2-6 4.2Z" fill="none" stroke="currentColor" stroke-width="2.35" stroke-linejoin="round"/></svg>';
- const repostTabIcon='<svg class="pati-profile-tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 10V7.5A3.5 3.5 0 0 1 7 4h12m0 0-3.4-3M19 4l-3.4 3M20.5 14v2.5A3.5 3.5 0 0 1 17 20H5m0 0 3.4-3M5 20l3.4 3" fill="none" stroke="currentColor" stroke-width="2.35" stroke-linecap="round" stroke-linejoin="round"/></svg>';
- const videoTabIcon='<svg class="pati-profile-tab-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.5" y="5" width="17" height="14" rx="3" stroke="currentColor" stroke-width="2.25"/><path d="m10 9 5 3-5 3Z" fill="currentColor"/></svg>';
- const textTabIcon='<svg class="pati-profile-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M5 6h14M5 11h14M5 16h9M5 21h7"/></svg>';
+ const gridTabIcon='<svg class="pati-profile-tab-icon pati-profile-grid-icon" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">'+[3,10,17].flatMap(y=>[3,10,17].map(x=>'<rect x="'+x+'" y="'+y+'" width="4.5" height="4.5" rx="1"/>')).join('')+'</svg>';
+ const reelsTabIcon='<svg class="pati-profile-tab-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2.5" width="16" height="19" rx="4"/><path d="m10 8 5 4-5 4z"/></svg>';
+ const repostTabIcon='<svg class="pati-profile-tab-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10V7.5A3.5 3.5 0 0 1 6.5 4H20"/><path d="m16.5 1 3.5 3-3.5 3"/><path d="M21 14v2.5a3.5 3.5 0 0 1-3.5 3.5H4"/><path d="m7.5 17-3.5 3 3.5 3"/></svg>';
+ const videoTabIcon='<svg class="pati-profile-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" aria-hidden="true"><rect x="2.7" y="5" width="18.6" height="14" rx="3.3"/><path d="m10 9 5.1 3-5.1 3Z" fill="currentColor" stroke="none"/></svg>';
+ const textTabIcon='<svg class="pati-profile-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 11h13M4 16h15M4 21h9"/></svg>';
  const iconTabs=[['media',gridTabIcon,'Gönderiler'],['reels',reelsTabIcon,'Reels'],['videos',videoTabIcon,'Videolar'],['text',textTabIcon,'Tweetler'],['reposts',repostTabIcon,'Yeniden paylaşılanlar']];
  if(own)void patiLoadProfileViewCounts(posts.map(x=>x.id),p.id);
  const grid=active.map(x=>{
@@ -5765,7 +5759,7 @@ function profilePage(){
  patiProfileLinksHTML(p)+mutualMarkup+
  
  '<div class="pati-ig-actions">'+(own?button('Profili düzenle','edit-profile')+'<button type="button" class="pati-profile-coin-balance" data-action="paticoin-rewards" aria-label="Puan bakiyen; ödülleri ve görevleri aç"><span class="pati-profile-coin-copy"><small>Puan bakiyen</small><strong id="pati-profile-balance">'+Number((typeof patiCoinState!=='undefined'?patiCoinState.balance:0)||0).toLocaleString('tr-TR')+'</strong></span></button>':button(followed.has(p.id)?'Takiptesin':patiIsFollowRequested(p.id)?'İstek gönderildi':followBack?'Sen de takip et':'Takip et','follow','data-id="'+esc(p.id)+'"'+(followBack?' data-follow-back="true"':''))+button('Mesaj gönder','chat','data-id="'+esc(p.id)+'"'))+'</div>'+(own&&typeof patiCreatorPreviewHTML==='function'?patiCreatorPreviewHTML():'')+(own?patiVerificationProfileAction():'')+
- '<div class="pati-ig-tabs" role="tablist" aria-label="Profil gönderileri">'+iconTabs.map(x=>'<button type="button" role="tab" aria-selected="'+(profilePostsTab===x[0])+'" class="'+(profilePostsTab===x[0]?'active':'')+'" data-action="profile-posts-tab" data-id="'+x[0]+'" aria-label="'+x[2]+'"><span class="pati-profile-tab-label">'+esc(x[2])+'</span></button>').join('')+'</div>'+
+ '<div class="pati-ig-tabs" role="tablist" aria-label="Profil gönderileri">'+iconTabs.map(x=>'<button type="button" role="tab" aria-selected="'+(profilePostsTab===x[0])+'" class="'+(profilePostsTab===x[0]?'active':'')+'" data-action="profile-posts-tab" data-id="'+x[0]+'" aria-label="'+x[2]+'" title="'+x[2]+'">'+x[1]+'</button>').join('')+'</div>'+
  profileContent+
  '</div>';
  void syncProfileCounts(p.id);
