@@ -16,13 +16,44 @@
      stage===0?'Kavramı bir cümleyle kendi sözcüklerinle açıklamaya çalış. Sadece tanımı ezberlemek yerine ne işe yaradığını düşün.':stage===1?'Kendi deneyiminden buna uyan bir olay bul; hangi kararın sonucu değiştirdiğini not et.':stage===2?'Bir küçük adım belirle, zamanı ve başarı ölçütünü yaz. Uygulamaya geçmeden önce risk ve kaynakları kontrol et.':stage===3?'Olası yanlış varsayımı, eksik bilgiyi veya acele verilen kararı belirle; farklı bir kaynaktan doğrula.':'Bu konuyla ilgili bir gerçek durum seç, iki cümleyle deneyeceğin davranışı ve ölçütünü yaz.',
      stage===0?'Bir sonraki derste '+context+' kavramının nerede kullanılabildiğine bakacaksın.':stage===1?'Bir örnek daha düşün: hangi koşul değişirse kararın da değişmesi gerekir?':stage===2?'Sonucu kaydet; işe yarayan adımı koru, işe yaramayanı küçük bir değişiklikle yeniden dene.':stage===3?'Hata riskini azaltmak için önce küçük, geri alınabilir bir deneme yap.':'Uygulamanın sonucunu değerlendir: ne öğrendin, bir sonraki küçük adımın ne?'
     ];
+    // A real 12-minute guided lesson, not a one-sentence content card.
+    // Timed reading, worked example, application and reflection are part of the lesson.
+    const approach=[
+      'İlk olarak kavramı kendi cümlenle açıklayıp ne zaman gerekli olduğunu ayır.',
+      'Konuyu gündelik hayattan gerçek bir durumla ilişkilendir; öncesini ve sonrasını karşılaştır.',
+      'Küçük bir başlangıç planı kur; ilk adımı, gerekli kaynağı ve takip edeceğin ölçütü belirle.',
+      'Sık rastlanan varsayımları sorgula; bir kanıt ya da ikinci görüşle fikrini sınamayı dene.',
+      'Bilgiyi bugün kullanacağın bir mikro göreve dönüştür; yapınca sonucu kaydet.'
+    ][stage];
+    const practice=[
+      'Bir kâğıda ya da not uygulamana konu başlığını yaz. Konuya dair bildiğin üç şeyi sırala ve emin olmadığın iki soruyu ekle. Sorularına hızlı bir yanıt uydurmak yerine hangi kaynaktan öğrenebileceğini işaretle.',
+      'Kendi hayatından veya gözlemlediğin bir durumdan örnek seç. Kimler etkileniyor, şu anda ne yapılıyor, ne daha iyi olabilir? Her soruya tek cümle yaz ve örneğin neden konuyla ilgili olduğunu açıklığa kavuştur.',
+      'Yapılabilecek üç küçük eylem düşün. En az maliyetli ve geri alınabilir olanını seç. Başlangıç ve bitiş durumunu nasıl fark edeceğini bir ölçütle açıkla; ilk adımı hemen atabileceğin kadar küçült.',
+      'Konuyla ilgili yanlış anlaşılabilecek üç iddia bul. Bunları gerçek, yorum veya doğrulanması gereken bilgi olarak ayır. Kaynak veya karşı örnek aramadan hiçbirini kesin sonuç gibi sunma.',
+      'Üç adımlı bir mikro görev hazırla. Önce hazırlık için gerekeni, sonra bugün deneyeceğin davranışı, sonunda ise sonucu nasıl kontrol edeceğini yaz. Uygulayamadıysan nedenini not et.'
+    ][stage];
+    const detailed=[
+      '1. KAVRAMA DERİNLİK KAT (2 dk). '+topic+' konusu için temel ilkeyi yeniden oku: '+insight+' Bu ifade neyi anlatıyor, hangi koşullarda yararlı olabilir, hangi koşullarda tek başına yeterli olmayabilir? Bir bilgiyi gerçekten öğrendiğinde yalnızca adını hatırlamazsın; neden önemli olduğunu, kimleri etkilediğini ve kararların sonucunu nasıl değiştirebileceğini de açıklayabilirsin. Konuya yabancı birine bir dakikada anlatacağını düşün ve anlaşılmayan kelimeleri sadeleştir.',
+      '2. DURUMU ANALİZ ET (2 dk). '+topic+' üzerine çalışırken gerçek yaşam koşullarını birbirinden ayır: amaç, mevcut durum, eldeki imkânlar, zaman ve olası riskler. '+insight+' Bu noktada tek bir örneğe bakıp herkes için aynı sonuca varma. Farklı bir kullanıcı, farklı bir bütçe veya farklı bir ortam olduğunda sonucun da değişebileceğini düşün. Somut bir senaryoda hangi bilginin eksik kaldığını saptayıp önce bu bilgiyi tamamlamayı öğren.',
+      '3. YÖNTEMİ KUR (2 dk). '+approach+' Bu yaklaşımı uygularken önce küçük bir deneme yap, ardından sonucu gözlemle. Başarılı görünen bir eylemi ölçmeden tekrar etmek ile gerçekten faydasını değerlendirmek farklıdır. Ne değişmesini beklediğini baştan yazman, sonradan kendi kararını daha tutarlı yorumlamanı sağlar. Bir yöntemin güvenli veya uygun olup olmadığını ve gerekiyorsa uzman desteğini ayrıca değerlendirmeyi unutma.',
+      '4. UYGULAMALI ÇALIŞMA (3 dk). '+practice+' Çalışmayı zihninden geçirmek yerine kısa notlarla tamamla. Seçtiğin durumun gerçek olmasına özen göster. Deneyimlemediğin bir sonucu deneyimlemiş gibi yazma; amaç doğru görünen cevap üretmek değil, kendi düşünme sürecini şeffaf hâle getirmek. Küçük adımlar bazen büyük planlardan daha öğreticidir çünkü neyin işe yaradığını ayırt etmeyi kolaylaştırır.',
+      '5. DEĞERLENDİRME VE PEKİŞTİRME (2 dk). Çalışmandan sonra şu üç soruyu yanıtla: Bu konudan önce ne düşünüyordum? Şimdi neyi daha iyi anlıyorum? Uygulama sırasında hangi bilgiyi yeniden kontrol etmem gerekir? '+topic+' hakkında öğrendiklerini başka bir örnekle karşılaştır; farklı sonuç çıkıyorsa nedenini açıklamayı dene. Bir sonraki derste geliştirmek istediğin tek noktayı seçip notuna ekle.',
+      '6. MİNİ SINAVA HAZIRLIK (1 dk). '+insight+' Bilgiyi cümle olarak tekrar etmek yerine ilkeli bir seçim yapmaya çalış. Hangi seçeneğin gerçek duruma, küçük denemeye, ölçüme ve gerekçeli karara daha çok yer verdiğine bak. Hatalı yanıt verirsen o adıma dön ve neden yanlış olabileceğini gözden geçir. Öğrenme sonunda bir sonraki derse geçmeye hazırsın.'
+    ];
+    parts.push(...detailed);
     const quiz=[''+topic+' konusunda ilk değerlendirmede hangisi doğru yaklaşımdır?',''+topic+' için yararlı bir örnek nasıl bulunur?',''+topic+' alanında uygulamaya nasıl başlanmalı?',''+topic+' konusundaki hata riski nasıl azaltılır?',''+topic+' mini görevi nasıl tamamlanır?'][stage];
     const correct=['Kavramın temel ilkesini açıklamak','Gerçek bir durum ve etkisini incelemek','Küçük, ölçülebilir bir adım belirlemek','Varsayımları kontrol edip küçük denemek','Bir örnek ve gözlemi kaydetmek'][stage];
     const opts=[correct,'Kanıt olmadan kesin sonuç çıkarmak','Diğer tüm koşulları göz ardı etmek'];
-    lessons.push({id:'s101-'+group.tag+'-'+String(num).padStart(3,'0'),series:group.title,cat:group.title,icon:group.icon,minutes:3,name,desc:insight,parts,q:quiz,opts,answer:0});
+    lessons.push({id:'s101-'+group.tag+'-'+String(num).padStart(3,'0'),series:group.title,cat:group.title,icon:group.icon,minutes:12,name,desc:insight,parts,q:quiz,opts,answer:0});
    }
   }
-  lessons.push({id:'s101-'+group.tag+'-101',series:group.title,cat:group.title,icon:group.icon,minutes:4,name:'101. Ders — Öğrendiklerini Birleştir',desc:group.title+' boyunca öğrendiğin temel yaklaşımları gerçek bir durum üzerinde birleştir.',parts:['Serideki yirmi temel konuyu gözden geçir. Her birinden işe yarayan bir düşünce ya da davranışı hatırla.','Günlük hayatından ilgili bir durum seç; sorunu, seçenekleri ve küçük bir uygulanabilir adımı yaz.','Bir hafta sonra notuna dön, sonucu kontrol et ve öğrendiklerinle yaklaşımını güncelle.'],q:'Bu seriyi tamamladıktan sonra en yararlı yaklaşım hangisidir?',opts:['Bilgiyi gerçek bir durumda küçük bir adımla uygulamak','Öğrendiklerini hiç kullanmadan unutmak','Tek örnekten her durum için kesin sonuç çıkarmak'],answer:0});
+  lessons.push({id:'s101-'+group.tag+'-101',series:group.title,cat:group.title,icon:group.icon,minutes:15,name:'101. Ders — Öğrendiklerini Birleştir',desc:group.title+' boyunca öğrendiğin temel yaklaşımları gerçek bir durum üzerinde birleştir.',parts:[
+ '1. ÖĞRENDİKLERİNİ TOPARLA (3 dk). Serideki yirmi temel konuyu tekrar gözden geçir. Her konudan bir ana ilke seç; ilkeler arasında hangi bağlantıların bulunduğunu anlamaya çalış. Öğrenme sırasında yalnızca bilgiyi hatırlamakla kalma, yeni bir durumda nasıl kullanacağını da anlat.',
+ '2. GERÇEK DURUM SEÇ (3 dk). Günlük hayatından veya çalışmandan bu seriye uygun somut bir durum seç. Sorunu, etkilenen kişileri ve bugün kullanılan yöntemi ayrı ayrı yaz. Gerçek veri ile tahminlerini birbirinden ayır. Eksik bilgi varsa kaynaklarını belirle.',
+ '3. KÜÇÜK PLAN OLUŞTUR (3 dk). Öğrendiğin ilkelerden en az üçünü bu duruma uygula. Bir eylem seç, başlamadan önce başarı ölçütünü belirle, süre ve kaynak ihtiyacını düşün. Gerekirse güvenli ve geri alınabilir bir ilk adımla başla.',
+ '4. SONUÇLARI YORUMLA (3 dk). Küçük denemenin beklenen ve beklenmeyen sonuçlarını not et. Neyin işe yaradığını, neyin belirsiz kaldığını ve hangi koşullarda yaklaşımını değiştireceğini açıkla. Sonuç henüz yoksa varsayımını sonuç gibi yazma.',
+ '5. SONUÇ ÖZETİ (3 dk). Bir cümlede ne öğrendiğini, bir cümlede neyi uygulayacağını, bir cümlede nasıl kontrol edeceğini yaz. Bir hafta sonra notuna dönerek gelişmeni kıyasla. Hazırsan son mini sınava geç.'
+ ],q:'Bu seriyi tamamladıktan sonra en yararlı yaklaşım hangisidir?',opts:['Bilgiyi gerçek bir durumda küçük bir adımla uygulamak','Öğrendiklerini hiç kullanmadan unutmak','Tek örnekten her durum için kesin sonuç çıkarmak'],answer:0});
  }
  if(series.length!==9||series.some(s=>s.topics.length!==20)||lessons.length!==909||new Set(lessons.map(l=>l.id)).size!==909)throw Error('101 eğitim serileri veri tutarsızlığı');
  window.PATIYIZ_SERIES_CATALOG=[{title:'101 Hayvan',icon:'🐾'},...series.map(s=>({title:s.title,icon:s.icon}))];
