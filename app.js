@@ -1682,7 +1682,20 @@ async function patiHydrateStorySharedPost(story){
    const showing=storyItems[storyIndex];
    const root=document.getElementById('story-overlay');
    const stage=root?.querySelector('.pati-story-share-stage');
-   if(showing?.id===story.id&&stage?.isConnected)stage.outerHTML=patiStorySharedPostCard(story);
+   if(showing?.id===story.id&&stage?.isConnected){
+    stage.outerHTML=patiStorySharedPostCard(story);
+    const sharedVideo=root.querySelector('.pati-story-share-media-video');
+    if(sharedVideo){
+     clearTimeout(storyTimer);
+     storyTimer=setTimeout(()=>stepStory(1),15000);
+     sharedVideo.addEventListener('loadedmetadata',()=>{
+      if(storyItems[storyIndex]?.id!==story.id)return;
+      clearTimeout(storyTimer);
+      const ms=Number.isFinite(sharedVideo.duration)?Math.min(15000,Math.max(5000,sharedVideo.duration*1000)):15000;
+      storyTimer=setTimeout(()=>stepStory(1),ms);
+     },{once:true});
+    }
+   }
   }catch(err){console.warn('Paylaşılan hikâye içeriği yüklenemedi:',err?.message||err)}
   finally{patiStoryShareLoads.delete(postId)}
  })();
@@ -1747,9 +1760,9 @@ function showStoryFrame(){const root=document.getElementById('story-overlay'),x=
   }
  }
  if(x.shared_post_id)void patiHydrateStorySharedPost(x);
- const upcoming=storyItems[storyIndex+1];if(upcoming?.image_url&&typeof Image==='function'){const preload=new Image();preload.src=upcoming.image_url}storyTimer=setTimeout(()=>stepStory(1),x.video_url?15000:6000);
+ const upcoming=storyItems[storyIndex+1];if(upcoming?.image_url&&typeof Image==='function'){const preload=new Image();preload.src=upcoming.image_url}storyTimer=setTimeout(()=>stepStory(1),(x.video_url||root.querySelector('.pati-story-share-media-video'))?15000:6000);
  if(x.author_id===me.id&&!x.pati_pet_highlight)void patiStoryPreviewLoad(x.id);
- if(x.video_url){
+ if(x.video_url||root.querySelector('.pati-story-share-media-video')){
   const video=root.querySelector('.story-big-video');
   video?.addEventListener('loadedmetadata',()=>{
    if(storyItems[storyIndex]?.id!==x.id)return;
