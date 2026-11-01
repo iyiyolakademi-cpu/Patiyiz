@@ -1,0 +1,156 @@
+/* Patiyiz: Seriler mobile overflow and daily celebration, 01.11.2026. */
+#main-content .pati-streaks-page{
+ --streak-ink:#181a20;--streak-muted:#70747e;--streak-line:#e5e7eb;--streak-paper:#fff;
+ box-sizing:border-box!important;display:flex!important;flex-direction:column!important;
+ width:100%!important;max-width:760px!important;min-width:0!important;
+ margin:0 auto!important;padding:14px 14px calc(35px + env(safe-area-inset-bottom,0px))!important;
+ gap:14px!important;overflow-x:clip!important;color:var(--streak-ink)!important;
+}
+#main-content .pati-streaks-page *,#main-content .pati-streaks-page *::before,
+#main-content .pati-streaks-page *::after{box-sizing:border-box!important}
+#main-content .pati-streaks-top{
+ display:flex!important;align-items:flex-start!important;gap:12px!important;
+ margin:0!important;padding:2px 0 5px!important;width:100%!important;min-width:0!important;
+}
+#main-content .pati-streaks-back{
+ display:grid!important;place-items:center!important;flex:0 0 44px!important;
+ width:44px!important;height:44px!important;background:#f4f5f7!important;
+ border:1px solid #e3e5e9!important;border-radius:14px!important;color:#181a20!important;
+}
+#main-content .pati-streak-title{min-width:0!important;flex:1!important}
+#main-content .pati-streak-title h1{color:#17191d!important;font-size:26px!important;margin:0!important}
+#main-content .pati-streak-title p{color:#727780!important;overflow-wrap:anywhere!important}
+#main-content .pati-streak-page-card{
+ display:flex!important;flex-direction:column!important;align-items:center!important;
+ width:100%!important;min-width:0!important;margin:0!important;padding:19px 13px!important;
+ gap:0!important;background:linear-gradient(160deg,#fff9ed,#fff3de)!important;
+ border:1px solid #f1dfbc!important;border-radius:22px!important;
+ box-shadow:none!important;text-align:center!important;
+}
+#main-content .pati-streak-page-card .pati-streak-sparkles{
+ width:104px!important;height:110px!important;flex:0 0 auto!important;margin:6px auto 0!important;
+}
+#main-content .pati-streak-page-card .pati-streak-count{font-size:62px!important;margin:0!important}
+#main-content .pati-streak-page-card h2{font-size:23px!important;margin:0!important}
+#main-content .pati-streak-page-card .pati-streak-week{
+ display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;
+ width:100%!important;max-width:390px!important;gap:3px!important;
+ padding:0!important;margin:5px auto 12px!important;
+}
+#main-content .pati-streak-page-card .pati-streak-day{min-width:0!important;gap:5px!important}
+#main-content .pati-streak-page-card .pati-streak-day-circle{
+ width:clamp(27px,7vw,38px)!important;height:clamp(27px,7vw,38px)!important;
+}
+#main-content .pati-streak-goal-section{
+ width:100%!important;max-width:100%!important;min-width:0!important;
+ padding:0!important;margin:0!important;border:0!important;background:transparent!important;
+}
+#main-content .pati-streak-goal-grid{
+ width:100%!important;min-width:0!important;display:grid!important;
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;
+}
+#main-content .pati-streak-goal-card{
+ display:flex!important;flex-direction:column!important;gap:8px!important;
+ width:100%!important;min-width:0!important;margin:0!important;padding:15px!important;
+ overflow:hidden!important;border:1px solid #e5e7eb!important;
+ border-radius:18px!important;background:#fff!important;color:#181a20!important;
+}
+#main-content .pati-streak-goal-card.is-selected{border:2px solid #eda942!important;padding:14px!important}
+#main-content .pati-streak-goal-top{
+ display:flex!important;flex-wrap:wrap!important;justify-content:space-between!important;
+ gap:8px!important;align-items:center!important;min-width:0!important;
+}
+#main-content .pati-streak-goal-coins{max-width:100%!important;white-space:normal!important;overflow-wrap:anywhere!important}
+#main-content .pati-streak-goal-card>strong,
+#main-content .pati-streak-goal-card>small{overflow-wrap:anywhere!important}
+#main-content .pati-streak-goal-footer{
+ display:flex!important;flex-direction:column!important;align-items:stretch!important;
+ gap:8px!important;width:100%!important;min-width:0!important;margin-top:auto!important;
+}
+#main-content .pati-streak-goal-footer>span{min-width:0!important;overflow-wrap:anywhere!important}
+#main-content .pati-streak-goal-footer button{
+ display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;
+ padding:10px 8px!important;min-height:44px!important;white-space:normal!important;
+ overflow-wrap:anywhere!important;
+}
+#main-content .pati-streak-sixty{
+ display:flex!important;flex-direction:column!important;gap:10px!important;
+ width:100%!important;max-width:100%!important;min-width:0!important;
+ margin-top:14px!important;padding:17px!important;
+ background:#fff!important;border:1px solid #e5e7eb!important;border-radius:18px!important;
+ overflow:hidden!important;
+}
+#main-content .pati-streak-sixty :is(h2,p,small,strong,span){max-width:100%!important;overflow-wrap:anywhere!important}
+#main-content .pati-streak-sixty button{
+ min-height:44px!important;padding:11px 12px!important;max-width:100%!important;
+ white-space:normal!important;border-radius:12px!important;background:#181a20!important;color:#fff!important;
+}
+#main-content .pati-streak-sixty button:disabled{background:#eceef2!important;color:#656974!important}
+#main-content .pati-streak-rules{overflow-wrap:anywhere!important;line-height:1.55!important}
+#main-content .pati-weekly-board,#main-content .pati-weekly-section,#main-content .pati-weekly-leaders{
+ max-width:100%!important;min-width:0!important;width:100%!important;
+}
+@media(max-width:640px){
+ #main-content .pati-streaks-page{
+  padding:12px 12px calc(98px + env(safe-area-inset-bottom,0px))!important;gap:13px!important;
+ }
+ #main-content .pati-streak-goal-grid{grid-template-columns:minmax(0,1fr)!important;gap:10px!important}
+ #main-content .pati-streak-goal-card{padding:15px!important}
+ #main-content .pati-streak-goal-card.is-selected{padding:14px!important}
+ #main-content .pati-streak-goal-footer{
+  display:grid!important;grid-template-columns:minmax(0,1fr) minmax(112px,auto)!important;
+  align-items:center!important;gap:9px!important;
+ }
+ #main-content .pati-streak-goal-footer button{min-width:112px!important}
+}
+@media(max-width:370px){
+ #main-content .pati-streaks-page{padding-inline:9px!important}
+ #main-content .pati-streak-goal-footer{display:flex!important;flex-direction:column!important}
+ #main-content .pati-streak-goal-footer button{width:100%!important}
+ #main-content .pati-streak-page-card{padding:16px 8px!important}
+ #main-content .pati-streak-page-card .pati-streak-week{gap:1px!important}
+ #main-content .pati-streak-page-card .pati-streak-day-circle{width:clamp(25px,7.8vw,32px)!important;height:clamp(25px,7.8vw,32px)!important}
+}
+/* Original Patiyiz flame with one-time confetti motion and a real Tamam action. */
+.pati-streak-overlay{z-index:240000!important;backdrop-filter:blur(5px)!important}
+.pati-streak-dialog{
+ width:min(410px,100%)!important;max-height:calc(100dvh - 28px)!important;
+ padding:24px 20px 22px!important;background:#fff!important;
+ color:#181a20!important;border-color:#ffdfae!important;
+}
+.pati-streak-confetti{position:absolute;inset:0;overflow:hidden;pointer-events:none;border-radius:inherit;z-index:0}
+.pati-streak-confetti i{
+ position:absolute;top:-12px;left:calc(8% + (var(--i) * 7%));
+ width:8px;height:13px;border-radius:3px;background:#f4ac40;
+ opacity:0;transform:translateY(0) rotate(0);
+}
+.pati-streak-confetti i:nth-child(3n){background:#7dbda6}
+.pati-streak-confetti i:nth-child(3n + 1){background:#ff8e6f}
+.pati-streak-overlay.is-visible .pati-streak-confetti i{
+ animation:pati-confetti-fall 1.55s ease-out calc(var(--i) * 45ms) 1 both;
+}
+@keyframes pati-confetti-fall{
+ 0%{opacity:0;transform:translateY(-10px) rotate(0) scale(.6)}
+ 20%{opacity:1}
+ 100%{opacity:0;transform:translateY(240px) rotate(260deg)}
+}
+.pati-streak-overlay .pati-streak-done{
+ position:relative!important;top:auto!important;right:auto!important;flex:0 0 auto!important;
+ display:block!important;width:100%!important;height:auto!important;min-height:52px!important;
+ margin:19px 0 0!important;padding:12px 20px!important;
+ background:#191b20!important;color:#fff!important;border:0!important;
+ border-radius:15px!important;font-size:16px!important;font-weight:850!important;line-height:1.3!important;
+}
+.pati-streak-overlay .pati-streak-done:focus-visible{outline:3px solid #e68c2c!important;outline-offset:3px!important}
+.pati-streak-overlay .pati-streak-sparkles{position:relative;z-index:1}
+.pati-streak-overlay :is(.pati-streak-count,h2,.pati-streak-message,.pati-streak-week,.pati-streak-best){
+ position:relative;z-index:1;color:#1b1d22!important;
+}
+@media(max-height:630px){
+ .pati-streak-dialog{padding:13px!important}
+ .pati-streak-sparkles{height:112px!important;width:112px!important}
+ .pati-streak-count{font-size:55px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .pati-streak-overlay.is-visible .pati-streak-confetti i{animation:none!important;opacity:0!important}
+}
