@@ -412,7 +412,7 @@ body #pati-create-sheet .pati-create-dismiss:focus-visible{
 </style>
 <style id="social-new-logo-20261101">
 #startup .pati-splash-icon{background:transparent!important;border-radius:23%!important;image-rendering:auto}
-#pati-feed-menu-trigger .brand-icon{width:44px!important;height:44px!important;flex:0 0 44px!important}
+#pati-feed-menu-trigger .brand-icon{width:var(--pati-share-button-size,44px)!important;height:var(--pati-share-button-size,44px)!important;flex:0 0 var(--pati-share-button-size,44px)!important;min-width:0!important;min-height:0!important;padding:0!important;margin:0!important;overflow:hidden!important;box-sizing:border-box!important}
 #pati-feed-menu-trigger .brand-icon img{width:100%!important;height:100%!important;object-fit:contain!important;border-radius:11px!important}
 #pati-feed-menu-trigger .pati-feed-current{display:block!important;font-size:12px!important}
 #auth-root img[src*="patiyiz-selected-logo"],#auth-root img[src*="patiyiz-favicon"]{content:url("logo-social-20261101.svg?v=1")!important}
@@ -439,6 +439,8 @@ function sync(root){
 let queued=false;
 function schedule(){if(queued)return;queued=true;queueMicrotask(()=>{queued=false;sync(document.querySelector('#auth-root'));sync(document.querySelector('#app-root'));});}
 document.addEventListener('DOMContentLoaded',()=>{
+ const matchShareSize=()=>{const share=document.getElementById('pati-header-share');if(!share)return;const size=Math.round(share.getBoundingClientRect().height);if(size>0)document.documentElement.style.setProperty('--pati-share-button-size',size+'px');};
+ matchShareSize();window.addEventListener('resize',matchShareSize,{passive:true});
  sync(document.querySelector('#auth-root'));sync(document.querySelector('#app-root'));
  const obs=new MutationObserver(schedule);
  for(const id of ['auth-root','app-root']){const target=document.getElementById(id);if(target)obs.observe(target,{subtree:true,childList:true,characterData:true})}
