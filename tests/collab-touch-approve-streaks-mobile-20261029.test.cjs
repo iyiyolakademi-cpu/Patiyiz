@@ -87,6 +87,6 @@ test('Seriler uses a compact hero and one-column touch friendly goals on phones'
  assert.match(css,/\.pati-streak-page-card \.pati-streak-week/);
  assert.match(css,/touch-action:manipulation/);
  assert.match(html,/patiyiz-collab-picker-20261029\.js\?v=3/);
- assert.match(html,/patiyiz-delight-20261029\.js\?v=4/);
+ assert.match(html,/patiyiz-delight-20261029\.js\?v=5-streak-tamam/);
  assert.match(html,/patiyiz-polish-collab-dm-story-20261029\.css\?v=3/);
 });
