@@ -304,3 +304,5 @@
   #main-content .pati-reel-rail>button,
   #main-content .pati-reel-caption-toggle{transition:none!important}
 }
+/* Respect the semantic hidden attribute even with forced button styles. */
+#main-content .pati-reel-caption-toggle[hidden]{display:none!important}
