@@ -411,76 +411,51 @@ body #pati-create-sheet .pati-create-dismiss:focus-visible{
 }
 </style>
 <style id="social-new-logo-20261101">
-#startup .pati-splash-icon{background:transparent!important;border-radius:23%!important;image-rendering:auto}
+/* Stable logo integration: do not mutate application text or DOM. */
+#startup .pati-splash-icon{background:transparent!important;border-radius:22%!important;object-fit:contain!important}
+#app-root .brand-icon:has(img[src*="social-final-logo"]){transform:none!important;background:transparent!important;border:0!important;box-shadow:none!important;overflow:visible!important;padding:0!important}
+#app-root .brand-icon img[src*="social-final-logo"]{display:block!important;object-fit:contain!important;aspect-ratio:1/1!important;transform:none!important;clip-path:none!important}
 @media(max-width:740px){
- #app-root:not(.hidden)>.mobile-header{display:flex!important;align-items:center!important;gap:8px!important;justify-content:flex-start!important;overflow:visible!important;padding-inline:12px!important}
- #app-root:not(.hidden)>.mobile-header>#pati-header-share{flex:0 0 auto!important;position:relative!important;margin:0!important}
+ #app-root:not(.hidden)>.mobile-header{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important;overflow:visible!important;box-sizing:border-box!important;padding-inline:12px!important}
+ #app-root:not(.hidden)>.mobile-header>#pati-header-share{position:relative!important;flex:0 0 auto!important;margin:0!important}
  #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand{
-  display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important;
-  flex:0 1 auto!important;position:relative!important;inset:auto!important;
-  width:auto!important;min-width:0!important;max-width:calc(100vw - 188px)!important;
-  height:48px!important;margin:0!important;padding:0!important;overflow:visible!important;
-  transform:none!important;background:transparent!important;box-shadow:none!important
+  display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:7px!important;
+  position:relative!important;inset:auto!important;transform:none!important;
+  flex:0 1 auto!important;min-width:0!important;max-width:none!important;width:auto!important;
+  height:auto!important;margin:0!important;padding:0!important;overflow:visible!important
  }
- #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand>.brand-icon{
-  display:block!important;position:relative!important;flex:0 0 44px!important;
-  width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;
-  max-width:44px!important;max-height:44px!important;
-  margin:0!important;padding:0!important;border:0!important;
-  border-radius:10px!important;background:transparent!important;
-  overflow:visible!important;transform:none!important;box-shadow:none!important
- }
+ #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand>.brand-icon,
  #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand>.brand-icon>img{
-  display:block!important;position:static!important;width:44px!important;height:44px!important;
-  min-width:44px!important;min-height:44px!important;max-width:44px!important;max-height:44px!important;
-  margin:0!important;padding:0!important;transform:none!important;
-  object-fit:contain!important;aspect-ratio:1!important;border-radius:10px!important;clip-path:none!important
+  display:block!important;position:static!important;flex:0 0 44px!important;
+  width:44px!important;height:44px!important;min-width:44px!important;max-width:44px!important;
+  min-height:44px!important;max-height:44px!important;
+  margin:0!important;padding:0!important;border:0!important;border-radius:9px!important;
+  transform:none!important;object-fit:contain!important;overflow:visible!important
  }
  #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand>div:not(.brand-icon){
-  display:block!important;flex:0 1 auto!important;min-width:0!important;max-width:90px!important;
-  margin:0!important;padding:0!important;position:static!important;transform:none!important
+  display:block!important;position:static!important;flex:0 1 auto!important;min-width:0!important;
+  margin:0!important;padding:0!important;transform:none!important
  }
  #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger .pati-feed-current{
-  display:block!important;position:static!important;white-space:nowrap!important;
-  font-size:12px!important;line-height:1.25!important;margin:0!important;transform:none!important
+  display:block!important;position:static!important;font-size:12px!important;white-space:nowrap!important;
+  line-height:1.2!important;margin:0!important;transform:none!important
  }
- #app-root:not(.hidden)>.mobile-header>.pati-header-actions{margin-left:auto!important;flex:0 0 auto!important;min-width:0!important}
+ #app-root:not(.hidden)>.mobile-header>.pati-header-actions{
+  display:flex!important;align-items:center!important;visibility:visible!important;
+  margin-left:auto!important;flex:0 0 auto!important;min-width:0!important;gap:6px!important
+ }
+ #app-root:not(.hidden)>.mobile-header>#pati-feed-menu{z-index:120!important}
 }
 @media(max-width:390px){
- #app-root:not(.hidden)>.mobile-header{gap:6px!important;padding-inline:9px!important}
- #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand{gap:5px!important;max-width:calc(100vw - 165px)!important}
-}
-#auth-root img[src*="patiyiz-selected-logo"],#auth-root img[src*="patiyiz-favicon"]{content:url("social-final-logo-20261101.png?v=4")!important}
-#auth-root .auth-brand-name,#auth-root .brand-name{display:none!important}
-</style>
-<script id="social-new-logo-runtime-20261101">
-(()=>{'use strict';
-const logo='social-final-logo-20261101.png?v=4', old=/patiyiz/i;
-function sync(root){
- if(!root)return;
- root.querySelectorAll?.('img').forEach(img=>{
-   if(/patiyiz-(selected-logo|favicon|apple-touch-icon)/i.test(img.getAttribute('src')||''))img.setAttribute('src',logo);
-   if(old.test(img.getAttribute('alt')||''))img.setAttribute('alt','Uygulama logosu');
- });
- const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
- const changes=[];let node;
- while((node=walker.nextNode())){
-   if(!old.test(node.nodeValue||''))continue;
-   if(node.parentElement?.closest('script,style,textarea,input,code'))continue;
-   changes.push(node);
+ #app-root:not(.hidden)>.mobile-header{gap:5px!important;padding-inline:8px!important}
+ #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand{gap:4px!important}
+ #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand>.brand-icon,
+ #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand>.brand-icon>img{
+  flex-basis:40px!important;width:40px!important;height:40px!important;min-width:40px!important;max-width:40px!important;min-height:40px!important;max-height:40px!important
  }
- changes.forEach(n=>{n.nodeValue=n.nodeValue.replace(/patiyiz/ig,'').replace(/ {2,}/g,' ')});
+ #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger .pati-feed-current{font-size:11px!important}
 }
-let queued=false;
-function schedule(){if(queued)return;queued=true;queueMicrotask(()=>{queued=false;sync(document.querySelector('#auth-root'));sync(document.querySelector('#app-root'));});}
-document.addEventListener('DOMContentLoaded',()=>{
- const matchShareSize=()=>{const share=document.getElementById('pati-header-share');if(!share)return;const size=Math.round(share.getBoundingClientRect().height);if(size>0)document.documentElement.style.setProperty('--pati-share-button-size',size+'px');};
- matchShareSize();window.addEventListener('resize',matchShareSize,{passive:true});
- sync(document.querySelector('#auth-root'));sync(document.querySelector('#app-root'));
- const obs=new MutationObserver(schedule);
- for(const id of ['auth-root','app-root']){const target=document.getElementById(id);if(target)obs.observe(target,{subtree:true,childList:true,characterData:true})}
-});
-})();
-</script>
+</style>
+
 
 </body></html>
