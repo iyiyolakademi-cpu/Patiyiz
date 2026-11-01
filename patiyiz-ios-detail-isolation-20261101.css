@@ -1,0 +1,36 @@
+/* iOS Home Screen PWA: isolate a selected post from the main timeline. */
+@media(max-width:740px), (hover:none) and (pointer:coarse) and (max-width:1024px){
+ html[data-pati-screen="inner"] #main-content:has(.pati-detail-screen){
+   box-sizing:border-box!important;min-width:0!important;width:100%!important;
+   max-width:100%!important;padding:0!important;margin:0!important;
+   overflow:hidden!important;
+ }
+ html[data-pati-screen="inner"] #main-content .pati-detail-screen{
+   position:relative!important;display:flex!important;flex-direction:column!important;
+   box-sizing:border-box!important;width:100%!important;max-width:100%!important;
+   height:calc(100dvh - 86px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))!important;
+   min-height:350px!important;overflow:hidden!important;margin:0!important;padding:0!important;
+   background:#fff!important;
+ }
+ html[data-pati-screen="inner"] #main-content .pati-detail-toolbar{
+   box-sizing:border-box!important;display:flex!important;align-items:center!important;
+   position:relative!important;top:auto!important;flex:0 0 auto!important;
+   padding:8px 12px!important;min-height:54px!important;
+   background:#fff!important;z-index:3!important;
+ }
+ html[data-pati-screen="inner"] #main-content .pati-detail-list{
+   box-sizing:border-box!important;flex:1 1 auto!important;min-height:0!important;
+   width:100%!important;max-width:100%!important;overflow-x:hidden!important;
+   overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;
+   overscroll-snap-type:y mandatory;
+ }
+ html[data-pati-screen="inner"] #main-content .pati-detail-item{
+   box-sizing:border-box!important;width:100%!important;max-width:100%!important;
+   min-height:100%!important;scroll-snap-align:start;
+ }
+ html[data-pati-screen="inner"] #main-content .pati-detail-item .pati-feed-card{
+   width:100%!important;max-width:100%!important;margin:0!important;
+ }
+ #main-content:has(.pati-detail-screen)>.pati-daily-card,
+ #main-content .pati-detail-screen .pati-daily-card{display:none!important}
+}
