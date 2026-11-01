@@ -9,6 +9,28 @@
   let activeMode='media';
   try { if(localStorage.getItem(STORAGE_KEY)==='text') activeMode='text'; } catch (_) {}
   const installed=[];
+  // Draw the icons directly, rather than depending on an SVG <use> sprite
+  // whose inherited stroke can be forced white by older mobile styles.
+  const darkStroke='style="stroke:#17191d!important;fill:none!important"';
+  const menuGlyphs={
+    media:'<rect x="3" y="3" width="18" height="18" rx="3" '+darkStroke+'></rect>'+
+      '<circle cx="9" cy="9" r="1.5" '+darkStroke+'></circle>'+
+      '<path d="m21 16-5-5L5 21" '+darkStroke+'></path>',
+    text:'<path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.5 0-2.9-.4-4.1-1.1L3 21l2.1-5.4A8.5 8.5 0 1 1 21 11.5z" '+darkStroke+'></path>'
+  };
+  function paintMenuIcons(menu){
+    for(const choice of ['media','text']){
+      const svg=menu.querySelector('[data-pati-feed-choice="'+choice+'"] svg');
+      if(!svg)continue;
+      svg.setAttribute('viewBox','0 0 24 24');
+      svg.setAttribute('aria-hidden','true');
+      svg.style.setProperty('color','#17191d','important');
+      svg.style.setProperty('stroke','#17191d','important');
+      svg.style.setProperty('fill','none','important');
+      svg.style.setProperty('visibility','visible','important');
+      svg.innerHTML=menuGlyphs[choice];
+    }
+  }
 
   function makeMenu(brand,kind){
     if(!brand)return;
@@ -46,6 +68,8 @@
         '"></use></svg><span class="pati-feed-menu-label"><strong>'+choice.title+
         '</strong><small>'+choice.subtitle+'</small></span><span class="pati-feed-selected" aria-hidden="true">✓</span></button>').join('');
     }
+
+    paintMenuIcons(menu);
 
     function close(){menu.hidden=true;trigger.setAttribute('aria-expanded','false');}
     function sync(){
