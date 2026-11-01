@@ -8021,7 +8021,6 @@ function openMessageOptions(el){
  const icons={
   reply:'<path d="M9 10 4 15l5 5"/><path d="M4 15h10a7 7 0 0 1 7 7"/>',
   copy:'<rect x="8" y="8" width="12" height="14" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h2"/>',
-  translate:'<path d="M4 5h12M10 3v3M6 9c1 4 4 7 9 9M13 9c-1 4-4 7-9 9M15 14h6M18 11l4 9M14 20l4-9"/>',
   trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14M10 11v6M14 11v6"/>',
   unsend:'<path d="M9 7 4 12l5 5"/><path d="M4 12h10a7 7 0 0 1 0 14"/>',
   more:'<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>',
@@ -8037,7 +8036,6 @@ function openMessageOptions(el){
  const preview=msg.attachment_type==='image'?'📷 Fotoğraf':msg.attachment_type==='audio'?'🎤 Sesli mesaj':msg.attachment_type==='video'?'🎬 Video':String(msg.body||'Mesaj');
  const options=option('dm-reply','Yanıtla','reply')+
   (canCopy?option('dm-context-copy','Kopyala','copy'):'')+
-  (canCopy?option('dm-context-translate','Çevir','translate'):'')+
   option('dm-hide-for-me','Kendin için sil','trash')+
   (mine?option('message-delete','Gönderimi geri al','unsend','is-danger'):'')+
   option('dm-context-more','Daha fazla','more');
@@ -8074,22 +8072,6 @@ function openMessageOptions(el){
    return;
   }
   if(action==='dm-context-close'){patiDmCloseContextMenu();return;}
-  if(action==='dm-context-translate'){
-   const input=String(msg.body||'').trim();
-   if(!input){notify('Bu mesajda çevrilecek metin bulunamadı.',true);return;}
-   if(!window.Translator?.create){notify('Bu cihazda yerel çeviri desteklenmiyor.',true);return;}
-   void (async()=>{
-    try{
-     const detector=window.LanguageDetector?.create?await window.LanguageDetector.create():null;
-     const candidate=detector?await detector.detect(input):[];
-     const source=candidate?.[0]?.detectedLanguage||'en';
-     const translator=await window.Translator.create({sourceLanguage:source,targetLanguage:'tr'});
-     const translated=await translator.translate(input);
-     dialog.querySelector('.pati-dm-context-preview span').textContent=translated;
-    }catch(error){notify('Çeviri şu an kullanılamıyor.',true)}
-   })();
-   return;
-  }
   patiDmCloseContextMenu();
   processClick({target:control});
  });
