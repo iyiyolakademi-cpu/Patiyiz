@@ -1,0 +1,49 @@
+/* Patiyiz / 01 Nov 2026 — clean mobile feed video appearance.
+ * The uploader and video controls remain unchanged. The post should never
+ * show a black placeholder or a dark tint imposed by the feed UI.
+ */
+#main-content .pati-feed-card .pati-video-frame,
+#main-content .pati-feed-card .pati-carousel,
+#main-content .pati-feed-card .pati-carousel-slide,
+#main-content .pati-feed-card .pati-video-slide{
+ background:#f2f3f5!important;
+ background-image:none!important;
+ border-top:0!important;
+ border-bottom:0!important;
+ box-shadow:none!important;
+}
+#main-content .pati-feed-card .pati-video-frame{
+ overflow:hidden!important;position:relative!important;
+}
+#main-content .pati-feed-card .pati-video-frame video.pati-post-video{
+ display:block!important;width:100%!important;height:100%!important;
+ object-fit:cover!important;object-position:center center!important;
+ background:#f2f3f5!important;
+ /* Slightly fill the video viewport to conceal letterboxing at media edges. */
+ transform:scale(1.05)!important;
+ transform-origin:center center!important;
+}
+#main-content .pati-feed-card .pati-video-frame video.pati-post-video.pati-selfie-mirrored{
+ transform:scaleX(-1) scale(1.05)!important;
+}
+#main-content .pati-feed-reel-card .pati-feed-reel-open{
+ background:transparent!important;
+ background-image:none!important;
+ box-shadow:none!important;
+}
+#main-content .pati-feed-reel-card .pati-feed-reel-open::before,
+#main-content .pati-feed-reel-card .pati-feed-reel-open::after{
+ background:transparent!important;
+ background-image:none!important;
+}
+#main-content .pati-feed-card .pati-feed-card-header{
+ background:#fff!important;border-bottom:0!important;box-shadow:none!important;
+}
+#main-content .pati-feed-card .pati-video-frame .pati-video-sound{
+ z-index:10;
+}
+@media(prefers-reduced-motion:reduce){
+ #main-content .pati-feed-card .pati-video-frame video.pati-post-video{
+  transition:none!important;
+ }
+}
