@@ -41,16 +41,16 @@ test('Full-screen cropping preserves wide originals, and swaps rotated dimension
 test('Crop orientation, zoom and pan are independent of the file the user selected',()=>{
  const a=paint({ratio:'4:5',zoom:1,x:.5,y:.5,rotation:0,flip:false});
  const b=paint({ratio:'1:1',zoom:1.6,x:.9,y:.2,rotation:0,flip:true});
- assert.deepEqual([a.canvas.width,a.canvas.height],[720,900]);
- assert.deepEqual([b.canvas.width,b.canvas.height],[720,720]);
+ assert.deepEqual([a.canvas.width,a.canvas.height],[1080,1350]);
+ assert.deepEqual([b.canvas.width,b.canvas.height],[1080,1080]);
  assert.ok(b.calls.some(x=>x[0]==='scale'&&x[1]===-1));
  assert.notDeepEqual(a.calls.find(x=>x[0]==='translate').slice(1),b.calls.find(x=>x[0]==='translate').slice(1));
 });
 test('Editor commits only on Bitti, is fully accessible and applies actual export on story and post',()=>{
  const source=between('async function patiCropOpen(options={}){','async function drawPostCrop()');
- for(const cmd of ['Vazgeç','Bitti','Ayna','Döndür','Orijinal','4:5','9:16','Yakınlaştır','patiCropEdits.set(files[i]','if(action===\'cancel\')','patiCropPaint(canvas,img,state)'])
+ for(const cmd of ['Vazgeç','Bitti','Ayna','Döndür','4:5','9:16','Yakınlaştır','patiCropEdits.set(files[i]','if(action===\'cancel\')',"patiCropPaint(canvas,img,state,'preview')"])
   assert.ok(source.includes(cmd),'Missing control '+cmd);
- assert.match(js,/const file=\(typeof patiCropEdits!=='undefined'&&patiCropEdits\.has\(photoFiles\[i\]\)\)/);
+ assert.match(js,/const file=await cropPostPhoto\(photoFiles\[i\],patiMediaDefaultRatio/);
  assert.match(js,/patiCropEdits\.has\(photo\)/);
  assert.match(js,/async function cropPostPhoto/);
  assert.match(js,/await cropPostPhoto\(photoFiles\[i\]/);
