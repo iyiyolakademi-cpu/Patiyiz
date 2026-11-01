@@ -4568,27 +4568,28 @@ function patiDmOpenPhoto(messageId){
  dialog.showModal();paint();
 }
 
-const patiDmEmojis=['❤️','😂','😮','😢','😡','👍','👏','🐾'];
+const patiDmEmojis=['❤️','😂','😮','😢','😡','👍','👏','🐾']; // Legacy fallback.
 function patiDmReactionMarkup(messageId){
  const reactions=data.dmReactions.filter(x=>x.message_id===messageId);
  if(!reactions.length)return '';
  const groups=[...new Set(reactions.map(x=>x.emoji))].map(emoji=>{
   const count=reactions.filter(x=>x.emoji===emoji).length;
   const own=reactions.some(x=>x.user_id===me.id&&x.emoji===emoji);
-  return '<span class="pati-dm-reaction-chip '+(own?'is-mine':'')+'" aria-label="'+esc(emoji)+' '+count+' tepki">'+emoji+' '+count+'</span>';
+  return '<span class="pati-dm-reaction-chip '+(own?'is-mine':'')+'" aria-label="'+esc(emoji)+' '+count+' tepki">'+esc(emoji)+' '+count+'</span>';
  });
  return '<span class="pati-dm-reaction-summary" aria-label="Mesaj tepkileri">'+groups.join('')+'</span>';
 }
 function patiDmOpenReactionPicker(messageId){
  const msg=patiDmFindMessage(messageId);
  if(!me||!msg||msg.sender_id===me.id||msg.receiver_id!==me.id)return;
+ if(window.PatiDmEmojiPicker?.open){window.PatiDmEmojiPicker.open(messageId,emoji=>run(()=>patiDmSetReaction(messageId,emoji)));return;}
  modal('Mesaja tepki ver','<div class="pati-dm-reaction-picker" role="group" aria-label="Emoji seç">'+
  patiDmEmojis.map(emoji=>'<button type="button" data-action="dm-react-set" data-id="'+esc(messageId)+'" data-emoji="'+esc(emoji)+'" aria-label="'+esc(emoji)+' ile tepki ver">'+emoji+'</button>').join('')+
  '</div>','dm-reaction-picker-form');
  document.querySelector('#dm-reaction-picker-form .modal-footer')?.remove();
 }
 async function patiDmSetReaction(messageId,emoji){
- if(!me||!patiDmEmojis.includes(emoji))throw Error('Tepki seçilemedi.');
+ if(!me||!(patiDmEmojis.includes(emoji)||window.PatiDmEmojiPicker?.isEmoji?.(emoji)))throw Error('Tepki seçilemedi.');
  const msg=patiDmFindMessage(messageId),owner=me.id;
  if(!msg||msg.sender_id===owner||msg.receiver_id!==owner||blocked.has(msg.sender_id)||blocked.has(msg.receiver_id))
   throw Error('Bu mesaja tepki verilemez.');
@@ -8031,7 +8032,7 @@ function openMessageOptions(el){
  const svg=(icon)=>'<svg class="pati-dm-context-svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+icons[icon]+'</svg>';
  const option=(action,label,icon,extra='')=>'<button type="button" class="pati-dm-context-item '+extra+'" data-action="'+action+'" data-id="'+esc(id)+'"><span class="pati-dm-context-symbol" aria-hidden="true">'+svg(icon)+'</span><span>'+label+'</span>'+(action==='dm-context-more'?'<span class="pati-dm-context-chevron">›</span>':'')+'</button>';
  const reaction=!mine?'<div class="pati-dm-context-reactions" role="group" aria-label="Mesaja tepki ver">'+
-  patiDmEmojis.slice(0,6).map(emoji=>'<button type="button" data-action="dm-react-set" data-id="'+esc(id)+'" data-emoji="'+esc(emoji)+'" aria-label="'+esc(emoji)+' ile tepki ver">'+emoji+'</button>').join('')+
+  (window.PatiDmEmojiPicker?.getQuick?.()||patiDmEmojis.slice(0,6)).map(emoji=>'<button type="button" data-action="dm-react-set" data-id="'+esc(id)+'" data-emoji="'+esc(emoji)+'" aria-label="'+esc(emoji)+' ile tepki ver">'+emoji+'</button>').join('')+
   '<button type="button" class="pati-dm-reaction-more" data-action="dm-react-open" data-id="'+esc(id)+'" aria-label="Diğer tepkiler">＋</button></div>':'';
  const preview=msg.attachment_type==='image'?'📷 Fotoğraf':msg.attachment_type==='audio'?'🎤 Sesli mesaj':msg.attachment_type==='video'?'🎬 Video':String(msg.body||'Mesaj');
  const options=option('dm-reply','Yanıtla','reply')+
