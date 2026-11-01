@@ -6512,7 +6512,7 @@ function postMediaField(mode){
  '<div class="pati-media-edit-entry" id="pati-media-edit-entry" hidden><button type="button" data-action="post-crop-open">🎚 Filtreler ve fotoğraf düzenleme</button><small>Renk filtresi, parlaklık, kontrast ve kırpma</small></div>'+
  '<div class="pati-media-picker-actions"><button type="button" class="pati-media-pick-primary" data-action="pati-media-gallery">▧ Galeriyi aç</button><button type="button" class="pati-media-pick-secondary" data-action="pati-media-camera">◎ '+(reel?'Video çek':'Fotoğraf çek')+'</button>'+(!reel?'<button type="button" class="pati-media-pick-secondary" data-action="pati-media-video">▷ Video seç</button>':'')+'</div>'+
  (reel?'<div class="pati-reels-editor"><label>Video kapak fotoğrafı <input type="file" name="cover_photo" accept="image/*" aria-label="Video kapağı seç"></label><label>Video altyazısı <input name="video_subtitle" maxlength="220" placeholder="Video için altyazı"></label></div>':story?'<div class="pati-reels-editor"><label>Video kapağı (isteğe bağlı) <input type="file" name="cover_photo" accept="image/*" aria-label="Hikâye video kapağı seç"></label></div>':'<div class="pati-reels-editor"><label>Gönderi video kapağı (isteğe bağlı) <input type="file" name="cover_photo" accept="image/*" aria-label="Gönderi video kapağı seç"></label></div>')+
- '<p class="pati-media-help">'+(reel?'MP4, WebM veya MOV · 50 MB altı; büyük klipler uygun cihazlarda sıkıştırılır.':story?'Fotoğraf ya da 50 MB altı video · 24 saatlik hikâye.':'JPG, PNG, HEIC ve desteklenen videolar.')+'</p>'+
+ '<div class="pati-cover-crop-row"><button type="button" data-action="post-crop-open">Kapak görselini kırp · 9:16 / 4:5</button><small>Video kapağı seçtiğinde düzenleyebilirsin.</small></div>'+\n '<p class="pati-media-help">'+(reel?'MP4, WebM veya MOV · 50 MB altı; büyük klipler uygun cihazlarda sıkıştırılır.':story?'Fotoğraf ya da 50 MB altı video · 24 saatlik hikâye.':'JPG, PNG, HEIC ve desteklenen videolar.')+'</p>'+
  '<input type="file" name="photo" accept="image/*,.heic,.heif" '+(!story&&!reel?'multiple':'')+' class="pati-native-input" aria-label="Fotoğraf seç"><input type="file" name="video" accept="video/mp4,video/webm,video/quicktime,.mov"'+(reel?' multiple':!story?' multiple':'')+' class="pati-native-input" aria-label="Video seç"></section>';
 }
 function openComposerMediaPicker(kind){
@@ -6717,7 +6717,7 @@ function patiCropFilterCSS(state){
 }
 function patiCropSize(ratio,img,rotation=0,quality='export'){
  const side=quality==='preview'?540:1080;
- const sizes={'9:16':[side,Math.round(side*16/9)],'4:5':[side,Math.round(side*5/4)],'1:1':[side,side],'1.91:1':[side,Math.round(side/1.91)]};
+ const sizes={'9:16':[side,Math.round(side*16/9)],'4:5':[side,Math.round(side*5/4)],'1:1':[side,side],'1.91:1':[side,Math.round(side*566/1080)]};
  if(sizes[ratio])return sizes[ratio];
  const rotate=rotation%180!==0,rw=rotate?img.naturalHeight:img.naturalWidth,rh=rotate?img.naturalWidth:img.naturalHeight;
  const max=2048,scale=Math.min(1,max/Math.max(rw,rh));
@@ -6786,8 +6786,11 @@ function patiCropPaint(canvas,img,state,quality='export'){
  return {extraX:Math.max(0,extraX),extraY:Math.max(0,extraY)};
 }
 async function patiCropOpen(options={}){
- const form=document.getElementById('post-form'),files=[...(form?.querySelector('input[name="photo"]')?.files||[])];
- if(!files.length)return notify('Kırpmak için bir fotoğraf seç.',true);
+ const form=document.getElementById('post-form');
+ const primary=[...(form?.querySelector('input[name="photo"]')?.files||[])];
+ const cover=form?.querySelector('input[name="cover_photo"]')?.files?.[0];
+ const files=primary.length?primary:cover?.size?[cover]:[];
+ if(!files.length)return notify('Düzenlemek için bir fotoğraf veya video kapağı seç.',true);
  document.getElementById('pati-full-crop-dialog')?.close();
  const popup=document.createElement('dialog');popup.id='pati-full-crop-dialog';popup.className='pati-full-crop-dialog';
  const drafts=new Map(),imageCache=new Map(),urls=[];
