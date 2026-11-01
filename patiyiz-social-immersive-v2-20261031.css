@@ -145,8 +145,8 @@
  border-radius:0!important;box-shadow:none!important;
 }
 #main-content .pati-feed-card .pati-social-actions{
- display:flex!important;justify-content:space-between!important;
- align-items:center!important;gap:2px!important;
+ display:flex!important;justify-content:flex-start!important;
+ align-items:center!important;gap:4px!important;
  margin:0!important;padding:5px clamp(9px,3vw,16px) 2px!important;
  min-height:49px!important;box-sizing:border-box!important;
  border:0!important;background:transparent!important;
