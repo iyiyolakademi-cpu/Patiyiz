@@ -142,7 +142,7 @@ const showSetup=()=>{starter();authRoot.classList.remove('hidden');authRoot.inne
 function showAuth(msg='') {starter();appRoot.classList.add('hidden');authRoot.classList.remove('hidden');let isSign=authMode==='signup',reset=authMode==='reset';authRoot.innerHTML=`<div class="auth-shell"><aside class="auth-story" aria-label="Patiyiz topluluğu"><div class="auth-story-top"><span class="auth-story-icon" aria-label="Patiyiz logosu"><img src="patiyiz-selected-logo.svg?v=20261024-new-p-logo-1" alt="Patiyiz logosu"></span><strong>patiyiz</strong><span class="auth-story-topline">BİRLİKTE DAHA GÜZEL</span></div><div class="auth-story-bottom"><span class="auth-story-label"><span class="auth-story-dot"></span> HAYVANSEVERLERİN DÜNYASI</span><h2>Onların hikâyesi,<br><em>bizim dünyamız.</em></h2><p>Patili dostlarınla anılarını paylaş, yeni arkadaşlıklar kur ve merak ettiklerini keşfet.</p></div></aside><div class="auth-pane"><div class="auth-card"><div class="auth-brand"><div class="brand-icon auth-matching-logo" aria-label="Patiyiz logosu"><img class="patiyiz-chosen-logo" src="patiyiz-selected-logo.svg?v=20261024-new-p-logo-1" alt="Patiyiz"></div><div><h1>patiyiz</h1><p>Hayvanseverlerin buluşma noktası</p></div></div>${reset?'':`<div class="auth-tabs"><button data-auth="login" class="${authMode==='login'?'active':''}">Giriş yap</button><button data-auth="signup" class="${isSign?'active':''}">Kayıt ol</button></div>`}<div class="auth-eyebrow">🐾 PATİYİZ'E HOŞ GELDİN</div><h2>${reset?'Şifreni yenileyelim':isSign?'Aramıza katıl':'Yeniden merhaba!'}</h2><p class="auth-sub">${reset?'E-posta adresini yaz, sana şifre yenileme bağlantısı gönderelim.':isSign?'Patili dostunla yeni bir dünyaya adım at. Üyelik ücretsiz.':'Patili dostların ve güzel hikâyeler burada seni bekliyor.'}</p>${msg?`<div class="pati-note">${esc(msg)}</div>`:''}<form id="auth-form">${isSign?`<div class="pati-auth-name-fields"><div class="pati-field"><label for="pati-first-name">Adın</label><input id="pati-first-name" name="first_name" type="text" required minlength="2" maxlength="45" autocomplete="given-name" autocapitalize="words" placeholder="Adın"></div><div class="pati-field"><label for="pati-last-name">Soyadın</label><input id="pati-last-name" name="last_name" type="text" required minlength="2" maxlength="45" autocomplete="family-name" autocapitalize="words" placeholder="Soyadın"></div></div>`:''}<div class="pati-field"><label for="email">E-posta</label><input id="email" name="email" type="email" inputmode="email" autocapitalize="none" spellcheck="false" required autocomplete="email" placeholder="ornek@eposta.com"></div>${reset?'':`<div class="pati-field"><label for="password">Şifre</label><span class="pati-auth-password-field"><input id="password" name="password" type="password" required minlength="6" autocomplete="${isSign?'new-password':'current-password'}" placeholder="${isSign?'Şifreni oluştur':'Şifreni gir'}"><button type="button" class="pati-auth-eye" data-auth-toggle-password aria-label="Şifreyi göster" aria-pressed="false">${ico('eye')}</button></span></div>`}<span class="pati-auth-terms">${isSign?'<label><input name="age_accepted" type="checkbox" value="yes" required> 18 yaşını doldurduğumu onaylıyorum.</label><label><input name="terms_accepted" type="checkbox" value="yes" required> <a href="terms.html" target="_blank" rel="noopener">Kullanım Şartlarını</a> kabul ediyorum.</label><span class="pati-auth-data-notice">Kişisel verilerinin nasıl işlendiğine ilişkin <a href="privacy.html" target="_blank" rel="noopener">Gizlilik Politikası ve veri işleme bilgilerini</a> inceleyebilirsin.</span>':'<a href="privacy.html" target="_blank" rel="noopener">Gizlilik Politikası</a> · <a href="terms.html" target="_blank" rel="noopener">Kullanım Şartları</a>'}</span><button class="primary-btn auth-submit" type="submit"><span>${reset?'Sıfırlama bağlantısı gönder':isSign?'Ücretsiz hesap oluştur':'Giriş yap'}</span><span aria-hidden="true">→</span></button></form><div class="auth-bottom"><button class="btn-link" data-auth="${reset?'login':'reset'}">${reset?'← Girişe dön':'Şifremi unuttum'}</button></div><p class="small-note"><span aria-hidden="true">🔒</span> E-posta doğrulama ve güvenli giriş. Gelen kutunu, gerekirse spam klasörünü kontrol et.</p></div></div></div>`}
 async function checkAdmin(){if(!me||!sb){isAdmin=false;return}try{const {data,error}=await sb.rpc('patiyiz_is_admin');isAdmin=!error&&data===true}catch(e){isAdmin=false}if(!appRoot.classList.contains('hidden')){navRender();if(view==='settings')render()}}
 /* Daily login streak: the database decides today's calendar date in Europe/Istanbul.
-   No client-generated visit dates and no PatiCoin balance updates. */
+   No client-generated visit dates and no Puan balance updates. */
 function patiStreakToday(){
  return new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Istanbul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
 }
@@ -234,7 +234,7 @@ async function patiStreakClaim(target){
   if(view==='streaks')render();
   if(coins>0){
    patiCoinAnimation(coins,['Seri ödülün toplandı']);
-   notify('+'+coins+' PatiCoin hesabına eklendi.');
+   notify('+'+coins+' Puan hesabına eklendi.');
   }else notify('Bu seri ödülü daha önce toplandı.');
   void patiCoinSync(false);
   void patiStreakGoalLoad();
@@ -290,7 +290,7 @@ function patiStreaksPage(){
   const disabled=!patiStreakGoalState.ready||patiStreakGoalState.loading||patiStreakClaimBusy||won||(!selected&&days>=item.days);
   return '<article class="pati-streak-goal-card '+(selected?'is-selected ':'')+(won?'is-earned':'')+'">'+
    '<div class="pati-streak-goal-top"><span class="pati-streak-goal-days">'+item.days+' <small>gün</small></span>'+
-   '<span class="pati-streak-goal-coins">+'+item.coins+' <img class="pati-coin-icon" src="pati-coin.svg?v=20261025-brand-1" alt="PatiCoin"></span></div>'+
+   '<span class="pati-streak-goal-coins">+'+item.coins+' </span></div>'+
    '<strong>'+esc(item.name)+'</strong><small>'+esc(item.desc)+'</small>'+
    '<div class="pati-streak-progress"><span style="width:'+pct+'%"></span></div>'+
    '<div class="pati-streak-goal-footer"><span>'+
@@ -303,18 +303,18 @@ function patiStreaksPage(){
  const cashState={pending:'200 TL nakit talebin incelemede',approved:'200 TL nakit talebin onaylandı',paid:'200 TL nakit ödendi',rejected:'200 TL nakit talebin reddedildi'};
  const bonus60='<section class="pati-streak-sixty" aria-label="60 günlük özel ödül">'+
   '<span class="pati-streak-sixty-kicker">60 GÜNLÜK ÖZEL ÖDÜL</span><h2>60 gün üst üste giriş</h2>'+
-  '<p><strong>100 PatiCoin</strong> · Mama ve ürün talepleri için</p>'+
+  '<p><strong>100 Puan</strong> · Mama ve ürün talepleri için</p>'+
   '<p>🎁 <strong>200 TL nakit ödül talebi</strong> · Ödeme öncesi inceleme gerekir</p>'+
   '<div class="pati-streak-progress"><span style="width:'+Math.min(100,days/60*100)+'%"></span></div>'+
-  '<small>'+Math.min(60,days)+' / 60 gün · PatiCoin nakde çevrilemez.</small>'+
-  (s60?.claimed?'<strong class="pati-streak-sixty-status">✓ 100 PatiCoin kazanıldı · '+esc(cashState[s60.cash_status]||'Nakit talebi oluşturuldu')+'</strong>':
+  '<small>'+Math.min(60,days)+' / 60 gün · Puan nakde çevrilemez.</small>'+
+  (s60?.claimed?'<strong class="pati-streak-sixty-status">✓ 100 Puan kazanıldı · '+esc(cashState[s60.cash_status]||'Nakit talebi oluşturuldu')+'</strong>':
     '<button type="button" data-action="pati-streak-60-claim" '+(!eligible60||s60?.loading||!s60?.ready?'disabled':'')+'>'+(eligible60?'Ödülünü al ve nakit talebi oluştur':Math.max(0,60-days)+' gün kaldı')+'</button>')+
   (s60?.error?'<p role="status">'+esc(s60.error)+'</p>':'')+'</section>';
  const label=patiStreakGoalState.loading&&!patiStreakGoalState.ready?'Hedeflerin yükleniyor…':
    patiStreakGoalState.error||'Serini tamamladığında Puanı topla butonuyla ödülünü hesabına ekle.';
  const retry=patiStreakGoalState.error?'<button type="button" class="pati-streaks-retry" data-action="pati-streak-refresh">Yeniden dene</button>':'';
  main.innerHTML='<div class="pati-streaks-page">'+
-   '<header class="pati-streaks-top"><button type="button" class="pati-streaks-back" data-action="pati-streak-back" aria-label="Önceki sayfaya dön">←</button><div class="pati-streak-title"><span class="pati-streak-kicker">PATİYİZ · GÜNLÜK SERİ</span><h1>Seriler</h1><p>Her gün bir pati izi, yeni bir başarı.</p></div></header>'+
+   '<header class="pati-streaks-top"><button type="button" class="pati-streaks-back" data-action="pati-streak-back" aria-label="Önceki sayfaya dön">←</button><div class="pati-streak-title"><span class="pati-streak-kicker">GÜNLÜK SERİLER</span><h1>Serilerim</h1><p>Her gün giriş yap, hedeflerini tamamla, puan kazan.</p></div></header>'+
    (window.PatiyizDelight?.streakPanel({count:days,best},patiStreakToday())||'')+
    patiWeeklyBoard()+
    '<section class="pati-streak-goal-section"><div class="pati-streak-goals-header"><h2>Seri hedefini belirle</h2><p>'+esc(label)+'</p>'+(goal?'<div class="pati-streak-goal-current"><span aria-hidden="true"></span>Aktif hedef: '+goal+' gün</div>':'')+'</div>'+
@@ -504,7 +504,7 @@ function navRender(){
   document.querySelectorAll?.('#pati-header-share, .pati-desktop-action-button.primary[data-action="pati-create-open"]')?.forEach(el=>{el.hidden=!shareAllowed;el.style.display=shareAllowed?'':'none';});
   if(document.documentElement?.dataset)document.documentElement.dataset.patiView=view;
  }
- const counts=unreadCounts();const coinHeader=$('#pati-header-coins'),desktopCoin=$('#pati-desktop-coins');for(const counter of [coinHeader,desktopCoin])if(counter){counter.innerHTML='<span aria-hidden="true"><img class="pati-coin-icon" src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true"></span><strong>'+Number(patiCoinState.balance||0).toLocaleString('tr-TR')+'</strong>';counter.setAttribute('aria-label',Number(patiCoinState.balance||0)+' PatiCoin · görevleri aç')}const profileBalance=$('#pati-profile-balance');if(profileBalance)profileBalance.textContent=Number(patiCoinState.balance||0).toLocaleString('tr-TR');const topMessages=$('#pati-header-messages');if(topMessages){topMessages.innerHTML=ico('message')+countBadge(counts.messages);topMessages.classList.toggle('active',view==='messages');topMessages.setAttribute('aria-label',counts.messages?'Mesajlar, '+counts.messages+' okunmamış mesaj':'Mesajlar')}const topBell=$('#pati-header-notifications');if(topBell){topBell.innerHTML=ico('bell')+countBadge(counts.notifications);topBell.classList.toggle('active',view==='notifications');topBell.setAttribute?.('aria-label',counts.notifications?'Bildirimler, '+counts.notifications+' okunmamış bildirim':'Bildirimler')}let navItem=([id,label,icon])=>`<button type="button" class="nav-link ${view===id?'active':''}" data-view="${id}" aria-current="${view===id?'page':'false'}" aria-label="${label}${id==='messages'&&counts.messages?', '+counts.messages+' okunmamış mesaj':id==='notifications'&&counts.notifications?', '+counts.notifications+' okunmamış bildirim':''}">${ico(icon)}${label}${id==='messages'?countBadge(counts.messages):id==='notifications'?countBadge(counts.notifications):''}</button>`;$('#desktop-nav').innerHTML=nav.map(navItem).join('')+(isAdmin?`<button class="nav-link patiyiz-admin-nav" type="button" data-action="open-admin">${ico('shield')}Yönetim Paneli</button>`:'');$('#mobile-nav').innerHTML=[['home','Akış','home'],['explore','Keşfet','search']].map(([id,label,icon])=>`<button type="button" class="mobile-nav-btn ${view===id?'active':''}" data-view="${id}" aria-label="${label}" aria-current="${view===id?'page':'false'}"><span class="pati-mobile-nav-glyph">${ico(icon)}</span><small>${label}</small></button>`).join('')+`<button type="button" class="mobile-nav-btn pati-messages-nav ${view==='messages'?'active':''}" data-view="messages" aria-label="Mesajlar${counts.messages?', '+counts.messages+' okunmamış mesaj':''}" aria-current="${view==='messages'?'page':'false'}"><span class="pati-mobile-nav-glyph">${ico('message')}${countBadge(counts.messages)}</span><small>Mesajlar</small></button>`+[['reels','Reels','reels-tab'],['profile','Profil','user']].map(([id,label,icon])=>`<button type="button" class="mobile-nav-btn ${view===id?'active':''}" data-view="${id}" aria-label="${label}" aria-current="${view===id?'page':'false'}"><span class="pati-mobile-nav-glyph">${ico(icon)}</span><small>${label}</small></button>`).join('')
+ const counts=unreadCounts();const coinHeader=$('#pati-header-coins'),desktopCoin=$('#pati-desktop-coins');for(const counter of [coinHeader,desktopCoin])if(counter){counter.innerHTML='<span class="pati-balance-title">Bakiyen</span><strong>'+Number(patiCoinState.balance||0).toLocaleString('tr-TR')+'</strong>';counter.setAttribute('aria-label','Bakiyen: '+Number(patiCoinState.balance||0)+' puan. Ödülleri aç')}const profileBalance=$('#pati-profile-balance');if(profileBalance)profileBalance.textContent=Number(patiCoinState.balance||0).toLocaleString('tr-TR');const topMessages=$('#pati-header-messages');if(topMessages){topMessages.innerHTML=ico('message')+countBadge(counts.messages);topMessages.classList.toggle('active',view==='messages');topMessages.setAttribute('aria-label',counts.messages?'Mesajlar, '+counts.messages+' okunmamış mesaj':'Mesajlar')}const topBell=$('#pati-header-notifications');if(topBell){topBell.innerHTML=ico('bell')+countBadge(counts.notifications);topBell.classList.toggle('active',view==='notifications');topBell.setAttribute?.('aria-label',counts.notifications?'Bildirimler, '+counts.notifications+' okunmamış bildirim':'Bildirimler')}let navItem=([id,label,icon])=>`<button type="button" class="nav-link ${view===id?'active':''}" data-view="${id}" aria-current="${view===id?'page':'false'}" aria-label="${label}${id==='messages'&&counts.messages?', '+counts.messages+' okunmamış mesaj':id==='notifications'&&counts.notifications?', '+counts.notifications+' okunmamış bildirim':''}">${ico(icon)}${label}${id==='messages'?countBadge(counts.messages):id==='notifications'?countBadge(counts.notifications):''}</button>`;$('#desktop-nav').innerHTML=nav.map(navItem).join('')+(isAdmin?`<button class="nav-link patiyiz-admin-nav" type="button" data-action="open-admin">${ico('shield')}Yönetim Paneli</button>`:'');$('#mobile-nav').innerHTML=[['home','Akış','home'],['explore','Keşfet','search']].map(([id,label,icon])=>`<button type="button" class="mobile-nav-btn ${view===id?'active':''}" data-view="${id}" aria-label="${label}" aria-current="${view===id?'page':'false'}"><span class="pati-mobile-nav-glyph">${ico(icon)}</span><small>${label}</small></button>`).join('')+`<button type="button" class="mobile-nav-btn pati-messages-nav ${view==='messages'?'active':''}" data-view="messages" aria-label="Mesajlar${counts.messages?', '+counts.messages+' okunmamış mesaj':''}" aria-current="${view==='messages'?'page':'false'}"><span class="pati-mobile-nav-glyph">${ico('message')}${countBadge(counts.messages)}</span><small>Mesajlar</small></button>`+[['reels','Reels','reels-tab'],['profile','Profil','user']].map(([id,label,icon])=>`<button type="button" class="mobile-nav-btn ${view===id?'active':''}" data-view="${id}" aria-label="${label}" aria-current="${view===id?'page':'false'}"><span class="pati-mobile-nav-glyph">${ico(icon)}</span><small>${label}</small></button>`).join('')
 }
 function patiMenuNotificationsHTML(){
  const list=notificationVisible().slice(0,1),total=notificationVisible().length;
@@ -552,7 +552,7 @@ function openMobileFeaturesMenu(){
   {title:'Topluluk',tone:'purple',items:[['community','Soru & Cevap','users']]},
    {title:'101 Eğitim Serileri',tone:'blue',items:[['education','10 seri · Her biri 101 ders','library']]},
   {title:'Hayvanım',tone:'green',items:[['my-pet','Hayvanım Merkezi · Tüm seçenekler','heart']]},
-  {title:'PatiCoin ve koleksiyonum',tone:'orange',items:[['rewards','PatiCoin Merkezi','grid'],['streaks','Günlük Seriler','calendar'],['shop','Pati Mağaza','grid'],['saved-posts','Kaydettiğim gönderiler','bookmark']]},
+  {title:'Puanlarım ve ödüllerim',tone:'orange',items:[['rewards','Puan ve Görevler','grid'],['streaks','Günlük Seriler','calendar'],['shop','Ödül Mağazası','grid'],['saved-posts','Kaydettiğim gönderiler','bookmark']]},
   {title:'Hesabım',tone:'blue',items:[['settings','Ayarlar ve gizlilik','settings'],['blocked','Engellediğim kişiler','shield']]}
  ];
  const sections=groups.map(group=>'<section class="pati-feature-group pati-menu-tone-'+group.tone+'"><h3>'+esc(group.title)+'</h3><div class="pati-mobile-menu-list">'+
@@ -649,13 +649,13 @@ async function patiCoinSync(withAnimation=false){
   navRender();if(['rewards','shop'].includes(view))render();
   const newly=(claimed.data?.awarded||[]);
   if(withAnimation&&newly.length)patiCoinAnimation(newly.reduce((n,x)=>n+x.coins,0),newly.map(x=>x.title));
- }catch(e){console.warn('PatiCoin yüklenemedi:',e);if(withAnimation)notify('PatiCoin yüklenemedi: '+friendly(e),true)}
+ }catch(e){console.warn('Puan yüklenemedi:',e);if(withAnimation)notify('Puan yüklenemedi: '+friendly(e),true)}
  finally{patiCoinState.loading=false}
 }
 function patiCoinAnimation(amount,titles){
  // Replaces the old blocking paticoin-celebration; only after Supabase confirmed a reward.
  if(window.PatiyizMotion?.coin)window.PatiyizMotion.coin(amount,titles);
- else notify('+'+Number(amount)+' PatiCoin kazandın!');
+ else notify('+'+Number(amount)+' Puan kazandın!');
 }
 function patiCoinMissionKey(code,group){
  if(group!=='daily'&&group!=='weekly')return code;
@@ -672,7 +672,7 @@ function patiRewardsPage(){
   const rows=tasks.map(([code,title,coins,info,period])=>{
    const key=patiCoinMissionKey(code,period||'once');
    const claimed=done.has(key);
-   return '<article class="paticoin-task '+(claimed?'pati-mission-claimed':'')+'"><div class="paticoin-task-icon">'+(claimed?'✓':'🐾')+'</div><div><strong>'+esc(title)+'</strong><small>'+esc(info)+'</small></div><b class="'+(claimed?'earned':'')+'">'+(claimed?'✓ Tamamlandı':'+'+coins+' <img class="pati-coin-icon" src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true">')+'</b></article>';
+   return '<article class="paticoin-task '+(claimed?'pati-mission-claimed':'')+'"><div class="paticoin-task-icon">'+(claimed?'✓':'🐾')+'</div><div><strong>'+esc(title)+'</strong><small>'+esc(info)+'</small></div><b class="'+(claimed?'earned':'')+'">'+(claimed?'✓ Tamamlandı':'+'+coins+' ')+'</b></article>';
   });
   const visible=completed?rows.length:(group==='once'?5:group==='daily'?3:2);
   return '<div class="paticoin-tasks">'+rows.slice(0,visible).join('')+(rows.length>visible?'<details class="pati-missions-more"><summary>Diğer '+(rows.length-visible)+' görevi göster</summary><div class="pati-missions-more-list">'+rows.slice(visible).join('')+'</div></details>':'')+'</div>';
@@ -683,11 +683,11 @@ function patiRewardsPage(){
  const earnedWeekCoins=patiCoinTasks.filter(t=>(t[4]||'once')==='weekly'&&done.has(patiCoinMissionKey(t[0],'weekly'))).reduce((sum,t)=>sum+Number(t[2]||0),0);
  const spentCoins=patiCoinState.orders.filter(o=>o.status!=='cancelled').reduce((sum,o)=>sum+Number(o.coins_spent||0),0);
  const waitingOrders=patiCoinState.orders.filter(o=>['pending','approved','preparing'].includes(o.status)).length;
- const usedSummary='<section class="pati-coin-spent-overview" aria-label="PatiCoin kullanım özeti"><div><strong>'+spentCoins.toLocaleString('tr-TR')+'</strong><span>Ödüllere kullanılan coin</span></div><div><strong>'+waitingOrders+'</strong><span>İşlemdeki ödül talebi</span></div><button type="button" data-action="paticoin-shop">Talep geçmişimi gör →</button></section>';
- const missionStatus='<div class="pati-mission-progress" aria-label="Görev ilerlemesi"><div><strong>Bugünkü görevlerin</strong><span>'+earnedToday+' / 5 tamamlandı · +'+earnedTodayCoins+' PatiCoin</span><progress value="'+earnedToday+'" max="5"></progress></div><div><strong>Haftalık görevlerin</strong><span>'+earnedWeek+' / 4 tamamlandı · +'+earnedWeekCoins+' PatiCoin</span><progress value="'+earnedWeek+'" max="4"></progress></div></div>';
+ const usedSummary='<section class="pati-coin-spent-overview" aria-label="Puan kullanım özeti"><div><strong>'+spentCoins.toLocaleString('tr-TR')+'</strong><span>Ödüllere kullanılan coin</span></div><div><strong>'+waitingOrders+'</strong><span>İşlemdeki ödül talebi</span></div><button type="button" data-action="paticoin-shop">Talep geçmişimi gör →</button></section>';
+ const missionStatus='<div class="pati-mission-progress" aria-label="Görev ilerlemesi"><div><strong>Bugünkü görevlerin</strong><span>'+earnedToday+' / 5 tamamlandı · +'+earnedTodayCoins+' Puan</span><progress value="'+earnedToday+'" max="5"></progress></div><div><strong>Haftalık görevlerin</strong><span>'+earnedWeek+' / 4 tamamlandı · +'+earnedWeekCoins+' Puan</span><progress value="'+earnedWeek+'" max="4"></progress></div></div>';
  const milestones=window.PatiyizFollowerMilestones?.renderPanel(patiFollowerRewardState.followers,patiFollowerRewardState.claimed,patiFollowerRewardState.cash)||'';
- const invite='<section class="paticoin-invite"><h2>🎁 Arkadaşını davet et</h2><p>Sen ve davet ettiğin kişi <b>50’şer PatiCoin</b> kazanırsınız. Her hesap yalnızca bir davet kodu kullanabilir.</p><div class="paticoin-invite-code"><strong>'+esc(patiInviteState.code||'Kod hazırlanıyor…')+'</strong><button data-action="paticoin-invite-share">Paylaş</button></div><small>Davet ettiğin kişi: '+(patiInviteState.invited_count||0)+'</small>'+(patiInviteState.already_used?'<p>✓ Davet kodu kullanma hakkını tamamladın.</p>':'<label class="paticoin-invite-entry">Arkadaşının kodu<input id="pati-invite-code" maxlength="9" autocomplete="off" placeholder="P1234ABCD"></label><button class="paticoin-invite-redeem" data-action="paticoin-invite-redeem">Kodu kullan · +50 <img class="pati-coin-icon" src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true"></button>')+'</section>';
- main.innerHTML='<section class="paticoin-page"><div class="paticoin-hero"><span>🐾 PATİYİZ GÖREV MERKEZİ</span><h1>PatiCoin</h1><strong><img class="pati-coin-icon" src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true"> '+Number(patiCoinState.balance).toLocaleString('tr-TR')+' <small>PatiCoin</small></strong><p>Toplam kazanılan: '+Number(patiCoinState.earned).toLocaleString('tr-TR')+' coin</p><div class="paticoin-actions"><button data-action="paticoin-claim">Görevlerimi kontrol et</button><button data-action="paticoin-shop">Pati Mağaza →</button></div></div>'+
+ const invite='<section class="paticoin-invite"><h2>🎁 Arkadaşını davet et</h2><p>Sen ve davet ettiğin kişi <b>50’şer Puan</b> kazanırsınız. Her hesap yalnızca bir davet kodu kullanabilir.</p><div class="paticoin-invite-code"><strong>'+esc(patiInviteState.code||'Kod hazırlanıyor…')+'</strong><button data-action="paticoin-invite-share">Paylaş</button></div><small>Davet ettiğin kişi: '+(patiInviteState.invited_count||0)+'</small>'+(patiInviteState.already_used?'<p>✓ Davet kodu kullanma hakkını tamamladın.</p>':'<label class="paticoin-invite-entry">Arkadaşının kodu<input id="pati-invite-code" maxlength="9" autocomplete="off" placeholder="P1234ABCD"></label><button class="paticoin-invite-redeem" data-action="paticoin-invite-redeem">Kodu kullan · +50 </button>')+'</section>';
+ main.innerHTML='<section class="paticoin-page"><div class="paticoin-hero"><span>GÖREV VE ÖDÜL MERKEZİ</span><h1>Puanlarım</h1><strong> '+Number(patiCoinState.balance).toLocaleString('tr-TR')+' <small>Puan</small></strong><p>Toplam kazanılan: '+Number(patiCoinState.earned).toLocaleString('tr-TR')+' coin</p><div class="paticoin-actions"><button data-action="paticoin-claim">Görevlerimi kontrol et</button><button data-action="paticoin-shop">Ödül Mağazası →</button></div></div>'+
  missionStatus+patiWeeklyBoard()+(milestones?'<details class="pati-follower-more"><summary>🏅 Takipçi hedeflerim</summary>'+milestones+'</details>':'')+'<div class="paticoin-mission-heading"><div><h2>🎯 Tek Seferlik Görevler</h2><p>Her hesapta yalnız bir kez puan kazandırır.</p></div><span>'+patiCoinTasks.filter(x=>!x[4]).length+' görev</span></div>'+missionList('once')+
  usedSummary+'<div class="paticoin-mission-heading"><div><h2>☀️ Günlük Görevler</h2><p>Her yeni gün yeniden yapılabilir. Aynı görevden günde bir kez puan kazanılır.</p></div><span>5 görev</span></div>'+missionList('daily')+
  '<div class="paticoin-mission-heading"><div><h2>🗓️ Haftalık Görevler</h2><p>Her pazartesi yeniden başlar. Aynı görevden haftada en fazla bir kez puan kazanılır.</p></div><span>4 görev</span></div>'+missionList('weekly')+
@@ -697,18 +697,18 @@ function patiRewardsPage(){
 let patiShopFilter='all';
 function patiShopPage(){
  const activeFilter=typeof patiShopFilter==='string'?patiShopFilter:'all';
- const label={pending:'Talep alındı · Beklemede',approved:'Onaylandı · Stok ayrıldı',preparing:'Hazırlanıyor',fulfilled:'Teslim/bağış tamamlandı',cancelled:'İptal edildi · PatiCoin iade edildi'};
- const coin='<img class="pati-coin-icon" src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true">';
+ const label={pending:'Talep alındı · Beklemede',approved:'Onaylandı · Stok ayrıldı',preparing:'Hazırlanıyor',fulfilled:'Teslim/bağış tamamlandı',cancelled:'İptal edildi · Puan iade edildi'};
+ const coin='';
  const filters=[['all','Tümü'],['food','Mama & Destek'],['supply','Ürünler'],['donation','Doğa bağışı']];
  const shown=patiCoinState.items.filter(p=>activeFilter==='all'||p.kind===activeFilter);
  const cards=shown.map(p=>{
   const donation=p.kind==='donation',stock=Math.max(0,Number(p.stock_available)||0),soldOut=stock===0,affordable=Number(patiCoinState.balance)>=Number(p.coins);
   const pending=patiCoinState.orders.some(o=>o.item_id===p.id&&['pending','approved','preparing'].includes(o.status));
-  const stateText=pending?'Talebin beklemede':soldOut?'Stokta yok':!affordable?'Yetersiz PatiCoin':'Stok: '+stock+' adet';
-  const actionText=pending?'Talep beklemede':soldOut?'Stokta yok':!affordable?'PatiCoin kazan':'Talep oluştur';
+  const stateText=pending?'Talebin beklemede':soldOut?'Stokta yok':!affordable?'Yetersiz Puan':'Stok: '+stock+' adet';
+  const actionText=pending?'Talep beklemede':soldOut?'Stokta yok':!affordable?'Puan kazan':'Talep oluştur';
   return '<article class="paticoin-item pati-shop-card '+(donation?'pati-shop-tree':'')+'"><div class="pati-shop-card-top"><span class="paticoin-item-icon" aria-hidden="true">'+esc(p.emoji)+'</span><span class="pati-shop-type">'+(donation?'Doğa için':p.kind==='food'?'Destek':'Ürün')+'</span></div>'+
    '<div class="pati-shop-card-copy"><h3>'+esc(p.name)+'</h3><p>'+esc(p.description)+'</p></div>'+
-   '<span class="pati-shop-stock-state '+(pending?'is-pending':soldOut?'is-out':!affordable?'is-low':'is-available')+'" role="status">'+stateText+'</span><div class="pati-shop-card-bottom"><strong>'+coin+Number(p.coins).toLocaleString('tr-TR')+' <small>PatiCoin</small></strong><button type="button" '+(soldOut||pending?'disabled aria-disabled="true"':'')+' data-action="'+(!affordable?'paticoin-rewards':'paticoin-buy')+'" data-id="'+esc(p.id)+'">'+actionText+'</button></div></article>';
+   '<span class="pati-shop-stock-state '+(pending?'is-pending':soldOut?'is-out':!affordable?'is-low':'is-available')+'" role="status">'+stateText+'</span><div class="pati-shop-card-bottom"><strong>'+coin+Number(p.coins).toLocaleString('tr-TR')+' <small>Puan</small></strong><button type="button" '+(soldOut||pending?'disabled aria-disabled="true"':'')+' data-action="'+(!affordable?'paticoin-rewards':'paticoin-buy')+'" data-id="'+esc(p.id)+'">'+actionText+'</button></div></article>';
  }).join('');
  const orders=patiCoinState.orders.map(o=>{
   const events=patiCoinState.history.filter(e=>e.redemption_id===o.id),note=o.admin_note?'<p class="paticoin-order-note">Bilgi: '+esc(o.admin_note)+'</p>':'';
@@ -717,7 +717,7 @@ function patiShopPage(){
   const destination=o.destination==='environment'?'🌱 Doğa için':o.destination==='street_animals'?'Sokak hayvanları için':'Kendi hayvanım için';
   return '<article class="paticoin-order"><b>'+esc(patiCoinState.items.find(p=>p.id===o.item_id)?.name||'Ürün')+'</b><span>'+destination+' · '+coin+Number(o.coins_spent).toLocaleString('tr-TR')+'</span><strong class="paticoin-order-status paticoin-order-'+esc(o.status)+'">'+esc(label[o.status]||'Beklemede')+'</strong>'+note+proof+timeline+'</article>';
  }).join('');
- main.innerHTML='<section class="paticoin-page pati-shop-v2 p4-shop"><header class="pati-shop-hero"><div><span class="pati-shop-eyebrow">PATIYIZ · ÖDÜL MAĞAZASI</span><h1>Pati Mağaza</h1><p>Ödüller için talep oluştur. Stok, onay ve teslimat durumunu talep geçmişinden takip et.</p></div><button class="pati-shop-wallet" type="button" data-action="paticoin-rewards"><span>BAKİYEN</span><strong>'+coin+Number(patiCoinState.balance||0).toLocaleString('tr-TR')+'</strong><small>Görevleri gör →</small></button></header>'+
+ main.innerHTML='<section class="paticoin-page pati-shop-v2 p4-shop"><header class="pati-shop-hero"><div><span class="pati-shop-eyebrow">PATIYIZ · ÖDÜL MAĞAZASI</span><h1>Ödül Mağazası</h1><p>Ödüller için talep oluştur. Stok, onay ve teslimat durumunu talep geçmişinden takip et.</p></div><button class="pati-shop-wallet" type="button" data-action="paticoin-rewards"><span>BAKİYEN</span><strong>'+coin+Number(patiCoinState.balance||0).toLocaleString('tr-TR')+'</strong><small>Görevleri gör →</small></button></header>'+
   '<div class="pati-shop-section-title"><div><span>ÖDÜL KOLEKSİYONU</span><h2>Bir iyilik seç</h2></div><small>'+patiCoinState.items.length+' seçenek</small></div>'+
   '<div class="pati-shop-filter" role="group" aria-label="Mağaza kategorileri">'+filters.map(([key,name])=>'<button type="button" data-action="paticoin-shop-filter" data-id="'+key+'" aria-pressed="'+(activeFilter===key)+'" class="'+(activeFilter===key?'active':'')+'">'+name+'</button>').join('')+'</div>'+
   '<div class="paticoin-items">'+(cards||'<p class="pati-shop-empty">Bu kategoride henüz ürün bulunmuyor.</p>')+'</div>'+
@@ -729,17 +729,17 @@ function patiCoinShowCheckout(id){
  if(!product)return notify('Ürün artık mevcut değil.',true);
  if(Number(product.stock_available)<=0)return notify('Bu ürün şu an stokta yok. Yeniden stok eklenmesini bekle.',true);
  if(patiCoinState.orders.some(o=>o.item_id===product.id&&['pending','approved','preparing'].includes(o.status)))return notify('Bu ürün için bekleyen bir talebin var. Talep geçmişini kontrol et.',true);
- if(patiCoinState.balance<product.coins)return notify('Yetersiz PatiCoin. Önce görevlerini tamamla.',true);
+ if(patiCoinState.balance<product.coins)return notify('Yetersiz Puan. Önce görevlerini tamamla.',true);
  patiCoinCheckoutItem=product.id;
  const pets=data.pets.filter(p=>p.owner_id===me.id),donation=product.kind==='donation';
- const coin='<img class="pati-coin-icon" src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true">';
+ const coin='';
  const destination=donation?
   '<div class="pati-shop-tree-destination"><label><input type="radio" name="paticoin-destination" value="environment" checked> 🌱 Doğa için 1 fidan</label><p>Talep gönderildiğinde coin bakiyenden düşer. Fidan dikimi ancak yönetici onayı ve bağış kanıtı sonrası tamamlandı sayılır.</p></div>':
   '<h3>Ürünü kimin için alıyorsun?</h3><label><input type="radio" name="paticoin-destination" value="own_pet" '+(pets.length?'checked':'disabled')+'> 🐶 Kendi hayvanım için</label><label><input type="radio" name="paticoin-destination" value="street_animals" '+(!pets.length?'checked':'')+'> 🐾 Sokak hayvanları için</label>'+
   '<div class="paticoin-pet-selector"><label for="paticoin-pet-id">Hayvanını seç</label><select id="paticoin-pet-id">'+pets.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('')+'</select></div>';
  const content='<div class="paticoin-checkout"><div class="paticoin-checkout-item">'+esc(product.emoji)+' <b>'+esc(product.name)+'</b><span>'+coin+product.coins+'</span></div>'+destination+
   '<p class="paticoin-disclaimer">Onayladığında talebin beklemeye alınır. Anında bağış veya teslimat gerçekleşmiş sayılmaz.</p><button type="button" class="paticoin-confirm" data-action="paticoin-confirm">'+coin+product.coins+' coin kullan · Talep oluştur</button></div>';
- modal('PatiCoin ile al',content,'paticoin-checkout-form');
+ modal('Puan ile al',content,'paticoin-checkout-form');
  const form=document.getElementById('paticoin-checkout-form');form.querySelector('.modal-footer')?.remove();
  const sync=()=>{const chosen=form.querySelector('input[name="paticoin-destination"]:checked')?.value;const selector=form.querySelector('.paticoin-pet-selector');if(selector)selector.hidden=chosen!=='own_pet'};
  form.querySelectorAll('input[name="paticoin-destination"]').forEach(input=>input.addEventListener('change',sync));sync();
@@ -2993,7 +2993,7 @@ function patiMyPetCenterPage(){
    ['knowledge','Bilgi Merkezi','book','aqua','📖','view'],
    ['lost','Kayıp İlanları','lost','coral','🔎','view'],
    ['adoption','Sahiplendirme','adopt','rose','🐾','view'],
-   ['shop','Pati Mağaza','gift','amber','🎁','view']
+   ['shop','Ödül Mağazası','gift','amber','🎁','view']
   ];
   const tile=(item)=>'<button type="button" class="p4-hub-tile p4-'+item[3]+'" '+(item[5]==='tab'?'data-action="pati-my-pet-tab" data-id="'+item[0]+'"':'data-view="'+item[0]+'"')+'><span class="p4-tile-ico" aria-hidden="true">'+item[4]+'</span><strong>'+item[1]+'</strong></button>';
   const petsBar='<div class="p4-pet-picker" role="group" aria-label="Kayıtlı hayvanlarım">'+pets.map(p=>'<button type="button" data-action="pati-hub-select-pet" data-id="'+esc(p.id)+'" class="p4-pet-thumb '+(featured?.id===p.id?'active':'')+'" aria-pressed="'+(featured?.id===p.id?'true':'false')+'">'+photo(p)+'<span>'+esc(p.name||'Dostum')+'</span></button>').join('')+'<button type="button" class="p4-pet-thumb" data-action="pet-add"><span class="p4-pet-add">+</span><span>Ekle</span></button></div>';
@@ -3433,7 +3433,7 @@ function patiWeeklyBoard(){
     '<span class="pati-weekly-handle">@'+esc(p.handle||'patiyiz')+'</span></button>':
     '<span class="pati-weekly-empty">Bu sıra henüz boş</span>')+
    '<div class="pati-weekly-bottom"><span>'+(p&&!blocked.has(p.user_id)?Number(p.score||0).toLocaleString('tr-TR')+' puan':'Sıralama bekleniyor')+'</span>'+
-   '<strong>+'+prize+' <img src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true"> Pati Coin</strong></div></article>';
+   '<strong>+'+prize+'  Puan</strong></div></article>';
  }).join('');
  const compactRows=[3,4,5].map(rank=>{
   const p=leaders.find(row=>Number(row.rank)===rank);
@@ -3448,7 +3448,7 @@ function patiWeeklyBoard(){
     '</div>';
  }).join('');
  const past=previous.length?'<div class="pati-weekly-previous"><strong>Geçen haftanın kazananları</strong>'+
-  previous.map(p=>'<span>'+(Number(p.rank)===1?'🥇':'🥉')+' '+esc(p.name||p.handle||'Patiyiz üyesi')+' · +'+Number(p.coins||0)+' Pati Coin</span>').join('')+'</div>':'';
+  previous.map(p=>'<span>'+(Number(p.rank)===1?'🥇':'🥉')+' '+esc(p.name||p.handle||'Patiyiz üyesi')+' · +'+Number(p.coins||0)+' Puan</span>').join('')+'</div>':'';
  const empty=state.error?'<p role="status" class="pati-weekly-status">'+esc(state.error)+'</p>':
  (!state.ready?'<p class="pati-weekly-status">Haftalık sıralama yükleniyor…</p>':'');
  return '<section class="pati-weekly-board" id="pati-weekly-board" aria-label="Haftanın en aktif kullanıcıları">'+
@@ -3456,7 +3456,7 @@ function patiWeeklyBoard(){
    (result.week_start&&result.week_end?shortDate(result.week_start)+' – '+shortDate(result.week_end)+' · ':'')+
    'Pazartesi–pazar · Türkiye saati</p></div><button type="button" data-action="pati-weekly-refresh" aria-label="Haftalık sıralamayı yenile">↻ Yenile</button></header>'+
   empty+'<div class="pati-weekly-podium">'+cards+'</div><div class="pati-weekly-runners" aria-label="3, 4 ve 5. sıradaki kullanıcılar">'+compactRows+'</div>'+past+
-  '<p class="pati-weekly-rules">Gönderi, yorum, beğeni ve aktif günlerden puan kazanılır. Her türde haftalık üst sınır vardır. Pazar gecesi sıralama kapanır; pazartesi 00.05 sonrası birinciye 100, ikinciye 50 Pati Coin otomatik ve yalnızca bir kez verilir. Beraberliklerde aktif gün sayısı, ardından hesap kimliği esas alınır.</p>'+
+  '<p class="pati-weekly-rules">Gönderi, yorum, beğeni ve aktif günlerden puan kazanılır. Her türde haftalık üst sınır vardır. Pazar gecesi sıralama kapanır; pazartesi 00.05 sonrası birinciye 100, ikinciye 50 Puan otomatik ve yalnızca bir kez verilir. Beraberliklerde aktif gün sayısı, ardından hesap kimliği esas alınır.</p>'+
   '</section>';
 }
 
@@ -5689,7 +5689,7 @@ function profilePage(){
     (p.bio?'<div class="pati-ig-bio">'+esc(p.bio)+'</div>':'')+'</div>':'')+
  patiProfileLinksHTML(p)+mutualMarkup+
  
- '<div class="pati-ig-actions">'+(own?button('Profili düzenle','edit-profile')+'<button type="button" class="pati-profile-coin-balance" data-action="paticoin-rewards" aria-label="PatiCoin bakiyen; ödülleri ve görevleri aç"><span class="pati-profile-coin-icon"><img src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true"></span><span class="pati-profile-coin-copy"><small>PatiCoin bakiyen</small><strong id="pati-profile-balance">'+Number((typeof patiCoinState!=='undefined'?patiCoinState.balance:0)||0).toLocaleString('tr-TR')+'</strong></span></button>':button(followed.has(p.id)?'Takiptesin':patiIsFollowRequested(p.id)?'İstek gönderildi':followBack?'Sen de takip et':'Takip et','follow','data-id="'+esc(p.id)+'"'+(followBack?' data-follow-back="true"':''))+button('Mesaj gönder','chat','data-id="'+esc(p.id)+'"'))+'</div>'+(own&&typeof patiCreatorPreviewHTML==='function'?patiCreatorPreviewHTML():'')+(own?patiVerificationProfileAction():'')+
+ '<div class="pati-ig-actions">'+(own?button('Profili düzenle','edit-profile')+'<button type="button" class="pati-profile-coin-balance" data-action="paticoin-rewards" aria-label="Puan bakiyen; ödülleri ve görevleri aç"><span class="pati-profile-coin-copy"><small>Puan bakiyen</small><strong id="pati-profile-balance">'+Number((typeof patiCoinState!=='undefined'?patiCoinState.balance:0)||0).toLocaleString('tr-TR')+'</strong></span></button>':button(followed.has(p.id)?'Takiptesin':patiIsFollowRequested(p.id)?'İstek gönderildi':followBack?'Sen de takip et':'Takip et','follow','data-id="'+esc(p.id)+'"'+(followBack?' data-follow-back="true"':''))+button('Mesaj gönder','chat','data-id="'+esc(p.id)+'"'))+'</div>'+(own&&typeof patiCreatorPreviewHTML==='function'?patiCreatorPreviewHTML():'')+(own?patiVerificationProfileAction():'')+
  '<div class="pati-ig-tabs" role="tablist" aria-label="Profil gönderileri">'+iconTabs.map(x=>'<button type="button" role="tab" aria-selected="'+(profilePostsTab===x[0])+'" class="'+(profilePostsTab===x[0]?'active':'')+'" data-action="profile-posts-tab" data-id="'+x[0]+'" aria-label="'+x[2]+'">'+x[1]+'</button>').join('')+'</div>'+
  profileContent+
  '</div>';
