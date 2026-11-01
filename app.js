@@ -786,6 +786,7 @@ let patiNavigatingBack=false;
 let patiSwipeNavDirection=0;
 let patiNavAnimationId=0;
 function navigate(to){
+ if(patiDmContextDialog)patiDmCloseContextMenu();
  const hubScreens=typeof patiPetHubScreens==='undefined'?new Set():patiPetHubScreens;
  if(view==='my-pet'&&patiMyPetTab==='hub'&&hubScreens.has(to)){
   patiPetHubOrigin=true;
@@ -7602,6 +7603,7 @@ case 'dm-react-open':patiDmOpenReactionPicker(id);break;
 case 'dm-react-set':{const emoji=target.dataset.emoji||'';closeModal(true);run(()=>patiDmSetReaction(id,emoji));break;}
 case 'dm-reply-jump':run(()=>patiDmSearchJump(personId,id,'reply'));break;
 case 'dm-reply-cancel':{const f=document.getElementById('message-form');if(f){delete f.dataset.reply;const box=f.querySelector('.pati-dm-reply-compose');if(box)box.hidden=true;const input=f.querySelector('input[name="body"]');if(input)input.placeholder='Mesaj yaz...'}break}
+case 'dm-context-copy':{const m=patiDmFindMessage(id);if(!m||!me||!((m.sender_id===me.id&&m.receiver_id===personId)||(m.receiver_id===me.id&&m.sender_id===personId)))break;const value=String(m.body||'');if(value){if(navigator.clipboard?.writeText)navigator.clipboard.writeText(value).then(()=>notify('Mesaj kopyalandı.'),()=>notify('Mesaj kopyalanamadı.',true));else notify('Bu cihazda kopyalama kullanılamıyor.',true);}break;}
 case 'dm-reply':patiDmBeginReply(id);break;case 'dm-edit':{const m=patiDmFindMessage(id);if(m?.sender_id!==me.id)break;if(!m||m.attachment_path)break;modal('Mesajı düzenle',textField('body','Mesaj',m.body,true,1000),'dm-edit-form');document.getElementById('dm-edit-form').dataset.message=id;break}case 'message-delete':{
  const m=patiDmFindMessage(id);if(!m||(m.sender_id!==me.id&&m.receiver_id!==me.id))break;
  closeModal();
@@ -7752,20 +7754,55 @@ case 'blocked-list':navigate('blocked');break;case 'follow-load-more':void patiL
 case 'report':closeStory();modal('İçeriği bildir',textField('reason','Şikâyet nedeni (en az 5 karakter)','',true,500),'report-form');$('#report-form').dataset.kind=target.dataset.kind;$('#report-form').dataset.record=id;break;
 case 'tools':openMobileFeaturesMenu();break;default:break}}
 let messagePressTimer=null,messagePressOrigin=null,messageLongPressed=false;
+
+let patiDmContextDialog=null;
+function patiDmCloseContextMenu(){
+ if(!patiDmContextDialog)return;
+ const dialog=patiDmContextDialog;patiDmContextDialog=null;
+ try{if(dialog.open)dialog.close()}catch(_){}
+ dialog.remove();
+}
 function openMessageOptions(el){
  if(!el||view!=='messages'||!me)return;
  const id=el.dataset.messageId,msg=patiDmFindMessage(id);
  if(!msg||!personId||!((msg.sender_id===me.id&&msg.receiver_id===personId)||(msg.receiver_id===me.id&&msg.sender_id===personId)))return;
- const mine=msg.sender_id===me.id;
- const pin=typeof patiDmPinState!=='undefined'&&patiDmPinState.byPeer.get(personId)===id;
+ const mine=msg.sender_id===me.id,pin=typeof patiDmPinState!=='undefined'&&patiDmPinState.byPeer.get(personId)===id;
  const canEdit=mine&&!msg.attachment_path&&!msg.attachment_type&&Date.now()-new Date(msg.created_at).getTime()<900000;
- const emoji=!mine?'<div class="pati-dm-press-emojis" role="group" aria-label="Mesaja tepki ver">'+patiDmEmojis.map(item=>'<button type="button" data-action="dm-react-set" data-id="'+esc(id)+'" data-emoji="'+esc(item)+'" aria-label="'+esc(item)+' ile tepki ver">'+item+'</button>').join('')+'</div>':'';
- const choices='<div class="pati-dm-press-actions"><button type="button" data-action="dm-reply" data-id="'+esc(id)+'">↳ Yanıtla</button>'+
- (canEdit?'<button type="button" data-action="dm-edit" data-id="'+esc(id)+'">Düzenle</button>':'')+
- '<button type="button" data-action="'+(pin?'dm-message-unpin':'dm-message-pin')+'" data-id="'+esc(id)+'">'+(pin?'Sabiti kaldır':'Sabitle')+'</button>'+
- (mine?'<button type="button" class="pati-msg-delete" data-action="message-delete" data-id="'+esc(id)+'">Sil</button>':'')+'</div>';
- modal('Mesaj seçenekleri',emoji+choices+'<p class="pati-dm-press-hint">Yanıtlamak için mesajı sağa kaydırabilirsin.</p>','message-options-form');
- $('#message-options-form .modal-footer')?.remove();
+ const canCopy=!!String(msg.body||'').trim()&&!msg.attachment_path&&!msg.attachment_type;
+ const reaction=!mine?'<div class="pati-dm-context-reactions" role="group" aria-label="Mesaja tepki ver">'+patiDmEmojis.map(emoji=>'<button type="button" data-action="dm-react-set" data-id="'+esc(id)+'" data-emoji="'+esc(emoji)+'" aria-label="'+esc(emoji)+' ile tepki ver">'+emoji+'</button>').join('')+'</div>':'';
+ const preview=msg.attachment_type==='image'?'📷 Fotoğraf':msg.attachment_type==='audio'?'🎤 Sesli mesaj':msg.attachment_type==='video'?'🎬 Video':String(msg.body||'Mesaj');
+ const option=(action,label,icon,extra='')=>'<button type="button" class="pati-dm-context-item '+extra+'" data-action="'+action+'" data-id="'+esc(id)+'"><span class="pati-dm-context-symbol" aria-hidden="true">'+icon+'</span><span>'+label+'</span></button>';
+ const options=option('dm-reply','Yanıtla','↩')+
+  (canCopy?option('dm-context-copy','Kopyala','⧉'):'')+
+  (canEdit?option('dm-edit','Düzenle','✎'):'')+
+  option(pin?'dm-message-unpin':'dm-message-pin',pin?'Sabitlemeyi kaldır':'Sabitle','⌑')+
+  (mine?option('message-delete','Sil','♲','is-danger'):'');
+ patiDmCloseContextMenu();
+ const dialog=document.createElement('dialog');
+ dialog.className='pati-dm-context-menu';
+ dialog.setAttribute('aria-label','Mesaj işlemleri');
+ dialog.innerHTML='<div class="pati-dm-context-content">'+
+  '<div class="pati-dm-context-top"><span>Mesaj seçenekleri</span><button type="button" data-action="dm-context-close" aria-label="Kapat">×</button></div>'+
+  reaction+
+  '<div class="pati-dm-context-preview '+(mine?'is-mine':'')+'"><span>'+esc(cut(preview,190))+'</span><small>'+esc(clock(msg.created_at))+'</small></div>'+
+  '<div class="pati-dm-context-actions">'+options+'</div>'+
+  '</div>';
+ document.body.append(dialog);patiDmContextDialog=dialog;
+ dialog.addEventListener('close',()=>{if(patiDmContextDialog===dialog)patiDmContextDialog=null;dialog.remove()},{once:true});
+ dialog.addEventListener('click',event=>{
+  const control=event.target.closest('button[data-action]');
+  if(!control){
+   if(event.target===dialog)patiDmCloseContextMenu();
+   return;
+  }
+  event.stopPropagation();
+  const action=control.dataset.action;
+  if(action==='dm-context-close'){patiDmCloseContextMenu();return;}
+  patiDmCloseContextMenu();
+  processClick({target:control});
+ });
+ if(typeof dialog.showModal==='function')dialog.showModal();
+ else dialog.setAttribute('open','');
 }
 document.addEventListener('contextmenu',e=>{
  const bubble=e.target.closest('.bubble-chat[data-message-id]');
