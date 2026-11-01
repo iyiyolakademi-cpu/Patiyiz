@@ -15,7 +15,9 @@
   active.token++;
   const v=q(active.form,'.pati-reel-cover-player');
   if(v){v.pause();v.removeAttribute('src');v.load()}
-  revoke(active.videoUrl);revoke(active.photoUrl);active=null;
+  revoke(active.videoUrl);revoke(active.photoUrl);
+  if(active.frame)revoke(active.frame.url);
+  active=null;
  }
  function get(form){
   if(!form||form.dataset.mode!=='reels'||!q(form,'[data-pati-cover-root]'))return null;
@@ -45,6 +47,7 @@
   const v=q(state.form,'.pati-reel-cover-player');
   if(v){v.pause();v.removeAttribute('src');v.load()}
   revoke(state.videoUrl);state.videoUrl='';state.file=file;
+  if(state.frame)revoke(state.frame.url);
   state.frame=null;state.pending=null;state.time=0;
   const range=q(state.form,'.pati-reel-cover-timeline');if(range)range.value='0';
   if(!file){
@@ -114,7 +117,7 @@
   const state=get(form);if(!state)return;
   event.preventDefault();event.stopPropagation();
   const choice=button.dataset.patiCoverAction;
-  if(choice==='gallery'){selected(state,'gallery');q(form,'input[name="cover_photo"]')?.click();return}
+  if(choice==='gallery'){q(form,'input[name="cover_photo"]')?.click();return}
   if(choice==='frame'){revealFrame(state);return}
   if(choice==='play'){
    const video=q(form,'.pati-reel-cover-player');if(!video)return;
@@ -126,7 +129,11 @@
   const input=event.target;
   if(!input?.matches?.('#post-form input[name="cover_photo"],#post-form input[name="video"]'))return;
   const form=input.closest('#post-form'),state=get(form);if(!state)return;
-  if(input.name==='video'){state.mode='auto';syncVideo(state);selected(state,'auto');return}
+  if(input.name==='video'){
+   revoke(state.photoUrl);state.photoUrl='';
+   const gallery=q(form,'input[name="cover_photo"]');if(gallery)gallery.value='';
+   state.mode='auto';syncVideo(state);selected(state,'auto');return
+  }
   const file=input.files?.[0];
   revoke(state.photoUrl);state.photoUrl='';
   if(!file){selected(state,'auto');return}
