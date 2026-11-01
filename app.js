@@ -160,9 +160,13 @@ async function patiStreakCheckin(){
   if(!row||!Number.isFinite(Number(row.current_streak)))throw Error('Giriş serisi alınamadı');
   patiStreakState={owner:uid,count:Math.max(0,Number(row.current_streak)||0),
    best:Math.max(0,Number(row.longest_streak)||0),ready:true,loading:false,checkedOn:today};
-  // The full streak screen is now available from Menü → Seriler, not an automatic popup.
+  // Server-confirmed daily check-in, celebrated once for each Istanbul day.
   if(view==='streaks')render();
   void patiStreakGoalLoad();
+  window.setTimeout(()=>{
+   if(me?.id!==uid||patiStreakState.checkedOn!==today||document.hidden)return;
+   window.PatiyizDelight?.showStreakOnce(patiStreakState,{userId:uid,day:today});
+  },380);
  }catch(e){
   console.warn('Günlük giriş serisi eşitlenemedi:',e?.message||e);
   if(me?.id===uid)patiStreakState.loading=false;
