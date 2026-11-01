@@ -1,0 +1,17 @@
+/* Buchee fresh white login and consistent green wordmark. */
+:root{--buchee-green:#007957}
+#auth-root .auth-story{display:none!important}
+#auth-root .auth-shell{display:flex!important;justify-content:center!important;align-items:center!important;min-height:100dvh!important;padding:20px 16px!important;background:#fff!important}
+#auth-root .auth-shell>.auth-card,#auth-root .auth-shell .auth-panel,#auth-root .auth-shell .auth-form-panel{margin-inline:auto!important;max-width:440px!important;width:100%!important}
+#auth-root .auth-shell :is(.auth-hero,.auth-dog,.auth-story-visual){display:none!important}
+#auth-root .auth-brand img,#auth-root .auth-story-icon img{content:url("buchee-wordmark.svg")!important;width:min(68vw,240px)!important;height:70px!important;object-fit:contain!important}
+#auth-root .auth-submit,#auth-root .primary-btn{background:#007957!important;border-color:#007957!important;color:white!important}
+#auth-root :is(input,select,button){font-size:max(16px,1rem)}
+#auth-root{background:#fff!important}
+#app-root .brand-icon img.patiyiz-chosen-logo,#app-root .brand-icon img[src*="patiyiz-selected-logo"]{content:url("buchee-wordmark.svg")!important;object-fit:contain!important}
+#app-root .brand-word{font-size:0!important}
+#app-root .brand-word::before{content:"Buchee";font-size:18px!important;color:#007957!important;font-weight:900!important}
+#app-root .pati-feed-brand-selector .brand-icon{width:76px!important;min-width:76px!important;flex-basis:76px!important}
+#app-root .pati-feed-brand-selector .brand-icon img{width:100%!important;height:100%!important;object-fit:contain!important}
+#app-root .pati-origin-flag{display:none!important}
+@media(max-width:740px){#auth-root .auth-shell{padding-top:calc(18px + env(safe-area-inset-top,0px))!important;padding-bottom:calc(18px + env(safe-area-inset-bottom,0px))!important}#app-root .pati-feed-brand-selector .brand-icon{width:60px!important;min-width:60px!important;flex-basis:60px!important}}
