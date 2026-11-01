@@ -9,7 +9,7 @@
  /* A user sees the centered, Duolingo-like daily card only once per Istanbul calendar day.
     The backend confirms the actual streak before this presentation runs. */
  const seenInPage=new Set();
- let streakActive=null,streakTimer=null;
+ let streakActive=null;
  const flameSVG='<svg class="pati-streak-flame" viewBox="0 0 160 174" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">'+
  '<defs><linearGradient id="pati-flame-gradient" x1="0" x2=".4" y1="0" y2="1"><stop stop-color="#ffc042"/><stop offset=".55" stop-color="#ff981f"/><stop offset="1" stop-color="#f35a21"/></linearGradient></defs>'+
  '<path d="M82 3c16 36-6 51-1 72 15-8 18-24 23-39 35 34 52 65 38 98-10 25-34 39-67 39-44 0-74-24-73-66C3 73 30 42 57 28c-5 31-2 46 13 52 8-25 26-42 12-77Z" fill="url(#pati-flame-gradient)"/>'+
@@ -33,8 +33,6 @@
   const active=streakActive;
   if(!active)return;
   streakActive=null;
-  if(streakTimer)clearTimeout(streakTimer);
-  streakTimer=null;
   document.removeEventListener('keydown',streakEscape);
   active.classList.remove('is-visible');active.classList.add('is-closing');
   window.setTimeout(()=>active.remove(),reduced()?0:240);
@@ -50,32 +48,26 @@
   const days=safeNumber(state.count),best=safeNumber(state.best);
   const el=document.createElement('div');
   el.className='pati-streak-overlay';
-  el.innerHTML='<div class="pati-streak-dialog" role="dialog" aria-label="Günlük giriş serin" aria-modal="false">'+
-    '<button type="button" class="pati-streak-close" aria-label="Seri ekranını kapat">×</button>'+
+  el.innerHTML='<div class="pati-streak-dialog" role="dialog" aria-label="Günlük giriş serin" aria-modal="true">'+
+    '<div class="pati-streak-confetti" aria-hidden="true">'+Array.from({length:12},(_,i)=>'<i style="--i:'+i+'"></i>').join('')+'</div>'+
     '<div class="pati-streak-sparkles" aria-hidden="true">'+flameSVG+'</div>'+
     '<div class="pati-streak-count">'+days.toLocaleString('tr-TR')+'</div>'+
-    '<h2>günlük seri!</h2>'+
+    '<h2>'+(days===1?'Serin başladı!':'Günlük serin büyüyor!')+'</h2>'+
     '<p class="pati-streak-message">'+(days===1?'İlk patini bıraktın! Yarın tekrar görüşelim.':days<7?'Harika gidiyorsun! Her gün bir pati izi daha.':'Müthiş! Patili dostların seni her gün bekliyor.')+'</p>'+
     '<div class="pati-streak-week" role="group" aria-label="Bu haftaki giriş günleri">'+streakWeekdays(state,day)+'</div>'+
     '<div class="pati-streak-best">🏆 En uzun seri: '+best+' gün</div>'+
-    '<div class="pati-streak-dismiss-note">Kısa süre sonra otomatik kapanır</div>'+
+    '<button type="button" class="pati-streak-close pati-streak-done">Tamam</button>'+
    '</div>';
   const button=el.querySelector('.pati-streak-close');
   button.addEventListener('click',closeStreak);
   el.addEventListener('click',e=>{if(e.target===el)closeStreak()});
-  el.addEventListener('focusin',()=>{if(streakTimer){clearTimeout(streakTimer);streakTimer=null}});
-  el.addEventListener('focusout',e=>{if(!el.contains(e.relatedTarget))scheduleStreakDismiss()});
   document.body.appendChild(el);
   streakActive=el;
   if(!reduced())requestAnimationFrame(()=>el.classList.add('is-visible'));
   else el.classList.add('is-visible');
   document.addEventListener('keydown',streakEscape);
-  scheduleStreakDismiss();
+  button?.focus?.();
   return true;
- }
- function scheduleStreakDismiss(){
-  if(streakTimer)clearTimeout(streakTimer);
-  if(streakActive)streakTimer=window.setTimeout(closeStreak,5100);
  }
  function streakPanel(state={},day=''){
   const days=safeNumber(state.count),best=safeNumber(state.best);
