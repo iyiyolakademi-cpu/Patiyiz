@@ -1198,12 +1198,12 @@ function patiRenderPostLikers(){
  if(!state.postId||!me||state.owner!==me.id)return;
  const list=document.getElementById('pati-post-likers-list');
  if(!list)return;
- const visible=state.rows.filter(id=>!blocked.has(id)&&data.profiles.some(p=>p.id===id)).sort((a,b)=>Number(state.followerIds?.has(b))-Number(state.followerIds?.has(a)));
+ const visible=state.rows.filter(id=>!blocked.has(id)&&data.profiles.some(p=>p.id===id)).sort((a,b)=>Number(b===me.id)-Number(a===me.id)||Number(state.followerIds?.has(b))-Number(state.followerIds?.has(a)));
  list.innerHTML=visible.map(id=>{
   const person=profile(id);
   return '<button type="button" class="pati-post-liker-person" data-action="view-user" data-id="'+esc(id)+'" aria-label="'+esc(person.display_name||person.handle||'Kullanıcı')+' profiline git">'+avatar(person,'s')+
    '<span class="pati-post-liker-identity"><strong>'+displayName(person)+'</strong><small>@'+esc(person.handle||'patiyiz')+'</small></span>'+
-   '<span class="pati-liker-follow-tag '+(state.followerIds?.has(id)?'is-follower':'is-not-follower')+'">'+(state.followerIds?.has(id)?'Seni takip ediyor':'Seni takip etmiyor')+'</span></button>';
+   '<span class="pati-liker-follow-tag '+(id===me.id?'is-self':state.followerIds?.has(id)?'is-follower':'is-not-follower')+'">'+(id===me.id?'Sen':state.followerIds?.has(id)?'Seni takip ediyor':'Seni takip etmiyor')+'</span></button>';
  }).join('')||(!state.loading?'<p class="pati-post-likers-empty">Henüz beğenen kimse yok.</p>':'');
  const more=document.getElementById('pati-post-likers-more');
  if(more){more.hidden=!state.hasMore;more.disabled=state.loading;more.textContent=state.loading?'Yükleniyor…':'Daha fazla göster';}
@@ -5168,7 +5168,7 @@ function blockedPage(){const ids=[...blocked];main.innerHTML=header('Engellenenl
 async function patiLoadFollowPage(reset=false){
  if(!me||!sb)return;
  const owner=followListId||me.id,followers=followListMode==='followers';
- const key=me.id+':'+owner+':'+followListMode+(!followers?':'+patiFollowSortOrder:''),previous=patiFollowPageState;
+ const key=me.id+':'+owner+':'+followListMode+':'+patiFollowSortOrder,previous=patiFollowPageState;
  if(reset||previous.key!==key){
   patiFollowPageState={key,rows:[],next:0,hasMore:true,loading:false,error:'',viewerFollowing:new Set()};
  }
@@ -5180,7 +5180,7 @@ async function patiLoadFollowPage(reset=false){
  try{
   const result=await sb.from('follows').select('follower_id,followee_id,created_at')
    .eq(followers?'followee_id':'follower_id',owner)
-   .order('created_at',{ascending:!followers&&patiFollowSortOrder==='oldest'})
+   .order('created_at',{ascending:patiFollowSortOrder==='oldest'})
    .order(followers?'follower_id':'followee_id',{ascending:!followers&&patiFollowSortOrder==='oldest'})
    .range(offset,offset+PATI_FOLLOW_PAGE_SIZE-1);
   if(result.error)throw result.error;
@@ -5218,15 +5218,15 @@ async function patiLoadFollowPage(reset=false){
 }
 function followListPage(){
  const owner=followListId||me.id,followers=followListMode==='followers';
- const key=me.id+':'+owner+':'+followListMode+(!followers?':'+patiFollowSortOrder:''),state=patiFollowPageState;
+ const key=me.id+':'+owner+':'+followListMode+':'+patiFollowSortOrder,state=patiFollowPageState;
  const scoped=state.key===key,records=scoped?state.rows:[];
  const orderedRecords=records;
  const ids=[...new Set(orderedRecords.map(f=>followers?f.follower_id:f.followee_id))].filter(id=>!blocked.has(id));
  const isFollowing=id=>followed.has(id)||(scoped&&state.viewerFollowing.has(id));
  const title=followers?'Takipçiler':'Takip edilenler';
  main.innerHTML=`<div class="pati-follow-backbar"><button type="button" class="pati-follow-back" data-action="followers-back" aria-label="Profile geri dön">←</button><span>Profile dön</span></div>`+
- '<div class="pati-follow-tabs"><button type="button" data-action="pati-follow-tab" data-id="followers" class="'+(followers?'active':'')+'">Takipçiler</button><button type="button" data-action="pati-follow-tab" data-id="following" class="'+(!followers?'active':'')+'">Takip edilenler</button></div>'+(!followers?'<div class="pati-follow-sort"><span>Sıralama</span><button type="button" data-action="pati-follow-sort" data-id="newest" class="'+(patiFollowSortOrder==='newest'?'active':'')+'">En yeni</button><button type="button" data-action="pati-follow-sort" data-id="oldest" class="'+(patiFollowSortOrder==='oldest'?'active':'')+'">En eski</button></div>':'')+
- `<div class="pati-list">${ids.map(id=>`<div class="pati-card pati-follow-person">${userRow(id)}${id!==me.id?button(isFollowing(id)?'Takiptesin':followers&&owner===me.id?'Sen de takip et':'Takip et','follow',`data-id="${esc(id)}"`):''}</div>`).join('')}`+
+ '<div class="pati-follow-tabs"><button type="button" data-action="pati-follow-tab" data-id="followers" class="'+(followers?'active':'')+'">Takipçiler</button><button type="button" data-action="pati-follow-tab" data-id="following" class="'+(!followers?'active':'')+'">Takip edilenler</button></div>'+('<div class="pati-follow-sort"><span>Sıralama</span><button type="button" data-action="pati-follow-sort" data-id="newest" class="'+(patiFollowSortOrder==='newest'?'active':'')+'">En yeni</button><button type="button" data-action="pati-follow-sort" data-id="oldest" class="'+(patiFollowSortOrder==='oldest'?'active':'')+'">En eski</button></div>')+
+ `<div class="pati-list">${ids.map(id=>`<div class="pati-card pati-follow-person"><div class="pati-follow-person-identity">${userRow(id)}<small class="pati-follow-date">${(()=>{const record=orderedRecords.find(row=>(followers?row.follower_id:row.followee_id)===id);return record?.created_at?new Date(record.created_at).toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'})+' tarihinde '+(followers?'takip etti':'takip edildi'):''})()}</small></div>${id!==me.id?button(isFollowing(id)?'Takiptesin':followers&&owner===me.id?'Sen de takip et':'Takip et','follow',`data-id="${esc(id)}"`):''}</div>`).join('')}`+
  (!ids.length&&scoped&&!state.loading&&!state.error?empty('Bu listede henüz kimse yok.'):'')+
  (scoped&&state.error?'<p class="pati-note" role="alert">'+esc(state.error)+'</p>':'')+
  `<div class="pati-load-more">${!scoped||state.loading?'<p role="status">Takip listesi yükleniyor…</p>':state.hasMore||state.error?button(state.error?'Yeniden dene':'Daha fazla kullanıcı yükle','follow-load-more'):' '}</div></div>`;
