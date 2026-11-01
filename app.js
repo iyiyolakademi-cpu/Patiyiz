@@ -6707,6 +6707,48 @@ function patiCropSize(ratio,img,rotation=0){
  const max=2048,scale=Math.min(1,max/Math.max(rw,rh));
  return [Math.max(1,Math.round(rw*scale)),Math.max(1,Math.round(rh*scale))];
 }
+/* Pixel-based filters: iOS WebKit can ignore CanvasRenderingContext2D.filter.
+   Process the exact cropped canvas using ImageData, shared by preview and upload. */
+function patiCropApplyPixelFilter(ctx,width,height,state){
+ const name=patiCropFilters[state.filter]?state.filter:'original';
+ const brightness=Math.max(.5,Math.min(1.5,(Number(state.brightness)||100)/100));
+ const contrast=Math.max(.5,Math.min(1.5,(Number(state.contrast)||100)/100));
+ if(name==='original'&&brightness===1&&contrast===1)return;
+ const config={
+  original:[1,0,1,1,0,0,0],
+  vibrant:[1.38,0,1.08,1,0,0,0],
+  warm:[1.2,.2,1,1,8,-1,-8],
+  cool:[.92,0,1,1,-5,0,12],
+  mono:[0,0,1.12,1,0,0,0],
+  vintage:[.75,.36,.96,1,0,0,0],
+  soft:[.74,0,.91,1.08,0,0,0],
+  cinema:[.77,.08,1.16,1,0,0,0]
+ }[name]||[1,0,1,1,0,0,0];
+ const image=ctx.getImageData(0,0,width,height),bytes=image.data;
+ const [saturation,sepia,presetContrast,presetBrightness,redShift,greenShift,blueShift]=config;
+ const finalContrast=contrast*presetContrast,finalBrightness=brightness*presetBrightness;
+ for(let i=0;i<bytes.length;i+=4){
+  let red=bytes[i],green=bytes[i+1],blue=bytes[i+2];
+  if(sepia){
+   const sr=.393*red+.769*green+.189*blue;
+   const sg=.349*red+.686*green+.168*blue;
+   const sb=.272*red+.534*green+.131*blue;
+   red=red*(1-sepia)+sr*sepia;
+   green=green*(1-sepia)+sg*sepia;
+   blue=blue*(1-sepia)+sb*sepia;
+  }
+  if(saturation!==1){
+   const gray=.2126*red+.7152*green+.0722*blue;
+   red=gray+(red-gray)*saturation;
+   green=gray+(green-gray)*saturation;
+   blue=gray+(blue-gray)*saturation;
+  }
+  bytes[i]=Math.max(0,Math.min(255,((red+redShift)*finalBrightness-128)*finalContrast+128));
+  bytes[i+1]=Math.max(0,Math.min(255,((green+greenShift)*finalBrightness-128)*finalContrast+128));
+  bytes[i+2]=Math.max(0,Math.min(255,((blue+blueShift)*finalBrightness-128)*finalContrast+128));
+ }
+ ctx.putImageData(image,0,0);
+}
 function patiCropPaint(canvas,img,state){
  const [w,h]=patiCropSize(state.ratio,img,state.rotation);
  if(canvas.width!==w)canvas.width=w;
@@ -6717,10 +6759,11 @@ function patiCropPaint(canvas,img,state){
  const scale=Math.max(w/rw,h/rh)*state.zoom;
  const extraX=rw*scale-w,extraY=rh*scale-h;
  const cx=w/2+extraX*(.5-state.x),cy=h/2+extraY*(.5-state.y);
- ctx.save();ctx.filter=patiCropFilterCSS(state);ctx.translate(cx,cy);ctx.rotate(state.rotation*Math.PI/180);
+ ctx.save();ctx.filter='none';ctx.translate(cx,cy);ctx.rotate(state.rotation*Math.PI/180);
  if(state.flip)ctx.scale(-1,1);
  ctx.drawImage(img,-img.naturalWidth*scale/2,-img.naturalHeight*scale/2,img.naturalWidth*scale,img.naturalHeight*scale);
  ctx.restore();
+ patiCropApplyPixelFilter(ctx,w,h,state);
  return {extraX:Math.max(0,extraX),extraY:Math.max(0,extraY)};
 }
 async function patiCropOpen(options={}){
