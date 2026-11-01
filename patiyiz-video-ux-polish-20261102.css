@@ -1,0 +1,78 @@
+/* Video-based iPhone UX polish, scoped to existing screen structures. */
+@media(max-width:740px){
+ /* Post detail owns its back toolbar. Never display the global feed header on top. */
+ html[data-pati-screen="inner"] #app-root:not(.hidden):has(#main-content .pati-detail-screen)>.mobile-header{display:none!important}
+ #app-root:not(.hidden):has(#main-content .pati-detail-screen)>.mobile-header{display:none!important}
+ #app-root:not(.hidden):has(#main-content .pati-detail-screen)>.app-shell{
+   padding-top:env(safe-area-inset-top,0px)!important;margin-top:0!important;
+ }
+ #main-content .pati-detail-screen{width:100%!important;max-width:100%!important;overflow-x:hidden!important}
+ #main-content .pati-detail-toolbar{
+   position:relative!important;top:auto!important;transform:none!important;
+   box-sizing:border-box!important;width:100%!important;min-height:56px!important;
+   display:flex!important;align-items:center!important;gap:9px!important;
+   padding:7px 12px!important;background:#fff!important;box-shadow:none!important;
+   backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+ }
+ #main-content .pati-detail-toolbar [data-action="post-back"]{
+   min-width:44px!important;min-height:44px!important;display:inline-flex!important;
+   align-items:center!important;justify-content:center!important;touch-action:manipulation!important;
+ }
+ #main-content:has(.pati-detail-screen)>.pati-page-back{display:none!important}
+ /* Daily poll remains readable, but no longer occupies most of the first viewport. */
+ html[data-pati-view="home"] #main-content>.pati-daily-card,
+ html[data-pati-view="home"] #main-content>.pati-daily-poll,
+ html[data-pati-view="home"] #main-content .pati-community-head+.pati-daily-card{
+   box-sizing:border-box!important;margin:7px 9px!important;padding:10px!important;
+   border-radius:14px!important;min-height:0!important;
+ }
+ #main-content .pati-daily-poll .pati-daily-top{margin:0 0 6px!important;gap:6px!important}
+ #main-content .pati-daily-poll .pati-daily-top-copy{font-size:13px!important}
+ #main-content .pati-daily-poll .pati-daily-clock{font-size:11px!important}
+ #main-content .pati-daily-poll button{min-height:38px!important;touch-action:manipulation!important}
+ /* Inbox title and actions: clear exit and two genuinely tappable CTAs. */
+ #main-content:has(.pati-dm-layout.mobile-chat-list)>.pati-dm-top{
+   display:grid!important;grid-template-columns:44px minmax(0,1fr)!important;
+   gap:6px 9px!important;padding:9px 12px!important;align-items:center!important;
+ }
+ #main-content>.pati-dm-top>.pati-dm-inbox-back{
+   grid-column:1!important;grid-row:1!important;
+   width:44px!important;min-height:44px!important;
+ }
+ #main-content>.pati-dm-top>.pati-dm-title{grid-column:2!important;grid-row:1!important;max-width:none!important}
+ #main-content>.pati-dm-top>.pati-dm-top-actions{
+   grid-column:1/-1!important;grid-row:2!important;display:grid!important;
+   grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;
+   width:100%!important;max-width:none!important;
+ }
+ #main-content>.pati-dm-top>.pati-dm-top-actions>span{
+   grid-column:1/-1!important;font-size:11px!important;line-height:1.2!important;
+ }
+ #main-content>.pati-dm-top>.pati-dm-top-actions>.pati-dm-new{
+   min-width:0!important;max-width:none!important;width:100%!important;min-height:44px!important;
+   margin:0!important;padding:8px!important;white-space:nowrap!important;
+ }
+ #main-content>.pati-dm-filters>button{min-height:44px!important;font-size:13px!important}
+ /* Chat composer: visible controls and keyboard-safe input. */
+ #main-content .pati-dm-layout.mobile-chat-open .chat-form{gap:7px!important;padding-left:9px!important;padding-right:9px!important}
+ #main-content .pati-dm-layout.mobile-chat-open .chat-form input[name="body"]{
+   min-width:0!important;flex:1 1 0!important;font-size:16px!important;
+ }
+ #main-content .pati-dm-layout.mobile-chat-open .chat-form :is(button,.pati-dm-attach>summary){
+   min-width:42px!important;min-height:44px!important;touch-action:manipulation!important;
+ }
+ /* Profile: legible stats and five equally spaced content tabs. */
+ #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"]{
+   display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;
+   width:100%!important;gap:3px!important;
+ }
+ #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"] button{
+   min-width:0!important;min-height:48px!important;padding:8px 2px!important;touch-action:manipulation!important;
+ }
+ #main-content .pati-ig-profile .pati-ig-profile-stats :is(strong,b){font-size:15px!important}
+ /* Menus and explorer should stay scannable, with full-width tap targets. */
+ #main-content [data-action="tools"],
+ #main-content .pati-profile-menu-trigger{min-width:44px!important;min-height:44px!important;touch-action:manipulation!important}
+ #main-content .pati-ig-profile{overflow-x:hidden!important}
+ #main-content :is(.pati-explore-grid,.explore-grid){max-width:100%!important;min-width:0!important}
+}
