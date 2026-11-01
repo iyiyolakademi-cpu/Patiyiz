@@ -4460,7 +4460,7 @@ function patiDmOpenPhoto(messageId){
  dialog.showModal();paint();
 }
 
-const patiDmEmojis=['❤️','😂','😮','😢','👏'];
+const patiDmEmojis=['❤️','😂','😮','😢','😡','👍','👏','🐾'];
 function patiDmReactionMarkup(messageId){
  const reactions=data.dmReactions.filter(x=>x.message_id===messageId);
  if(!reactions.length)return '';
@@ -7624,6 +7624,21 @@ case 'dm-react-open':patiDmOpenReactionPicker(id);break;
 case 'dm-react-set':{const emoji=target.dataset.emoji||'';closeModal(true);run(()=>patiDmSetReaction(id,emoji));break;}
 case 'dm-reply-jump':run(()=>patiDmSearchJump(personId,id,'reply'));break;
 case 'dm-reply-cancel':{const f=document.getElementById('message-form');if(f){delete f.dataset.reply;const box=f.querySelector('.pati-dm-reply-compose');if(box)box.hidden=true;const input=f.querySelector('input[name="body"]');if(input)input.placeholder='Mesaj yaz...'}break}
+case 'dm-hide-for-me':{
+ const m=patiDmFindMessage(id);
+ if(!m||!me||!((m.sender_id===me.id&&m.receiver_id===personId)||(m.receiver_id===me.id&&m.sender_id===personId)))break;
+ if(!confirm('Mesaj yalnızca senin sohbetinden silinsin mi?'))break;
+ run(async()=>{
+  const owner=me.id;
+  const result=await sb.from('message_hidden').insert({user_id:owner,message_id:id}).select('user_id,message_id');
+  if(result.error&&result.error.code!=='23505')throw result.error;
+  if(me?.id!==owner)return;
+  if(!data.messageHidden.some(x=>x.user_id===owner&&x.message_id===id))
+   data.messageHidden.push({user_id:owner,message_id:id});
+  render();
+ },'Mesaj yalnızca senden silindi.');
+ break;
+}
 case 'dm-context-copy':{const m=patiDmFindMessage(id);if(!m||!me||!((m.sender_id===me.id&&m.receiver_id===personId)||(m.receiver_id===me.id&&m.sender_id===personId)))break;const value=String(m.body||'');if(value){if(navigator.clipboard?.writeText)navigator.clipboard.writeText(value).then(()=>notify('Mesaj kopyalandı.'),()=>notify('Mesaj kopyalanamadı.',true));else notify('Bu cihazda kopyalama kullanılamıyor.',true);}break;}
 case 'dm-reply':patiDmBeginReply(id);break;case 'dm-edit':{const m=patiDmFindMessage(id);if(m?.sender_id!==me.id)break;if(!m||m.attachment_path)break;modal('Mesajı düzenle',textField('body','Mesaj',m.body,true,1000),'dm-edit-form');document.getElementById('dm-edit-form').dataset.message=id;break}case 'message-delete':{
  const m=patiDmFindMessage(id);if(!m||(m.sender_id!==me.id&&m.receiver_id!==me.id))break;
@@ -7790,54 +7805,83 @@ function openMessageOptions(el){
  const mine=msg.sender_id===me.id,pin=typeof patiDmPinState!=='undefined'&&patiDmPinState.byPeer.get(personId)===id;
  const canEdit=mine&&!msg.attachment_path&&!msg.attachment_type&&Date.now()-new Date(msg.created_at).getTime()<900000;
  const canCopy=!!String(msg.body||'').trim()&&!msg.attachment_path&&!msg.attachment_type;
- const reaction=!mine?'<div class="pati-dm-context-reactions" role="group" aria-label="Mesaja tepki ver">'+patiDmEmojis.map(emoji=>'<button type="button" data-action="dm-react-set" data-id="'+esc(id)+'" data-emoji="'+esc(emoji)+'" aria-label="'+esc(emoji)+' ile tepki ver">'+emoji+'</button>').join('')+'</div>':'';
+ const icons={
+  reply:'<path d="M9 10 4 15l5 5"/><path d="M4 15h10a7 7 0 0 1 7 7"/>',
+  copy:'<rect x="8" y="8" width="12" height="14" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h2"/>',
+  translate:'<path d="M4 5h12M10 3v3M6 9c1 4 4 7 9 9M13 9c-1 4-4 7-9 9M15 14h6M18 11l4 9M14 20l4-9"/>',
+  trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14M10 11v6M14 11v6"/>',
+  unsend:'<path d="M9 7 4 12l5 5"/><path d="M4 12h10a7 7 0 0 1 0 14"/>',
+  more:'<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>',
+  pin:'<path d="m7 3 10 10M14 2l8 8M4 22l7-7M11 7 7 11l6 6 4-4"/>',
+  edit:'<path d="m4 20 4-.5L20 7.5 16.5 4 4.5 16zM14.5 6 18 9.5"/>',
+  back:'<path d="m14 6-6 6 6 6"/>'
+ };
+ const svg=(icon)=>'<svg class="pati-dm-context-svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+icons[icon]+'</svg>';
+ const option=(action,label,icon,extra='')=>'<button type="button" class="pati-dm-context-item '+extra+'" data-action="'+action+'" data-id="'+esc(id)+'"><span class="pati-dm-context-symbol" aria-hidden="true">'+svg(icon)+'</span><span>'+label+'</span>'+(action==='dm-context-more'?'<span class="pati-dm-context-chevron">›</span>':'')+'</button>';
+ const reaction=!mine?'<div class="pati-dm-context-reactions" role="group" aria-label="Mesaja tepki ver">'+
+  patiDmEmojis.slice(0,6).map(emoji=>'<button type="button" data-action="dm-react-set" data-id="'+esc(id)+'" data-emoji="'+esc(emoji)+'" aria-label="'+esc(emoji)+' ile tepki ver">'+emoji+'</button>').join('')+
+  '<button type="button" class="pati-dm-reaction-more" data-action="dm-react-open" data-id="'+esc(id)+'" aria-label="Diğer tepkiler">＋</button></div>':'';
  const preview=msg.attachment_type==='image'?'📷 Fotoğraf':msg.attachment_type==='audio'?'🎤 Sesli mesaj':msg.attachment_type==='video'?'🎬 Video':String(msg.body||'Mesaj');
- const option=(action,label,icon,extra='')=>'<button type="button" class="pati-dm-context-item '+extra+'" data-action="'+action+'" data-id="'+esc(id)+'"><span class="pati-dm-context-symbol" aria-hidden="true">'+icon+'</span><span>'+label+'</span></button>';
- const options=option('dm-reply','Yanıtla','↩')+
-  (canCopy?option('dm-context-copy','Kopyala','⧉'):'')+
-  (canEdit?option('dm-edit','Düzenle','✎'):'')+
-  option(pin?'dm-message-unpin':'dm-message-pin',pin?'Sabitlemeyi kaldır':'Sabitle','⌑')+
-  (mine?option('message-delete','Sil','♲','is-danger'):'');
+ const options=option('dm-reply','Yanıtla','reply')+
+  (canCopy?option('dm-context-copy','Kopyala','copy'):'')+
+  (canCopy?option('dm-context-translate','Çevir','translate'):'')+
+  option('dm-hide-for-me','Kendin için sil','trash')+
+  (mine?option('message-delete','Gönderimi geri al','unsend','is-danger'):'')+
+  option('dm-context-more','Daha fazla','more');
+ const extras=option('dm-context-back','Geri','back')+
+  (canEdit?option('dm-edit','Düzenle','edit'):'')+
+  option(pin?'dm-message-unpin':'dm-message-pin',pin?'Sabitlemeyi kaldır':'Sabitle','pin');
  patiDmCloseContextMenu();
  const dialog=document.createElement('dialog');
  dialog.className='pati-dm-context-menu';
  dialog.setAttribute('aria-label','Mesaj işlemleri');
+ dialog.dataset.side=mine?'mine':'theirs';
+ const rect=el.getBoundingClientRect();
+ const estimatedHeight=mine?620:570;
+ const proposedTop=Math.max(12,Math.min(rect.top-92,window.innerHeight-estimatedHeight));
+ dialog.style.setProperty('--pati-dm-context-top',Math.max(10,proposedTop)+'px');
  dialog.innerHTML='<div class="pati-dm-context-content">'+
   reaction+
   '<div class="pati-dm-context-preview '+(mine?'is-mine':'')+'"><span>'+esc(cut(preview,190))+'</span><small>'+esc(clock(msg.created_at))+'</small></div>'+
   '<div class="pati-dm-context-actions">'+options+'</div>'+
+  '<div class="pati-dm-context-actions pati-dm-context-extra" hidden>'+extras+'</div>'+
   '</div>';
  document.body.append(dialog);patiDmContextDialog=dialog;
  dialog.addEventListener('close',()=>{if(patiDmContextDialog===dialog)patiDmContextDialog=null;dialog.remove()},{once:true});
+ dialog.addEventListener('cancel',event=>{event.preventDefault();patiDmCloseContextMenu()});
  dialog.addEventListener('click',event=>{
   const control=event.target.closest('button[data-action]');
-  if(!control){
-   if(event.target===dialog)patiDmCloseContextMenu();
-   return;
-  }
+  if(!control){if(event.target===dialog)patiDmCloseContextMenu();return;}
   event.stopPropagation();
   const action=control.dataset.action;
+  if(action==='dm-context-more'||action==='dm-context-back'){
+   const expanded=action==='dm-context-more';
+   dialog.querySelector('.pati-dm-context-extra').hidden=!expanded;
+   dialog.querySelector('.pati-dm-context-actions:not(.pati-dm-context-extra)').hidden=expanded;
+   return;
+  }
   if(action==='dm-context-close'){patiDmCloseContextMenu();return;}
+  if(action==='dm-context-translate'){
+   const input=String(msg.body||'').trim();
+   if(!input){notify('Bu mesajda çevrilecek metin bulunamadı.',true);return;}
+   if(!window.Translator?.create){notify('Bu cihazda yerel çeviri desteklenmiyor.',true);return;}
+   void (async()=>{
+    try{
+     const detector=window.LanguageDetector?.create?await window.LanguageDetector.create():null;
+     const candidate=detector?await detector.detect(input):[];
+     const source=candidate?.[0]?.detectedLanguage||'en';
+     const translator=await window.Translator.create({sourceLanguage:source,targetLanguage:'tr'});
+     const translated=await translator.translate(input);
+     dialog.querySelector('.pati-dm-context-preview span').textContent=translated;
+    }catch(error){notify('Çeviri şu an kullanılamıyor.',true)}
+   })();
+   return;
+  }
   patiDmCloseContextMenu();
   processClick({target:control});
  });
  if(typeof dialog.showModal==='function')dialog.showModal();
  else dialog.setAttribute('open','');
- // Anchor the Instagram-like reaction row + message + action menu to the
- // actual long-pressed bubble, not the screen center. Fit within the safe area.
- const bubbleRect=el.getBoundingClientRect(),panel=dialog.querySelector('.pati-dm-context-content');
- if(panel){
-  const vw=window.visualViewport?.width||window.innerWidth;
-  const vh=window.visualViewport?.height||window.innerHeight;
-  const width=Math.min(350,vw-24),height=panel.offsetHeight;
-  const desiredLeft=mine?bubbleRect.right-width:bubbleRect.left;
-  const left=Math.min(Math.max(12,desiredLeft),Math.max(12,vw-width-12));
-  const desiredTop=bubbleRect.top-62;
-  const top=Math.min(Math.max(12,desiredTop),Math.max(12,vh-height-12));
-  panel.style.setProperty('--dm-popup-left',Math.round(left)+'px');
-  panel.style.setProperty('--dm-popup-top',Math.round(top)+'px');
-  panel.style.setProperty('--dm-popup-width',Math.round(width)+'px');
- }
 }
 document.addEventListener('contextmenu',e=>{
  const bubble=e.target.closest('.bubble-chat[data-message-id]');
