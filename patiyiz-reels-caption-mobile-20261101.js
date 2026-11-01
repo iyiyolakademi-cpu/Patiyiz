@@ -24,7 +24,7 @@
       requestAnimationFrame(() => {
         if (!button.isConnected) return;
         const clipped = text.scrollHeight > text.clientHeight + 3;
-        if (!clipped) button.hidden = true;
+        if (!clipped && length < 106) button.hidden = true;
       });
     }
   }
