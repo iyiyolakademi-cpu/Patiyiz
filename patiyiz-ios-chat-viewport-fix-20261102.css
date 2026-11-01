@@ -1,0 +1,71 @@
+/* iPhone standalone DM repair: only active chat, not home/feed/profile.
+   Keep header, timeline and composer in one viewport-sized flex column. */
+@media (max-width:740px){
+  #app-root:not(.hidden):has(.pati-dm-layout.mobile-chat-open)>.mobile-header{
+    display:none!important;
+  }
+  #app-root:not(.hidden):has(.pati-dm-layout.mobile-chat-open)>.app-shell{
+    position:fixed!important;
+    inset:0!important;
+    padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)!important;
+    margin:0!important;
+    width:100%!important;height:100dvh!important;
+    max-height:100dvh!important;
+    overflow:hidden!important;
+    display:flex!important;flex-direction:column!important;
+    box-sizing:border-box!important;
+  }
+  #app-root:not(.hidden):has(.pati-dm-layout.mobile-chat-open)>.app-shell>#main-content,
+  #app-root:not(.hidden):has(.pati-dm-layout.mobile-chat-open) #main-content{
+    display:flex!important;flex:1 1 auto!important;min-height:0!important;
+    height:100%!important;max-height:100%!important;
+    padding:0!important;margin:0!important;overflow:hidden!important;
+  }
+  #main-content .pati-dm-layout.mobile-chat-open{
+    position:relative!important;top:auto!important;transform:none!important;
+    flex:1 1 auto!important;display:flex!important;
+    height:100%!important;max-height:100%!important;min-height:0!important;
+    padding:0!important;margin:0!important;overflow:hidden!important;
+  }
+  #main-content .pati-dm-layout.mobile-chat-open .chat-window{
+    flex:1 1 auto!important;display:flex!important;flex-direction:column!important;
+    height:100%!important;min-height:0!important;max-height:100%!important;
+    margin:0!important;padding:0!important;overflow:hidden!important;
+  }
+  #main-content .pati-dm-layout.mobile-chat-open .chat-window>header{
+    position:relative!important;inset:auto!important;transform:none!important;
+    flex:0 0 auto!important;margin:0!important;
+    min-height:60px!important;padding:8px 10px!important;
+    background:#fff!important;backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;opacity:1!important;
+  }
+  #main-content .pati-dm-layout.mobile-chat-open .chat-history{
+    flex:1 1 0!important;min-height:0!important;
+    height:auto!important;max-height:none!important;
+    overflow-x:hidden!important;overflow-y:auto!important;
+    padding:12px 10px!important;
+    display:block!important;
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior:contain!important;
+  }
+  #main-content .pati-dm-layout.mobile-chat-open .chat-history>.bubble-chat{
+    height:auto!important;min-height:0!important;
+    margin-block:6px!important;
+  }
+  #main-content .pati-dm-layout.mobile-chat-open .chat-form{
+    position:relative!important;inset:auto!important;transform:none!important;
+    flex:0 0 auto!important;margin:0!important;
+    background:#fff!important;
+    padding:7px 9px!important;min-height:60px!important;
+    box-sizing:border-box!important;
+  }
+  #main-content .pati-dm-layout.mobile-chat-open .pati-dm-image-open{
+    display:block!important;max-width:min(250px,70vw)!important;
+    padding:0!important;border:0!important;overflow:hidden!important;
+    border-radius:12px!important;background:#f3f4f6!important;
+  }
+  #main-content .pati-dm-layout.mobile-chat-open .pati-dm-image-open img.pati-dm-image{
+    display:block!important;width:100%!important;max-width:100%!important;
+    height:auto!important;max-height:300px!important;object-fit:contain!important;
+  }
+}
