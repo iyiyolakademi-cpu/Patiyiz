@@ -6,17 +6,11 @@
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#05cba8",
-  "theme_color": "#05cba8",
+  "background_color": "#9fd3c9",
+  "theme_color": "#9fd3c9",
   "icons": [
     {
-      "src": "logo-social-20261101.svg?v=3",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any"
-    },
-    {
-      "src": "social-apple-touch-icon-180.png?v=3",
+      "src": "social-final-logo-20261101.png?v=4",
       "sizes": "180x180",
       "type": "image/png",
       "purpose": "any"
