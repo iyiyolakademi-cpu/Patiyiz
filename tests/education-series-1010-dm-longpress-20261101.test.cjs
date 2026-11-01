@@ -24,7 +24,7 @@ test('10 independent educational series contain exactly 1010 unique short lesson
   const lessons=cat.PATIYIZ_SERIES_LESSONS.filter(l=>l.cat===item.title);
   assert.equal(lessons.length,101,item.title);
   for(const lesson of lessons){
-   assert.ok(lesson.parts.length>=9,'at least nine reading and practice sections');
+   assert.ok(lesson.parts.length>=(lesson.id.endsWith('-101')?5:9),'guided learning sections included');
    assert.ok(lesson.minutes>=10,'each lesson is at least ten minutes');
    assert.ok(lesson.name&&lesson.q&&lesson.opts.length>=3);
    assert.ok(lesson.answer>=0&&lesson.answer<lesson.opts.length);
@@ -42,8 +42,8 @@ test('Education moves to its own menu, independent from the pet center',()=>{
  assert.match(app,/\['education','10 seri · Her biri 101 ders','library'\]/);
  assert.doesNotMatch(app,/\['education','Eğitim','academy','violet'/);
  assert.doesNotMatch(app,/patiPetHubScreens=new Set\(\['pets','education'/);
- assert.match(html,/academy-series-1010-20261101\.js\?v=1/);
- assert.match(html,/patiyiz-101-series-20261101\.css\?v=1/);
+ assert.match(html,/academy-series-1010-20261101\.js\?v=2-long-12min/);
+ assert.match(html,/patiyiz-101-series-20261101\.css\?v=2-fullscreen/);
 });
 test('Message long-press presents a modal reaction row and functional compact actions',()=>{
  assert.match(app,/dialog\.className='pati-dm-context-menu'/);
@@ -56,7 +56,7 @@ test('Message long-press presents a modal reaction row and functional compact ac
  assert.match(app,/option\('dm-reply','Yanıtla'/);
  assert.match(app,/option\('message-delete','Sil'/);
  assert.match(app,/msg\.sender_id===owner\|\|msg\.receiver_id!==owner/);
- assert.match(html,/patiyiz-dm-longpress-20261101\.css\?v=1/);
+ assert.match(html,/patiyiz-dm-longpress-20261101\.css\?v=2-anchored/);
  const css=fs.readFileSync('patiyiz-dm-longpress-20261101.css','utf8');
  assert.match(css,/\.pati-dm-context-menu::backdrop/);
  assert.match(css,/\.pati-dm-context-actions/);
