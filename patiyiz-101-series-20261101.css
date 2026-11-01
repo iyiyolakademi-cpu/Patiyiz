@@ -70,3 +70,83 @@
  #main-content .pati-ref-academy-topic strong{font-size:15px!important}
 }
 @media(prefers-reduced-motion:reduce){#main-content .pati-ref-academy-topic{transition:none!important}}
+
+
+/* True full-screen 101 learning environment on phone and desktop.
+   The application's header/navigation stay behind the learning view. */
+#app-root:not(.hidden) #main-content>.pati-edu{
+ position:fixed!important;
+ inset:0!important;
+ width:100vw!important;height:100dvh!important;
+ min-width:0!important;max-width:none!important;
+ z-index:25000!important;
+ overflow-y:auto!important;overscroll-behavior:contain!important;
+ -webkit-overflow-scrolling:touch!important;
+ margin:0!important;border:0!important;border-radius:0!important;
+ background:#f7f7f9!important;
+ padding:max(18px,env(safe-area-inset-top,0px)) max(16px,calc((100vw - 960px) / 2)) max(32px,env(safe-area-inset-bottom,0px))!important;
+ box-sizing:border-box!important;
+}
+#app-root:not(.hidden) #main-content>.pati-edu *{box-sizing:border-box!important}
+#main-content .pati-edu-fullscreen-top{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ gap:12px!important;min-height:48px!important;margin:0 0 12px!important;
+}
+#main-content .pati-edu-fullscreen-top button{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ min-height:44px!important;padding:10px 15px!important;
+ color:#17191e!important;background:#fff!important;
+ border:1px solid #e3e5ea!important;border-radius:13px!important;
+ font-size:14px!important;font-weight:790!important;
+}
+#main-content .pati-edu-fullscreen-top span{
+ color:#343740!important;font-weight:760!important;font-size:15px!important;
+}
+#main-content .pati-edu-duration-guide{
+ display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:8px!important;
+ margin:0 0 24px!important;padding:17px 18px!important;
+ background:#f0f2f5!important;border:1px solid #e0e3e9!important;
+ border-radius:17px!important;color:#22252a!important;
+}
+#main-content .pati-edu-duration-guide strong{
+ color:#17191e!important;font-size:16px!important;font-weight:850!important;
+}
+#main-content .pati-edu-duration-guide>span{
+ color:#343940!important;font-size:14px!important;line-height:1.45!important;
+}
+#main-content .pati-edu-duration-guide small{
+ color:#717680!important;font-size:12px!important;line-height:1.5!important;
+ margin-top:4px!important;
+}
+#main-content .pati-edu-lesson-body .pati-edu-step{
+ display:flex!important;flex-direction:column!important;gap:10px!important;
+ padding:19px!important;margin:0 0 13px!important;
+ border:1px solid #e4e6eb!important;border-radius:17px!important;
+ background:#fff!important;color:#25272d!important;
+}
+#main-content .pati-edu-step p{
+ margin:0!important;max-width:75ch!important;font-size:15px!important;
+ line-height:1.75!important;color:#34383f!important;white-space:pre-line!important;
+}
+#main-content .pati-edu-lesson-body .pati-edu-step>b{
+ display:grid!important;place-items:center!important;width:33px!important;height:33px!important;
+ border-radius:11px!important;background:#eef0f4!important;color:#191b20!important;
+ font-size:13px!important;
+}
+#main-content .pati-edu-lesson-head h1{font-size:clamp(24px,4vw,34px)!important;line-height:1.24!important}
+#main-content .pati-edu-quiz{
+ padding:19px!important;margin-top:22px!important;
+ border:1px solid #e2e5ea!important;border-radius:18px!important;
+ background:#fff!important;
+}
+#main-content .edu-v2-lesson-nav button{min-height:46px!important}
+@media(max-width:740px){
+ #app-root:not(.hidden) #main-content>.pati-edu{
+  inset:0!important;padding:calc(env(safe-area-inset-top,0px) + 10px) 14px calc(env(safe-area-inset-bottom,0px) + 28px)!important;
+  height:100dvh!important;width:100vw!important;
+ }
+ #main-content .pati-ref-academy-topics{grid-template-columns:minmax(0,1fr)!important}
+ #main-content .pati-edu-duration-guide{padding:15px!important}
+ #main-content .pati-edu-lesson-body .pati-edu-step{padding:16px!important}
+ #main-content .pati-edu-step p{font-size:14px!important;line-height:1.7!important}
+}
