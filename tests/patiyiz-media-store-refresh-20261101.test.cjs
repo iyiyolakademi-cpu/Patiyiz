@@ -61,5 +61,5 @@ test('Shop contains four actual options, clear stock limitations and planned cas
  assert.match(markup,/data-action="paticoin-rewards"/);
  assert.match(css,/\.pati-calm-grid/);
  assert.match(css,/\.pati-calm-progress/);
- assert.match(html,/patiyiz-media-store-refresh-20261101\.css\?v=3/);
+ assert.match(html,/patiyiz-media-store-refresh-20261101\.css\?v=4/);
 });
