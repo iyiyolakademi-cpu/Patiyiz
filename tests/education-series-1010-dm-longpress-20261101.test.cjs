@@ -32,7 +32,7 @@ test('10 independent educational series contain exactly 1010 unique short lesson
  }
  assert.match(app,/lesson\.subtopic=lesson\.cat;lesson\.cat='101 Hayvan'/);
  assert.match(app,/lesson\.minutes=12/);
- assert.match(app,/pati-edu-duration-guide/);
+ assert.match(app,/PatiyizLessonWorkshop\.render/);
  const fullCss=fs.readFileSync('patiyiz-101-series-20261101.css','utf8');
  assert.match(fullCss,/#app-root:not\(\.hidden\) #main-content>\.pati-edu/);
  assert.match(app,/data-action="education-exit"/);
@@ -49,15 +49,34 @@ test('Message long-press presents a modal reaction row and functional compact ac
  assert.match(app,/dialog\.className='pati-dm-context-menu'/);
  assert.match(app,/dialog\.showModal\(\)/);
  assert.match(app,/getBoundingClientRect\(\)/);
- assert.match(app,/--dm-popup-top/);
+ assert.match(app,/--pati-dm-context-top/);
  assert.match(app,/pati-dm-context-reactions/);
  assert.match(app,/data-action="dm-react-set"/);
  assert.match(app,/dm-context-copy/);
  assert.match(app,/option\('dm-reply','Yanıtla'/);
- assert.match(app,/option\('message-delete','Sil'/);
+ assert.match(app,/option\('message-delete','Gönderimi geri al'/);
  assert.match(app,/msg\.sender_id===owner\|\|msg\.receiver_id!==owner/);
- assert.match(html,/patiyiz-dm-longpress-20261101\.css\?v=2-anchored/);
+ assert.match(html,/patiyiz-dm-longpress-20261101\.css\?v=v3-context-overlay/);
  const css=fs.readFileSync('patiyiz-dm-longpress-20261101.css','utf8');
  assert.match(css,/\.pati-dm-context-menu::backdrop/);
  assert.match(css,/\.pati-dm-context-actions/);
+});
+
+test('Long lessons use active study time, six guided chapters and full-screen layout',()=>{
+ const src=fs.readFileSync('patiyiz-lesson-workshop-20261101.js','utf8');
+ const css=fs.readFileSync('patiyiz-lesson-workshop-20261101.css','utf8');
+ const ctx={window:{},localStorage:{getItem:()=>null}};vm.createContext(ctx);vm.runInContext(src,ctx);
+ const example={id:'s101-girisim-001',name:'Problem keşfi — Temel Kavram',cat:'101 Girişimcilik',desc:'Kullanıcıların gerçek sorunlarını anlamak',parts:['Sorunu doğru belirle','Örnekleri incele','Küçük bir deney yap']};
+ const sections=ctx.window.PatiyizLessonWorkshop.sections(example);
+ assert.equal(sections.length,6);
+ assert.equal(sections.reduce((t,x)=>t+x.duration,0),12);
+ assert.ok(sections.every(x=>x.text.length>=3&&x.task.length>50));
+ assert.match(src,/MIN_SECONDS=600/);
+ assert.match(src,/document\.visibilityState!=='visible'/);
+ assert.match(app,/PatiyizLessonWorkshop\.ready\(id,me\?\.id\)/);
+ assert.match(css,/position:fixed!important;inset:0!important/);
+ assert.match(html,/patiyiz-lesson-workshop-20261101\.js\?v=1/);
+ assert.match(html,/patiyiz-lesson-workshop-20261101\.css\?v=1/);
+ assert.match(app,/case 'dm-hide-for-me'/);
+ assert.match(app,/option\('dm-hide-for-me','Kendin için sil'/);
 });
