@@ -1,0 +1,61 @@
+name: Patiyiz Pages - Safe Serial Deployment
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: read
+concurrency:
+  group: patiyiz-pages-production
+  cancel-in-progress: false
+jobs:
+  check-publishing-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    permissions:
+      pages: read
+    outputs:
+      enabled: ${{ steps.source.outputs.enabled }}
+    steps:
+      - name: Check that Pages is configured for GitHub Actions
+        id: source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mode=$(gh api "repos/${GITHUB_REPOSITORY}/pages" --jq '.build_type // "legacy"' 2>/dev/null || echo disabled)
+          echo "GitHub Pages publishing source: $mode"
+          if [[ "$mode" == "workflow" ]]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::To deploy with this workflow, set Settings > Pages > Build and deployment > Source to GitHub Actions."
+          fi
+  deploy:
+    needs: check-publishing-source
+    if: needs.check-publishing-source.outputs.enabled == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - name: Check out approved main revision
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Upload static Patiyiz site
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: '.'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
