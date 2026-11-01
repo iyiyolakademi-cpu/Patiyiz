@@ -26,6 +26,11 @@
   width:26px!important;height:26px!important;flex-shrink:0!important;
   stroke-width:2.35!important;
 }
+/* Instagram's bookmark stays isolated at the far right without a
+   number next to it; the metric itself remains in the DOM for tracking. */
+#main-content .pati-feed-card .pati-actionbar.pati-social-actions>button[data-action="save"] .pati-engagement-metric{
+  display:none!important;
+}
 @media(max-width:370px){
  #main-content .pati-feed-card .pati-actionbar.pati-social-actions{
   gap:0!important;padding:4px 6px!important;
