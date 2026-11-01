@@ -472,8 +472,9 @@ function patiMenuRenderNotifications(){
 function openMobileFeaturesMenu(){
  const groups=[
   {title:'Topluluk',tone:'purple',items:[['community','Soru & Cevap','users']]},
+   {title:'101 Eğitim Serileri',tone:'blue',items:[['education','10 seri · Her biri 101 ders','library']]},
   {title:'Hayvanım',tone:'green',items:[['my-pet','Hayvanım Merkezi · Tüm seçenekler','heart']]},
-  {title:'PatiCoin ve koleksiyonum',tone:'orange',items:[['rewards','PatiCoin Merkezi','grid'],['streaks','Seriler','calendar'],['shop','Pati Mağaza','grid'],['saved-posts','Kaydettiğim gönderiler','bookmark']]},
+  {title:'PatiCoin ve koleksiyonum',tone:'orange',items:[['rewards','PatiCoin Merkezi','grid'],['streaks','Günlük Seriler','calendar'],['shop','Pati Mağaza','grid'],['saved-posts','Kaydettiğim gönderiler','bookmark']]},
   {title:'Hesabım',tone:'blue',items:[['settings','Ayarlar ve gizlilik','settings'],['blocked','Engellediğim kişiler','shield']]}
  ];
  const sections=groups.map(group=>'<section class="pati-feature-group pati-menu-tone-'+group.tone+'"><h3>'+esc(group.title)+'</h3><div class="pati-mobile-menu-list">'+
@@ -897,7 +898,7 @@ function patiBuildPostStats(likes,comments,hiddenAuthors){
  return stats;
 }
 let patiPetHubOrigin=false;
-const patiPetHubScreens=new Set(['pets','education','knowledge','lost','adoption','community','shop']);
+const patiPetHubScreens=new Set(['pets','knowledge','lost','adoption','community','shop']);
 function patiPetHubBackButton(){
  if(!patiPetHubOrigin||!patiPetHubScreens.has(view))return;
  const root=main.querySelector('section');if(!root)return;
@@ -2824,6 +2825,9 @@ const patiyizLessons=[
 {id:'small',name:'Tavşan ve küçük memeliler',cat:'Diğer',icon:'🐇',minutes:6,desc:'Alan, beslenme ve stresin azaltılması',parts:['Tavşanlar ve küçük memeliler türlerine uygun geniş hareket alanına ve saklanma noktalarına ihtiyaç duyar.','Tavşanlarda uygun lif kaynağı önemlidir; yem seçimi ve yaşam koşullarını tür konusunda deneyimli veterinerle değerlendir.','Bu hayvanların bazıları av türüdür; zorla kucağa almak yoğun strese neden olabilir.'],q:'Küçük memeliler için hangisi daha uygundur?',opts:['Zorla tutmak','Türüne uygun alan ve sakin yaklaşım','Her türü aynı şekilde beslemek'],answer:1}
 ];
 patiyizLessons.push(...(window.PATIYIZ_EXTRA_LESSONS||[]));
+// Keep every original animal lesson ID and completion record while creating its independent series.
+for(const lesson of patiyizLessons){lesson.subtopic=lesson.cat;lesson.cat='101 Hayvan';lesson.series='101 Hayvan'}
+patiyizLessons.push(...(window.PATIYIZ_SERIES_LESSONS||[]));
 let educationCategory='Tümü',educationLesson='',educationAnswer={},educationSearch='';
 let educationCloudDone=new Set(),educationCloudUser='';
 function educationLocalDone(){try{return new Set(JSON.parse(localStorage.getItem('patiyiz-edu-'+(me?.id||'guest'))||'[]'))}catch{return new Set()}}
@@ -2891,7 +2895,6 @@ function patiMyPetCenterPage(){
    ['care','Bakım Takvimi','calendar','sky','📅','tab'],
    ['wellness','Sağlık','pulse','pink','💗','tab'],
    ['own-pets','Hayvanlarım','pets','peach','🐱','tab'],
-   ['education','Eğitim','academy','violet','🎓','view'],
    ['knowledge','Bilgi Merkezi','book','aqua','📖','view'],
    ['lost','Kayıp İlanları','lost','coral','🔎','view'],
    ['adoption','Sahiplendirme','adopt','rose','🐾','view'],
@@ -2986,7 +2989,7 @@ function educationTopicNext(topic,done){
 }
 function educationTopicArtwork(topic){
  const files={Kedi:'pati-illustration-cat.svg',Köpek:'pati-illustration-dog.svg',Kuş:'pati-illustration-bird.svg',Balık:'pati-illustration-fish.svg'};
- const symbols={Genel:'🐾',Sağlık:'🩺',Beslenme:'🥣',Sahiplendirme:'🏠','İlk Yardım':'⛑️',Diğer:'📚'};
+ const symbols=Object.fromEntries((window.PATIYIZ_SERIES_CATALOG||[]).map(x=>[x.title,x.icon]));
  return files[topic]?'<img src="'+files[topic]+'" alt="'+esc(topic)+' illüstrasyonu" loading="lazy" decoding="async">':
   '<span class="pati-academy-topic-art-icon" aria-hidden="true">'+esc(symbols[topic]||'📚')+'</span>';
 }
@@ -3027,7 +3030,7 @@ function educationPage(){
    +'<div class="pati-edu-next edu-v2-lesson-nav">'+(prev?'<button type="button" class="edu-v2-previous" data-action="education-previous" data-id="'+esc(prev.id)+'">← Önceki ders</button>':'<span></span>')
    +(next?nextReady?'<button type="button" data-action="education-next" data-id="'+esc(next.id)+'">Sıradaki ders →</button>':'<button type="button" disabled aria-disabled="true" class="pati-edu-next-locked">🔒 Önce bu dersi tamamla</button>':
    '<button type="button" data-action="education-back">Konu derslerine dön ✓</button>')+'</div>'
-   +'<p class="pati-edu-notice">Eğitim amaçlıdır; veteriner muayenesi ve kişisel uzman görüşünün yerini almaz.</p></div></section>';
+   +'<p class="pati-edu-notice">Bu ders genel eğitim amaçlıdır; gerektiğinde konunun uzmanına danış.</p></div></section>';
   return;
  }
  if(educationCategory==='Tümü'){
@@ -3037,11 +3040,11 @@ function educationPage(){
    return '<button type="button" class="pati-ref-academy-topic pati-ref-topic-'+accents[i%accents.length]+'" data-action="education-filter" data-id="'+esc(topic)+'"><span class="pati-ref-academy-topic-copy"><strong>'+esc(topic)+'</strong><small>'+done+' / '+lessons.length+' ders tamamlandı</small><span class="pati-topic-open">Eğitimleri aç ›</span></span>'+educationTopicArtwork(topic)+'</button>';
   };
   main.innerHTML='<section class="pati-edu pati-edu-v2 pati-ref-academy-home pati-edu-path-home">'
-   +'<header class="pati-ref-academy-header"><div><span>🐾 PATİYİZ AKADEMİ</span><h1>Eğitimleri Keşfet</h1><p>Öğrenmek istediğin konuyu seç. Dersler sırayla açılacak.</p></div></header>'
-   +(typeof window!=='undefined'&&window.PatiyizDelight?.academyIntro(completedCount,patiyizLessons.length)||'')+'<div class="pati-ref-academy-section"><h2>Konunu seç</h2><span>'+topics.length+' eğitim konusu</span></div>'
+   +'<header class="pati-ref-academy-header"><div><span>101 EĞİTİM SERİLERİ</span><h1>Öğrenmek istediğin seriyi seç</h1><p>10 bağımsız seri. Her seride 101 kısa ders ve mini sınav var.</p></div></header>'
+   +'<div class="pati-ref-academy-section"><h2>101 Ders Serileri</h2><span>'+topics.length+' ayrı seri</span></div>'
    +'<div class="pati-ref-academy-topics">'+topics.map(topicCard).join('')+'</div>'
    +'<div class="pati-academy-total-progress" role="status"><strong>'+completedCount+' / '+patiyizLessons.length+' ders tamamlandı</strong><div class="pati-edu-progressbar" role="progressbar" aria-label="Akademi tamamlanma oranı" aria-valuenow="'+progress+'" aria-valuemin="0" aria-valuemax="100"><span style="width:'+progress+'%"></span></div><small>Her tamamlanan ders ilerlemene kaydedilir.</small></div>'
-   +'<p class="pati-edu-notice">10 konuda 101 ücretsiz ders. Eğitimler genel bilgi amaçlıdır; veteriner önerilerinin yerini almaz.</p></section>';
+   +'<p class="pati-edu-notice">10 bağımsız seri ve toplam '+patiyizLessons.length+' kısa ders. Eğitimler genel bilgi amaçlıdır; uzman görüşünün yerini almaz.</p></section>';
   return;
  }
  const topic=educationTopicLessons(educationCategory);
@@ -3051,8 +3054,8 @@ function educationPage(){
  const categoryProgress=Math.round(topicDone*100/topic.length);
  main.innerHTML='<section class="pati-edu pati-edu-v2 pati-ref-academy-list pati-edu-path-list">'
   +'<div class="pati-ref-topic-toolbar"><button type="button" data-action="pati-academy-home">← Eğitimleri Keşfet</button></div>'
-  +'<div class="pati-edu-path-topic-head"><div class="pati-edu-path-topic-icon">'+educationTopicArtwork(educationCategory)+'</div><div><span>PATİYİZ AKADEMİ</span><h1>'+esc(educationCategory)+' Eğitimleri</h1><p>Konuları sırayla tamamla. Bir dersi bitirdiğinde sıradaki açılır.</p></div></div>'
-  +(typeof window!=='undefined'&&window.PatiyizDelight?.academyIntro(topicDone,topic.length)||'')+'<div class="pati-edu-path-progress"><div><strong>'+topicDone+' / '+topic.length+' ders tamamlandı</strong><small>%'+categoryProgress+' tamamlandı</small></div><div class="pati-edu-progressbar" role="progressbar" aria-label="Bu konunun tamamlanma oranı" aria-valuenow="'+categoryProgress+'" aria-valuemin="0" aria-valuemax="100"><span style="width:'+categoryProgress+'%"></span></div></div>'
+  +'<div class="pati-edu-path-topic-head"><div class="pati-edu-path-topic-icon">'+educationTopicArtwork(educationCategory)+'</div><div><span>101 EĞİTİM SERİLERİ</span><h1>'+esc(educationCategory)+'</h1><p>101 kısa dersi sırayla tamamla. Seriler birbirinden bağımsız ilerler.</p></div></div>'
+  +'<div class="pati-edu-path-progress"><div><strong>'+topicDone+' / '+topic.length+' ders tamamlandı</strong><small>%'+categoryProgress+' tamamlandı</small></div><div class="pati-edu-progressbar" role="progressbar" aria-label="Bu konunun tamamlanma oranı" aria-valuenow="'+categoryProgress+'" aria-valuemin="0" aria-valuemax="100"><span style="width:'+categoryProgress+'%"></span></div></div>'
   +(next?'<button type="button" class="pati-edu-path-start" data-action="education-continue" data-id="'+esc(next.id)+'">▶ '+(topicDone?'Kaldığın yerden devam et':'İlk derse başla')+'</button>':'<p class="pati-edu-path-complete">✓ Bu konunun tüm derslerini tamamladın.</p>')
   +'<div class="edu-v2-results-head"><h2>Dersler ve Konular</h2><span>'+topic.length+' ders</span></div>'
   +'<div id="pati-edu-result-list" class="pati-edu-path-items" role="list">'+educationPathCards(educationCategory,completed)+'</div>'
