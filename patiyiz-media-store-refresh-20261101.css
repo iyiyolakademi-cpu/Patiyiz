@@ -193,3 +193,179 @@
 #post-form .pati-cover-crop-row{display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:8px!important;margin:11px 0!important;padding:10px 12px!important;border:1px solid #e5e8ed!important;border-radius:13px!important;background:#f9fafb!important}
 #post-form .pati-cover-crop-row button{min-height:43px!important;padding:10px 15px!important;border:1px solid #dfe2e7!important;border-radius:11px!important;background:#fff!important;color:#222630!important;font-size:12px!important;font-weight:800!important}
 #post-form .pati-cover-crop-row small{color:#777e88!important;font-size:11px!important;line-height:1.4!important}
+
+
+/* 2026-11-01 · Four-item shop, no category navigation. */
+#main-content .pati-calm-shop{
+ width:min(100%,980px)!important;margin:0 auto!important;
+ padding:18px clamp(13px,3vw,26px) calc(96px + env(safe-area-inset-bottom,0px))!important;
+ color:#181a1f!important;box-sizing:border-box!important;overflow-x:hidden!important;
+}
+#main-content .pati-calm-header{margin-bottom:18px!important;padding:7px 2px!important}
+#main-content .pati-calm-header>span{
+ display:block!important;font-size:10px!important;letter-spacing:.15em!important;
+ font-weight:850!important;color:#787d87!important;
+}
+#main-content .pati-calm-header h1{
+ margin:7px 0 8px!important;color:#15181e!important;font-size:clamp(26px,5vw,37px)!important;
+ font-weight:850!important;letter-spacing:-.04em!important;line-height:1.2!important;
+}
+#main-content .pati-calm-header p{margin:0!important;color:#767b86!important;font-size:13px!important;line-height:1.6!important}
+#main-content .pati-calm-wallet{
+ border-radius:23px!important;padding:clamp(17px,3vw,25px)!important;
+ background:#1a1d25!important;color:#fff!important;margin:0 0 27px!important;
+ border:1px solid #313542!important;
+}
+#main-content .pati-calm-wallet-top{display:flex!important;gap:14px!important;align-items:center!important;justify-content:space-between!important}
+#main-content .pati-calm-wallet-top>div{display:flex!important;flex-direction:column!important;gap:3px!important}
+#main-content .pati-calm-wallet-top small{
+ color:#bbc1cb!important;font-size:10px!important;font-weight:800!important;letter-spacing:.12em!important;
+}
+#main-content .pati-calm-wallet-top strong{
+ color:white!important;font-size:clamp(28px,5vw,38px)!important;font-weight:850!important;letter-spacing:-.035em!important;
+ font-variant-numeric:tabular-nums!important;
+}
+#main-content .pati-calm-wallet-top button{
+ border:1px solid #ffffff31!important;background:#ffffff16!important;color:#fff!important;
+ padding:10px 12px!important;border-radius:12px!important;min-height:44px!important;
+ font-weight:750!important;font-size:12px!important;text-align:center!important;
+}
+#main-content .pati-calm-cash{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;flex-wrap:wrap!important;
+ gap:12px!important;margin:20px 0 14px!important;padding-top:20px!important;border-top:1px solid #ffffff24!important;
+}
+#main-content .pati-calm-cash-label{
+ display:block!important;font-size:10px!important;letter-spacing:.12em!important;
+ color:#aeb6c1!important;font-weight:800!important;
+}
+#main-content .pati-calm-cash h2{
+ margin:8px 0 0!important;font-size:clamp(20px,4vw,29px)!important;letter-spacing:-.035em!important;
+ color:#fff!important;line-height:1.25!important;
+}
+#main-content .pati-calm-cash h2 span{color:#aab4c5!important;padding:0 5px!important}
+#main-content .pati-calm-planned{
+ background:#343b49!important;border:1px solid #ffffff2b!important;color:#dee2eb!important;
+ font-size:11px!important;border-radius:999px!important;padding:8px 12px!important;font-weight:800!important;
+}
+#main-content .pati-calm-progress{
+ width:100%!important;height:9px!important;background:#404651!important;border-radius:99px!important;
+ margin:0 0 10px!important;overflow:hidden!important;
+}
+#main-content .pati-calm-progress>span{
+ display:block!important;height:100%!important;border-radius:inherit!important;
+ background:#d8dce8!important;transition:width .2s ease!important;
+}
+#main-content .pati-calm-progress-meta{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;font-size:12px!important}
+#main-content .pati-calm-progress-meta span{color:#b5bdc9!important}
+#main-content .pati-calm-progress-meta strong{color:#fff!important;font-weight:800!important;font-variant-numeric:tabular-nums!important}
+#main-content .pati-calm-program-note{
+ margin:15px 0 0!important;color:#b5bdc7!important;font-size:11px!important;line-height:1.7!important;
+}
+#main-content .pati-calm-section-head{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;
+ margin:0 0 14px!important;
+}
+#main-content .pati-calm-section-head h2{color:#1c1f26!important;font-size:20px!important;letter-spacing:-.03em!important;margin:0!important}
+#main-content .pati-calm-section-head span{color:#898d98!important;font-size:12px!important;font-weight:700!important}
+#main-content .pati-calm-grid{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ gap:14px!important;align-items:stretch!important;min-width:0!important;
+}
+#main-content .pati-calm-item{
+ display:flex!important;flex-direction:column!important;border-radius:20px!important;
+ border:1px solid #e6e8ed!important;background:#fff!important;overflow:hidden!important;
+ min-width:0!important;box-shadow:0 5px 16px rgba(28,33,49,.04)!important;
+}
+#main-content .pati-calm-item-art{
+ min-height:126px!important;display:flex!important;align-items:center!important;justify-content:center!important;
+ flex-direction:column!important;gap:9px!important;padding:16px!important;
+ background:linear-gradient(135deg,#f2f1ec,#e3e0d6)!important;
+}
+#main-content .pati-calm-item:nth-child(2) .pati-calm-item-art{background:linear-gradient(135deg,#edf0f5,#dfe7f0)!important}
+#main-content .pati-calm-item:nth-child(3) .pati-calm-item-art{background:linear-gradient(135deg,#edf3ee,#dfede3)!important}
+#main-content .pati-calm-item:nth-child(4) .pati-calm-item-art{background:linear-gradient(135deg,#f0f3e6,#dfe6c7)!important}
+#main-content .pati-calm-item-art>span{font-size:56px!important;line-height:1!important}
+#main-content .pati-calm-item-art>small{
+ font-size:10px!important;color:#4c515d!important;font-weight:850!important;letter-spacing:.12em!important;
+}
+#main-content .pati-calm-item-content{
+ display:flex!important;flex:1!important;flex-direction:column!important;
+ gap:9px!important;padding:16px!important;
+}
+#main-content .pati-calm-item-content h3{
+ margin:0!important;font-size:16px!important;line-height:1.35!important;
+ color:#252a32!important;font-weight:830!important;
+}
+#main-content .pati-calm-item-content>p{
+ margin:0!important;min-height:35px!important;color:#777c85!important;
+ font-size:12px!important;line-height:1.55!important;
+}
+#main-content .pati-calm-item-state{
+ color:#767b86!important;font-size:11px!important;font-weight:760!important;
+}
+#main-content .pati-calm-item-state.is-open{color:#267551!important}
+#main-content .pati-calm-item-bottom{
+ display:flex!important;justify-content:space-between!important;align-items:center!important;
+ gap:12px!important;margin-top:auto!important;padding-top:12px!important;
+ border-top:1px solid #eff0f3!important;
+}
+#main-content .pati-calm-cost{display:flex!important;align-items:baseline!important;gap:5px!important;white-space:nowrap!important}
+#main-content .pati-calm-cost strong{
+ font-size:23px!important;letter-spacing:-.04em!important;line-height:1.1!important;
+ color:#191c23!important;font-variant-numeric:tabular-nums!important;
+}
+#main-content .pati-calm-cost small{font-size:11px!important;color:#7d838b!important}
+#main-content .pati-calm-item-bottom button{
+ min-height:42px!important;min-width:96px!important;padding:10px 13px!important;
+ border:0!important;border-radius:11px!important;background:#1d2028!important;
+ color:#fff!important;font-size:12px!important;font-weight:800!important;white-space:nowrap!important;
+}
+#main-content .pati-calm-item-bottom button:disabled{background:#eff0f3!important;color:#9399a1!important;cursor:not-allowed!important}
+#main-content .pati-calm-item-foot{margin-top:3px!important;font-size:10px!important;line-height:1.5!important;color:#9095a0!important}
+#main-content .pati-calm-rules{
+ border:1px solid #e8eaee!important;border-radius:15px!important;background:#fafbfd!important;
+ margin:18px 0!important;padding:16px!important;font-size:11px!important;line-height:1.65!important;color:#777d86!important;
+}
+#main-content .pati-calm-rules strong{color:#3a404a!important}
+#main-content .pati-calm-history{
+ border:1px solid #e6e8ed!important;border-radius:15px!important;background:#fff!important;
+ margin:0 0 15px!important;padding:0 15px!important;
+}
+#main-content .pati-calm-history summary{
+ display:flex!important;justify-content:space-between!important;gap:12px!important;
+ list-style:none!important;cursor:pointer!important;padding:16px 0!important;
+ font-size:13px!important;font-weight:800!important;color:#242831!important;
+}
+#main-content .pati-calm-history summary::-webkit-details-marker{display:none}
+#main-content .pati-calm-history summary>span:last-child{color:#858b95!important;font-size:11px!important}
+#main-content .pati-calm-orders{display:grid!important;gap:9px!important;padding:0 0 17px!important}
+#main-content .pati-calm-order{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;flex-wrap:wrap!important;
+ gap:8px!important;padding:12px!important;border:1px solid #edf0f3!important;border-radius:12px!important;
+}
+#main-content .pati-calm-order>div{display:grid!important;gap:5px!important}
+#main-content .pati-calm-order strong{font-size:12px!important;color:#2a2e34!important}
+#main-content .pati-calm-order small,#main-content .pati-calm-order>span{font-size:11px!important;color:#858b95!important}
+#main-content .pati-calm-order p,#main-content .pati-calm-order a{flex-basis:100%!important;font-size:11px!important}
+#main-content .pati-calm-refresh{
+ display:block!important;margin:0 auto!important;padding:9px 13px!important;min-height:40px!important;
+ border:1px solid #e4e7ee!important;border-radius:11px!important;background:#fff!important;
+ color:#49505a!important;font-size:12px!important;font-weight:720!important;
+}
+@media(max-width:530px){
+ #main-content .pati-calm-shop{padding:10px 12px calc(105px + env(safe-area-inset-bottom,0px))!important}
+ #main-content .pati-calm-wallet{border-radius:19px!important;padding:17px!important}
+ #main-content .pati-calm-wallet-top button{font-size:11px!important;max-width:48%!important}
+ #main-content .pati-calm-grid{gap:9px!important}
+ #main-content .pati-calm-item{border-radius:16px!important}
+ #main-content .pati-calm-item-art{min-height:94px!important;padding:13px!important}
+ #main-content .pati-calm-item-art>span{font-size:43px!important}
+ #main-content .pati-calm-item-content{padding:11px!important;gap:7px!important}
+ #main-content .pati-calm-item-content h3{font-size:13px!important}
+ #main-content .pati-calm-item-content>p{font-size:10.5px!important;min-height:43px!important}
+ #main-content .pati-calm-item-bottom{flex-direction:column!important;align-items:stretch!important;gap:8px!important}
+ #main-content .pati-calm-cost strong{font-size:20px!important}
+ #main-content .pati-calm-item-bottom button{min-height:42px!important;width:100%!important}
+}
+@media(max-width:320px){#main-content .pati-calm-grid{grid-template-columns:1fr!important}}
+@media(prefers-reduced-motion:reduce){#main-content .pati-calm-progress>span{transition:none!important}}
