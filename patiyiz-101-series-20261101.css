@@ -1,0 +1,72 @@
+/* 101 Education Series: general social platform, mobile first, not pet-centric. */
+#main-content .pati-edu-path-home,
+#main-content .pati-edu-path-list,
+#main-content .edu-path-detail{
+  width:100%!important;min-width:0!important;max-width:840px!important;
+  margin:0 auto!important;box-sizing:border-box!important;
+  padding:16px 14px calc(95px + env(safe-area-inset-bottom,0px))!important;
+  color:#1c1d22!important;
+}
+#main-content .pati-ref-academy-header{
+  margin:0 0 20px!important;padding:22px 20px!important;
+  background:#191b21!important;color:#fff!important;border-radius:22px!important;
+  box-shadow:none!important;border:1px solid #282b32!important;
+}
+#main-content .pati-ref-academy-header span{color:#c5c8d0!important;font-size:11px!important;letter-spacing:.08em!important}
+#main-content .pati-ref-academy-header h1{color:#fff!important;font-size:27px!important;line-height:1.15!important;letter-spacing:-.035em!important;margin:9px 0!important}
+#main-content .pati-ref-academy-header p{color:#d4d5dc!important;font-size:13px!important}
+#main-content .pati-ref-academy-topics{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:11px!important;width:100%!important;min-width:0!important;
+}
+#main-content .pati-ref-academy-topic{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  box-sizing:border-box!important;width:100%!important;min-width:0!important;
+  min-height:125px!important;padding:14px!important;
+  background:#fff!important;color:#191b21!important;
+  border:1px solid #e6e7eb!important;border-radius:18px!important;
+  box-shadow:none!important;transform:none!important;
+}
+#main-content .pati-ref-academy-topic .pati-ref-academy-topic-copy{
+  display:flex!important;flex:1 1 auto!important;min-width:0!important;
+  flex-direction:column!important;align-items:flex-start!important;gap:5px!important;
+  overflow-wrap:anywhere!important;
+}
+#main-content .pati-ref-academy-topic strong{
+  color:#17191e!important;font-size:15px!important;line-height:1.3!important;
+  font-weight:800!important;overflow-wrap:anywhere!important;
+}
+#main-content .pati-ref-academy-topic small{color:#727781!important;font-size:12px!important}
+#main-content .pati-ref-academy-topic .pati-topic-open{
+  color:#484d58!important;font-size:11px!important;font-weight:730!important;
+}
+#main-content .pati-ref-academy-topic .pati-academy-topic-art-icon{
+  flex:0 0 auto!important;display:grid!important;place-items:center!important;
+  width:47px!important;height:47px!important;margin:0 0 0 7px!important;
+  border-radius:13px!important;background:#f1f2f5!important;
+  font-size:25px!important;line-height:1!important;
+}
+#main-content .pati-edu-path-topic-head,
+#main-content .pati-academy-total-progress,
+#main-content .pati-edu-path-progress{
+  box-sizing:border-box!important;max-width:100%!important;min-width:0!important;
+  border-radius:18px!important;
+}
+#main-content .pati-edu-path-topic-head{background:#f5f6f8!important;color:#17191d!important}
+#main-content .pati-edu-path-topic-head h1{color:#191b20!important;font-size:25px!important;overflow-wrap:anywhere!important}
+#main-content .pati-edu-path-topic-icon .pati-academy-topic-art-icon{font-size:30px!important}
+#main-content .pati-edu-path-items{width:100%!important;max-width:100%!important;min-width:0!important}
+#main-content .pati-edu-path-item{min-width:0!important;max-width:100%!important}
+#main-content .pati-edu-path-copy{min-width:0!important;overflow-wrap:anywhere!important}
+#main-content .pati-edu-notice{color:#727680!important;line-height:1.55!important}
+@media(max-width:560px){
+ #main-content .pati-edu-path-home,#main-content .pati-edu-path-list,#main-content .edu-path-detail{
+  padding:12px 12px calc(95px + env(safe-area-inset-bottom,0px))!important;
+ }
+ #main-content .pati-ref-academy-header{padding:20px 17px!important;border-radius:19px!important}
+ #main-content .pati-ref-academy-header h1{font-size:23px!important}
+ #main-content .pati-ref-academy-topics{grid-template-columns:minmax(0,1fr)!important;gap:9px!important}
+ #main-content .pati-ref-academy-topic{min-height:91px!important;padding:13px 15px!important}
+ #main-content .pati-ref-academy-topic strong{font-size:15px!important}
+}
+@media(prefers-reduced-motion:reduce){#main-content .pati-ref-academy-topic{transition:none!important}}
