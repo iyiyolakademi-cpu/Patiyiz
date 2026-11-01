@@ -1,0 +1,32 @@
+/* === patiyiz-cashout-20261101.css === */
+.pati-cashout-box{background:#fff;border:1px solid #e6e8eb;border-radius:18px;padding:17px;margin:16px 0;display:grid;gap:10px;color:#1c2025}.pati-cashout-box h2{font-size:19px;margin:0}.pati-cashout-box p,.pati-cashout-box small{font-size:12px;color:#747982;line-height:1.5}.pati-cashout-box form{display:grid;gap:12px}.pati-cashout-box label{display:grid;gap:6px;font-size:13px;font-weight:700}.pati-cashout-box input,.pati-cashout-box select{width:100%;box-sizing:border-box;border:1px solid #dfe2e6;border-radius:12px;background:#fff;color:#222;padding:12px;font-size:14px}.pati-cashout-box button{border:0;border-radius:12px;background:#191c22;color:white;padding:13px;font-weight:750}.pati-cashout-box button:disabled{opacity:.5}#cashout-history div{padding:10px 0;border-bottom:1px solid #eee;font-size:13px}#cashout-history small{float:right}
+/* === patiyiz-wallet-screens-20261101.css === */
+.pati-wallet-homehead{padding:20px 18px 22px;background:#fff;border:1px solid #eee;border-radius:18px;margin:10px 0 15px}.pati-wallet-homehead small{font-size:11px;color:#79808a}.pati-wallet-homehead h1{font-size:23px;margin:8px 0}.pati-wallet-homehead>strong{font-size:34px;display:block}.pati-wallet-homehead>strong small{font-size:14px}.pati-wallet-homehead p{color:#7a8089;font-size:13px}.pati-wallet-menu{display:grid;gap:10px}.pati-wallet-menu>button{width:100%;display:flex;align-items:center;justify-content:space-between;text-align:left;border:1px solid #e6e8eb;background:#fff;border-radius:14px;padding:17px 16px;color:#191c22;min-height:70px}.pati-wallet-menu button span{display:grid;gap:5px}.pati-wallet-menu button strong{font-size:15px}.pati-wallet-menu button small{font-size:12px;color:#7a7f89}.pati-wallet-menu button>b{font-size:23px;font-weight:400}.pati-wallet-subhead{display:flex;gap:12px;align-items:center;padding:13px 5px 18px;font-size:18px}.pati-wallet-subhead button{width:38px;height:38px;border:1px solid #e5e5e5;background:white;border-radius:50%;font-size:21px;color:#111}.pati-wallet-subcontent{min-height:55vh;padding-bottom:40px}.pati-wallet-subcontent .paticoin-invite{margin-top:0}.pati-calm-shop[data-screen="products"] #cashout-panel{display:none!important}.pati-calm-shop[data-screen="cashout"]>*:not(.pati-wallet-subhead):not(#cashout-panel){display:none!important}.pati-calm-shop[data-screen="cashout"] #cashout-panel{display:grid!important;margin:0;min-height:60vh}.pati-calm-shop[data-screen="cashout"]{min-height:85dvh}.pati-wallet-menu button:active{background:#f7f7f7}@media(max-width:700px){.pati-wallet-homehead{margin:0 0 14px}.pati-wallet-menu{padding-bottom:85px}.pati-wallet-subcontent{min-height:calc(100dvh - 170px)}}
+
+/* Refined balance center */
+.paticoin-page,.pati-calm-shop{max-width:720px;margin:0 auto;min-width:0}
+.pati-wallet-homehead{background:linear-gradient(155deg,#fff,#f7f8f9);border:1px solid #e5e7eb;border-radius:20px;box-shadow:0 4px 20px rgba(15,23,42,.035);padding:24px 20px}
+.pati-wallet-homehead>strong{letter-spacing:-1px;line-height:1.15;font-variant-numeric:tabular-nums}
+.pati-wallet-menu{gap:9px}
+.pati-wallet-menu>button{transition:background .14s,border-color .14s;min-height:78px;box-shadow:0 1px 4px rgba(0,0,0,.018)}
+.pati-wallet-menu>button:focus-visible,.pati-wallet-subhead button:focus-visible{outline:2px solid #111;outline-offset:2px}
+.pati-wallet-menu button strong{font-size:15px;color:#191b20}
+.pati-wallet-menu button small{font-size:12px;line-height:1.35;color:#787d86}
+.pati-wallet-subhead{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid #edf0f2;margin-bottom:14px}
+.pati-wallet-subcontent{display:grid;align-content:start;gap:12px}
+.pati-wallet-subcontent .paticoin-invite,.pati-wallet-subcontent .pati-follower-more{width:100%;max-width:100%;box-sizing:border-box}
+.pati-wallet-subcontent .pati-wallet-invite{border:1px solid #eceef0;background:#fff;border-radius:18px;padding:18px}
+.pati-wallet-ledger{padding:16px;background:#fff;border:1px solid #e9eaee;border-radius:18px;display:grid;gap:0}
+.pati-wallet-ledger h2{font-size:17px;margin:0 0 12px}
+.pati-wallet-entry{display:flex;align-items:center;gap:16px;justify-content:space-between;padding:12px 0;border-top:1px solid #f0f0f2}
+.pati-wallet-entry>div{display:grid;gap:4px;min-width:0}
+.pati-wallet-entry strong{font-weight:600;font-size:12px;text-transform:capitalize}
+.pati-wallet-entry small{font-size:11px;color:#878b93}
+.pati-wallet-entry>b{white-space:nowrap;font-size:12px;color:#bd3b3b;font-variant-numeric:tabular-nums}
+.pati-wallet-entry>b.earned{color:#16803b}
+.pati-calm-shop[data-screen="products"] .pati-calm-header{padding-top:3px}
+.pati-calm-shop[data-screen="products"] .pati-calm-item{box-shadow:0 2px 9px rgba(15,23,42,.035)}
+.pati-calm-item-art span[role="img"]{font-size:36px}
+.pati-calm-shop[data-screen="cashout"] #cashout-panel{border:none;box-shadow:none;padding:12px 0}
+.pati-calm-shop[data-screen="cashout"] .pati-wallet-subhead{display:flex!important}
+@media(max-width:600px){.paticoin-page,.pati-calm-shop{width:100%;padding:0 12px;box-sizing:border-box}.pati-wallet-homehead{margin-top:8px}.pati-wallet-subhead{min-height:55px}.pati-wallet-menu>button{min-height:72px}.pati-wallet-entry{gap:8px}}
