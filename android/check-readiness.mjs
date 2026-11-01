@@ -36,7 +36,7 @@ if(web){
  if(!pngIcons.length)fail('PWA için PNG ikon bulunamadı.');
  for(const icon of pngIcons){
   const file=icon.src.split('?')[0];
-  const sizes=icon.sizes?.split(/\\s+/).filter(Boolean)||[];
+  const sizes=icon.sizes?.split(/\s+/).filter(Boolean)||[];
   try{
    const bytes=fs.readFileSync(path.join(root,file));
    if(bytes.subarray(0,8).toString('hex')!=='89504e470d0a1a0a')throw Error('PNG değil');
