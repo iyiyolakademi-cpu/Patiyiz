@@ -412,9 +412,44 @@ body #pati-create-sheet .pati-create-dismiss:focus-visible{
 </style>
 <style id="social-new-logo-20261101">
 #startup .pati-splash-icon{background:transparent!important;border-radius:23%!important;image-rendering:auto}
-#pati-feed-menu-trigger{display:inline-flex!important;align-items:center!important;gap:10px!important;min-width:0!important;max-width:100%!important;padding:0!important;overflow:visible!important}#pati-feed-menu-trigger .brand-icon{display:block!important;width:46px!important;height:46px!important;flex:0 0 46px!important;min-width:46px!important;min-height:46px!important;padding:0!important;margin:0!important;overflow:hidden!important;box-sizing:border-box!important;background:transparent!important;border:0!important;box-shadow:none!important;border-radius:10px!important}
-#pati-feed-menu-trigger .brand-icon img{display:block!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;object-position:center!important;aspect-ratio:1/1!important;border-radius:10px!important;transform:none!important;position:static!important}#pati-feed-menu-trigger>div:last-child{position:static!important;flex:0 0 auto!important;min-width:0!important;transform:none!important;margin:0!important}#pati-feed-menu-trigger .pati-feed-current{position:static!important;white-space:nowrap!important;margin:0!important;transform:none!important}
-#pati-feed-menu-trigger .pati-feed-current{display:block!important;font-size:12px!important}
+@media(max-width:740px){
+ #app-root:not(.hidden)>.mobile-header{display:flex!important;align-items:center!important;gap:8px!important;justify-content:flex-start!important;overflow:visible!important;padding-inline:12px!important}
+ #app-root:not(.hidden)>.mobile-header>#pati-header-share{flex:0 0 auto!important;position:relative!important;margin:0!important}
+ #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand{
+  display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important;
+  flex:0 1 auto!important;position:relative!important;inset:auto!important;
+  width:auto!important;min-width:0!important;max-width:calc(100vw - 188px)!important;
+  height:48px!important;margin:0!important;padding:0!important;overflow:visible!important;
+  transform:none!important;background:transparent!important;box-shadow:none!important
+ }
+ #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand>.brand-icon{
+  display:block!important;position:relative!important;flex:0 0 44px!important;
+  width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;
+  max-width:44px!important;max-height:44px!important;
+  margin:0!important;padding:0!important;border:0!important;
+  border-radius:10px!important;background:transparent!important;
+  overflow:visible!important;transform:none!important;box-shadow:none!important
+ }
+ #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand>.brand-icon>img{
+  display:block!important;position:static!important;width:44px!important;height:44px!important;
+  min-width:44px!important;min-height:44px!important;max-width:44px!important;max-height:44px!important;
+  margin:0!important;padding:0!important;transform:none!important;
+  object-fit:contain!important;aspect-ratio:1!important;border-radius:10px!important;clip-path:none!important
+ }
+ #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand>div:not(.brand-icon){
+  display:block!important;flex:0 1 auto!important;min-width:0!important;max-width:90px!important;
+  margin:0!important;padding:0!important;position:static!important;transform:none!important
+ }
+ #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger .pati-feed-current{
+  display:block!important;position:static!important;white-space:nowrap!important;
+  font-size:12px!important;line-height:1.25!important;margin:0!important;transform:none!important
+ }
+ #app-root:not(.hidden)>.mobile-header>.pati-header-actions{margin-left:auto!important;flex:0 0 auto!important;min-width:0!important}
+}
+@media(max-width:390px){
+ #app-root:not(.hidden)>.mobile-header{gap:6px!important;padding-inline:9px!important}
+ #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand{gap:5px!important;max-width:calc(100vw - 165px)!important}
+}
 #auth-root img[src*="patiyiz-selected-logo"],#auth-root img[src*="patiyiz-favicon"]{content:url("logo-social-20261101.svg?v=1")!important}
 #auth-root .auth-brand-name,#auth-root .brand-name{display:none!important}
 </style>
@@ -447,62 +482,5 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 })();
 </script>
-<style id="pati-mobile-header-collision-fix-20261101">
-/* Keep the logo, feed picker and create action in normal mobile flex flow. */
-@media(max-width:740px){
- #app-root:not(.hidden)>.mobile-header{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important;padding-left:12px!important;padding-right:12px!important;min-width:0!important;overflow:visible!important}
- #app-root:not(.hidden)>.mobile-header>#pati-header-share{position:relative!important;flex:0 0 auto!important;z-index:16!important;margin:0!important}
- #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand{position:relative!important;left:auto!important;top:auto!important;right:auto!important;transform:none!important;flex:0 1 auto!important;min-width:0!important;max-width:none!important;width:auto!important;margin:0!important;padding:0!important;gap:5px!important;justify-content:flex-start!important;z-index:16!important;overflow:hidden!important}
- #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger .brand-icon{position:relative!important;display:flex!important;align-items:center!important;justify-content:center!important;flex:0 0 46px!important;width:46px!important;height:46px!important;min-width:46px!important;min-height:46px!important;max-width:46px!important;max-height:46px!important;margin:0!important;overflow:hidden!important;transform:none!important}
- #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger .brand-icon img{display:block!important;width:46px!important;height:46px!important;max-width:46px!important;max-height:46px!important;object-fit:contain!important;position:static!important;transform:none!important}
- #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger>div:not(.brand-icon){min-width:0!important;max-width:100%!important;flex:0 1 auto!important}
- #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger .pati-feed-current{display:block!important;font-size:12px!important;line-height:1.2!important;margin:0!important;max-width:82px!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
- #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger:after{flex:0 0 7px!important;margin-left:2px!important}
- #app-root:not(.hidden)>.mobile-header>.pati-header-actions{position:relative!important;margin-left:auto!important;flex:0 0 auto!important;min-width:0!important;gap:6px!important;z-index:16!important}
-}
-@media(max-width:390px){
- #app-root:not(.hidden)>.mobile-header{gap:5px!important;padding-left:9px!important;padding-right:9px!important}
- #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger .brand-icon{flex-basis:40px!important;width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;max-width:40px!important;max-height:40px!important}
- #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger .brand-icon img{width:40px!important;height:40px!important;max-width:40px!important;max-height:40px!important}
- #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger .pati-feed-current{max-width:68px!important;font-size:11px!important}
-}
-</style>
-<style id="pati-final-logo-no-crop-20261101">
-@media(max-width:740px){
- #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand{
-  display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;
-  flex:0 1 auto!important;width:auto!important;min-width:0!important;max-width:calc(100vw - 185px)!important;
-  gap:7px!important;padding:0!important;margin:0!important;overflow:visible!important;
-  transform:none!important;white-space:nowrap!important
- }
- #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand>.brand-icon{
-  display:block!important;position:relative!important;flex:0 0 46px!important;
-  width:46px!important;height:46px!important;min-width:46px!important;max-width:46px!important;
-  min-height:46px!important;max-height:46px!important;overflow:visible!important;
-  border:0!important;border-radius:10px!important;padding:0!important;margin:0!important;
-  background:transparent!important;box-shadow:none!important;transform:none!important
- }
- #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand>.brand-icon>img{
-  display:block!important;position:static!important;box-sizing:border-box!important;
-  width:46px!important;height:46px!important;min-width:46px!important;max-width:46px!important;
-  min-height:46px!important;max-height:46px!important;object-fit:contain!important;
-  object-position:center!important;aspect-ratio:1/1!important;
-  transform:none!important;clip-path:none!important;border-radius:10px!important;margin:0!important
- }
- #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand>div:not(.brand-icon){
-  flex:0 1 auto!important;min-width:0!important;max-width:85px!important;position:static!important;
-  overflow:visible!important;transform:none!important
- }
- #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand .pati-feed-current{
-  position:static!important;display:block!important;margin:0!important;line-height:1.2!important;
-  font-size:12px!important;white-space:nowrap!important;transform:none!important
- }
-}
-@media(max-width:390px){
- #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand>.brand-icon,
- #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand>.brand-icon>img{
-  flex-basis:42px!important;width:42px!important;height:42px!important;
-  min-width:42px!important;max-width:42px!important;min-height:42px!important;max-height:42px!important
- }
-}
-</style></body></html>
+
+</body></html>
