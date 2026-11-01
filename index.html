@@ -116,7 +116,7 @@
 <link rel="stylesheet" href="patiyiz-interaction-polish-20261031.css?v=6-responsive-reels-stability&amp;mobile_ui=20261101v4">
 <link rel="stylesheet" href="patiyiz-unified-social-design-20261031.css?v=1&amp;mobile_ui=20261101v4">
 <link rel="stylesheet" href="patiyiz-fullscreen-reels-profile-20261031.css?v=1">
-<link rel="stylesheet" href="patiyiz-colorful-camera-chooser-20261031.css?v=2-professional-neutral">
+<link rel="stylesheet" href="patiyiz-colorful-camera-chooser-20261031.css?v=3-dark-centered-sharing">
 <link rel="stylesheet" href="patiyiz-share-profile-story-polish-20261031.css?v=1">
 <link rel="stylesheet" href="patiyiz-profile-menu-coin-layout-20261031.css?v=1">
 <link rel="stylesheet" href="patiyiz-reels-controls-media-icons-20261031.css?v=1">
@@ -263,6 +263,95 @@
 @media(max-width:380px){
  #app-root #main-content .pati-feed-card .pati-actionbar.pati-social-actions {gap:1px!important;padding-inline:6px!important}
  #app-root #main-content .pati-feed-card .pati-actionbar.pati-social-actions>button {min-width:35px!important;padding-inline:3px!important}
+}
+/* Patiyiz 2026-11-01: centered dark create dialog on all phones. */
+body #pati-create-sheet:not([hidden]){
+  position:fixed!important;inset:0!important;z-index:23000!important;
+  display:flex!important;justify-content:center!important;align-items:center!important;
+  padding:max(14px,env(safe-area-inset-top,0px)) 14px max(14px,env(safe-area-inset-bottom,0px))!important;
+  box-sizing:border-box!important;isolation:isolate!important;
+}
+body #pati-create-sheet .pati-create-mask{
+  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+  background:rgba(14,15,20,.87)!important;
+  -webkit-backdrop-filter:blur(9px)!important;backdrop-filter:blur(9px)!important;
+  border:0!important;
+}
+body #pati-create-sheet .pati-create-modal{
+  position:relative!important;z-index:1!important;
+  box-sizing:border-box!important;width:min(100%,480px)!important;
+  max-width:480px!important;max-height:min(720px,calc(100dvh - 32px))!important;
+  margin:auto!important;padding:22px 18px 20px!important;
+  border:1px solid #383a42!important;border-radius:25px!important;
+  background:#18191e!important;color:#f7f7f8!important;
+  box-shadow:0 22px 70px rgba(0,0,0,.4)!important;
+  overflow-y:auto!important;overscroll-behavior:contain!important;
+}
+body #pati-create-sheet .pati-create-heading{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  gap:12px!important;margin:0 0 15px!important;padding:0 2px!important;
+}
+body #pati-create-sheet .pati-create-heading strong{
+  color:#fff!important;font-size:22px!important;font-weight:800!important;letter-spacing:-.035em!important;
+}
+body #pati-create-sheet .pati-create-heading em{color:#f7f7f8!important;font-style:normal!important}
+body #pati-create-sheet .pati-create-dismiss{
+  display:grid!important;place-items:center!important;
+  width:44px!important;height:44px!important;flex:0 0 44px!important;
+  background:#2b2d34!important;color:#fff!important;border:0!important;
+  border-radius:50%!important;
+}
+body #pati-create-sheet .pati-create-choices{
+  width:100%!important;max-width:440px!important;
+  display:flex!important;flex-direction:column!important;align-items:stretch!important;
+  gap:10px!important;margin:0 auto!important;
+}
+body #pati-create-sheet .pati-create-choice{
+  display:flex!important;align-items:center!important;flex:none!important;
+  width:100%!important;min-height:78px!important;padding:12px 13px!important;gap:13px!important;
+  border:1px solid #3d3f47!important;border-radius:17px!important;
+  background:#222329!important;background-image:none!important;box-shadow:none!important;
+  color:#fff!important;text-align:left!important;
+}
+body #pati-create-sheet .pati-create-choice:hover{background:#2a2b32!important;border-color:#71737c!important}
+body #pati-create-sheet .pati-create-choice:active{background:#303139!important;transform:none!important}
+body #pati-create-sheet .pati-create-choice .pati-choice-icon{
+  width:51px!important;height:51px!important;flex:0 0 51px!important;
+  border:1px solid #ffffff27!important;border-radius:15px!important;
+  box-shadow:none!important;color:#fff!important;
+}
+body #pati-create-sheet .pati-create-choice[data-action="pati-create-post"] .pati-choice-icon{background:linear-gradient(145deg,#476da9,#36578c)!important}
+body #pati-create-sheet .pati-create-choice[data-action="pati-create-text"] .pati-choice-icon{background:linear-gradient(145deg,#33857f,#25635f)!important}
+body #pati-create-sheet .pati-create-choice[data-action="pati-create-story"] .pati-choice-icon{background:linear-gradient(145deg,#a45272,#7d435b)!important}
+body #pati-create-sheet .pati-create-choice[data-action="pati-create-reels"] .pati-choice-icon{background:linear-gradient(145deg,#8b57a3,#68417f)!important}
+body #pati-create-sheet .pati-create-choice[data-action="pati-create-question"] .pati-choice-icon{background:linear-gradient(145deg,#b47c43,#8c5d34)!important}
+body #pati-create-sheet .pati-choice-icon .icon{
+  width:25px!important;height:25px!important;stroke:#fff!important;fill:none!important;
+}
+body #pati-create-sheet .pati-choice-copy{min-width:0!important;flex:1 1 auto!important}
+body #pati-create-sheet .pati-choice-copy b{color:#fff!important;font-size:16px!important;font-weight:790!important}
+body #pati-create-sheet .pati-choice-copy small{color:#bfc1ca!important;font-size:12px!important;line-height:1.4!important}
+body #pati-create-sheet .pati-choice-chevron{width:18px!important;height:18px!important;flex:0 0 18px!important;stroke:#bfc1c9!important}
+body #pati-create-sheet .pati-create-choice:focus-visible,
+body #pati-create-sheet .pati-create-dismiss:focus-visible{outline:2px solid #fff!important;outline-offset:2px!important}
+@media(max-width:740px){
+ body #pati-create-sheet:not([hidden]){
+  align-items:center!important;justify-content:center!important;
+  padding:max(12px,env(safe-area-inset-top,0px)) 14px max(12px,env(safe-area-inset-bottom,0px))!important;
+ }
+ body #pati-create-sheet .pati-create-modal{
+  width:100%!important;max-width:440px!important;
+  max-height:calc(100dvh - 28px)!important;
+  padding:18px 14px 17px!important;border-radius:23px!important;
+ }
+ body #pati-create-sheet .pati-create-choice{min-height:73px!important;padding:10px 12px!important}
+ body #pati-create-sheet .pati-create-choice .pati-choice-icon{width:47px!important;height:47px!important;flex-basis:47px!important}
+}
+@media(max-height:650px){
+ body #pati-create-sheet .pati-create-heading{margin-bottom:10px!important}
+ body #pati-create-sheet .pati-create-choice{min-height:62px!important;padding:8px 11px!important}
+ body #pati-create-sheet .pati-create-choices{gap:7px!important}
+ body #pati-create-sheet .pati-create-choice .pati-choice-icon{width:42px!important;height:42px!important;flex-basis:42px!important}
 }
 </style>
 </body></html>
