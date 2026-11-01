@@ -391,4 +391,23 @@ body #pati-create-sheet .pati-create-dismiss:focus-visible{
  body #pati-create-sheet .pati-create-choice[data-action="pati-create-question"]{min-height:52px!important}
 }
 </style>
-<script src="patiyiz-reels-caption-mobile-20261101.js?v=1" defer></script><script src="patiyiz-reels-profile-final-20261101.js?v=3-eye-save-cover" defer></script><script src="patiyiz-explore-choice-20261101.js?v=2-fix" defer></script><script src="patiyiz-daily-reputation-20261101.js?v=7-poll-only" defer></script><script src="patiyiz-pull-refresh-20261101.js?v=1" defer></script><script src="patiyiz-cashout-20261101.js?v=3" defer></script></body></html>
+<script src="patiyiz-reels-caption-mobile-20261101.js?v=1" defer></script><script src="patiyiz-reels-profile-final-20261101.js?v=3-eye-save-cover" defer></script><script src="patiyiz-explore-choice-20261101.js?v=2-fix" defer></script><script src="patiyiz-daily-reputation-20261101.js?v=7-poll-only" defer></script><script src="patiyiz-pull-refresh-20261101.js?v=1" defer></script><script src="patiyiz-cashout-20261101.js?v=3" defer></script><style id="patiyiz-mobile-release-safety-20261101">
+/* Final mobile overflow and safe-area adjustments; preserve desktop layout. */
+@media(max-width:740px){
+ html,body,#app-root,#main-content{max-width:100%;min-width:0}
+ #main-content :is(.pati-feed-card,.pati-ig-profile,.pati-dm-layout,.pati-card){min-width:0;max-width:100%;box-sizing:border-box}
+ #main-content :is(.pati-feed-card,.pati-ig-profile,.pati-dm-layout) :is(img,video){max-width:100%}
+ #main-content .pati-ig-profile :is(.pati-ig-actions,.pati-ig-tabs){max-width:100%;min-width:0}
+ #main-content .pati-feed-card .pati-social-actions>button{touch-action:manipulation}
+ #modal-root .modal{max-width:calc(100vw - 12px);box-sizing:border-box}
+ #modal-root :is(input,textarea,select){max-width:100%;box-sizing:border-box;font-size:max(16px,1em)}
+ html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-utility{right:max(10px,env(safe-area-inset-right,0px))!important}
+ html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-progress{bottom:max(16px,env(safe-area-inset-bottom,0px))!important}
+ html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-caption{overflow-wrap:anywhere}
+}
+@media(max-width:360px){
+ html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-rail{right:max(6px,env(safe-area-inset-right,0px))!important}
+ html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-caption{right:56px!important}
+}
+</style>
+</body></html>
