@@ -6558,10 +6558,13 @@ function updatePostMediaPreview(){
  clearPatiMediaUrls();box.replaceChildren();thumbs.replaceChildren();
  const images=[...(f.querySelector('input[name="photo"]')?.files||[])],video=f.querySelector('input[name="video"]')?.files?.[0];
  const files=images.length?images:video?.size?[video]:[],isVideo=!images.length&&!!video?.size;
+ const activeRatio=patiMediaDefaultRatio(f.dataset.mode||'post');
+ box.dataset.ratio=activeRatio;box.setAttribute('aria-label','Medya önizlemesi · '+activeRatio);
  box.classList.toggle('has-media',!!files.length);thumbs.hidden=files.length<2;
  const editEntry=f.querySelector('#pati-media-edit-entry');if(editEntry)editEntry.hidden=!images.length;
  if(!files.length){box.innerHTML='<div class="pati-media-empty"><span>▧</span><strong>Galerinden bir an seç</strong><small>Fotoğraf veya video seçmek için aşağıya dokun.</small></div>';return}
  const selected=files[Math.min(postCropIndex,files.length-1)];
+ if(images.length){const edited=patiCropEdits.get(selected);box.dataset.ratio=edited&&patiMediaAllowedRatios(f.dataset.mode||'post').includes(edited.ratio)?edited.ratio:activeRatio;}
  if(isVideo){const v=document.createElement('video');v.src=makePatiMediaUrl(selected);v.controls=true;v.playsInline=true;v.preload='metadata';v.setAttribute('aria-label','Reels veya gönderi video önizlemesi');box.appendChild(v)}
  else{const img=document.createElement('img');img.src=makePatiMediaUrl(selected);img.alt='Seçilen fotoğrafın önizlemesi';box.appendChild(img);
   if(patiCropEdits.has(selected))void cropPostPhoto(selected,'original').then(output=>{
@@ -6692,8 +6695,10 @@ const patiCropFilters={
  soft:{name:'Pastel',css:'saturate(.74) contrast(.91) brightness(1.08)',tint:'#e7bfd0'},
  cinema:{name:'Sinematik',css:'contrast(1.16) saturate(.77) sepia(.08)',tint:'#777e99'}
 };
+function patiMediaDefaultRatio(mode){return mode==='story'||mode==='reels'||mode==='reel'?'9:16':'4:5'}
+function patiMediaAllowedRatios(mode){return mode==='story'||mode==='reels'||mode==='reel'?['9:16']:['4:5','1:1','1.91:1']}
 function patiCropDefault(file,ratio){
- return {ratio:ratio||'original',zoom:1,x:.5,y:.5,rotation:0,flip:false,filter:'original',brightness:100,contrast:100};
+ return {ratio:ratio||'4:5',zoom:1,x:.5,y:.5,rotation:0,flip:false,filter:'original',brightness:100,contrast:100};
 }
 function patiCropFilterCSS(state){
  const preset=patiCropFilters[state.filter]||patiCropFilters.original;
@@ -6701,8 +6706,9 @@ function patiCropFilterCSS(state){
  const contrast=Math.max(50,Math.min(150,Number(state.contrast)||100));
  return [preset.css,'brightness('+bright+'%)','contrast('+contrast+'%)'].filter(Boolean).join(' ');
 }
-function patiCropSize(ratio,img,rotation=0){
- const sizes={'9:16':[720,1280],'4:5':[720,900],'1:1':[720,720],'1.91:1':[720,377]};
+function patiCropSize(ratio,img,rotation=0,quality='export'){
+ const side=quality==='preview'?540:1080;
+ const sizes={'9:16':[side,Math.round(side*16/9)],'4:5':[side,Math.round(side*5/4)],'1:1':[side,side],'1.91:1':[side,Math.round(side/1.91)]};
  if(sizes[ratio])return sizes[ratio];
  const rotate=rotation%180!==0,rw=rotate?img.naturalHeight:img.naturalWidth,rh=rotate?img.naturalWidth:img.naturalHeight;
  const max=2048,scale=Math.min(1,max/Math.max(rw,rh));
@@ -6751,8 +6757,8 @@ function patiCropApplyPixelFilter(ctx,width,height,state){
  ctx.putImageData(image,0,0);
  return true;
 }
-function patiCropPaint(canvas,img,state){
- const [w,h]=patiCropSize(state.ratio,img,state.rotation);
+function patiCropPaint(canvas,img,state,quality='export'){
+ const [w,h]=patiCropSize(state.ratio,img,state.rotation,quality);
  if(canvas.width!==w)canvas.width=w;
  if(canvas.height!==h)canvas.height=h;
  const ctx=canvas.getContext('2d');if(!ctx)throw Error('Fotoğraf düzenleyici açılamadı.');
@@ -6780,7 +6786,8 @@ async function patiCropOpen(options={}){
  const getState=i=>{
   if(!drafts.has(i)){
    const saved=patiCropEdits.get(files[i]);
-   drafts.set(i,saved?{...saved}:patiCropDefault(files[i],form.dataset.mode==='story'?'9:16':'original'));
+   const mode=form.dataset.mode||'post';
+   drafts.set(i,saved?{...saved,ratio:patiMediaAllowedRatios(mode).includes(saved.ratio)?saved.ratio:patiMediaDefaultRatio(mode)}:patiCropDefault(files[i],patiMediaDefaultRatio(mode)));
   }
   return drafts.get(i);
  };
@@ -6792,7 +6799,7 @@ async function patiCropOpen(options={}){
   '<button type="button" data-crop-action="rotate" aria-label="90 derece döndür">↻ <small>Döndür</small></button>'+
   '<span class="pati-full-crop-counter" id="pati-full-crop-counter"></span>'+
   '</div><div class="pati-crop-ratios" role="group" aria-label="Kırpma oranı">'+
-  [['original','Orijinal'],['1:1','Kare'],['4:5','4:5'],['9:16','9:16'],['1.91:1','Yatay']].map(([ratio,label])=>
+  patiMediaAllowedRatios(form.dataset.mode||'post').map(ratio=>[ratio,({'4:5':'4:5 · Dikey','1:1':'1:1 · Kare','1.91:1':'1.91:1 · Yatay','9:16':'9:16 · Tam ekran'})[ratio]]).map(([ratio,label])=>
   '<button type="button" data-crop-action="ratio" data-ratio="'+ratio+'">'+label+'</button>').join('')+'</div>'+
   '<section class="pati-crop-color-panel" aria-label="Renk filtreleri ve fotoğraf ayarları"><div class="pati-crop-color-heading"><strong>Renk filtreleri</strong><button type="button" data-crop-action="reset-color">Sıfırla</button></div>'+
   '<div class="pati-crop-filter-strip" role="group" aria-label="Fotoğraf filtreleri">'+Object.entries(patiCropFilters).map(([key,preset])=>
@@ -6817,7 +6824,7 @@ async function patiCropOpen(options={}){
   try{
    const img=await loadImage(index);
    if(token!==drawToken||!popup.isConnected)return;
-   const extras=patiCropPaint(canvas,img,state);
+   const extras=patiCropPaint(canvas,img,state,'preview');
    canvas.dataset.extraX=String(extras.extraX);canvas.dataset.extraY=String(extras.extraY);
    popup.querySelector('.pati-full-crop-stage').style.setProperty('--pati-crop-aspect',canvas.width+' / '+canvas.height);
    popup.querySelector('#pati-full-crop-counter').textContent=files.length>1?(index+1)+' / '+files.length:'Fotoğraf';
@@ -6892,7 +6899,7 @@ async function drawPostCrop(){
 }
 async function cropPostPhoto(file,aspect){
  if(!file?.size)return file;
- const state=patiCropEdits.get(file)||patiCropDefault(file,aspect);
+ const state=patiCropEdits.get(file)||patiCropDefault(file,aspect||'4:5');
  const url=URL.createObjectURL(file);
  try{
   const img=new Image();img.src=url;await img.decode();
@@ -7080,7 +7087,7 @@ async function createPostPublication(form,f,str){
   const record={body,species:'Diğer',pet_id:null,images:[],media_videos:[],post_format:form.dataset.mode==='reels'?'reels':'post',selfie_mirrored:hasVideo&&form.dataset.selfieMirror==='true'};
   for(let i=0;i<photoFiles.length;i++){
    uploadStatus('Fotoğraf '+(i+1)+' / '+photoFiles.length+' hazırlanıyor…');
-   const file=(typeof patiCropEdits!=='undefined'&&patiCropEdits.has(photoFiles[i]))?await cropPostPhoto(photoFiles[i],str('aspect')):str('aspect')==='original'?await preparePhoto(photoFiles[i]):await cropPostPhoto(photoFiles[i],str('aspect'));
+   const file=await cropPostPhoto(photoFiles[i],patiMediaDefaultRatio(form.dataset.mode||'post'));
    const url=await send(file,'image');
    if(url)record.images.push(url);
   }
@@ -7103,7 +7110,7 @@ async function createPostPublication(form,f,str){
    record.video_subtitle=str('video_subtitle').slice(0,220)||null;
    const cover=form.querySelector('input[name="cover_photo"]')?.files?.[0];
    const selectedCover=cover?.size?cover:await patiGenerateVideoCover(video);
-    if(selectedCover?.size){uploadStatus('Video kapağı kaydediliyor…');record.video_cover_url=await send(selectedCover,'image')}
+    if(selectedCover?.size){uploadStatus('Video kapağı kaydediliyor…');record.video_cover_url=await send(await cropPostPhoto(selectedCover,form.dataset.mode==='reels'?'9:16':'4:5'),'image')}
   }
   uploadStatus('Paylaşım kaydediliyor…');
   return record;
@@ -7134,13 +7141,13 @@ async function createStoryPublication(form,f,str){
   let image_url=null,video_url=null;
   if(photo?.size){
    uploadStatus('Hikâye fotoğrafı hazırlanıyor…');
-   const img=(typeof patiCropEdits!=='undefined'&&patiCropEdits.has(photo))?await cropPostPhoto(photo,str('aspect')||'9:16'):shared?await cropPostPhoto(photo,str('aspect')||'9:16'):await renderEditedStoryFile(photo,form);
+   const img=shared||patiCropEdits.has(photo)?await cropPostPhoto(photo,'9:16'):await cropPostPhoto(await renderEditedStoryFile(photo,form),'9:16');
    image_url=await send(img,'image');
   }else{
    uploadStatus('Hikâye videosu hazırlanıyor…');
    const chosen=form.querySelector('input[name="cover_photo"]')?.files?.[0];
    const poster=chosen?.size?chosen:await patiGenerateVideoCover(video)||await patiFallbackStoryPoster();
-   image_url=await send(poster,'image');
+   image_url=await send(await cropPostPhoto(poster,'9:16'),'image');
    video_url=await send(video,'video');
    if(!video_url)throw Error('Hikâye videosu yüklenemedi.');
   }
