@@ -36,3 +36,27 @@
 #pati-daily-overlay .pati-daily-answers article button{background:#f7f8fa;color:#2c3036;border:1px solid #e8e9ec;border-radius:11px;padding:9px 12px;font-size:12px}
 #pati-daily-overlay .pati-daily-answers article button:disabled{opacity:.5}
 @media(max-width:640px){#pati-daily-overlay:not([hidden]){align-items:flex-end;padding:0}#pati-daily-overlay .pati-daily-panel{max-width:none;border-radius:22px 22px 0 0;max-height:94dvh;padding-bottom:env(safe-area-inset-bottom,0px)}}
+
+/* Direct inline poll: compact white design on phone and desktop */
+.pati-daily-card.pati-daily-poll{display:flex;flex-direction:column;gap:12px;cursor:default;max-width:100%;box-sizing:border-box}
+.pati-daily-poll .pati-daily-top{display:flex;gap:10px;align-items:center}
+.pati-daily-poll .pati-daily-inline-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;width:100%}
+.pati-daily-poll .pati-daily-inline-options button{display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0;min-height:45px;padding:10px 12px;background:#fff;color:#202328;border:1px solid #e4e7eb;border-radius:12px;font-size:12px;font-weight:650;text-align:left;overflow-wrap:anywhere}
+.pati-daily-poll .pati-daily-inline-options button.selected{background:#f3f4f6;border-color:#1e2126}
+.pati-daily-poll .pati-daily-inline-options button b{flex-shrink:0;font-size:11px}
+.pati-daily-poll .pati-daily-footer{font-size:11px}
+.pati-notifications-simple-head{display:flex!important;align-items:center!important;justify-content:space-between!important}
+.pati-notifications-close{display:grid;place-items:center;width:40px;height:40px;border:0;background:#f3f4f6;color:#17191e;border-radius:50%;font-size:25px;line-height:1;flex-shrink:0}
+@media(max-width:380px){.pati-daily-poll .pati-daily-inline-options{grid-template-columns:1fr}}
+/* Question replies sheet: fixed size user avatars and clean author hierarchy */
+#modal-root .pati-question-reply-summary .pati-comment-post-user{display:flex;align-items:center;gap:10px;min-width:0}
+#modal-root .pati-question-reply-summary .pati-comment-profile-avatar,
+#modal-root .pati-question-reply-row .pati-comment-profile-avatar{width:38px!important;height:38px!important;min-width:38px!important;flex:0 0 38px!important;border-radius:50%!important;padding:0!important;overflow:hidden!important;display:grid!important;place-items:center!important;border:0!important;background:#f1f2f4!important}
+#modal-root .pati-question-reply-summary .pati-comment-profile-avatar img,
+#modal-root .pati-question-reply-row .pati-comment-profile-avatar img{width:100%!important;height:100%!important;object-fit:cover!important;border-radius:50%!important;display:block!important}
+#modal-root .pati-question-reply-summary .pati-comment-profile-name,
+#modal-root .pati-question-reply-row .pati-comment-profile-name{max-width:100%;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700;color:#1a1d22;background:none;border:0;text-align:left}
+#modal-root .pati-question-reply-row .pati-sheet-comment-main{min-width:0;flex:1}
+#modal-root .pati-question-reply-row .pati-sheet-comment-line{display:flex;align-items:center;gap:8px;min-width:0}
+#modal-root .pati-question-reply-row .pati-sheet-comment-line time{flex-shrink:0}
+html,body,#app-root,#main-content{max-width:100%;overflow-x:clip}
