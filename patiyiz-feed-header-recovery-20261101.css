@@ -105,3 +105,46 @@
     position:absolute!important;top:calc(100% + 4px)!important;
   }
 }
+
+/* iPhone visual viewport finishing pass: opaque header, extra clearance and DM tabs. */
+@media (max-width:740px), (hover:none) and (pointer:coarse) and (max-width:1024px){
+  :root{--pati-mobile-header-extra:16px}
+  #app-root:not(.hidden)>.mobile-header{
+    top:calc(env(safe-area-inset-top,0px) + var(--pati-mobile-header-extra))!important;
+    background:#fff!important;background-color:#fff!important;
+    opacity:1!important;filter:none!important;backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+    box-shadow:none!important;
+    isolation:isolate!important;
+  }
+  #app-root:not(.hidden)>.mobile-header::before,
+  #app-root:not(.hidden)>.mobile-header::after{
+    backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+  }
+  #app-root:not(.hidden)>.app-shell{
+    padding-top:calc(80px + env(safe-area-inset-top,0px))!important;
+  }
+  #app-root:not(.hidden) #main-content:has(.pati-dm-layout){
+    padding-top:12px!important;
+    scroll-margin-top:calc(90px + env(safe-area-inset-top,0px));
+  }
+  #main-content:has(.pati-dm-layout) .pati-dm-top,
+  #main-content:has(.pati-dm-layout) .pati-dm-filters,
+  #main-content:has(.pati-dm-layout) .pati-dm-searchbar{
+    position:relative!important;top:auto!important;transform:none!important;
+    opacity:1!important;filter:none!important;
+    backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+    background:#fff!important;
+    z-index:1!important;
+  }
+  #app-root:not(.hidden):has(#main-content .pati-dm-layout.mobile-chat-open)>.app-shell{
+    padding-top:calc(80px + env(safe-area-inset-top,0px))!important;
+    height:var(--pati-dm-visual-height,100dvh)!important;
+    max-height:var(--pati-dm-visual-height,100dvh)!important;
+  }
+  #main-content .pati-dm-layout.mobile-chat-open .chat-window>header{
+    position:relative!important;top:auto!important;
+    background:#fff!important;opacity:1!important;
+    backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+  }
+}
