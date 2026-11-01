@@ -5726,7 +5726,7 @@ function profilePage(){
  const repostTabIcon='<svg class="pati-profile-tab-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10V7.5A3.5 3.5 0 0 1 6.5 4H20"/><path d="m16.5 1 3.5 3-3.5 3"/><path d="M21 14v2.5a3.5 3.5 0 0 1-3.5 3.5H4"/><path d="m7.5 17-3.5 3 3.5 3"/></svg>';
  const videoTabIcon='<svg class="pati-profile-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" aria-hidden="true"><rect x="2.7" y="5" width="18.6" height="14" rx="3.3"/><path d="m10 9 5.1 3-5.1 3Z" fill="currentColor" stroke="none"/></svg>';
  const textTabIcon='<svg class="pati-profile-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 11h13M4 16h15M4 21h9"/></svg>';
- const iconTabs=[['media',gridTabIcon,'Gönderiler','Gönderi'],['reels',ico('reels-tab'),'Reels','Reels'],['videos',videoTabIcon,'Videolar','Video'],['text',textTabIcon,'Tweetler','Tweet'],['reposts',repostTabIcon,'Yeniden paylaşılanlar','Yeniden']];
+ const iconTabs=[['media',gridTabIcon,'Gönderiler','Gönderi'],['reels',ico('reels-tab'),'Reels','Reels'],['videos',videoTabIcon,'Videolar','Video'],['text',textTabIcon,'Tweetler','Tweet'],['reposts',repostTabIcon,'Yeniden paylaşılanlar','Yeniden paylaş']];
  if(own)void patiLoadProfileViewCounts(posts.map(x=>x.id),p.id);
  const grid=active.map(x=>{
   const cover=x.video_url?(x.video_cover_url||x.image_url):(x.images?.[0]||x.image_url);
