@@ -752,10 +752,10 @@ async function patiCashoutSubmit(){
  if(patiCashoutSubmitting||!me||!sb)return;
  const form=document.querySelector('#pati-cashout-form');if(!form)return;
  const points=Number(form.querySelector('[name="cashout_points"]:checked')?.value);
- const name=String(form.querySelector('[name="cashout_name"]')?.value||'').trim().replace(/\\s+/g,' ');
- const iban=String(form.querySelector('[name="cashout_iban"]')?.value||'').toUpperCase().replace(/\\s+/g,'');
+ const name=String(form.querySelector('[name="cashout_name"]')?.value||'').trim().replace(/\s+/g,' ');
+ const iban=String(form.querySelector('[name="cashout_iban"]')?.value||'').toUpperCase().replace(/\s+/g,'');
  if(![1000,2000,5000,10000].includes(points)||points>Number(patiCoinState.balance||0))return notify('Geçerli puan tutarını ve bakiyeni kontrol et.',true);
- if(name.length<5||name.length>100||!/^[\\p{L} ]+$/u.test(name))return notify('Ad ve soyadını eksiksiz gir.',true);
+ if(name.length<5||name.length>100||!/^[\p{L} ]+$/u.test(name))return notify('Ad ve soyadını eksiksiz gir.',true);
  if(!patiIbanValid(iban))return notify('Geçerli bir Türkiye IBAN numarası gir.',true);
  if(!confirm((points/10).toLocaleString('tr-TR')+' TL tutarında nakit talebi oluşturulsun mu? '+points.toLocaleString('tr-TR')+' puanın inceleme süresince ayrılacak.'))return;
  const btn=form.querySelector('[data-action="pati-cashout-submit"]');patiCashoutSubmitting=true;if(btn){btn.disabled=true;btn.textContent='Talep gönderiliyor…'}
