@@ -35,23 +35,31 @@ test('Photo crop UI keeps per-image edits and output follows mode',()=>{
  assert.match(css,/--pati-compose-ratio:9 \/ 16/);
  assert.match(css,/aspect-ratio:var\(--pati-feed-aspect,4 \/ 5\)/);
 });
-test('Shop shows real stock and point checkout, while unavailable new items stay disabled',()=>{
+test('Shop contains four actual options, clear stock limitations and planned cash progress without false payout promises',()=>{
  const s=app.slice(app.indexOf('function patiShopPage(){'),app.indexOf('function patiCoinShowCheckout('));
  let markup='';
  const model={balance:250,items:[
-  {id:'mama-mini',name:'Mini Paket',description:'Küçük bir paket',emoji:'🥣',kind:'food',coins:220,stock_available:10},
-  {id:'mini-sticker',name:'Mini Çıkartma',description:'Stok bekliyor',emoji:'🎨',kind:'supply',coins:120,stock_available:0}
+  {id:'kedi-mamasi-250',name:'Kedi Maması · 250 g',coins:350,stock_available:0},
+  {id:'kopek-mamasi-250',name:'Köpek Maması · 250 g',coins:350,stock_available:0},
+  {id:'mama-destek',name:'Sokak Hayvanlarına Mama Desteği',coins:400,stock_available:10},
+  {id:'fidan-bagisi',name:'Bir Fidan Bağışla',coins:700,stock_available:10},
+  {id:'mini-sticker',name:'Mini Çıkartma Seti',coins:120,stock_available:100}
  ],orders:[],history:[]};
- const env={patiShopFilter:'all',patiCoinState:model,main:{set innerHTML(s){markup=s}},esc:s=>String(s),day:s=>String(s)};
+ const env={patiCoinState:model,main:{set innerHTML(s){markup=s}},esc:s=>String(s),day:s=>String(s)};
  vm.createContext(env);vm.runInContext(s+';patiShopPage()',env);
- assert.match(markup,/Satın Al/);
- assert.match(markup,/Mini Çıkartma/);
- assert.match(markup,/Stok bekleniyor/);
- assert.match(markup,/data-id="mini-sticker" disabled aria-disabled="true"/);
- assert.match(markup,/Sosyal Puan/);
- assert.match(markup,/TL ile ödeme yapılmaz/);
- assert.match(app,/patiyiz_redeem_reward/);
- assert.match(css,/\.pati-store-grid/);
- assert.match(css,/@media\(max-width:540px\)/);
+ assert.equal((markup.match(/class="pati-calm-item"/g)||[]).length,4);
+ assert.match(markup,/Kedi Maması/);
+ assert.match(markup,/Köpek Maması/);
+ assert.match(markup,/Sokak Hayvanlarına Mama Desteği/);
+ assert.match(markup,/Bir Fidan Bağışla/);
+ assert.doesNotMatch(markup,/Mini Çıkartma Seti|pati-store-filterbar/);
+ assert.match(markup,/10\.000 puan/);
+ assert.match(markup,/1\.000 TL/);
+ assert.match(markup,/Nakit ödül programı henüz başlatılmadı/);
+ assert.match(markup,/aria-valuenow="250"/);
+ assert.match(markup,/data-id="kedi-mamasi-250" disabled aria-disabled="true"/);
+ assert.match(markup,/data-action="paticoin-rewards"/);
+ assert.match(css,/\.pati-calm-grid/);
+ assert.match(css,/\.pati-calm-progress/);
  assert.match(html,/patiyiz-media-store-refresh-20261101\.css\?v=3/);
 });
