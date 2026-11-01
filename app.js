@@ -696,14 +696,14 @@ function patiRewardsPage(){
 let patiShopFilter='all';
 function patiShopPage(){
  // The shop intentionally has one short catalog, without tabs or category filters.
- const ids=['kedi-mamasi-250','kopek-mamasi-250','mama-destek','fidan-bagisi'];
+ const ids=['keychain-basic','mini-notebook','phone-stand-basic','fidan-bagisi'];
  const items=ids.map(id=>patiCoinState.items.find(item=>item.id===id)).filter(Boolean);
  const balance=Math.max(0,Math.floor(Number(patiCoinState.balance)||0));
  const orders=patiCoinState.orders||[];
  const meta={
-  'kedi-mamasi-250':{emoji:'🐈',tag:'KEDİ',subtitle:'Kediler için 250 g kuru mama'},
-  'kopek-mamasi-250':{emoji:'🐕',tag:'KÖPEK',subtitle:'Köpekler için 250 g kuru mama'},
-  'mama-destek':{emoji:'🤝',tag:'DESTEK',subtitle:'Sokak hayvanlarının beslenmesine katkı'},
+  'keychain-basic':{emoji:'🔑',tag:'AKSESUAR',subtitle:'Sade, günlük kullanım için anahtarlık'},
+  'mini-notebook':{emoji:'📓',tag:'KIRTASİYE',subtitle:'Kompakt cep not defteri'},
+  'phone-stand-basic':{emoji:'📱',tag:'AKSESUAR',subtitle:'Masaüstü telefon standı'},
   'fidan-bagisi':{emoji:'🌱',tag:'DOĞA',subtitle:'Bir fidan için bağış talebi'}
  };
  const cards=items.map(item=>{
@@ -730,9 +730,9 @@ function patiShopPage(){
    '</details>':'')+'</div>';
  }).join('');
  main.innerHTML='<section class="pati-calm-shop" aria-label="Puan mağazası">'+
-  '<header class="pati-calm-header"><span>MAĞAZA</span><h1>İyiliğe dönüştür</h1><p>Dört seçenek, tek ekran. Puanlarınla mama desteği veya fidan talebi oluştur.</p></header>'+
+  '<header class="pati-calm-header"><span>MAĞAZA</span><h1>İyiliğe dönüştür</h1><p>Puanlarınla günlük ürünler ve fidan desteği için talep oluştur.</p></header>'+
   '<section class="pati-calm-wallet" aria-label="Puan bakiyesi ve ödül hedefi"><div class="pati-calm-wallet-top"><div><small>PUAN BAKİYEN</small><strong>'+balance.toLocaleString('tr-TR')+'</strong></div><button type="button" data-action="paticoin-rewards">Puan kazanma yolları <span aria-hidden="true">›</span></button></div>'+
-   '<div class="pati-calm-program-note"><strong>Puanların ne işe yarar?</strong><p>Görevlerle kazandığın puanlarla mevcut mama, mama desteği ve fidan seçeneklerine talep oluşturabilirsin. Puanlar nakit değildir ve TL’ye çevrilemez. Her talep stok ve uygunluk kontrolünden geçer.</p></div></section>'+
+   '<div class="pati-calm-program-note"><strong>Puanların ne işe yarar?</strong><p>Görevlerle kazandığın puanlarla anahtarlık, not defteri, telefon standı veya fidan desteği talep edebilirsin. Puanlar nakit değildir ve TL’ye çevrilemez. Her talep stok ve uygunluk kontrolünden geçer.</p></div></section>'+
   '<section class="pati-calm-products"><div class="pati-calm-section-head"><h2>Mağazadakiler</h2><span>4 seçenek</span></div><div class="pati-calm-grid">'+(cards||'<p class="pati-calm-empty">Ürünler yükleniyor. Yenile butonuyla tekrar dene.</p>')+'</div></section>'+
   '<p class="pati-calm-rules"><strong>Nasıl çalışır?</strong> “Puanla Al” bir talep başlatır; doğrudan fiziksel teslimat veya bağış gerçekleşmiş sayılmaz. Stok ve uygunluk sunucu tarafından kontrol edilir. Hesabın en az 7 günlük olması, son 30 günde en az 3 gün aktif olman ve 14 günlük talep sınırı geçerlidir.</p>'+
   '<details class="pati-calm-history"><summary><span>Talep geçmişim</span><span>'+orders.length+' kayıt</span></summary><div class="pati-calm-orders">'+(history||'<p>Henüz bir talebin yok.</p>')+'</div></details>'+
