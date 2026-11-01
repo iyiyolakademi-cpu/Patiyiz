@@ -1,0 +1,306 @@
+/* Patiyiz | 2026-11-01 | Three-screen mobile UX pass.
+   Only home feed, Reels and direct messages. Existing actions, emoji
+   customization, private-chat rules and native video controls are preserved. */
+@media (max-width:740px){
+  /* 1. Home: a short and stable toolbar with genuinely tappable controls. */
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header{
+    display:flex!important;align-items:center!important;
+    box-sizing:border-box!important;width:100%!important;
+    min-height:58px!important;height:auto!important;
+    padding:5px max(9px,env(safe-area-inset-right,0px)) 5px max(9px,env(safe-area-inset-left,0px))!important;
+    gap:4px!important;background:#fff!important;
+    border-bottom:1px solid #eceef1!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-header-share,
+  html[data-pati-view="home"] #app-root>.mobile-header .pati-header-actions button{
+    box-sizing:border-box!important;flex-shrink:0!important;
+    min-width:42px!important;min-height:44px!important;
+    display:inline-flex!important;align-items:center!important;justify-content:center!important;
+    border-radius:12px!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header .pati-header-actions{
+    margin-left:auto!important;display:flex!important;
+    gap:3px!important;align-items:center!important;
+    min-width:0!important;flex:0 0 auto!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-feed-menu-trigger{
+    min-height:44px!important;
+    max-width:calc(100% - 168px)!important;
+    gap:4px!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-feed-menu-trigger .pati-feed-current{
+    line-height:1.15!important;
+    max-width:84px!important;margin-top:1px!important;
+  }
+  html[data-pati-view="home"] #main-content{min-width:0!important}
+  html[data-pati-view="home"] #main-content>.stories-section{
+    margin:0!important;padding:6px 9px 5px!important;
+    border-radius:0!important;box-shadow:none!important;
+  }
+  html[data-pati-view="home"] #main-content>.stories-section .stories-heading{
+    margin:0!important;padding:0!important;min-height:0!important;
+  }
+  html[data-pati-view="home"] #main-content>.stories-section .stories-strip{
+    gap:12px!important;margin:0!important;padding:3px 0 4px!important;
+  }
+  html[data-pati-view="home"] #main-content .pati-feed-posts{
+    width:100%!important;max-width:none!important;margin:0!important;
+    padding:0!important;display:flex!important;flex-direction:column!important;gap:0!important;
+  }
+  html[data-pati-view="home"] #main-content .pati-feed-posts>.pati-feed-card{
+    box-sizing:border-box!important;
+    width:100%!important;max-width:none!important;min-width:0!important;
+    margin:0 0 8px!important;padding:0!important;
+    border-radius:0!important;border-left:0!important;border-right:0!important;
+    box-shadow:none!important;
+  }
+  html[data-pati-view="home"] #main-content .pati-feed-card .pati-feed-card-header{
+    box-sizing:border-box!important;min-height:54px!important;
+    padding:7px 11px!important;margin:0!important;gap:8px!important;
+    display:flex!important;align-items:center!important;
+  }
+  html[data-pati-view="home"] #main-content .pati-feed-card .pati-post-more{
+    box-sizing:border-box!important;min-width:44px!important;min-height:44px!important;
+    display:grid!important;place-items:center!important;margin-left:auto!important;
+  }
+  html[data-pati-view="home"] #main-content .pati-feed-card :is(.pati-video-frame,.pati-carousel,.pati-feed-text-content){
+    max-width:100%!important;margin-left:0!important;margin-right:0!important;
+  }
+  html[data-pati-view="home"] #main-content .pati-feed-card .pati-actionbar.pati-social-actions{
+    box-sizing:border-box!important;display:flex!important;align-items:center!important;
+    justify-content:flex-start!important;flex-flow:row nowrap!important;
+    gap:clamp(1px,1vw,6px)!important;
+    width:100%!important;min-height:49px!important;
+    padding:2px 9px!important;margin:0!important;
+  }
+  html[data-pati-view="home"] #main-content .pati-feed-card .pati-actionbar.pati-social-actions>button{
+    display:inline-flex!important;align-items:center!important;justify-content:center!important;
+    flex:0 0 auto!important;box-sizing:border-box!important;
+    min-width:42px!important;min-height:44px!important;
+    padding:5px 4px!important;margin:0!important;
+  }
+  html[data-pati-view="home"] #main-content .pati-feed-card .pati-post-details{
+    box-sizing:border-box!important;padding:0 12px 10px!important;
+    margin:0!important;
+  }
+  html[data-pati-view="home"] #main-content .pati-feed-card .pati-post-caption{
+    overflow-wrap:anywhere!important;line-height:1.45!important;
+  }
+
+  /* 2. Reels: clear actions without five large opaque boxes. */
+  html[data-pati-view="reels"] #main-content .pati-reel-item{
+    width:100%!important;max-width:100%!important;
+    height:100dvh!important;overflow:hidden!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-rail{
+    right:max(8px,env(safe-area-inset-right,0px))!important;
+    bottom:max(119px,calc(env(safe-area-inset-bottom,0px) + 112px))!important;
+    display:flex!important;flex-direction:column!important;
+    gap:4px!important;width:46px!important;max-width:46px!important;
+    z-index:16!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-rail>button.pati-reel-action{
+    width:46px!important;min-width:46px!important;max-width:46px!important;
+    height:46px!important;min-height:46px!important;max-height:46px!important;
+    padding:3px 2px!important;margin:0!important;gap:1px!important;
+    border:1px solid rgba(255,255,255,.16)!important;
+    border-radius:15px!important;
+    background:rgba(12,15,22,.27)!important;
+    color:#fff!important;box-shadow:none!important;
+    backdrop-filter:blur(3px)!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-rail>button.pati-reel-action svg{
+    width:22px!important;height:22px!important;flex-shrink:0!important;
+    stroke:#fff!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-rail .pati-reel-count,
+  html[data-pati-view="reels"] #main-content .pati-reel-rail .pati-engagement-metric{
+    font-size:10px!important;line-height:1.05!important;color:#fff!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-utility{
+    position:absolute!important;
+    right:max(9px,env(safe-area-inset-right,0px))!important;
+    bottom:max(55px,calc(env(safe-area-inset-bottom,0px) + 49px))!important;
+    display:flex!important;flex-direction:row!important;gap:7px!important;
+    z-index:17!important;height:40px!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-utility>button.pati-reel-tool{
+    min-width:44px!important;height:40px!important;min-height:40px!important;
+    border-radius:13px!important;
+    background:rgba(10,13,20,.62)!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-progress{
+    position:absolute!important;left:12px!important;right:12px!important;
+    bottom:max(8px,env(safe-area-inset-bottom,0px))!important;
+    z-index:20!important;pointer-events:auto!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-author{
+    bottom:max(190px,calc(env(safe-area-inset-bottom,0px) + 182px))!important;
+    left:12px!important;right:64px!important;z-index:15!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-caption{
+    box-sizing:border-box!important;
+    left:12px!important;right:64px!important;
+    bottom:max(105px,calc(env(safe-area-inset-bottom,0px) + 100px))!important;
+    max-height:76px!important;min-width:0!important;
+    z-index:16!important;display:flex!important;
+    flex-direction:column!important;align-items:flex-start!important;
+    gap:2px!important;overflow:hidden!important;
+    color:#fff!important;font-size:13px!important;line-height:1.4!important;
+    text-shadow:0 1px 5px #000b!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-caption-text{
+    display:-webkit-box!important;-webkit-box-orient:vertical!important;
+    -webkit-line-clamp:2;line-clamp:2;
+    overflow:hidden!important;max-width:100%!important;overflow-wrap:anywhere;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-caption-toggle{
+    display:inline-flex!important;align-items:center!important;min-height:25px!important;
+    margin:0!important;padding:1px 6px 1px 0!important;border:0!important;
+    background:transparent!important;color:#fff!important;font-size:12px!important;
+    font-weight:800!important;text-shadow:0 1px 5px #000!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-caption-toggle:focus-visible{
+    outline:2px solid #fff!important;outline-offset:2px!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-caption.is-expanded{
+    max-height:min(35dvh,230px)!important;overflow-y:auto!important;
+    padding:10px 12px!important;border-radius:14px!important;
+    background:rgba(10,13,20,.87)!important;
+    overscroll-behavior:contain!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-caption.is-expanded .pati-reel-caption-text{
+    display:block!important;-webkit-line-clamp:unset!important;line-clamp:unset!important;
+    overflow:visible!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-item:has(.pati-reel-caption.is-expanded) .pati-reel-author{
+    bottom:calc(115px + min(35dvh,230px))!important;
+  }
+
+  /* 3. Direct messages: clean inbox and a composer that stays above iOS/Android keyboards. */
+  #main-content:has(.pati-dm-layout) .pati-dm-top{
+    box-sizing:border-box!important;min-height:58px!important;
+    padding:8px 10px!important;gap:6px!important;
+    border-bottom:1px solid #edf0f3!important;
+  }
+  #main-content:has(.pati-dm-layout) .pati-dm-top .pati-dm-title strong{
+    color:#17191d!important;font-size:20px!important;line-height:1.15!important;
+  }
+  #main-content:has(.pati-dm-layout) .pati-dm-filters{
+    box-sizing:border-box!important;display:flex!important;
+    gap:6px!important;padding:8px 11px!important;
+    border-bottom:1px solid #edf0f3!important;
+  }
+  #main-content:has(.pati-dm-layout) .pati-dm-filters button{
+    flex:1 1 0!important;min-width:0!important;min-height:42px!important;
+    border-radius:11px!important;white-space:nowrap!important;
+  }
+  #main-content:has(.pati-dm-layout) .pati-dm-searchbar{
+    box-sizing:border-box!important;padding:4px 11px 10px!important;
+  }
+  #main-content .pati-dm-layout.mobile-chat-list .chat-people{
+    box-sizing:border-box!important;padding:0 8px 10px!important;
+    background:#fff!important;
+  }
+  #main-content .pati-dm-layout .chat-people .chat-person{
+    box-sizing:border-box!important;min-height:70px!important;
+    padding:10px 9px!important;gap:10px!important;
+    border-radius:13px!important;
+  }
+  #main-content .pati-dm-layout .chat-person-info{min-width:0!important}
+  #main-content .pati-dm-layout .chat-person-info :is(strong,small){
+    display:block!important;overflow:hidden!important;
+    white-space:nowrap!important;text-overflow:ellipsis!important;
+  }
+  #app-root:not(.hidden):has(#main-content .pati-dm-layout.mobile-chat-open)>.app-shell{
+    box-sizing:border-box!important;
+    height:var(--pati-dm-visual-height,100dvh)!important;
+    max-height:var(--pati-dm-visual-height,100dvh)!important;
+    min-height:0!important;padding-top:0!important;padding-bottom:0!important;
+  }
+  #main-content .pati-dm-layout.mobile-chat-open{
+    box-sizing:border-box!important;min-height:0!important;
+    height:100%!important;max-height:100%!important;overflow:hidden!important;
+  }
+  #main-content .pati-dm-layout.mobile-chat-open .chat-window{
+    display:flex!important;flex-direction:column!important;
+    min-height:0!important;height:100%!important;max-height:100%!important;
+    overflow:hidden!important;
+  }
+  #main-content .pati-dm-layout.mobile-chat-open .chat-window>header{
+    box-sizing:border-box!important;min-height:57px!important;
+    padding:9px 10px!important;gap:8px!important;flex:0 0 auto!important;
+  }
+  #main-content .pati-dm-layout.mobile-chat-open .chat-history{
+    flex:1 1 auto!important;min-height:0!important;
+    overflow-y:auto!important;overscroll-behavior:contain!important;
+    padding:12px 11px 16px!important;
+    -webkit-overflow-scrolling:touch!important;
+  }
+  #main-content .pati-dm-layout.mobile-chat-open .chat-form{
+    box-sizing:border-box!important;position:relative!important;
+    flex:0 0 auto!important;width:100%!important;
+    display:flex!important;align-items:center!important;
+    min-height:59px!important;gap:6px!important;
+    margin:0!important;padding:7px 10px max(8px,env(safe-area-inset-bottom,0px))!important;
+    background:#fff!important;border-top:1px solid #edf0f3!important;
+  }
+  #main-content .pati-dm-layout.mobile-chat-open .chat-form input[name="body"]{
+    box-sizing:border-box!important;flex:1 1 auto!important;min-width:0!important;
+    width:1px!important;min-height:43px!important;height:43px!important;
+    padding:8px 13px!important;font-size:16px!important;
+    border-radius:22px!important;background:#f4f5f7!important;
+    color:#191b20!important;border:1px solid #e6e8ec!important;
+  }
+  #main-content .pati-dm-layout.mobile-chat-open .chat-form :is(.primary-btn,.pati-dm-mic,.pati-dm-attach>summary){
+    box-sizing:border-box!important;flex:0 0 42px!important;
+    min-width:42px!important;width:42px!important;height:43px!important;min-height:43px!important;
+    display:grid!important;place-items:center!important;
+  }
+  html.pati-keyboard-open #main-content .pati-dm-layout.mobile-chat-open .chat-form{
+    padding-bottom:7px!important;
+  }
+}
+@media (max-width:370px){
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-feed-menu-trigger{
+    max-width:calc(100% - 157px)!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-feed-menu-trigger .brand-icon{
+    width:24px!important;min-width:24px!important;height:24px!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-feed-menu-trigger .brand-word{
+    font-size:16px!important;
+  }
+  html[data-pati-view="home"] #main-content .pati-feed-card .pati-actionbar.pati-social-actions{
+    gap:0!important;padding-left:5px!important;padding-right:5px!important;
+  }
+  html[data-pati-view="home"] #main-content .pati-feed-card .pati-actionbar.pati-social-actions>button{
+    min-width:39px!important;padding:4px 2px!important;
+  }
+  #main-content:has(.pati-dm-layout) .pati-dm-top-actions .pati-dm-new{
+    font-size:11px!important;padding:7px 5px!important;min-height:39px!important;
+  }
+  #main-content .pati-dm-layout.mobile-chat-open .chat-form{gap:4px!important;padding-left:7px!important;padding-right:7px!important}
+  #main-content .pati-dm-layout.mobile-chat-open .chat-form :is(.primary-btn,.pati-dm-mic,.pati-dm-attach>summary){
+    flex-basis:40px!important;min-width:40px!important;width:40px!important;
+  }
+}
+@media (max-height:590px) and (max-width:740px){
+  html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-rail{
+    bottom:max(106px,calc(env(safe-area-inset-bottom,0px) + 101px))!important;
+    gap:2px!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-rail>button.pati-reel-action{
+    min-height:43px!important;height:43px!important;max-height:43px!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-author{
+    bottom:174px!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-caption{
+    bottom:97px!important;
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  #main-content .pati-reel-rail>button,
+  #main-content .pati-reel-caption-toggle{transition:none!important}
+}
