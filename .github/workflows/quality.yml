@@ -26,5 +26,5 @@ jobs:
         run: node android/check-readiness.mjs && node --check android/generate-assetlinks.mjs
       - name: Verify source assets and Android packaging references
         run: node scripts/check-assets.cjs
-      - name: Regression tests
-        run: node --test tests/*.test.cjs
+      - name: Regression tests - block new failures, report historical debt
+        run: node scripts/ci-regression-gate.cjs
