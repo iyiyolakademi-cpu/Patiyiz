@@ -1,0 +1,96 @@
+/* Full-viewport, mobile-first guided reading; overrides legacy bounded education layout. */
+body:has(#main-content .edu-path-detail) {overscroll-behavior:none}
+#main-content .edu-path-detail{
+ position:fixed!important;inset:0!important;z-index:100500!important;
+ display:block!important;overflow-x:hidden!important;overflow-y:auto!important;
+ overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important;
+ box-sizing:border-box!important;width:100vw!important;min-width:0!important;max-width:none!important;
+ height:100dvh!important;min-height:100dvh!important;max-height:100dvh!important;
+ margin:0!important;padding:calc(18px + env(safe-area-inset-top,0px)) max(16px,calc((100vw - 760px)/2)) calc(48px + env(safe-area-inset-bottom,0px))!important;
+ background:#fcfcfd!important;color:#181a1f!important;border-radius:0!important;
+}
+#main-content .edu-path-detail .pati-edu-back{
+ position:sticky!important;top:0!important;z-index:3!important;
+ display:inline-flex!important;align-items:center!important;
+ min-height:42px!important;padding:10px 15px!important;margin:0 0 14px!important;
+ background:#f0f1f3!important;color:#20232a!important;border:1px solid #e2e3e8!important;
+ border-radius:999px!important;font-weight:700!important;font-size:13px!important;
+}
+#main-content .edu-path-detail .edu-v2-lesson-meta{
+ display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:7px!important;
+ margin:0 0 12px!important;font-size:12px!important;color:#60646e!important;
+}
+#main-content .edu-path-detail .edu-v2-lesson-meta span{
+ border-radius:999px!important;padding:6px 10px!important;background:#f2f3f5!important;
+}
+#main-content .edu-path-detail .pati-edu-lesson-head{
+ display:flex!important;align-items:flex-start!important;gap:13px!important;
+ padding:24px 20px!important;margin:18px 0 16px!important;background:#191b21!important;
+ border:0!important;border-radius:22px!important;color:white!important;
+}
+#main-content .edu-path-detail .pati-edu-lesson-head>span{
+ width:44px!important;height:44px!important;flex:0 0 44px!important;display:grid!important;place-items:center!important;
+ border-radius:13px!important;background:#34363f!important;font-size:26px!important;
+}
+#main-content .edu-path-detail .pati-edu-lesson-head h1{
+ color:white!important;font-size:clamp(22px,5.2vw,32px)!important;line-height:1.2!important;
+ letter-spacing:-.035em!important;overflow-wrap:anywhere!important;margin:8px 0!important;
+}
+#main-content .edu-path-detail .pati-edu-lesson-head p{
+ color:#d2d4da!important;line-height:1.65!important;font-size:14px!important;
+}
+#main-content .edu-path-detail .pati-edu-lesson-head small{color:#bfc2cb!important;font-size:12px!important}
+#main-content .edu-path-detail .pati-edu-lesson-body{
+ width:100%!important;min-width:0!important;margin:0!important;padding:0!important;
+ background:transparent!important;border:0!important;box-shadow:none!important;
+}
+#main-content .pati-edu-workshop-summary{
+ display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
+ border:1px solid #e8e9ed;border-radius:20px;padding:18px;background:#fff;
+}
+#main-content .pati-edu-workshop-summary h2{font-size:18px!important;margin:7px 0!important;color:#181a20!important}
+#main-content .pati-edu-workshop-summary p{font-size:13px!important;line-height:1.55!important;color:#636873!important;margin:0!important}
+#main-content .pati-edu-kicker{font-size:10px;font-weight:800;letter-spacing:.12em;color:#777c84}
+#main-content .pati-edu-study-clock{
+ display:flex;flex:0 0 auto;flex-direction:column;align-items:center;justify-content:center;
+ border-radius:15px;background:#f0f1f3;min-width:91px;min-height:77px;padding:9px;
+}
+#main-content .pati-edu-study-clock strong{font-size:22px!important;color:#17191e!important;font-variant-numeric:tabular-nums}
+#main-content .pati-edu-study-clock small{font-size:10px!important;color:#737780!important}
+#main-content .pati-edu-time-track{height:7px!important;width:100%;overflow:hidden;border-radius:999px;background:#e8e9ed;margin:12px 0 24px}
+#main-content .pati-edu-time-track span{height:100%;display:block;background:#1d2027;border-radius:inherit;transition:width .3s}
+#main-content .pati-edu-chapter{
+ margin:0 0 14px!important;padding:23px 20px!important;border:1px solid #e8e9ed!important;
+ background:#fff!important;border-radius:20px!important;box-shadow:none!important;
+}
+#main-content .pati-edu-chapter-line{display:flex;justify-content:space-between;gap:12px;font-size:11px;font-weight:800;letter-spacing:.03em;color:#757a83}
+#main-content .pati-edu-chapter h2{font-size:20px!important;color:#1a1c22!important;line-height:1.35!important;letter-spacing:-.02em;margin:13px 0 16px!important}
+#main-content .pati-edu-chapter>p{color:#3c424c!important;font-size:15px!important;line-height:1.85!important;margin:0 0 15px!important;overflow-wrap:break-word!important}
+#main-content .pati-edu-practice{padding:17px!important;border-radius:15px!important;background:#f5f6f8!important;border-left:3px solid #20232b!important;margin-top:18px!important}
+#main-content .pati-edu-practice strong{display:block;color:#202329!important;font-size:11px!important;letter-spacing:.08em;margin-bottom:8px!important}
+#main-content .pati-edu-practice p{margin:0!important;font-size:14px!important;line-height:1.7!important;color:#454b55!important}
+#main-content .pati-edu-study-note{
+ padding:14px 16px;margin:0 0 20px;border-radius:14px;background:#f0f1f4;
+ color:#4e535d;font-size:13px;line-height:1.6;
+}
+#main-content .edu-path-detail .pati-edu-quiz{
+ margin:15px 0!important;padding:22px 18px!important;background:#fff!important;
+ border:1px solid #e8e9ed!important;border-radius:20px!important;
+}
+#main-content .edu-path-detail .pati-edu-quiz.is-time-locked>button{opacity:.58!important;cursor:not-allowed!important}
+#main-content .edu-path-detail .pati-edu-quiz button{min-height:50px!important}
+#main-content .edu-path-detail .edu-v2-lesson-nav{display:flex;flex-wrap:wrap;gap:9px!important;padding:14px 0!important}
+#main-content .edu-path-detail .edu-v2-lesson-nav button{min-height:48px!important;border-radius:12px!important}
+#main-content .edu-path-detail .pati-edu-notice{font-size:12px!important;line-height:1.6!important;color:#777b83!important}
+@media(max-width:540px){
+ #main-content .edu-path-detail{padding:calc(10px + env(safe-area-inset-top,0px)) 13px calc(35px + env(safe-area-inset-bottom,0px))!important}
+ #main-content .edu-path-detail .pati-edu-back{min-height:42px!important}
+ #main-content .edu-path-detail .pati-edu-lesson-head{padding:21px 17px!important;border-radius:20px!important}
+ #main-content .pati-edu-workshop-summary{padding:15px;gap:8px}
+ #main-content .pati-edu-workshop-summary h2{font-size:16px!important}
+ #main-content .pati-edu-study-clock{min-width:76px;padding:7px}
+ #main-content .pati-edu-study-clock strong{font-size:18px!important}
+ #main-content .pati-edu-chapter{padding:20px 17px!important}
+ #main-content .pati-edu-chapter>p{font-size:14.5px!important;line-height:1.82!important}
+}
+@media(prefers-reduced-motion:reduce){#main-content .pati-edu-time-track span{transition:none}}
