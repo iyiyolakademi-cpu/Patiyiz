@@ -591,7 +591,7 @@ const patiCoinTasks=[
  ['weekly_lessons3','Haftada 3 ders bitir',9,'Bu hafta üç Akademi dersi tamamla','weekly'],
  ['weekly_comments5','Haftada 5 yorum yap',8,'Bu hafta beş yorum yaz','weekly']
 ];
-let patiCoinState={balance:0,earned:0,claims:[],items:[],orders:[],history:[],loading:false};
+let patiCoinState={balance:0,earned:0,claims:[],items:[],orders:[],history:[],transactions:[],loading:false};
 let patiFollowerRewardState={followers:null,claimed:[],cash:[]};
 let patiCoinCheckoutItem=null;
 let patiInviteState={code:'',invited_count:0,already_used:false,coins_each:50,loading:false};
@@ -634,7 +634,7 @@ async function patiCoinSync(withAnimation=false){
   if(me?.id!==uid)return;
   const [wallet,ledger,items,orders,history,cashClaims]=await Promise.all([
    sb.from('patiyiz_reward_wallets').select('balance,lifetime_earned').eq('user_id',uid).maybeSingle(),
-   sb.from('patiyiz_reward_ledger').select('task_code').eq('user_id',uid).not('task_code','is',null),
+   sb.from('patiyiz_reward_ledger').select('task_code,delta,created_at').eq('user_id',uid).order('created_at',{ascending:false}).limit(150),
    sb.from('patiyiz_reward_items').select('id,name,description,kind,coins,emoji,stock_available').eq('enabled',true).order('sort_order'),
    sb.from('patiyiz_reward_redemptions').select('id,item_id,coins_spent,destination,status,created_at,admin_note,proof_url,reviewed_at,fulfilled_at').eq('user_id',uid).order('created_at',{ascending:false}).limit(30),
    sb.from('patiyiz_reward_fulfillment_events').select('redemption_id,previous_status,next_status,note,created_at').order('created_at',{ascending:false}).limit(100),
@@ -644,7 +644,7 @@ async function patiCoinSync(withAnimation=false){
   if(me?.id!==uid)return;
   patiFollowerRewardState.cash=cashClaims.data||[];
   patiCoinState={balance:wallet.data?.balance||0,earned:wallet.data?.lifetime_earned||0,
-   claims:(ledger.data||[]).map(x=>x.task_code),items:items.data||[],orders:orders.data||[],history:history.data||[],loading:false};
+   claims:(ledger.data||[]).map(x=>x.task_code),items:items.data||[],orders:orders.data||[],history:history.data||[],transactions:ledger.data||[],loading:false};
   navRender();if(['rewards','shop'].includes(view))render();
   const newly=(claimed.data?.awarded||[]);
   if(withAnimation&&newly.length)patiCoinAnimation(newly.reduce((n,x)=>n+x.coins,0),newly.map(x=>x.title));
@@ -687,6 +687,7 @@ function patiRewardShowPage(){
  });
  root.innerHTML=header+title+'</strong></header><section class="pati-wallet-subcontent"></section>';
  const target=root.querySelector('.pati-wallet-subcontent');filtered.forEach(el=>target.appendChild(el));
+ if(patiRewardsSection==='history'){const logs=(patiCoinState.transactions||[]).slice(0,75);target.insertAdjacentHTML('afterbegin','<section class="pati-wallet-ledger"><h2>Puan hareketleri</h2>'+(logs.length?logs.map(t=>'<div class="pati-wallet-entry"><div><strong>'+esc(t.task_code?.startsWith('cashout_reserve_')?'Nakit başvurusu için ayrıldı':t.task_code?.startsWith('cashout_refund_')?'Nakit başvurusu iadesi':t.task_code?.replaceAll('_',' ').replace(/:[0-9]{8}$/,'')||'Puan hareketi')+'</strong><small>'+day(t.created_at)+'</small></div><b class="'+(Number(t.delta)>0?'earned':'')+'">'+(Number(t.delta)>0?'+':'')+Number(t.delta).toLocaleString('tr-TR')+' puan</b></div>').join(''):'<p>Henüz puan hareketin yok.</p>')+'</section>')}
  if(!filtered.length)target.innerHTML='<p>Bu alanda henüz kayıt yok.</p>';
 }
 function patiRewardsPage(){
