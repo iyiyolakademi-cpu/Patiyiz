@@ -5118,7 +5118,7 @@ async function notificationFetch(){
 function notificationsPage(){
  const list=notificationVisible(),unread=list.filter(n=>!n.read).length;
  main.innerHTML='<section class="pati-alerts notification-v2 pati-notifications-simple">'
-  +'<header class="pati-notifications-simple-head"><h1>Bildirimler'+(unread?' <span class="pati-alert-count">'+unread+'</span>':'')+'</h1><button type="button" data-action="pati-notifications-close" class="pati-notifications-close" aria-label="Bildirimleri kapat">×</button></header>'
+  +'<header class="pati-notifications-simple-head"><h1>Bildirimler'+(unread?' <span class="pati-alert-count">'+unread+'</span>':'')+'</h1><button type="button" data-action="notifications-delete-all" class="pati-notifications-clear-all">Tümünü Temizle</button><button type="button" data-action="pati-notifications-close" class="pati-notifications-close" aria-label="Bildirimleri kapat">×</button></header>'
   +(notificationLoadError?'<p class="notification-v2-error" role="alert">'+esc(notificationLoadError)+'</p>':'')
   +'<div id="notification-v2-results" class="notification-v2-list" aria-label="Bildirimlerin">'+
     (notificationBusy&&!list.length?'<p role="status" class="notification-v2-loading">Bildirimler yükleniyor…</p>':
