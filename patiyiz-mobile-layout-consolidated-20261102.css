@@ -1,0 +1,1025 @@
+/* === Retained source: patiyiz-mobile-three-screens-20261101.css === */
+/* Patiyiz | 2026-11-01 | Three-screen mobile UX pass.
+   Only home feed, Reels and direct messages. Existing actions, emoji
+   customization, private-chat rules and native video controls are preserved. */
+@media (max-width:740px){
+  /* 1. Home: a short and stable toolbar with genuinely tappable controls. */
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header{
+    display:flex!important;align-items:center!important;
+    box-sizing:border-box!important;width:100%!important;
+    min-height:58px!important;height:auto!important;
+    padding:5px max(9px,env(safe-area-inset-right,0px)) 5px max(9px,env(safe-area-inset-left,0px))!important;
+    gap:4px!important;background:#fff!important;
+    border-bottom:1px solid #eceef1!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-header-share,
+  html[data-pati-view="home"] #app-root>.mobile-header .pati-header-actions button{
+    box-sizing:border-box!important;flex-shrink:0!important;
+    min-width:42px!important;min-height:44px!important;
+    display:inline-flex!important;align-items:center!important;justify-content:center!important;
+    border-radius:12px!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header .pati-header-actions{
+    margin-left:auto!important;display:flex!important;
+    gap:3px!important;align-items:center!important;
+    min-width:0!important;flex:0 0 auto!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-feed-menu-trigger{
+    min-height:44px!important;
+    max-width:calc(100% - 168px)!important;
+    gap:4px!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-feed-menu-trigger .pati-feed-current{
+    line-height:1.15!important;
+    max-width:84px!important;margin-top:1px!important;
+  }
+  html[data-pati-view="home"] #main-content{min-width:0!important}
+  html[data-pati-view="home"] #main-content>.stories-section{
+    margin:0!important;padding:6px 9px 5px!important;
+    border-radius:0!important;box-shadow:none!important;
+  }
+  html[data-pati-view="home"] #main-content>.stories-section .stories-heading{
+    margin:0!important;padding:0!important;min-height:0!important;
+  }
+  html[data-pati-view="home"] #main-content>.stories-section .stories-strip{
+    gap:12px!important;margin:0!important;padding:3px 0 4px!important;
+  }
+  html[data-pati-view="home"] #main-content .pati-feed-posts{
+    width:100%!important;max-width:none!important;margin:0!important;
+    padding:0!important;display:flex!important;flex-direction:column!important;gap:0!important;
+  }
+  html[data-pati-view="home"] #main-content .pati-feed-posts>.pati-feed-card{
+    box-sizing:border-box!important;
+    width:100%!important;max-width:none!important;min-width:0!important;
+    margin:0 0 8px!important;padding:0!important;
+    border-radius:0!important;border-left:0!important;border-right:0!important;
+    box-shadow:none!important;
+  }
+  html[data-pati-view="home"] #main-content .pati-feed-card .pati-feed-card-header{
+    box-sizing:border-box!important;min-height:54px!important;
+    padding:7px 11px!important;margin:0!important;gap:8px!important;
+    display:flex!important;align-items:center!important;
+  }
+  html[data-pati-view="home"] #main-content .pati-feed-card .pati-post-more{
+    box-sizing:border-box!important;min-width:44px!important;min-height:44px!important;
+    display:grid!important;place-items:center!important;margin-left:auto!important;
+  }
+  html[data-pati-view="home"] #main-content .pati-feed-card :is(.pati-video-frame,.pati-carousel,.pati-feed-text-content){
+    max-width:100%!important;margin-left:0!important;margin-right:0!important;
+  }
+  html[data-pati-view="home"] #main-content .pati-feed-card .pati-actionbar.pati-social-actions{
+    box-sizing:border-box!important;display:flex!important;align-items:center!important;
+    justify-content:flex-start!important;flex-flow:row nowrap!important;
+    gap:clamp(1px,1vw,6px)!important;
+    width:100%!important;min-height:49px!important;
+    padding:2px 9px!important;margin:0!important;
+  }
+  html[data-pati-view="home"] #main-content .pati-feed-card .pati-actionbar.pati-social-actions>button{
+    display:inline-flex!important;align-items:center!important;justify-content:center!important;
+    flex:0 0 auto!important;box-sizing:border-box!important;
+    min-width:42px!important;min-height:44px!important;
+    padding:5px 4px!important;margin:0!important;
+  }
+  html[data-pati-view="home"] #main-content .pati-feed-card .pati-post-details{
+    box-sizing:border-box!important;padding:0 12px 10px!important;
+    margin:0!important;
+  }
+  html[data-pati-view="home"] #main-content .pati-feed-card .pati-post-caption{
+    overflow-wrap:anywhere!important;line-height:1.45!important;
+  }
+
+  /* 2. Reels: clear actions without five large opaque boxes. */
+  html[data-pati-view="reels"] #main-content .pati-reel-item{
+    width:100%!important;max-width:100%!important;
+    height:100dvh!important;overflow:hidden!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-rail{
+    right:max(8px,env(safe-area-inset-right,0px))!important;
+    bottom:max(119px,calc(env(safe-area-inset-bottom,0px) + 112px))!important;
+    display:flex!important;flex-direction:column!important;
+    gap:4px!important;width:46px!important;max-width:46px!important;
+    z-index:16!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-rail>button.pati-reel-action{
+    width:46px!important;min-width:46px!important;max-width:46px!important;
+    height:46px!important;min-height:46px!important;max-height:46px!important;
+    padding:3px 2px!important;margin:0!important;gap:1px!important;
+    border:1px solid rgba(255,255,255,.16)!important;
+    border-radius:15px!important;
+    background:rgba(12,15,22,.27)!important;
+    color:#fff!important;box-shadow:none!important;
+    backdrop-filter:blur(3px)!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-rail>button.pati-reel-action svg{
+    width:22px!important;height:22px!important;flex-shrink:0!important;
+    stroke:#fff!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-rail .pati-reel-count,
+  html[data-pati-view="reels"] #main-content .pati-reel-rail .pati-engagement-metric{
+    font-size:10px!important;line-height:1.05!important;color:#fff!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-utility{
+    position:absolute!important;
+    right:max(9px,env(safe-area-inset-right,0px))!important;
+    bottom:max(55px,calc(env(safe-area-inset-bottom,0px) + 49px))!important;
+    display:flex!important;flex-direction:row!important;gap:7px!important;
+    z-index:17!important;height:40px!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-utility>button.pati-reel-tool{
+    min-width:44px!important;height:40px!important;min-height:40px!important;
+    border-radius:13px!important;
+    background:rgba(10,13,20,.62)!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-progress{
+    position:absolute!important;left:12px!important;right:12px!important;
+    bottom:max(8px,env(safe-area-inset-bottom,0px))!important;
+    z-index:20!important;pointer-events:auto!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-author{
+    bottom:max(190px,calc(env(safe-area-inset-bottom,0px) + 182px))!important;
+    left:12px!important;right:64px!important;z-index:15!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-caption{
+    box-sizing:border-box!important;
+    left:12px!important;right:64px!important;
+    bottom:max(105px,calc(env(safe-area-inset-bottom,0px) + 100px))!important;
+    max-height:76px!important;min-width:0!important;
+    z-index:16!important;display:flex!important;
+    flex-direction:column!important;align-items:flex-start!important;
+    gap:2px!important;overflow:hidden!important;
+    color:#fff!important;font-size:13px!important;line-height:1.4!important;
+    text-shadow:0 1px 5px #000b!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-caption-text{
+    display:-webkit-box!important;-webkit-box-orient:vertical!important;
+    -webkit-line-clamp:2;line-clamp:2;
+    overflow:hidden!important;max-width:100%!important;overflow-wrap:anywhere;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-caption-toggle{
+    display:inline-flex!important;align-items:center!important;min-height:25px!important;
+    margin:0!important;padding:1px 6px 1px 0!important;border:0!important;
+    background:transparent!important;color:#fff!important;font-size:12px!important;
+    font-weight:800!important;text-shadow:0 1px 5px #000!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-caption-toggle:focus-visible{
+    outline:2px solid #fff!important;outline-offset:2px!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-caption.is-expanded{
+    max-height:min(35dvh,230px)!important;overflow-y:auto!important;
+    padding:10px 12px!important;border-radius:14px!important;
+    background:rgba(10,13,20,.87)!important;
+    overscroll-behavior:contain!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-caption.is-expanded .pati-reel-caption-text{
+    display:block!important;-webkit-line-clamp:unset!important;line-clamp:unset!important;
+    overflow:visible!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-item:has(.pati-reel-caption.is-expanded) .pati-reel-author{
+    bottom:calc(115px + min(35dvh,230px))!important;
+  }
+
+  /* 3. Direct messages: clean inbox and a composer that stays above iOS/Android keyboards. */
+  #main-content:has(.pati-dm-layout) .pati-dm-top{
+    box-sizing:border-box!important;min-height:58px!important;
+    padding:8px 10px!important;gap:6px!important;
+    border-bottom:1px solid #edf0f3!important;
+  }
+  #main-content:has(.pati-dm-layout) .pati-dm-top .pati-dm-title strong{
+    color:#17191d!important;font-size:20px!important;line-height:1.15!important;
+  }
+  #main-content:has(.pati-dm-layout) .pati-dm-filters{
+    box-sizing:border-box!important;display:flex!important;
+    gap:6px!important;padding:8px 11px!important;
+    border-bottom:1px solid #edf0f3!important;
+  }
+  #main-content:has(.pati-dm-layout) .pati-dm-filters button{
+    flex:1 1 0!important;min-width:0!important;min-height:42px!important;
+    border-radius:11px!important;white-space:nowrap!important;
+  }
+  #main-content:has(.pati-dm-layout) .pati-dm-searchbar{
+    box-sizing:border-box!important;padding:4px 11px 10px!important;
+  }
+  #main-content .pati-dm-layout.mobile-chat-list .chat-people{
+    box-sizing:border-box!important;padding:0 8px 10px!important;
+    background:#fff!important;
+  }
+  #main-content .pati-dm-layout .chat-people .chat-person{
+    box-sizing:border-box!important;min-height:70px!important;
+    padding:10px 9px!important;gap:10px!important;
+    border-radius:13px!important;
+  }
+  #main-content .pati-dm-layout .chat-person-info{min-width:0!important}
+  #main-content .pati-dm-layout .chat-person-info :is(strong,small){
+    display:block!important;overflow:hidden!important;
+    white-space:nowrap!important;text-overflow:ellipsis!important;
+  }
+  #app-root:not(.hidden):has(#main-content .pati-dm-layout.mobile-chat-open)>.app-shell{
+    box-sizing:border-box!important;
+    height:var(--pati-dm-visual-height,100dvh)!important;
+    max-height:var(--pati-dm-visual-height,100dvh)!important;
+    min-height:0!important;padding-top:0!important;padding-bottom:0!important;
+  }
+  #main-content .pati-dm-layout.mobile-chat-open{
+    box-sizing:border-box!important;min-height:0!important;
+    height:100%!important;max-height:100%!important;overflow:hidden!important;
+  }
+  #main-content .pati-dm-layout.mobile-chat-open .chat-window{
+    display:flex!important;flex-direction:column!important;
+    min-height:0!important;height:100%!important;max-height:100%!important;
+    overflow:hidden!important;
+  }
+  #main-content .pati-dm-layout.mobile-chat-open .chat-window>header{
+    box-sizing:border-box!important;min-height:57px!important;
+    padding:9px 10px!important;gap:8px!important;flex:0 0 auto!important;
+  }
+  #main-content .pati-dm-layout.mobile-chat-open .chat-history{
+    flex:1 1 auto!important;min-height:0!important;
+    overflow-y:auto!important;overscroll-behavior:contain!important;
+    padding:12px 11px 16px!important;
+    -webkit-overflow-scrolling:touch!important;
+  }
+  #main-content .pati-dm-layout.mobile-chat-open .chat-form{
+    box-sizing:border-box!important;position:relative!important;
+    flex:0 0 auto!important;width:100%!important;
+    display:flex!important;align-items:center!important;
+    min-height:59px!important;gap:6px!important;
+    margin:0!important;padding:7px 10px max(8px,env(safe-area-inset-bottom,0px))!important;
+    background:#fff!important;border-top:1px solid #edf0f3!important;
+  }
+  #main-content .pati-dm-layout.mobile-chat-open .chat-form input[name="body"]{
+    box-sizing:border-box!important;flex:1 1 auto!important;min-width:0!important;
+    width:1px!important;min-height:43px!important;height:43px!important;
+    padding:8px 13px!important;font-size:16px!important;
+    border-radius:22px!important;background:#f4f5f7!important;
+    color:#191b20!important;border:1px solid #e6e8ec!important;
+  }
+  #main-content .pati-dm-layout.mobile-chat-open .chat-form :is(.primary-btn,.pati-dm-mic,.pati-dm-attach>summary){
+    box-sizing:border-box!important;flex:0 0 42px!important;
+    min-width:42px!important;width:42px!important;height:43px!important;min-height:43px!important;
+    display:grid!important;place-items:center!important;
+  }
+  html.pati-keyboard-open #main-content .pati-dm-layout.mobile-chat-open .chat-form{
+    padding-bottom:7px!important;
+  }
+}
+@media (max-width:370px){
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-feed-menu-trigger{
+    max-width:calc(100% - 157px)!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-feed-menu-trigger .brand-icon{
+    width:24px!important;min-width:24px!important;height:24px!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-feed-menu-trigger .brand-word{
+    font-size:16px!important;
+  }
+  html[data-pati-view="home"] #main-content .pati-feed-card .pati-actionbar.pati-social-actions{
+    gap:0!important;padding-left:5px!important;padding-right:5px!important;
+  }
+  html[data-pati-view="home"] #main-content .pati-feed-card .pati-actionbar.pati-social-actions>button{
+    min-width:39px!important;padding:4px 2px!important;
+  }
+  #main-content:has(.pati-dm-layout) .pati-dm-top-actions .pati-dm-new{
+    font-size:11px!important;padding:7px 5px!important;min-height:39px!important;
+  }
+  #main-content .pati-dm-layout.mobile-chat-open .chat-form{gap:4px!important;padding-left:7px!important;padding-right:7px!important}
+  #main-content .pati-dm-layout.mobile-chat-open .chat-form :is(.primary-btn,.pati-dm-mic,.pati-dm-attach>summary){
+    flex-basis:40px!important;min-width:40px!important;width:40px!important;
+  }
+}
+@media (max-height:590px) and (max-width:740px){
+  html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-rail{
+    bottom:max(106px,calc(env(safe-area-inset-bottom,0px) + 101px))!important;
+    gap:2px!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-rail>button.pati-reel-action{
+    min-height:43px!important;height:43px!important;max-height:43px!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-author{
+    bottom:174px!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-caption{
+    bottom:97px!important;
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  #main-content .pati-reel-rail>button,
+  #main-content .pati-reel-caption-toggle{transition:none!important}
+}
+/* Respect the semantic hidden attribute even with forced button styles. */
+#main-content .pati-reel-caption-toggle[hidden]{display:none!important}
+
+/* Notification bell uses the existing navigation route and unread counter. */
+@media (max-width:740px){
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-header-notifications{
+    box-sizing:border-box!important;position:relative!important;
+    display:inline-grid!important;place-items:center!important;
+    flex:0 0 42px!important;width:42px!important;min-width:42px!important;
+    height:44px!important;min-height:44px!important;
+    padding:7px!important;margin:0!important;
+    border:0!important;border-radius:12px!important;
+    background:transparent!important;color:#17191d!important;
+    box-shadow:none!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-header-notifications svg{
+    width:22px!important;height:22px!important;
+    stroke:currentColor!important;fill:none!important;
+    flex:0 0 22px!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-header-notifications .pati-count-badge{
+    display:grid!important;place-items:center!important;position:absolute!important;
+    top:1px!important;right:0!important;min-width:17px!important;height:17px!important;
+    padding:0 3px!important;margin:0!important;border-radius:99px!important;
+    background:#df273c!important;color:#fff!important;
+    font-size:9px!important;line-height:1!important;font-weight:800!important;
+    border:2px solid #fff!important;box-sizing:content-box!important;
+    pointer-events:none!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-header-coins{
+    box-sizing:border-box!important;flex:0 1 auto!important;
+    max-width:53px!important;padding:3px!important;gap:3px!important;
+    white-space:nowrap!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-header-coins .pati-coin-icon{
+    width:17px!important;height:17px!important;flex-shrink:0!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-header-coins strong{
+    font-size:11px!important;min-width:0!important;
+  }
+}
+@media(max-width:420px){
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-feed-menu-trigger{
+    left:calc(50% - 23px)!important;max-width:calc(100% - 180px)!important;
+  }
+}
+@media(max-width:370px){
+  /* The balance remains available via the coin button; drop only the number
+     from the crowded top bar instead of hiding notifications or share. */
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-header-coins{
+    flex:0 0 40px!important;max-width:40px!important;width:40px!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-header-coins strong{
+    display:none!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header .pati-header-actions{gap:0!important}
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-header-notifications{
+    flex-basis:40px!important;width:40px!important;min-width:40px!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-header-menu{
+    min-width:40px!important;width:40px!important;
+  }
+}
+
+
+/* === Retained source: patiyiz-mobile-layout-fixes-20261101.css === */
+/* 1 Nov 2026 - Mobile layout follow-up: no header overlap, compact
+   Reels author/caption group, readable five-category profile navigation.
+   Existing click handlers and profile/reel data filters are unchanged. */
+@media (max-width:740px){
+  /* Main toolbar is real grid layout; brand must not be absolute centered
+     underneath balance/notifications/menu. */
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header{
+    box-sizing:border-box!important;
+    display:grid!important;
+    grid-template-columns:44px minmax(0,1fr) max-content!important;
+    grid-template-rows:minmax(50px,auto)!important;
+    align-items:center!important;
+    column-gap:5px!important;row-gap:0!important;
+    width:100%!important;max-width:100%!important;
+    min-width:0!important;min-height:58px!important;
+    padding:4px max(8px,env(safe-area-inset-right,0px))
+            4px max(8px,env(safe-area-inset-left,0px))!important;
+  }
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-header-share{
+    grid-column:1!important;grid-row:1!important;
+    position:relative!important;inset:auto!important;
+    transform:none!important;display:grid!important;place-items:center!important;
+    width:44px!important;min-width:44px!important;height:44px!important;
+    min-height:44px!important;margin:0!important;justify-self:start!important;
+    z-index:2!important;
+  }
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand{
+    grid-column:2!important;grid-row:1!important;
+    position:relative!important;
+    top:auto!important;right:auto!important;bottom:auto!important;left:auto!important;
+    transform:none!important;
+    box-sizing:border-box!important;
+    display:flex!important;justify-content:flex-start!important;align-items:center!important;
+    width:100%!important;max-width:100%!important;min-width:0!important;
+    min-height:44px!important;height:44px!important;
+    margin:0!important;padding:2px 0!important;gap:3px!important;overflow:hidden!important;
+    z-index:3!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-feed-menu-trigger .brand-icon{
+    box-sizing:border-box!important;
+    width:27px!important;min-width:27px!important;height:27px!important;flex:0 0 27px!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-feed-menu-trigger .brand-word{
+    display:flex!important;align-items:center!important;
+    font-size:clamp(14px,4.1vw,19px)!important;
+    overflow:hidden!important;text-overflow:ellipsis!important;
+    max-width:100%!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-feed-menu-trigger .pati-origin-flag{
+    margin-left:3px!important;font-size:11px!important;
+  }
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>.pati-header-actions{
+    grid-column:3!important;grid-row:1!important;justify-self:end!important;
+    position:relative!important;inset:auto!important;transform:none!important;
+    box-sizing:border-box!important;
+    display:flex!important;flex-flow:row nowrap!important;align-items:center!important;
+    justify-content:flex-end!important;gap:2px!important;
+    min-width:0!important;width:max-content!important;max-width:100%!important;
+    margin:0!important;padding:0!important;z-index:4!important;
+  }
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>.pati-header-actions>button{
+    position:relative!important;inset:auto!important;transform:none!important;
+    box-sizing:border-box!important;flex:0 0 40px!important;
+    display:inline-flex!important;align-items:center!important;justify-content:center!important;
+    width:40px!important;min-width:40px!important;max-width:40px!important;
+    height:44px!important;min-height:44px!important;max-height:44px!important;
+    padding:5px!important;margin:0!important;
+    border-radius:12px!important;
+  }
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>.pati-header-actions>#pati-header-coins{
+    display:inline-flex!important;flex:0 0 auto!important;
+    width:auto!important;min-width:42px!important;max-width:66px!important;
+    gap:2px!important;padding:3px 4px!important;
+    background:#f4f5f7!important;color:#1b2028!important;
+    border:1px solid #e5e7ec!important;box-shadow:none!important;
+    overflow:hidden!important;
+  }
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>.pati-header-actions>#pati-header-coins::before,
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>.pati-header-actions>#pati-header-coins::after{
+    content:none!important;display:none!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-header-coins .pati-coin-icon{
+    display:block!important;width:17px!important;height:17px!important;
+    min-width:17px!important;flex:0 0 17px!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-header-coins strong{
+    display:block!important;color:#1b2028!important;
+    font-size:11px!important;line-height:1.1!important;
+    max-width:40px!important;overflow:hidden!important;
+    text-overflow:ellipsis!important;white-space:nowrap!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-header-notifications svg,
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-header-menu svg{
+    width:22px!important;height:22px!important;
+  }
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu{
+    position:absolute!important;top:calc(100% + 5px)!important;
+    left:50%!important;right:auto!important;
+    transform:translateX(-50%)!important;
+    z-index:1200!important;
+  }
+
+  /* All five profile filters have their actual category labels, not icon-only
+     buttons. Horizontal scroll keeps each at a comfortable thumb size. */
+  #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"]{
+    box-sizing:border-box!important;
+    display:flex!important;flex-flow:row nowrap!important;
+    grid-template-columns:none!important;
+    align-items:stretch!important;justify-content:flex-start!important;
+    gap:7px!important;width:100%!important;min-width:0!important;max-width:100%!important;
+    padding:10px 12px!important;margin:4px 0 0!important;
+    overflow-x:auto!important;overflow-y:hidden!important;
+    scroll-snap-type:x proximity!important;
+    scroll-padding-inline:12px!important;
+    -webkit-overflow-scrolling:touch!important;
+    scrollbar-width:none!important;
+    border:0!important;background:#fff!important;
+  }
+  #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"]::-webkit-scrollbar{display:none!important}
+  #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"]>button[role="tab"]{
+    box-sizing:border-box!important;position:relative!important;
+    display:inline-flex!important;flex:0 0 auto!important;
+    align-items:center!important;justify-content:center!important;
+    width:auto!important;min-width:96px!important;max-width:none!important;
+    height:44px!important;min-height:44px!important;
+    padding:0 14px!important;margin:0!important;
+    border:1px solid #e4e7eb!important;border-radius:13px!important;
+    background:#f5f6f8!important;color:#393d45!important;
+    font-size:13px!important;font-weight:760!important;line-height:1.15!important;
+    white-space:nowrap!important;letter-spacing:0!important;
+    text-align:center!important;text-transform:none!important;
+    box-shadow:none!important;scroll-snap-align:start!important;
+  }
+  #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"]>button[role="tab"].active,
+  #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"]>button[role="tab"][aria-selected="true"]{
+    background:#1c1e23!important;color:#fff!important;
+    border-color:#1c1e23!important;box-shadow:none!important;
+  }
+  #main-content .pati-ig-profile .pati-ig-tabs>button .pati-profile-tab-label{
+    display:block!important;position:static!important;
+    color:inherit!important;font-size:inherit!important;font-weight:inherit!important;
+    line-height:inherit!important;opacity:1!important;
+  }
+  #main-content .pati-ig-profile .pati-ig-tabs>button::before,
+  #main-content .pati-ig-profile .pati-ig-tabs>button::after{
+    content:none!important;display:none!important;
+  }
+}
+/* Keep Reels author directly above the caption, with a single shared
+   bottom anchor. Never position them separately by arbitrary offsets. */
+html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-info{
+  box-sizing:border-box!important;
+  position:absolute!important;
+  top:auto!important;left:12px!important;
+  right:68px!important;bottom:max(99px,calc(env(safe-area-inset-bottom,0px) + 94px))!important;
+  z-index:19!important;
+  display:flex!important;flex-direction:column!important;
+  align-items:stretch!important;justify-content:flex-end!important;
+  gap:7px!important;padding:0!important;margin:0!important;
+  max-height:min(44dvh,325px)!important;min-width:0!important;
+  pointer-events:none!important;
+}
+html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-info>.pati-reel-author,
+html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-info>.pati-reel-caption{
+  box-sizing:border-box!important;
+  position:relative!important;
+  top:auto!important;bottom:auto!important;right:auto!important;left:auto!important;
+  transform:none!important;
+  display:flex!important;align-items:center!important;
+  width:100%!important;min-width:0!important;max-width:100%!important;
+  padding:0!important;margin:0!important;
+  border:0!important;background:transparent!important;
+  z-index:auto!important;pointer-events:auto!important;
+}
+html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-info>.pati-reel-author{
+  flex:0 0 auto!important;
+  flex-direction:row!important;justify-content:flex-start!important;
+  min-height:39px!important;gap:7px!important;
+}
+html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-info>.pati-reel-caption{
+  flex:0 1 auto!important;
+  flex-direction:column!important;align-items:flex-start!important;
+  justify-content:flex-start!important;
+  max-height:64px!important;overflow:hidden!important;
+  gap:2px!important;
+  font-size:13px!important;line-height:1.42!important;
+}
+html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-info .pati-reel-caption-text{
+  display:-webkit-box!important;-webkit-box-orient:vertical!important;
+  -webkit-line-clamp:2;line-clamp:2;
+  overflow:hidden!important;max-height:none!important;
+  max-width:100%!important;
+}
+html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-info>.pati-reel-caption.is-expanded{
+  max-height:min(30dvh,220px)!important;overflow:auto!important;
+  background:rgba(10,13,20,.88)!important;
+  padding:9px 10px!important;border-radius:13px!important;
+}
+html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-info>.pati-reel-caption.is-expanded .pati-reel-caption-text{
+  display:block!important;-webkit-line-clamp:unset!important;line-clamp:unset!important;
+  overflow:visible!important;
+}
+html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-info .pati-reel-caption-toggle[hidden]{
+  display:none!important;
+}
+@media(max-width:355px){
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header{
+    grid-template-columns:42px minmax(0,1fr) max-content!important;
+    column-gap:2px!important;padding-inline:5px!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-feed-menu-trigger .brand-icon{
+    width:24px!important;min-width:24px!important;flex-basis:24px!important;height:24px!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-feed-menu-trigger .brand-word{
+    font-size:13px!important;
+  }
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>.pati-header-actions>#pati-header-coins{
+    min-width:40px!important;max-width:54px!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header #pati-header-coins strong{
+    max-width:27px!important;font-size:10px!important;
+  }
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>.pati-header-actions>button{
+    flex-basis:38px!important;min-width:38px!important;max-width:38px!important;width:38px!important;
+  }
+}
+@media(max-height:560px){
+  html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-info{
+    bottom:max(91px,calc(env(safe-area-inset-bottom,0px) + 86px))!important;
+    max-height:min(39dvh,250px)!important;gap:5px!important;
+  }
+}
+
+/* === Retained source: patiyiz-mobile-icons-actions-insights-20261101.css === */
+/* Patiyiz - 01 Nov 2026. Mobile profile icon tabs, accessible post
+   actions, single tools entry point and readable Reels counters.
+   Loaded AFTER the previous mobile patches, without changing behavior. */
+
+/* A single features/tools menu lives on the user's profile. */
+#pati-right-menu-handle,
+#app-root>.mobile-header>#pati-header-menu{
+  display:none!important;
+}
+
+@media(max-width:740px){
+  /* Two right actions: balance and notifications. Logo/chooser is independent. */
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header{
+    display:grid!important;
+    grid-template-columns:44px minmax(0,1fr) auto!important;
+    grid-template-rows:minmax(48px,auto)!important;
+    align-items:center!important;
+    gap:5px!important;box-sizing:border-box!important;
+    width:100%!important;min-height:58px!important;
+    padding:5px max(9px,env(safe-area-inset-right,0px))
+            5px max(9px,env(safe-area-inset-left,0px))!important;
+  }
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand{
+    grid-column:2!important;grid-row:1!important;
+    position:relative!important;left:auto!important;top:auto!important;
+    right:auto!important;bottom:auto!important;
+    transform:none!important;min-width:0!important;width:100%!important;
+    max-width:100%!important;min-height:44px!important;
+    justify-content:flex-start!important;overflow:hidden!important;
+    z-index:7!important;
+  }
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>.pati-header-actions{
+    grid-column:3!important;grid-row:1!important;
+    position:relative!important;display:flex!important;
+    flex-direction:row!important;align-items:center!important;
+    justify-content:flex-end!important;
+    flex:0 0 auto!important;gap:5px!important;
+    width:auto!important;max-width:none!important;
+    padding:0!important;margin:0!important;
+    z-index:8!important;
+  }
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>.pati-header-actions>#pati-header-coins{
+    box-sizing:border-box!important;position:relative!important;
+    flex:0 0 auto!important;
+    width:auto!important;max-width:89px!important;min-width:46px!important;
+    min-height:44px!important;height:44px!important;
+    border:1px solid #e4e6eb!important;background:#f5f6f8!important;
+    border-radius:13px!important;
+    display:flex!important;flex-direction:column!important;
+    justify-content:center!important;align-items:center!important;
+    gap:0!important;padding:3px 6px!important;
+    box-shadow:none!important;
+    color:#1a1c20!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header>.pati-header-actions>#pati-header-coins .pati-balance-title{
+    display:block!important;position:static!important;
+    width:auto!important;max-width:100%!important;min-width:0!important;
+    padding:0!important;margin:0!important;
+    color:#6a6f77!important;-webkit-text-fill-color:#6a6f77!important;
+    font-size:9px!important;font-weight:700!important;line-height:1.2!important;
+    white-space:nowrap!important;text-align:center!important;
+  }
+  html[data-pati-view="home"] #app-root>.mobile-header>.pati-header-actions>#pati-header-coins strong{
+    display:block!important;color:#1a1c20!important;
+    -webkit-text-fill-color:#1a1c20!important;
+    max-width:100%!important;min-width:0!important;
+    font-size:13px!important;line-height:1.3!important;
+    font-weight:800!important;white-space:nowrap!important;
+  }
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-header-share,
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-header-notifications{
+    display:grid!important;place-items:center!important;
+    min-width:44px!important;width:44px!important;height:44px!important;
+    min-height:44px!important;max-height:44px!important;
+    padding:7px!important;box-sizing:border-box!important;
+  }
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-header-share{
+    grid-column:1!important;grid-row:1!important;justify-self:start!important;
+    position:relative!important;transform:none!important;inset:auto!important;
+  }
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu{
+    z-index:1900!important;
+  }
+
+  /* Restore the original five-icon profile organization, now consistent
+     squares, stronger icon strokes and an unambiguous active indicator. */
+  #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"]{
+    box-sizing:border-box!important;
+    display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    flex-direction:unset!important;align-items:stretch!important;
+    justify-content:stretch!important;
+    gap:2px!important;width:100%!important;max-width:100%!important;
+    min-width:0!important;min-height:65px!important;
+    margin:9px 0 0!important;padding:0 5px!important;
+    overflow:visible!important;
+    scroll-snap-type:none!important;
+    background:#fff!important;
+    border-top:1px solid #edf0f3!important;
+    border-bottom:1px solid #e4e7ea!important;
+  }
+  #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"]>button[role="tab"]{
+    box-sizing:border-box!important;
+    display:flex!important;flex-direction:column!important;
+    align-items:center!important;justify-content:center!important;
+    flex:1 1 auto!important;
+    width:100%!important;min-width:0!important;max-width:100%!important;
+    height:64px!important;min-height:64px!important;max-height:64px!important;
+    margin:0!important;padding:8px 2px 6px!important;
+    color:#777b83!important;-webkit-text-fill-color:#777b83!important;
+    background:#fff!important;
+    border:0!important;border-bottom:3px solid transparent!important;
+    border-radius:9px 9px 0 0!important;
+    box-shadow:none!important;scroll-snap-align:none!important;
+    -webkit-tap-highlight-color:transparent!important;
+  }
+  #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"]>button[role="tab"].active,
+  #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"]>button[role="tab"][aria-selected="true"]{
+    color:#181a1f!important;-webkit-text-fill-color:#181a1f!important;
+    background:#f1f3f6!important;
+    border-color:#181a1f!important;
+  }
+  #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"]>button[role="tab"] .pati-profile-tab-icon{
+    display:block!important;position:static!important;
+    width:29px!important;height:29px!important;
+    min-width:29px!important;max-width:29px!important;
+    flex:0 0 29px!important;opacity:1!important;
+    stroke:currentColor!important;stroke-width:2.4px!important;
+    stroke-linecap:round!important;stroke-linejoin:round!important;
+    filter:none!important;
+  }
+  #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"]>button[role="tab"] .pati-profile-grid-icon{
+    fill:currentColor!important;stroke:none!important;
+  }
+  #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"]>button[role="tab"] .pati-profile-tab-label,
+  #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"]>button[role="tab"]::before,
+  #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"]>button[role="tab"]::after{
+    display:none!important;content:none!important;
+  }
+  #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"]>button[role="tab"]:focus-visible{
+    outline:2px solid #17191e!important;outline-offset:-4px!important;
+  }
+
+  /* Slightly larger statistics card; not a giant extra section. */
+  #main-content .pati-ig-profile .pati-profile-insights-preview{
+    box-sizing:border-box!important;
+    display:grid!important;grid-template-columns:minmax(0,1fr) auto auto!important;
+    align-items:center!important;gap:11px!important;
+    width:calc(100% - 24px)!important;max-width:none!important;
+    min-height:99px!important;height:auto!important;
+    margin:10px 12px 8px!important;padding:16px 17px!important;
+    background:#fff!important;color:#202227!important;
+    border:1px solid #e2e5e9!important;border-radius:17px!important;
+    box-shadow:0 2px 7px rgba(23,26,31,.04)!important;
+    text-align:left!important;
+  }
+  #main-content .pati-ig-profile .pati-profile-insights-preview>span:first-child{
+    display:flex!important;flex-direction:column!important;
+    align-items:flex-start!important;justify-content:center!important;
+    gap:4px!important;min-width:0!important;
+  }
+  #main-content .pati-ig-profile .pati-profile-insights-preview strong{
+    color:#202227!important;font-size:19px!important;
+    font-weight:800!important;line-height:1.2!important;
+  }
+  #main-content .pati-ig-profile .pati-profile-insights-preview small{
+    color:#6d737b!important;font-size:12px!important;line-height:1.3!important;
+  }
+  #main-content .pati-ig-profile .pati-profile-insights-preview .pati-profile-insights-value{
+    color:#1e2126!important;font-weight:800!important;
+    font-size:25px!important;line-height:1.1!important;
+    font-variant-numeric:tabular-nums!important;
+  }
+  #main-content .pati-ig-profile .pati-profile-insights-preview .pati-profile-insights-arrow{
+    color:#1e2126!important;font-size:26px!important;
+    font-weight:750!important;line-height:1!important;
+  }
+
+  /* Larger, bolder post controls for both the home feed and post detail.
+     Save occupies the far right, others are naturally left aligned. */
+  #main-content .pati-feed-card .pati-actionbar.pati-social-actions{
+    box-sizing:border-box!important;
+    display:flex!important;flex-flow:row nowrap!important;
+    align-items:center!important;justify-content:flex-start!important;
+    gap:clamp(2px,1.2vw,7px)!important;
+    width:100%!important;min-height:59px!important;
+    padding:5px 11px!important;margin:0!important;
+    overflow:visible!important;
+  }
+  #main-content .pati-feed-card .pati-actionbar.pati-social-actions>button{
+    box-sizing:border-box!important;position:relative!important;
+    display:inline-flex!important;flex:0 0 auto!important;
+    justify-content:center!important;align-items:center!important;
+    min-width:45px!important;width:auto!important;
+    min-height:48px!important;height:48px!important;
+    margin:0!important;padding:7px 5px!important;
+    gap:4px!important;border-radius:11px!important;
+  }
+  #main-content .pati-feed-card .pati-actionbar.pati-social-actions>button[data-action="save"]{
+    margin-left:auto!important;margin-right:0!important;
+    justify-content:center!important;
+  }
+  #main-content .pati-feed-card .pati-actionbar.pati-social-actions>button :is(svg,svg.icon){
+    display:block!important;flex:0 0 auto!important;
+    width:clamp(24px,6.7vw,29px)!important;height:clamp(24px,6.7vw,29px)!important;
+    stroke-width:2.45!important;
+    stroke-linejoin:round!important;stroke-linecap:round!important;
+  }
+  #main-content .pati-feed-card .pati-actionbar.pati-social-actions>button :is(span,.pati-engagement-metric){
+    font-size:12px!important;font-weight:720!important;line-height:1.1!important;
+  }
+  #main-content .pati-feed-card .pati-post-details{
+    padding:2px 13px 12px!important;margin:0!important;
+  }
+}
+@media(max-width:365px){
+  #main-content .pati-feed-card .pati-actionbar.pati-social-actions{
+    gap:0!important;padding-inline:6px!important;
+  }
+  #main-content .pati-feed-card .pati-actionbar.pati-social-actions>button{
+    min-width:40px!important;padding-inline:2px!important;
+  }
+  #main-content .pati-feed-card .pati-actionbar.pati-social-actions>button :is(svg,svg.icon){
+    width:24px!important;height:24px!important;
+  }
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>.pati-header-actions{
+    gap:2px!important;
+  }
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>.pati-header-actions>#pati-header-coins{
+    max-width:72px!important;min-width:43px!important;
+  }
+}
+
+/* Reels action counters: white even on active green repost indicator.
+   Do not alter the existing active/liked UI color semantics. */
+html[data-pati-view="reels"] #main-content .pati-reel-item
+  .pati-reel-rail>button[data-action="pati-repost"] :is(.pati-engagement-metric,.pati-reel-count),
+html[data-pati-view="reels"] #main-content .pati-reel-item
+  .pati-reel-rail>button[data-action="pati-repost"] :is(span,.pati-reel-action-label){
+  color:#fff!important;-webkit-text-fill-color:#fff!important;
+  opacity:1!important;text-shadow:0 1px 3px #000b!important;
+}
+@media(max-width:740px){
+  html[data-pati-view="reels"] #main-content .pati-reel-rail>button.pati-reel-action{
+    min-width:47px!important;width:47px!important;max-width:47px!important;
+    min-height:48px!important;height:48px!important;max-height:48px!important;
+    gap:2px!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-rail>button.pati-reel-action svg{
+    width:24px!important;height:24px!important;stroke-width:2.5!important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reel-rail>button .pati-reel-count,
+  html[data-pati-view="reels"] #main-content .pati-reel-rail>button .pati-engagement-metric{
+    color:#fff!important;-webkit-text-fill-color:#fff!important;
+    font-weight:800!important;font-size:11px!important;line-height:1.05!important;
+  }
+}
+
+/* Bottom tabs also use stronger, slightly larger strokes, with safe phone
+   hit targets. Keep the familiar labels and the existing five destinations. */
+@media(max-width:740px){
+  #app-root:not(.hidden)>.mobile-bottom{
+    box-sizing:border-box!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    align-items:stretch!important;
+    min-height:70px!important;
+    padding:6px 4px max(8px,env(safe-area-inset-bottom,0px))!important;
+  }
+  #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn{
+    box-sizing:border-box!important;min-width:0!important;max-width:none!important;
+    min-height:56px!important;padding:5px 2px!important;
+    gap:4px!important;border-radius:12px!important;
+  }
+  #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn .pati-mobile-nav-glyph{
+    display:grid!important;place-items:center!important;
+    flex:0 0 30px!important;width:32px!important;height:30px!important;
+  }
+  #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn .pati-mobile-nav-glyph>.icon{
+    width:27px!important;height:27px!important;
+    stroke-width:2.35!important;stroke-linecap:round!important;
+    stroke-linejoin:round!important;
+  }
+  #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn>small{
+    font-size:10.5px!important;line-height:1.1!important;font-weight:730!important;
+  }
+}
+
+/* 2026-11-01: profile detail adjustments and the two Reels icon swap.
+   Applies after the existing mobile layout rules, with no duplicate screens. */
+@media(max-width:740px){
+  /* Make each icon explain its category even on a small phone.
+     Retain the original 5-column grid and its 5 working tab actions. */
+  #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"]{
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    min-height:75px!important;
+    padding:0 4px!important;
+    align-items:stretch!important;
+  }
+  #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"]>button[role="tab"]{
+    box-sizing:border-box!important;
+    display:flex!important;
+    flex-flow:column nowrap!important;
+    align-items:center!important;justify-content:center!important;
+    gap:5px!important;
+    height:74px!important;min-height:74px!important;max-height:74px!important;
+    min-width:0!important;width:100%!important;
+    padding:6px 2px 5px!important;
+    overflow:hidden!important;
+    -webkit-tap-highlight-color:transparent!important;
+  }
+  #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"]>button[role="tab"] :is(.pati-profile-tab-icon,svg.icon){
+    box-sizing:border-box!important;
+    display:block!important;flex:0 0 27px!important;
+    width:27px!important;min-width:27px!important;max-width:27px!important;
+    height:27px!important;min-height:27px!important;max-height:27px!important;
+    fill:none;
+    stroke:currentColor!important;stroke-width:2.35px!important;
+    stroke-linejoin:round!important;stroke-linecap:round!important;
+    opacity:1!important;
+  }
+  #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"]>button[role="tab"] .pati-profile-grid-icon{
+    stroke:none!important;fill:currentColor!important;
+  }
+  #main-content .pati-ig-profile .pati-ig-tabs[role="tablist"] .pati-profile-tab-caption{
+    display:block!important;position:static!important;
+    padding:0!important;margin:0!important;
+    flex:0 0 auto!important;
+    max-width:100%!important;min-width:0!important;
+    color:inherit!important;-webkit-text-fill-color:currentColor!important;
+    font-size:clamp(9px,2.65vw,11px)!important;line-height:1.15!important;
+    font-weight:750!important;letter-spacing:-.01em!important;
+    white-space:normal!important;text-align:center!important;
+    overflow-wrap:normal!important;overflow:hidden!important;
+    display:-webkit-box!important;-webkit-box-orient:vertical!important;
+    -webkit-line-clamp:2!important;line-clamp:2!important;
+  }
+
+  /* Main stats: larger labels; numbers and ordering stay unchanged. */
+  #main-content .pati-ig-profile .pati-ig-stats :is(span,button){
+    min-width:0!important;text-align:center!important;
+    align-items:center!important;
+  }
+  #main-content .pati-ig-profile .pati-ig-stats :is(span,button)>small{
+    display:block!important;
+    font-size:clamp(12px,3.55vw,14px)!important;
+    font-weight:720!important;line-height:1.19!important;
+    letter-spacing:-.012em!important;
+    white-space:normal!important;
+    overflow-wrap:normal!important;
+    color:#4d535c!important;
+    opacity:1!important;
+  }
+
+  /* Return the statistics card to a compact, but still legible size. */
+  #main-content .pati-ig-profile .pati-profile-insights-preview{
+    box-sizing:border-box!important;
+    width:calc(100% - 24px)!important;
+    height:auto!important;min-height:83px!important;max-height:none!important;
+    margin:7px 12px 6px!important;padding:11px 14px!important;
+    gap:8px!important;border-radius:15px!important;
+  }
+  #main-content .pati-ig-profile .pati-profile-insights-preview>span:first-child{
+    gap:2px!important;
+  }
+  #main-content .pati-ig-profile .pati-profile-insights-preview strong{
+    font-size:17px!important;line-height:1.2!important;
+  }
+  #main-content .pati-ig-profile .pati-profile-insights-preview small{
+    font-size:11px!important;line-height:1.22!important;
+  }
+  #main-content .pati-ig-profile .pati-profile-insights-preview .pati-profile-insights-value{
+    font-size:22px!important;
+  }
+  #main-content .pati-ig-profile .pati-profile-insights-preview .pati-profile-insights-arrow{
+    font-size:23px!important;
+  }
+
+  /* The own profile has one black full-width Edit button, with no balance
+     card. Visitors retain their existing Follow / Message action layout. */
+  #main-content .pati-ig-profile .pati-ig-actions.pati-own-profile-actions{
+    box-sizing:border-box!important;
+    display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+    align-items:stretch!important;
+    width:100%!important;min-width:0!important;max-width:100%!important;
+    gap:0!important;
+    margin:0!important;padding:9px 12px 12px!important;
+  }
+  #main-content .pati-ig-profile .pati-ig-actions.pati-own-profile-actions>button[data-action="edit-profile"]{
+    box-sizing:border-box!important;grid-column:1/-1!important;
+    display:flex!important;align-items:center!important;justify-content:center!important;
+    width:100%!important;min-width:0!important;max-width:100%!important;
+    height:62px!important;min-height:62px!important;max-height:62px!important;
+    margin:0!important;padding:10px 15px!important;
+    background:#202126!important;color:#fff!important;
+    -webkit-text-fill-color:#fff!important;
+    border:1px solid #202126!important;
+    border-radius:15px!important;box-shadow:none!important;
+    font-size:16px!important;font-weight:820!important;line-height:1.2!important;
+  }
+  #main-content .pati-ig-profile .pati-own-profile-actions .pati-profile-coin-balance,
+  #main-content .pati-ig-profile .pati-own-profile-actions #pati-profile-balance{
+    display:none!important;
+  }
+
+  /* Swap completed in app.js: bottom Reels is the vertical-play device. */
+  #app-root:not(.hidden)>.mobile-bottom .pati-mobile-reels-icon{
+    width:27px!important;height:27px!important;min-width:27px!important;
+    stroke:currentColor!important;stroke-width:2.5px!important;
+    fill:none!important;opacity:1!important;
+  }
+}
+@media(max-width:350px){
+  #main-content .pati-ig-profile .pati-ig-stats :is(span,button)>small{
+    font-size:12px!important;
+  }
+  #main-content .pati-ig-profile .pati-ig-tabs .pati-profile-tab-caption{
+    font-size:9px!important;letter-spacing:-.025em!important;
+  }
+}
+

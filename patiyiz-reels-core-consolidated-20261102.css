@@ -1,0 +1,192 @@
+/* Original patiyiz-reels-compact-controls-20261031.css */
+/* 31 Oct 2026 | Reels compact five-action rail and independent playback utilities.
+   Keeps original data-action handlers and their accessible labels. */
+html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-rail{
+ position:absolute!important;right:max(10px,env(safe-area-inset-right,0px))!important;
+ bottom:max(114px,calc(env(safe-area-inset-bottom,0px) + 102px))!important;
+ z-index:14!important;display:flex!important;flex-direction:column!important;
+ align-items:center!important;justify-content:flex-end!important;
+ width:44px!important;max-width:44px!important;gap:6px!important;
+ box-sizing:border-box!important;
+}
+html[data-pati-view="reels"] #main-content .pati-reel-rail>button.pati-reel-action{
+ box-sizing:border-box!important;display:flex!important;
+ flex:0 0 auto!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+ width:44px!important;min-width:44px!important;max-width:44px!important;
+ min-height:48px!important;height:auto!important;max-height:none!important;
+ margin:0!important;padding:5px 2px!important;gap:1px!important;
+ border:1px solid rgba(255,255,255,.34)!important;
+ border-radius:14px!important;
+ background:rgba(12,15,24,.54)!important;color:#fff!important;
+ box-shadow:0 2px 9px rgba(0,0,0,.17)!important;
+ -webkit-backdrop-filter:blur(8px)!important;backdrop-filter:blur(8px)!important;
+ text-shadow:0 1px 3px rgba(0,0,0,.65)!important;
+}
+html[data-pati-view="reels"] #main-content .pati-reel-rail>button.pati-reel-action svg.icon{
+ display:block!important;width:22px!important;height:22px!important;
+ stroke-width:2.2!important;filter:drop-shadow(0 1px 2px #0006);
+}
+html[data-pati-view="reels"] #main-content .pati-reel-rail>button .pati-reel-count,
+html[data-pati-view="reels"] #main-content .pati-reel-rail>button .pati-engagement-metric{
+ font-size:10px!important;font-weight:800!important;
+ line-height:1.12!important;color:#fff!important;
+}
+html[data-pati-view="reels"] #main-content .pati-reel-rail>button.pati-reel-action:focus-visible{
+ outline:2px solid #fff!important;outline-offset:3px!important;
+}
+html[data-pati-view="reels"] #main-content .pati-reel-rail>button.active[data-action="like"]{
+ background:rgba(60,15,37,.82)!important;border-color:rgba(255,145,173,.82)!important;
+}
+html[data-pati-view="reels"] #main-content .pati-reel-rail>button.active[data-action="save"]{
+ background:rgba(47,37,19,.83)!important;border-color:rgba(242,210,129,.75)!important;
+}
+html[data-pati-view="reels"] #main-content .pati-reel-rail>button.active[data-action="pati-repost"]{
+ background:rgba(10,49,43,.8)!important;border-color:rgba(99,223,189,.76)!important;
+}
+
+/* Speed and sound are now siblings of the right rail, not children. Their
+   own floating row is 40+px ABOVE the scrubber, preventing overlap on iPhone. */
+html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-utility{
+ position:absolute!important;z-index:16!important;
+ right:max(11px,env(safe-area-inset-right,0px))!important;
+ bottom:max(60px,calc(env(safe-area-inset-bottom,0px) + 51px))!important;
+ left:auto!important;top:auto!important;
+ display:flex!important;flex-direction:row!important;
+ align-items:center!important;justify-content:flex-end!important;
+ gap:7px!important;margin:0!important;padding:0!important;
+ width:auto!important;max-width:calc(100% - 30px)!important;
+ height:38px!important;min-height:38px!important;
+ pointer-events:auto;
+}
+html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-utility>button.pati-reel-tool{
+ position:relative!important;inset:auto!important;transform:none!important;
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ flex:0 0 auto!important;flex-direction:row!important;gap:5px!important;
+ box-sizing:border-box!important;
+ width:auto!important;max-width:none!important;min-width:44px!important;
+ height:36px!important;min-height:36px!important;max-height:36px!important;
+ margin:0!important;padding:7px 9px!important;
+ border-radius:12px!important;border:1px solid rgba(255,255,255,.38)!important;
+ background:rgba(10,13,21,.78)!important;box-shadow:0 2px 8px #0005!important;
+ -webkit-backdrop-filter:blur(10px)!important;backdrop-filter:blur(10px)!important;
+ color:#fff!important;
+}
+html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-utility>button svg.icon{
+ width:18px!important;height:18px!important;flex:0 0 18px!important;
+ fill:none!important;stroke:#fff!important;stroke-width:2.1!important;
+}
+html[data-pati-view="reels"] #main-content .pati-reel-utility .pati-reel-tool-label{
+ display:block!important;position:static!important;
+ width:auto!important;height:auto!important;clip-path:none!important;
+ opacity:1!important;overflow:visible!important;
+ font-size:11px!important;font-weight:800!important;line-height:1!important;
+ color:#fff!important;white-space:nowrap!important;text-shadow:none!important;
+}
+html[data-pati-view="reels"] #main-content .pati-reel-utility .pati-reel-sound-label,
+html[data-pati-view="reels"] #main-content .pati-reel-utility button[data-action="reel-sound"] .pati-reel-tool-label{
+ position:absolute!important;width:1px!important;height:1px!important;
+ padding:0!important;margin:-1px!important;overflow:hidden!important;
+ clip:rect(0,0,0,0)!important;clip-path:inset(50%)!important;
+ white-space:nowrap!important;
+}
+html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-utility>button:focus-visible{
+ outline:2px solid #fff!important;outline-offset:3px!important;
+}
+/* Progress has an isolated z-index and remains freely draggable. */
+html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-progress{
+ position:absolute!important;left:13px!important;right:13px!important;
+ width:auto!important;bottom:max(12px,env(safe-area-inset-bottom,0px))!important;
+ z-index:18!important;pointer-events:auto!important;
+}
+html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-author{
+ right:66px!important;bottom:119px!important;
+}
+html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-caption{
+ right:65px!important;bottom:51px!important;
+ max-height:58px!important;
+}
+@media(max-height:650px){
+ html[data-pati-view="reels"] #main-content .pati-reel-rail{gap:3px!important}
+ html[data-pati-view="reels"] #main-content .pati-reel-rail>button.pati-reel-action{
+  min-height:41px!important;padding:3px 2px!important;border-radius:12px!important;
+ }
+ html[data-pati-view="reels"] #main-content .pati-reel-rail>button.pati-reel-action svg.icon{
+  width:20px!important;height:20px!important;
+ }
+ html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-author{bottom:104px!important}
+ html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-caption{bottom:45px!important}
+}
+@media(max-height:480px){
+ html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-rail{
+  bottom:max(90px,calc(env(safe-area-inset-bottom,0px) + 83px))!important;
+ }
+ html[data-pati-view="reels"] #main-content .pati-reel-rail>button.pati-reel-action{
+  min-height:36px!important;gap:0!important;padding:2px!important;
+ }
+ html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-utility{
+  bottom:max(51px,calc(env(safe-area-inset-bottom,0px) + 43px))!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-pati-view="reels"] #main-content .pati-reel-rail>button,
+ html[data-pati-view="reels"] #main-content .pati-reel-utility>button{
+  transition:none!important;
+ }
+}
+
+
+/* Original patiyiz-reels-fast-feed-20261031.css */
+/* Never show buffering UI before playback actually needs it.
+   The [hidden] attribute must win over this file's display:flex!important rules. */
+#main-content .pati-reel-item .pati-reel-buffering[hidden],
+#main-content .pati-reels-viewport>.pati-reels-load-more[hidden]{
+ display:none!important;
+}
+
+/* Reels loading should be rare and subtle, not a large repeated dialog.
+   Actual decoding/preload/pagination logic lives in app.js. */
+#main-content .pati-reel-item .pati-reel-buffering:not(.pati-reel-buffering-error){
+ display:flex;justify-content:center;align-items:center;
+ width:46px!important;height:46px!important;
+ min-width:46px!important;max-width:46px!important;
+ min-height:46px!important;max-height:46px!important;
+ padding:0!important;margin:0!important;gap:0!important;
+ border:1px solid #ffffff36!important;
+ border-radius:50%!important;background:#090b11b8!important;
+ box-shadow:0 3px 16px #0004!important;
+ -webkit-backdrop-filter:blur(9px)!important;backdrop-filter:blur(9px)!important;
+ pointer-events:none!important;
+}
+#main-content .pati-reel-item .pati-reel-buffering .pati-reel-spinner{
+ display:block!important;width:22px!important;height:22px!important;
+ border-width:2px!important;
+}
+#main-content .pati-reel-item .pati-reel-buffering:not(.pati-reel-buffering-error) :is(.pati-reel-loading-label,progress){
+ position:absolute!important;width:1px!important;height:1px!important;
+ overflow:hidden!important;clip-path:inset(50%)!important;
+ white-space:nowrap!important;
+}
+#main-content .pati-reel-item .pati-reel-buffering.pati-reel-buffering-error{
+ width:auto!important;min-width:155px!important;max-width:calc(100% - 70px)!important;
+ padding:12px 16px!important;min-height:52px!important;
+ border-radius:14px!important;background:#101319ed!important;
+ color:#fff!important;
+}
+#main-content .pati-reel-item .pati-reel-buffering.pati-reel-buffering-error .pati-reel-loading-label{
+ display:block!important;font-weight:700!important;font-size:12px!important;
+ line-height:1.4!important;color:#fff!important;
+}
+#main-content .pati-reel-item .pati-reel-buffering.pati-reel-buffering-error progress{
+ display:none!important;
+}
+/* Fetch next Reels unobtrusively, without a tall "Videolar yükleniyor" card. */
+#main-content .pati-reels-viewport>.pati-reels-load-more[hidden]{
+ display:none!important;
+}
+#main-content .pati-reels-viewport>.pati-reels-load-more:not(:has(button)){
+ display:none!important;
+}
+@media(prefers-reduced-motion:reduce){
+ #main-content .pati-reel-item .pati-reel-spinner{animation:none!important}
+}
+
