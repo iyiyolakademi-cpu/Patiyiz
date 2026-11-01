@@ -75,7 +75,7 @@ test('Long lessons use active study time, six guided chapters and full-screen la
  assert.match(src,/document\.visibilityState!=='visible'/);
  assert.match(app,/PatiyizLessonWorkshop\.ready\(id,me\?\.id\)/);
  assert.match(css,/position:fixed!important;inset:0!important/);
- assert.match(html,/patiyiz-lesson-workshop-20261101\.js\?v=1/);
+ assert.match(html,/patiyiz-lesson-workshop-20261101\.js\?v=2/);
  assert.match(html,/patiyiz-lesson-workshop-20261101\.css\?v=1/);
  assert.match(app,/case 'dm-hide-for-me'/);
  assert.match(app,/option\('dm-hide-for-me','Kendin için sil'/);
