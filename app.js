@@ -673,7 +673,7 @@ function patiRewardsPage(){
   const rows=tasks.map(([code,title,coins,info,period])=>{
    const key=patiCoinMissionKey(code,period||'once');
    const claimed=done.has(key);
-   return '<article class="paticoin-task '+(claimed?'pati-mission-claimed':'')+'"><div class="paticoin-task-icon">'+(claimed?'✓':'🐾')+'</div><div><strong>'+esc(title)+'</strong><small>'+esc(info)+'</small></div><b class="'+(claimed?'earned':'')+'">'+(claimed?'✓ Tamamlandı':'+'+coins+' ')+'</b></article>';
+   return '<article class="paticoin-task '+(claimed?'pati-mission-claimed':'')+'"><div class="paticoin-task-icon">'+(claimed?'✓':'★')+'</div><div><strong>'+esc(title)+'</strong><small>'+esc(info)+'</small></div><b class="'+(claimed?'earned':'')+'">'+(claimed?'✓ Tamamlandı':'+'+coins+' ')+'</b></article>';
   });
   const visible=completed?rows.length:(group==='once'?5:group==='daily'?3:2);
   return '<div class="paticoin-tasks">'+rows.slice(0,visible).join('')+(rows.length>visible?'<details class="pati-missions-more"><summary>Diğer '+(rows.length-visible)+' görevi göster</summary><div class="pati-missions-more-list">'+rows.slice(visible).join('')+'</div></details>':'')+'</div>';
@@ -3422,7 +3422,7 @@ function patiWeeklyBoard(){
   const [year,month,day]=value.split('-').map(Number);
   return day+' '+['','Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'][month];
  };
- const portrait=p=>p?.avatar_url?'<img class="pati-weekly-avatar" src="'+esc(p.avatar_url)+'" alt="" loading="lazy" decoding="async">':'<span class="pati-weekly-avatar pati-weekly-avatar-fallback" aria-hidden="true">🐾</span>';
+ const portrait=p=>p?.avatar_url?'<img class="pati-weekly-avatar" src="'+esc(p.avatar_url)+'" alt="" loading="lazy" decoding="async">':'<span class="pati-weekly-avatar pati-weekly-avatar-fallback" aria-hidden="true">★</span>';
  const cards=[1,2].map(rank=>{
   const p=leaders.find(row=>Number(row.rank)===rank);
   const gold=rank===1,prize=gold?100:50;
