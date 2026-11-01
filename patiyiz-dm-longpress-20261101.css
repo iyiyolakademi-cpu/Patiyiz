@@ -1,158 +1,95 @@
-/* Mobile-first long-press message actions. Keeps existing chat, pinning and RLS. */
-.pati-dm-context-menu {
-  position:fixed!important;inset:0!important;box-sizing:border-box!important;
-  width:100vw!important;height:100dvh!important;max-width:none!important;max-height:none!important;
-  margin:0!important;padding:16px!important;
-  border:0!important;background:transparent!important;color:#18191e!important;
-  display:flex!important;flex-direction:column!important;
-  align-items:center!important;justify-content:center!important;
-  overflow-y:auto!important;overscroll-behavior:contain!important;
-  z-index:999999!important;
+/* Instagram-style message long-press overlay: dark floating reactions, message, actions. */
+.pati-dm-context-menu{
+ position:fixed!important;inset:0!important;box-sizing:border-box!important;
+ display:flex!important;flex-direction:column!important;align-items:flex-end!important;
+ width:100vw!important;height:100dvh!important;max-width:none!important;max-height:none!important;
+ margin:0!important;padding:0 14px!important;border:0!important;
+ overflow-y:auto!important;overflow-x:hidden!important;background:transparent!important;
+ color:#fff!important;z-index:999999!important;overscroll-behavior:contain!important;
 }
 .pati-dm-context-menu:not([open]){display:none!important}
 .pati-dm-context-menu::backdrop{
-  background:rgba(14,16,22,.45)!important;
-  -webkit-backdrop-filter:blur(5px)!important;backdrop-filter:blur(5px)!important;
+ background:rgba(14,15,19,.73)!important;
+ -webkit-backdrop-filter:blur(9px)!important;backdrop-filter:blur(9px)!important;
 }
 .pati-dm-context-content{
-  width:min(360px,100%)!important;max-height:calc(100dvh - 36px)!important;
-  min-width:0!important;display:flex!important;flex-direction:column!important;gap:10px!important;
-  overflow-y:auto!important;overflow-x:hidden!important;
-  padding:13px!important;border-radius:22px!important;
-  background:#f9fafb!important;border:1px solid rgba(255,255,255,.9)!important;
-  box-shadow:0 22px 72px rgba(0,0,0,.20)!important;color:#1b1d22!important;
+ box-sizing:border-box!important;display:flex!important;flex-direction:column!important;gap:12px!important;
+ flex:0 0 auto!important;width:min(380px,100%)!important;max-width:100%!important;min-width:0!important;
+ max-height:calc(100dvh - 28px)!important;overflow-y:auto!important;overflow-x:hidden!important;
+ margin-top:clamp(12px,var(--pati-dm-context-top,10vh),calc(100dvh - 540px))!important;
+ margin-bottom:14px!important;padding:0!important;border:0!important;border-radius:0!important;
+ box-shadow:none!important;background:transparent!important;color:#fff!important;
+ scrollbar-width:none!important;-webkit-overflow-scrolling:touch!important;
 }
-.pati-dm-context-top{
-  display:flex!important;align-items:center!important;justify-content:space-between!important;
-  padding:0 3px!important;color:#626671!important;font-size:12px!important;
-  font-weight:760!important;letter-spacing:.01em!important;
-}
-.pati-dm-context-top button{
-  width:40px!important;height:40px!important;min-height:40px!important;
-  display:grid!important;place-items:center!important;
-  background:#e9ebef!important;border:0!important;border-radius:50%!important;
-  color:#25272c!important;font-size:25px!important;font-weight:400!important;
-}
+.pati-dm-context-content::-webkit-scrollbar{display:none}
 .pati-dm-context-reactions{
-  display:flex!important;align-items:center!important;justify-content:space-around!important;
-  gap:2px!important;padding:9px 5px!important;width:100%!important;
-  background:#fff!important;border:1px solid #e9eaed!important;
-  border-radius:999px!important;
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ width:100%!important;min-height:64px!important;padding:7px 10px!important;margin:0!important;gap:2px!important;
+ border-radius:999px!important;background:#181b1e!important;border:1px solid rgba(255,255,255,.04)!important;
+ box-shadow:0 12px 38px rgba(0,0,0,.26)!important;
 }
 .pati-dm-context-reactions button{
-  flex:0 0 auto!important;width:46px!important;height:46px!important;min-height:46px!important;
-  display:grid!important;place-items:center!important;padding:0!important;
-  background:transparent!important;border:0!important;border-radius:50%!important;
-  font-size:25px!important;line-height:1!important;transition:transform .13s ease!important;
+ flex:1 1 auto!important;min-width:0!important;max-width:48px!important;
+ height:48px!important;min-height:48px!important;padding:0!important;
+ border:0!important;border-radius:50%!important;background:transparent!important;
+ color:#fff!important;font-size:27px!important;line-height:1!important;
+ display:grid!important;place-items:center!important;touch-action:manipulation!important;
+ transition:transform .15s ease!important;
 }
-.pati-dm-context-reactions button:active{transform:scale(1.23)!important}
+.pati-dm-context-reactions button:active{transform:scale(1.22)!important}
+.pati-dm-context-reactions .pati-dm-reaction-more{color:#adb3ba!important;font-size:39px!important;font-weight:300!important}
 .pati-dm-context-preview{
-  display:flex!important;flex-direction:column!important;align-self:flex-start!important;
-  gap:6px!important;width:fit-content!important;max-width:95%!important;min-width:0!important;
-  margin:4px 0!important;padding:12px 14px!important;
-  background:#fff!important;border:1px solid #e7e8eb!important;
-  border-radius:15px 15px 15px 5px!important;
-  color:#202127!important;font-size:14px!important;line-height:1.42!important;
-  overflow-wrap:anywhere!important;white-space:pre-wrap!important;
+ display:flex!important;flex-direction:column!important;align-self:flex-start!important;
+ width:fit-content!important;max-width:93%!important;min-width:0!important;
+ margin:2px 0 4px!important;padding:12px 14px!important;gap:7px!important;
+ border-radius:17px 17px 17px 4px!important;background:#3e4045!important;
+ border:1px solid rgba(255,255,255,.08)!important;color:#fff!important;
+ font-size:15px!important;line-height:1.5!important;white-space:pre-wrap!important;overflow-wrap:anywhere!important;
 }
 .pati-dm-context-preview.is-mine{
-  align-self:flex-end!important;background:#26282e!important;color:#fff!important;
-  border:0!important;border-radius:15px 15px 5px 15px!important;
-}
-.pati-dm-context-preview span{display:block!important;max-height:104px!important;overflow:hidden!important}
-.pati-dm-context-preview small{display:block!important;align-self:flex-end!important;opacity:.65!important;font-size:10px!important}
-.pati-dm-context-actions{
-  display:flex!important;flex-direction:column!important;gap:0!important;
-  width:100%!important;background:#fff!important;border:1px solid #e9eaed!important;
-  overflow:hidden!important;border-radius:15px!important;
-}
-.pati-dm-context-item{
-  display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;
-  gap:13px!important;width:100%!important;min-height:51px!important;
-  padding:11px 15px!important;background:#fff!important;color:#24262b!important;
-  border:0!important;border-radius:0!important;text-align:left!important;
-  font-size:14px!important;font-weight:690!important;line-height:1.2!important;
-}
-.pati-dm-context-item+.pati-dm-context-item{border-top:1px solid #f0f0f2!important}
-.pati-dm-context-item:active{background:#f1f2f5!important}
-.pati-dm-context-symbol{
-  flex:0 0 22px!important;display:grid!important;place-items:center!important;
-  width:22px!important;font-size:20px!important;color:#555b65!important;font-weight:600!important;
-}
-.pati-dm-context-item.is-danger{color:#d23742!important}
-.pati-dm-context-item.is-danger .pati-dm-context-symbol{color:#d23742!important}
-.pati-dm-context-menu button:focus-visible{outline:2px solid #353941!important;outline-offset:-3px!important}
-@media(max-width:420px){
-  .pati-dm-context-menu{padding:14px 15px!important}
-  .pati-dm-context-content{width:min(340px,100%)!important;padding:11px!important;gap:8px!important}
-  .pati-dm-context-reactions button{width:44px!important;height:44px!important;font-size:24px!important}
-}
-@media(max-height:530px){
-  .pati-dm-context-menu{justify-content:flex-start!important;padding-block:10px!important}
-  .pati-dm-context-content{margin:auto 0!important;max-height:calc(100dvh - 20px)!important}
-  .pati-dm-context-reactions button{height:40px!important;min-height:40px!important}
-  .pati-dm-context-item{min-height:45px!important}
-}
-@media(prefers-reduced-motion:reduce){.pati-dm-context-reactions button{transition:none!important}}
-
-
-/* The selected message stays visually anchored; do not turn this into a
-   generic centered dialog or a bottom sheet. */
-.pati-dm-context-menu[open]{
- display:block!important;overflow:hidden!important;
- padding:0!important;background:transparent!important;
-}
-.pati-dm-context-menu .pati-dm-context-content{
- position:fixed!important;
- left:var(--dm-popup-left,12px)!important;
- top:var(--dm-popup-top,80px)!important;
- width:var(--dm-popup-width,min(350px,calc(100vw - 24px)))!important;
- margin:0!important;transform-origin:70% 25%!important;
- max-height:calc(100dvh - 24px)!important;
- border:0!important;border-radius:0!important;padding:0!important;
- overflow:auto!important;gap:8px!important;
- background:transparent!important;box-shadow:none!important;
- animation:pati-ig-press-in .16s cubic-bezier(.22,1,.36,1) both!important;
-}
-.pati-dm-context-menu .pati-dm-context-reactions{
- background:#fff!important;box-shadow:0 6px 25px rgba(0,0,0,.13)!important;
- border:0!important;border-radius:999px!important;
- gap:0!important;padding:6px 5px!important;
-}
-.pati-dm-context-menu .pati-dm-context-preview{
- margin:0 0 1px!important;padding:13px 15px!important;
- border:0!important;border-radius:17px 17px 17px 5px!important;
- background:#f4f5f7!important;color:#22242a!important;
- box-shadow:0 5px 17px rgba(0,0,0,.10)!important;
- white-space:pre-wrap!important;max-height:175px!important;
-}
-.pati-dm-context-menu .pati-dm-context-preview.is-mine{
- background:#303137!important;color:#fff!important;
+ align-self:flex-end!important;background:#6845f4!important;border:0!important;
  border-radius:17px 17px 5px 17px!important;
 }
-.pati-dm-context-menu .pati-dm-context-actions{
- background:#fff!important;border:0!important;
- border-radius:17px!important;
- box-shadow:0 9px 24px rgba(0,0,0,.14)!important;
+.pati-dm-context-preview span{display:block!important;max-height:110px!important;overflow:hidden!important}
+.pati-dm-context-preview small{display:block!important;align-self:flex-end!important;color:#d2d2d8!important;opacity:.83!important;font-size:11px!important;font-weight:500!important}
+.pati-dm-context-actions{
+ display:flex!important;flex-direction:column!important;gap:0!important;align-self:flex-end!important;
+ width:min(315px,88%)!important;min-width:0!important;margin:0!important;
+ padding:8px 0!important;overflow:hidden!important;
+ background:rgba(72,73,78,.96)!important;border:1px solid rgba(255,255,255,.1)!important;
+ color:#fff!important;border-radius:21px!important;box-shadow:0 18px 65px rgba(0,0,0,.32)!important;
+ -webkit-backdrop-filter:blur(25px)!important;backdrop-filter:blur(25px)!important;
 }
-.pati-dm-context-menu .pati-dm-context-item{
- min-height:49px!important;padding:11px 16px!important;
- font-size:14px!important;gap:13px!important;
+.pati-dm-context-actions[hidden]{display:none!important}
+.pati-dm-context-item{
+ box-sizing:border-box!important;display:flex!important;flex-direction:row!important;
+ align-items:center!important;justify-content:flex-start!important;gap:14px!important;
+ width:100%!important;min-height:60px!important;padding:11px 20px!important;
+ border:0!important;border-radius:0!important;background:transparent!important;
+ color:#f8f8fa!important;text-align:left!important;font-size:17px!important;font-weight:500!important;
+ line-height:1.3!important;box-shadow:none!important;
 }
-.pati-dm-context-menu .pati-dm-context-top{display:none!important}
-@keyframes pati-ig-press-in{
- from{opacity:.35;transform:scale(.95) translateY(7px)}
- to{opacity:1;transform:scale(1) translateY(0)}
+.pati-dm-context-item:hover,.pati-dm-context-item:active{background:rgba(255,255,255,.085)!important}
+.pati-dm-context-symbol{flex:0 0 28px!important;width:28px!important;display:grid!important;place-items:center!important;color:inherit!important}
+.pati-dm-context-svg{width:25px!important;height:25px!important;stroke:currentColor!important;fill:none!important}
+.pati-dm-context-chevron{margin-left:auto!important;color:#e1e1e6!important;font-size:28px!important;font-weight:300!important}
+.pati-dm-context-item.is-danger{color:#ff6484!important}
+.pati-dm-context-item.is-danger .pati-dm-context-symbol{color:#ff6484!important}
+.pati-dm-context-menu button:focus-visible{outline:2px solid #dfe1f1!important;outline-offset:-4px!important}
+@media(max-width:440px){
+ .pati-dm-context-menu{padding:0 12px!important}
+ .pati-dm-context-content{width:100%!important;gap:10px!important}
+ .pati-dm-context-reactions{padding:7px 6px!important;min-height:58px!important}
+ .pati-dm-context-reactions button{font-size:25px!important;max-width:45px!important;height:44px!important;min-height:44px!important}
+ .pati-dm-context-reactions .pati-dm-reaction-more{font-size:35px!important}
+ .pati-dm-context-actions{width:min(310px,83%)!important}
+ .pati-dm-context-item{min-height:56px!important;font-size:16px!important;padding:9px 16px!important}
 }
-@media(max-width:400px){
- .pati-dm-context-menu .pati-dm-context-content{
-  max-height:calc(100dvh - 16px)!important;
- }
- .pati-dm-context-menu .pati-dm-context-reactions button{
-  min-height:42px!important;height:42px!important;
-  width:calc((100% - 20px)/5)!important;max-width:48px!important;
- }
+@media(max-height:690px){
+ .pati-dm-context-content{margin-top:10px!important;gap:8px!important}
+ .pati-dm-context-actions{padding:5px 0!important}
+ .pati-dm-context-item{min-height:48px!important}
+ .pati-dm-context-reactions{min-height:52px!important}
+ .pati-dm-context-reactions button{height:40px!important;min-height:40px!important}
 }
-@media(prefers-reduced-motion:reduce){
- .pati-dm-context-menu .pati-dm-context-content{animation:none!important}
-}
+@media(prefers-reduced-motion:reduce){.pati-dm-context-reactions button{transition:none!important}}
