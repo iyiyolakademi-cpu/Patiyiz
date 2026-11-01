@@ -1,27 +1,133 @@
-/* Only the LEFT media icons are colorful. Keep the native, neutral
- * create-post chooser, navigation, text and publication panels unchanged. */
-#patiyiz-system-media .pati-system-options button[data-system="camera-photo"] .pati-system-option-photo,
-#patiyiz-system-media .pati-system-options .pati-system-option-photo{
- background:linear-gradient(135deg,#62bdff,#3374ea)!important;
- color:#fff!important;border-color:#ffffff60!important;
- box-shadow:0 7px 17px #0004,inset 0 1px #ffffff45;
+/* Patiyiz 01.11.2026 — iOS-like, neutral mobile media publisher.
+ * Replace old blue/pink/purple artificial-gradient tiles; keep native picker actions.
+ * Covers both the chooser and the preview so no full-screen black sheet appears.
+ */
+#patiyiz-system-media{
+ background:#fafafb!important;color:#191b20!important;
+ color-scheme:light!important;
 }
-#patiyiz-system-media .pati-system-options button[data-system="camera-video"] .pati-system-option-video,
-#patiyiz-system-media .pati-system-options .pati-system-option-video{
- background:linear-gradient(135deg,#ff9f91,#e84b7c)!important;
- color:#fff!important;border-color:#ffffff60!important;
- box-shadow:0 7px 17px #0004,inset 0 1px #ffffff45;
+#patiyiz-system-media .pati-system-panel{
+ max-width:560px!important;gap:18px!important;
 }
-#patiyiz-system-media .pati-system-options button[data-system="gallery"] .pati-system-option-gallery,
+#patiyiz-system-media .pati-system-head{
+ position:relative!important;min-height:58px!important;
+ border-bottom:1px solid #e7e8eb!important;padding-bottom:7px!important;
+}
+#patiyiz-system-media .pati-system-head strong{
+ color:#191b20!important;font-size:17px!important;font-weight:750!important;
+ letter-spacing:-.025em!important;
+}
+#patiyiz-system-media .pati-system-head button{
+ color:#17191d!important;font-size:31px!important;font-weight:350!important;
+ width:44px!important;height:44px!important;
+}
+#patiyiz-system-media .pati-system-intro{
+ text-align:left!important;padding:15px 4px 12px!important;
+}
+#patiyiz-system-media .pati-system-intro-symbol{display:none!important}
+#patiyiz-system-media .pati-system-intro h2{
+ font-size:21px!important;line-height:1.23!important;font-weight:770!important;
+ letter-spacing:-.035em!important;margin:0 0 7px!important;
+ color:#17191d!important;
+}
+#patiyiz-system-media .pati-system-intro p{
+ font-size:13px!important;line-height:1.5!important;
+ color:#737781!important;margin:0!important;
+}
+#patiyiz-system-media .pati-system-options{gap:9px!important}
+#patiyiz-system-media .pati-system-options button,
+#patiyiz-system-media .pati-system-options button[data-system]{
+ display:flex!important;align-items:center!important;
+ min-height:76px!important;padding:12px 14px!important;gap:14px!important;
+ border:1px solid #e6e8eb!important;border-radius:15px!important;
+ background:#fff!important;color:#1a1b20!important;
+ background-image:none!important;
+ box-shadow:none!important;text-align:left!important;
+ transition:border-color .16s ease,background-color .16s ease!important;
+}
+#patiyiz-system-media .pati-system-options button:hover{
+ background:#f5f6f8!important;border-color:#d9dce1!important;
+}
+#patiyiz-system-media .pati-system-options button:active{
+ background:#f0f1f3!important;transform:none!important;
+}
+#patiyiz-system-media .pati-system-options button::after{
+ border-color:#777b85!important;width:7px!important;height:7px!important;
+}
+#patiyiz-system-media .pati-system-options .pati-system-option-icon,
+#patiyiz-system-media .pati-system-options .pati-system-option-photo,
+#patiyiz-system-media .pati-system-options .pati-system-option-video,
 #patiyiz-system-media .pati-system-options .pati-system-option-gallery{
- background:linear-gradient(135deg,#c29aff,#8663e9)!important;
- color:#fff!important;border-color:#ffffff60!important;
- box-shadow:0 7px 17px #0004,inset 0 1px #ffffff45;
+ width:46px!important;height:46px!important;flex:0 0 46px!important;
+ border-radius:12px!important;border:1px solid #ebedf0!important;
+ background:#f3f4f6!important;background-image:none!important;
+ color:#22252b!important;box-shadow:none!important;
+ transform:none!important;
 }
 #patiyiz-system-media .pati-system-options .pati-system-option-icon svg{
- color:#fff!important;stroke:#fff!important;
- width:27px!important;height:27px!important;
+ width:24px!important;height:24px!important;
+ stroke:#22252b!important;color:#22252b!important;
+ fill:none!important;stroke-width:1.8!important;
+}
+#patiyiz-system-media .pati-system-options button strong{
+ color:#1a1b20!important;font-size:15px!important;
+ font-weight:740!important;letter-spacing:-.018em!important;
+ margin-bottom:4px!important;
+}
+#patiyiz-system-media .pati-system-options button small{
+ color:#777c85!important;font-size:12px!important;font-weight:450!important;
+}
+#patiyiz-system-media .pati-system-modes{
+ margin-top:auto!important;padding:16px 0 12px!important;
+ border-top:1px solid #e8eaed!important;
+}
+#patiyiz-system-media .pati-system-modes button{
+ border-radius:999px!important;color:#727780!important;
+ padding:12px 16px!important;font-weight:750!important;
+}
+#patiyiz-system-media .pati-system-modes button.active{
+ background:#191b20!important;color:#fff!important;
+}
+#patiyiz-system-media .pati-system-mirror-option{
+ background:#fff!important;border:1px solid #e7e9ed!important;
+ color:#191b20!important;
+}
+#patiyiz-system-media .pati-system-mirror-option small{color:#676b76!important}
+#patiyiz-system-media .pati-system-mirror-option input{accent-color:#191b20!important}
+#patiyiz-system-media .pati-system-preview-media{
+ background:#eff0f2!important;border:1px solid #e8e9eb!important;
+}
+#patiyiz-system-media .pati-system-preview-media video{
+ background:#eff0f2!important;
+}
+#patiyiz-system-media .pati-system-summary{color:#717680!important}
+#patiyiz-system-media .pati-system-caption-label{color:#202228!important}
+#patiyiz-system-media #pati-system-caption,
+#patiyiz-system-media #pati-system-audience{
+ background:#fff!important;border:1px solid #dadde2!important;
+ color:#191b20!important;
+}
+#patiyiz-system-media #pati-system-caption::placeholder{color:#9a9da5!important}
+#patiyiz-system-media .pati-system-publish-actions button{
+ background:#fff!important;border:1px solid #dfe2e7!important;
+ color:#1b1d22!important;
+}
+#patiyiz-system-media #pati-system-publish{
+ background:#191b20!important;border-color:#191b20!important;
+ color:#fff!important;
+}
+#patiyiz-system-media .pati-system-error{
+ background:#fff2f2!important;border-color:#f4c4c4!important;color:#9d222b!important;
+}
+#patiyiz-system-media :is(button,textarea,select):focus-visible{
+ outline:2px solid #292d34!important;outline-offset:2px!important;
+}
+@media(max-width:740px){
+ #patiyiz-system-media{padding: max(15px,env(safe-area-inset-top,0px)) 14px max(20px,env(safe-area-inset-bottom,0px))!important;}
+ #patiyiz-system-media .pati-system-intro{padding-top:10px!important;}
+ #patiyiz-system-media .pati-system-panel{gap:14px!important}
+ #patiyiz-system-media .pati-system-options button{min-height:72px!important}
 }
 @media(prefers-reduced-motion:reduce){
- #patiyiz-system-media .pati-system-options .pati-system-option-icon{transition:none!important}
+ #patiyiz-system-media .pati-system-options button{transition:none!important}
 }
