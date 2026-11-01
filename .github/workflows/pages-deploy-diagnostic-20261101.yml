@@ -1,0 +1,29 @@
+name: Diagnose Patiyiz Pages stale deployment
+on:
+  push:
+    paths:
+      - '.github/workflows/pages-deploy-diagnostic-20261101.yml'
+permissions:
+  contents: read
+  pages: read
+  deployments: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Inspect site configuration and old deployment records
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          echo "Checking Pages publishing configuration"
+          gh api "repos/${GITHUB_REPOSITORY}/pages" --jq '{status,build_type,source,cname,html_url}' || true
+          echo "Inspecting repo deployments for blocked commit"
+          gh api "repos/${GITHUB_REPOSITORY}/deployments?per_page=100" --jq '[.[] | select(.environment=="github-pages") | {id,sha,environment,created_at,updated_at}] | .[:12]' || true
+          echo "Inspect statuses for the known blocked SHA"
+          ids=$(gh api "repos/${GITHUB_REPOSITORY}/deployments?sha=6827cc3c09cafcb9a81369f6154051e61014fdd7&per_page=100" --jq '.[].id') || exit 0
+          for id in $ids; do
+            echo "Deployment ID: $id"
+            gh api "repos/${GITHUB_REPOSITORY}/deployments/$id/statuses?per_page=10" --jq '[.[]|{state,description,created_at}]' || true
+          done
