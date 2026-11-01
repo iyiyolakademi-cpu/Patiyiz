@@ -1,0 +1,137 @@
+/* Patiyiz · Reels cover picker and Instagram-style save placement
+   Release: 2026-11-01. The actual posting / upload remains in app.js. */
+#main-content .pati-feed-card .pati-actionbar.pati-social-actions{
+  box-sizing:border-box!important;
+  display:flex!important;
+  flex-direction:row!important;flex-wrap:nowrap!important;
+  align-items:center!important;justify-content:flex-start!important;
+  width:100%!important;gap:4px!important;
+  padding:5px clamp(8px,2vw,13px)!important;
+}
+#main-content .pati-feed-card .pati-actionbar.pati-social-actions>button{
+  order:0!important;
+  flex:0 0 auto!important;
+  min-width:40px!important;
+  margin:0!important;
+}
+#main-content .pati-feed-card .pati-actionbar.pati-social-actions>button[data-action="save"]{
+  order:99!important;
+  flex:0 0 44px!important;
+  width:44px!important;min-width:44px!important;
+  margin-left:auto!important;margin-right:0!important;
+  padding-inline:4px!important;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+}
+#main-content .pati-feed-card .pati-actionbar.pati-social-actions>button[data-action="save"] svg{
+  width:26px!important;height:26px!important;flex-shrink:0!important;
+  stroke-width:2.35!important;
+}
+@media(max-width:370px){
+ #main-content .pati-feed-card .pati-actionbar.pati-social-actions{
+  gap:0!important;padding:4px 6px!important;
+ }
+ #main-content .pati-feed-card .pati-actionbar.pati-social-actions>button{
+  padding:5px 2px!important;min-width:37px!important;
+ }
+ #main-content .pati-feed-card .pati-actionbar.pati-social-actions>button[data-action="save"]{
+  min-width:40px!important;flex-basis:40px!important;width:40px!important;
+ }
+}
+/* Composer cover controls */
+#post-form[data-mode="reels"] .pati-reels-cover-editor{
+  display:flex!important;flex-direction:column!important;
+  gap:12px!important;width:100%!important;min-width:0!important;
+  margin:12px 0!important;padding:15px!important;
+  border:1px solid #e6e8ec!important;
+  border-radius:18px!important;background:#fff!important;color:#1d2026!important;
+  box-sizing:border-box!important;
+}
+#post-form[data-mode="reels"] .pati-cover-title{
+  display:flex;flex-direction:column;gap:3px;
+}
+#post-form[data-mode="reels"] .pati-cover-title strong{
+  font-size:16px!important;line-height:1.3!important;font-weight:800!important;
+}
+#post-form[data-mode="reels"] .pati-cover-title small{
+  font-size:12px!important;line-height:1.5!important;color:#69707a!important;
+}
+#post-form[data-mode="reels"] .pati-cover-workspace{
+  display:grid!important;grid-template-columns:92px minmax(0,1fr)!important;
+  align-items:center!important;gap:12px!important;min-width:0!important;
+}
+#post-form[data-mode="reels"] .pati-reel-cover-visual{
+  position:relative;aspect-ratio:9/16;min-width:0;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid #dfe2e7;border-radius:12px;background:#202229;color:#e8eaf0;
+}
+#post-form[data-mode="reels"] .pati-reel-cover-visual img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+}
+#post-form[data-mode="reels"] .pati-reel-cover-visual img[hidden],
+#post-form[data-mode="reels"] .pati-reel-cover-placeholder[hidden]{
+  display:none!important;
+}
+#post-form[data-mode="reels"] .pati-reel-cover-placeholder{
+  font-size:11px!important;line-height:1.4!important;text-align:center;
+  padding:7px;max-width:100%;overflow-wrap:anywhere;
+}
+#post-form[data-mode="reels"] .pati-reel-cover-buttons{
+  display:flex;flex-direction:column;gap:8px;min-width:0;
+}
+#post-form[data-mode="reels"] .pati-reel-cover-buttons button{
+  box-sizing:border-box!important;width:100%!important;min-width:0!important;
+  min-height:44px!important;display:flex!important;
+  align-items:center!important;justify-content:center!important;
+  padding:8px 10px!important;border-radius:12px!important;
+  background:#f4f5f7!important;color:#1b1f25!important;
+  font-size:12px!important;font-weight:800!important;
+  border:1px solid #e3e5eb!important;box-shadow:none!important;
+}
+#post-form[data-mode="reels"] .pati-reel-cover-buttons button[aria-pressed="true"]{
+  background:#1c1f25!important;color:#fff!important;border-color:#1c1f25!important;
+}
+#post-form[data-mode="reels"] .pati-reel-cover-frame-panel{
+  box-sizing:border-box;width:100%;padding:10px;
+  border:1px solid #e4e6eb;border-radius:14px;background:#f8f9fa;
+}
+#post-form[data-mode="reels"] .pati-reel-cover-frame-panel[hidden]{
+  display:none!important;
+}
+#post-form[data-mode="reels"] .pati-reel-cover-frame-panel video{
+  display:block;width:100%;max-width:260px;max-height:225px;
+  aspect-ratio:9/16;object-fit:contain;margin:0 auto;
+  border-radius:12px;background:#121417;
+}
+#post-form[data-mode="reels"] .pati-reel-cover-scrub{
+  display:flex;align-items:center;gap:9px;margin-top:10px;
+}
+#post-form[data-mode="reels"] .pati-reel-cover-scrub button{
+  box-sizing:border-box;min-width:65px;min-height:44px;padding:7px;
+  border:1px solid #dde0e6;border-radius:11px;background:#fff;color:#16191f;
+  font-weight:800;
+}
+#post-form[data-mode="reels"] .pati-reel-cover-timeline{
+  display:block;flex:1 1 auto;min-width:0;width:100%;height:42px;
+  accent-color:#22252b;touch-action:pan-y;
+}
+#post-form[data-mode="reels"] .pati-cover-message{
+  margin:0;font-size:12px;line-height:1.5;color:#535b67;
+}
+#post-form[data-mode="reels"] .pati-cover-message.is-error{color:#ba2434}
+#post-form[data-mode="reels"] .pati-cover-subtitle{
+  display:flex;flex-direction:column;gap:5px;min-width:0;
+  color:#1d2026;font-size:12px;font-weight:800;
+}
+#post-form[data-mode="reels"] .pati-cover-subtitle input{
+  box-sizing:border-box;width:100%;min-height:45px!important;
+  padding:10px 12px;border:1px solid #dadde2;
+  border-radius:12px;font-size:16px!important;background:#fff;color:#1e2026;
+}
+#post-form[data-mode="reels"] .pati-reel-cover-input{
+  position:absolute!important;width:1px!important;height:1px!important;
+  overflow:hidden!important;opacity:0!important;pointer-events:none!important;
+}
+@media(max-width:365px){
+ #post-form[data-mode="reels"] .pati-cover-workspace{grid-template-columns:78px minmax(0,1fr)!important;gap:9px!important}
+ #post-form[data-mode="reels"] .pati-reels-cover-editor{padding:12px!important}
+}
