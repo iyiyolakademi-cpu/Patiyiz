@@ -148,3 +148,51 @@
     backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
   }
 }
+
+/* Messages inbox: place New chat, tabs and search below the visible header. */
+@media (max-width:740px), (hover:none) and (pointer:coarse) and (max-width:1024px){
+  #app-root:not(.hidden) #main-content:has(.pati-dm-layout.mobile-chat-list){
+    box-sizing:border-box!important;
+    padding-top:32px!important;
+    padding-left:0!important;padding-right:0!important;
+    overflow-x:hidden!important;
+  }
+  #app-root:not(.hidden) #main-content .pati-dm-layout.mobile-chat-list{
+    position:relative!important;top:auto!important;
+    transform:none!important;
+    box-sizing:border-box!important;
+    margin-top:0!important;padding-top:10px!important;
+    min-width:0!important;max-width:100%!important;
+    background:#fff!important;
+  }
+  #app-root:not(.hidden) #main-content .pati-dm-layout.mobile-chat-list .pati-dm-top,
+  #app-root:not(.hidden) #main-content .pati-dm-layout.mobile-chat-list .pati-dm-filters,
+  #app-root:not(.hidden) #main-content .pati-dm-layout.mobile-chat-list .pati-dm-searchbar{
+    position:relative!important;inset:auto!important;transform:none!important;
+    visibility:visible!important;opacity:1!important;
+    filter:none!important;backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;background:#fff!important;
+    max-width:100%!important;box-sizing:border-box!important;
+  }
+  #app-root:not(.hidden) #main-content .pati-dm-layout.mobile-chat-list .pati-dm-top{
+    display:flex!important;align-items:center!important;flex-wrap:wrap!important;
+    gap:8px!important;min-height:62px!important;
+    padding:12px 12px 10px!important;
+  }
+  #app-root:not(.hidden) #main-content .pati-dm-layout.mobile-chat-list .pati-dm-top-actions{
+    display:flex!important;align-items:center!important;gap:6px!important;
+    margin-left:auto!important;min-width:0!important;
+  }
+  #app-root:not(.hidden) #main-content .pati-dm-layout.mobile-chat-list .pati-dm-new{
+    position:relative!important;inset:auto!important;
+    display:inline-flex!important;align-items:center!important;justify-content:center!important;
+    min-height:44px!important;white-space:normal!important;
+  }
+  #app-root:not(.hidden) #main-content .pati-dm-layout.mobile-chat-list .pati-dm-filters{
+    display:flex!important;gap:6px!important;
+    padding:9px 12px!important;
+  }
+  #app-root:not(.hidden) #main-content .pati-dm-layout.mobile-chat-list .pati-dm-filters button{
+    min-width:0!important;min-height:44px!important;
+  }
+}
