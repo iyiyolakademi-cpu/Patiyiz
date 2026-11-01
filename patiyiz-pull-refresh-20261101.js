@@ -1,0 +1,11 @@
+/* Mobile pull to refresh: feed, Discover, and Questions only. */
+(()=>{'use strict';let start=null,active=false,working=false;const LIMIT=76;
+const main=()=>document.getElementById('main-content');
+function allowed(e){const m=main();if(!m||!e.target.closest('#main-content'))return false;if(document.querySelector('#modal-root .modal,#pati-daily-overlay:not([hidden]),#patiyiz-system-media'))return false;if(e.target.closest('input,textarea,select,[contenteditable],.pati-reels-viewport,.pati-carousel,.pati-search-screen'))return false;return !!(m.querySelector('.pati-daily-card')||m.querySelector('.pati-explore-media-screen'))&&window.matchMedia('(max-width:740px)').matches}
+function bar(){let b=document.getElementById('pati-pull-refresh');if(!b){b=document.createElement('div');b.id='pati-pull-refresh';b.setAttribute('aria-live','polite');b.textContent='↓ Yenilemek için çek';document.body.appendChild(b)}return b}
+function hide(){active=false;start=null;const b=document.getElementById('pati-pull-refresh');if(b){b.classList.remove('visible','ready','busy');b.style.transform=''}}
+document.addEventListener('touchstart',e=>{start=null;if(working||e.touches.length!==1||!allowed(e))return;const m=main();if(window.scrollY>5||m.scrollTop>5)return;start={x:e.touches[0].clientX,y:e.touches[0].clientY,d:0}},{passive:true});
+document.addEventListener('touchmove',e=>{if(!start||e.touches.length!==1)return;const dx=e.touches[0].clientX-start.x,dy=e.touches[0].clientY-start.y;if(dy<0||Math.abs(dx)>Math.max(30,dy*.65)){hide();return}if(dy<12)return;active=true;start.d=dy;const b=bar();b.classList.add('visible');b.classList.toggle('ready',dy>=LIMIT);b.textContent=dy>=LIMIT?'↑ Bırak ve yenile':'↓ Yenilemek için çek';b.style.transform='translate(-50%,'+Math.min(dy*.3,30)+'px)'},{passive:true});
+document.addEventListener('touchend',()=>{if(!start)return;const pull=start.d;hide();if(pull<LIMIT||working)return;working=true;const b=bar();b.textContent='↻ Yenileniyor…';b.classList.add('visible','busy');window.dispatchEvent(new Event('patiyiz:pull-refresh'));setTimeout(()=>{working=false;hide()},1600)},{passive:true});
+document.addEventListener('touchcancel',hide,{passive:true});
+})();
