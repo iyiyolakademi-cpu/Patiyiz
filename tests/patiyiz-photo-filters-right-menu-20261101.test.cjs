@@ -36,8 +36,8 @@ test('Filters use pixel-level image processing on iPhones and match upload outpu
  const img={naturalWidth:1600,naturalHeight:1200};
  vm.runInContext('this.renderFilter=patiCropPaint',context);
  context.renderFilter(canvas,img,{ratio:'1:1',zoom:1,x:.5,y:.5,rotation:0,flip:false,filter:'mono',brightness:95,contrast:125});
- assert.equal(canvas.width,720);
- assert.equal(canvas.height,720);
+ assert.equal(canvas.width,1080);
+ assert.equal(canvas.height,1080);
  assert.ok(output,'output bytes should be exported on canvas');
  assert.equal(output[0],output[1]);
  assert.equal(output[1],output[2]);
@@ -45,7 +45,7 @@ test('Filters use pixel-level image processing on iPhones and match upload outpu
  assert.match(app,/patiCropApplyPixelFilter\(ctx,w,h,state\)/);
  assert.match(app,/ctx\.putImageData\(image,0,0\)/);
  assert.match(app,/async function cropPostPhoto\(file,aspect\)/);
- assert.match(app,/patiCropEdits\.has\(photoFiles\[i\]\)/);
+ assert.match(app,/await cropPostPhoto\(photoFiles\[i\],patiMediaDefaultRatio/);
 });
 test('Photo adjustment controls are available on mobile, preview and export',()=>{
  assert.match(app,/pati-crop-filter-strip/);
