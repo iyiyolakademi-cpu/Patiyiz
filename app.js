@@ -241,6 +241,44 @@ async function patiStreakClaim(target){
  }catch(error){if(me?.id===uid)notify('Seri ödülü alınamadı: '+friendly(error),true)}
  finally{patiStreakClaimBusy=false}
 }
+/* 60-day progress is read without claiming or paying any reward. */
+let patiStreak60State={owner:'',ready:false,loading:false,eligible:false,claimed:false,cash_status:'',error:''};
+async function patiStreak60Load(){
+ if(!me?.id||!sb||patiStreak60State.loading)return;
+ const uid=me.id;
+ if(patiStreak60State.owner!==uid)patiStreak60State={owner:uid,ready:false,loading:false,eligible:false,claimed:false,cash_status:'',error:''};
+ patiStreak60State.loading=true;
+ try{
+  const {data,error}=await sb.rpc('patiyiz_streak60_reward',{p_claim:false});
+  if(error)throw error;
+  if(me?.id!==uid)return;
+  patiStreak60State={owner:uid,ready:true,loading:false,eligible:!!data?.eligible,
+   claimed:!!data?.claimed,cash_status:String(data?.cash_status||''),error:''};
+  if(view==='streaks')render();
+ }catch(error){
+  console.warn('60 günlük seri kontrolü:',error?.message||error);
+  if(me?.id===uid){patiStreak60State={...patiStreak60State,loading:false,ready:false,error:'60 günlük ödül kontrol edilemedi.'};if(view==='streaks')render()}
+ }
+}
+let patiStreak60ClaimBusy=false;
+async function patiStreak60Claim(){
+ if(!me?.id||!sb||patiStreak60ClaimBusy||!patiStreak60State.eligible||patiStreak60State.claimed)return;
+ if(!confirm('60 günlük seri ödülünü alıp 200 TL nakit ödül talebi oluşturulsun mu? Ödeme inceleme sonrasında kararlaştırılır.'))return;
+ const uid=me.id;
+ patiStreak60ClaimBusy=true;
+ try{
+  const {data,error}=await sb.rpc('patiyiz_streak60_reward',{p_claim:true});
+  if(error)throw error;
+  if(me?.id!==uid)return;
+  patiStreak60State={owner:uid,ready:true,loading:false,eligible:!!data?.eligible,claimed:!!data?.claimed,cash_status:String(data?.cash_status||''),error:''};
+  if(Number.isFinite(Number(data?.balance))){patiCoinState.balance=Math.max(0,Number(data.balance)||0);navRender()}
+  if(Number(data?.awarded_balance)>0)notify('+'+Number(data.awarded_balance)+' Puan hesabına eklendi. Nakit talebin incelemede.');
+  else notify('Ödül talebinin güncel durumu görüntülendi.');
+  void patiCoinSync(false);
+  if(view==='streaks')render();
+ }catch(error){if(me?.id===uid)notify('60 günlük seri talebi oluşturulamadı: '+friendly(error),true)}
+ finally{patiStreak60ClaimBusy=false}
+}
 function patiStreaksPage(){
  const goal=patiStreakGoalState.goal,days=patiStreakState.count||0,
    best=patiStreakState.best||0,earned=new Set(patiStreakGoalState.earned||[]);
@@ -283,7 +321,7 @@ function patiStreaksPage(){
    retry+'<div class="pati-streak-goal-grid">'+cards+'</div>'+bonus60+
    '<p class="pati-streak-rules">Ödüller yalnızca seçtiğin ve tamamladığın hedef için bir kez alınabilir. Puanı topla butonuna bastığında sunucu ödülü doğrular. Gün değişimi Türkiye saatine göre hesaplanır.</p></section></div>';
  if(!patiStreakGoalState.ready&&!patiStreakGoalState.loading&&!patiStreakGoalState.error&&!patiStreakState.loading)void patiStreakGoalLoad();
- if(patiStreak60State.owner!==me?.id||(!patiStreak60State.ready&&!patiStreak60State.loading))void patiStreak60Load();
+ if(patiStreak60State.owner!==me?.id||(!patiStreak60State.ready&&!patiStreak60State.loading&&!patiStreak60State.error))void patiStreak60Load();
 }
 
 function showApp(){starter();
@@ -460,16 +498,6 @@ function navRender(){
   handle.setAttribute('aria-label','Sağdaki menüyü aç');handle.title='Menüyü sağdan aç';
   handle.textContent='‹';
   appRoot.appendChild(handle);
-  let edgeTouch=null;
-  handle.addEventListener('touchstart',event=>{
-   const t=event.touches[0];if(event.touches.length===1&&t)edgeTouch={x:t.clientX,y:t.clientY};
-  },{passive:true});
-  handle.addEventListener('touchend',event=>{
-   const t=event.changedTouches[0];if(!edgeTouch||!t)return;
-   const dx=t.clientX-edgeTouch.x,dy=t.clientY-edgeTouch.y;edgeTouch=null;
-   if(dx< -30&&Math.abs(dx)>Math.abs(dy)){event.preventDefault();openMobileFeaturesMenu()}
-  },{passive:false});
-  handle.addEventListener('touchcancel',()=>{edgeTouch=null},{passive:true});
  }
  const fab=$('#app-root>.mobile-fab');if(fab){fab.hidden=true;fab.style.display='none'}const sideCreate=$('.nav-create');if(sideCreate){const action=view==='home'?'compose':'';sideCreate.hidden=!action;sideCreate.style.display=action?'':'none';if(action){sideCreate.dataset.action=action;sideCreate.innerHTML=ico('plus')+(view==='community'?' Soru sor':view==='care'?' Görev ekle':view==='lost'?' İlan oluştur':view==='adoption'?' Sahiplendirme ilanı':' Yeni paylaşım')}}const shareAllowed=view==='home';
  if(typeof document!=='undefined'){
@@ -512,16 +540,6 @@ function patiOpenRightMenu(markup){
   patiCloseRightMenu();
   processClick({target:item});
  });
- let touch=null;
- popup.querySelector('.pati-right-menu-panel').addEventListener('touchstart',event=>{
-  const t=event.touches[0];
-  if(event.touches.length===1&&t)touch={x:t.clientX,y:t.clientY};
- },{passive:true});
- popup.querySelector('.pati-right-menu-panel').addEventListener('touchend',event=>{
-  const t=event.changedTouches[0];if(!touch||!t)return;
-  const dx=t.clientX-touch.x,dy=t.clientY-touch.y;touch=null;
-  if(dx>75&&Math.abs(dx)>Math.abs(dy)*1.4){event.preventDefault();patiCloseRightMenu()}
- },{passive:false});
  if(typeof popup.showModal==='function')popup.showModal();
  else popup.setAttribute('open','');
 }
@@ -7586,7 +7604,7 @@ case 'dm-receipts-toggle':run(async()=>{
  const p=data.profiles.find(x=>x.id===user);if(p)p.read_receipts_enabled=r.data.read_receipts_enabled;
  render();
  }finally{button.disabled=false}
-},'Görüldü tercihin kaydedildi.');break;case 'pati-streak-refresh':patiStreakGoalState.error='';void patiStreakGoalLoad();break;case 'pati-streak-goal':{const target=Number(id);if([3,7,14,30].includes(target))void patiStreakGoalLoad(target);break;}case 'pati-streak-collect':{const target=Number(id);if([3,7,14,30].includes(target))void patiStreakClaim(target);break;}case 'pati-streak-60-claim':void patiStreak60Load(true);break;case 'pati-streak-back':patiGoBack();break;case 'paticoin-claim':patiCoinSync(true);break;case 'pati-weekly-refresh':void patiWeeklyRefresh(true);break;case 'paticoin-refresh':void patiCoinSync(false);break;case 'paticoin-invite-redeem':void patiInviteRedeem();break;case 'paticoin-invite-share':patiInviteShare();break;case 'paticoin-shop':navigate('shop');break;case 'paticoin-shop-filter':{if(['all','food','supply','donation'].includes(id)){patiShopFilter=id;patiShopPage()}break}case 'paticoin-rewards':navigate('rewards');break;case 'saved-posts':navigate('saved-posts');break;case 'paticoin-buy':patiCoinShowCheckout(id);break;case 'paticoin-confirm':patiCoinConfirm();break;case 'hashtag':navigate('explore');search='#'+(id||'');render();break;case 'pati-create-open':openPatiCreate();break;case 'pati-onboarding-dismiss':patiDismissOnboarding();break;case 'pati-feed-open-reel':patiOpenFeedReel(id);break;case 'reel-speed':{const v=target.closest('.pati-reel-item')?.querySelector('video');if(v){const rates=[1,1.25,1.5,2,.75],i=rates.indexOf(v.playbackRate);v.playbackRate=rates[(i+1)%rates.length];const label=target.querySelector('.pati-reel-tool-label');if(label)label.textContent=v.playbackRate+'×';target.setAttribute('aria-label','Oynatma hızı '+v.playbackRate+'×')}break}case 'reels-more':void patiLoadMoreReels();break;case 'reel-play':reelHandleTap(target);break;case 'reel-sound':reelToggleSound(target);break;
+},'Görüldü tercihin kaydedildi.');break;case 'pati-streak-refresh':patiStreakGoalState.error='';void patiStreakGoalLoad();break;case 'pati-streak-goal':{const target=Number(id);if([3,7,14,30].includes(target))void patiStreakGoalLoad(target);break;}case 'pati-streak-collect':{const target=Number(id);if([3,7,14,30].includes(target))void patiStreakClaim(target);break;}case 'pati-streak-60-claim':void patiStreak60Claim();break;case 'pati-streak-back':patiGoBack();break;case 'paticoin-claim':patiCoinSync(true);break;case 'pati-weekly-refresh':void patiWeeklyRefresh(true);break;case 'paticoin-refresh':void patiCoinSync(false);break;case 'paticoin-invite-redeem':void patiInviteRedeem();break;case 'paticoin-invite-share':patiInviteShare();break;case 'paticoin-shop':navigate('shop');break;case 'paticoin-shop-filter':{if(['all','food','supply','donation'].includes(id)){patiShopFilter=id;patiShopPage()}break}case 'paticoin-rewards':navigate('rewards');break;case 'saved-posts':navigate('saved-posts');break;case 'paticoin-buy':patiCoinShowCheckout(id);break;case 'paticoin-confirm':patiCoinConfirm();break;case 'hashtag':navigate('explore');search='#'+(id||'');render();break;case 'pati-create-open':openPatiCreate();break;case 'pati-onboarding-dismiss':patiDismissOnboarding();break;case 'pati-feed-open-reel':patiOpenFeedReel(id);break;case 'reel-speed':{const v=target.closest('.pati-reel-item')?.querySelector('video');if(v){const rates=[1,1.25,1.5,2,.75],i=rates.indexOf(v.playbackRate);v.playbackRate=rates[(i+1)%rates.length];const label=target.querySelector('.pati-reel-tool-label');if(label)label.textContent=v.playbackRate+'×';target.setAttribute('aria-label','Oynatma hızı '+v.playbackRate+'×')}break}case 'reels-more':void patiLoadMoreReels();break;case 'reel-play':reelHandleTap(target);break;case 'reel-sound':reelToggleSound(target);break;
  case 'reel-seek':break;case 'pati-media-gallery':openComposerMediaPicker('gallery');break;case 'pati-dm-gallery-open':document.querySelector('#message-form input[name="dm_gallery"]')?.click();break;case 'pati-media-video':{const f=document.getElementById('post-form');const file=f?.querySelector('input[name="video"]');if(file){file.removeAttribute('capture');file.click()}break}case 'pati-media-camera':openComposerMediaPicker('camera');break;case 'pati-draft-save':draftSave();break;case 'pati-draft-load':draftRestore();break;case 'pati-media-select':{postCropIndex=Number(id)||0;updatePostMediaPreview();if(postCropRatio!=='original')void drawPostCrop();break}
 case 'pati-media-prev':case 'pati-media-next':case 'pati-media-remove':patiComposerReorder(target.dataset.kind,Number(id),act==='pati-media-prev'?-1:1,act==='pati-media-remove');break;case 'pati-story-gallery':document.querySelector('#story-form input[name="story_gallery"]')?.click();break;case 'pati-story-camera':document.querySelector('#story-form input[name="story_camera"]')?.click();break;case 'pati-create-close':closePatiCreate();break;case 'pati-create-post':closePatiCreate();startPatiCameraPost();break;case 'pati-create-text':closePatiCreate();compose(null,'text',false);break;case 'pati-create-story':closePatiCreate();startPatiCameraStory();break;case 'pati-create-reels':closePatiCreate();startPatiCameraReels();break;case 'pati-create-question':closePatiCreate();navigate('community');composeQuestion();break;case 'story-close':closeStory();break;case 'story-sound':{const video=document.querySelector('#story-overlay .story-big-video');if(video){patiyizStorySoundEnabled=video.muted;video.muted=!patiyizStorySoundEnabled;target.textContent=video.muted?'Ses aç':'Ses kapat';target.setAttribute('aria-label',video.muted?'Hikâye sesini aç':'Hikâye sesini kapat');if(!video.muted)video.play().catch(e=>{video.muted=true;target.textContent='Ses aç';target.setAttribute('aria-label','Hikâye sesini aç');console.warn('Hikâye sesi tarayıcı tarafından engellendi:',e?.message||e)})}break}case 'story-poll':run(async()=>{if(data.storyResponses.some(x=>x.story_id===id&&x.user_id===me.id&&x.kind==='poll'))throw Error('Bu ankete zaten oy verdin.');const result=await sb.from('patiyiz_story_responses').insert({story_id:id,user_id:me.id,kind:'poll',option_index:Number(target.dataset.index)});if(result.error)throw result.error;data.storyResponses.push({story_id:id,user_id:me.id,kind:'poll',option_index:Number(target.dataset.index)})},'Oyun kaydedildi.');break;case 'story-question':{const x=storyItems.find(x=>x.id===id);if(x){clearTimeout(storyTimer);storyTimer=null;modal('Hikâye sorusuna yanıt',textField('response','Yanıtın','',true,220),'story-answer-form');document.getElementById('story-answer-form').dataset.story=id}break}case 'story-emoji':run(async()=>{if(data.storyResponses.some(x=>x.story_id===id&&x.user_id===me.id&&x.kind==='emoji'))throw Error('Bu hikâyeye zaten tepki verdin.');const result=await sb.from('patiyiz_story_responses').insert({story_id:id,user_id:me.id,kind:'emoji',response:'🐾'});if(result.error)throw result.error;data.storyResponses.push({story_id:id,user_id:me.id,kind:'emoji',response:'🐾'})},'Tepki gönderildi.');break;case 'story-like':toggleStoryLike(id);break;case 'story-viewers':showStoryViewers();break;case 'story-viewer-profile':{if(!id||blocked.has(id))break;closeStory(false);lastDetailView=view;followReturnList=false;profileId=id;navigate('profile');break;}case 'story-viewer-chat':{if(!id||id===me.id||blocked.has(id))break;closeStory(false);patiActiveGroupId='';patiGroupLiveStop();patiDmOpenAtLatest(id);personId=id;mobileChatOpen=true;navigate('messages');break;}case 'story-viewers-close':{patiStopStoryActivityRefresh();const el=document.getElementById('story-viewers-sheet');if(el)el.hidden=true;document.getElementById('story-overlay')?.classList.remove('pati-story-viewers-open');document.querySelector('#story-overlay .story-big-video')?.play?.()?.catch?.(()=>{});clearTimeout(storyTimer);if(storyItems.length)storyTimer=setTimeout(()=>stepStory(1),storyItems[storyIndex]?.video_url?15000:6000);break}case 'story-create':startPatiCameraStory();break;case 'story-create-highlight':newHighlightAlbum();break;case 'story-highlight-choose':chooseStoryHighlight(id);break;case 'story-highlight-new':newHighlightAlbum(id);break;case 'story-highlight-album':run(()=>addStoryToHighlightAlbum(target.dataset.story,id));break;case 'story-view':openStory(id);break;case 'story-highlights':openHighlights(id);break;case 'highlight-album-open':openHighlightAlbum(id);break;case 'highlight-album-new':newHighlightAlbum();break;case 'highlight-album-manage':manageHighlightAlbums();break;case 'highlight-album-delete':if(confirm('Bu albüm silinsin mi? Hikâyelerin silinmeyecek.'))run(async()=>{const out=await sb.from('patiyiz_highlight_albums').delete().eq('id',id).eq('owner_id',me.id);if(out.error)throw out.error;closeModal(true);await refresh()},'Albüm silindi.');break;case 'highlight-album-add':{const stories=data.stories.filter(x=>x.author_id===me.id&&x.is_highlight);if(!stories.length){notify('Önce bir hikâyeyi kalıcı olarak sabitle.',true);break}modal('Albüme hikâye ekle','<div class="pati-field"><label>Hikâyeyi seç</label><select name="story_id">'+stories.map(x=>'<option value="'+esc(x.id)+'">'+esc(cut(x.caption||day(x.created_at),65))+'</option>').join('')+'</select></div>','highlight-album-add-form');document.getElementById('highlight-album-add-form').dataset.album=id;break}case 'story-highlight-open':openHighlightStory(id);break;case 'story-pet-highlight':openPetHighlight(id);break;case 'pati-task-follow':exploreTab='users';navigate('explore');break;case 'story-prev':stepStory(-1);break;case 'story-next':stepStory(1);break;case 'story-delete':if(confirm('Hikâyeni silmek istiyor musun?'))run(async()=>{const original=data.stories.find(x=>x.id===id&&x.author_id===me.id);const r=await sb.from('patiyiz_stories').delete().eq('id',id).eq('author_id',me.id).select('id');if(r.error)throw r.error;if(!r.data?.length)throw Error('Hikâye silinemedi.');closeStory();await refresh();if(original?.private_image_path){const paths=[original.private_image_path,original.private_video_path].filter(Boolean);const cleanup=await sb.storage.from('patiyiz-close-stories').remove(paths);if(cleanup.error)console.warn('Özel hikâye dosyaları silinemedi:',cleanup.error.message)}else if(original&&!original.shared_post_id)await deleteOwnedMedia(original)},'Hikâye silindi.');break;case 'verification-request':{const meProfile=current();if(meProfile.is_verified){notify('Hesabın zaten doğrulanmış.');break}run(async()=>{const r=await sb.from('verification_requests').select('status').eq('user_id',me.id).eq('status','pending').limit(1);if(r.error)throw r.error;if(r.data?.length){notify('Mavi tik talebin inceleme bekliyor.');return}modal('Mavi tik talebi',textField('note','Doğrulama gerekçen (isteğe bağlı)','',false,500),'verification-request-form')});break}case 'open-admin':if(isAdmin){window.location.href='admin.html'}else notify('Yönetici yetkisi doğrulanamadı.',true);break;case 'close':if(e.target.classList.contains('modal-backdrop')||target.tagName==='BUTTON')closeModal();break;case 'home-retry':run(()=>refresh());break;case 'load-more':if(['posts','messages','notifications'].includes(id))run(()=>loadMore(id));break;case 'compose':if(view==='community')composeQuestion();else if(view==='care')composeCare();else if(view==='lost')composeLost();else if(view==='adoption')composeAdoption();else if(view==='home'||view==='profile')startPatiCameraPost();break;case 'question':composeQuestion();break;case 'community-more':void patiLoadCommunity();break;case 'community-replies-more':void patiLoadQuestionReplies(id,true);break;case 'community-filter':communityCategory=id;render();void patiLoadCommunity(true);break;case 'pati-care-day':patiCareSelectedDate=patiCareSelectedDate===id?'':id;patiCareMonth=id.slice(0,7);careFilter='all';carePage();break;
 case 'pati-care-clear-day':patiCareSelectedDate='';careFilter='all';carePage();break;
@@ -8284,8 +8302,6 @@ document.addEventListener('touchend',event=>{
  if(!patiCanSwipePage(event.target)||Date.now()-swipe.started>1100)return;
  const t=event.changedTouches[0],dx=t.clientX-swipe.x,dy=t.clientY-swipe.y;
  if(Math.abs(dx)<75||Math.abs(dx)<Math.abs(dy)*1.5)return;
- // Feed swipes left reveal the right-hand menu, not the Explore tab.
- if(view==='home'&&dx<0){openMobileFeaturesMenu();return;}
  const idx=patiSwipeTabs.indexOf(view),direction=dx<0?1:-1,next=patiSwipeTabs[idx+direction];
  if(!next)return;
  if(next==='profile')profileId='';
@@ -8551,7 +8567,7 @@ function resetSessionState(){
  patiDmPendingLatestPeer='';patiDmAcceptedState={owner:'',ids:new Set(),ready:false,loading:false,error:''};if(typeof patiDmHiddenConversations!=='undefined')patiDmHiddenConversations={owner:'',ready:false,busy:false,error:false,cutoffs:new Map()};if(typeof patiDmThreads!=='undefined')patiDmThreads.clear();if(typeof patiDmInbox!=='undefined')patiDmInbox={owner:'',rows:[],offset:0,hasMore:true,loading:false,ready:false,error:''};
 
  if(typeof window!=='undefined')window.PatiyizDelight?.closeStreak();
- patiStreakState={owner:'',count:0,best:0,ready:false,loading:false,checkedOn:''};patiStreakGoalState={owner:'',ready:false,loading:false,goal:null,earned:[],error:''};patiyizLoadToken++;patiyizLoadedTables.clear();patiyizDeferredLoading=null;
+ patiStreakState={owner:'',count:0,best:0,ready:false,loading:false,checkedOn:''};patiStreakGoalState={owner:'',ready:false,loading:false,goal:null,earned:[],error:''};patiStreak60State={owner:'',ready:false,loading:false,eligible:false,claimed:false,cash_status:'',error:''};patiyizLoadToken++;patiyizLoadedTables.clear();patiyizDeferredLoading=null;
  if(typeof patiHomeFeedIds!=='undefined'){patiHomeFeedIds=null;patiHomeFeedCursor=null;patiHomeLoadError=''};if(typeof patiHomeCountCache!=='undefined'){patiHomeCountCache.clear();patiHomeCountsLoading.clear()};if(typeof patiPostCommentPages!=='undefined')patiPostCommentPages.clear();patiWellness={reminders:[],weights:[],loaded:false,loading:false,notified:new Set()};patiWeeklyState={owner:'',loading:false,ready:false,error:'',updatedAt:0,result:null};patiInviteState={code:'',invited_count:0,already_used:false,coins_each:50,loading:false};patiDmReturnView='home';mobileChatOpen=false;patiCoinState={balance:0,earned:0,claims:[],items:[],orders:[],history:[],loading:false};patiFollowerRewardState={followers:null,claimed:[],cash:[]};document.getElementById('paticoin-celebration')?.remove();
  if(typeof patiDmSharedPosts!=='undefined'){patiDmSharedPosts.clear();patiDmSharedFetched.clear();patiDmSharedReturnPeer='';patiDmSharedRetryAt=0}
  data=Object.fromEntries(Object.keys(data).map(key=>[key,[]]));
