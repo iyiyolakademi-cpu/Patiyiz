@@ -7196,7 +7196,7 @@ async function createPostPublication(form,f,str){
    const cover=form.querySelector('input[name="cover_photo"]')?.files?.[0];
    const chosenCover=form.dataset.mode==='reels'&&window.PatiyizReelsCover
      ?await window.PatiyizReelsCover.getSelectedCover(form):cover;
-   const selectedCover=chosenCover?.size?chosenCover:await patiGenerateVideoCover(video);
+   const selectedCover=chosenCover?.size?chosenCover:cover?.size?cover:await patiGenerateVideoCover(video);
    if(selectedCover?.size){
     uploadStatus('Video kapağı kaydediliyor…');
     record.video_cover_url=await send(await cropPostPhoto(selectedCover,form.dataset.mode==='reels'?'9:16':'4:5'),'image');
