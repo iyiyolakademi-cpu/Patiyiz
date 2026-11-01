@@ -146,9 +146,9 @@
     width:23px;
     height:23px;
     flex:none;
-    color:#fff!important;
-    stroke:currentColor!important;
-    fill:none;
+    color:#17191d!important;
+    stroke:#17191d!important;
+    fill:none!important;
   }
   #app-root:not(.hidden)>.mobile-header>.pati-feed-menu>button .pati-feed-menu-label {
     flex:1;
