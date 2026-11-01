@@ -1,0 +1,58 @@
+name: Repair stale Patiyiz Pages deployment (one-time)
+on:
+  push:
+    paths:
+      - '.github/workflows/pages-stale-deployment-repair-20261101.yml'
+permissions:
+  contents: read
+  deployments: write
+  pages: read
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify and release single stale completed Pages deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          api="https://api.github.com/repos/${GITHUB_REPOSITORY}"
+          old_id="7470792110"
+          old_sha="6827cc3c09cafcb9a81369f6154051e61014fdd7"
+          auth=(-H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${GH_TOKEN}" -H "X-GitHub-Api-Version: 2026-03-10")
+          deployment=$(curl -fLsS "${auth[@]}" "$api/deployments/$old_id")
+          actual_sha=$(jq -r '.sha' <<<"$deployment")
+          actual_env=$(jq -r '.environment' <<<"$deployment")
+          if [[ "$actual_sha" != "$old_sha" || "$actual_env" != "github-pages" ]]; then
+            echo "::error::Target deployment mismatch; no changes made."
+            exit 1
+          fi
+          state=$(curl -fLsS "${auth[@]}" "$api/deployments/$old_id/statuses?per_page=1" | jq -r '.[0].state')
+          echo "Stale Pages deployment #$old_id is $state."
+          if [[ "$state" != "success" && "$state" != "inactive" ]]; then
+            echo "::error::Refusing to touch deployment with unexpected state $state."
+            exit 1
+          fi
+          result=$(curl -sS -o /tmp/pages-delete -w '%{http_code}' -X DELETE "${auth[@]}" "$api/deployments/$old_id")
+          if [[ "$result" == "204" || "$result" == "404" ]]; then
+            echo "Stale deployment removed ($result)."
+            exit 0
+          fi
+          if [[ "$result" != "422" ]]; then
+            echo "::error::Delete denied HTTP $result"; head -c 500 /tmp/pages-delete; exit 1
+          fi
+          echo "Old deployment active in environment; marking its status inactive."
+          code=$(curl -sS -o /tmp/pages-inactive -w '%{http_code}' -X POST "${auth[@]}" \
+            -H "Content-Type: application/json" \
+            --data '{"state":"inactive","description":"Replace superseded Pages release after stuck GitHub Pages backend","auto_inactive":false}' \
+            "$api/deployments/$old_id/statuses")
+          if [[ "$code" != "201" ]]; then
+            echo "::error::Inactive status rejected HTTP $code"; head -c 500 /tmp/pages-inactive; exit 1
+          fi
+          code=$(curl -sS -o /tmp/pages-delete2 -w '%{http_code}' -X DELETE "${auth[@]}" "$api/deployments/$old_id")
+          if [[ "$code" == "204" || "$code" == "404" ]]; then
+            echo "Stale deployment removed after retiring its status ($code)."
+          else
+            echo "::error::Deletion still blocked HTTP $code"; head -c 500 /tmp/pages-delete2; exit 1
+          fi
