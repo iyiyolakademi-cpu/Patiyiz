@@ -3,18 +3,18 @@
 (()=>{
  'use strict';
  const tiers=[
-  {need:1000,coins:100,title:'İlk Bin Pati',icon:'🐾',kind:'Bronz'},
-  {need:5000,coins:300,title:'Gümüş Pati',icon:'🥈',kind:'Gümüş'},
-  {need:10000,coins:100,title:'Altın Pati',icon:'🥇',kind:'Altın'},
-  {need:50000,coins:500,title:'Platin Pati',icon:'💎',kind:'Platin'},
-  {need:100000,coins:1000,title:'Elmas Pati',icon:'👑',kind:'Elmas'}
+  {need:1000,coins:100,title:'İlk Hedef',icon:'🐾',kind:'Bronz'},
+  {need:5000,coins:300,title:'Gümüş Seviye',icon:'🥈',kind:'Gümüş'},
+  {need:10000,coins:100,title:'Altın Seviye',icon:'🥇',kind:'Altın'},
+  {need:50000,coins:500,title:'Platin Seviye',icon:'💎',kind:'Platin'},
+  {need:100000,coins:1000,title:'Elmas Seviye',icon:'👑',kind:'Elmas'}
  ];
  const number=n=>Math.max(0,Math.floor(Number(n)||0)).toLocaleString('tr-TR');
  const countOf=n=>Math.max(0,Math.floor(Number(n)||0));
  function nextTarget(count){return tiers.find(t=>count<t.need)||null}
  function profileHint(count){
   const c=countOf(count),next=nextTarget(c);
-  if(!next)return '<span class="pati-goal-header"><img class="pati-goal-logo" src="patiyiz-selected-logo.svg?v=20261024-new-p-logo-1" alt="" aria-hidden="true"><span><small>TÜM HEDEFLER TAMAMLANDI</small><strong>Elmas Pati</strong></span><span class="pati-goal-arrow" aria-hidden="true">↗</span></span><span class="pati-goal-subtitle">100.000 takipçi başarısına ulaştın. Tebrikler!</span>';
+  if(!next)return '<span class="pati-goal-header"><img class="pati-goal-logo" src="patiyiz-selected-logo.svg?v=20261024-new-p-logo-1" alt="" aria-hidden="true"><span><small>TÜM HEDEFLER TAMAMLANDI</small><strong>Elmas Seviye</strong></span><span class="pati-goal-arrow" aria-hidden="true">↗</span></span><span class="pati-goal-subtitle">100.000 takipçi başarısına ulaştın. Tebrikler!</span>';
   const previous=tiers.filter(t=>t.need<=c).at(-1)?.need||0;
   const percent=Math.min(100,Math.max(0,(c-previous)/(next.need-previous)*100));
   return '<span class="pati-goal-header"><img class="pati-goal-logo" src="patiyiz-selected-logo.svg?v=20261024-new-p-logo-1" alt="" aria-hidden="true"><span><small>SIRADAKİ HEDEF</small><strong>'+number(next.need)+' takipçi</strong></span><span class="pati-goal-arrow" aria-hidden="true">↗</span></span>'+
@@ -32,7 +32,7 @@
   const cards=tiers.map(t=>{
     const won=earned.has('followers_'+t.need);
     const pct=hasCount?Math.min(100,c/t.need*100):0;
-    const status=won?'✓ Coin kazanıldı':hasCount&&c>=t.need?'Doğrulanıyor':'Hedefe '+number(Math.max(0,t.need-c))+' kaldı';
+    const status=won?'✓ Puan kazanıldı':hasCount&&c>=t.need?'Doğrulanıyor':'Hedefe '+number(Math.max(0,t.need-c))+' kaldı';
     const cashInfo='';
     return '<article class="pati-follower-tier '+(won?'is-earned':'')+'"><div class="pati-follower-tier-icon" aria-hidden="true">'+t.icon+'</div><div class="pati-follower-tier-copy"><span>'+t.kind+' rozet</span><h3>'+number(t.need)+' takipçi</h3><strong>'+t.title+'</strong></div><span class="pati-follower-coin">'+(won?'✓':'+'+number(t.coins))+' <img class="pati-coin-icon" src="pati-coin.svg?v=20261025-brand-1" alt="" aria-hidden="true"></span><div class="pati-follower-track"><i style="width:'+pct.toFixed(2)+'%"></i></div><small>'+status+'</small>'+cashInfo+'</article>';
   }).join('');
