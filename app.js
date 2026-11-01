@@ -7489,6 +7489,11 @@ async function togglePostLike(id){
  pendingPostLikes.add(id);likesChangeEpoch++;
  const buttons=[...document.querySelectorAll('[data-action="like"][data-id="'+id+'"]')];
  buttons.forEach(btn=>{btn.disabled=true;btn.setAttribute('aria-busy','true')});
+ // Immediate optimistic feedback; server response below remains authoritative.
+ const previousCount=data.likes.filter(row=>row.post_id===id).length;
+ const optimisticCount=Math.max(0,previousCount+(wasLiked?-1:1));
+ buttons.forEach(btn=>{btn.classList.toggle('active',!wasLiked);btn.setAttribute('aria-pressed',String(!wasLiked));const label=btn.querySelector('.pati-reel-count')||btn.querySelector('span');if(label)label.textContent=String(optimisticCount)});
+ document.querySelectorAll('.pati-feed-card[data-post-id="'+id+'"] .pati-post-like-summary').forEach(el=>el.textContent=optimisticCount+' beğeni');
  try{
   if(wasLiked){
    const out=await sb.from('post_likes').delete().eq('post_id',id).eq('user_id',owner);
@@ -7519,6 +7524,8 @@ async function togglePostLike(id){
   if(savedLike&&togglePostLike.heartTargets?.has(id))window.PatiyizMotion?.heart(togglePostLike.heartTargets.get(id));
  }catch(error){
   console.warn('Beğeni kalıcılık kontrolü:',error);
+  buttons.forEach(btn=>{btn.classList.toggle('active',wasLiked);btn.setAttribute('aria-pressed',String(wasLiked));const label=btn.querySelector('.pati-reel-count')||btn.querySelector('span');if(label)label.textContent=String(previousCount)});
+  document.querySelectorAll('.pati-feed-card[data-post-id="'+id+'"] .pati-post-like-summary').forEach(el=>el.textContent=previousCount+' beğeni');
   notify('Beğeni kaydedilemedi: '+friendly(error),true);
   try{
    const existing=await sb.from('post_likes').select('post_id,user_id').eq('post_id',id);
