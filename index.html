@@ -501,4 +501,66 @@ body #pati-create-sheet .pati-create-dismiss:focus-visible{
  #main-content .pati-dm-top-actions{justify-content:flex-start;width:100%}
  #main-content .pati-dm-filters{gap:4px;padding-inline:7px}
 }
-</style></body></html>
+</style>
+<style id="pati-iphone-opening-fix-20261101">
+@media (max-width:740px) {
+  #app-root:not(.hidden)>.mobile-header {
+    position:sticky!important;
+    top:0!important;
+    z-index:900!important;
+    display:grid!important;
+    background:#fff!important;
+    visibility:visible!important;
+    opacity:1!important;
+    transform:none!important;
+    margin-top:0!important;
+    box-shadow:0 1px 0 rgba(20,25,30,.09)!important;
+  }
+  #app-root:not(.hidden)>.app-shell{margin-top:0!important}
+  #app-root:not(.hidden)>.mobile-header #pati-feed-menu-trigger.brand{opacity:1!important;visibility:visible!important}
+  #app-root:not(.hidden)>.mobile-header #pati-feed-menu-trigger .brand-icon{
+    background:transparent!important;box-shadow:none!important;transform:none!important;
+  }
+  #app-root:not(.hidden)>.mobile-header #pati-feed-menu-trigger .patiyiz-chosen-logo{
+    display:block!important;object-fit:contain!important;visibility:visible!important;opacity:1!important;
+  }
+}
+</style>
+<script id="pati-iphone-opening-scroll-20261101">
+(function(){
+  'use strict';
+  if ('scrollRestoration' in history) history.scrollRestoration='manual';
+  var handled=false;
+  function resetInitialScroll(){
+    if(handled) return;
+    var root=document.getElementById('app-root');
+    if(!root || root.classList.contains('hidden')) return;
+    var current=document.documentElement.getAttribute('data-pati-view');
+    if(current && current!=='home') {handled=true;return;}
+    handled=true;
+    function top(){
+      if(document.documentElement.getAttribute('data-pati-view')!=='home') return;
+      window.scrollTo({top:0,left:0,behavior:'instant'});
+      document.documentElement.scrollTop=0;
+      document.body.scrollTop=0;
+    }
+    top();
+    requestAnimationFrame(top);
+    setTimeout(top,180);
+  }
+  function boot(){
+    var root=document.getElementById('app-root');
+    if(!root)return;
+    if(!root.classList.contains('hidden'))resetInitialScroll();
+    if(!handled){
+      var observer=new MutationObserver(function(){
+        if(!root.classList.contains('hidden')){observer.disconnect();resetInitialScroll();}
+      });
+      observer.observe(root,{attributes:true,attributeFilter:['class']});
+    }
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
+  else boot();
+})();
+</script>
+</body></html>
