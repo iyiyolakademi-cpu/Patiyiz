@@ -52,15 +52,15 @@
     box-shadow:none!important;
     color:#1a1c20!important;
   }
-  html[data-pati-view="home"] #app-root>.mobile-header>#pati-header-coins .pati-balance-title{
+  html[data-pati-view="home"] #app-root>.mobile-header>.pati-header-actions>#pati-header-coins .pati-balance-title{
     display:block!important;position:static!important;
     width:auto!important;max-width:100%!important;min-width:0!important;
     padding:0!important;margin:0!important;
     color:#6a6f77!important;-webkit-text-fill-color:#6a6f77!important;
-    font:700 9px/1.2 inherit!important;
+    font-size:9px!important;font-weight:700!important;line-height:1.2!important;
     white-space:nowrap!important;text-align:center!important;
   }
-  html[data-pati-view="home"] #app-root>.mobile-header>#pati-header-coins strong{
+  html[data-pati-view="home"] #app-root>.mobile-header>.pati-header-actions>#pati-header-coins strong{
     display:block!important;color:#1a1c20!important;
     -webkit-text-fill-color:#1a1c20!important;
     max-width:100%!important;min-width:0!important;
