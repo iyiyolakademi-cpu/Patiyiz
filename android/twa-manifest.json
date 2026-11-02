@@ -1,8 +1,8 @@
 {
   "packageId": "com.patiyiz.app",
   "host": "patiyiz.com",
-  "name": "Patiyiz",
-  "launcherName": "Patiyiz",
+  "name": "BucheeSocial",
+  "launcherName": "Buchee",
   "display": "standalone",
   "themeColor": "#000000",
   "themeColorDark": "#000000",
