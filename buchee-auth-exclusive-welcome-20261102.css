@@ -1,0 +1,26 @@
+/* Exclusive welcome + coordinated sign-in and registration. Mobile first. */
+#auth-root.buchee-welcome-active>.auth-shell{display:none!important}
+#auth-root.buchee-welcome-active>.buchee-welcome{display:grid!important}
+#auth-root:not(.buchee-welcome-active)>.buchee-welcome{display:none!important}
+#auth-root .buchee-auth-return{display:none}
+@media(max-width:740px){
+#auth-root.buchee-welcome-active{position:fixed!important;inset:0!important;height:100dvh!important;overflow:hidden!important;background:#130b2a!important}
+#auth-root.buchee-welcome-active .buchee-welcome{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;z-index:50!important}
+#auth-root:not(.buchee-welcome-active){height:100dvh!important;overflow-y:auto!important;background:#100820!important}
+#auth-root:not(.buchee-welcome-active)>.auth-shell{display:block!important;position:relative!important;min-height:100dvh!important;background:radial-gradient(ellipse at 110% -10%,#5c1a99 0%,transparent 48%),radial-gradient(ellipse at -20% 80%,#2e1557 0%,transparent 60%),#130a27!important}
+#auth-root:not(.buchee-welcome-active) .auth-story{display:none!important}
+#auth-root:not(.buchee-welcome-active) .auth-pane{position:relative!important;display:block!important;width:100%!important;min-height:100dvh!important;margin:0!important;padding:calc(env(safe-area-inset-top,0px) + 76px) 21px calc(env(safe-area-inset-bottom,0px) + 32px)!important;border-radius:0!important;background:transparent!important}
+#auth-root:not(.buchee-welcome-active) .buchee-auth-return{display:grid!important;place-items:center!important;position:absolute!important;z-index:4!important;left:20px!important;top:calc(env(safe-area-inset-top,0px) + 17px)!important;width:43px!important;height:43px!important;color:#fff!important;background:#ffffff12!important;border:1px solid #ffffff35!important;border-radius:14px!important;font-size:24px!important}
+#auth-root:not(.buchee-welcome-active) .auth-card{max-width:430px!important;margin:auto!important;padding:0!important;background:transparent!important;color:#fff!important}
+#auth-root:not(.buchee-welcome-active) .auth-card>.auth-brand{display:flex!important;align-items:center!important;justify-content:center!important;max-width:280px!important;margin:4px auto 24px!important;min-height:42px!important;background:none!important;border:none!important;box-shadow:none!important}
+#auth-root:not(.buchee-welcome-active) .auth-brand img{width:100%!important;max-width:280px!important;height:auto!important;object-fit:contain!important}
+#auth-root:not(.buchee-welcome-active) .buchee-signature{display:none!important}
+#auth-root:not(.buchee-welcome-active) .auth-tabs{display:flex!important;gap:8px!important;border:1px solid #ffffff24!important;padding:5px!important;margin:0 0 22px!important;background:#ffffff13!important;border-radius:17px!important}
+#auth-root:not(.buchee-welcome-active) .auth-tabs button{min-height:44px!important;color:#eee4f9!important;border:0!important;border-radius:12px!important;background:none!important}
+#auth-root:not(.buchee-welcome-active) .auth-tabs button.active{background:linear-gradient(115deg,#8134eb,#c83aa3)!important;color:#fff!important}
+#auth-root:not(.buchee-welcome-active) .auth-card>h2{font-size:27px!important;font-weight:800!important;letter-spacing:-.6px!important}
+#auth-root:not(.buchee-welcome-active) .auth-card .auth-sub{color:#c9bbd8!important;line-height:1.55!important}
+#auth-root:not(.buchee-welcome-active) .pati-field input{color:#21152c!important;background:#fff!important;border-radius:14px!important;border:1px solid #e1d8ea!important;min-height:50px!important;font-size:16px!important}
+#auth-root:not(.buchee-welcome-active) .auth-submit{background:linear-gradient(110deg,#a43ef2,#6813d1)!important;color:#fff!important;border:0!important;border-radius:15px!important;min-height:53px!important;box-shadow:0 10px 25px #5415b844!important}
+#auth-root:not(.buchee-welcome-active) .auth-card .pati-auth-terms,#auth-root:not(.buchee-welcome-active) .auth-card .pati-auth-terms a,#auth-root:not(.buchee-welcome-active) .auth-card .small-note{color:#d8cce6!important}
+}
