@@ -158,3 +158,181 @@
  transform:scale(.94)!important;transition:transform .11s ease!important;
 }
 #main-content .pati-feed-card .pati-save-action{margin-left:auto!important;order:999!important}
+
+
+/* BucheeSocial UX refinements — saved tab alignment, liking dialog, share confirmation. */
+/* Consistent profile-photo-less avatar across account, comment, share and feed. */
+.avatar.buchee-avatar-empty{
+ position:relative!important;display:inline-flex!important;align-items:center!important;
+ justify-content:center!important;overflow:hidden!important;border-radius:50%!important;
+ background:#e9eaed!important;color:#939aa4!important;
+}
+.avatar.buchee-avatar-empty .buchee-avatar-silhouette{
+ display:block!important;flex:0 0 100%!important;width:100%!important;height:100%!important;
+ max-width:100%!important;max-height:100%!important;fill:none!important;
+}
+.avatar.buchee-avatar-empty .buchee-avatar-silhouette>*{opacity:1!important;}
+/* The entire like-dialog top row remains at the same vertical alignment. */
+#modal-root .modal.pati-post-likers-modal>.modal-header{
+ position:relative!important;display:flex!important;align-items:center!important;
+ justify-content:space-between!important;gap:12px!important;
+ min-height:64px!important;box-sizing:border-box!important;padding:10px 15px!important;
+}
+#modal-root .modal.pati-post-likers-modal>.modal-header h2{
+ display:block!important;flex:1 1 auto!important;align-self:center!important;
+ margin:0!important;padding:0!important;font-size:18px!important;line-height:1.35!important;
+}
+#modal-root .modal.pati-post-likers-modal>.modal-header>.close-modal{
+ position:relative!important;inset:auto!important;top:auto!important;right:auto!important;
+ bottom:auto!important;left:auto!important;transform:none!important;
+ display:grid!important;place-items:center!important;flex:0 0 48px!important;
+ min-width:48px!important;width:48px!important;min-height:48px!important;height:48px!important;
+ margin:0!important;padding:0!important;touch-action:manipulation!important;
+ border-radius:50%!important;z-index:4!important;font-size:28px!important;line-height:1!important;
+}
+@media(max-width:740px){
+ #modal-root .modal.pati-post-likers-modal>.modal-header{
+  padding:calc(max(10px,env(safe-area-inset-top,0px))) 15px 10px!important;
+  min-height:calc(64px + env(safe-area-inset-top,0px))!important;
+ }
+}
+/* Copy confirmation must be visible in the foreground INSIDE the share sheet. */
+#modal-root #share-post-form .buchee-share-feedback[hidden]{display:none!important}
+#modal-root #share-post-form .buchee-share-feedback{
+ display:block!important;position:relative!important;flex:0 0 auto!important;z-index:8!important;
+ min-height:41px!important;max-width:100%!important;margin:0!important;padding:10px 12px!important;
+ border-radius:12px!important;background:#244b39!important;border:1px solid #39815b!important;
+ color:#e6fff0!important;font:750 13px/1.4 system-ui,sans-serif!important;
+ text-align:center!important;box-shadow:0 4px 16px #0003!important;
+}
+#modal-root #share-post-form .buchee-share-feedback.is-error{
+ background:#542b37!important;border-color:#bd5868!important;color:#fff0f0!important;
+}
+/* A single tick in the CENTER of the rotating repost symbol, never an external badge. */
+#modal-root #share-post-form .buchee-share-quick-action.is-on::before,
+#modal-root #share-post-form .buchee-share-quick-action.is-on::after,
+#main-content .pati-repost-btn.active::before,
+#main-content .pati-repost-btn.active::after{content:none!important;display:none!important}
+#modal-root #share-post-form .buchee-share-quick-action.is-on .buchee-share-quick-check{
+ position:absolute!important;left:50%!important;top:50%!important;right:auto!important;bottom:auto!important;
+ inset:auto!important;transform:translate(-50%,-50%)!important;display:grid!important;place-items:center!important;
+ width:14px!important;height:14px!important;min-width:14px!important;padding:0!important;
+ background:#282d35!important;color:#c99aff!important;border:0!important;border-radius:50%!important;
+ font-size:11px!important;font-weight:900!important;box-shadow:none!important;
+}
+#main-content .pati-feed-card .pati-social-actions .pati-repost-btn .buchee-repost-check{
+ left:11px!important;top:17px!important;right:auto!important;bottom:auto!important;
+ width:13px!important;height:13px!important;box-shadow:none!important;
+ background:var(--pati-bg,#fff)!important;color:#9134cb!important;font-size:10px!important;line-height:1!important;
+}
+/* Premium, uncomplicated bottom-sheet post options. */
+#modal-root .modal-backdrop:has(#post-actions-form){
+ position:fixed!important;inset:0!important;z-index:49900!important;
+ display:flex!important;align-items:flex-end!important;justify-content:center!important;
+ padding:0!important;margin:0!important;background:rgba(12,12,20,.60)!important;
+}
+#modal-root .modal:has(#post-actions-form){
+ position:relative!important;display:flex!important;flex-direction:column!important;
+ width:100%!important;max-width:520px!important;height:auto!important;max-height:89dvh!important;
+ min-height:0!important;margin:0!important;padding:0!important;
+ border-radius:23px 23px 0 0!important;border:0!important;
+ overflow:hidden!important;background:#fff!important;color:#181820!important;
+ box-shadow:0 -12px 45px #0003!important;transform:none!important;
+}
+#modal-root .modal:has(#post-actions-form)>.modal-header{
+ position:relative!important;display:flex!important;align-items:center!important;justify-content:space-between!important;
+ flex:0 0 auto!important;min-height:59px!important;padding:12px 16px!important;
+ background:#fff!important;color:#171820!important;border-bottom:1px solid #eef0f3!important;
+}
+#modal-root .modal:has(#post-actions-form)>.modal-header h2{font-size:18px!important;font-weight:850!important;color:#171820!important;margin:0!important}
+#modal-root .modal:has(#post-actions-form)>.modal-header .close-modal{
+ position:relative!important;inset:auto!important;display:grid!important;place-items:center!important;
+ width:45px!important;height:45px!important;min-width:45px!important;min-height:45px!important;
+ margin:0!important;padding:0!important;border:0!important;border-radius:50%!important;
+ color:#333541!important;background:#f4f4f8!important;font-size:25px!important;
+}
+#modal-root #post-actions-form{display:flex!important;flex:1 1 auto!important;flex-direction:column!important;min-height:0!important;overflow:hidden!important}
+#modal-root #post-actions-form>.modal-content{display:block!important;overflow:auto!important;max-height:none!important;min-height:0!important;padding:0 13px max(19px,env(safe-area-inset-bottom,0px))!important;background:#fff!important}
+#modal-root #post-actions-form>.modal-footer{display:none!important}
+#modal-root #post-actions-form .buchee-post-options{display:flex!important;flex-direction:column!important;gap:7px!important;padding:0 0 9px!important}
+#modal-root #post-actions-form .buchee-post-options-intro{
+ font:600 12px/1.35 system-ui,sans-serif!important;color:#858594!important;margin:0!important;
+ padding:12px 8px 7px!important;text-align:left!important;
+}
+#modal-root #post-actions-form .buchee-post-option{
+ display:flex!important;align-items:center!important;gap:13px!important;min-height:73px!important;
+ width:100%!important;padding:10px 9px!important;margin:0!important;text-align:left!important;
+ background:#fbfbfd!important;color:#20202a!important;border:1px solid #eff0f3!important;
+ border-radius:16px!important;cursor:pointer!important;touch-action:manipulation!important;
+ box-shadow:none!important;
+}
+#modal-root #post-actions-form .buchee-post-option:active{background:#f3eefb!important}
+#modal-root #post-actions-form .buchee-post-option:disabled{opacity:.52!important;cursor:default!important}
+#modal-root #post-actions-form .buchee-post-option-icon{
+ display:grid!important;place-items:center!important;flex:0 0 45px!important;
+ width:45px!important;height:45px!important;border-radius:13px!important;
+ background:#f0e8fc!important;color:#7d3cca!important;
+}
+#modal-root #post-actions-form .buchee-post-option-icon svg{display:block!important;width:23px!important;height:23px!important}
+#modal-root #post-actions-form .buchee-post-option-copy{
+ display:flex!important;flex:1 1 auto!important;min-width:0!important;
+ flex-direction:column!important;align-items:flex-start!important;gap:3px!important;
+}
+#modal-root #post-actions-form .buchee-post-option-copy strong{
+ color:#22232d!important;font:800 14px/1.25 system-ui,sans-serif!important;
+ white-space:normal!important;overflow-wrap:anywhere!important;
+}
+#modal-root #post-actions-form .buchee-post-option-copy small{
+ color:#777a85!important;font:500 12px/1.35 system-ui,sans-serif!important;overflow-wrap:anywhere!important;
+}
+#modal-root #post-actions-form .buchee-post-option-chevron{
+ display:inline-block!important;flex:0 0 12px!important;color:#a4a5af!important;font-size:23px!important;font-weight:400!important;
+}
+#modal-root #post-actions-form .buchee-post-option.is-danger{
+ border-color:#f9e4e6!important;background:#fff8f8!important;
+}
+#modal-root #post-actions-form .buchee-post-option.is-danger .buchee-post-option-icon{
+ background:#ffeaeb!important;color:#d93b4c!important;
+}
+#modal-root #post-actions-form .buchee-post-option.is-danger strong{color:#bd2e42!important}
+@media(min-width:741px){
+ #modal-root .modal-backdrop:has(#post-actions-form){align-items:center!important}
+ #modal-root .modal:has(#post-actions-form){border-radius:22px!important;max-height:80vh!important}
+}
+/* Up to 3 co-authors including creator, with balanced touch targets. */
+#main-content .pati-collab-dual-header.buchee-collab-three{
+ display:flex!important;align-items:center!important;min-width:0!important;flex:1 1 auto!important;gap:8px!important;
+}
+#main-content .buchee-collab-three .pati-collab-dual-avatars{
+ display:inline-flex!important;align-items:center!important;flex:0 0 auto!important;min-width:0!important;
+}
+#main-content .buchee-collab-three .pati-collab-dual-avatars>span{
+ display:inline-flex!important;width:30px!important;height:30px!important;min-width:30px!important;
+ margin-left:-6px!important;overflow:hidden!important;border-radius:50%!important;
+ background:#fff!important;box-shadow:0 0 0 2px #fff!important;
+}
+#main-content .buchee-collab-three .pati-collab-dual-avatars>span:first-child{margin-left:0!important}
+#main-content .buchee-collab-three .pati-collab-dual-avatars .avatar{width:30px!important;height:30px!important;min-width:30px!important}
+#main-content .buchee-collab-three .pati-collab-dual-authors{
+ display:flex!important;flex-wrap:wrap!important;align-items:center!important;flex:1 1 auto!important;
+ justify-content:flex-start!important;gap:2px 4px!important;min-width:0!important;
+}
+#main-content .buchee-collab-three .pati-collab-author{
+ display:inline-flex!important;align-items:center!important;min-width:0!important;
+ min-height:25px!important;max-width:40%!important;font-size:12px!important;padding:1px 0!important;
+}
+#main-content .buchee-collab-three .pati-collab-author-name{
+ overflow:hidden!important;white-space:nowrap!important;text-overflow:ellipsis!important;max-width:100%!important;
+}
+#main-content .buchee-collab-three .pati-collab-dual-label{white-space:nowrap!important;font-size:10px!important}
+#modal-root .buchee-collab-limit-hint{font-size:13px!important;color:#626775!important;margin:0 0 14px!important;padding:11px!important;border-radius:12px!important;background:#f6f5fa!important}
+/* Saved importance filters aligned to the same left inset as mobile content. */
+#main-content > .pati-saved-screen .pati-saved-filters{
+ display:flex!important;justify-content:flex-start!important;align-items:center!important;
+ width:100%!important;max-width:100%!important;margin:0!important;
+ padding:11px 14px 10px 18px!important;scroll-padding-inline-start:18px!important;
+ overflow-x:auto!important;box-sizing:border-box!important;
+}
+#main-content > .pati-saved-screen .pati-saved-filters>.pati-saved-filter:first-child{
+ margin-inline-start:0!important;flex:0 0 auto!important;
+}

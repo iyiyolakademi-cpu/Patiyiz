@@ -14,7 +14,7 @@
     '<input type="hidden" name="collab_user_id" value="">'+
     '<div class="pati-collab-search-results" id="'+resultsId+'" role="listbox" aria-label="Ortak seçilecek profiller" hidden></div>'+
     '<div class="pati-collab-selected" aria-live="polite" hidden></div>'+
-    '<small id="'+hintId+'" class="pati-collab-hint">Kullanıcı adını yaz, çıkan profiller arasından doğru kişiyi seç. Davet kabul edilirse gönderi iki profilde görünür.</small>'+
+    '<small id="'+hintId+'" class="pati-collab-hint">Kullanıcı adını yaz, çıkan profiller arasından doğru kişiyi seç. Gönderi sahibi dahil en fazla 3 kişi ortak olabilir. Kabul edilince paylaşım ortak profillerde görünür.</small>'+
    '</div>';
  }
  function mount(form,options){
