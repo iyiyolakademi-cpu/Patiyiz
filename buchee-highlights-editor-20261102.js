@@ -65,10 +65,19 @@ function renderPicker(){
  if(!root||!state)return;
  state.stage='pick';
  root.innerHTML=header('Öne çıkanlara ekle','',false)+
- '<p class="bh-intro">Profiline kalıcı eklemek istediğin eski hikâyeleri seç. Birden fazla seçebilirsin.</p>'+
+ '<p class="bh-intro">Profiline kalıcı eklemek istediğin eski hikâyeleri seç. Birden fazla seçebilirsin. <span class="bh-total-count">'+state.stories.length+' hikâye</span></p>'+
  '<div class="bh-scroll bh-archive-scroll"><div class="bh-archive-grid">'+state.stories.map(function(story){return card(story,state.selected.has(story.id))}).join('')+'</div>'+
  (state.stories.length?'':'<div class="bh-empty">Arşivinde henüz hikâye yok. Önce bir hikâye paylaş.</div>')+'</div>'+
  '<div class="bh-footer"><span class="bh-selected-count">'+state.selected.size+' hikâye seçildi</span><button type="button" class="bh-primary" data-bh="next"'+(state.selected.size?'':' disabled')+'>İleri <span aria-hidden="true">→</span></button></div><p class="bh-error" role="alert" hidden></p>';
+ root.querySelectorAll('.bh-archive-card video').forEach(function(video){
+  video.muted=true;video.playsInline=true;
+  video.addEventListener('loadedmetadata',function(){
+   if(Number.isFinite(video.duration)&&video.duration>.2){
+    try{video.currentTime=Math.min(.6,video.duration-.05)}catch(_){}
+   }
+  },{once:true});
+  var result=video.play();if(result&&result.catch)result.catch(function(){});
+ });
 }
 function renderEdit(){
  if(!root||!state)return;
