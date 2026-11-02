@@ -1,0 +1,18 @@
+/* Buchee coherent opt-in dark palette and Instagram-like reel utility. */
+html.buchee-dark{color-scheme:dark;--bg:#0b0f14;--card:#161b22;--text:#f5f6f8;--muted:#a8adb8;--border:#323943;background:#0b0f14!important;color:#f5f6f8!important}
+html.buchee-dark body,html.buchee-dark #app-root,html.buchee-dark #main-content{background:#0b0f14!important;color:#f5f6f8!important}
+html.buchee-dark :is(.mobile-header,.stories-section,.pati-ig-profile,.pati-feed-post,.pati-post,.buchee-highlights,.pati-dm-top,.pati-dm-layout,.pati-dm-list-row,.pati-ig-profile .pati-own-profile-actions){background-color:#121820!important;color:#f5f6f8!important;border-color:#29313b!important}
+html.buchee-dark :is(.pati-ig-profile,.pati-dm-layout,#main-content) :is(h1,h2,h3,h4,p,strong,span,label){color:inherit}
+html.buchee-dark :is(.pati-ig-profile,.pati-dm-layout) :is(button,input,textarea,select){background-color:#222a35!important;color:#f7f8fb!important;border-color:#384250!important}
+html.buchee-dark :is(.story-person,.story-name,.buchee-highlight-tile,.buchee-highlight-tile small){color:#e8eaf0!important}
+html.buchee-dark :is(.pati-reel-item,.pati-reel-rail,.pati-reel-info){color:white!important}
+html.buchee-dark #pati-feed-menu-trigger .pati-feed-current{color:#c4c8d1!important}
+html.buchee-dark .pati-header-actions #pati-header-coins{background:#242a36!important;color:#fff!important}
+html.buchee-dark .pati-header-actions #pati-header-coins :is(span,strong){color:#fff!important}
+#buchee-theme-toggle{position:fixed;right:12px;bottom:calc(78px + env(safe-area-inset-bottom,0px));z-index:35;display:none;width:42px;height:42px;border-radius:50%;border:1px solid #8b7d9c;background:#f8f6fc;color:#352047;box-shadow:0 3px 16px #0003;align-items:center;justify-content:center;font-size:20px;cursor:pointer}
+html[data-pati-view="profile"] #buchee-theme-toggle,html[data-pati-view="settings"] #buchee-theme-toggle{display:flex}
+html.buchee-dark #buchee-theme-toggle{background:#303b4c;color:#fff}
+html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-utility{right:10px!important;bottom:calc(128px + env(safe-area-inset-bottom,0px))!important;width:48px!important;min-height:44px!important;flex-direction:column!important}
+html[data-pati-view="reels"] #main-content .pati-reel-utility [data-action="reel-speed"]{display:none!important}
+html[data-pati-view="reels"] #main-content .pati-reel-utility [data-action="reel-sound"]{display:grid!important;width:44px!important;height:44px!important}
+html[data-pati-view="reels"] #main-content .pati-reel-utility :is([data-action="reel-rotate"],[data-action="reel-fit"],[data-action="reel-expand"]){display:none!important}
