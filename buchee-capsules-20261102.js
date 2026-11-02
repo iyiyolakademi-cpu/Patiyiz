@@ -11,9 +11,28 @@ function localInputDate(date){const n=new Date(date),p=v=>String(v).padStart(2,'
 function safeMedia(file){
  if(!file)return {kind:'text',mime:'',ext:'',file:null};
  const mime=(file.type||'').toLowerCase(),image=['image/jpeg','image/png','image/webp'],video=['video/mp4','video/webm','video/quicktime'];
+ const heic=['image/heic','image/heif'].includes(mime)||/\.(heic|heif)$/i.test(file.name||'');
+ if(heic&&file.size<=15*1024*1024)return {kind:'image',mime:'image/jpeg',ext:'jpg',file,isHeic:true};
  if(image.includes(mime)&&file.size<=15*1024*1024)return {kind:'image',mime,ext:mime==='image/png'?'png':mime==='image/webp'?'webp':'jpg',file};
  if(video.includes(mime)&&file.size<=50*1024*1024)return {kind:'video',mime,ext:mime==='video/webm'?'webm':mime==='video/quicktime'?'mov':'mp4',file};
  throw Error('Fotoğraf en fazla 15 MB, video en fazla 50 MB olmalı. JPG, PNG, WebP, MP4, MOV veya WebM kullan.');
+}
+async function normalizeHeic(media){
+ if(!media.isHeic)return media;
+ const url=URL.createObjectURL(media.file);
+ try{
+  const photo=new Image();
+  await new Promise((resolve,reject)=>{photo.onload=resolve;photo.onerror=()=>reject(Error('HEIC fotoğrafı dönüştürülemedi. Fotoğrafı JPG olarak paylaş.'));photo.src=url});
+  const width=photo.naturalWidth,height=photo.naturalHeight;
+  if(!width||!height)throw Error('Fotoğraf açılamadı.');
+  const ratio=Math.min(1,2400/Math.max(width,height));
+  const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(width*ratio));canvas.height=Math.max(1,Math.round(height*ratio));
+  const ctx=canvas.getContext('2d');if(!ctx)throw Error('Fotoğraf dönüştürme desteklenmiyor.');
+  ctx.drawImage(photo,0,0,canvas.width,canvas.height);
+  const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',.85));
+  if(!blob)throw Error('Fotoğraf JPG formatına dönüştürülemedi.');
+  return {kind:'image',mime:'image/jpeg',ext:'jpg',file:new File([blob],'buchee-kapsul.jpg',{type:'image/jpeg'})};
+ }finally{URL.revokeObjectURL(url)}
 }
 function icon(kind){return kind==='image'?'◈':kind==='video'?'▷':'✉'}
 function section({sb,viewerId,profileId,own,locked}){
@@ -85,7 +104,7 @@ function openCreate(){
  '<form id="bc-create-form" class="bc-form">'+
  '<label class="bc-label" for="bc-title">Kapsülün adı <span>2–64 karakter</span></label><input id="bc-title" name="title" maxlength="64" minlength="2" placeholder="Örn. 2027’deki bana…" required autocomplete="off">'+
  '<label class="bc-label" for="bc-message">İçine ne bırakalım?</label><textarea id="bc-message" name="message" maxlength="2000" rows="5" placeholder="Geleceğe bir not yaz. İstersen fotoğraf veya video da ekleyebilirsin."></textarea>'+
- '<label class="bc-media-picker" for="bc-file"><span class="bc-media-icon">▧</span><span><strong>Fotoğraf veya video ekle</strong><small>Fotoğraf en fazla 15 MB · Video en fazla 50 MB</small></span><span class="bc-media-plus">＋</span><input type="file" id="bc-file" name="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,video/quicktime" hidden></label>'+
+ '<label class="bc-media-picker" for="bc-file"><span class="bc-media-icon">▧</span><span><strong>Fotoğraf veya video ekle</strong><small>Fotoğraf en fazla 15 MB · Video en fazla 50 MB</small></span><span class="bc-media-plus">＋</span><input type="file" id="bc-file" name="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif,video/mp4,video/webm,video/quicktime" hidden></label>'+
  '<div id="bc-media-preview" class="bc-media-preview" hidden></div>'+
  '<label class="bc-label" for="bc-unlock">Ne zaman açılsın?</label><input id="bc-unlock" type="datetime-local" name="unlock" required min="'+minDate+'" max="'+maxDate+'" value="'+defaultDate+'"><p class="bc-field-hint">Saat, telefonunun yerel saatine göre seçilir. Kapsül en az 5 dakika sonrasına ayarlanabilir.</p>'+
  '<label class="bc-label" for="bc-audience">Kimler görebilsin?</label><select id="bc-audience" name="audience"><option value="everyone">Herkes (profiline erişebilenler)</option><option value="followers">Yalnızca takipçilerim</option><option value="only_me">Yalnızca ben</option></select>'+
@@ -113,6 +132,7 @@ async function seal(){
  busy=true;btn.disabled=true;btn.textContent='Kapsül mühürleniyor…';formError('');
  let id='',path='',completed=false;
  try{
+  media=await normalizeHeic(media);
   id=crypto.randomUUID();
   if(media.kind!=='text')path=oldId+'/'+id+'/'+crypto.randomUUID()+'.'+media.ext;
   const insert=await client.from('buchee_capsules').insert({id,owner_id:oldId,title,unlock_at:new Date(rawDate).toISOString(),audience,kind:media.kind,media_path:path||null}).select('id').single();
