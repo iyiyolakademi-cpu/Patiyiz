@@ -1,0 +1,8 @@
+@media(max-width:740px){
+html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-utility{left:50%!important;right:auto!important;top:calc(50% - 90px)!important;bottom:auto!important;transform:translate(-50%,-50%)!important;z-index:40!important;pointer-events:none!important;opacity:0!important;visibility:hidden!important}
+html[data-pati-view="reels"] #main-content .pati-reel-item.buchee-reel-paused .pati-reel-utility{opacity:1!important;visibility:visible!important}
+html[data-pati-view="reels"] #main-content .pati-reel-utility [data-action="reel-sound"]{display:grid!important;pointer-events:auto!important;background:#0009!important;border-radius:50%!important}
+html[data-pati-view="reels"] #main-content [data-action="reel-speed"]{display:none!important}
+html[data-pati-view="reels"] #main-content .pati-reel-item .buchee-pause-control{position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;z-index:40!important;display:grid!important;place-items:center!important;border:0!important;background:#0009!important;color:#fff!important;width:70px!important;height:70px!important;border-radius:50%!important;font-size:33px!important;cursor:pointer!important}
+html[data-pati-view="reels"] #main-content .buchee-pause-control[hidden],html[data-pati-view="reels"] #main-content .pati-reel-item:not(.buchee-reel-paused) .buchee-pause-control{display:none!important}
+}
