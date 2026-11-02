@@ -22,8 +22,9 @@ self.addEventListener('notificationclick',event=>{
 /* Small same-origin static cache: faster return visits without storing API/user data.
    Bump the cache version whenever this worker changes. URLs keep their release
    query parameters, so updated CSS/JS assets are distinct cache entries. */
-const PATIYIZ_STATIC_CACHE='patiyiz-static-v20261101-mobile-feed-controls-fix';
+const PATIYIZ_STATIC_CACHE='buchee-static-v20261102-auto-update-1';
 const PATIYIZ_STATIC_PREFIX='patiyiz-static-v';
+const BUCHEE_STATIC_PREFIX='buchee-static-v';
 self.addEventListener('install',event=>{
  event.waitUntil((async()=>{
   // Only the anonymous offline shell is cached for navigation fallback.
@@ -35,10 +36,11 @@ self.addEventListener('install',event=>{
 self.addEventListener('activate',event=>{
  event.waitUntil((async()=>{
   const keys=await caches.keys();
-  await Promise.all(keys.filter(k=>k.startsWith(PATIYIZ_STATIC_PREFIX)&&k!==PATIYIZ_STATIC_CACHE).map(k=>caches.delete(k)));
+  await Promise.all(keys.filter(k=>(k.startsWith(PATIYIZ_STATIC_PREFIX)||k.startsWith(BUCHEE_STATIC_PREFIX))&&k!==PATIYIZ_STATIC_CACHE).map(k=>caches.delete(k)));
   await self.clients.claim();
  })());
 });
+self.addEventListener('message',event=>{if(event.data?.type==='BUCHEE_SKIP_WAITING')void self.skipWaiting()});
 self.addEventListener('fetch',event=>{
  const request=event.request;
  if(request.method!=='GET'||request.cache==='no-store')return;
@@ -60,7 +62,7 @@ self.addEventListener('fetch',event=>{
   const cached=await cache.match(request);
   // Keep core application code and styling fresh on iOS home-screen PWAs.
   // If the network is offline, use only an existing cached copy.
-  if(/\.(?:js|css)$/i.test(url.pathname)){
+  if(/\.(?:js|css|svg|png|webp|webmanifest)$/i.test(url.pathname)){
    try{
     const fresh=await fetch(request,{cache:'no-store'});
     if(fresh.ok&&fresh.type==='basic'){
