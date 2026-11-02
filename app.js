@@ -1988,16 +1988,39 @@ async function addStoryToHighlightAlbum(storyId,albumId){
  if(link.error)throw link.error;
  closeModal(true);await refresh();notify('Hikâye "'+album.title+'" albümüne eklendi.');
 }
+function patiHighlightCover(story){
+ const src=story?.image_url||story?.video_cover_url||'';
+ return src?'<img src="'+esc(src)+'" alt="" loading="lazy" decoding="async">':'<span class="buchee-highlight-cover-empty" aria-hidden="true">◈</span>';
+}
+function patiHighlightStoryPicker(stories,selected=''){
+ return '<div class="buchee-highlight-story-picker" role="radiogroup" aria-label="Hikâye seç">'+stories.map((story,i)=>
+ '<label class="buchee-highlight-story-option"><input type="radio" name="story_id" value="'+esc(story.id)+'" '+((selected?story.id===selected:i===0)?'checked':'')+' required>'+
+ '<span class="buchee-highlight-story-thumb">'+patiHighlightCover(story)+'</span>'+
+ '<small>'+esc(cut(story.caption||day(story.created_at)||'Hikâye',35))+'</small>'+
+ '<span class="buchee-highlight-selected" aria-hidden="true">✓</span></label>').join('')+'</div>';
+}
 function newHighlightAlbum(storyId=''){
- const stories=data.stories.filter(x=>x.author_id===me.id);
- if(!stories.length)return notify('Önce bir hikâye paylaş.',true);
+ const stories=data.stories.filter(x=>x.author_id===me?.id);
+ if(!stories.length)return notify('Kalıcı hikâye için önce bir hikâye paylaş.',true);
  const selected=storyId&&stories.some(x=>x.id===storyId)?storyId:stories[0].id;
- const options=stories.map(x=>'<option value="'+esc(x.id)+'" '+(x.id===selected?'selected':'')+'>'+esc(cut(x.caption||('Hikâye · '+day(x.created_at)),50))+'</option>').join('');
- modal('Yeni öne çıkanlar albümü','<div class="pati-field"><label>Albüm adı</label><input name="title" maxlength="32" minlength="1" placeholder="Örn. Patim, Geziler, Anılar" required></div><div class="pati-field"><label>İlk hikâyeni seç</label><select name="story_id">'+options+'</select></div><p class="small-note">Profilinde diğer albümlerin yanında ayrı bir daire olarak gösterilir. Daha sonra birden fazla hikâye ekleyebilirsin.</p>','highlight-album-form');
+ modal('Yeni kalıcı hikâye','<div class="buchee-highlight-form-intro"><strong>En güzel anıların profilinde kalsın</strong><p>Albümüne isim ver ve ilk hikâyeni seç.</p></div>'+
+ '<div class="pati-field"><label>Albüm adı</label><input name="title" maxlength="32" minlength="1" placeholder="Örn. Anılarım" required></div>'+
+ '<h3 class="buchee-highlight-picker-heading">İlk hikâyeni seç</h3>'+patiHighlightStoryPicker(stories,selected)+
+ '<p class="buchee-highlight-hint">Daha sonra başka hikâyeler ekleyebilir ve albüm adını değiştirebilirsin.</p>','highlight-album-form');
 }
 function manageHighlightAlbums(){
- const albums=data.highlightAlbums.filter(x=>x.owner_id===me.id);
- modal('Kalıcı hikâyelerini yönet','<p class="small-note">Albümüne hikâye ekle veya albümü kaldır. Albümü kaldırınca hikâyelerin silinmez.</p>'+albums.map(x=>'<div class="pati-album-manage"><b>'+esc(x.title)+'</b><button type="button" data-action="highlight-album-add" data-id="'+esc(x.id)+'">Hikâye ekle</button><button type="button" data-action="highlight-album-delete" data-id="'+esc(x.id)+'">Sil</button></div>').join('')+(!albums.length?'<p>Henüz albüm yok.</p>':''),'highlight-album-manager');
+ const albums=data.highlightAlbums.filter(x=>x.owner_id===me?.id);
+ const rows=albums.map(x=>{
+  const ids=new Set(data.highlightItems.filter(y=>y.album_id===x.id).map(y=>y.story_id));
+  const cover=data.stories.find(y=>ids.has(y.id));
+  return '<article class="buchee-highlight-manage-item"><span class="buchee-highlight-manage-cover">'+patiHighlightCover(cover)+'</span><span class="buchee-highlight-manage-detail"><strong>'+esc(x.title)+'</strong><small>'+ids.size+' hikâye</small></span><div class="buchee-highlight-manage-actions">'+
+   '<button type="button" data-action="highlight-album-add" data-id="'+esc(x.id)+'">Ekle</button>'+
+   '<button type="button" data-action="highlight-album-rename" data-id="'+esc(x.id)+'">Adı</button>'+
+   '<button type="button" data-action="highlight-album-delete" data-id="'+esc(x.id)+'" class="buchee-highlight-delete">Sil</button></div></article>';
+ }).join('');
+ modal('Kalıcı hikâyelerim','<div class="buchee-highlight-manager"><div class="buchee-highlight-form-intro"><strong>Albümlerini düzenle</strong><p>Hikâye ekle, ad değiştir veya albümü kaldır. Hikâyelerin silinmez.</p></div>'+rows+
+ (albums.length?'':'<p class="buchee-highlight-hint">Henüz kalıcı hikâye albümün yok.</p>')+
+ '<button type="button" class="buchee-highlight-new-manager" data-action="highlight-album-new">+ Yeni albüm oluştur</button></div>','highlight-album-manager');
 }
 function openHighlights(id){const items=data.stories.filter(x=>x.author_id===id&&x.is_highlight).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));if(!items.length)return notify('Öne çıkan hikâye bulunamadı.');closeStory(false);storyItems=items;storyIndex=0;const layer=document.createElement('div');layer.id='story-overlay';layer.className='story-fullscreen';document.body.appendChild(layer);document.body.classList.add('story-fullscreen-open');showStoryFrame()}
 function stepStory(n){if(!storyItems.length)return;clearTimeout(storyTimer);if(document.getElementById('story-viewers-sheet')?.hidden===false&&n===1)return;const next=storyIndex+n;if(next<0){showStoryFrame();return}if(next>=storyItems.length){closeStory();return}storyIndex=next;showStoryFrame()}
