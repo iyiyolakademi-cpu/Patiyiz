@@ -361,7 +361,7 @@ function showApp(){starter();
   patiyizDeferredLoading=Promise.resolve().then(async()=>{
    if(me?.id!==userId)return;
    const initial=signature();
-   if(!patiyizLoadedTables.has('posts')){await load('instant');redraw(initial,true);}
+   if(!patiyizLoadedTables.has('posts')||!patiyizLoadedTables.has('patiyiz_stories')||!patiyizLoadedTables.has('profiles')){await load('instant');redraw(initial,true);}
    if(me?.id!==userId)return;
    const instant=signature();
    await load('feed');redraw(instant);if(typeof patiCollabRefresh==='function')void patiCollabRefresh();
@@ -2055,15 +2055,12 @@ function setupReelsViewer(){
   if(position<0||position===lastPreparedIndex)return;
   lastPreparedIndex=position;
   video.preload='auto';attach(video);
-  // Keep the next Reel ready, and warm one more on fast connections.
-  // Do not start fetching the entire feed on mobile or metered networks.
   const next=videos[position+1];
-  if(next){next.preload=lowData?'metadata':'auto';attach(next)}
-  if(!lowData){
-   const afterNext=videos[position+2];
-   if(afterNext){afterNext.preload='metadata';attach(afterNext)}
-   const previous=videos[position-1];
-   if(previous&&!previous.getAttribute?.('src')){previous.preload='metadata';attach(previous)}
+  if(next){next.preload=lowData?'none':'metadata';if(!lowData)attach(next)}
+  // Prevent background video downloads competing with images, DMs and the active Reel.
+  for(let i=0;i<videos.length;i++){
+   const other=videos[i];if(other===video||other===next)continue;
+   if(Math.abs(i-position)>1&&other.paused){other.preload='none';if(other.hasAttribute('src')&&other.dataset.patiVideoSrc){other.removeAttribute('src');other.load()}}
   }
  };
  const loadNearEnd=()=>{
