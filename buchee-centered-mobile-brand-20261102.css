@@ -1,0 +1,28 @@
+/* Buchee: truly centered feed wordmark on phone, independent of side controls. */
+@media(max-width:740px){
+html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header{
+position:relative!important;grid-template-columns:44px minmax(0,1fr) 120px!important;
+}
+html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger{
+position:absolute!important;left:50%!important;top:calc(env(safe-area-inset-top,0px) + 11px)!important;
+transform:translateX(-50%)!important;-webkit-transform:translateX(-50%)!important;
+margin:0!important;padding:0!important;width:min(48vw,210px)!important;
+max-width:calc(100% - 215px)!important;min-width:0!important;
+display:flex!important;align-items:center!important;justify-content:center!important;
+z-index:7!important;
+}
+html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger>div{
+width:100%!important;min-width:0!important;text-align:center!important;
+}
+html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger .brand-word{
+display:flex!important;justify-content:center!important;align-items:center!important;gap:2px!important;
+}
+html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger .buchee-feed-wordmark{
+max-width:calc(100% - 40px)!important;width:auto!important;max-height:22px!important;
+}
+html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger .pati-feed-current{
+display:block!important;text-align:center!important;
+}
+html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-header-share{grid-column:1!important;z-index:8!important}
+html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>.pati-header-actions{grid-column:3!important;z-index:8!important}
+}
