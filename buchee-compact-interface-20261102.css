@@ -52,3 +52,25 @@
 #main-content .buchee-search-shell .buchee-chat-popover{position:absolute!important;right:0!important;top:calc(100% + 8px)!important;min-width:180px!important;transform:none!important}
 #main-content .buchee-search-shell .buchee-chat-popover[hidden]{display:none!important}
 @media(max-width:740px){#main-content .pati-dm-top-actions.buchee-chat-actions{min-height:0!important;height:auto!important}#main-content .pati-dm-top-actions.buchee-chat-actions > [data-action]{display:none!important}}
+
+/* Buchee feed header v4 — icon directly after flag, numeric balance in the upper-right. */
+@media(max-width:740px){
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header{grid-template-columns:38px minmax(0,1fr) 119px!important;column-gap:5px!important;padding-left:5px!important;padding-right:5px!important}
+ html[data-pati-view="home"] #app-root>.mobile-header>#pati-feed-menu-trigger{position:relative!important;display:flex!important;align-items:center!important;min-width:0!important;width:100%!important;overflow:visible!important;padding:0!important}
+ html[data-pati-view="home"] #pati-feed-menu-trigger>div{width:100%!important;min-width:0!important}
+ html[data-pati-view="home"] #pati-feed-menu-trigger .brand-word{display:flex!important;align-items:center!important;gap:3px!important;min-width:0!important;width:100%!important;overflow:visible!important;white-space:nowrap!important}
+ html[data-pati-view="home"] #pati-feed-menu-trigger .buchee-feed-wordmark{flex:0 1 auto!important;min-width:0!important;width:auto!important;max-width:calc(100% - 47px)!important;height:23px!important;max-height:23px!important;object-fit:contain!important;object-position:left center!important}
+ html[data-pati-view="home"] #pati-feed-menu-trigger .pati-origin-flag{display:inline-flex!important;visibility:visible!important;position:static!important;flex:0 0 18px!important;width:18px!important;margin:0!important;font-size:12px!important;line-height:1!important}
+ html[data-pati-view="home"] #pati-feed-menu-trigger .buchee-inline-chevron{position:static!important;flex:0 0 21px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;width:21px!important;height:25px!important;margin-left:2px!important;color:#17191d!important}
+ html[data-pati-view="home"] #pati-feed-menu-trigger .buchee-inline-chevron svg{width:21px!important;height:21px!important;stroke:currentColor!important}
+ html[data-pati-view="home"] #pati-feed-menu-trigger::before,
+ html[data-pati-view="home"] #pati-feed-menu-trigger::after,
+ html[data-pati-view="home"] #pati-feed-menu-trigger>div::after,
+ html[data-pati-view="home"] #pati-feed-menu-trigger .brand-word::after{content:none!important;display:none!important}
+ html[data-pati-view="home"] #app-root>.mobile-header>.pati-header-actions{width:119px!important;max-width:119px!important;min-width:119px!important;gap:2px!important}
+ html[data-pati-view="home"] #app-root>.mobile-header>.pati-header-actions>#pati-header-coins{flex:0 0 75px!important;width:75px!important;min-width:75px!important;max-width:75px!important;display:flex!important;align-items:center!important;justify-content:center!important;flex-direction:column!important;height:45px!important;padding:3px!important;border-radius:13px!important;overflow:hidden!important}
+ html[data-pati-view="home"] #app-root>.mobile-header #pati-header-coins>span:not(.pati-balance-title){display:none!important}
+ html[data-pati-view="home"] #app-root>.mobile-header #pati-header-coins .pati-balance-title{display:block!important;visibility:visible!important;font-size:10px!important;line-height:15px!important}
+ html[data-pati-view="home"] #app-root>.mobile-header #pati-header-coins strong{display:block!important;position:static!important;visibility:visible!important;opacity:1!important;font-size:13px!important;line-height:17px!important;max-width:100%!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+ html[data-pati-view="home"] #app-root>.mobile-header>.pati-header-actions>#pati-header-notifications{flex:0 0 40px!important;width:40px!important;max-width:40px!important;min-width:40px!important}
+}
