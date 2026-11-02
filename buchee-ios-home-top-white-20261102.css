@@ -1,0 +1,20 @@
+/* iOS Home Screen: extend solid white canvas through the top safe area.
+   Keep header, stories and feed dimensions and their positions untouched. */
+@media(max-width:740px){
+ html[data-pati-view="home"],html[data-pati-view="home"] body{
+   background:#fff!important;background-color:#fff!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden){
+   background:#fff!important;background-color:#fff!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)::before{
+   content:"";position:fixed;inset:0 0 auto 0;
+   height:calc(env(safe-area-inset-top,0px) + 210px);
+   background:#fff!important;pointer-events:none;z-index:-1;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header{
+   background:#fff!important;
+   -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+   filter:none!important;
+ }
+}
