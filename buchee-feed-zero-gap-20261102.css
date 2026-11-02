@@ -1,0 +1,7 @@
+/* Buchee iPhone feed: zero gap below the header, first visible content immediately follows. */
+@media(max-width:740px){
+html[data-pati-view="home"] #app-root:not(.hidden) #main-content{padding-top:0!important;margin-top:0!important;row-gap:0!important;gap:0!important}
+html[data-pati-view="home"] #app-root:not(.hidden) #main-content>.stories-section{margin:0!important;padding-top:5px!important;transform:none!important}
+html[data-pati-view="home"] #app-root:not(.hidden) #main-content>.pati-home-feed-tabs{display:none!important}
+html[data-pati-view="home"] #app-root:not(.hidden) #main-content>.buchee-blank-before-stories{display:none!important;visibility:hidden!important;height:0!important;min-height:0!important;max-height:0!important;margin:0!important;padding:0!important;border:0!important}
+}
