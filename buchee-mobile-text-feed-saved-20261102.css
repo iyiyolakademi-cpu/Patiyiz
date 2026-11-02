@@ -1,0 +1,61 @@
+/* Buchee iPhone feed alignment and saved filters — scoped to mobile only. */
+@media(max-width:740px){
+ html[data-pati-view="home"] #app-root:not(.hidden)>.app-shell.buchee-text-home{
+  padding-top:0!important;margin-top:0!important;min-height:0!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.app-shell.buchee-text-home>#main-content{
+  padding-top:0!important;margin-top:0!important;min-height:0!important;
+ }
+ html[data-pati-view="home"] #main-content>.pati-daily-card{
+  margin:0 0 8px!important;width:100%!important;max-width:100%!important;
+  box-sizing:border-box!important;border-radius:0 0 15px 15px!important;
+  padding:13px 14px!important;background:#fff!important;
+ }
+ html[data-pati-view="home"] #main-content .pati-daily-top{
+  display:grid!important;grid-template-columns:38px minmax(0,1fr) auto!important;
+  align-items:center!important;gap:10px!important;width:100%!important;
+ }
+ html[data-pati-view="home"] #main-content .pati-daily-top-copy{
+  min-width:0!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;
+ }
+ html[data-pati-view="home"] #main-content .pati-daily-clock{
+  white-space:nowrap!important;text-align:right!important;font-size:13px!important;
+ }
+ html[data-pati-view="home"] #main-content .pati-daily-card>strong{
+  display:block!important;text-align:center!important;margin:14px auto!important;
+  width:100%!important;line-height:1.35!important;
+ }
+ html[data-pati-view="home"] #main-content .pati-daily-inline-options{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:9px!important;width:100%!important;
+ }
+ html[data-pati-view="home"] #main-content .pati-daily-inline-options button{
+  min-width:0!important;width:100%!important;box-sizing:border-box!important;
+  text-align:center!important;justify-content:center!important;
+ }
+ html[data-pati-view="home"] #main-content .pati-daily-footer{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  flex-wrap:wrap!important;gap:5px 8px!important;width:100%!important;
+ }
+ #app-root:not(.hidden) #main-content>.pati-saved-screen .pati-saved-filters{
+  display:flex!important;flex-direction:row!important;align-items:center!important;
+  flex-wrap:nowrap!important;justify-content:flex-start!important;
+  visibility:visible!important;opacity:1!important;position:relative!important;
+  width:100%!important;height:auto!important;min-height:60px!important;max-height:none!important;
+  padding:9px 10px!important;margin:0!important;overflow-x:auto!important;overflow-y:hidden!important;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;z-index:6!important;
+  background:#fff!important;transform:none!important;
+ }
+ #app-root:not(.hidden) #main-content>.pati-saved-screen .pati-saved-filters>.pati-saved-filter{
+  display:inline-flex!important;visibility:visible!important;opacity:1!important;
+  flex:0 0 auto!important;min-width:0!important;min-height:42px!important;
+  padding:8px 11px!important;white-space:nowrap!important;
+  background:#fff!important;color:#17191b!important;border:1px solid #e3e3e8!important;
+ }
+ #app-root:not(.hidden) #main-content>.pati-saved-screen .pati-saved-filters>.pati-saved-filter.active{
+  background:#f0f1f4!important;color:#17191b!important;
+ }
+ #app-root:not(.hidden) #main-content>.pati-saved-screen .pati-saved-color-dot{
+  display:inline-block!important;visibility:visible!important;opacity:1!important;
+ }
+}
