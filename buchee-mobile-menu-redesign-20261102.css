@@ -1,0 +1,162 @@
+/* BucheeSocial full-screen menu redesign 2026-11-02.
+   Scoped to the modern mobile menu; existing destinations and actions remain intact. */
+dialog.pati-right-menu-drawer[open]{
+ background:#fff!important;color:#21172b!important;overscroll-behavior:none!important
+}
+dialog.pati-right-menu-drawer[open] .pati-right-menu-panel{
+ background:#fff!important;color:#21172b!important;
+ width:100%!important;max-width:100%!important;height:100dvh!important;
+ display:flex!important;flex-direction:column!important;border-radius:0!important
+}
+dialog.pati-right-menu-drawer[open] .pati-right-menu-head.buchee-menu-head{
+ box-sizing:border-box!important;
+ display:flex!important;justify-content:space-between!important;align-items:center!important;
+ min-height:calc(64px + env(safe-area-inset-top,0px))!important;
+ padding:calc(12px + env(safe-area-inset-top,0px)) 18px 12px!important;
+ border-bottom:1px solid #f0eaf4!important;background:#fff!important;
+ flex:0 0 auto!important
+}
+.pati-right-menu-head .buchee-menu-heading{display:flex!important;align-items:center!important;gap:15px!important}
+.pati-right-menu-head .buchee-menu-heading h2{
+ margin:0!important;font-size:22px!important;line-height:1.2!important;font-weight:820!important;
+ color:#261b2e!important;letter-spacing:-.5px!important
+}
+dialog.pati-right-menu-drawer .pati-right-menu-head.buchee-menu-head button{
+ display:grid!important;place-items:center!important;width:42px!important;height:42px!important;
+ flex:0 0 42px!important;min-width:42px!important;min-height:42px!important;
+ border-radius:13px!important;border:0!important;font-size:25px!important;
+ box-shadow:none!important;background:#f6f2f8!important;color:#302239!important;
+ line-height:1!important;padding:0!important
+}
+dialog.pati-right-menu-drawer .pati-right-menu-head.buchee-menu-head .buchee-menu-header-settings{
+ background:#f7f3fb!important;color:#6a2ac0!important
+}
+dialog.pati-right-menu-drawer .pati-right-menu-head.buchee-menu-head .buchee-menu-header-settings svg{
+ display:block!important;width:22px!important;height:22px!important
+}
+dialog.pati-right-menu-drawer[open] .pati-right-menu-content{
+ flex:1 1 auto!important;min-height:0!important;box-sizing:border-box!important;
+ width:100%!important;max-width:680px!important;
+ padding:14px 18px calc(29px + env(safe-area-inset-bottom,0px))!important;
+ overflow-y:auto!important;overflow-x:hidden!important;
+ overscroll-behavior-y:contain!important;-webkit-overflow-scrolling:touch!important;
+ background:#fff!important;
+}
+.buchee-menu-v2,.buchee-menu-v2 *{box-sizing:border-box!important}
+.buchee-menu-v2{
+ width:100%!important;max-width:680px!important;margin:0 auto!important;
+ display:flex!important;flex-direction:column!important;gap:0!important;color:#281a32!important;
+ padding:0!important;background:#fff!important;box-shadow:none!important
+}
+.buchee-menu-v2 button{
+ position:relative!important;cursor:pointer!important;-webkit-tap-highlight-color:transparent!important;
+ font-family:inherit!important;white-space:normal!important;transition:background-color .14s ease,transform .14s ease!important
+}
+.buchee-menu-v2 button:focus-visible,
+.buchee-menu-head button:focus-visible{outline:3px solid #a272eb!important;outline-offset:2px!important}
+.buchee-menu-v2 .buchee-menu-profile{
+ display:flex!important;align-items:center!important;gap:13px!important;text-align:left!important;
+ padding:15px!important;width:100%!important;min-height:87px!important;margin:0 0 15px!important;
+ border-radius:20px!important;background:#f8f5fb!important;border:1px solid #efe7f6!important;
+ box-shadow:none!important;color:#271b30!important
+}
+.buchee-menu-v2 .buchee-menu-avatar{
+ display:grid!important;place-items:center!important;flex:0 0 54px!important;
+ width:54px!important;height:54px!important;border-radius:50%!important;overflow:hidden!important;
+ font-size:24px!important;font-weight:850!important;color:#792fc5!important;
+ background:linear-gradient(145deg,#e6d4ff,#f8eafb)!important;border:2px solid #fff!important
+}
+.buchee-menu-v2 .buchee-menu-avatar img{
+ display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;
+ border-radius:50%!important
+}
+.buchee-menu-v2 .buchee-menu-profile-text{
+ min-width:0!important;flex:1 1 auto!important;display:flex!important;flex-direction:column!important;
+ align-items:flex-start!important;gap:3px!important;text-align:left!important
+}
+.buchee-menu-v2 .buchee-menu-profile-text strong{
+ display:block!important;font-size:15px!important;line-height:1.15!important;font-weight:800!important;
+ max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important
+}
+.buchee-menu-v2 .buchee-menu-profile-text small{
+ display:block!important;font-size:12px!important;color:#7e6e88!important;
+ line-height:1.3!important;max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important
+}
+.buchee-menu-v2 .buchee-menu-profile-text>span{
+ font-size:11px!important;font-weight:600!important;color:#6e2fc0!important;line-height:1.3!important
+}
+.buchee-menu-v2 .buchee-menu-profile-arrow{color:#91849d!important;display:grid!important;place-items:center!important}
+.buchee-menu-v2 .buchee-menu-profile-arrow svg{width:18px!important;height:18px!important}
+.buchee-menu-v2 .buchee-menu-quick-grid{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ gap:10px!important;width:100%!important;margin:0 0 23px!important;padding:0!important
+}
+.buchee-menu-v2 .buchee-menu-quick{
+ display:flex!important;flex-direction:column!important;justify-content:space-between!important;
+ align-items:flex-start!important;gap:5px!important;text-align:left!important;
+ padding:14px!important;min-width:0!important;min-height:123px!important;width:100%!important;
+ border:1px solid transparent!important;border-radius:18px!important;
+ box-shadow:none!important
+}
+.buchee-menu-v2 .buchee-menu-quick-purple{background:#f0e8fc!important;color:#6122a5!important}
+.buchee-menu-v2 .buchee-menu-quick-pink{background:#fdebf4!important;color:#b52b77!important}
+.buchee-menu-v2 .buchee-menu-quick-teal{background:#e8f7f4!important;color:#218b80!important}
+.buchee-menu-v2 .buchee-menu-quick-amber{background:#fff3e4!important;color:#bd7626!important}
+.buchee-menu-v2 .buchee-menu-quick-icon{display:grid!important;place-items:center!important;width:33px!important;height:33px!important}
+.buchee-menu-v2 .buchee-menu-quick-icon svg{display:block!important;width:27px!important;height:27px!important;stroke:currentColor!important}
+.buchee-menu-v2 .buchee-menu-quick-name{
+ display:block!important;font-weight:800!important;color:#2e2335!important;
+ font-size:14px!important;line-height:1.2!important;letter-spacing:-.2px!important
+}
+.buchee-menu-v2 .buchee-menu-quick small{
+ color:#73677b!important;font-size:11px!important;font-weight:500!important;line-height:1.3!important
+}
+.buchee-menu-v2 .buchee-menu-section{
+ display:block!important;margin:0!important;padding:0 0 15px!important;border-bottom:1px solid #efeaf2!important
+}
+.buchee-menu-v2 .buchee-menu-section + .buchee-menu-section{padding-top:16px!important}
+.buchee-menu-v2 .buchee-menu-section h3{
+ display:block!important;margin:0 0 7px 2px!important;font-size:11px!important;
+ line-height:1.5!important;font-weight:850!important;letter-spacing:1.05px!important;
+ color:#8c8193!important;text-transform:uppercase!important
+}
+.buchee-menu-v2 .buchee-menu-section-list{display:flex!important;flex-direction:column!important;gap:0!important}
+.buchee-menu-v2 .buchee-menu-link{
+ display:flex!important;align-items:center!important;gap:12px!important;
+ min-height:53px!important;width:100%!important;padding:10px 5px!important;
+ background:transparent!important;border:0!important;box-shadow:none!important;text-align:left!important;
+ color:#302338!important;border-radius:12px!important
+}
+.buchee-menu-v2 .buchee-menu-link-icon{
+ display:grid!important;place-items:center!important;flex:0 0 27px!important;
+ width:27px!important;height:27px!important;color:#6c5683!important
+}
+.buchee-menu-v2 .buchee-menu-link-icon svg{width:22px!important;height:22px!important;display:block!important}
+.buchee-menu-v2 .buchee-menu-link-label{
+ display:block!important;flex:1 1 auto!important;font-size:14px!important;font-weight:650!important;
+ line-height:1.35!important;color:#302338!important
+}
+.buchee-menu-v2 .buchee-menu-link-arrow{display:grid!important;place-items:center!important;color:#b0a6b6!important}
+.buchee-menu-v2 .buchee-menu-link-arrow svg{width:15px!important;height:15px!important}
+.buchee-menu-v2 .buchee-menu-logout{
+ display:flex!important;align-items:center!important;gap:12px!important;width:100%!important;
+ margin:15px 0 0!important;padding:12px 6px!important;min-height:48px!important;
+ border:0!important;border-radius:12px!important;background:transparent!important;
+ color:#c63552!important;font-size:14px!important;font-weight:700!important;text-align:left!important
+}
+.buchee-menu-v2 .buchee-menu-logout svg{width:23px!important;height:23px!important;transform:rotate(180deg)!important}
+.buchee-menu-v2 .buchee-menu-footer{
+ margin:12px 0 5px!important;padding:0!important;font-size:11px!important;
+ line-height:1.3!important;font-weight:550!important;text-align:center!important;color:#a9a0b0!important
+}
+@media(hover:hover){
+ .buchee-menu-v2 .buchee-menu-profile:hover,.buchee-menu-v2 .buchee-menu-link:hover{background:#f6f0fa!important}
+ .buchee-menu-v2 .buchee-menu-quick:hover{filter:brightness(.98)!important;transform:translateY(-1px)!important}
+}
+@media(max-width:365px){
+ .buchee-menu-v2 .buchee-menu-quick{padding:12px!important;min-height:115px!important}
+ .buchee-menu-v2 .buchee-menu-quick-name{font-size:13px!important}
+ .buchee-menu-v2 .buchee-menu-profile{padding:12px!important;gap:10px!important}
+ .buchee-menu-v2 .buchee-menu-avatar{width:46px!important;height:46px!important;flex-basis:46px!important}
+}
+@media(prefers-reduced-motion:reduce){.buchee-menu-v2 button{transition:none!important}}
