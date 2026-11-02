@@ -5839,6 +5839,18 @@ function profilePage(){
  const followBack=!own&&!followed.has(p.id)&&followsMe;
  const cachedCounts=profileCountCache.get(p.id)?.value;const followers=cachedCounts?.followers??data.follows.filter(f=>f.followee_id===p.id).length,following=cachedCounts?.following??data.follows.filter(f=>f.follower_id===p.id).length;
  const stories=data.stories.filter(x=>x.author_id===p.id&&new Date(x.expires_at).getTime()>Date.now());const assignedIds=new Set(data.highlightItems.filter(x=>data.highlightAlbums.some(a=>a.id===x.album_id&&a.owner_id===p.id)).map(x=>x.story_id));const highlights=data.stories.filter(x=>x.author_id===p.id&&x.is_highlight&&!assignedIds.has(x.id)).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));const albums=data.highlightAlbums.filter(x=>x.owner_id===p.id).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+
+ const highlightStrip=(!privateLocked||own)?'<section class="buchee-highlights" aria-label="Kalıcı hikâyeler">'+
+ '<div class="buchee-highlights-top"><strong>Kalıcı Hikâyeler</strong>'+(own?'<button type="button" data-action="highlight-album-manage">Düzenle</button>':'')+'</div>'+
+ '<div class="buchee-highlights-track">'+
+ (own?'<button type="button" class="buchee-highlight-tile buchee-highlight-create" data-action="highlight-album-new"><span class="buchee-highlight-ring buchee-highlight-plus">+</span><small>Yeni</small></button>':'')+
+ albums.map(album=>{
+  const ids=new Set(data.highlightItems.filter(item=>item.album_id===album.id).map(item=>item.story_id));
+  const cover=data.stories.find(story=>ids.has(story.id));
+  return '<button type="button" class="buchee-highlight-tile" data-action="highlight-album-open" data-id="'+esc(album.id)+'" aria-label="'+esc(album.title)+' kalıcı hikâyelerini aç"><span class="buchee-highlight-ring">'+patiHighlightCover(cover)+'</span><small>'+esc(album.title)+'</small></button>';
+ }).join('')+
+ (highlights.length?'<button type="button" class="buchee-highlight-tile" data-action="story-highlights" data-id="'+esc(p.id)+'"><span class="buchee-highlight-ring buchee-highlight-archive">◈</span><small>Diğer</small></button>':'')+
+ '</div></section>':'';
  const liveProfileStory=stories.some(x=>!x.pati_pet_highlight&&!blocked.has(x.author_id));
  if(typeof patiStorySeenSync==='function')void patiStorySeenSync();
  const unseenProfileStory=liveProfileStory&&(typeof patiHasUnseenStory!=='function'||patiHasUnseenStory(p.id));
@@ -5889,7 +5901,7 @@ function profilePage(){
  patiProfileLinksHTML(p)+mutualMarkup+
  
  '<div class="pati-ig-actions'+(own?' pati-own-profile-actions':'')+'">'+(own?button('Profili düzenle','edit-profile'):button(followed.has(p.id)?'Takiptesin':patiIsFollowRequested(p.id)?'İstek gönderildi':followBack?'Sen de takip et':'Takip et','follow','data-id="'+esc(p.id)+'"'+(followBack?' data-follow-back="true"':''))+button('Mesaj gönder','chat','data-id="'+esc(p.id)+'"'))+'</div>'+(own&&typeof patiCreatorPreviewHTML==='function'?patiCreatorPreviewHTML():'')+
- '<div class="pati-ig-tabs" role="tablist" aria-label="Profil gönderileri">'+iconTabs.map(x=>'<button type="button" role="tab" aria-selected="'+(profilePostsTab===x[0])+'" class="'+(profilePostsTab===x[0]?'active':'')+'" data-action="profile-posts-tab" data-id="'+x[0]+'" aria-label="'+x[2]+'" title="'+x[2]+'">'+x[1]+'<span class="pati-profile-tab-caption" aria-hidden="true">'+esc(x[3])+'</span></button>').join('')+'</div>'+
+ highlightStrip+'<div class="pati-ig-tabs" role="tablist" aria-label="Profil gönderileri">'+iconTabs.map(x=>'<button type="button" role="tab" aria-selected="'+(profilePostsTab===x[0])+'" class="'+(profilePostsTab===x[0]?'active':'')+'" data-action="profile-posts-tab" data-id="'+x[0]+'" aria-label="'+x[2]+'" title="'+x[2]+'">'+x[1]+'<span class="pati-profile-tab-caption" aria-hidden="true">'+esc(x[3])+'</span></button>').join('')+'</div>'+
  profileContent+
  '</div>';
  void syncProfileCounts(p.id);
