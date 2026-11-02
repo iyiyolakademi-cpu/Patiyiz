@@ -63,6 +63,7 @@
     const root = document.getElementById('main-content');
     if (!root) return;
     const items = visiblePosts();
+    const missingCount = [...context.saved].filter(id => !context.data.posts.some(post => post.id === id)).length;
     const filters = [['all','Tümü'],['green','Yeşil'],['orange','Turuncu'],['red','Kırmızı']];
     const intro = !context.saved.size ? 'Henüz kaydettiğin bir paylaşım yok.' :
       filter !== 'all' ? 'Bu önem düzeyinde henüz kayıt yok.' :
@@ -83,6 +84,7 @@
       ).join('') +
       '</div>' +
       '<div class="pati-saved-subhead"><h2>Önem listesi</h2><span>' + items.length + ' kayıt</span></div>' +
+      (missingCount ? '<p class="pati-saved-hint" role="status">' + missingCount + ' kayıt henüz yüklenemedi. Erişim durumu kontrol ediliyor.</p>' : '') +
       (items.length
         ? '<div class="pati-saved-grid">' + items.map(mediaTile).join('') + '</div>'
         : '<div class="pati-saved-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg><p>' +
@@ -181,6 +183,7 @@
       openChoice(button.dataset.id);
     }
   });
+  document.addEventListener('error', event => {const img=event.target;if(!(img instanceof HTMLImageElement)||!img.closest('.pati-saved-tile-open'))return;const tile=img.closest('.pati-saved-tile-open');if(!tile||tile.dataset.fallbackShown)return;tile.dataset.fallbackShown='true';img.remove();const label=document.createElement('span');label.className='pati-saved-text-tile';label.textContent='Görsel yüklenemedi';tile.prepend(label);},true);
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && activeChoice && !busy) closeChoice();
   });
