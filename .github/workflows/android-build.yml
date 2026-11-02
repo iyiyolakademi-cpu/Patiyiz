@@ -45,6 +45,9 @@ jobs:
           {"appId":"com.buchee.social","appName":"Buchee Social","webDir":"www","android":{"allowMixedContent":false}}
           JSON
           test -s www/index.html
+          # Regenerate the native project in this disposable Actions runner only.
+          # The repository's existing android/ directory is never deleted or committed.
+          rm -rf android
           npx cap add android
           npx cap sync android
       - name: Build installable test APK and test AAB
