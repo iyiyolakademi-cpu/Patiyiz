@@ -6019,17 +6019,8 @@ function profilePage(){
  const cachedCounts=profileCountCache.get(p.id)?.value;const followers=cachedCounts?.followers??data.follows.filter(f=>f.followee_id===p.id).length,following=cachedCounts?.following??data.follows.filter(f=>f.follower_id===p.id).length;
  const stories=data.stories.filter(x=>x.author_id===p.id&&new Date(x.expires_at).getTime()>Date.now());const assignedIds=new Set(data.highlightItems.filter(x=>data.highlightAlbums.some(a=>a.id===x.album_id&&a.owner_id===p.id)).map(x=>x.story_id));const highlights=data.stories.filter(x=>x.author_id===p.id&&x.is_highlight&&!assignedIds.has(x.id)).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));const albums=data.highlightAlbums.filter(x=>x.owner_id===p.id&&(own||data.highlightItems.some(i=>i.album_id===x.id))).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
 
- const highlightStrip=(!privateLocked||own)?'<section class="buchee-highlights" aria-label="Kalıcı hikâyeler">'+
- '<div class="buchee-highlights-top"><strong>Kalıcı Hikâyeler</strong>'+(own?'<button type="button" data-action="highlight-album-manage">Düzenle</button>':'')+'</div>'+
- '<div class="buchee-highlights-track">'+
- (own?'<button type="button" class="buchee-highlight-tile buchee-highlight-create" data-action="highlight-album-new" aria-label="Hikâye arşivini aç ve albüm oluştur"><span class="buchee-highlight-ring buchee-highlight-plus">+</span><small>Arşiv</small></button>':'')+
- albums.map(album=>{
-  const ids=new Set(data.highlightItems.filter(item=>item.album_id===album.id).map(item=>item.story_id));
-  const cover=data.stories.find(story=>ids.has(story.id));
-  return '<button type="button" class="buchee-highlight-tile" data-action="highlight-album-open" data-id="'+esc(album.id)+'" aria-label="'+esc(album.title)+' kalıcı hikâyelerini aç"><span class="buchee-highlight-ring">'+patiHighlightCover(cover,album)+'</span><small>'+esc(album.title)+'</small></button>';
- }).join('')+
- ''+
- '</div></section>':'';
+ const highlightStrip=window.BucheeCapsules?.section?.({sb,viewerId:me.id,profileId:p.id,own,locked:privateLocked}) ||
+ (!privateLocked||own?'<section class="buchee-highlights"><strong>Buchee Kapsül</strong><p>Kapsüller yükleniyor…</p></section>':'');
  const liveProfileStory=stories.some(x=>!x.pati_pet_highlight&&!blocked.has(x.author_id));
  if(typeof patiStorySeenSync==='function')void patiStorySeenSync();
  const unseenProfileStory=liveProfileStory&&(typeof patiHasUnseenStory!=='function'||patiHasUnseenStory(p.id));
