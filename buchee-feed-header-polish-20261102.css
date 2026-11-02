@@ -1,0 +1,46 @@
+/* BucheeSocial - subtle mobile feed header refinement only. No JS or menu changes. */
+@media (max-width:740px){
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header{
+  grid-template-columns:40px minmax(0,1fr) 84px!important;
+  column-gap:4px!important;
+  padding-left:7px!important;padding-right:7px!important;
+  height:calc(62px + env(safe-area-inset-top,0px))!important;
+  min-height:calc(62px + env(safe-area-inset-top,0px))!important;
+  background:#fff!important;
+  border-bottom:1px solid #f0edf3!important;
+  box-shadow:none!important;
+ }
+ html[data-pati-view="home"] #app-root>.mobile-header>#pati-feed-menu-trigger{
+  display:flex!important;align-items:center!important;justify-content:flex-start!important;
+  overflow:visible!important;padding:0 1px!important;min-width:0!important;
+ }
+ html[data-pati-view="home"] #pati-feed-menu-trigger>div{width:100%!important;min-width:0!important}
+ html[data-pati-view="home"] #pati-feed-menu-trigger .brand-word{
+  display:flex!important;align-items:center!important;flex-wrap:nowrap!important;
+  gap:4px!important;width:100%!important;min-width:0!important;white-space:nowrap!important;
+ }
+ html[data-pati-view="home"] #pati-feed-menu-trigger .buchee-feed-wordmark{
+  flex:1 1 auto!important;min-width:0!important;width:calc(100% - 22px)!important;
+  max-width:none!important;max-height:25px!important;height:auto!important;
+  object-fit:contain!important;object-position:left center!important;
+ }
+ html[data-pati-view="home"] #pati-feed-menu-trigger .pati-origin-flag{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  flex:0 0 18px!important;width:18px!important;min-width:18px!important;
+  font-size:13px!important;line-height:1!important;
+ }
+ html[data-pati-view="home"] #pati-feed-menu-trigger .pati-feed-current{
+  font-size:10px!important;line-height:1.15!important;opacity:.75!important;
+ }
+ html[data-pati-view="home"] #app-root>.mobile-header>.pati-header-actions{
+  gap:2px!important;align-items:center!important;justify-content:flex-end!important;
+ }
+ html[data-pati-view="home"] #app-root>.mobile-header>.pati-header-actions>button{
+  width:40px!important;min-width:40px!important;max-width:40px!important;
+  min-height:44px!important;display:flex!important;align-items:center!important;justify-content:center!important;
+ }
+ html[data-pati-view="home"] #app-root>.mobile-header>#pati-header-share{
+  width:40px!important;min-width:40px!important;min-height:44px!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+ }
+}
