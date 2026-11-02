@@ -1,0 +1,119 @@
+name: Buchee Play Console signed AAB
+on:
+  workflow_dispatch:
+    inputs:
+      package_id:
+        description: "Play Console package ID (must match existing app)"
+        required: true
+        type: string
+      version_code:
+        description: "New versionCode (must exceed all uploaded versions)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  signed-bundle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      BUCHEE_UPLOAD_KEYSTORE_B64: ${{ secrets.BUCHEE_UPLOAD_KEYSTORE_B64 }}
+      BUCHEE_KEYSTORE_PASSWORD: ${{ secrets.BUCHEE_KEYSTORE_PASSWORD }}
+      BUCHEE_KEY_ALIAS: ${{ secrets.BUCHEE_KEY_ALIAS }}
+      BUCHEE_KEY_PASSWORD: ${{ secrets.BUCHEE_KEY_PASSWORD }}
+      PACKAGE_ID: ${{ inputs.package_id }}
+      VERSION_CODE: ${{ inputs.version_code }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Validate release configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$PACKAGE_ID" =~ ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)+$ ]] || { echo "::error::Invalid package ID"; exit 1; }
+          [[ "$VERSION_CODE" =~ ^[0-9]+$ ]] && (( VERSION_CODE > 0 && VERSION_CODE <= 2100000000 )) || { echo "::error::Invalid versionCode"; exit 1; }
+          for key in BUCHEE_UPLOAD_KEYSTORE_B64 BUCHEE_KEYSTORE_PASSWORD BUCHEE_KEY_ALIAS BUCHEE_KEY_PASSWORD; do
+            [[ -n "${!key:-}" ]] || { echo "::error::Missing GitHub secret: $key"; exit 1; }
+          done
+      - name: Configure Android SDK
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "ANDROID_HOME=$ANDROID_SDK_ROOT" >> "$GITHUB_ENV"
+          yes | "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null || true
+          "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+      - name: Prepare current web app and Android project
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > package.json <<'JSON'
+          {"name":"buchee-social-android","version":"1.0.0","private":true,"type":"module","dependencies":{"@capacitor/core":"7.4.4","@capacitor/android":"7.4.4"},"devDependencies":{"@capacitor/cli":"7.4.4"}}
+          JSON
+          npm install --no-audit --no-fund
+          mkdir -p www
+          rsync -a --exclude=.git --exclude=.github --exclude=node_modules --exclude=android --exclude=www --exclude=package.json --exclude=package-lock.json --exclude='*.apk' --exclude='*.aab' ./ www/
+          cat > capacitor.config.json <<JSON
+          {"appId":"$PACKAGE_ID","appName":"Buchee Social","webDir":"www","android":{"allowMixedContent":false}}
+          JSON
+          test -s www/index.html
+          rm -rf android
+          npx cap add android
+          npx cap sync android
+      - name: Configure release signing
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf '%s' "$BUCHEE_UPLOAD_KEYSTORE_B64" | base64 --decode > "$RUNNER_TEMP/buchee-upload.jks"
+          keytool -list -keystore "$RUNNER_TEMP/buchee-upload.jks" -storepass "$BUCHEE_KEYSTORE_PASSWORD" -alias "$BUCHEE_KEY_ALIAS" >/dev/null
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path("android/app/build.gradle")
+          s=p.read_text()
+          s="import java.lang.System\n"+s
+          needle="android {"
+          assert needle in s, "Unexpected Capacitor Gradle format"
+          signing="""android {
+              signingConfigs {
+                  bucheeUpload {
+                      storeFile file(System.getenv('RUNNER_TEMP') + '/buchee-upload.jks')
+                      storePassword System.getenv('BUCHEE_KEYSTORE_PASSWORD')
+                      keyAlias System.getenv('BUCHEE_KEY_ALIAS')
+                      keyPassword System.getenv('BUCHEE_KEY_PASSWORD')
+                  }
+              }
+          """
+          s=s.replace(needle,signing,1)
+          s=s.replace("versionCode 1","versionCode Integer.parseInt(System.getenv('VERSION_CODE'))",1)
+          s=s.replace("signingConfig signingConfigs.debug","signingConfig signingConfigs.bucheeUpload",1)
+          # Capacitor-generated template commonly defines a release block without a signingConfig.
+          release="release {"
+          assert release in s, "Missing release build type"
+          s=s.replace(release,release+"\n            signingConfig signingConfigs.bucheeUpload",1)
+          p.write_text(s)
+          PY
+      - name: Build signed release AAB
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd android
+          chmod +x ./gradlew
+          ./gradlew --no-daemon bundleRelease
+          test -s app/build/outputs/bundle/release/app-release.aab
+          jarsigner -verify -verbose -certs app/build/outputs/bundle/release/app-release.aab >/dev/null
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BucheeSocial-PlayConsole-Signed-AAB
+          path: android/app/build/outputs/bundle/release/*.aab
+          if-no-files-found: error
+          retention-days: 14
+      - name: Remove temporary signing key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/buchee-upload.jks"
