@@ -1,0 +1,27 @@
+/* BucheeSocial sunset onboarding — mobile-only, preserves existing authentication events. */
+@media(max-width:740px){
+#auth-root:not(.hidden){height:100dvh!important;min-height:100dvh!important;overflow-y:auto!important;overscroll-behavior:contain;background:#130b2d!important}
+#auth-root .auth-shell{display:flex!important;flex-direction:column!important;width:100%!important;max-width:none!important;min-height:100dvh!important;margin:0!important;padding:0!important;border:0!important;background:#170f31!important;overflow:visible!important}
+#auth-root .auth-story{position:relative!important;display:flex!important;flex-direction:column!important;justify-content:flex-start!important;min-height:52svh!important;height:52svh!important;max-height:none!important;width:100%!important;margin:0!important;padding:calc(env(safe-area-inset-top,0px) + 24px) 24px 34px!important;border-radius:0!important;border:0!important;box-shadow:none!important;background:linear-gradient(180deg,rgba(16,10,41,.58),rgba(16,10,41,.05) 55%,rgba(16,10,41,.45)),url("buchee-auth-sunset-scene.svg?v=1") center 55%/cover no-repeat!important;color:#fff!important;overflow:hidden!important;box-sizing:border-box!important}
+#auth-root .auth-story::before,#auth-root .auth-story::after{content:none!important;display:none!important}
+#auth-root .auth-story-top{display:flex!important;justify-content:center!important;align-items:center!important;flex-direction:column!important;width:100%!;margin:20px 0 0!important;gap:0!important}
+#auth-root .auth-story-top .auth-story-icon{display:block!important;width:min(73vw,310px)!important;height:auto!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}
+#auth-root .auth-story-top .auth-story-icon img{width:100%!important;height:auto!important;max-height:58px!important;object-fit:contain!important;filter:drop-shadow(0 2px 4px rgba(0,0,0,.15))!important}
+#auth-root .auth-story-top>strong,#auth-root .auth-story-topline,#auth-root .auth-story-label,#auth-root .auth-story-bottom>p{display:none!important}
+#auth-root .auth-story-bottom{display:block!important;position:relative!important;margin:28px auto 0!important;padding:0!important;max-width:340px!important;width:100%!important;text-align:center!important;background:none!important;border:0!important}
+#auth-root .auth-story-bottom h2{display:block!important;margin:0!important;padding:0!important;font-size:clamp(25px,7vw,33px)!important;line-height:1.2!important;font-weight:800!important;letter-spacing:-.7px!important;text-align:center!important;color:#fff!important;text-shadow:0 2px 12px #180e3b99!important}
+#auth-root .auth-story-bottom h2 em{font-style:normal!important;color:#fff!important}
+#auth-root .auth-pane{position:relative!important;z-index:2!important;display:block!important;flex:1 0 auto!important;width:100%!important;max-width:none!important;margin:-25px 0 0!important;padding:22px 20px calc(36px + env(safe-area-inset-bottom,0px))!important;border:0!important;border-radius:30px 30px 0 0!important;background:linear-gradient(170deg,#281644 0%,#130d2d 65%,#1b0c2a 100%)!important;box-sizing:border-box!important;box-shadow:none!important;overflow:visible!important}
+#auth-root .auth-card{width:100%!important;max-width:420px!important;margin:0 auto!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;color:#fff!important}
+#auth-root .auth-card>.auth-brand,#auth-root .auth-card>.buchee-auth-features,#auth-root .auth-card>.auth-eyebrow{display:none!important}
+#auth-root .auth-tabs{display:flex!important;width:100%!important;gap:12px!important;margin:0 0 19px!important;padding:0!important;background:transparent!important;border:0!important}
+#auth-root .auth-tabs button{flex:1!important;width:auto!important;min-height:51px!important;border:1.5px solid #ded1ed!important;border-radius:999px!important;background:transparent!important;color:#fff!important;font-size:16px!important;font-weight:750!important}
+#auth-root .auth-tabs button.active{background:#fff!important;color:#4915a5!important;border-color:#fff!important}
+#auth-root .auth-card>h2{font-size:22px!important;color:#fff!important;margin:8px 0 4px!important}
+#auth-root .auth-card .auth-sub{color:#ded4e8!important;font-size:13px!important;margin:0 0 16px!important}
+#auth-root .pati-field label,#auth-root .pati-auth-terms,#auth-root .pati-auth-terms a,#auth-root .small-note,#auth-root .auth-bottom button{color:#eee7f7!important}
+#auth-root .pati-field input{background:#fff!important;color:#211730!important;border:1px solid #ded6e7!important;border-radius:13px!important;min-height:49px!important}
+#auth-root .auth-submit{background:#fff!important;color:#4a159e!important;border-radius:999px!important;min-height:50px!important}
+#auth-root .pati-note{color:#fff!important}
+}
+@media(min-width:741px){/* Preserve current desktop sign-in */ }
