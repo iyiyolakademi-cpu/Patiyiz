@@ -1,0 +1,26 @@
+/* BucheeSocial signature entrance. No delay to interactive form. */
+#auth-root .auth-brand{position:relative!important}
+#auth-root .auth-brand .auth-matching-logo img{
+  animation:bucheeBrandArrive .72s cubic-bezier(.18,.75,.23,1) both;
+}
+#auth-root .auth-brand .buchee-signature{
+  display:block!important;width:min(47vw,186px)!important;height:26px!important;
+  max-width:100%!important;margin:1px auto 0!important;overflow:visible!important;
+  flex:0 0 auto!important;pointer-events:none!important;
+}
+#auth-root .buchee-signature path{
+  stroke-dasharray:350;stroke-dashoffset:350;
+  animation:bucheeDrawSignature 1.15s cubic-bezier(.52,.1,.26,1) .28s forwards;
+}
+@keyframes bucheeBrandArrive{
+ from{opacity:0;transform:translateY(8px) scale(.98)}
+ to{opacity:1;transform:translateY(0) scale(1)}
+}
+@keyframes bucheeDrawSignature{
+ 0%{stroke-dashoffset:350;opacity:.5}
+ 100%{stroke-dashoffset:0;opacity:1}
+}
+@media(prefers-reduced-motion:reduce){
+ #auth-root .auth-brand .auth-matching-logo img{animation:none!important}
+ #auth-root .buchee-signature path{animation:none!important;stroke-dashoffset:0!important}
+}
