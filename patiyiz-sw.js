@@ -22,7 +22,7 @@ self.addEventListener('notificationclick',event=>{
 /* Small same-origin static cache: faster return visits without storing API/user data.
    Bump the cache version whenever this worker changes. URLs keep their release
    query parameters, so updated CSS/JS assets are distinct cache entries. */
-const PATIYIZ_STATIC_CACHE='buchee-static-v20261102-auto-update-1';
+const PATIYIZ_STATIC_CACHE='buchee-static-v20261102-highlight-manager-2';
 const PATIYIZ_STATIC_PREFIX='patiyiz-static-v';
 const BUCHEE_STATIC_PREFIX='buchee-static-v';
 self.addEventListener('install',event=>{
