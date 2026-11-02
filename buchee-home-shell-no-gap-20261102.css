@@ -1,0 +1,10 @@
+/* Home feed only: remove padding from the OUTER app shell, not just stories. */
+@media(max-width:740px){
+html[data-pati-view="home"] #app-root:not(.hidden)>.app-shell:has(#main-content>.stories-section){
+padding-top:0!important;margin-top:0!important;row-gap:0!important;
+}
+html[data-pati-view="home"] #app-root:not(.hidden)>.app-shell:has(#main-content>.stories-section)>#main-content{
+margin:0!important;padding:0!important;top:auto!important;translate:none!important;min-height:0!important;
+}
+html[data-pati-view="home"] #app-root:not(.hidden)>.app-shell #main-content>.stories-section{margin:0!important}
+}
