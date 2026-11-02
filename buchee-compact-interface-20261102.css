@@ -40,3 +40,15 @@
 .buchee-search-actions .buchee-chat-popover{position:absolute;right:0;top:calc(100% + 7px);z-index:3200;min-width:186px;background:#fff;border:1px solid #eee6f2;border-radius:14px;box-shadow:0 12px 30px #261b3330;padding:5px}
 .buchee-search-actions .buchee-chat-popover[hidden]{display:none!important}
 .buchee-search-actions .buchee-chat-popover button{display:block;width:100%;padding:12px;border:0;border-radius:9px;background:transparent;text-align:left;font-size:14px;font-weight:650;color:#24202a}
+
+/* Final iPhone message layout: one search field with inline ellipsis. */
+#main-content .pati-dm-top-actions > [data-action="dm-new"],
+#main-content .pati-dm-top-actions > [data-action="pati-group-create-open"]{display:none!important;visibility:hidden!important}
+#main-content .buchee-search-shell{position:relative!important;display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;margin:0!important;padding:0!important}
+#main-content .buchee-search-shell .pati-dm-searchbar{box-sizing:border-box!important;width:100%!important;max-width:100%!important;min-width:0!important;margin:0!important;padding-right:64px!important;display:flex!important}
+#main-content .buchee-search-shell .pati-dm-searchbar input{min-width:0!important;width:100%!important;padding-right:0!important}
+#main-content .buchee-search-shell .buchee-search-actions{position:absolute!important;top:50%!important;right:9px!important;transform:translateY(-50%)!important;width:42px!important;height:42px!important;margin:0!important;padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important;z-index:20!important}
+#main-content .buchee-search-shell .buchee-chat-menu-button{width:40px!important;height:40px!important;min-width:40px!important;max-width:40px!important;min-height:40px!important;padding:0!important;border:0!important;border-radius:11px!important;background:#ebe8f2!important;color:#2b2136!important;line-height:1!important}
+#main-content .buchee-search-shell .buchee-chat-popover{position:absolute!important;right:0!important;top:calc(100% + 8px)!important;min-width:180px!important;transform:none!important}
+#main-content .buchee-search-shell .buchee-chat-popover[hidden]{display:none!important}
+@media(max-width:740px){#main-content .pati-dm-top-actions.buchee-chat-actions{min-height:0!important;height:auto!important}#main-content .pati-dm-top-actions.buchee-chat-actions > [data-action]{display:none!important}}
