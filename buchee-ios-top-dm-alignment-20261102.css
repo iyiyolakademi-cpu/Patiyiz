@@ -1,0 +1,55 @@
+/* iPhone top white continuity + DM avatar/name collision repair. */
+@media(max-width:740px){
+ html[data-pati-view="home"],html[data-pati-view="home"] body,
+ html[data-pati-view="home"] #app-root:not(.hidden){background:#fff!important}
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header{
+   isolation:isolate!important;background:#fff!important;
+   backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+   box-shadow:none!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header::before{
+   content:"";position:absolute;left:0;right:0;
+   bottom:100%;height:calc(240px + env(safe-area-inset-top,0px));
+   background:#fff!important;pointer-events:none;z-index:-1;
+ }
+ html[data-pati-view="messages"] #main-content .pati-dm-list-row{
+   display:flex!important;align-items:center!important;gap:8px!important;
+   min-width:0!important;position:relative!important;
+ }
+ html[data-pati-view="messages"] #main-content .pati-dm-list-row>.chat-person{
+   display:flex!important;align-items:center!important;flex:1 1 0!important;
+   min-width:0!important;width:auto!important;gap:10px!important;
+   padding-left:8px!important;position:relative!important;transform:none!important;
+ }
+ html[data-pati-view="messages"] #main-content .pati-dm-list-row>.chat-person>.avatar{
+   flex:0 0 46px!important;width:46px!important;height:46px!important;
+   position:relative!important;inset:auto!important;margin:0!important;
+ }
+ html[data-pati-view="messages"] #main-content .pati-dm-list-row>.chat-person .chat-person-info{
+   flex:1 1 0!important;min-width:0!important;max-width:100%!important;
+   display:flex!important;flex-direction:column!important;align-items:flex-start!important;
+   position:relative!important;inset:auto!important;margin:0!important;
+   text-align:left!important;overflow:hidden!important;
+ }
+ html[data-pati-view="messages"] #main-content .pati-dm-list-row .chat-person-info :is(strong,small){
+   display:block!important;max-width:100%!important;overflow:hidden!important;
+   white-space:nowrap!important;text-overflow:ellipsis!important;
+ }
+ html[data-pati-view="messages"] #main-content .pati-dm-list-row .chat-person-meta{
+   flex:0 0 auto!important;position:relative!important;inset:auto!important;
+   max-width:56px!important;
+ }
+ html[data-pati-view="messages"] #main-content .pati-dm-list-row>[class*="story-ring"]{
+   flex-shrink:0!important;
+ }
+ html[data-pati-view="messages"] #main-content .pati-dm-list-row>.pati-dm-row-actions{
+   flex:0 0 32px!important;position:relative!important;right:auto!important;
+ }
+ html[data-pati-view="messages"] #main-content .chat-header .chat-head-avatar,
+ html[data-pati-view="messages"] #main-content .pati-group-chat-header .chat-head-avatar{
+   flex:0 0 42px!important;min-width:42px!important;position:relative!important;inset:auto!important;
+ }
+ html[data-pati-view="messages"] #main-content .pati-group-chat-title{
+   flex:1 1 0!important;min-width:0!important;overflow:hidden!important;
+ }
+}
