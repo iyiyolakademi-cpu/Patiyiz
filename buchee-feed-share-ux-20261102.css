@@ -147,3 +147,14 @@
  #modal-root #share-post-form .buchee-share-quick{gap:4px!important}
 }
 @media(min-width:740px){#modal-root .modal-backdrop:has(#share-post-form){align-items:center!important}#modal-root .modal:has(#share-post-form){border-radius:22px!important;height:min(85vh,820px)!important}}
+
+/* Smooth vertical feed navigation and comfortable mobile tap responses. */
+#main-content .pati-feed-posts{touch-action:pan-y pinch-zoom!important;overscroll-behavior-x:contain!important;-webkit-overflow-scrolling:touch!important}
+#main-content .pati-feed-card{scroll-margin-top:8px!important}
+#main-content .pati-feed-card .pati-social-actions button,
+#modal-root .buchee-share-person,#modal-root .buchee-share-quick-action,
+#app-root .bottom-nav button{touch-action:manipulation!important;-webkit-tap-highlight-color:transparent!important}
+#app-root .bottom-nav button:active,#app-root .nav-item:active{
+ transform:scale(.94)!important;transition:transform .11s ease!important;
+}
+#main-content .pati-feed-card .pati-save-action{margin-left:auto!important;order:999!important}
