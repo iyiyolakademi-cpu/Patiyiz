@@ -1074,18 +1074,15 @@ function userRow(id,small=''){let p=profile(id);return `<button type="button" cl
 /* One approved shared post, two first-class authors, no duplicate post record.
    Center both names and their avatars on the same card in either profile. */
 function patiCollabHeader(post,accepted){
- if(!accepted?.user_id)return userRow(post.author_id,'');
- const first=profile(post.author_id),second=profile(accepted.user_id);
- const person=(p,id)=>'<button type="button" class="pati-collab-author" data-action="view-user" data-id="'+esc(id)+'" aria-label="'+esc(p.display_name||p.handle||'Kullanıcı')+' profilini aç">'+
-   
-   '<span class="pati-collab-author-name">'+esc(p.handle||p.display_name||'BucheeSocial üyesi')+(p.is_verified?' <span class="pati-collab-verified" aria-label="Doğrulanmış hesap">✓</span>':'')+'</span></button>';
- return '<div class="pati-collab-dual-header" aria-label="Ortak gönderi">'+
-   '<div class="pati-collab-dual-avatars" aria-hidden="true"><span>'+avatar(first,'s')+'</span><span>'+avatar(second,'s')+'</span></div>'+
-   '<div class="pati-collab-dual-authors">'+person(first,post.author_id)+
-   '<span class="pati-collab-dual-and" aria-hidden="true">ve</span>'+person(second,accepted.user_id)+'</div>'+
-   '<small class="pati-collab-dual-label">Ortak gönderi</small></div>';
+ const ids=[post.author_id,...(Array.isArray(accepted)?accepted:[accepted]).filter(Boolean).map(x=>x.user_id).filter(Boolean)].slice(0,3);
+ if(ids.length<2)return userRow(post.author_id,'');
+ const faces=ids.map(uid=>'<span>'+avatar(profile(uid),'s')+'</span>').join('');
+ const handles=ids.map(uid=>{const p=profile(uid);return '<button type="button" class="pati-collab-author" data-action="view-user" data-id="'+esc(uid)+'" aria-label="'+esc(p.display_name||p.handle||'Kullanıcı')+' profilini aç"><span class="pati-collab-author-name">'+esc(p.handle||p.display_name||'BucheeSocial üyesi')+(p.is_verified?'<span class="pati-collab-verified" aria-label="Doğrulanmış">✓</span>':'')+'</span></button>'}).join('<span class="pati-collab-dual-and" aria-hidden="true">ve</span>');
+ return '<div class="pati-collab-dual-header buchee-collab-three" aria-label="'+ids.length+' ortak hesap">'+
+ '<div class="pati-collab-dual-avatars" aria-hidden="true">'+faces+'</div>'+
+ '<div class="pati-collab-dual-authors">'+handles+'</div>'+
+ '<small class="pati-collab-dual-label">Ortak gönderi</small></div>';
 }
-
 // Render-scoped counters: no stale counts after Realtime events or successful user mutations.
 let patiPostRenderStats=null;
 function patiBuildPostStats(likes,comments,hiddenAuthors){
@@ -2421,6 +2418,42 @@ function bucheeShareFeedback(message,bad=false){
  bucheeShareFeedback.timer=window.setTimeout(()=>{if(panel.isConnected)panel.hidden=true},2800);
  return true;
 }
+
+function bucheePostMenu(postId){
+ const post=patiFindSocialPost(postId);
+ if(!post)return;
+ const own=post.author_id===me.id;
+ const active=patiCollabs.rows.filter(x=>x.post_id===postId&&x.status!=='declined');
+ const icons={
+  edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-7"/><path d="m15.2 5.5 3.3 3.3M9 16l3.9-.8 7.3-7.3a2.3 2.3 0 0 0-3.3-3.3L9.8 12z"/></svg>',
+  pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3H9l1 5-3 3v3h10v-3l-3-3zM12 14v7"/></svg>',
+  users:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M17 10h5M19.5 7.5v5"/></svg>',
+  unlink:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>',
+  flag:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4m0 1q6-3 12 0v10q-6-3-12 0"/></svg>',
+  link:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m9 15 6-6M8.2 17H6a4 4 0 0 1 0-8h3M15.8 7H18a4 4 0 0 1 0 8h-3"/></svg>',
+  trash:ico('trash')
+ };
+ const option=(kind,name,subtitle,action,attributes='',disabled=false)=>
+  '<button type="button" class="buchee-post-option '+(kind==='trash'?'is-danger':'')+'" data-action="'+action+'" data-id="'+esc(postId)+'" '+attributes+(disabled?' disabled aria-disabled="true"':'')+'>'+
+  '<span class="buchee-post-option-icon">'+icons[kind]+'</span><span class="buchee-post-option-copy"><strong>'+name+'</strong><small>'+subtitle+'</small></span>'+
+  '<span class="buchee-post-option-chevron" aria-hidden="true">›</span></button>';
+ const items=own?[
+  option('edit','Gönderiyi düzenle','Açıklama ve içerik ayrıntıları','edit-post'),
+  option('pin',patiOwnPin(postId)?'Sabiti kaldır':'Profilde sabitle','Profilinin üst kısmında göster','pati-pin'),
+  option('users','Ortak paylaşım','Sen dahil en fazla 3 kişi','collab-invite-open','',active.length>=2),
+  option('trash','Gönderiyi sil','Kalıcı olarak kaldır','delete-post')
+ ]:[
+  option('link','Bağlantıyı kopyala','Paylaşım adresini kopyala','pati-copy-post'),
+  option('flag','Gönderiyi bildir','Topluluk kurallarına aykırıysa bildir','report','data-kind="post"'),
+  ...(active.some(x=>x.user_id===me.id)?[option('unlink','Ortaklıktan ayrıl','Gönderi profilinden kaldırılır','collab-remove','data-user="'+esc(me.id)+'"')]:[])
+ ];
+ if(own&&active.length)for(const collaborator of active)items.push(
+   option('unlink','Ortaklığı kaldır','@'+esc(profile(collaborator.user_id).handle||'üye')+' · '+(collaborator.status==='accepted'?'Kabul edildi':'Davet bekliyor'),
+      'collab-remove','data-user="'+esc(collaborator.user_id)+'"')
+ );
+ modal('Gönderi seçenekleri','<div class="buchee-post-options"><p class="buchee-post-options-intro">Bu gönderiyle ilgili işlemler</p>'+items.join('')+'</div>','post-actions-form');
+}
+
 function openPatiShareModal(postId){
  const post=patiFindSocialPost(postId);
  if(!me||!post||blocked.has(post.author_id))return notify('Bu paylaşım artık bulunamıyor.',true);
@@ -2501,7 +2534,7 @@ function patiCollabMerge(rows){
 }
 function patiCollabAccepted(postId){
  patiCollabEnsure();
- return patiCollabs.rows.find(x=>x.post_id===postId&&x.status==='accepted')||null;
+ return patiCollabs.rows.filter(x=>x.post_id===postId&&x.status==='accepted').slice(0,2);
 }
 function patiCollabPartnerPosts(ownerId){
  patiCollabEnsure();
@@ -2583,6 +2616,9 @@ async function patiCollabInvite(postId,rawHandle,selectedUserId){
  if(!found.data||String(found.data.handle||'').toLocaleLowerCase('tr-TR')!==handle.toLocaleLowerCase('tr-TR'))throw Error('Seçtiğin profil bulunamadı. Kullanıcıyı yeniden seç.');
  if(found.data.id===owner)throw Error('Kendi hesabına ortak daveti gönderemezsin.');
  if(blocked.has(found.data.id))throw Error('Bu hesaba ortak daveti gönderemezsin.');
+ const existing=await sb.from('patiyiz_post_collaborators').select('user_id,status').eq('post_id',postId).in('status',['pending','accepted']);
+ if(existing.error)throw existing.error;
+ if((existing.data||[]).length>=2)throw Error('Bir gönderide sahibi dahil en fazla 3 kişi ortak olabilir.');
  const result=await sb.from('patiyiz_post_collaborators').insert({post_id:postId,user_id:found.data.id,invited_by:owner,status:'pending'}).select('*').single();
  if(result.error)throw result.error;
  if(me?.id!==owner)return;
@@ -2600,15 +2636,17 @@ async function patiCollabRespond(postId,status){
  if(status==='accepted')await patiCollabHydrate(r.data);
  render();
 }
-async function patiCollabRemove(postId){
+async function patiCollabRemove(postId,collaboratorId){
  if(!me)return;
- const owner=me.id;
- const r=await sb.from('patiyiz_post_collaborators').delete().eq('post_id',postId)
- .or('user_id.eq.'+owner+',invited_by.eq.'+owner).select('post_id');
+ const uid=me.id,post=data.posts.find(p=>p.id===postId),own=post?.author_id===uid;
+ const target=own?collaboratorId:uid;
+ if(!target)throw Error('Kaldırılacak ortak seçilemedi.');
+ const r=await sb.from('patiyiz_post_collaborators').delete()
+  .eq('post_id',postId).eq('user_id',target).select('post_id,user_id');
  if(r.error)throw r.error;
- if(!r.data?.length)throw Error('Bu ortaklık kaydı bulunamadı.');
- if(me?.id!==owner)return;
- patiCollabs.rows=patiCollabs.rows.filter(x=>x.post_id!==postId);
+ if(!r.data?.length)throw Error('Ortaklık kaydı bulunamadı veya erişim yok.');
+ if(me?.id!==uid)return;
+ patiCollabs.rows=patiCollabs.rows.filter(x=>!(x.post_id===postId&&x.user_id===target));
  patiCollabs.profilesLoaded.clear();closeModal(true);render();
 }
 async function patiFollowingFetch(more=false){
@@ -8077,12 +8115,12 @@ case 'comment-like':run(async()=>{const form=$('#comment-form');const postId=for
   const state=patiPostCommentPages.get(post);
   if(state){state.rows=state.rows.filter(row=>row.id!==id);state.at=0}
   patiHomeCountCache.delete(post);showComments(post);
- },'Yorum silindi');break}case 'replies':questionReplies(id);void patiLoadQuestionReplies(id);break;case 'post-menu':{const post=patiFindSocialPost(id);if(!post)break;const own=post.author_id===me.id;modal('Gönderi seçenekleri','<div class="pati-post-menu-list">'+(own?'<button type="button" data-action="edit-post" data-id="'+esc(id)+'">'+ico('edit')+' Gönderiyi düzenle</button><button type="button" data-action="pati-pin" data-id="'+esc(id)+'">'+(patiOwnPin(id)?'↻ Sabiti kaldır':'↻ Profilde sabitle')+'</button><button type="button" data-action="collab-invite-open" data-id="'+esc(id)+'">Ortak davet et</button>'+(patiCollabs.rows.some(x=>x.post_id===id)?'<button type="button" data-action="collab-remove" data-id="'+esc(id)+'">Ortak davetini kaldır</button>':'')+'<button type="button" class="danger" data-action="delete-post" data-id="'+esc(id)+'">'+ico('trash')+' Gönderiyi sil</button>':'<button type="button" data-action="report" data-kind="post" data-id="'+esc(id)+'">'+ico('alert')+' Gönderiyi bildir</button>'+(patiCollabs.rows.some(x=>x.post_id===id&&x.user_id===me.id&&x.status==='accepted')?'<button type="button" data-action="collab-remove" data-id="'+esc(id)+'">Ortaklıktan ayrıl</button>':''))+'</div>','post-actions-form');break}case 'collab-invite-open':{const p=data.posts.find(x=>x.id===id&&x.author_id===me?.id);if(!p)break;closeModal(true);modal('Ortak gönderi daveti',window.PatiyizCollabPicker?.makeMarkup('collab-handle')||'','collab-invite-form');const collabForm=document.getElementById('collab-invite-form');collabForm.dataset.post=id;window.PatiyizCollabPicker?.mount(collabForm,{sb,userId:me?.id,blocked,localProfiles:data.profiles,avatar,escape:esc});break;}
+ },'Yorum silindi');break}case 'replies':questionReplies(id);void patiLoadQuestionReplies(id);break;case 'post-menu':bucheePostMenu(id);break;case 'collab-invite-open':{const p=data.posts.find(x=>x.id===id&&x.author_id===me?.id);if(!p)break;if(patiCollabs.rows.filter(x=>x.post_id===id&&x.status!=='declined').length>=2){notify('En fazla 3 ortak kişi olabilir.',true);break;}closeModal(true);modal('Ortak gönderi daveti','<p class="buchee-collab-limit-hint">Gönderi sahibi dahil en fazla 3 kişi.</p>'+(window.PatiyizCollabPicker?.makeMarkup('collab-handle')||''),'collab-invite-form');const collabForm=document.getElementById('collab-invite-form');collabForm.dataset.post=id;window.PatiyizCollabPicker?.mount(collabForm,{sb,userId:me?.id,blocked,localProfiles:data.profiles,avatar,escape:esc});break;}
 case 'pati-repost':run(()=>patiToggleRepost(id));break;
 case 'pati-pin':run(()=>patiTogglePin(id));break;
 case 'pati-share-story':if(confirm('Bu gönderi hikâyende 24 saat paylaşılsın mı?'))run(()=>patiSharePostToStory(id));break;
 case 'pati-story-open-post':run(()=>patiOpenSharedStoryPost(id));break;case 'pati-story-share-author':if(id&&!blocked.has(id)){closeStory(false);patiOpenProfileOnly(id)}break;
-case 'collab-remove':run(()=>patiCollabRemove(id),'Ortaklık daveti kaldırıldı.');break;
+case 'collab-remove':run(()=>patiCollabRemove(id,target.dataset.user),'Ortaklık kaldırıldı.');break;
 case 'collab-accept':run(()=>patiCollabRespond(id,'accepted'),'Ortak gönderi kabul edildi.');break;
 case 'collab-decline':run(()=>patiCollabRespond(id,'declined'),'Ortak gönderi reddedildi.');break;
 case 'collab-refresh':void patiCollabRefresh();break;
