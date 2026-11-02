@@ -12,8 +12,13 @@ function sync(){
  if(toolbar){toolbar.replaceChildren();const status=document.createElement('span');status.textContent=selected.size+' sohbet seçildi';const del=document.createElement('button');del.className='buchee-dm-remove';del.textContent='Seçilenleri sil';del.disabled=!selected.size||busy;const cancel=document.createElement('button');cancel.textContent='Vazgeç';cancel.disabled=busy;cancel.addEventListener('click',()=>{selecting=false;selected.clear();sync()});del.addEventListener('click',remove);toolbar.append(status,del,cancel)}
 }
 async function remove(){if(busy||!selected.size)return;const ids=[...selected];if(!confirm(ids.length+' sohbet listenden kaldırılacak. Karşı taraftaki mesajlar silinmez. Devam edilsin mi?'))return;
- busy=true;sync();let handled=0;for(const id of ids){const row=[...document.querySelectorAll('.pati-dm-list-row[data-chat-peer]')].find(e=>e.dataset.chatPeer===id);const btn=row?.querySelector('[data-action="dm-delete-thread"]');if(btn){/* Keep the native confirmation and backend permission checks. */btn.click();handled++}await new Promise(resolve=>setTimeout(resolve,100))}
- busy=false;selecting=false;selected.clear();sync();if(!handled)alert('Sohbet listesi değişti. Lütfen yeniden seç.')}
+ busy=true;sync();
+ try {if(typeof window.BucheeBulkHideDmThreads!=='function')throw new Error('Toplu silme servisi yüklenmedi.');
+ const outcome=await window.BucheeBulkHideDmThreads(ids);
+ if(outcome.failed)alert(outcome.failed+' sohbet kaldırılamadı.');}
+ catch(err){alert(err?.message||'Silme işlemi tamamlanamadı.')}
+ finally{busy=false;selecting=false;selected.clear();sync()}
+}
 document.addEventListener('click',e=>{const t=e.target.closest('.buchee-dm-bulk-trigger');if(t){e.preventDefault();selecting=!selecting;selected.clear();sync();return}if(selecting&&e.target.closest('.pati-dm-list-row[data-chat-peer]')&&!e.target.closest('.buchee-dm-checkbox')){const row=e.target.closest('.pati-dm-list-row');const cb=row.querySelector('.buchee-dm-checkbox');if(cb){cb.checked=!cb.checked;cb.dispatchEvent(new Event('change',{bubbles:true}))}}},true);
 document.addEventListener('change',e=>{if(!e.target.matches('.buchee-dm-checkbox'))return;const id=e.target.closest('[data-chat-peer]')?.dataset.chatPeer;if(!id)return;e.target.checked?selected.add(id):selected.delete(id);sync()});
 const observer=new MutationObserver(records=>{if(!records.some(r=>[...r.addedNodes].some(n=>n.nodeType===1&&!n.classList?.contains('buchee-dm-bulk-toolbar')&&!n.classList?.contains('buchee-dm-checkbox')&&!n.closest?.('.buchee-dm-bulk-toolbar'))))return;if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;sync()})});if(main())observer.observe(main(),{subtree:true,childList:true});sync();
