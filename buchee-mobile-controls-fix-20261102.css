@@ -1,0 +1,12 @@
+@media(max-width:740px){
+html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-utility{left:50%!important;right:auto!important;top:40%!important;bottom:auto!important;transform:translate(-50%,-50%)!important;width:46px!important;height:46px!important;min-height:46px!important;display:flex!important;align-items:center!important;justify-content:center!important;z-index:35!important;pointer-events:none!important;background:transparent!important;border:0!important}
+html[data-pati-view="reels"] #main-content .pati-reel-utility [data-action="reel-sound"]{display:grid!important;place-items:center!important;width:46px!important;height:46px!important;background:#0008!important;border-radius:50%!important;pointer-events:auto!important}
+html[data-pati-view="reels"] #main-content .pati-reel-utility [data-action="reel-speed"],html[data-pati-view="reels"] #main-content .pati-reel-utility [data-action="reel-rotate"],html[data-pati-view="reels"] #main-content .pati-reel-utility [data-action="reel-fit"]{display:none!important}
+#main-content>.pati-saved-screen{top:0!important;transform:none!important;margin-top:0!important;padding-top:0!important}
+#main-content>.pati-saved-screen>.pati-saved-page-header{position:sticky!important;top:0!important;z-index:90!important;display:flex!important;visibility:visible!important;opacity:1!important;transform:none!important;min-height:52px!important;background:#fff!important}
+#main-content>.pati-saved-screen [data-saved-action="back"]{display:grid!important;place-items:center!important;visibility:visible!important;opacity:1!important;min-width:44px!important;min-height:44px!important}
+#main-content .pati-ig-profile .pati-own-profile-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;padding:0 14px!important}
+#main-content .pati-ig-profile .pati-own-profile-actions>button{min-height:42px!important;font-size:12px!important;padding:8px 4px!important;border-radius:11px!important}
+#story-overlay .story-hit.prev{left:0!important;right:auto!important;width:38%!important;z-index:8!important}
+#story-overlay .story-hit.next{right:0!important;left:auto!important;width:38%!important;z-index:8!important}
+}
