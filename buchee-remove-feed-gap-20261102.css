@@ -1,0 +1,9 @@
+/* Remove the empty grey slot directly above Stories on the mobile Home feed. */
+@media(max-width:740px){
+html[data-pati-view="home"] #main-content{margin-top:0!important;padding-top:0!important}
+html[data-pati-view="home"] #main-content::before,
+html[data-pati-view="home"] #main-content .stories-section::before{content:none!important;display:none!important}
+html[data-pati-view="home"] #main-content>.stories-section{margin-top:0!important;padding-top:6px!important;clear:none!important}
+html[data-pati-view="home"] #main-content>.pati-home-feed-tabs{display:none!important;height:0!important;min-height:0!important;margin:0!important;padding:0!important}
+html[data-pati-view="home"] #main-content>.buchee-empty-feed-space{display:none!important;height:0!important;min-height:0!important;margin:0!important;padding:0!important}
+}
