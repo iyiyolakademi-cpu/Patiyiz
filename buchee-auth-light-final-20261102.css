@@ -1,0 +1,43 @@
+/* BucheeSocial — light, mobile-first onboarding and real email/password forms.
+   Keeps existing Supabase auth controls and required consent fields. */
+@media(max-width:740px){
+#auth-root.buchee-welcome-active{background:#faf7ff!important}
+#auth-root.buchee-welcome-active .buchee-welcome{background:#fbf9ff!important;color:#24142f!important}
+#auth-root.buchee-welcome-active .buchee-welcome-art{background:radial-gradient(ellipse 90% 34% at 90% 38%,#ffe6f0 0%,transparent 76%),radial-gradient(ellipse 86% 34% at 4% 73%,#e7ddff 0%,transparent 76%),#fcfaff!important}
+#auth-root.buchee-welcome-active .buchee-welcome-art:before{width:115%!important;height:20%!important;left:-12%!important;top:35%!important;border:0!important;border-radius:45%!important;background:linear-gradient(100deg,#f3e8ff,#fce2f0)!important;box-shadow:none!important;transform:rotate(-6deg)!important}
+#auth-root.buchee-welcome-active .buchee-welcome-art:after{width:135%!important;height:20%!important;left:-15%!important;bottom:-11%!important;border:0!important;border-radius:50%!important;background:linear-gradient(130deg,#ebdcff,#ffe3ed)!important;box-shadow:none!important;transform:rotate(-8deg)!important}
+#auth-root.buchee-welcome-active .buchee-welcome-brand{top:calc(env(safe-area-inset-top,0px) + 11%)!important;transform:translateX(-50%)!important;width:calc(100% - 48px)!important;max-width:380px!important;gap:11px!important}
+#auth-root.buchee-welcome-active .buchee-welcome-brand img{width:75%!important;max-height:54px!important;filter:none!important}
+#auth-root.buchee-welcome-active .buchee-welcome-brand h1{display:block!important;margin:12px 0 0!important;color:#251532!important;font-size:clamp(25px,6.8vw,34px)!important;line-height:1.13!important;letter-spacing:-.8px!important;text-align:center!important}
+#auth-root.buchee-welcome-active .buchee-welcome-brand p{color:#62546e!important;font-size:13px!important;line-height:1.48!important;letter-spacing:0!important;max-width:310px!important}
+#auth-root.buchee-welcome-active .buchee-light-social-cards{position:absolute!important;top:43%!important;left:50%!important;transform:translateX(-50%)!important;width:min(82vw,340px)!important;height:25%!important;z-index:4!important}
+#auth-root.buchee-welcome-active .buchee-light-media{position:absolute!important;overflow:hidden!important;border:5px solid #fff!important;border-radius:16px!important;box-shadow:0 9px 25px #7d4c9b38!important;background:#eee0fa!important}
+#auth-root.buchee-welcome-active .buchee-light-media img{width:100%!important;height:100%!important;object-fit:cover!important}
+#auth-root.buchee-welcome-active .buchee-card-left{height:66%!important;width:38%!important;left:1%!important;top:20%!important;transform:rotate(-13deg)!important}
+#auth-root.buchee-welcome-active .buchee-card-main{height:87%!important;width:45%!important;left:29%!important;top:4%!important;z-index:2!important;transform:rotate(2deg)!important}
+#auth-root.buchee-welcome-active .buchee-card-main span{position:absolute!important;bottom:0!important;left:0!important;right:0!important;padding:7px 4px!important;color:#5a3a69!important;background:#fff!important;font-size:10px!important;text-align:center!important;font-weight:700!important}
+#auth-root.buchee-welcome-active .buchee-card-right{height:66%!important;width:35%!important;right:0!important;top:20%!important;transform:rotate(13deg)!important}
+#auth-root.buchee-welcome-active .buchee-light-float{position:absolute!important;z-index:4!important;display:grid!important;place-items:center!important;width:38px!important;height:38px!important;border-radius:12px!important;color:#fff!important;font-size:20px!important;box-shadow:0 5px 15px #9b53c03a!important}
+#auth-root.buchee-welcome-active .buchee-float-heart{top:0!important;left:1%!important;background:#ed3b93!important}
+#auth-root.buchee-welcome-active .buchee-float-people{top:10%!important;right:-2%!important;background:#9450db!important;font-size:12px!important}
+#auth-root.buchee-welcome-active .buchee-welcome-buttons{top:auto!important;bottom:calc(env(safe-area-inset-bottom,0px) + 7%)!important;transform:translateX(-50%)!important;gap:12px!important;width:min(83vw,360px)!important}
+#auth-root.buchee-welcome-active .buchee-welcome-buttons button{min-height:52px!important;color:#fff!important;font-size:16px!important;border-radius:999px!important;font-weight:750!important}
+#auth-root.buchee-welcome-active .buchee-welcome-buttons button:first-child{background:linear-gradient(110deg,#fc529f,#e62b77)!important;box-shadow:0 9px 20px #ee4a9940!important}
+#auth-root.buchee-welcome-active .buchee-welcome-buttons button:last-child{background:#ffffff80!important;color:#5221a2!important;border:1.5px solid #7637d9!important}
+#auth-root:not(.buchee-welcome-active)>.auth-shell{background:radial-gradient(ellipse at 95% 6%,#ffebf4,transparent 40%),radial-gradient(ellipse at 5% 96%,#eee3ff,transparent 35%),#fffaff!important}
+#auth-root:not(.buchee-welcome-active) .auth-pane{background:transparent!important;padding:calc(env(safe-area-inset-top,0px) + 66px) 23px calc(env(safe-area-inset-bottom,0px) + 28px)!important}
+#auth-root:not(.buchee-welcome-active) .buchee-auth-return{color:#542093!important;background:#f6f0ff!important;border:1px solid #e9dafa!important}
+#auth-root:not(.buchee-welcome-active) .auth-card{color:#24152f!important}
+#auth-root:not(.buchee-welcome-active) .auth-card>.auth-brand{display:flex!important;margin:0 auto 29px!important}
+#auth-root:not(.buchee-welcome-active) .auth-brand img{filter:none!important;max-height:58px!important}
+#auth-root:not(.buchee-welcome-active) .auth-card>h2{color:#251631!important;font-size:27px!important}
+#auth-root:not(.buchee-welcome-active) .auth-card .auth-sub{color:#6b5b72!important;font-size:14px!important}
+#auth-root:not(.buchee-welcome-active) .auth-tabs{background:#f5edfb!important;border-color:#ebe0f4!important}
+#auth-root:not(.buchee-welcome-active) .auth-tabs button{color:#5a4774!important}
+#auth-root:not(.buchee-welcome-active) .auth-tabs button.active{background:#fff!important;color:#7128c1!important;box-shadow:0 2px 9px #5f369022!important}
+#auth-root:not(.buchee-welcome-active) .pati-field label{color:#42344e!important}
+#auth-root:not(.buchee-welcome-active) .pati-field input{background:#faf8ff!important;color:#24142e!important;border:1px solid #d9cce7!important}
+#auth-root:not(.buchee-welcome-active) .auth-submit{background:linear-gradient(100deg,#fa4f9e,#e32d76)!important;color:#fff!important;box-shadow:0 9px 22px #f34d9135!important}
+#auth-root:not(.buchee-welcome-active) .auth-bottom button,#auth-root:not(.buchee-welcome-active) .pati-auth-terms a{color:#c52173!important}
+#auth-root:not(.buchee-welcome-active) .pati-auth-terms,#auth-root:not(.buchee-welcome-active) .small-note{color:#655972!important}
+}
