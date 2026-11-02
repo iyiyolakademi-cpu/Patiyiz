@@ -1,0 +1,12 @@
+/* Approved pastel-cloud splash layout, iOS safe-area native status remains native. */
+#startup:not(.hidden){position:fixed!important;inset:0!important;width:100%!important;height:100dvh!important;background:#eac6ed url("buchee-splash-pastel-sky.svg?v=1") center center/cover no-repeat!important;overflow:hidden!important}
+#startup .pati-splash-center{position:absolute!important;top:45%!important;left:50%!important;transform:translate(-50%,-50%)!important;width:min(88vw,430px)!important;max-width:88vw!important;display:grid!important;place-items:center!important}
+#startup .pati-splash-icon{width:100%!important;max-width:none!important;max-height:none!important;aspect-ratio:1226/195!important;filter:none!important;animation:bucheeBrandAppear .65s ease-out both!important;object-fit:contain!important;image-rendering:auto!important}
+#startup .buchee-splash-accent{position:absolute!important;top:72%!important;left:50%!important;transform:translateX(-50%)!important;display:flex!important;gap:21px!important;align-items:center!important;justify-content:center!important}
+#startup .buchee-splash-accent span{display:block!important;width:12px!important;height:12px!important;border:0!important;border-radius:50%!important;background:#5100b4!important;box-shadow:none!important;animation:bucheeDot 1.2s ease-in-out infinite!important}
+#startup .buchee-splash-accent span:nth-child(2){background:#ff1686!important;animation-delay:.17s!important}
+#startup .buchee-splash-accent span:nth-child(3){background:#701cc8!important;animation-delay:.34s!important}
+#startup .pati-splash-footer{display:none!important}
+@keyframes bucheeBrandAppear{from{opacity:0}to{opacity:1}}
+@keyframes bucheeDot{0%,75%,100%{opacity:.6}35%{opacity:1}}
+@media(prefers-reduced-motion:reduce){#startup .pati-splash-icon,#startup .buchee-splash-accent span{animation:none!important}}
