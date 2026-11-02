@@ -14,8 +14,7 @@ function source(story){
 function artwork(story,extra){
  var src=source(story),cl=extra||'';
  if(!src.url)return '<span class="bh-missing" aria-label="Hikâye kaydı mevcut; medya dosyası bulunamadı"><span>▧</span><small>Görsel bulunamadı</small></span>';
- if(src.video&&src.poster)return '<img class="'+cl+'" src="'+esc(src.poster)+'" data-video-fallback="'+esc(src.url)+'" alt="Video hikâyesinin kapak fotoğrafı" loading="lazy" decoding="async" draggable="false">';
- if(src.video)return '<video class="'+cl+' bh-lazy-video" data-src="'+esc(src.url)+'" preload="none" muted playsinline webkit-playsinline aria-label="Video hikâyesi"></video>';
+ if(src.video)return '<video class="'+cl+' bh-lazy-video" data-src="'+esc(src.url)+'"'+(src.poster?' poster="'+esc(src.poster)+'"':'')+' preload="none" muted playsinline webkit-playsinline aria-label="Video hikâyesi"></video>';
  return '<img class="'+cl+'" src="'+esc(src.url)+'" alt="Hikâye kapağı" loading="lazy" decoding="async" draggable="false">';
 }
 function storyById(id){return state.stories.find(function(s){return s.id===id})}
@@ -76,6 +75,11 @@ function open(options){
  root.addEventListener('dragstart',stopNativeSelection,{capture:true});
  root.addEventListener('error',function(e){
   var media=e.target;if(!media||!['IMG','VIDEO'].includes(media.tagName))return;
+  if(media.tagName==='VIDEO'&&media.getAttribute('poster')){
+   var poster=document.createElement('img');poster.src=media.getAttribute('poster');
+   poster.className=media.className.replace('bh-lazy-video','');poster.alt='Hikâye video kapağı';
+   poster.draggable=false;media.replaceWith(poster);return;
+  }
   if(media.dataset.videoFallback&&!media.dataset.triedVideo){
    var video=document.createElement('video');video.className=media.className+' bh-lazy-video';
    video.dataset.src=media.dataset.videoFallback;video.preload='none';video.muted=true;video.playsInline=true;
