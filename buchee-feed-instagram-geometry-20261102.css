@@ -1,0 +1,45 @@
+/* Buchee iPhone feed geometry: compact, content-first. Scoped to home. */
+@media(max-width:740px){
+html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header{
+height:calc(56px + env(safe-area-inset-top,0px))!important;
+min-height:calc(56px + env(safe-area-inset-top,0px))!important;
+padding:calc(env(safe-area-inset-top,0px) + 4px) 12px 4px!important;
+grid-template-columns:42px minmax(0,1fr) 96px!important;column-gap:6px!important;
+align-items:center!important;background:#fff!important;
+}
+html[data-pati-view="home"] #app-root>.mobile-header>#pati-header-share{
+width:42px!important;height:42px!important;min-width:42px!important;max-width:42px!important;border-radius:12px!important;
+}
+html[data-pati-view="home"] #app-root>.mobile-header>#pati-feed-menu-trigger{
+position:absolute!important;top:calc(env(safe-area-inset-top,0px) + 13px)!important;left:50%!important;transform:translateX(-50%)!important;
+margin:0!important;width:min(51vw,205px)!important;max-width:calc(100% - 155px)!important;z-index:6!important;
+}
+html[data-pati-view="home"] #pati-feed-menu-trigger .pati-feed-current{display:none!important}
+html[data-pati-view="home"] #pati-feed-menu-trigger .buchee-feed-wordmark{max-height:26px!important;width:auto!important;max-width:100%!important;object-fit:contain!important}
+html[data-pati-view="home"] #app-root>.mobile-header>.pati-header-actions{width:96px!important;min-width:96px!important;max-width:96px!important;gap:4px!important}
+html[data-pati-view="home"] #app-root>.mobile-header #pati-header-coins{flex:0 0 52px!important;width:52px!important;min-width:52px!important;max-width:52px!important;height:38px!important;border-radius:11px!important}
+html[data-pati-view="home"] #app-root>.mobile-header #pati-header-coins .pati-balance-title{font-size:9px!important;line-height:12px!important}
+html[data-pati-view="home"] #app-root>.mobile-header #pati-header-coins strong{font-size:13px!important;line-height:16px!important}
+html[data-pati-view="home"] #app-root>.mobile-header #pati-header-notifications{width:38px!important;min-width:38px!important;max-width:38px!important}
+html[data-pati-view="home"] #main-content{padding-top:0!important;margin-top:0!important;gap:0!important}
+html[data-pati-view="home"] #main-content>.stories-section{
+padding:8px 0 9px!important;margin:0!important;border-radius:0!important;
+border:0!important;border-bottom:1px solid #e9e9ec!important;background:#fff!important;
+min-height:0!important;
+}
+html[data-pati-view="home"] .stories-section .stories-heading{display:none!important}
+html[data-pati-view="home"] .stories-strip{display:flex!important;gap:12px!important;padding:0 12px 2px!important;overflow-x:auto!important;scrollbar-width:none!important;align-items:flex-start!important}
+html[data-pati-view="home"] .stories-strip::-webkit-scrollbar{display:none!important}
+html[data-pati-view="home"] .stories-strip .story-person{min-width:76px!important;max-width:76px!important;width:76px!important;flex:0 0 76px!important;gap:5px!important;padding:0!important;font-size:12px!important}
+html[data-pati-view="home"] .stories-strip .story-avatar{box-sizing:border-box!important;width:72px!important;height:72px!important;min-width:72px!important;min-height:72px!important;padding:3px!important;border-width:3px!important}
+html[data-pati-view="home"] .stories-strip .story-avatar>.avatar{width:100%!important;height:100%!important}
+html[data-pati-view="home"] .stories-strip .story-person small,
+html[data-pati-view="home"] .stories-strip .story-name{font-size:12px!important;font-weight:500!important;line-height:16px!important;width:76px!important;max-width:76px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;text-align:center!important}
+html[data-pati-view="home"] .stories-strip .story-create .story-avatar::after{width:20px!important;height:20px!important;right:-3px!important;bottom:-3px!important;border-radius:50%!important;border:2px solid #fff!important}
+html[data-pati-view="home"] #main-content>.pati-home-feed-tabs{display:none!important}
+html[data-pati-view="home"] #main-content .pati-feed-post,
+html[data-pati-view="home"] #main-content .pati-post{border-radius:0!important;margin-left:0!important;margin-right:0!important}
+html[data-pati-view="home"] #main-content .pati-feed-post img,
+html[data-pati-view="home"] #main-content .pati-post img{max-width:100%}
+}
+@media(max-width:370px){html[data-pati-view="home"] #app-root>.mobile-header>#pati-feed-menu-trigger{max-width:calc(100% - 150px)!important}}
