@@ -1,0 +1,34 @@
+name: BucheeSocial icon regeneration
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/buchee-brand-icons.yml'
+      - 'native-capacitor/scripts/generate-buchee-icons.mjs'
+      - 'buchee-word-only-icon.svg'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  icons:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install native dependencies
+        working-directory: native-capacitor
+        run: npm install --no-audit --no-fund
+      - name: Generate official Buchee icons (including legacy compatible paths)
+        working-directory: native-capacitor
+        run: node scripts/generate-buchee-icons.mjs
+      - name: Commit updated visual assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add buchee-app-icon-48.png buchee-app-icon-180.png buchee-app-icon-192.png buchee-app-icon-512.png patiyiz-app-icon-192.png patiyiz-app-icon-512.png patiyiz-apple-touch-icon.png patiyiz-favicon-48.png
+          if ! git diff --cached --quiet; then
+            git commit -m "assets(buchee): refresh Android/PWA icons"
+            git push
+          fi

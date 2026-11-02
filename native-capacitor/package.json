@@ -1,8 +1,8 @@
 {
-  "name": "patiyiz-capacitor-android",
+  "name": "bucheesocial-capacitor-android",
   "version": "0.1.0",
   "private": true,
-  "description": "Independent native Android QA build of Patiyiz, without replacing the live PWA",
+  "description": "Native Android build of BucheeSocial; existing Google Play application ID preserved",
   "scripts": {
     "build:web": "node scripts/build-web.mjs",
     "prepare:icons": "node scripts/prepare-icons.mjs",

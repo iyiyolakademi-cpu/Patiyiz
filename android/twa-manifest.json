@@ -13,8 +13,8 @@
   "backgroundColor": "#000000",
   "enableNotifications": true,
   "startUrl": "/",
-  "iconUrl": "https://patiyiz.com/patiyiz-app-icon-512.png",
-  "maskableIconUrl": "https://patiyiz.com/patiyiz-app-icon-512.png",
+  "iconUrl": "https://patiyiz.com/buchee-app-icon-512.png",
+  "maskableIconUrl": "https://patiyiz.com/buchee-app-icon-512.png",
   "splashScreenFadeOutDuration": 300,
   "signingKey": {
     "path": "./patiyiz-upload.keystore",

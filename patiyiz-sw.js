@@ -5,7 +5,7 @@ self.addEventListener('push', event=>{
  const title=String(payload.title||'BucheeSocial').slice(0,120);
  const body=String(payload.body||'Yeni bir bildirimin var.').slice(0,220);
  event.waitUntil(self.registration.showNotification(title,{
-  body,icon:'./buchee-social-app-icon.svg?v=20261024-new-p-logo-1',badge:'./buchee-social-app-icon.svg?v=20261024-new-p-logo-1',tag:'patiyiz-'+String(payload.id||'notice'),
+  body,icon:'./buchee-social-app-icon.svg?v=20261102-buchee-logo-2',badge:'./buchee-social-app-icon.svg?v=20261024-new-p-logo-1',tag:'buchee-'+String(payload.id||'notice'),
   data:{url:payload.id?'./?notification='+encodeURIComponent(String(payload.id)):'./'},renotify:false
  }));
 });
@@ -22,7 +22,7 @@ self.addEventListener('notificationclick',event=>{
 /* Small same-origin static cache: faster return visits without storing API/user data.
    Bump the cache version whenever this worker changes. URLs keep their release
    query parameters, so updated CSS/JS assets are distinct cache entries. */
-const PATIYIZ_STATIC_CACHE='buchee-static-v20261102-direct-open-clean-5';
+const PATIYIZ_STATIC_CACHE='buchee-static-v20261102-rebrand-clean-6';
 const PATIYIZ_STATIC_PREFIX='patiyiz-static-v';
 const BUCHEE_STATIC_PREFIX='buchee-static-v';
 self.addEventListener('install',event=>{
