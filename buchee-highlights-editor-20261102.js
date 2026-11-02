@@ -2,9 +2,9 @@
    No original story or gallery file is modified. Database writes stay in app.js callbacks. */
 (function(global){
 'use strict';
-var root=null,state=null,mediaObserver=null;
+var root=null,state=null,mediaObserver=null,touchGesture=null;
 function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(x){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]})}
-function clean(){if(mediaObserver){mediaObserver.disconnect();mediaObserver=null}if(state&&state.fileUrl)URL.revokeObjectURL(state.fileUrl);state=null;if(root){root.remove();root=null}document.body.classList.remove('buchee-highlight-editor-open')}
+function clean(){touchGesture=null;if(mediaObserver){mediaObserver.disconnect();mediaObserver=null}if(state&&state.fileUrl)URL.revokeObjectURL(state.fileUrl);state=null;if(root){root.remove();root=null}document.body.classList.remove('buchee-highlight-editor-open')}
 function source(story){
  if(!story)return {url:'',video:false,poster:''};
  var poster=story.image_url||story.video_cover_url||story.shared_cover_url||'';
@@ -68,6 +68,9 @@ function open(options){
  root.addEventListener('change',onChange);
  root.addEventListener('pointerdown',startDrag);
  root.addEventListener('touchstart',startTouchDrag,{passive:false});
+ root.addEventListener('touchmove',moveTouchDrag,{passive:false});
+ root.addEventListener('touchend',finishTouchDrag,{passive:false});
+ root.addEventListener('touchcancel',finishTouchDrag,{passive:false});
  root.addEventListener('contextmenu',stopNativeSelection,{capture:true});
  root.addEventListener('selectstart',stopNativeSelection,{capture:true});
  root.addEventListener('dragstart',stopNativeSelection,{capture:true});
@@ -140,7 +143,8 @@ function renderEdit(){
  '<div class="bh-footer"><span class="bh-selected-count">'+state.selected.size+' hikâye</span><button type="button" class="bh-primary" data-bh="save">Kaydet</button></div><p class="bh-error" role="alert" hidden></p>';
  updatePreview();activateLazyVideos();
 }
-function updatePreview(){
+function clampCover(){if(!state)return;state.zoom=Math.max(1,Math.min(3,Number(state.zoom)||1));var max=(state.zoom-1)/2;state.dx=Math.max(-max,Math.min(max,Number(state.dx)||0));state.dy=Math.max(-max,Math.min(max,Number(state.dy)||0))}
+function updatePreview(){clampCover();
  if(!root||!state)return;
  var area=root.querySelector('#bh-preview');if(!area)return;
  var src=state.fileUrl?{url:state.fileUrl,video:false}:state.coverUrl&&!state.coverStoryId?{url:state.coverUrl,video:false}:source(storyById(state.coverStoryId));
@@ -165,22 +169,42 @@ function stopNativeSelection(e){
  if(e.target.closest?.('#bh-preview'))e.preventDefault();
 }
 function startTouchDrag(e){
- if(!state||state.stage!=='edit'||!e.target.closest('#bh-preview')||e.touches.length!==1)return;
- e.preventDefault();
- var area=e.target.closest('#bh-preview'),touch=e.touches[0],startX=touch.clientX,startY=touch.clientY,
-     dx=state.dx,dy=state.dy,width=Math.max(1,area.getBoundingClientRect().width);
- function move(v){
-  if(v.cancelable)v.preventDefault();
-  if(v.touches.length!==1)return;
-  var pt=v.touches[0];
-  state.dx=Math.max(-.5,Math.min(.5,dx+(pt.clientX-startX)/width));
-  state.dy=Math.max(-.5,Math.min(.5,dy+(pt.clientY-startY)/width));
-  updatePreview();
+ if(!state||state.stage!=='edit'||!e.target.closest('#bh-preview')||!e.touches.length)return;
+ if(e.cancelable)e.preventDefault();
+ setupTouchGesture(e.touches);
+}
+function setupTouchGesture(touches){
+ var area=root?.querySelector('#bh-preview');if(!area||!state)return;
+ var width=Math.max(1,area.getBoundingClientRect().width);
+ if(touches.length>=2){
+  var a=touches[0],b=touches[1],distance=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);
+  touchGesture={kind:'pinch',distance:Math.max(1,distance),zoom:state.zoom,dx:state.dx,dy:state.dy,
+   centerX:(a.clientX+b.clientX)/2,centerY:(a.clientY+b.clientY)/2,width:width};
+ }else{
+  touchGesture={kind:'pan',x:touches[0].clientX,y:touches[0].clientY,dx:state.dx,dy:state.dy,width:width};
  }
- function stop(){root?.removeEventListener('touchmove',move);root?.removeEventListener('touchend',stop);root?.removeEventListener('touchcancel',stop)}
- root.addEventListener('touchmove',move,{passive:false});
- root.addEventListener('touchend',stop,{passive:false});
- root.addEventListener('touchcancel',stop,{passive:false});
+}
+function moveTouchDrag(e){
+ if(!touchGesture||!state||state.stage!=='edit')return;
+ if(e.cancelable)e.preventDefault();
+ var g=touchGesture;
+ if(e.touches.length>=2){
+  if(g.kind!=='pinch'){setupTouchGesture(e.touches);g=touchGesture}
+  var a=e.touches[0],b=e.touches[1],dist=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);
+  var centerX=(a.clientX+b.clientX)/2,centerY=(a.clientY+b.clientY)/2;
+  state.zoom=Math.max(1,Math.min(3,g.zoom*dist/g.distance));
+  state.dx=g.dx+(centerX-g.centerX)/g.width;
+  state.dy=g.dy+(centerY-g.centerY)/g.width;
+ }else if(e.touches.length===1){
+  if(g.kind!=='pan'){setupTouchGesture(e.touches);g=touchGesture}
+  var pt=e.touches[0];state.dx=g.dx+(pt.clientX-g.x)/g.width;state.dy=g.dy+(pt.clientY-g.y)/g.width;
+ }else return;
+ updatePreview();
+}
+function finishTouchDrag(e){
+ if(!touchGesture)return;
+ if(e.touches.length){setupTouchGesture(e.touches)}
+ else touchGesture=null;
 }
 function onClick(e){
  var b=e.target.closest('[data-bh]');if(!b||!root||!root.contains(b)||!state)return;
@@ -194,8 +218,8 @@ function onClick(e){
  }
  if(action==='selected-only'){state.onlySelected=!state.onlySelected;b.classList.toggle('active',state.onlySelected);b.setAttribute('aria-pressed',String(state.onlySelected));applyPickerFilter();return}
  if(action==='edit-stories'){state.month='';state.onlySelected=false;state.stage='pick';renderPicker();return}
- if(action==='remove-story'){state.selected.delete(b.dataset.id);state.order=state.order.filter(function(id){return id!==b.dataset.id});if(state.coverStoryId===b.dataset.id)state.coverStoryId=selectedStories()[0]?.id||'';renderEdit();return}
- if(action==='move-up'||action==='move-down'){var i=state.order.indexOf(b.dataset.id),j=i+(action==='move-up'?-1:1);if(i>=0&&j>=0&&j<state.order.length){[state.order[i],state.order[j]]=[state.order[j],state.order[i]];renderEdit()}return}
+ if(action==='remove-story'){var savedScroll=root.querySelector('.bh-editor-scroll')?.scrollTop||0;state.selected.delete(b.dataset.id);state.order=state.order.filter(function(id){return id!==b.dataset.id});if(state.coverStoryId===b.dataset.id)state.coverStoryId=selectedStories()[0]?.id||'';renderEdit();if(root.querySelector('.bh-editor-scroll'))root.querySelector('.bh-editor-scroll').scrollTop=savedScroll;return}
+ if(action==='move-up'||action==='move-down'){var i=state.order.indexOf(b.dataset.id),j=i+(action==='move-up'?-1:1);if(i>=0&&j>=0&&j<state.order.length){var savedScroll=root.querySelector('.bh-editor-scroll')?.scrollTop||0;[state.order[i],state.order[j]]=[state.order[j],state.order[i]];renderEdit();if(root.querySelector('.bh-editor-scroll'))root.querySelector('.bh-editor-scroll').scrollTop=savedScroll}return}
  if(action==='next'){
   if(!state.selected.size)return;
   if(!state.coverStoryId||!state.selected.has(state.coverStoryId))state.coverStoryId=selectedStories().find(function(s){return !!source(s).url})?.id||selectedStories()[0]?.id||'';
@@ -209,7 +233,7 @@ function onClick(e){
  if(action==='reset'){state.zoom=1;state.dx=state.dy=0;updatePreview();return}
  if(action==='save')void save();
 }
-function onInput(e){if(!state)return;if(e.target.id==='bh-title')state.title=e.target.value;if(e.target.id==='bh-zoom'){state.zoom=Number(e.target.value)||1;updatePreview()}}
+function onInput(e){if(!state)return;if(e.target.id==='bh-title')state.title=e.target.value;if(e.target.id==='bh-zoom'){state.zoom=Number(e.target.value)||1;clampCover();updatePreview()}}
 function onChange(e){
  if(e.target.id==='bh-month'&&state){state.month=e.target.value;applyPickerFilter();return}
  if(e.target.id!=='bh-file'||!state)return;
@@ -224,7 +248,7 @@ function startDrag(e){
  if(e.pointerType==='touch'||(e.pointerType==='mouse'&&e.button!==0))return;
  var area=e.target.closest('#bh-preview'),startX=e.clientX,startY=e.clientY,dx=state.dx,dy=state.dy,width=Math.max(1,area.getBoundingClientRect().width);
  area.setPointerCapture?.(e.pointerId);e.preventDefault();
- function move(v){state.dx=Math.min(.5,Math.max(-.5,dx+(v.clientX-startX)/width));state.dy=Math.min(.5,Math.max(-.5,dy+(v.clientY-startY)/width));updatePreview()}
+ function move(v){state.dx=dx+(v.clientX-startX)/width;state.dy=dy+(v.clientY-startY)/width;updatePreview()}
  function stop(){area.removeEventListener('pointermove',move);area.removeEventListener('pointerup',stop);area.removeEventListener('pointercancel',stop)}
  area.addEventListener('pointermove',move);area.addEventListener('pointerup',stop);area.addEventListener('pointercancel',stop);
 }
