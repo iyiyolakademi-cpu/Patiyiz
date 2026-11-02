@@ -1,0 +1,34 @@
+/* Buchee iPhone top bar — safe spacing, no subpixel transforms */
+@media(max-width:740px){
+html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header{
+box-sizing:border-box!important;
+padding-top:calc(env(safe-area-inset-top,0px) + 9px)!important;
+padding-bottom:5px!important;
+height:calc(77px + env(safe-area-inset-top,0px))!important;
+min-height:calc(77px + env(safe-area-inset-top,0px))!important;
+grid-template-columns:43px minmax(0,1fr) 120px!important;
+column-gap:9px!important;
+align-items:center!important;
+background:#fff!important;
+}
+html[data-pati-view="home"] #app-root>.mobile-header>#pati-header-share{
+width:43px!important;min-width:43px!important;max-width:43px!important;
+height:44px!important;margin:0!important;
+}
+html[data-pati-view="home"] #app-root>.mobile-header>#pati-feed-menu-trigger{
+margin:0 0 0 8px!important;padding:0!important;
+transform:none!important;-webkit-transform:none!important;
+width:calc(100% - 8px)!important;min-width:0!important;
+}
+html[data-pati-view="home"] #app-root>.mobile-header>#pati-feed-menu-trigger .brand-word{
+transform:none!important;filter:none!important;
+}
+html[data-pati-view="home"] #app-root>.mobile-header .buchee-feed-wordmark{
+transform:none!important;filter:none!important;image-rendering:auto!important;
+}
+}
+@media(max-width:370px){
+html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header{
+grid-template-columns:40px minmax(0,1fr) 116px!important;column-gap:6px!important}
+html[data-pati-view="home"] #app-root>.mobile-header>#pati-feed-menu-trigger{margin-left:5px!important;width:calc(100% - 5px)!important}
+}
