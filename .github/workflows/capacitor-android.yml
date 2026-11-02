@@ -81,11 +81,11 @@ jobs:
       - name: Configure Android in-app camera and full gallery permissions
         working-directory: native-capacitor
         run: node scripts/setup-camera-gallery.mjs
-      - name: Generate real Patiyiz Android icon and splash
+      - name: Generate BucheeSocial Android icon and splash
         working-directory: native-capacitor
         run: |
           npm run prepare:icons
-          npx capacitor-assets generate --android --iconBackgroundColor "#FFFFFF" --iconBackgroundColorDark "#000000" --splashBackgroundColor "#FFFFFF" --splashBackgroundColorDark "#FFFFFF"
+          npx capacitor-assets generate --android --iconBackgroundColor "#14021e" --iconBackgroundColorDark "#14021e" --splashBackgroundColor "#14021e" --splashBackgroundColorDark "#14021e"
       - name: Confirm Android app identity and API target
         shell: bash
         run: |

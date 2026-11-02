@@ -9,19 +9,19 @@
   },
   "android": {
     "allowMixedContent": false,
-    "backgroundColor": "#000000"
+    "backgroundColor": "#14021e"
   },
   "plugins": {
     "SplashScreen": {
       "launchShowDuration": 800,
       "launchAutoHide": true,
-      "backgroundColor": "#FFFFFF",
+      "backgroundColor": "#14021e",
       "showSpinner": false,
       "launchFadeOutDuration": 200
     },
     "StatusBar": {
       "style": "DARK",
-      "backgroundColor": "#000000",
+      "backgroundColor": "#14021e",
       "overlaysWebView": false
     },
     "Keyboard": {
