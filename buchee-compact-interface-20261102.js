@@ -13,12 +13,12 @@ function enhance(){
   const originals=[...actions.querySelectorAll('[data-action="dm-new"],[data-action="pati-group-create-open"]')];
   if(originals.length===2){
    actions.classList.add('buchee-chat-actions');
-   originals.forEach(n=>n.hidden=true);
+   originals.forEach(n=>{n.hidden=true;n.style.setProperty('display','none','important')});
    const btn=document.createElement('button');btn.type='button';btn.className='buchee-chat-menu-button';btn.setAttribute('aria-label','Yeni mesaj seçenekleri');btn.setAttribute('aria-haspopup','menu');btn.setAttribute('aria-expanded','false');btn.textContent='⋯';
    const pop=document.createElement('div');pop.className='buchee-chat-popover';pop.setAttribute('role','menu');pop.hidden=true;
    pop.innerHTML='<button type="button" role="menuitem" data-buchee-message="dm-new">＋ Yeni sohbet</button><button type="button" role="menuitem" data-buchee-message="pati-group-create-open">♧ Yeni grup</button>';
    const search=document.querySelector('.pati-dm-searchbar');
-   if(search){const wrap=document.createElement('div');wrap.className='buchee-search-actions';search.insertAdjacentElement('afterend',wrap);wrap.append(btn,pop)}
+   if(search){const shell=document.createElement('div');shell.className='buchee-search-shell';search.parentNode.insertBefore(shell,search);shell.appendChild(search);const wrap=document.createElement('div');wrap.className='buchee-search-actions';shell.appendChild(wrap);wrap.append(btn,pop)}
    else actions.append(btn,pop);
   }
  }
