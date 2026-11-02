@@ -1,0 +1,14 @@
+/* Buchee mobile profile: large highlights, crisp branding, two primary actions. */
+@media(max-width:740px){
+#main-content .pati-ig-profile .pati-own-profile-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;padding:0 13px!important;align-items:stretch!important}
+#main-content .pati-ig-profile .pati-own-profile-actions>button{min-width:0!important;width:100%!important;min-height:44px!important;padding:10px 8px!important;border-radius:12px!important;font-size:13px!important;line-height:19px!important;font-weight:700!important;white-space:nowrap!important}
+#main-content .buchee-highlights{margin:10px 0 12px!important;padding:7px 0 6px!important}
+#main-content .buchee-highlights-track{gap:15px!important;padding:2px 14px 8px!important;min-height:124px!important}
+#main-content .buchee-highlight-tile{flex:0 0 94px!important;width:94px!important;gap:8px!important}
+#main-content .buchee-highlight-ring{width:88px!important;height:88px!important;flex:0 0 88px!important;border-width:3px!important;padding:3px!important}
+#main-content .buchee-highlight-ring img{width:100%!important;height:100%!important;object-fit:cover!important}
+#main-content .buchee-highlight-tile small{font-size:12px!important;line-height:16px!important;font-weight:550!important}
+html[data-pati-view="home"] #pati-feed-menu-trigger .brand-word,
+html[data-pati-view="home"] #pati-feed-menu-trigger .buchee-feed-wordmark{filter:none!important;image-rendering:auto!important;backface-visibility:visible!important}
+html[data-pati-view="home"] #pati-feed-menu-trigger .buchee-feed-wordmark{height:28px!important;max-height:28px!important;width:auto!important;max-width:100%!important;object-fit:contain!important}
+}
