@@ -10,7 +10,7 @@
   "theme_color": "#ffffff",
   "icons": [
     {
-      "src": "buchee-social-app-icon.svg?v=20261102b",
+      "src": "buchee-word-only-icon.svg?v=20261102c",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
