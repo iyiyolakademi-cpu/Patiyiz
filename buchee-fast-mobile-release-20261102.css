@@ -1,0 +1,25 @@
+/* BucheeSocial fast-start/mobile release polish. No launch overlay or feature cards. */
+:root{--buchee-tap-min:44px}
+html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
+body{overscroll-behavior-x:none}
+#main-content{min-width:0;max-width:100%;overflow-x:clip}
+#main-content :is(button,[role="button"],a){-webkit-tap-highlight-color:transparent}
+#main-content :is(.pati-actionbar button,.pati-social-actions button,.pati-profile-more-wrap summary,.pati-ig-actions button),
+#app-root :is(.nav-item,.bottom-nav button){min-width:40px;min-height:44px;touch-action:manipulation}
+#main-content button:focus-visible,#main-content a:focus-visible,#auth-root :is(button,input):focus-visible{outline:3px solid #7c35d3;outline-offset:2px}
+#main-content input,#main-content textarea,#main-content select,#auth-root input{font-size:16px;max-width:100%}
+#main-content img,#main-content video{max-width:100%}
+#main-content :is(.pati-feed-card,.pati-profile-card,.pati-question-card){overflow-wrap:anywhere}
+#main-content [data-action="story-create"],#main-content [data-action="compose"]{touch-action:manipulation}
+@media(max-width:740px){
+  #app-root{width:100%;max-width:100%;overflow-x:clip}
+  #main-content{padding-bottom:max(8px,env(safe-area-inset-bottom,0px))}
+  .pati-page-back{min-height:44px!important;min-width:44px!important;position:relative;z-index:3}
+  #main-content :is(.pati-feed-card,.pati-ig-profile){max-width:100%;min-width:0}
+}
+/* Remove retired sections even if a previously cached fragment is reinserted. */
+.buchee-highlights,.buchee-highlight-tile,.buchee-highlight-manager,.pati-highlight-destinations,#buchee-highlight-flow,#buchee-capsule-overlay,.bc-section{display:none!important}
+@media(prefers-reduced-motion:reduce){
+  #app-root *:not(.story-progress):not(.reels-progress){scroll-behavior:auto!important}
+  #main-content :is(.pati-feed-card,.pati-ig-profile){animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
