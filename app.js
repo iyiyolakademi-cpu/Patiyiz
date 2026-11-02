@@ -527,7 +527,7 @@ function patiOpenRightMenu(markup){
  popup.className='pati-right-menu-drawer';popup.dataset.fullscreen='true';
  popup.setAttribute('aria-label','BucheeSocial menüsü');
  popup.innerHTML='<div class="pati-right-menu-panel">'+
-  '<header class="pati-right-menu-head"><div><small>UYGULAMA</small><h2>Menü</h2></div><button type="button" data-drawer-close aria-label="Menüyü kapat">×</button></header>'+
+  '<header class="pati-right-menu-head buchee-menu-head"><div class="buchee-menu-heading"><button type="button" data-drawer-close aria-label="Menüyü kapat">←</button><h2>Menü</h2></div><button type="button" class="buchee-menu-header-settings" data-view="settings" aria-label="Ayarlar ve gizlilik">'+ico('settings')+'</button></header>'+
   '<div class="pati-right-menu-content">'+markup+'</div></div>';
  document.body.appendChild(popup);
  patiRightMenuDialog=popup;
@@ -548,22 +548,45 @@ function patiMenuRenderNotifications(){
  const target=document.getElementById('pati-feature-notifications-content');
  if(target)target.innerHTML=patiMenuNotificationsHTML();
 }
+
 function openMobileFeaturesMenu(){
- const groups=[
-  {title:'Topluluk',tone:'purple',items:[['community','Soru & Cevap','users']]},
-   {title:'101 Eğitim Serileri',tone:'blue',items:[['education','10 seri · Her biri 101 ders','library']]},
-  {title:'Hayvanım',tone:'green',items:[['my-pet','Hayvanım Merkezi · Tüm seçenekler','heart']]},
-  {title:'Sosyal Puan ve ödüller',tone:'orange',items:[['rewards','Sosyal Puan ve Görevler','grid'],['streaks','Günlük Seriler','calendar'],['shop','Ödül Mağazası','grid'],['saved-posts','Kaydettiğim gönderiler','bookmark']]},
-  {title:'Hesabım',tone:'blue',items:[['settings','Ayarlar ve gizlilik','settings'],['blocked','Engellediğim kişiler','shield']]}
+ const p=current();
+ const name=String(p?.display_name||'Profilim').trim()||'Profilim';
+ const handle=String(p?.handle||'').replace(/^@/,'');
+ const initials=String(name).trim().slice(0,1).toLocaleUpperCase('tr-TR')||'B';
+ const avatar=p?.avatar_url?'<img src="'+esc(p.avatar_url)+'" alt="" loading="lazy" decoding="async">':'<span aria-hidden="true">'+esc(initials)+'</span>';
+ const quickLinks=[
+  ['rewards','Sosyal Puan','Puan ve görevler','grid','purple'],
+  ['shop','Ödül Mağazası','Ödülleri keşfet','sparkles','pink'],
+  ['saved-posts','Kaydedilenler','Önem listem','bookmark','teal'],
+  ['streaks','Günlük Seriler','Serini takip et','calendar','amber']
  ];
- const sections=groups.map(group=>'<section class="pati-feature-group pati-menu-tone-'+group.tone+'"><h3>'+esc(group.title)+'</h3><div class="pati-mobile-menu-list">'+
-  group.items.map(([dest,label,icon])=>'<button type="button" class="pati-mobile-menu-item" data-view="'+dest+'" aria-label="'+esc(label)+'"><span class="pati-menu-icon">'+ico(icon)+'</span><span>'+esc(label)+'</span><span class="pati-menu-arrow">'+ico('arrow')+'</span></button>').join('')+
-  '</div></section>').join('');
- const closeFriendsMenu='<section class="pati-feature-group pati-menu-tone-blue"><h3>Paylaşım gizliliği</h3><button type="button" class="pati-mobile-menu-item" data-action="pati-close-friends-open"><span class="pati-menu-icon">★</span><span>Yakın Arkadaşlar</span><span class="pati-menu-arrow">'+ico('arrow')+'</span></button></section>';
- const addPet='<div class="pati-feature-add-pet"><button type="button" class="pati-mobile-menu-item" data-action="pet-add"><span class="pati-menu-icon">'+ico('plus')+'</span><span>Yeni hayvan ekle</span><span class="pati-menu-arrow">'+ico('arrow')+'</span></button></div>';
- const admin=isAdmin?'<section class="pati-feature-group pati-menu-tone-blue"><h3>Yönetim</h3><button type="button" class="pati-mobile-menu-item" data-action="open-admin"><span class="pati-menu-icon">'+ico('shield')+'</span><span>Yönetim Paneli</span><span class="pati-menu-arrow">'+ico('arrow')+'</span></button></section>':'';
- const markup='<div class="pati-features-list pati-color-menu pati-menu-mobile-20261031"><section class="pati-feature-notifications" aria-label="Bildirimlerin" id="pati-feature-notifications-content">'+patiMenuNotificationsHTML()+'</section><p class="pati-feature-intro">Tüm özellikler · Kaydırarak keşfet</p>'+sections+closeFriendsMenu+addPet+admin+'</div>';
- if(window.matchMedia?.('(max-width:740px)')?.matches){patiOpenRightMenu(markup);return;}
+ const quickHtml=quickLinks.map(([dest,label,desc,icon,tone])=>
+  '<button type="button" class="buchee-menu-quick buchee-menu-quick-'+tone+'" data-view="'+dest+'" aria-label="'+esc(label)+'">'+
+   '<span class="buchee-menu-quick-icon">'+ico(icon)+'</span>'+
+   '<span class="buchee-menu-quick-name">'+esc(label)+'</span>'+
+   '<small>'+esc(desc)+'</small>'+
+  '</button>').join('');
+ const section=(heading,items)=>'<section class="buchee-menu-section"><h3>'+esc(heading)+'</h3><div class="buchee-menu-section-list">'+items.map(([dest,label,icon,type])=>
+  '<button type="button" class="buchee-menu-link" '+(type==='action'?'data-action="':'data-view="')+esc(dest)+'" aria-label="'+esc(label)+'">'+
+   '<span class="buchee-menu-link-icon">'+ico(icon)+'</span><span class="buchee-menu-link-label">'+esc(label)+'</span>'+
+   '<span class="buchee-menu-link-arrow" aria-hidden="true">'+ico('arrow')+'</span></button>').join('')+'</div></section>';
+ const accountCard='<button type="button" class="buchee-menu-profile" data-view="profile" aria-label="Profilimi görüntüle">'+
+  '<span class="buchee-menu-avatar">'+avatar+'</span>'+
+  '<span class="buchee-menu-profile-text"><strong>'+esc(name)+'</strong>'+
+  (handle?'<small>@'+esc(handle)+'</small>':'')+
+  '<span>Profilimi görüntüle</span></span><span class="buchee-menu-profile-arrow">'+ico('arrow')+'</span></button>';
+ const markup='<div class="pati-features-list buchee-menu-v2">'+
+  accountCard+
+  '<div class="buchee-menu-quick-grid" aria-label="Hızlı erişim">'+quickHtml+'</div>'+
+  section('TOPLULUK',[['community','Soru & Cevap','users'],['pati-close-friends-open','Yakın Arkadaşlar','heart','action']])+
+  section('DİĞER ÖZELLİKLER',[['education','101 Eğitim Serileri','library'],['my-pet','Hayvanım Merkezi','heart'],['pet-add','Yeni hayvan ekle','plus','action']])+
+  section('HESAP VE GÜVENLİK',[['settings','Ayarlar ve gizlilik','settings'],['blocked','Engellenen kişiler','shield']])+
+  (isAdmin?section('YÖNETİM',[['open-admin','Yönetim Paneli','shield','action']]):'')+
+  '<button type="button" class="buchee-menu-logout" data-action="logout">'+ico('arrow')+'<span>Çıkış Yap</span></button>'+
+  '<p class="buchee-menu-footer">BucheeSocial</p>'+
+  '</div>';
+ if(window.matchMedia?.('(max-width:740px)')?.matches){patiOpenRightMenu(markup);return}
  modal('Menü',markup,'tools-form');
  $('#tools-form .modal-footer')?.remove();
 }
