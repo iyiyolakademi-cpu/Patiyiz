@@ -1,0 +1,57 @@
+/* iPhone: home uses the same solid top canvas as the messages screen.
+   DM story avatar occupies its own column, never the name column. */
+@media(max-width:740px){
+ html[data-pati-view="home"],html[data-pati-view="home"] body,
+ html[data-pati-view="home"] #app-root:not(.hidden),
+ html[data-pati-view="home"] #app-root:not(.hidden)>.app-shell{background:#fff!important}
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header{
+  background:#fff!important;background-image:none!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+  filter:none!important;box-shadow:none!important;
+  opacity:1!important;isolation:isolate!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header::before{
+  content:"";position:absolute;left:0;right:0;bottom:100%;
+  height:calc(300px + env(safe-area-inset-top,0px));
+  background:#fff!important;filter:none!important;backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;pointer-events:none;z-index:-1;
+ }
+ html[data-pati-view="home"] #main-content>.stories-section{background:#fff!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+ html[data-pati-view="messages"] #main-content .pati-dm-list-row{
+  display:flex!important;align-items:center!important;gap:10px!important;
+  padding:12px 12px!important;min-width:0!important;box-sizing:border-box!important;
+ }
+ html[data-pati-view="messages"] #main-content .pati-dm-list-row>.pati-dm-story-trigger{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  position:relative!important;inset:auto!important;transform:none!important;
+  flex:0 0 56px!important;width:56px!important;height:56px!important;
+  margin:0!important;padding:2px!important;box-sizing:border-box!important;
+ }
+ html[data-pati-view="messages"] #main-content .pati-dm-list-row>.pati-dm-story-trigger .avatar{
+  position:relative!important;inset:auto!important;width:46px!important;height:46px!important;
+  margin:0!important;transform:none!important;
+ }
+ html[data-pati-view="messages"] #main-content .pati-dm-list-row>.chat-person{
+  flex:1 1 0!important;min-width:0!important;width:auto!important;
+  padding:0!important;margin:0!important;gap:10px!important;
+  display:flex!important;align-items:center!important;position:relative!important;
+  left:auto!important;right:auto!important;transform:none!important;
+ }
+ html[data-pati-view="messages"] #main-content .pati-dm-list-row:has(>.pati-dm-story-trigger)>.chat-person{
+  padding-left:0!important;margin-left:0!important;
+ }
+ html[data-pati-view="messages"] #main-content .pati-dm-list-row>.chat-person>.chat-person-info{
+  position:relative!important;left:auto!important;right:auto!important;
+  flex:1 1 0!important;min-width:0!important;max-width:100%!important;
+  margin:0!important;transform:none!important;overflow:hidden!important;
+ }
+ html[data-pati-view="messages"] #main-content .pati-dm-list-row .chat-person-info strong,
+ html[data-pati-view="messages"] #main-content .pati-dm-list-row .chat-person-info small{
+  display:block!important;max-width:100%!important;white-space:nowrap!important;
+  overflow:hidden!important;text-overflow:ellipsis!important;
+ }
+ html[data-pati-view="messages"] #main-content .pati-dm-list-row>.pati-dm-row-actions{
+  position:relative!important;inset:auto!important;flex:0 0 30px!important;
+  margin:0!important;
+ }
+}
