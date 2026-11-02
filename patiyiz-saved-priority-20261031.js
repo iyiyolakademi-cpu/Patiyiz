@@ -70,8 +70,7 @@
     root.innerHTML =
       '<section class="pati-saved-screen" aria-label="Kaydedilen paylaşımlar">' +
       '<header class="pati-saved-page-header">' +
-      '<button type="button" class="pati-saved-back" data-saved-action="back" aria-label="Ana akışa dön">' +
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" aria-hidden="true"><path d="m15 4-8 8 8 8"/></svg></button>' +
+      '<span class="pati-saved-header-space" aria-hidden="true"></span>' +
       '<h1>Kaydedildi</h1><span aria-hidden="true" class="pati-saved-header-space"></span>' +
       '</header>' +
       '<div class="pati-saved-filters" role="group" aria-label="Önem listesi">' +
