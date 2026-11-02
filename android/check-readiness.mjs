@@ -30,7 +30,7 @@ if(app){
  if(app.fingerprints?.some(f=>!/^([A-F0-9]{2}:){31}[A-F0-9]{2}$/i.test(f.value||'')))fail('TWA fingerprints girdilerinden biri hatalı.');
 }
 if(web){
- if(web.name!=='Patiyiz'||web.display!=='standalone')fail('PWA adı/görünümü uygun değil.');
+ if(web.name!=='BucheeSocial'||web.display!=='standalone')fail('BucheeSocial PWA adı/görünümü uygun değil.');
  if(!['/','./'].includes(web.start_url)||!['/','./'].includes(web.scope))fail('PWA başlangıç ve scope kök alan adıyla uyumsuz.');
  const pngIcons=(web.icons||[]).filter(icon=>icon.type==='image/png');
  for(const size of [192,512]){
