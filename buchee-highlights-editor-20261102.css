@@ -92,3 +92,35 @@ body.buchee-highlight-editor-open{overflow:hidden!important}
 #main-content .buchee-highlight-manage-cover img,#main-content .buchee-highlight-manage-cover video{
  display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;transform-origin:center center!important;max-width:none!important
 }
+
+
+/* iPhone Safari: prevent long-press Copy/Look Up / Save Image while cropping. */
+#buchee-highlight-flow #bh-preview,
+#buchee-highlight-flow #bh-preview *,
+#buchee-highlight-flow .bh-preview-outer{
+ -webkit-touch-callout:none!important;
+ -webkit-user-select:none!important;
+ user-select:none!important;
+ -webkit-user-drag:none!important;
+ touch-action:none!important;
+ -webkit-tap-highlight-color:transparent!important;
+}
+#buchee-highlight-flow #bh-preview img,
+#buchee-highlight-flow #bh-preview video{
+ -webkit-user-drag:none!important;
+ pointer-events:none!important;
+ -webkit-touch-callout:none!important;
+ -webkit-user-select:none!important;
+ user-select:none!important;
+ object-fit:cover!important;
+ display:block!important;
+}
+#buchee-highlight-flow .bh-archive-media video,
+#buchee-highlight-flow .bh-cover-option video{
+ background:#111922!important;
+ object-fit:cover!important;
+ -webkit-touch-callout:none!important;
+}
+#buchee-highlight-flow .bh-intro .bh-total-count{
+ font-weight:800!important;color:#272f3c!important;
+}
