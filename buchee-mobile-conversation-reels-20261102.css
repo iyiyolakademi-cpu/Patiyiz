@@ -25,3 +25,15 @@ html[data-pati-view="reels"] #main-content .pati-reel-rail>[data-action="reel-mo
 .buchee-dm-selecting .pati-dm-list-row{position:relative;padding-left:43px!important}
 .buchee-dm-selecting .pati-dm-list-row .chat-person{pointer-events:none!important}
 .buchee-dm-checkbox{position:absolute;left:8px;top:50%;transform:translateY(-50%);height:29px;width:29px;accent-color:#7b3ed2;z-index:6}
+
+/* Right reel rail ends with sound control, not a second media utility stack. */
+html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-utility{position:absolute!important;right:10px!important;bottom:calc(77px + env(safe-area-inset-bottom,0px))!important;z-index:27!important;display:flex!important;align-items:center!important;justify-content:center!important;width:48px!important;min-height:45px!important;gap:0!important;transform:none!important;background:transparent!important;box-shadow:none!important;border:0!important}
+html[data-pati-view="reels"] #main-content .pati-reel-utility [data-action="reel-speed"]{display:none!important}
+html[data-pati-view="reels"] #main-content .pati-reel-utility [data-action="reel-sound"]{display:grid!important;place-items:center!important;width:44px!important;height:44px!important;border:0!important;border-radius:0!important;background:transparent!important;color:#fff!important;box-shadow:none!important}
+html[data-pati-view="reels"] #main-content .pati-reel-utility [data-action="reel-sound"] svg{width:26px!important;height:26px!important;filter:drop-shadow(0 2px 2px #000a)}
+html[data-pati-view="reels"] #main-content .pati-reel-utility .pati-reel-tool-label{display:none!important}
+@media(max-width:740px){
+ #app-root:not(.hidden) #main-content:has(.pati-dm-layout.mobile-chat-list)>.pati-dm-top{grid-template-columns:44px minmax(0,1fr) 136px!important}
+ #main-content>.pati-dm-top>.pati-dm-top-actions{width:136px!important;max-width:136px!important;gap:1px!important}
+ #main-content>.pati-dm-top>.pati-dm-top-actions>.buchee-dm-bulk-trigger{flex:0 0 44px!important}
+}
