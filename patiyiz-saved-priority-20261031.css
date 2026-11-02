@@ -372,3 +372,7 @@ html[data-pati-theme="dark"] #main-content > .pati-saved-screen {
   }
   #main-content .pati-saved-filter {min-height:40px!important;padding:9px 12px!important}
 }
+
+/* Buchee: prevent a second back arrow in saved screen, including cached markup. */
+#main-content .pati-saved-page-header .pati-saved-back{display:none!important}
+#main-content .pati-saved-page-header{grid-template-columns:48px minmax(0,1fr) 48px!important}
