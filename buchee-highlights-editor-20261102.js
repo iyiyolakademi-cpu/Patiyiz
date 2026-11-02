@@ -36,7 +36,7 @@ function open(options){
   if(!root||!state||state.options!==options)return;
   state.stories=Array.isArray(stories)?stories:[];
   if(state.album){
-   if(!state.coverStoryId)state.coverStoryId=selectedStories().find(function(s){return !!source(s).url})?.id||'';
+   if(!state.coverStoryId&&!state.coverUrl)state.coverStoryId=selectedStories().find(function(s){return !!source(s).url})?.id||'';
    state.stage='edit';renderEdit();
   }else{
    if(options.initialStoryId)state.selected.add(options.initialStoryId);
@@ -61,7 +61,7 @@ function renderPicker(){
 function renderEdit(){
  if(!root||!state)return;
  state.stage='edit';
- if(!state.coverStoryId)state.coverStoryId=selectedStories().find(function(s){return !!source(s).url})?.id||'';
+ if(!state.coverStoryId&&!state.coverUrl)state.coverStoryId=selectedStories().find(function(s){return !!source(s).url})?.id||'';
  var opts=selectedStories().map(function(story){
   return '<button type="button" class="bh-cover-option'+(!state.file&&state.coverStoryId===story.id?' active':'')+'" data-bh="cover-story" data-id="'+esc(story.id)+'" aria-pressed="'+(!state.file&&state.coverStoryId===story.id)+'">'+artwork(story,'bh-cover-thumb')+'</button>';
  }).join('');
