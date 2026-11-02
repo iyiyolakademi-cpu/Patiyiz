@@ -27,3 +27,23 @@ html[data-pati-view="home"] body #app-root:not(.hidden)>.mobile-header{grid-temp
 #startup .pati-splash-footer{display:none!important}
 @keyframes bucheeSplashRise{0%{opacity:0;transform:translateY(18px) scale(.94);filter:blur(7px)}65%{opacity:1;filter:blur(0)}100%{opacity:1;transform:translateY(0) scale(1);filter:drop-shadow(0 10px 24px rgba(89,0,198,.08))}}
 @media(prefers-reduced-motion:reduce){#startup .pati-splash-icon{animation:none!important}}
+
+/* iOS Safari: crisp and fully opaque fixed top navigation. */
+@media(max-width:740px){
+#app-root:not(.hidden)>.mobile-header,
+html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header{
+background:#fff!important;background-image:none!important;
+backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+filter:none!important;opacity:1!important;mix-blend-mode:normal!important;
+box-shadow:none!important;isolation:isolate!important;
+}
+#app-root:not(.hidden)>.mobile-header #pati-feed-menu-trigger,
+#app-root:not(.hidden)>.mobile-header .brand-word,
+#app-root:not(.hidden)>.mobile-header .pati-header-actions,
+#app-root:not(.hidden)>.mobile-header .pati-header-actions button{
+filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;opacity:1!important;
+}
+#app-root:not(.hidden)>.mobile-header .buchee-feed-wordmark{
+filter:none!important;opacity:1!important;image-rendering:auto!important;
+}
+}
