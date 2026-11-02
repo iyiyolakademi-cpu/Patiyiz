@@ -126,7 +126,8 @@ const current=()=>profile(me?.id);
 const verifiedBadge=p=>p?.is_verified?'<span class="pati-verified pati-verified-blue" role="img" aria-label="Doğrulanmış hesap" title="Doğrulanmış hesap"><svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 1.6 14.8 3l3.12-.13 1.04 2.94L21.7 7.5l-.67 3.05 1.07 2.93-2.5 1.96-.64 3.09-3.15.32L12 21.1l-2.81-2.25-3.15-.32-.64-3.09-2.5-1.96 1.07-2.93L3.3 7.5l2.74-1.69 1.04-2.94L10.2 3Z" fill="#2196f3"/><path d="m7.55 11.8 2.9 2.85 5.95-6.05" fill="none" stroke="#fff" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"/></svg></span>':'';
 const displayName=p=>esc(p?.display_name||'BucheeSocial üyesi')+verifiedBadge(p);
 const displayUser=id=>displayName(profile(id));
-const avatar=(p,s='m')=>`<span class="avatar ${s}">${p.avatar_url?`<img src="${esc(p.avatar_url)}" alt="">`:esc((p.display_name||'P').slice(0,1).toUpperCase())}</span>`;
+const bucheeAvatarEmpty='<svg class="buchee-avatar-silhouette" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="50" cy="38" r="22" fill="#9299a3"/><path d="M9 96c2-25 18-40 41-40s39 15 41 40" fill="#9299a3"/></svg>';
+const avatar=(p,s='m')=>`<span class="avatar ${s}${p?.avatar_url?'':' buchee-avatar-empty'}">${p?.avatar_url?`<img src="${esc(p.avatar_url)}" alt="">`:bucheeAvatarEmpty}</span>`;
 const petIcon=s=>({'Kedi':'🐱','Köpek':'🐶','Kuş':'🦜','Tavşan':'🐰','Balık':'🐠','Kemirgen':'🐹'}[s]||'💜');
 const photo=(url,fallback='💜',priority=false)=>`<div class="pati-photo">${url?`<img src="${esc(url)}" alt="Hayvan fotoğrafı" loading="${priority===true?'eager':'lazy'}" decoding="async" ${priority===true?'fetchpriority="high"':'fetchpriority="low"'}>`:fallback}</div>`;
 // Render the destination immediately behind the splash, preserving the opening signature for a brief, intentional 1.55-second reveal. 
@@ -2412,6 +2413,14 @@ function closePatiCreate(){const el=$('#pati-create-sheet');if(el)el.hidden=true
 function openPatiCreate(){if(view!=='home')return;const el=$('#pati-create-sheet');if(!el)return;el.hidden=false;document.body.classList.add('pati-create-open');el.querySelector('.pati-create-dismiss')?.focus()}
 
 
+function bucheeShareFeedback(message,bad=false){
+ const panel=document.querySelector('#share-post-form .buchee-share-feedback');
+ if(!panel)return false;
+ panel.hidden=false;panel.classList.toggle('is-error',bad);panel.textContent=message;
+ window.clearTimeout(bucheeShareFeedback.timer);
+ bucheeShareFeedback.timer=window.setTimeout(()=>{if(panel.isConnected)panel.hidden=true},2800);
+ return true;
+}
 function openPatiShareModal(postId){
  const post=patiFindSocialPost(postId);
  if(!me||!post||blocked.has(post.author_id))return notify('Bu paylaşım artık bulunamıyor.',true);
@@ -2427,7 +2436,7 @@ function openPatiShareModal(postId){
  '<button type="button" class="buchee-share-quick-action" data-action="pati-copy-post" data-id="'+esc(postId)+'"><span class="buchee-share-quick-icon">'+linkIcon+'</span><small>Bağlantıyı kopyala</small></button>'+
  '<button type="button" class="buchee-share-quick-action" data-action="pati-share-system" data-id="'+esc(postId)+'"><span class="buchee-share-quick-icon">'+ico('send')+'</span><small>Diğer uygulamalarda paylaş</small></button></div>';
  const search='<div class="buchee-share-search-row"><label class="buchee-share-search">'+ico('search')+'<input id="pati-share-search" type="search" placeholder="Ara" autocomplete="off" aria-label="Kişi ara"></label><button type="button" class="buchee-share-focus" data-action="buchee-share-focus" aria-label="Kişi ara">'+ico('user')+'<span aria-hidden="true">+</span></button></div>';
- const inner='<div class="buchee-share-sheet">'+search+'<div class="buchee-share-scroll" role="region" aria-label="Paylaşılacak kişiler"><div class="buchee-share-grid">'+(recipients||'<p class="buchee-share-no-people">Henüz paylaşabileceğin kullanıcı yok.</p>')+'</div><p class="buchee-share-no-match" hidden>Bu isimle kullanıcı bulunamadı.</p></div><div class="buchee-share-bottom"><button type="button" class="buchee-share-send" data-action="buchee-share-send" data-post="'+esc(postId)+'" disabled>Kişi seç</button>'+actions+'</div></div>';
+ const inner='<div class="buchee-share-sheet">'+search+'<div class="buchee-share-scroll" role="region" aria-label="Paylaşılacak kişiler"><div class="buchee-share-grid">'+(recipients||'<p class="buchee-share-no-people">Henüz paylaşabileceğin kullanıcı yok.</p>')+'</div><p class="buchee-share-no-match" hidden>Bu isimle kullanıcı bulunamadı.</p></div><div class="buchee-share-bottom"><div class="buchee-share-feedback" role="status" aria-live="polite" hidden></div><button type="button" class="buchee-share-send" data-action="buchee-share-send" data-post="'+esc(postId)+'" disabled>Kişi seç</button>'+actions+'</div></div>';
  modal('Paylaş',inner,'share-post-form');
  const form=document.getElementById('share-post-form');
  form?.closest('.modal')?.classList.add('buchee-share-dialog');
@@ -8088,7 +8097,22 @@ case 'edit-post':compose(data.posts.find(p=>p.id===id));break;case 'delete-post'
   if(!result.data?.length)throw Error('Görev silinemedi veya yetkin yok.');
   data.care=data.care.filter(x=>x.id!==id);if(view==='care'||(view==='my-pet'&&patiMyPetTab==='care'))render();
  },'Bakım görevi silindi.');break;}case 'logout':run(async()=>{globalThis.PatiyizPrivateMedia?.clear();patiDmPhotoClear();const r=await sb.auth.signOut();if(r.error)throw r.error;me=null;isAdmin=false;authMode='login';bucheeWelcomeEntered=false;showAuth()},'Çıkış yapıldı');break;
-case 'post-likers-more':void patiLoadPostLikers();break;case 'post-likers':patiOpenPostLikers(id);break;case 'like':void togglePostLike(id);break;case 'share-post':openPatiShareModal(id);break;case 'pati-copy-post':{const link=location.origin+location.pathname+'#post-'+id;if(navigator.clipboard?.writeText)navigator.clipboard.writeText(link).then(()=>notify('Paylaşım bağlantısı kopyalandı.'),()=>notify('Bağlantı kopyalanamadı.',true));else notify(link);break}case 'pati-share-system':{const link=location.origin+location.pathname+'#post-'+id;if(navigator.share)navigator.share({title:'BucheeSocial paylaşımı',url:link}).catch(()=>{});else if(navigator.clipboard?.writeText)navigator.clipboard.writeText(link).then(()=>notify('Bağlantı kopyalandı.'));break}case 'dm-story-open':{if(!patiDmHasActiveStory(id))return notify('Bu kullanıcının aktif hikâyesi bulunmuyor.',true);openStory(id);break}case 'dm-open-shared-post':run(()=>patiDmOpenSharedPost(id,target.dataset.comment||''));break;case 'buchee-share-focus':document.getElementById('pati-share-search')?.focus();break;
+case 'post-likers-more':void patiLoadPostLikers();break;case 'post-likers':patiOpenPostLikers(id);break;case 'like':void togglePostLike(id);break;case 'share-post':openPatiShareModal(id);break;case 'pati-copy-post':{
+ const link=location.origin+location.pathname+'#post-'+id;
+ void (async()=>{
+  try{
+   if(navigator.clipboard?.writeText)await navigator.clipboard.writeText(link);
+   else{
+    const field=document.createElement('textarea');field.value=link;field.setAttribute('readonly','');
+    field.style.cssText='position:fixed;left:-9999px;top:0;opacity:0';
+    document.body.appendChild(field);field.select();const ok=document.execCommand('copy');field.remove();
+    if(!ok)throw Error('Kopyalama başarısız');
+   }
+   if(!bucheeShareFeedback('✓ Bağlantı kopyalandı'))notify('Bağlantı kopyalandı.');
+  }catch(error){if(!bucheeShareFeedback('Bağlantı kopyalanamadı.',true))notify('Bağlantı kopyalanamadı.',true)}
+ })();
+ break;
+}case 'pati-share-system':{const link=location.origin+location.pathname+'#post-'+id;if(navigator.share)navigator.share({title:'BucheeSocial paylaşımı',url:link}).catch(()=>{});else if(navigator.clipboard?.writeText)navigator.clipboard.writeText(link).then(()=>notify('Bağlantı kopyalandı.'));break}case 'dm-story-open':{if(!patiDmHasActiveStory(id))return notify('Bu kullanıcının aktif hikâyesi bulunmuyor.',true);openStory(id);break}case 'dm-open-shared-post':run(()=>patiDmOpenSharedPost(id,target.dataset.comment||''));break;case 'buchee-share-focus':document.getElementById('pati-share-search')?.focus();break;
 case 'buchee-share-pick':{
  const form=document.getElementById('share-post-form');
  if(!form||!target.closest('#share-post-form'))break;
