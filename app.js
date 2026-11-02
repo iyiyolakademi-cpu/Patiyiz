@@ -2045,10 +2045,18 @@ document.addEventListener('error',event=>{
 },true);
 async function patiOwnStoryArchive(){
  if(!me?.id)throw Error('Oturum bulunamadı.');
- const uid=me.id,res=await sb.from('patiyiz_stories').select('*').eq('author_id',uid).order('created_at',{ascending:false}).limit(500);
- if(res.error)throw res.error;
- if(me?.id!==uid)throw Error('Oturum değişti.');
- let stories=res.data||[];
+ const uid=me.id;
+ // Fetch every archived story (including older ones) rather than truncating at 500.
+ const archived=[];
+ for(let start=0;start<10000;start+=200){
+  const res=await sb.from('patiyiz_stories').select('*').eq('author_id',uid)
+   .order('created_at',{ascending:false}).order('id',{ascending:false}).range(start,start+199);
+  if(res.error)throw res.error;
+  if(me?.id!==uid)throw Error('Oturum değişti.');
+  archived.push(...(res.data||[]));
+  if((res.data||[]).length<200)break;
+ }
+ let stories=archived;
  if(globalThis.PatiyizPrivateMedia?.hydrateRows)stories=await globalThis.PatiyizPrivateMedia.hydrateRows(stories,uid,sb);
  stories=await Promise.all(stories.map(async story=>{
   if(!story.private_image_path)return story;
