@@ -1,0 +1,18 @@
+/* Buchee dark mode contrast repair, loaded after legacy styles. */
+html.buchee-dark{color-scheme:dark!important;--bg:#0b0f14;--card:#171d26;--text:#f3f5f8;--muted:#b6bfcb;--border:#343e4b}
+html.buchee-dark body,html.buchee-dark #app-root,html.buchee-dark #main-content,html.buchee-dark #app-root .app-shell{background:#0b0f14!important;color:#f3f5f8!important}
+html.buchee-dark #main-content .pati-ig-profile,
+html.buchee-dark #main-content .pati-ig-profile :is(.pati-ig-about,.pati-ig-head,.pati-ig-profile-header,.pati-ig-stats,.pati-ig-actions,.pati-own-profile-actions,.pati-ig-bio,.pati-ig-links,.pati-ig-tabs),
+html.buchee-dark #main-content :is(.buchee-highlights,.stories-section,.pati-saved-screen,.pati-daily-card,.pati-dm-top,.pati-dm-layout,.pati-dm-list-row,.pati-feed-post,.pati-post){background-color:#141b24!important;color:#f3f5f8!important;border-color:#35404c!important}
+html.buchee-dark #main-content .pati-ig-profile :is(h1,h2,h3,strong,span,p,a,small,label,button){color:#f2f4f8!important}
+html.buchee-dark #main-content .pati-ig-profile :is(.pati-ig-stats button,.pati-ig-stats a,.pati-ig-stats>div){background-color:transparent!important;color:#f5f6f8!important;border-color:transparent!important;box-shadow:none!important}
+html.buchee-dark #main-content .pati-ig-profile .pati-own-profile-actions>button{background:#293340!important;color:#fff!important;border:1px solid #45505f!important;box-shadow:none!important}
+html.buchee-dark #main-content .pati-ig-profile .pati-own-profile-actions>button.buchee-edit-compact{background:#293340!important;color:#fff!important}
+html.buchee-dark #main-content .pati-ig-profile :is(.pati-ig-profession,.pati-ig-bio,.pati-ig-name,.pati-ig-handle){color:#e5e9ee!important}
+html.buchee-dark #main-content .pati-ig-profile :is(.pati-ig-link,.pati-profile-link,.pati-ig-links a){background:#202936!important;color:#e9edf5!important;border-color:#3b4655!important}
+html.buchee-dark #main-content .pati-ig-profile :is(.pati-ig-tabs,.pati-ig-tab,.pati-profile-tabs) {background-color:#151c25!important;color:#c3ccd6!important;border-color:#343d49!important}
+html.buchee-dark #main-content .pati-ig-profile :is(.pati-ig-tab.active,[aria-selected="true"]){color:#fff!important;border-bottom-color:#bf83ff!important}
+html.buchee-dark #main-content :is(.buchee-highlights .buchee-highlight-tile small,.stories-section .story-person small){color:#d8dce5!important}
+html.buchee-dark #main-content :is(.pati-dm-layout,.pati-dm-top) :is(input,textarea,button,select){background-color:#212a36!important;color:#f3f5f8!important;border-color:#394555!important}
+html.buchee-dark #app-root :is(.mobile-header,.bottom-nav,.mobile-bottom-nav,.pati-mobile-nav){background-color:#151b24!important;color:#f3f5f8!important;border-color:#394350!important}
+html.buchee-dark #main-content .pati-ig-profile :is(img,video){filter:none!important;opacity:1!important}
