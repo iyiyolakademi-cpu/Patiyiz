@@ -1,23 +1,5 @@
 /* Root fix: no artificial white overlays or duplicated iOS safe-area space. */
 @media(max-width:740px){
- html[data-pati-view="home"],html[data-pati-view="home"] body{background:#fff!important}
- html[data-pati-view="home"] #app-root:not(.hidden){background:#fff!important}
- html[data-pati-view="home"] #app-root:not(.hidden)::before,
- html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header::before,
- html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header::after{content:none!important;display:none!important}
- html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header{
-  box-sizing:border-box!important;height:calc(56px + env(safe-area-inset-top,0px))!important;
-  min-height:calc(56px + env(safe-area-inset-top,0px))!important;
-  padding-top:calc(env(safe-area-inset-top,0px) + 4px)!important;
-  padding-bottom:4px!important;background:#fff!important;background-image:none!important;
-  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
-  filter:none!important;box-shadow:none!important;opacity:1!important;
- }
- html[data-pati-view="home"] #app-root:not(.hidden)>.app-shell,
- html[data-pati-view="home"] #main-content,
- html[data-pati-view="home"] #main-content>.stories-section{
-  margin-top:0!important;padding-top:0!important;background:#fff!important;
- }
  /* Inbox rows: avatar is either a story trigger sibling or inside the chat button.
     One layout for both variants; no absolute positioning or duplicate avatar. */
  html[data-pati-view="messages"] #main-content .pati-dm-list-row{
