@@ -18,7 +18,7 @@
   try{lastReload=Number(sessionStorage.getItem(key)||0)}catch(_){}
   if(now-lastReload<30000)return;
   try{sessionStorage.setItem(key,String(now))}catch(_){}
-  if(document.visibilityState==='visible'&&!document.querySelector('input:focus,textarea:focus,#buchee-highlight-flow,#story-overlay,.modal-backdrop'))window.location.reload();
+  if(document.visibilityState==='visible'&&!document.querySelector('input:focus,textarea:focus,#buchee-highlight-flow,#buchee-capsule-overlay,#story-overlay,.modal-backdrop'))window.location.reload();
  });
  window.addEventListener('load',()=>{void check()},{once:true});
  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')void check()});
