@@ -2099,10 +2099,10 @@ async function patiSaveHighlightDetails(detail){
  let uploaded='',createdId='';
  try{
   if(detail.coverFile)uploaded=await patiHighlightCoverUpload(detail.coverFile,uid);
-  const sourceAudience=detail.coverFile?'everyone':coverStory?.audience==='close_friends'?'close_friends':'everyone';
+  const sourceAudience=detail.coverFile?'everyone':(!detail.coverStoryId&&prior?.cover_image_url?(prior.cover_audience||'everyone'):(coverStory?.audience==='close_friends'?'close_friends':'everyone'));
   const settings={
    title,
-   cover_story_id:detail.coverFile?null:coverStory?.id||null,
+   cover_story_id:detail.coverFile?null:(detail.coverStoryId?coverStory?.id||null:prior?.cover_story_id||coverStory?.id||null),
    cover_image_url:uploaded||(!detail.coverFile&&prior?.cover_image_url&&!detail.coverStoryId?prior.cover_image_url:null),
    cover_pan_x:Math.max(-.5,Math.min(.5,Number(detail.panX)||0)),
    cover_pan_y:Math.max(-.5,Math.min(.5,Number(detail.panY)||0)),
@@ -2127,7 +2127,7 @@ async function patiSaveHighlightDetails(detail){
   }
   if(me?.id!==uid)throw Error('Oturum değişti.');
   patiOwnHighlightsCache.fetchedAt=0;
-  if(prior&&prior.cover_image_url&&uploaded&&prior.cover_image_url!==uploaded)void patiRemoveUnusedCover(prior.cover_image_url);
+  if(prior?.cover_image_url&&prior.cover_image_url!==settings.cover_image_url)void patiRemoveUnusedCover(prior.cover_image_url);
   closeModal(true);
   await refresh();
   notify(prior?'Kalıcı hikâye güncellendi.':'Kalıcı hikâye albümü oluşturuldu.');
