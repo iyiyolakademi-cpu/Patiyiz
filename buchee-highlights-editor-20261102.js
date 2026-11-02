@@ -6,16 +6,16 @@ var root=null,state=null;
 function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(x){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]})}
 function clean(){if(state&&state.fileUrl)URL.revokeObjectURL(state.fileUrl);state=null;if(root){root.remove();root=null}document.body.classList.remove('buchee-highlight-editor-open')}
 function source(story){
- if(!story)return {url:'',video:false};
- var photo=story.image_url||story.video_cover_url||story.shared_cover_url||'';
- if(photo)return {url:photo,video:false};
- return {url:story.video_url||'',video:!!story.video_url};
+ if(!story)return {url:'',video:false,poster:''};
+ // Playback uses the actual video; archived cover thumbnails can be a black frame.
+ if(story.video_url)return {url:story.video_url,video:true,poster:story.image_url||story.video_cover_url||''};
+ return {url:story.image_url||story.video_cover_url||story.shared_cover_url||'',video:false,poster:''};
 }
 function artwork(story,extra){
  var src=source(story),cl=extra||'';
- if(!src.url)return '<span class="bh-missing" aria-label="Bu hikâyenin görseli kullanılamıyor"><span>▧</span><small>Önizleme yok</small></span>';
- if(src.video)return '<video class="'+cl+'" src="'+esc(src.url)+'#t=0.15" preload="metadata" muted playsinline aria-label="Video hikâyesi"></video>';
- return '<img class="'+cl+'" src="'+esc(src.url)+'" alt="Hikâye kapağı" loading="lazy" decoding="async">';
+ if(!src.url)return '<span class="bh-missing" aria-label="Hikâye kaydı mevcut, medya dosyası bulunamadı"><span>▧</span><small>Hikâye kaydı</small></span>';
+ if(src.video)return '<video class="'+cl+'" src="'+esc(src.url)+'"'+(src.poster?' poster="'+esc(src.poster)+'"':'')+' preload="metadata" muted playsinline webkit-playsinline autoplay loop disablepictureinpicture aria-label="Video hikâyesi"></video>';
+ return '<img class="'+cl+'" src="'+esc(src.url)+'" alt="Hikâye kapağı" loading="lazy" decoding="async" draggable="false">';
 }
 function storyById(id){return state.stories.find(function(s){return s.id===id})}
 function selectedStories(){return state.stories.filter(function(s){return state.selected.has(s.id)})}
@@ -30,7 +30,19 @@ function open(options){
  root.addEventListener('input',onInput);
  root.addEventListener('change',onChange);
  root.addEventListener('pointerdown',startDrag);
- root.addEventListener('error',function(e){if(e.target&&e.target.tagName==='IMG'){var img=e.target;var fallback=document.createElement('span');fallback.className='bh-missing';fallback.textContent='Görsel açılamadı';img.replaceWith(fallback)}},true);
+ root.addEventListener('touchstart',startTouchDrag,{passive:false});
+ root.addEventListener('contextmenu',stopNativeSelection,{capture:true});
+ root.addEventListener('selectstart',stopNativeSelection,{capture:true});
+ root.addEventListener('dragstart',stopNativeSelection,{capture:true});
+ root.addEventListener('error',function(e){
+  var media=e.target;if(!media||!['IMG','VIDEO'].includes(media.tagName))return;
+  if(media.tagName==='VIDEO'&&!media.dataset.retryPoster&&media.getAttribute('poster')){
+   media.dataset.retryPoster='1';var pic=document.createElement('img');pic.src=media.getAttribute('poster');pic.alt='Hikâye önizlemesi';pic.className=media.className;pic.draggable=false;media.replaceWith(pic);return;
+  }
+  var fallback=document.createElement('span');fallback.className='bh-missing';
+  fallback.innerHTML='<span>▧</span><small>Medya dosyası bulunamadı</small>';
+  media.replaceWith(fallback);
+ },true);
  root.innerHTML='<div class="bh-loading" role="status">Hikâye arşivi açılıyor…</div>';
  Promise.resolve().then(options.loadStories).then(function(stories){
   if(!root||!state||state.options!==options)return;
@@ -84,11 +96,42 @@ function updatePreview(){
  var area=root.querySelector('#bh-preview');if(!area)return;
  var src=state.fileUrl?{url:state.fileUrl,video:false}:state.coverUrl&&!state.coverStoryId?{url:state.coverUrl,video:false}:source(storyById(state.coverStoryId));
  if(src.url){
-  var transform='translate('+state.dx*100+'%, '+state.dy*100+'%) scale('+state.zoom+')';
-  area.innerHTML=src.video?'<video src="'+esc(src.url)+'#t=0.15" playsinline muted preload="metadata"></video>':'<img src="'+esc(src.url)+'" alt="Kapak önizlemesi">';
-  var asset=area.firstElementChild;asset.style.transform=transform;
- }else area.innerHTML='<span class="bh-missing">Kapak seç</span>';
+  // Do not replace the image element during each finger move: iOS otherwise begins
+  // the native image select/copy interaction and breaks pointer capture.
+  if(area.dataset.currentSource!==src.url||area.dataset.isVideo!==String(src.video)||!area.firstElementChild){
+   var media=document.createElement(src.video?'video':'img');
+   if(src.video){media.muted=true;media.playsInline=true;media.setAttribute('playsinline','');media.preload='metadata';if(src.poster)media.poster=src.poster;media.src=src.url;media.addEventListener('loadeddata',()=>{media.currentTime=Math.min(.5,Math.max(0,(media.duration||1)-.01))},{once:true})}
+   else{media.src=src.url;media.alt='Kapak önizlemesi';media.draggable=false}
+   area.replaceChildren(media);area.dataset.currentSource=src.url;area.dataset.isVideo=String(src.video);
+  }
+  var asset=area.firstElementChild;
+  asset.style.transform='translate('+state.dx*100+'%, '+state.dy*100+'%) scale('+state.zoom+')';
+ }else{
+  area.replaceChildren();area.innerHTML='<span class="bh-missing">Kapak seç</span>';
+  area.dataset.currentSource='';area.dataset.isVideo='';
+ }
  var range=root.querySelector('#bh-zoom');if(range)range.value=String(state.zoom);
+}
+function stopNativeSelection(e){
+ if(e.target.closest?.('#bh-preview'))e.preventDefault();
+}
+function startTouchDrag(e){
+ if(!state||state.stage!=='edit'||!e.target.closest('#bh-preview')||e.touches.length!==1)return;
+ e.preventDefault();
+ var area=e.target.closest('#bh-preview'),touch=e.touches[0],startX=touch.clientX,startY=touch.clientY,
+     dx=state.dx,dy=state.dy,width=Math.max(1,area.getBoundingClientRect().width);
+ function move(v){
+  if(v.cancelable)v.preventDefault();
+  if(v.touches.length!==1)return;
+  var pt=v.touches[0];
+  state.dx=Math.max(-.5,Math.min(.5,dx+(pt.clientX-startX)/width));
+  state.dy=Math.max(-.5,Math.min(.5,dy+(pt.clientY-startY)/width));
+  updatePreview();
+ }
+ function stop(){root?.removeEventListener('touchmove',move);root?.removeEventListener('touchend',stop);root?.removeEventListener('touchcancel',stop)}
+ root.addEventListener('touchmove',move,{passive:false});
+ root.addEventListener('touchend',stop,{passive:false});
+ root.addEventListener('touchcancel',stop,{passive:false});
 }
 function onClick(e){
  var b=e.target.closest('[data-bh]');if(!b||!root||!root.contains(b)||!state)return;
@@ -123,7 +166,7 @@ function onChange(e){
 }
 function startDrag(e){
  if(!state||state.stage!=='edit'||!e.target.closest('#bh-preview'))return;
- if(e.pointerType==='mouse'&&e.button!==0)return;
+ if(e.pointerType==='touch'||(e.pointerType==='mouse'&&e.button!==0))return;
  var area=e.target.closest('#bh-preview'),startX=e.clientX,startY=e.clientY,dx=state.dx,dy=state.dy,width=Math.max(1,area.getBoundingClientRect().width);
  area.setPointerCapture?.(e.pointerId);e.preventDefault();
  function move(v){state.dx=Math.min(.5,Math.max(-.5,dx+(v.clientX-startX)/width));state.dy=Math.min(.5,Math.max(-.5,dy+(v.clientY-startY)/width));updatePreview()}
@@ -162,7 +205,7 @@ async function save(){
   var file=await croppedFile();
   await s.options.onSave({title:title,selectedIds:stories.map(function(x){return x.id}),coverStoryId:s.coverStoryId||null,coverFile:file,panX:file?0:s.dx,panY:file?0:s.dy,zoom:file?1:s.zoom,coverAudience:file?'everyone':storyById(s.coverStoryId)?.audience||'everyone',album:s.album});
   if(state===s)clean();
- }catch(e){error(e.message||'Kaydedilemedi. Tekrar dene.');if(state===s){state.saving=false;var button=root.querySelector('[data-bh="save"]');if(button){button.disabled=false;button.textContent='Kaydet'}}}
+ }catch(e){var msg=String(e.message||'');error(/permission denied|row.level security|patiyiz_highlight_items/i.test(msg)?'Kalıcı hikâye kaydedilemedi. Tekrar dene veya oturumunu yenile.':msg||'Kaydedilemedi. Tekrar dene.');if(state===s){state.saving=false;var button=root.querySelector('[data-bh="save"]');if(button){button.disabled=false;button.textContent='Kaydet'}}}
 }
 global.BucheeHighlightFlow={open:open,close:clean};
 })(window);
