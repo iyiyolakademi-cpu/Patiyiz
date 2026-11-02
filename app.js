@@ -350,13 +350,18 @@ function showApp(){starter();
   const signature=()=>data.posts.map(x=>x.id).join(',')+'|'+data.stories.map(x=>x.id).join(',');
   const redraw=(before,force=false)=>{
    if(me?.id!==userId)return;
-   navRender();
    if(document.activeElement?.matches?.('input,textarea,[contenteditable]'))return;
+   const changed=signature()!==before;
    if(view==='home'){
-    if(force||signature()!==before||!patiyizLoadedTables.has('posts')||!patiyizLoadedTables.has('patiyiz_stories')){
+    // Avoid full DOM replacement on secondary data requests when feed/story IDs are unchanged.
+    if(force||changed){
+     navRender();
      const y=window.scrollY;render();requestAnimationFrame(()=>window.scrollTo({top:y,behavior:'instant'}));
     }
-   }else if(view!=='reels')render();
+   }else if(view!=='reels'){
+    navRender();
+    render();
+   }
   };
   patiyizDeferredLoading=Promise.resolve().then(async()=>{
    if(me?.id!==userId)return;
