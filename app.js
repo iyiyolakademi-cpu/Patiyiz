@@ -129,7 +129,7 @@ const displayUser=id=>displayName(profile(id));
 const avatar=(p,s='m')=>`<span class="avatar ${s}">${p.avatar_url?`<img src="${esc(p.avatar_url)}" alt="">`:esc((p.display_name||'P').slice(0,1).toUpperCase())}</span>`;
 const petIcon=s=>({'Kedi':'🐱','Köpek':'🐶','Kuş':'🦜','Tavşan':'🐰','Balık':'🐠','Kemirgen':'🐹'}[s]||'💜');
 const photo=(url,fallback='💜',priority=false)=>`<div class="pati-photo">${url?`<img src="${esc(url)}" alt="Hayvan fotoğrafı" loading="${priority===true?'eager':'lazy'}" decoding="async" ${priority===true?'fetchpriority="high"':'fetchpriority="low"'}>`:fallback}</div>`;
-// Show the first app screen as soon as session resolution finishes. No artificial 2-second splash. 
+// Render the destination immediately behind the splash, preserving the opening signature for a brief, intentional 1.55-second reveal. 
 const bucheeSplashStartedAt=Date.now();
 let bucheeSplashDismissed=false;
 const starter=()=>{
@@ -140,7 +140,7 @@ const starter=()=>{
  window.clearTimeout(window.__bucheeLaunchWatchdog);
  const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
  const elapsed=Date.now()-bucheeSplashStartedAt;
- const remaining=reduced?0:Math.max(0,700-elapsed);
+ const remaining=reduced?0:Math.max(0,1550-elapsed);
  window.setTimeout(()=>{
   startup.classList.add('buchee-splash-done');
   window.setTimeout(()=>{

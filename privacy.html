@@ -17,8 +17,11 @@ table{width:100%;border-collapse:collapse;min-width:580px}th,td{border-bottom:1p
 .action{display:inline-block;padding:12px 18px;background:#4c167b;color:#fff;border-radius:12px;font-weight:750;text-decoration:none;min-height:46px}
 footer{text-align:center;padding:10px 15px 34px;color:#766b80;font-size:13px}footer a{color:inherit}
 @media(max-width:700px){main{margin:0;border:0;border-radius:0;min-height:70vh}header a{font-size:20px}}
+.legal-back{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:37px;padding:6px 11px;margin:0 0 18px;border:1px solid #e8dfee;border-radius:11px;background:#faf6ff;color:#4c246d;text-decoration:none;font-size:13px;font-weight:750;line-height:1.3;transition:background .14s ease}.legal-back:hover{background:#efe5fa}.legal-back:focus-visible{outline:3px solid #853ed0;outline-offset:2px}
 </style></head><body>
 <header><a href="./">BucheeSocial</a></header><main>
+<a href="./" class="legal-back" aria-label="Uygulamaya geri dön">← Geri</a>
+
 <h1>Gizlilik Politikası</h1><p class="meta">Son güncelleme: 2 Kasım 2026</p>
 <nav class="nav" aria-label="Yasal belgeler"><a href="privacy.html">Gizlilik Politikası</a><a href="kvkk.html">KVKK Aydınlatma</a><a href="terms.html">Kullanım Şartları</a><a href="delete-account.html">Hesap Silme</a></nav>
 
@@ -50,4 +53,19 @@ footer{text-align:center;padding:10px 15px 34px;color:#766b80;font-size:13px}foo
 <h2>8. Hakların ve iletişim</h2>
 <p>KVKK m.11 çerçevesinde bilgi alma, erişim, düzeltme, silme ve yasal koşulları oluştuğunda işleme/aktarıma itiraz etme gibi haklarını kullanabilirsin. Başvurular için kayıtlı e-posta hesabından <a href="mailto:iyiyolakademi@gmail.com?subject=BucheeSocial%20KVKK%20Basvurusu">iyiyolakademi@gmail.com</a> adresine yazabilirsin. Başvuru usulleri ve ayrıntılar için <a href="kvkk.html">KVKK Aydınlatma Metni</a>ni incele.</p>
 <h2>9. Değişiklikler</h2><p>Hizmetin yeni özellikleri, işlenen veri türleri veya hukuki gereklilikler değişirse metin güncellenir. Önemli değişikliklerde uygun bilgilendirme yapılır.</p>
-</main><footer>BucheeSocial · © 2026 · <a href="privacy.html">Gizlilik</a> · <a href="kvkk.html">KVKK</a> · <a href="terms.html">Kullanım Şartları</a></footer></body></html>
+</main><footer>BucheeSocial · © 2026 · <a href="privacy.html">Gizlilik</a> · <a href="kvkk.html">KVKK</a> · <a href="terms.html">Kullanım Şartları</a></footer>
+<script>
+(function(){
+ var back=document.querySelector('.legal-back');
+ if(!back)return;
+ back.addEventListener('click',function(event){
+  try{
+   if(!document.referrer||new URL(document.referrer).origin!==location.origin)return;
+   event.preventDefault();
+   if(history.length>1){history.back();return}
+   window.close();
+   window.setTimeout(function(){if(!window.closed)location.assign('./')},160);
+  }catch(error){location.assign('./')}
+ });
+})();
+</script></body></html>
