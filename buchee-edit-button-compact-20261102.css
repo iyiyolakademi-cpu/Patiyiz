@@ -1,0 +1,15 @@
+/* Compact flat Edit action on mobile profile; statistics unchanged. */
+@media (max-width:740px){
+#main-content .pati-ig-profile .pati-own-profile-actions>button.buchee-edit-compact{
+  height:36px!important;min-height:36px!important;max-height:36px!important;
+  padding:5px 12px!important;border-radius:8px!important;
+  background:#f0f1f3!important;color:#20232a!important;
+  box-shadow:none!important;transform:none!important;
+  border:1px solid #e4e5e9!important;font-size:12px!important;
+  font-weight:650!important;line-height:18px!important;
+  align-self:center!important;
+}
+html.buchee-dark #main-content .pati-ig-profile .pati-own-profile-actions>button.buchee-edit-compact{
+ background:#29313c!important;color:#f3f4f6!important;border-color:#424b58!important;
+}
+}
