@@ -1,0 +1,15 @@
+/* Buchee Welcome — exact direction of chosen dark-purple concept, no carousel dots. */
+.buchee-welcome{position:fixed;inset:0;z-index:40000;display:grid;place-items:center;background:#110925;color:#fff;overflow:hidden}
+.buchee-welcome-art{position:relative;width:100%;height:100%;min-height:100%;overflow:hidden;background:radial-gradient(ellipse 60% 36% at 76% 72%,#301052 0%,transparent 78%),linear-gradient(145deg,#120b30,#170929 74%,#11061e)}
+.buchee-welcome-art::before{content:"";position:absolute;pointer-events:none;left:-40%;top:-21%;width:116%;height:74%;border-radius:0 0 92% 15%;background:linear-gradient(150deg,#080818,#1a0c40 74%,#35137f);box-shadow:6px 4px 2px #703cf7,inset -15px -20px 46px #4a16a71c}
+.buchee-welcome-art::after{content:"";position:absolute;pointer-events:none;width:160%;height:46%;left:-32%;bottom:-15%;border-radius:50% 56% 0 0;transform:rotate(-11deg);background:radial-gradient(ellipse at 50% 2%,#cb4fff99,transparent 25%),linear-gradient(180deg,#4a1380 0%,#1e0b37 14%,#120821 75%);box-shadow:0 -3px 7px #a354ff,0 -14px 55px #8d37fa65;z-index:1}
+.buchee-welcome-brand{position:absolute;z-index:3;top:30%;left:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:10px;width:min(82vw,370px)}
+.buchee-welcome-brand img{display:block;width:100%;max-height:82px;object-fit:contain;filter:brightness(1.4) drop-shadow(0 3px 4px #180a29)}
+.buchee-welcome-brand p{font-size:14px;letter-spacing:.03em;margin:0;color:#eee5fa;text-align:center}
+.buchee-welcome-buttons{position:absolute;z-index:4;top:70%;left:50%;transform:translate(-50%,-50%);display:grid;gap:13px;width:min(78vw,330px)}
+.buchee-welcome-buttons button{width:100%;min-height:52px;border-radius:999px;font:700 16px inherit;cursor:pointer;letter-spacing:.01em;color:#fff}
+.buchee-welcome-buttons button:first-child{background:linear-gradient(180deg,#b843ff,#6500d1);border:0;box-shadow:0 7px 30px #b12bff55}
+.buchee-welcome-buttons button:last-child{background:transparent;border:1.5px solid #eee6ff}
+@media(min-width:741px){.buchee-welcome-art{max-width:440px;max-height:850px;border-radius:32px;box-shadow:0 30px 70px #08031655}.buchee-welcome{background:#ede7f7}}
+@media(max-height:690px){.buchee-welcome-brand{top:27%}.buchee-welcome-buttons{top:72%}}
+@media(prefers-reduced-motion:no-preference){.buchee-welcome-brand{animation:bucheeEnter .55s ease both}@keyframes bucheeEnter{from{opacity:0;translate:0 12px}to{opacity:1;translate:0 0}}}
