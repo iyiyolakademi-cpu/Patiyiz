@@ -47,3 +47,26 @@ filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:non
 filter:none!important;opacity:1!important;image-rendering:auto!important;
 }
 }
+
+/* Standalone iOS: prevent a composited blur layer over the top navigation. */
+@media(max-width:740px){
+html.patiyiz-ios-reels body #app-root:not(.hidden)>.mobile-header,
+html.patiyiz-ios-reels body #app-root:not(.hidden)>.mobile-header *,
+html.patiyiz-ios-reels body #app-root:not(.hidden)>.mobile-header *::before,
+html.patiyiz-ios-reels body #app-root:not(.hidden)>.mobile-header *::after{
+filter:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+text-shadow:none!important;mix-blend-mode:normal!important;
+}
+html.patiyiz-ios-reels body #app-root:not(.hidden)>.mobile-header{
+background:#fff!important;opacity:1!important;transform:none!important;
+-webkit-transform:none!important;perspective:none!important;
+}
+html.patiyiz-ios-reels body #app-root:not(.hidden)>.mobile-header::before,
+html.patiyiz-ios-reels body #app-root:not(.hidden)>.mobile-header::after{
+content:none!important;display:none!important}
+html.patiyiz-ios-reels body #app-root:not(.hidden)>.mobile-header .buchee-feed-wordmark{
+image-rendering:auto!important;filter:none!important;transform:none!important}
+html.patiyiz-ios-reels body #app-root:not(.hidden)>.mobile-header #pati-header-share,
+html.patiyiz-ios-reels body #app-root:not(.hidden)>.mobile-header #pati-header-coins{
+box-shadow:none!important;filter:none!important;opacity:1!important}
+}
