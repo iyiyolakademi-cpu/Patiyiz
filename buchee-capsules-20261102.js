@@ -21,7 +21,7 @@ function section({sb,viewerId,profileId,own,locked}){
  client=sb;viewer=viewerId;
  const markup='<section class="bc-section" data-bc-profile="'+esc(profileId)+'" data-bc-own="'+(own?'yes':'no')+'" aria-label="Buchee Kapsül">'+
  '<div class="bc-section-head"><div class="bc-section-heading"><span class="bc-spark">◈</span><div><strong>Buchee Kapsül</strong><small>Geleceğe bir iz bırak.</small></div></div>'+
- (own?'<button type="button" class="bc-archive-link" data-bc-action="legacy">Hikâye Arşivim</button>':'')+'</div>'+
+ (own?'<button type="button" class="bc-archive-link" data-action="highlight-album-manage">Hikâye Arşivim</button>':'')+'</div>'+
  '<div class="bc-rail" role="list">'+(own?'<button role="listitem" type="button" class="bc-new-card" data-bc-action="create"><span class="bc-new-glyph">＋</span><strong>Yeni kapsül</strong><small>Geleceğe gönder</small></button>':'')+
  '<div class="bc-loading-card" role="status"><span class="bc-loading-circle"></span><small>Kapsüller yükleniyor…</small></div></div></section>';
  Promise.resolve().then(()=>{const root=document.querySelector('.bc-section[data-bc-profile="'+profileId+'"]');if(root)void hydrate(root,profileId,own)});
@@ -92,7 +92,7 @@ function openCreate(){
  '<p class="bc-seal-notice">Kapsül kapatıldıktan sonra mesaj ve medya düzenlenemez. Açılma zamanı gelene kadar içerik gizli kalır. Dilersen kapsülü tamamen silebilirsin.</p>'+
  '</form></div><div class="bc-footer"><span class="bc-form-error" role="alert" hidden></span><button type="button" class="bc-primary" data-bc-action="seal">◈ Kapsülü kilitle</button></div>';
  const root=makeOverlay('Yeni Buchee Kapsül',html);
- root.querySelector('#bc-title')?.focus({preventScroll:true});
+ // Avoid auto-opening the iPhone keyboard over the creation form.
 }
 async function seal(){
  if(!editor||busy||!client)return;
