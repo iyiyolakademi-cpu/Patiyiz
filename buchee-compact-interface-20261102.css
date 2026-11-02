@@ -1,0 +1,21 @@
+/* Buchee: compact mobile header and messages action menu */
+@media(max-width:740px){
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header{grid-template-columns:38px minmax(0,1fr) 110px!important;column-gap:3px!important;height:calc(66px + env(safe-area-inset-top,0px))!important;min-height:calc(66px + env(safe-area-inset-top,0px))!important}
+ html[data-pati-view="home"] #app-root>.mobile-header>#pati-feed-menu-trigger{transform:translateY(4px)!important}
+ html[data-pati-view="home"] #pati-feed-menu-trigger .brand-word{gap:3px!important}
+ html[data-pati-view="home"] #pati-feed-menu-trigger .buchee-feed-wordmark{max-height:24px!important;width:auto!important;flex:1 1 auto!important}
+ html[data-pati-view="home"] #pati-feed-menu-trigger .pati-origin-flag{display:none!important}
+ html[data-pati-view="home"] #pati-feed-menu-trigger .buchee-feed-chevron{flex:0 0 13px;display:inline-flex;align-items:center;color:#5a5268}
+ html[data-pati-view="home"] #app-root>.mobile-header>.pati-header-actions{width:110px!important;min-width:110px!important;max-width:110px!important}
+ html[data-pati-view="home"] #app-root>.mobile-header>.pati-header-actions>#pati-header-coins{flex:0 0 67px!important;width:67px!important;max-width:67px!important;min-width:67px!important;height:43px!important;display:flex!important;flex-direction:column!important;gap:0!important;border-radius:12px!important;background:#f7f4fb!important;color:#362052!important}
+ html[data-pati-view="home"] #app-root>.mobile-header #pati-header-coins .pati-balance-title{display:block!important;font-size:9px!important;line-height:13px!important;font-weight:600!important}
+ html[data-pati-view="home"] #app-root>.mobile-header #pati-header-coins strong{display:block!important;font-size:13px!important;line-height:17px!important;font-weight:800!important;white-space:nowrap!important}
+ html[data-pati-view="home"] #app-root>.mobile-header>.pati-header-actions>#pati-header-notifications{flex:0 0 40px!important;width:40px!important;max-width:40px!important;min-width:40px!important}
+}
+.pati-dm-top-actions.buchee-chat-actions{position:relative;display:flex;align-items:center;gap:8px}
+.buchee-chat-actions .buchee-chat-menu-button{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:12px;background:#f4f0fa;border:1px solid #eee6f5;color:#392052;font-size:24px;cursor:pointer}
+.buchee-chat-actions .buchee-chat-popover{position:absolute;top:calc(100% + 7px);right:0;z-index:300;min-width:184px;border:1px solid #eee8f3;border-radius:15px;padding:5px;background:#fff;box-shadow:0 12px 34px #22102b22}
+.buchee-chat-actions .buchee-chat-popover[hidden]{display:none!important}
+.buchee-chat-actions .buchee-chat-popover button{display:block;width:100%;border:0;background:transparent;padding:12px;border-radius:10px;text-align:left;color:#25202a;font-size:14px;font-weight:650;cursor:pointer}
+.buchee-chat-actions .buchee-chat-popover button:hover{background:#f7f4fb}
+@media(max-width:740px){.pati-dm-top-actions.buchee-chat-actions>span{font-size:11px;white-space:nowrap}.pati-dm-top-actions.buchee-chat-actions .buchee-chat-menu-button{flex:0 0 42px}}
