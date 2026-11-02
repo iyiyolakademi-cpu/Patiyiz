@@ -24,7 +24,7 @@ function renderCard(){const m=main();if(!m)return;const textMode=document.queryS
 let queued=false;
 const observer=new MutationObserver(list=>{if(list.some(r=>Array.from(r.addedNodes).some(n=>n.nodeType===1&&!n.classList?.contains('pati-daily-card')))){if(!queued){queued=true;requestAnimationFrame(()=>{queued=false;renderCard()})}}});
 function boot(){const m=main();if(!m)return;observer.observe(m,{childList:true});renderCard();refresh().then(()=>{renderCard();}).catch(e=>console.warn('Günün Sorusu yüklenemedi',e))}
-document.addEventListener('click',e=>{const v=e.target.closest('[data-daily-vote]');if(v)void action('vote',{p_choice:Number(v.dataset.dailyVote)});});
+document.addEventListener('click',e=>{if(e.target.closest('[data-pati-feed-choice]'))setTimeout(renderCard,0);const v=e.target.closest('[data-daily-vote]');if(v)void action('vote',{p_choice:Number(v.dataset.dailyVote)});});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh().then(renderCard).catch(()=>{})});
 setInterval(()=>{if(!document.hidden)updateClock()},1000);
 // Poll every 12 seconds while visible, so other users' votes appear automatically.
