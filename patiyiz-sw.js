@@ -22,7 +22,7 @@ self.addEventListener('notificationclick',event=>{
 /* Small same-origin static cache: faster return visits without storing API/user data.
    Bump the cache version whenever this worker changes. URLs keep their release
    query parameters, so updated CSS/JS assets are distinct cache entries. */
-const PATIYIZ_STATIC_CACHE='buchee-static-v20261102-rebrand-clean-6';
+const PATIYIZ_STATIC_CACHE='buchee-static-v20261102-speed-7';
 const PATIYIZ_STATIC_PREFIX='patiyiz-static-v';
 const BUCHEE_STATIC_PREFIX='buchee-static-v';
 self.addEventListener('install',event=>{
@@ -63,15 +63,17 @@ self.addEventListener('fetch',event=>{
   // Keep core application code and styling fresh on iOS home-screen PWAs.
   // If the network is offline, use only an existing cached copy.
   if(/\.(?:js|css|svg|png|webp|webmanifest)$/i.test(url.pathname)){
-   try{
-    const fresh=await fetch(request,{cache:'no-store'});
+   const update=async()=>{
+    const fresh=await fetch(request);
     if(fresh.ok&&fresh.type==='basic'){
      try{await cache.put(request,fresh.clone())}catch(_){}
-     return fresh;
     }
-    return cached||fresh;
-   }catch(error){
-    if(cached)return cached;
+    return fresh;
+   };
+   if(cached){event.waitUntil(update().catch(()=>{}));return cached;}
+   return await update();
+  }
+  if(cached)return cached;
     throw error;
    }
   }
