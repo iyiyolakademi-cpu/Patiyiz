@@ -6168,17 +6168,19 @@ let patiCloseFriendsIds=new Set();
   if(res.error)throw res.error;
   if(me?.id!==owner)return false;
   const initial=new Set((res.data||[]).map(x=>x.friend_id)),selected=new Set(initial);
+  let cfFilter='all';
   const people=data.profiles.filter(p=>p.id!==owner&&!blocked.has(p.id)).sort((a,b)=>Number(initial.has(b.id))-Number(initial.has(a.id))||String(a.display_name||'').localeCompare(String(b.display_name||''),'tr'));
   const existing=document.getElementById('pati-close-picker');if(existing)return false;
   const layer=document.createElement('section');layer.id='pati-close-picker';layer.setAttribute('role','dialog');layer.setAttribute('aria-modal','true');layer.className='pati-close-picker';
-  layer.innerHTML='<div class="pati-close-picker-shell"><header><button type="button" data-cf-action="cancel" aria-label="Geri dön">←</button><strong>Yakın Arkadaşlar</strong><button type="button" class="pati-close-confirm" data-cf-action="confirm">Onayla</button></header><div class="pati-close-info"><strong id="pati-close-count"></strong><p>Hikâyeni görmesini istediğin kişileri seç. Bu listeyi değiştirmek önceki Yakın Arkadaşlar hikâyelerinin görünürlüğünü de etkileyebilir.</p></div><input id="pati-close-search" type="search" placeholder="İsim veya kullanıcı adı ara" aria-label="Kullanıcı ara"><div class="pati-close-people" id="pati-close-people"></div><p class="pati-close-error" role="alert" hidden></p></div>';
+  layer.innerHTML='<div class="pati-close-picker-shell"><header><button type="button" data-cf-action="cancel" aria-label="Geri dön">←</button><strong>Yakın Arkadaşlar</strong><button type="button" class="pati-close-confirm" data-cf-action="confirm">Kaydet</button></header><div class="pati-close-info"><span class="buchee-cf-icon" aria-hidden="true">★</span><h2>Yakın çevren, sana özel</h2><p>Yalnızca seçtiğin kişiler Yakın Arkadaşlar hikâyelerini görebilir. Listen başkalarına gösterilmez.</p><strong id="pati-close-count" aria-live="polite"></strong></div><div class="buchee-cf-search-wrap"><input id="pati-close-search" type="search" placeholder="İsim veya kullanıcı adı ara" aria-label="Kullanıcı ara"></div><div class="buchee-cf-tabs" role="group" aria-label="Arkadaşları filtrele"><button type="button" data-cf-action="filter" data-filter="all" aria-pressed="true">Tüm kişiler</button><button type="button" data-cf-action="filter" data-filter="selected" aria-pressed="false">Seçilenler</button></div><div class="pati-close-people" id="pati-close-people"></div><p class="buchee-cf-note">Listeyi değiştirmek önceki Yakın Arkadaşlar hikâyelerinin görünürlüğünü de etkileyebilir.</p><p class="pati-close-error" role="alert" hidden></p></div>';
   document.body.appendChild(layer);document.body.classList.add('pati-close-picker-active');
   let busy=false;
   const draw=()=>{
    const q=String(layer.querySelector('#pati-close-search').value||'').toLocaleLowerCase('tr-TR');
    layer.querySelector('#pati-close-count').textContent=selected.size+' kişi seçildi';
-   const matches=people.filter(p=>(String(p.display_name||'')+' '+String(p.handle||'')).toLocaleLowerCase('tr-TR').includes(q));
-   layer.querySelector('#pati-close-people').innerHTML=matches.length?matches.map(p=>'<button type="button" class="pati-close-person" data-cf-action="toggle" data-id="'+esc(p.id)+'" aria-pressed="'+selected.has(p.id)+'">'+avatar(p,'s')+'<span><strong>'+esc(p.display_name||'BucheeSocial üyesi')+'</strong><small>@'+esc(p.handle||'patiyiz')+'</small></span><b>'+ (selected.has(p.id)?'✓':'')+'</b></button>').join(''):'<p class="pati-close-empty">Kullanıcı bulunamadı.</p>';
+   const matches=people.filter(p=>(cfFilter!=='selected'||selected.has(p.id))&&(String(p.display_name||'')+' '+String(p.handle||'')).toLocaleLowerCase('tr-TR').includes(q));
+   layer.querySelectorAll('[data-cf-action="filter"]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.filter===cfFilter)));
+   layer.querySelector('#pati-close-people').innerHTML=matches.length?matches.map(p=>'<button type="button" class="pati-close-person" data-cf-action="toggle" data-id="'+esc(p.id)+'" aria-pressed="'+selected.has(p.id)+'">'+avatar(p,'s')+'<span><strong>'+esc(p.display_name||'BucheeSocial üyesi')+'</strong><small>@'+esc(p.handle||'patiyiz')+'</small></span><b>'+ (selected.has(p.id)?'✓':'')+'</b></button>').join(''):'<p class="pati-close-empty">'+(cfFilter==='selected'?'Henüz kimseyi seçmedin.':'Kullanıcı bulunamadı.')+'</p>';
   };
   draw();
   return await new Promise(resolve=>{
@@ -6188,9 +6190,9 @@ let patiCloseFriendsIds=new Set();
     const button=event.target.closest('[data-cf-action]');if(!button||busy)return;
     const action=button.dataset.cfAction;
     if(action==='cancel'){done(false);return}
+    if(action==='filter'){cfFilter=button.dataset.filter==='selected'?'selected':'all';draw();return}
     if(action==='toggle'){const id=button.dataset.id;if(!people.some(p=>p.id===id))return;selected.has(id)?selected.delete(id):selected.add(id);draw();return}
     if(action==='confirm'){
-     if(!selected.size){layer.querySelector('.pati-close-error').hidden=false;layer.querySelector('.pati-close-error').textContent='En az bir kişi seç.';return;}
      busy=true;button.disabled=true;button.textContent='Kaydediliyor…';
      try{
       if(me?.id!==owner)throw Error('Oturum değişti.');
