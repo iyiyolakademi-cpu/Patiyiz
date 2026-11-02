@@ -11,15 +11,8 @@
    if(reg.waiting&&navigator.serviceWorker.controller)reg.waiting.postMessage({type:'BUCHEE_SKIP_WAITING'});
   }catch(e){console.warn('BucheeSocial update check:',e)}finally{checking=false}
  }
- navigator.serviceWorker.addEventListener('controllerchange',()=>{
-  if(!navigator.serviceWorker.controller)return;
-  const key='buchee-pwa-controller-refresh';
-  const now=Date.now();
-  try{lastReload=Number(sessionStorage.getItem(key)||0)}catch(_){}
-  if(now-lastReload<30000)return;
-  try{sessionStorage.setItem(key,String(now))}catch(_){}
-  if(document.visibilityState==='visible'&&!document.querySelector('input:focus,textarea:focus,#buchee-highlight-flow,#buchee-capsule-overlay,#story-overlay,.modal-backdrop'))window.location.reload();
- });
+ // Do not force a page reload when the service worker changes controller.
+ // New resources are used on the next normal navigation, avoiding lost UI state.
  window.addEventListener('load',()=>{void check()},{once:true});
  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')void check()});
  window.addEventListener('pageshow',()=>{void check()});
