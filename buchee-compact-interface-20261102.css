@@ -19,3 +19,5 @@
 .buchee-chat-actions .buchee-chat-popover button{display:block;width:100%;border:0;background:transparent;padding:12px;border-radius:10px;text-align:left;color:#25202a;font-size:14px;font-weight:650;cursor:pointer}
 .buchee-chat-actions .buchee-chat-popover button:hover{background:#f7f4fb}
 @media(max-width:740px){.pati-dm-top-actions.buchee-chat-actions>span{font-size:11px;white-space:nowrap}.pati-dm-top-actions.buchee-chat-actions .buchee-chat-menu-button{flex:0 0 42px}}
+
+.buchee-chat-actions > .pati-dm-new{display:none!important}
