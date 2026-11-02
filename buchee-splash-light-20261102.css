@@ -1,0 +1,12 @@
+/* Buchee branded splash — consistent with light onboarding; iOS-safe compositing. */
+#startup:not(.hidden){background:#fffbff!important;background-image:radial-gradient(ellipse 65% 27% at 50% 57%,#f8e9ff 0%,transparent 94%)!important;isolation:isolate!important}
+#startup .pati-splash-center{position:absolute!important;left:50%!important;top:48%!important;transform:translate(-50%,-50%)!important;width:min(90vw,390px)!important;max-width:390px!important;display:grid!important;place-items:center!important}
+#startup .pati-splash-icon{width:min(84vw,360px)!important;max-width:100%!important;height:auto!important;filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;will-change:auto!important;image-rendering:auto!important;animation:bucheeSplashClear .65s ease-out both!important}
+#startup .pati-splash-footer{display:none!important}
+#startup .buchee-splash-accent{position:absolute!important;left:50%!important;top:calc(48% + 38px)!important;transform:translateX(-50%)!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important}
+#startup .buchee-splash-accent span{width:5px!important;height:5px!important;border-radius:50%!important;background:#8a2ee2!important;box-shadow:none!important}
+#startup .buchee-splash-accent span:nth-child(2){background:#df42aa!important}
+#startup .buchee-splash-accent span:nth-child(3){background:#fa5e99!important}
+@keyframes bucheeSplashClear{from{opacity:.12}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){#startup .pati-splash-icon{animation:none!important}}
+@media(max-width:740px){#startup{height:100dvh!important;width:100vw!important;overflow:hidden!important}#startup .pati-splash-icon{transform:none!important}}
