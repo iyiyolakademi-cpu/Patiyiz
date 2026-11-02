@@ -1,4 +1,4 @@
-/* Patiyiz camera-first composer — post, story and Reels share one entry point.
+/* BucheeSocial camera-first composer — post, story and Reels share one entry point.
  * User permission is required for camera and gallery access. Browser photo libraries
  * are opened through their native picker; Android MediaStore thumbnails are permission-gated.
  */

@@ -1,4 +1,4 @@
-/* Patiyiz Android native bridge. No private Firebase keys belong in this bundle. */
+/* BucheeSocial Android native bridge. No private Firebase keys belong in this bundle. */
 import {Capacitor,registerPlugin} from '@capacitor/core';
 import {App} from '@capacitor/app';
 import {StatusBar,Style} from '@capacitor/status-bar';
@@ -68,7 +68,7 @@ async function attachPushListeners(){
  if(notificationListeners||!firebaseConfigured)return;
  notificationListeners=true;
  await PushNotifications.addListener('registration',async result=>{
-  try{await saveToken(result.value)}catch(e){console.warn('Patiyiz FCM registration:',e);nativeToast('Android bildirim kaydı tamamlanamadı.')}
+  try{await saveToken(result.value)}catch(e){console.warn('BucheeSocial FCM registration:',e);nativeToast('Android bildirim kaydı tamamlanamadı.')}
  });
  await PushNotifications.addListener('registrationError',e=>nativeToast('Bildirim kaydı başarısız: '+String(e.error||'FCM')));
  await PushNotifications.addListener('pushNotificationActionPerformed',()=>routeWebUrl('https://patiyiz.com/open?screen=notifications'));

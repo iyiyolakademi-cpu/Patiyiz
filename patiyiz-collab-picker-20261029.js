@@ -1,4 +1,4 @@
-/* Patiyiz — interactive, account-verified collaborator picker.
+/* BucheeSocial — interactive, account-verified collaborator picker.
    Use the authenticated profiles RLS; never trust a free-typed username as a collaborator.
    Accessible suggestion buttons work with touch, mouse and keyboard. */
 (function(){
@@ -38,7 +38,7 @@
   const resultMarkup=()=>{
    for(const p of items)knownProfiles.set(p.id,p);
    results.innerHTML=items.map((p,i)=>'<div class="pati-collab-option'+(i===active?' is-highlighted':'')+'">'+
-    '<span class="pati-collab-avatar">'+(options.avatar?options.avatar(p,'s'):'<span class="avatar">🐾</span>')+'</span>'+
+    '<span class="pati-collab-avatar">'+(options.avatar?options.avatar(p,'s'):'<span class="avatar">💜</span>')+'</span>'+
     '<span class="pati-collab-user"><strong>'+escape(p.display_name||p.handle)+'</strong><small>@'+escape(p.handle)+'</small></span>'+
     '<button type="button" role="option" data-pati-approve-id="'+escape(p.id)+'" aria-selected="'+(i===active?'true':'false')+'" class="pati-collab-approve" aria-label="'+escape(p.handle)+' hesabını ortak olarak onayla">Onayla</button></div>').join('');
    if(!items.length)results.innerHTML='<p class="pati-collab-no-result" role="status">Bu aramaya uygun profil bulunamadı.</p>';
@@ -51,7 +51,7 @@
    input.value='@'+String(p.handle||'');
    idField.value=p.id;wrap.dataset.selectedHandle=normal(p.handle);
    selected.hidden=false;
-   selected.innerHTML='<span class="pati-collab-picked-avatar">'+(options.avatar?options.avatar(p,'s'):'🐾')+'</span>'+
+   selected.innerHTML='<span class="pati-collab-picked-avatar">'+(options.avatar?options.avatar(p,'s'):'💜')+'</span>'+
     '<span class="pati-collab-picked-text"><strong>'+escape(p.display_name||p.handle)+'</strong><small>@'+escape(p.handle)+' · Seçildi</small></span>'+
     '<button type="button" class="pati-collab-unselect" aria-label="Ortak kullanıcı seçimini kaldır">×</button>';
    results.hidden=true;results.innerHTML='';input.setAttribute('aria-expanded','false');

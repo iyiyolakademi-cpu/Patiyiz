@@ -1,4 +1,4 @@
-/* Patiyiz: mobile-first full emoji picker and customizable six quick reactions. */
+/* BucheeSocial: mobile-first full emoji picker and customizable six quick reactions. */
 (() => {
  'use strict';
  const QUICK_KEY='patiyiz-dm-quick-reactions-v1';
@@ -32,7 +32,7 @@
  if(!Array.isArray(recent))recent=[];
  recent=recent.filter(e=>all.has(e)).slice(0,28);
  let active=null;
- const alias={kalp:'❤️',ask:'😍',aşk:'😍',sevgi:'🥰',gül:'😂',gulen:'😄',gülen:'😄',mutlu:'😊',agla:'😭',ağla:'😭',üzgün:'😢',kızgın:'😡',sasirma:'😮',şaşırma:'😮',alkis:'👏',alkış:'👏',begeni:'👍',beğeni:'👍',kedi:'🐱',köpek:'🐶',pati:'🐾',turkiye:'🇹🇷',türkiye:'🇹🇷',bayrak:'🇹🇷',gunes:'☀️',güneş:'☀️',yildiz:'⭐',yıldız:'⭐',ates:'🔥',ateş:'🔥',çiçek:'🌸',cicek:'🌸',kahve:'☕',pizza:'🍕',araba:'🚗',para:'💰',gülümse:'🙂'};
+ const alias={kalp:'❤️',ask:'😍',aşk:'😍',sevgi:'🥰',gül:'😂',gulen:'😄',gülen:'😄',mutlu:'😊',agla:'😭',ağla:'😭',üzgün:'😢',kızgın:'😡',sasirma:'😮',şaşırma:'😮',alkis:'👏',alkış:'👏',begeni:'👍',beğeni:'👍',kedi:'🐱',köpek:'🐶',pati:'💜',turkiye:'🇹🇷',türkiye:'🇹🇷',bayrak:'🇹🇷',gunes:'☀️',güneş:'☀️',yildiz:'⭐',yıldız:'⭐',ates:'🔥',ateş:'🔥',çiçek:'🌸',cicek:'🌸',kahve:'☕',pizza:'🍕',araba:'🚗',para:'💰',gülümse:'🙂'};
  const esc=(s)=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  function save(key,value){try{localStorage.setItem(key,JSON.stringify(value));}catch(_){}}
  function getQuick(){return quick.slice();}

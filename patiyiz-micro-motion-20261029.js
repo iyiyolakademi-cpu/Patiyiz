@@ -1,9 +1,9 @@
-/* Patiyiz Motion: presentation-only feedback after confirmed app operations. */
+/* BucheeSocial Motion: presentation-only feedback after confirmed app operations. */
 (function(){
  'use strict';
- const coinAsset='pati-coin.svg?v=20261025-brand-1';
+ const coinAsset='buchee-social-app-icon.svg?v=20261025-brand-1';
  const reduce=()=>!!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
- const pawHTML='<span class="pati-motion-paws" aria-hidden="true"><span>🐾</span><span>🐾</span><span>🐾</span></span>';
+ const pawHTML='<span class="pati-motion-paws" aria-hidden="true"><span>💜</span><span>💜</span><span>💜</span></span>';
  const queue=cb=>window.requestAnimationFrame?requestAnimationFrame(()=>requestAnimationFrame(cb)):setTimeout(cb,30);
  function heart(el){
   if(!el||reduce())return;
@@ -19,7 +19,7 @@
   toast.className='pati-motion-coin-toast';toast.setAttribute('role','status');
   const img=document.createElement('img');img.src=coinAsset;img.alt='';
   const detail=document.createElement('div'),heading=document.createElement('strong'),info=document.createElement('span');
-  heading.textContent='+'+value.toLocaleString('tr-TR')+' PatiCoin';
+  heading.textContent='+'+value.toLocaleString('tr-TR')+' Buchee Puan';
   info.textContent=Array.isArray(titles)&&titles.length?titles.filter(Boolean).slice(0,2).join(' · '):'Görev ödülün hesabına eklendi';
   detail.append(heading,info);toast.append(img,detail);document.body.append(toast);
   setTimeout(()=>toast.remove(),2200);
@@ -62,6 +62,6 @@
   };
   queue(find);
  }
- /* Opening splash intentionally shows only the existing Patiyiz logo. */
+ /* Opening splash intentionally shows only the existing BucheeSocial logo. */
  window.PatiyizMotion=Object.freeze({heart,coin,loading,messageSent,petAdded});
 })();

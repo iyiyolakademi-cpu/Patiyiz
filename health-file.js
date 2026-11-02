@@ -1,4 +1,4 @@
-/* Patiyiz private digital pet health file.
+/* BucheeSocial private digital pet health file.
  * Authenticated, owner-only documents in a PRIVATE Supabase storage bucket.
  * Never creates public file URLs or permits another user's document IDs. */
 (()=>{
@@ -33,7 +33,7 @@
     if(r.error)throw r.error;
     if(getUser()?.id!==uid)return;
     state.docs=r.data||[];state.loaded=true;
-   }catch(e){console.warn('Patiyiz sağlık dosyası:',e);state.error='Sağlık kayıtları yüklenemedi. Lütfen yeniden dene.'}
+   }catch(e){console.warn('BucheeSocial sağlık dosyası:',e);state.error='Sağlık kayıtları yüklenemedi. Lütfen yeniden dene.'}
    finally{state.loading=false;changed()}
   }
   function selectPet(id){if(!pets().some(p=>p.id===id))return;state.petId=id;state.printView=false;state.editingId='';state.query='';state.typeFilter='all';changed()}
@@ -82,7 +82,7 @@
     await load(true);
    }catch(e){
     if(uploadedPath){try{const cleanup=await sb.storage.from(bucket).remove([uploadedPath]);if(cleanup.error)console.warn('Sağlık yüklemesi geri alınamadı:',cleanup.error)}catch(err){console.warn('Sağlık yükleme temizleme:',err)}}
-    console.warn('Patiyiz sağlık kaydı kaydedilemedi:',e);
+    console.warn('BucheeSocial sağlık kaydı kaydedilemedi:',e);
     notify('Sağlık kaydı kaydedilemedi. Dosya ve bağlantı izinlerini kontrol et.',true);
    }finally{state.saving=false;changed()}
   }
@@ -117,7 +117,7 @@
    const safe=val=>esc(String(val??''));
    const print=document.createElement('section');
    print.id='pati-health-print-report';print.className='pati-health-print-report';
-   print.innerHTML='<header><strong>🐾 Patiyiz · Kişisel Sağlık Dosyası</strong><span>'+safe(new Date().toLocaleDateString('tr-TR'))+'</span></header>'+
+   print.innerHTML='<header><strong>💜 BucheeSocial · Kişisel Sağlık Dosyası</strong><span>'+safe(new Date().toLocaleDateString('tr-TR'))+'</span></header>'+
     '<h1>'+safe(pet.name)+'</h1><p>'+safe(pet.species)+' · '+safe(pet.breed||'')+' · '+safe(pet.age||'')+'</p>'+
     '<h2>Sağlık kayıtları ('+list.length+')</h2>'+
     (list.map(d=>'<article><b>'+safe(day(d.document_date))+' · '+safe(d.title)+'</b><p>'+safe(types[d.doc_type]?.[1]||'Kayıt')+' · '+safe(d.notes||'')+'</p></article>').join('')||'<p>Henüz sağlık kaydı eklenmedi.</p>')+
@@ -147,13 +147,13 @@
    const animals=pets();
    if(!state.petId||!animals.some(p=>p.id===state.petId))state.petId=animals[0]?.id||'';
    const active=current();
-   if(!active)return '<section class="health-file health-stage13"><div class="hf-header"><span>🔒 YALNIZCA SANA ÖZEL</span><h1>Dijital Pati Sağlık Dosyası</h1><p>Sağlık dosyasını oluşturmak için önce bir hayvan profili ekle.</p></div><div class="hf-empty"><button type="button" data-action="health-add-pet" class="hf-primary">Hayvan ekle</button></div></section>';
+   if(!active)return '<section class="health-file health-stage13"><div class="hf-header"><span>🔒 YALNIZCA SANA ÖZEL</span><h1>Dijital Buchee Sağlık Dosyası</h1><p>Sağlık dosyasını oluşturmak için önce bir hayvan profili ekle.</p></div><div class="hf-empty"><button type="button" data-action="health-add-pet" class="hf-primary">Hayvan ekle</button></div></section>';
    const docs=visibleDocs(),weights=(getWeights()||[]).filter(x=>x.pet_id===active.id),reminders=(getReminders()||[]).filter(x=>x.pet_id===active.id);
    const editing=state.editingId?docs.find(x=>x.id===state.editingId):null;
    if(state.editingId&&!editing)state.editingId='';
    const filtered=shownDocs();
    return '<section class="health-file health-stage13">'
-    +'<div class="hf-header"><span>🔒 YALNIZCA SANA ÖZEL</span><h1>Dijital Pati Sağlık Dosyası</h1><p>Aşı kartlarını, tahlilleri ve veteriner notlarını yalnızca kendi hesabında sakla.</p></div>'
+    +'<div class="hf-header"><span>🔒 YALNIZCA SANA ÖZEL</span><h1>Dijital Buchee Sağlık Dosyası</h1><p>Aşı kartlarını, tahlilleri ve veteriner notlarını yalnızca kendi hesabında sakla.</p></div>'
     +'<div class="hf-controls"><div class="hf-pets" role="group" aria-label="Hayvan seç">'+animals.map(p=>'<button type="button" class="'+(p.id===active.id?'active':'')+'" data-health-pet="'+safe(p.id)+'" aria-pressed="'+String(p.id===active.id)+'">'+safe(p.name)+'</button>').join('')+'</div>'
     +'<button type="button" data-health-print class="hf-report">🖨️ Yazdır / PDF kaydet</button></div>'
     +'<div class="hf-metrics"><div><strong>'+docs.length+'</strong><small>Sağlık kaydı</small></div><div><strong>'+docs.filter(d=>!!d.object_path).length+'</strong><small>Özel belge</small></div><div><strong>'+weights.length+'</strong><small>Kilo kaydı</small></div><div><strong>'+reminders.length+'</strong><small>Hatırlatma</small></div></div>'

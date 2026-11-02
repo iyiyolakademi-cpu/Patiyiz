@@ -1,11 +1,11 @@
-/* Patiyiz Delight — small, accessible motion layers; no database writes or reward mutations. */
+/* BucheeSocial Delight — small, accessible motion layers; no database writes or reward mutations. */
 (function(){
  'use strict';
- const mascot='patiyiz-mascot.svg?v=20261029-2';
+ const mascot='buchee-social-app-icon.svg?v=20261029-2';
  const reduced=()=>!!window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
  const safeNumber=v=>Math.max(0,Math.min(99999,Number.isFinite(Number(v))?Math.trunc(Number(v)):0));
  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','"':'&quot;'}[c]));
- const mascotImage=(label='Patiyiz maskotu')=>'<img class="pati-delight-mascot" src="'+mascot+'" alt="'+esc(label)+'" decoding="async" width="105" height="105">';
+ const mascotImage=(label='BucheeSocial logosu')=>'<img class="pati-delight-mascot" src="'+mascot+'" alt="'+esc(label)+'" decoding="async" width="105" height="105">';
  /* A user sees the centered, Duolingo-like daily card only once per Istanbul calendar day.
     The backend confirms the actual streak before this presentation runs. */
  const seenInPage=new Set();
@@ -53,7 +53,7 @@
     '<div class="pati-streak-sparkles" aria-hidden="true">'+flameSVG+'</div>'+
     '<div class="pati-streak-count">'+days.toLocaleString('tr-TR')+'</div>'+
     '<h2>'+(days===1?'Serin başladı!':'Günlük serin büyüyor!')+'</h2>'+
-    '<p class="pati-streak-message">'+(days===1?'İlk patini bıraktın! Yarın tekrar görüşelim.':days<7?'Harika gidiyorsun! Her gün bir pati izi daha.':'Müthiş! Patili dostların seni her gün bekliyor.')+'</p>'+
+    '<p class="pati-streak-message">'+(days===1?'İlk patini bıraktın! Yarın tekrar görüşelim.':days<7?'Harika gidiyorsun! Her gün bir pati izi daha.':'Müthiş! Evcil dostların seni her gün bekliyor.')+'</p>'+
     '<div class="pati-streak-week" role="group" aria-label="Bu haftaki giriş günleri">'+streakWeekdays(state,day)+'</div>'+
     '<div class="pati-streak-best">🏆 En uzun seri: '+best+' gün</div>'+
     '<button type="button" class="pati-streak-close pati-streak-done">Tamam</button>'+
@@ -73,7 +73,7 @@
   const days=safeNumber(state.count),best=safeNumber(state.best);
   const iso=/^\d{4}-\d{2}-\d{2}$/.test(day)?day:new Date().toISOString().slice(0,10);
   return '<section class="pati-streak-page-card" aria-label="Günlük giriş serin">'+
-   '<span class="pati-streak-hero-eyebrow">🔥 Patili başarı yolculuğun</span>'+
+   '<span class="pati-streak-hero-eyebrow">🔥 Evcil başarı yolculuğun</span>'+
    '<div class="pati-streak-sparkles">'+flameSVG+'</div>'+
    '<strong class="pati-streak-count">'+days.toLocaleString('tr-TR')+'</strong>'+
    '<h2>günlük seri!</h2>'+

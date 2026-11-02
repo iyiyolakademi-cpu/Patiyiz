@@ -1,4 +1,4 @@
-/* Patiyiz Reels Studio — local-only video editor. No third-party upload service. */
+/* BucheeSocial Reels Studio — local-only video editor. No third-party upload service. */
 (function(){
 'use strict';
 const FILTERS={
@@ -46,7 +46,7 @@ function mount(form){
  '<div class="prs-trim"></div><div class="prs-global">'+
  '<label>Filtre<select data-prs-global="filter"><option value="original">Orijinal</option><option value="canli">Canlı</option><option value="sicak">Sıcak</option><option value="siyahbeyaz">Siyah beyaz</option><option value="sinema">Sinema</option></select></label>'+
  '<label>Geçiş<select data-prs-global="transition"><option value="cut">Doğrudan kes</option><option value="fade">Yumuşak geçiş</option></select></label>'+
- '<label>Video üzerindeki yazı<input data-prs-global="overlay" maxlength="80" placeholder="Örneğin: Birlikte büyüyoruz 🐾"></label>'+
+ '<label>Video üzerindeki yazı<input data-prs-global="overlay" maxlength="80" placeholder="Örneğin: Birlikte büyüyoruz 💜"></label>'+
  '<label>Yazının konumu<select data-prs-global="position"><option value="bottom">Alt</option><option value="center">Orta</option><option value="top">Üst</option></select></label>'+
  '<label class="prs-mute"><input type="checkbox" data-prs-global="mute"> Videonun sesini kaldır</label></div>'+
  '<div class="prs-feedback" role="status">Düzenleme cihazında yapılır; videon yalnızca paylaşırken yüklenir.</div>';
