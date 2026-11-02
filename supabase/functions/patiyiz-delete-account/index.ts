@@ -25,50 +25,53 @@ Deno.serve(async req=>{
  const passwordClient=createClient(url,anon,{auth:{autoRefreshToken:false,persistSession:false}});
  const {data:passwordCheck,error:passwordError}=await passwordClient.auth.signInWithPassword({email:verified.user.email,password:json.password});
  if(passwordError||passwordCheck.user?.id!==uid)return answer(403,"Şifren doğrulanamadı. Hesap silinmedi.");
- // Clean up owned files using Storage API, not direct storage.objects SQL.
+ // Delete the auth record FIRST. This transaction cascades to database rows.
+ // If the database rejects deletion, keep all media intact so a retry is safe.
+ const {error:deleteError}=await admin.auth.admin.deleteUser(uid);
+ if(deleteError){console.error("Delete user failed",deleteError.message);return answer(503,"Hesap silinemedi, lütfen yeniden dene.");}
+
+ // Only remove stored files AFTER the auth deletion has succeeded. Clean up owned files using Storage API, not direct storage.objects SQL.
  // Include private chat uploads authored by this user; never leave sensitive attachments orphaned.
- for(const bucket of ["patiyiz-media","patiyiz-voice-comments","patiyiz-videos","patiyiz-private-messages"]){
+ for(const bucket of ["patiyiz-media","patiyiz-voice-comments","patiyiz-videos","patiyiz-private-messages","patiyiz-close-stories","patiyiz-private-posts","patiyiz-group-avatars","buchee-capsules"]){
   for(let page=0;page<300;page++){
    const {data:objects,error:listingError}=await admin.storage.from(bucket).list(uid,{limit:100,offset:0});
-   if(listingError)return answer(503,"Dosyalar listelenemedi; hesap silinmedi.");
+   if(listingError)return answer(200,"Hesabın silindi, ancak bazı dosyalar henüz temizlenemedi. Destek ile iletişime geç.");
    if(!objects?.length)break;
    const paths=objects.filter(o=>o.name&&o.id).map(o=>uid+"/"+o.name);
-   if(!paths.length)return answer(503,"Dosya temizleme doğrulanamadı; hesap silinmedi.");
+   if(!paths.length)return answer(200,"Hesabın silindi, ancak bazı dosyalar henüz temizlenemedi. Destek ile iletişime geç.");
    const {error:removeError}=await admin.storage.from(bucket).remove(paths);
-   if(removeError)return answer(503,"Dosyalar silinemedi; hesap silinmedi.");
+   if(removeError)return answer(200,"Hesabın silindi, ancak bazı dosyalar henüz temizlenemedi. Destek ile iletişime geç.");
    if(objects.length<100)break;
-   if(page===299)return answer(503,"Dosya temizleme sınırına ulaşıldı; hesap silinmedi.");
+   if(page===299)return answer(200,"Hesabın silindi, ancak bazı dosyalar henüz temizlenemedi. Destek ile iletişime geç.");
   }
  }
  // Health records are nested in owner/pet/document; delete PRIVATE objects before auth user cascade.
  const healthBucket="patiyiz-health-private";
  for(let batch=0;batch<300;batch++){
   const {data:folders,error:folderError}=await admin.storage.from(healthBucket).list(uid,{limit:100,offset:0});
-  if(folderError)return answer(503,"Özel sağlık belgeleri listelenemedi; hesap silinmedi.");
+  if(folderError)return answer(200,"Hesabın silindi, ancak bazı dosyalar henüz temizlenemedi. Destek ile iletişime geç.");
   if(!folders?.length)break;
   for(const folder of folders){
    const prefix=uid+"/"+folder.name;
    if(folder.id){
     const {error:removeError}=await admin.storage.from(healthBucket).remove([prefix]);
-    if(removeError)return answer(503,"Özel sağlık belgesi silinemedi; hesap silinmedi.");
+    if(removeError)return answer(200,"Hesabın silindi, ancak bazı dosyalar henüz temizlenemedi. Destek ile iletişime geç.");
     continue;
    }
    for(let page=0;page<300;page++){
     const {data:entries,error:listError}=await admin.storage.from(healthBucket).list(prefix,{limit:100,offset:0});
-    if(listError)return answer(503,"Özel sağlık belgeleri listelenemedi; hesap silinmedi.");
+    if(listError)return answer(200,"Hesabın silindi, ancak bazı dosyalar henüz temizlenemedi. Destek ile iletişime geç.");
     if(!entries?.length)break;
     const paths=entries.filter(o=>o.id&&o.name).map(o=>prefix+"/"+o.name);
-    if(!paths.length)return answer(503,"Özel sağlık belgelerinin temizlenmesi doğrulanamadı; hesap silinmedi.");
+    if(!paths.length)return answer(200,"Hesabın silindi, ancak bazı dosyalar henüz temizlenemedi. Destek ile iletişime geç.");
     const {error:removeError}=await admin.storage.from(healthBucket).remove(paths);
-    if(removeError)return answer(503,"Özel sağlık belgeleri silinemedi; hesap silinmedi.");
+    if(removeError)return answer(200,"Hesabın silindi, ancak bazı dosyalar henüz temizlenemedi. Destek ile iletişime geç.");
     if(entries.length<100)break;
-    if(page===299)return answer(503,"Özel sağlık belgesi sayfa sınırına ulaşıldı; hesap silinmedi.");
+    if(page===299)return answer(200,"Hesabın silindi, ancak bazı dosyalar henüz temizlenemedi. Destek ile iletişime geç.");
    }
   }
   if(folders.length<100)break;
-  if(batch===299)return answer(503,"Özel sağlık dosyası temizleme sınırına ulaşıldı; hesap silinmedi.");
+  if(batch===299)return answer(200,"Hesabın silindi, ancak bazı dosyalar henüz temizlenemedi. Destek ile iletişime geç.");
  }
- const {error:deleteError}=await admin.auth.admin.deleteUser(uid);
- if(deleteError){console.error("Delete user failed",deleteError.message);return answer(503,"Hesap silinemedi, lütfen yeniden dene.");}
  return answer(200,"Hesabın ve ona bağlı veriler silindi.");
 });
