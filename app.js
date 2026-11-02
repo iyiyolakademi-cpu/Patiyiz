@@ -127,7 +127,7 @@ const verifiedBadge=p=>p?.is_verified?'<span class="pati-verified pati-verified-
 const displayName=p=>esc(p?.display_name||'BucheeSocial üyesi')+verifiedBadge(p);
 const displayUser=id=>displayName(profile(id));
 const bucheeAvatarEmpty='<svg class="buchee-avatar-silhouette" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="50" cy="38" r="22" fill="#9299a3"/><path d="M9 96c2-25 18-40 41-40s39 15 41 40" fill="#9299a3"/></svg>';
-const avatar=(p,s='m')=>`<span class="avatar ${s}${p?.avatar_url?'':' buchee-avatar-empty'}">${p?.avatar_url?`<img src="${esc(p.avatar_url)}" alt="">`:bucheeAvatarEmpty}</span>`;
+const avatar=(p,s='m')=>`<span class="avatar ${s}${p?.avatar_url?'':' buchee-avatar-empty'}">${p?.avatar_url?`<img src="${esc(p.avatar_url)}" alt="" loading="lazy" decoding="async">`:bucheeAvatarEmpty}</span>`;
 const petIcon=s=>({'Kedi':'🐱','Köpek':'🐶','Kuş':'🦜','Tavşan':'🐰','Balık':'🐠','Kemirgen':'🐹'}[s]||'💜');
 const photo=(url,fallback='💜',priority=false)=>`<div class="pati-photo">${url?`<img src="${esc(url)}" alt="Hayvan fotoğrafı" loading="${priority===true?'eager':'lazy'}" decoding="async" ${priority===true?'fetchpriority="high"':'fetchpriority="low"'}>`:fallback}</div>`;
 // Render the destination immediately behind the splash, preserving the opening signature for a brief, intentional 1.55-second reveal. 
