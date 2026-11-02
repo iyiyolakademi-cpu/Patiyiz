@@ -2033,6 +2033,16 @@ let patiOwnArchiveCache={owner:'',rows:new Map()};
 let patiOwnHighlightsCache={owner:'',rows:[],fetchedAt:0};
 async function patiHydrateAlbumCovers(rows,uid){if(!globalThis.PatiyizPrivateMedia?.hydrateRows)return rows;return Promise.all(rows.map(async album=>{if(!album.cover_image_url)return album;const res=await globalThis.PatiyizPrivateMedia.hydrateRows([{image_url:album.cover_image_url}],uid,sb);return {...album,_bucheeCoverUrl:res[0]?.image_url||''}}))}
 
+/* Missing files must not render as broken-image icons after archive migrations. */
+document.addEventListener('error',event=>{
+ const media=event.target;
+ if(!(media instanceof HTMLImageElement||media instanceof HTMLVideoElement))return;
+ const wrapper=media.closest?.('.buchee-highlight-ring,.buchee-highlight-manage-cover');
+ if(!wrapper)return;
+ const empty=document.createElement('span');empty.className='buchee-highlight-cover-empty';empty.textContent='◈';
+ empty.setAttribute('aria-label','Kapak fotoğrafı kullanılamıyor');
+ media.replaceWith(empty);
+},true);
 async function patiOwnStoryArchive(){
  if(!me?.id)throw Error('Oturum bulunamadı.');
  const uid=me.id,res=await sb.from('patiyiz_stories').select('*').eq('author_id',uid).order('created_at',{ascending:false}).limit(500);
@@ -9039,6 +9049,7 @@ globalThis.PatiyizPrivateMedia?.onRefresh(async()=>{
  data.posts=await globalThis.PatiyizPrivateMedia.hydrateRows(data.posts,uid,sb);
  data.stories=await globalThis.PatiyizPrivateMedia.hydrateRows(data.stories,uid,sb);
  data.pets=await globalThis.PatiyizPrivateMedia.hydrateRows(data.pets,uid,sb);
+ data.highlightAlbums=await patiHydrateAlbumCovers(data.highlightAlbums,uid);
  if(patiReelsFeed?.owner===uid)patiReelsFeed.rows=await globalThis.PatiyizPrivateMedia.hydrateRows(patiReelsFeed.rows,uid,sb);
  if(patiExploreMedia?.owner===uid)patiExploreMedia.rows=await globalThis.PatiyizPrivateMedia.hydrateRows(patiExploreMedia.rows,uid,sb);
  if(patiFollowingState?.owner===uid)patiFollowingState.rows=await globalThis.PatiyizPrivateMedia.hydrateRows(patiFollowingState.rows,uid,sb);
