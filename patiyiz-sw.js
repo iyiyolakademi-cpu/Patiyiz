@@ -1,11 +1,11 @@
-/* Patiyiz push notification service worker */
+/* BucheeSocial push notification service worker */
 self.addEventListener('push', event=>{
  let payload={title:'BucheeSocial',body:'Yeni bir bildirimin var.',url:'./'};
  try{const incoming=event.data?.json();if(incoming&&typeof incoming==='object')payload={...payload,...incoming}}catch(_){}
  const title=String(payload.title||'BucheeSocial').slice(0,120);
  const body=String(payload.body||'Yeni bir bildirimin var.').slice(0,220);
  event.waitUntil(self.registration.showNotification(title,{
-  body,icon:'./patiyiz-icon.svg?v=20261024-new-p-logo-1',badge:'./patiyiz-icon.svg?v=20261024-new-p-logo-1',tag:'patiyiz-'+String(payload.id||'notice'),
+  body,icon:'./buchee-social-app-icon.svg?v=20261024-new-p-logo-1',badge:'./buchee-social-app-icon.svg?v=20261024-new-p-logo-1',tag:'patiyiz-'+String(payload.id||'notice'),
   data:{url:payload.id?'./?notification='+encodeURIComponent(String(payload.id)):'./'},renotify:false
  }));
 });
