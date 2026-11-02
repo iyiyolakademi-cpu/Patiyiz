@@ -5,6 +5,8 @@ import {fileURLToPath} from 'node:url';
 import {build} from 'esbuild';
 const native=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const root=path.resolve(native,'..'),out=path.join(native,'www');
+// Generate release icons before copying assets; no dependency on another workflow finishing.
+await import('./generate-buchee-icons.mjs');
 const files=[
 'index.html','admin.html','privacy.html','terms.html','delete-account.html',
 'style.css','buchee-inbox-reels-clean-brand-20261102.css','buchee-launch-reels-profile-fix-20261102.css','patiyiz-inspired.css','ios-reels.css','follower-milestones.css','dm-fullscreen.css','pets-completion.css','reels-stage4.css','manifest.webmanifest','config.js','push-config.js',

@@ -56,6 +56,6 @@
  ],q:'Bu seriyi tamamladıktan sonra en yararlı yaklaşım hangisidir?',opts:['Bilgiyi gerçek bir durumda küçük bir adımla uygulamak','Öğrendiklerini hiç kullanmadan unutmak','Tek örnekten her durum için kesin sonuç çıkarmak'],answer:0});
  }
  if(series.length!==9||series.some(s=>s.topics.length!==20)||lessons.length!==909||new Set(lessons.map(l=>l.id)).size!==909)throw Error('101 eğitim serileri veri tutarsızlığı');
- window.PATIYIZ_SERIES_CATALOG=[{title:'101 Hayvan',icon:'🐾'},...series.map(s=>({title:s.title,icon:s.icon}))];
+ window.PATIYIZ_SERIES_CATALOG=[{title:'101 Hayvan',icon:'📚'},...series.map(s=>({title:s.title,icon:s.icon}))];
  window.PATIYIZ_SERIES_LESSONS=lessons;
 })();
