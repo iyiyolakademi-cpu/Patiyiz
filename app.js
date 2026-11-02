@@ -4436,10 +4436,10 @@ async function patiDmLoadHiddenThreads(){
   }
  }
 }
-async function patiDmDeleteConversation(peer){
+async function patiDmDeleteConversation(peer, skipConfirmation = false){
  if(!me?.id||!peer||peer===me.id||blocked.has(peer))throw Error('Sohbet seçilemedi.');
  const owner=me.id;
- if(!confirm('Bu sohbet yalnızca senin listenden kaldırılacak. Karşı tarafın mesajları silinmez. Yeni mesaj gelirse sohbet yeniden görünür. Devam edilsin mi?'))return;
+ if(!skipConfirmation && !confirm('Bu sohbet yalnızca senin listenden kaldırılacak. Karşı tarafın mesajları silinmez. Yeni mesaj gelirse sohbet yeniden görünür. Devam edilsin mi?'))return;
  const hiddenAt=new Date().toISOString();
  const table=()=>sb.from('patiyiz_dm_hidden_threads');
  let res=await table().update({hidden_at:hiddenAt}).eq('viewer_id',owner).eq('peer_id',peer).select('peer_id,hidden_at');
@@ -4458,6 +4458,17 @@ async function patiDmDeleteConversation(peer){
  patiDmSafeRender();navRender();notify('Sohbet listenden kaldırıldı.');
 }
 
+window.BucheeBulkHideDmThreads = async function(ids) {
+ const unique = [...new Set(ids)].filter(id => typeof id === 'string' && id && id !== me?.id);
+ const owner = me?.id;
+ if(!owner)throw new Error('Oturum açılmalı.');
+ let done=0,failed=0;
+ for(const peer of unique){
+  if(me?.id !== owner)break;
+  try{await patiDmDeleteConversation(peer,true);done++}catch(err){failed++;console.warn('Sohbet kaldırılamadı',err)}
+ }
+ return {done,failed};
+};
 function patiDmThreadKey(peer){return (me?.id||'')+':'+peer}
 function patiDmFindMessage(id){
  return data.messages.find(row=>row.id===id)||
