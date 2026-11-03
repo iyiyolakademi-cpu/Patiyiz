@@ -1,0 +1,84 @@
+/* Buchee — phase 1: home feed only. No changes to messages, explore, Reels or profile. */
+html[data-pati-view="home"][data-pati-screen="feed"] #main-content .buchee-home-feed-filters{
+ display:flex;align-items:center;gap:6px;box-sizing:border-box;width:100%;
+ padding:7px 12px;margin:0;background:#fff;border-bottom:1px solid #eceef1;
+}
+html[data-pati-view="home"][data-pati-screen="feed"] #main-content .buchee-home-feed-filters>button{
+ appearance:none;display:inline-flex;align-items:center;justify-content:center;
+ min-height:44px;min-width:0;padding:8px 15px;border:1px solid transparent;border-radius:999px;
+ background:transparent;color:#626771;font:650 12px/1.25 system-ui,-apple-system,sans-serif;
+ white-space:nowrap;cursor:pointer;touch-action:manipulation;
+}
+html[data-pati-view="home"][data-pati-screen="feed"] #main-content .buchee-home-feed-filters>button.active,
+html[data-pati-view="home"][data-pati-screen="feed"] #main-content .buchee-home-feed-filters>button[aria-pressed="true"]{
+ background:#f0edf6;color:#25202e;border-color:#e6dff0;
+}
+html[data-pati-view="home"][data-pati-screen="feed"] #main-content .buchee-home-feed-filters>button:focus-visible{
+ outline:2px solid #6c3bad;outline-offset:2px;
+}
+html[data-pati-view="home"][data-pati-screen="feed"] #main-content .buchee-home-empty-actions{
+ display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:9px;
+ padding:10px 12px 18px;background:#fff;
+}
+html[data-pati-view="home"][data-pati-screen="feed"] #main-content .buchee-home-empty-actions button{
+ min-height:44px;padding:9px 16px;border:1px solid #e0d8ec;border-radius:11px;
+ background:#f4f0f8;color:#39254b;font:650 13px/1.35 system-ui,-apple-system,sans-serif;
+ touch-action:manipulation;
+}
+html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-following-state{
+ padding:20px 14px;margin:0;text-align:center;color:#69717d;font-size:13px;
+}
+@media(max-width:740px){
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-daily-card.pati-daily-poll{
+  margin:0 0 6px!important;padding:10px 12px 11px!important;
+  border-radius:0!important;box-shadow:none!important;border-bottom:1px solid #edf0f3!important;
+ }
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-daily-card .pati-daily-top{
+  gap:8px!important;align-items:center!important;
+ }
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-daily-card .pati-daily-top-copy small{
+  display:none!important;
+ }
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-daily-card>strong{
+  display:block!important;margin:8px 0 10px!important;
+  text-align:left!important;font-size:14px!important;line-height:1.4!important;
+ }
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-daily-card .pati-daily-inline-options{
+  gap:7px!important;
+ }
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-daily-card .pati-daily-inline-options button{
+  min-height:44px!important;padding:8px 10px!important;font-size:12px!important;
+ }
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-daily-card .pati-daily-footer{
+  margin-top:7px!important;font-size:11px!important;
+ }
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-daily-card .pati-daily-footer>span:last-child{
+  display:none!important;
+ }
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-feed-posts>.pati-feed-card,
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-feed-posts>.pati-home-question{
+  margin-bottom:7px!important;border-radius:0!important;box-shadow:none!important;
+ }
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-feed-card .pati-actionbar.pati-social-actions{
+  display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  column-gap:0!important;row-gap:0!important;align-items:center!important;
+  box-sizing:border-box!important;width:100%!important;max-width:100%!important;
+  min-height:50px!important;padding:3px 8px!important;
+ }
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-feed-card .pati-actionbar.pati-social-actions>button,
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-feed-card .pati-actionbar.pati-social-actions>button.pati-save-action{
+  position:relative!important;display:flex!important;align-items:center!important;justify-content:center!important;
+  width:100%!important;max-width:100%!important;min-width:0!important;min-height:44px!important;
+  margin:0!important;padding:4px 1px!important;gap:2px!important;
+  flex:none!important;order:initial!important;overflow:visible!important;
+ }
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-feed-card .pati-social-actions>button svg.icon{
+  width:clamp(20px,5.8vw,24px)!important;height:clamp(20px,5.8vw,24px)!important;
+  min-width:20px!important;
+ }
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-feed-card .pati-social-actions>button span[data-pati-metric],
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-feed-card .pati-social-actions>button>span:not(.buchee-repost-check){
+  font-size:clamp(10px,2.8vw,12px)!important;line-height:1.2!important;
+  font-variant-numeric:tabular-nums;
+ }
+}
