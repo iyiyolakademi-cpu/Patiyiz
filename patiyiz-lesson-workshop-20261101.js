@@ -23,7 +23,7 @@
   if(authored){
    // Preserve the three original safety-focused teaching notes for animal care.
    if(lesson.cat==='101 Hayvan'){
-    const source=(lesson.parts||[]).slice(0,3).map(clean);
+    const source=(lesson.parts||[]).slice(0,3).map(x=>clean(x).replace(/^(?:TEMEL BİLGİ|GÜNLÜK ÖRNEK VE GÖZLEM|GÜVENLİK VE SINIRLAR)\s*—\s*/,'').trim());
     if(source[0])authored[0].text.unshift(source[0]);
     if(source[1])authored[2].text.unshift(source[1]);
     if(source[2])authored[4].text.unshift(source[2]);
