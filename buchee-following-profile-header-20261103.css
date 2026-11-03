@@ -1,0 +1,19 @@
+/* Buchee 03.11: followed stories, centered home brand and quiet profile controls. */
+#pati-header-coins,#pati-desktop-coins{display:none!important}
+#main-content .pati-ig-profile .buchee-profile-wallet{padding:0 14px;margin:0 0 14px}
+#main-content .pati-ig-profile .buchee-profile-wallet>button{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:43px;padding:9px 14px;border:1px solid #e5e7ec;border-radius:11px;background:#f2f3f6;color:#252633;font:650 13px/20px system-ui,-apple-system,sans-serif;box-shadow:none}
+#main-content .pati-ig-profile .buchee-profile-wallet>button>span:last-child{font-size:22px;font-weight:400;line-height:1}
+@media(max-width:740px){
+html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header{position:relative!important;grid-template-columns:52px minmax(0,1fr) 52px!important}
+html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger{position:absolute!important;left:50%!important;right:auto!important;transform:translateX(-50%)!important;top:calc(env(safe-area-inset-top,0px) + 7px)!important;width:min(58vw,220px)!important;max-width:calc(100vw - 120px)!important;margin:0!important;z-index:7!important;display:flex!important;justify-content:center!important;align-items:center!important}
+html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger>div,
+html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger .brand-word{width:100%!important;display:flex!important;align-items:center!important;justify-content:center!important}
+html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger .buchee-feed-wordmark{max-width:100%!important;width:auto!important;height:auto!important;max-height:27px!important;object-fit:contain!important}
+html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>.pati-header-actions{grid-column:3!important;grid-row:1!important;justify-content:flex-end!important;width:52px!important;min-width:52px!important;max-width:52px!important;margin-left:auto!important}
+html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-header-share{grid-column:1!important;grid-row:1!important;position:relative!important;z-index:8!important;display:grid!important;place-items:center!important;width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;padding:0!important;background:transparent!important;background-image:none!important;border:0!important;box-shadow:none!important;border-radius:0!important;color:#111!important}
+html[data-pati-view="home"] #pati-header-share svg,html[data-pati-view="home"] #pati-header-share .icon{width:25px!important;height:25px!important;color:#111!important;stroke:#111!important;fill:none!important}
+#main-content .pati-ig-profile .pati-own-profile-actions>button:first-child,
+#main-content .pati-ig-profile .pati-own-profile-actions>button.buchee-edit-compact:first-child{background:#f1f2f5!important;border:1px solid #eceef2!important;color:#282b36!important;font-size:12px!important;font-weight:650!important}
+#main-content .pati-ig-profile .pati-ig-tabs .pati-profile-tab-caption{font-size:10px!important;line-height:14px!important;letter-spacing:0!important}
+#main-content .pati-ig-profile .pati-ig-tabs button{min-width:0!important}
+}
