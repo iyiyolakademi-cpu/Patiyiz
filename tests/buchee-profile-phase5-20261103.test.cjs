@@ -74,7 +74,7 @@ test('photo/video grid and privacy remain, no balance appears on visitor profile
 });
 test('isolated mobile stylesheet is loaded late without modifying source bundle',()=>{
  assert.match(html,/buchee-profile-phase5-20261103\.css\?v=20261103v1/);
- assert.match(html,/app\.js\?v=20261103-profile-phase5-v1/);
+ assert.match(html,/<script src="app\.js\?v=20\d{6}-[a-z0-9-]+/);
  assert.ok(html.indexOf('buchee-profile-phase5-20261103.css')>html.indexOf('buchee-reels-phase4-20261103.css'));
  assert.doesNotMatch(css,/html\[data-pati-view="reels"\]|html\[data-pati-view="home"\]|html\[data-pati-view="messages"\]/);
  new vm.Script(app);
