@@ -3463,6 +3463,7 @@ function bucheeQuizSync(root,id){
  if(count)count.textContent='Soru '+(step+1)+' / '+questions.length;
  const meter=root.querySelector('.buchee-quiz-progress-fill');
  if(meter)meter.style.width=(((step+1)/questions.length)*100)+'%';
+ const track=root.querySelector('.buchee-quiz-progress-track');if(track)track.setAttribute('aria-valuenow',String(step+1));
  root.querySelectorAll('.buchee-quiz-dot').forEach((dot,i)=>{
   dot.classList.toggle('is-active',i===step);
   dot.classList.toggle('is-answered',Number.isInteger(selections[i])&&selections[i]>=0);
@@ -8205,8 +8206,8 @@ case 'education-quiz-next':case 'education-quiz-prev':{
  if(educationQuizBusy||educationLesson!==id||educationDone().has(id))break;
  const quiz=target.closest('.buchee-edu-quiz');
  const step=Number(bucheeQuizStep[id]||0);
- if(action==='education-quiz-next'&&(!Array.isArray(educationAnswer[id])||educationAnswer[id][step]<0))break;
- bucheeQuizStep[id]=Math.max(0,Math.min(4,step+(action==='education-quiz-next'?1:-1)));
+ if(act==='education-quiz-next'&&(!Array.isArray(educationAnswer[id])||educationAnswer[id][step]==null||educationAnswer[id][step]<0))break;
+ bucheeQuizStep[id]=Math.max(0,Math.min(4,step+(act==='education-quiz-next'?1:-1)));
  bucheeQuizSync(quiz,id);
  const legend=quiz?.querySelector('.buchee-edu-question.is-current legend');
  if(legend){legend.setAttribute('tabindex','-1');legend.focus({preventScroll:true});}
