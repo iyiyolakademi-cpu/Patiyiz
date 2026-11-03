@@ -198,3 +198,34 @@ html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-profile-tile
   transition:none!important;animation:none!important;
  }
 }
+
+/* Buchee profile: small, aligned eye and view count on tiles (2026-11-04). */
+html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-profile-tile>.pati-profile-view-count{
+ position:absolute!important;inset:auto auto 7px 7px!important;
+ z-index:9!important;display:inline-flex!important;
+ align-items:center!important;justify-content:flex-start!important;
+ box-sizing:border-box!important;width:auto!important;height:auto!important;
+ min-width:0!important;min-height:0!important;max-width:calc(100% - 14px)!important;
+ gap:4px!important;margin:0!important;padding:0!important;
+ border:0!important;border-radius:0!important;
+ background:transparent!important;background-image:none!important;
+ box-shadow:none!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ font:700 12px/1.15 system-ui,-apple-system,sans-serif!important;
+ letter-spacing:0!important;font-variant-numeric:tabular-nums!important;
+ white-space:nowrap!important;text-shadow:0 1px 3px rgba(0,0,0,.85)!important;
+ pointer-events:none!important;
+}
+html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-profile-tile>.pati-profile-view-count>.pati-eye-mark{
+ display:block!important;flex:0 0 15px!important;
+ width:15px!important;height:15px!important;min-width:15px!important;max-width:15px!important;
+ color:#fff!important;stroke:currentColor!important;stroke-width:2!important;
+ fill:none!important;opacity:1!important;
+ filter:drop-shadow(0 1px 2px rgba(0,0,0,.65))!important;
+}
+html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-profile-tile>.pati-profile-view-count>span[data-pati-view-count]{
+ display:inline-block!important;min-width:0!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ font:700 12px/1.15 system-ui,-apple-system,sans-serif!important;
+ letter-spacing:0!important;white-space:nowrap!important;
+}
