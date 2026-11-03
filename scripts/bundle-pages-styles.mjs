@@ -3,7 +3,7 @@
 import fs from 'node:fs';
 import {createHash} from 'node:crypto';
 const filename='index.html';
-const html=fs.readFileSync(filename,'utf8');
+const html=fs.readFileSync(filename,'utf8').replace(/<template id="buchee-core-style-sources">[\s\S]*?<\/template>/,'');
 const link=/<link rel="stylesheet" href="([\w.-]+\.css)(?:\?[^"]*)?">/g;
 const adjacent=new RegExp('(?:'+link.source+'\\s*){2,}','g');
 const bundled=html.replace(adjacent,group=>{

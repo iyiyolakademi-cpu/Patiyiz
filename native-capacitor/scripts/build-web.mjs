@@ -39,6 +39,7 @@ html=replace(html,'</head>','<link rel="stylesheet" href="native-reels.css">\n</
 html=html.replace(/<link rel="canonical" href="https:\/\/patiyiz\.com\/">/,'');
 // Preserve the cascade order but serve one stylesheet inside Capacitor.
  // Source files remain separate and editable. This removes dozens of runtime CSS requests.
+ html=html.replace(/<template id="buchee-core-style-sources">[\s\S]*?<\/template>/,'');
  html=html.replace(/<link rel="stylesheet" data-views="[^"]+" data-href=/g,'<link rel="stylesheet" href=');
  const sourceStyles=[...html.matchAll(/<link rel="stylesheet" href="([^"]+)">/g)];
  const stylesheetPieces=[];
