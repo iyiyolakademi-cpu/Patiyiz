@@ -3471,7 +3471,7 @@ function bucheeQuizSync(root,id){
  });
  const prev=root.querySelector('.buchee-quiz-prev'),next=root.querySelector('.buchee-quiz-next'),submit=root.querySelector('.buchee-edu-submit');
  if(prev){prev.hidden=step===0;prev.disabled=step===0;}
- if(next){next.hidden=step===questions.length-1;next.disabled=selections[step]==null||selections[step]<0;}
+ if(next){next.hidden=step===questions.length-1;next.disabled=false;next.removeAttribute('aria-disabled');}
  if(submit){submit.hidden=step!==questions.length-1;submit.disabled=selections.length!==questions.length||selections.some(v=>!Number.isInteger(v)||v<0);}
 }
 function educationQuizMarkup(l,completed,studyReady){
@@ -3493,7 +3493,7 @@ function educationQuizMarkup(l,completed,studyReady){
    question.opts.map((answer,j)=>'<button type="button" class="buchee-edu-option '+(selections[i]===j?'selected':'')+'" data-action="education-answer" data-id="'+esc(l.id)+'" data-question="'+i+'" data-choice="'+j+'" aria-pressed="'+String(selections[i]===j)+'"><span class="edu-v2-answer-marker" aria-hidden="true">'+String.fromCharCode(65+j)+'</span><span class="buchee-quiz-answer-copy">'+esc(answer)+'</span><span class="buchee-quiz-choice-check" aria-hidden="true">✓</span></button>').join('')+
    '</div></fieldset>').join('')+
   '<div class="buchee-quiz-navigation"><button type="button" class="buchee-quiz-prev" data-action="education-quiz-prev" data-id="'+esc(l.id)+'"'+(index===0?' hidden':'')+'>← Önceki</button>'+
-  '<button type="button" class="buchee-quiz-next" data-action="education-quiz-next" data-id="'+esc(l.id)+'"'+(index===quiz.length-1?' hidden':'')+(selections[index]<0?' disabled':'')+'>Devam et <span aria-hidden="true">→</span></button>'+
+  '<button type="button" class="buchee-quiz-next" data-action="education-quiz-next" data-id="'+esc(l.id)+'"'+(index===quiz.length-1?' hidden':'')+'>Devam et <span aria-hidden="true">→</span></button>'+
   '<button type="button" class="buchee-edu-submit" data-action="education-submit" data-id="'+esc(l.id)+'"'+(index!==quiz.length-1?' hidden':'')+(selections.some(x=>x<0)?' disabled':'')+'>Testi bitir <span aria-hidden="true">✓</span></button></div>'+
   '<p class="buchee-edu-quiz-feedback" role="status" aria-live="polite">'+(feedback?esc(feedback):'Cevabını seçerek devam et. Sonuç, test bitince hesaplanır.')+'</p>'+
   '</section>';
@@ -8206,11 +8206,10 @@ case 'education-quiz-next':case 'education-quiz-prev':{
  if(educationQuizBusy||educationLesson!==id||educationDone().has(id))break;
  const quiz=target.closest('.buchee-edu-quiz');
  const step=Number(bucheeQuizStep[id]||0);
- if(act==='education-quiz-next'&&(!Array.isArray(educationAnswer[id])||educationAnswer[id][step]==null||educationAnswer[id][step]<0))break;
  bucheeQuizStep[id]=Math.max(0,Math.min(4,step+(act==='education-quiz-next'?1:-1)));
  bucheeQuizSync(quiz,id);
  const legend=quiz?.querySelector('.buchee-edu-question.is-current legend');
- if(legend){legend.setAttribute('tabindex','-1');legend.focus({preventScroll:true});}
+ if(legend){legend.setAttribute('tabindex','-1');requestAnimationFrame(()=>{if(!legend.isConnected)return;legend.scrollIntoView({behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});try{legend.focus({preventScroll:true})}catch(_){legend.focus()}});}
  break;
 }
 case 'education-submit':{
