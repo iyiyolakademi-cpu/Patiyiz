@@ -1,0 +1,236 @@
+/* Buchee Hayvanım Merkezi — refined multi-pet hub and editor. */
+#main-content .pati-pet-hub.buchee-pet-center{
+ width:100%!important;max-width:100%!important;box-sizing:border-box!important;
+ padding-top:12px!important;padding-bottom:26px!important;
+}
+#main-content .buchee-pet-center .buchee-pet-center-top,
+#main-content .buchee-own-pets .buchee-own-pets-heading{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ flex-wrap:wrap!important;gap:14px!important;box-sizing:border-box!important;
+ width:100%!important;min-width:0!important;margin:0 0 19px!important;
+ padding:0 4px!important;
+}
+#main-content .buchee-pet-center .buchee-pet-center-top>div,
+#main-content .buchee-own-pets .buchee-own-pets-heading>div{min-width:0!important;flex:1 1 180px!important}
+#main-content .buchee-pet-center .buchee-pet-center-top>div>span,
+#main-content .buchee-own-pets .buchee-own-pets-heading>div>span{
+ display:block!important;margin:0 0 5px!important;
+ color:#8a7295!important;font:850 10px/1.2 system-ui,-apple-system,sans-serif!important;
+ letter-spacing:.13em!important;
+}
+#main-content .buchee-pet-center .buchee-pet-center-top h2,
+#main-content .buchee-own-pets .buchee-own-pets-heading h1{
+ margin:0!important;padding:0!important;color:#18191e!important;
+ font:850 clamp(21px,4.5vw,27px)/1.28 system-ui,-apple-system,sans-serif!important;
+ letter-spacing:-.042em!important;text-align:left!important;
+}
+#main-content .buchee-pet-center .buchee-pet-center-top p,
+#main-content .buchee-own-pets .buchee-own-pets-heading p{
+ margin:6px 0 0!important;color:#787983!important;
+ font:550 12px/1.4 system-ui,-apple-system,sans-serif!important;
+}
+#main-content .buchee-pet-center .buchee-pet-add-primary,
+#main-content .buchee-own-pets .buchee-own-pets-add{
+ appearance:none!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ flex:0 0 auto!important;box-sizing:border-box!important;
+ min-height:46px!important;width:auto!important;margin:0!important;padding:11px 14px!important;
+ border:0!important;border-radius:12px!important;
+ background:#24252b!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+ box-shadow:none!important;font:760 12px/1.25 system-ui,-apple-system,sans-serif!important;
+ white-space:nowrap!important;touch-action:manipulation!important;
+}
+#main-content .buchee-pet-center .p4-hub-hero{
+ box-sizing:border-box!important;margin-bottom:15px!important;
+ border-radius:22px!important;overflow:hidden!important;
+}
+#main-content .buchee-pet-center .buchee-pet-picker-heading{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;
+ width:100%!important;margin:19px 0 11px!important;padding:0 2px!important;
+}
+#main-content .buchee-pet-center .buchee-pet-picker-heading>strong{
+ color:#24252a!important;font:850 16px/1.35 system-ui,-apple-system,sans-serif!important;
+}
+#main-content .buchee-pet-center .buchee-pet-picker-heading>button{
+ display:inline-flex!important;align-items:center!important;min-height:36px!important;
+ padding:7px 9px!important;border:0!important;border-radius:9px!important;
+ background:transparent!important;color:#696170!important;
+ font:700 12px/1.2 system-ui,-apple-system,sans-serif!important;
+}
+#main-content .buchee-pet-center .p4-pet-picker{
+ display:flex!important;align-items:flex-start!important;gap:14px!important;
+ min-width:0!important;width:100%!important;max-width:100%!important;
+ margin:0 0 19px!important;padding:4px 2px 10px!important;overflow-x:auto!important;
+ scrollbar-width:none!important;
+}
+#main-content .buchee-pet-center .p4-pet-picker::-webkit-scrollbar{display:none}
+#main-content .buchee-pet-center .p4-pet-picker .p4-pet-thumb{
+ display:flex!important;flex:0 0 74px!important;flex-direction:column!important;align-items:center!important;
+ justify-content:flex-start!important;gap:7px!important;
+ box-sizing:border-box!important;width:74px!important;min-width:74px!important;
+ min-height:92px!important;margin:0!important;padding:3px!important;
+ border:0!important;background:transparent!important;box-shadow:none!important;
+ color:#303138!important;font:650 12px/1.2 system-ui,-apple-system,sans-serif!important;
+}
+#main-content .buchee-pet-center .p4-pet-picker .p4-pet-thumb img,
+#main-content .buchee-pet-center .p4-pet-picker .p4-pet-add{
+ display:grid!important;place-items:center!important;flex:0 0 62px!important;
+ box-sizing:border-box!important;width:62px!important;height:62px!important;
+ min-width:62px!important;min-height:62px!important;margin:0!important;padding:0!important;
+ border:2px solid #ececf0!important;border-radius:18px!important;
+ background:#f5f5f7!important;object-fit:cover!important;box-shadow:none!important;
+}
+#main-content .buchee-pet-center .p4-pet-picker .p4-pet-thumb.active img{
+ border:2px solid #6f578a!important;box-shadow:0 0 0 2px #e9dff3!important;
+}
+#main-content .buchee-pet-center .p4-pet-picker .p4-pet-add{
+ color:#514159!important;font:400 29px/1 system-ui,-apple-system,sans-serif!important;
+}
+#main-content .buchee-pet-center .p4-pet-picker .p4-pet-thumb>span:last-child{
+ width:100%!important;max-width:74px!important;margin:0!important;
+ color:#30313a!important;font:700 11px/1.2 system-ui,-apple-system,sans-serif!important;
+ overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;text-align:center!important;
+}
+#main-content .pati-own-pets.buchee-own-pets{
+ display:block!important;width:100%!important;max-width:100%!important;
+ box-sizing:border-box!important;padding:20px 15px 38px!important;
+ background:#fff!important;color:#1d1e23!important;
+}
+#main-content .buchee-own-pets .buchee-own-pets-heading{
+ padding:0!important;margin:0 0 22px!important;
+}
+#main-content .buchee-own-pets .buchee-pet-profile-grid{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ width:100%!important;gap:13px!important;margin:0!important;padding:0!important;
+}
+#main-content .buchee-own-pets .buchee-pet-profile-card{
+ display:flex!important;flex-direction:column!important;box-sizing:border-box!important;
+ min-width:0!important;width:100%!important;margin:0!important;padding:0!important;
+ border:1px solid #e8e8ed!important;border-radius:19px!important;
+ background:#fff!important;overflow:hidden!important;
+ box-shadow:0 4px 17px rgba(24,24,34,.045)!important;
+}
+#main-content .buchee-own-pets .buchee-pet-profile-cover{
+ display:block!important;position:relative!important;aspect-ratio:1.25!important;
+ width:100%!important;overflow:hidden!important;background:#f3f3f6!important;
+}
+#main-content .buchee-own-pets .buchee-pet-profile-cover img{
+ display:block!important;position:absolute!important;inset:0!important;
+ width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;
+ margin:0!important;object-fit:cover!important;border-radius:0!important;
+}
+#main-content .buchee-own-pets .buchee-pet-profile-info{
+ display:flex!important;flex-direction:column!important;min-width:0!important;
+ gap:5px!important;width:100%!important;padding:12px 13px!important;
+}
+#main-content .buchee-own-pets .buchee-pet-profile-info>strong{
+ font:850 16px/1.3 system-ui,-apple-system,sans-serif!important;color:#1b1c21!important;
+ overflow-wrap:anywhere!important;
+}
+#main-content .buchee-own-pets .buchee-pet-profile-info>span{
+ font:600 11px/1.3 system-ui,-apple-system,sans-serif!important;color:#777982!important;
+ overflow-wrap:anywhere!important;
+}
+#main-content .buchee-own-pets .buchee-pet-profile-info>p{
+ margin:3px 0 0!important;color:#61636c!important;
+ font:530 12px/1.5 system-ui,-apple-system,sans-serif!important;
+ display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;
+ overflow:hidden!important;overflow-wrap:anywhere!important;
+}
+#main-content .buchee-own-pets .buchee-pet-profile-actions{
+ display:flex!important;flex-direction:column!important;gap:7px!important;
+ margin-top:auto!important;padding:0 12px 13px!important;
+}
+#main-content .buchee-own-pets .buchee-pet-profile-actions>button{
+ appearance:none!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ box-sizing:border-box!important;min-height:42px!important;width:100%!important;
+ margin:0!important;padding:9px!important;border-radius:11px!important;
+ border:1px solid #e4e5e9!important;background:#fff!important;color:#24252a!important;
+ font:750 12px/1.2 system-ui,-apple-system,sans-serif!important;
+}
+#main-content .buchee-own-pets .buchee-pet-profile-actions>button:last-child{
+ background:#25252b!important;border-color:#25252b!important;color:#fff!important;
+}
+#main-content .buchee-own-pets .buchee-own-pets-empty{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ flex-direction:column!important;min-height:290px!important;
+ padding:30px 20px!important;border:1px dashed #e0e1e6!important;border-radius:20px!important;
+ background:#fafafb!important;text-align:center!important;
+}
+#main-content .buchee-own-pets .buchee-own-pets-empty>span{
+ display:grid!important;place-items:center!important;
+ width:67px!important;height:67px!important;border-radius:18px!important;
+ background:#f0edf4!important;color:#675278!important;font-size:29px!important;
+}
+#main-content .buchee-own-pets .buchee-own-pets-empty>h2{
+ color:#22232a!important;font-size:19px!important;font-weight:800!important;margin:16px 0 6px!important;
+}
+#main-content .buchee-own-pets .buchee-own-pets-empty>p{
+ max-width:310px!important;color:#75757f!important;font-size:13px!important;line-height:1.5!important;margin:0 0 17px!important;
+}
+#main-content .buchee-own-pets .buchee-own-pets-empty>button{
+ min-height:45px!important;margin:0!important;padding:10px 16px!important;
+ border:0!important;border-radius:11px!important;background:#25252b!important;color:#fff!important;font-weight:750!important;
+}
+#modal-root .pati-pet-edit-modal{
+ --pet-editor-ink:#1b1c20;--pet-editor-muted:#6b6d76;
+ color:var(--pet-editor-ink)!important;
+}
+#modal-root .pati-pet-edit-modal .pati-edit-cover.pati-pet-edit-cover{
+ box-sizing:border-box!important;display:flex!important;align-items:center!important;gap:15px!important;
+ margin:0 0 18px!important;padding:17px!important;border:1px solid #e6e6eb!important;
+ border-radius:16px!important;background:#f8f8fa!important;
+}
+#modal-root .pati-pet-edit-modal .pati-pet-edit-photo{
+ flex:0 0 82px!important;width:82px!important;height:82px!important;
+ min-width:82px!important;min-height:82px!important;border-radius:19px!important;
+ overflow:hidden!important;background:#ececf0!important;
+}
+#modal-root .pati-pet-edit-modal .pati-pet-edit-photo img{
+ width:100%!important;height:100%!important;object-fit:cover!important;
+}
+#modal-root .pati-pet-edit-modal .pati-pet-edit-photo-tools{
+ flex:1 1 auto!important;min-width:0!important;align-items:flex-start!important;
+}
+#modal-root .pati-pet-edit-modal .pati-pet-edit-photo-tools>strong{
+ color:#22232a!important;font-size:14px!important;font-weight:800!important;
+}
+#modal-root .pati-pet-edit-modal .pati-pet-photo-select{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ min-height:39px!important;margin-top:5px!important;padding:8px 11px!important;
+ border:1px solid #dfdfe5!important;border-radius:10px!important;
+ background:#fff!important;color:#24252a!important;font-size:12px!important;font-weight:750!important;
+}
+#modal-root .pati-pet-edit-modal .pati-edit-section-title{
+ margin:14px 0 11px!important;color:#23242a!important;font:800 14px/1.25 system-ui,-apple-system,sans-serif!important;
+}
+#modal-root .pati-pet-edit-modal input:not([type="file"]),
+#modal-root .pati-pet-edit-modal select,
+#modal-root .pati-pet-edit-modal textarea{
+ box-sizing:border-box!important;min-height:47px!important;width:100%!important;max-width:100%!important;
+ border:1px solid #dfe0e6!important;border-radius:11px!important;
+ background:#fff!important;color:#1e1f25!important;-webkit-text-fill-color:#1e1f25!important;
+ padding:11px 12px!important;font:550 14px/1.4 system-ui,-apple-system,sans-serif!important;
+ box-shadow:none!important;
+}
+#modal-root .pati-pet-edit-modal label{
+ color:#42434c!important;font-size:12px!important;font-weight:700!important;
+}
+#modal-root .pati-pet-edit-modal .modal-footer button[type="submit"]{
+ box-sizing:border-box!important;min-height:50px!important;width:100%!important;
+ border:0!important;border-radius:12px!important;background:#24242b!important;color:#fff!important;
+ font:750 14px/1.25 system-ui,-apple-system,sans-serif!important;
+}
+#main-content .buchee-pet-center button:focus-visible,
+#main-content .buchee-own-pets button:focus-visible,
+#modal-root .pati-pet-edit-modal button:focus-visible{
+ outline:3px solid #8a70a1!important;outline-offset:2px!important;
+}
+@media(max-width:420px){
+ #main-content .buchee-pet-center .buchee-pet-center-top{align-items:stretch!important}
+ #main-content .buchee-pet-center .buchee-pet-add-primary{flex:1 1 auto!important;width:100%!important}
+ #main-content .buchee-own-pets .buchee-own-pets-heading>button{width:100%!important;flex:1 1 auto!important}
+ #main-content .buchee-own-pets .buchee-pet-profile-grid{gap:9px!important}
+ #main-content .buchee-own-pets .buchee-pet-profile-cover{aspect-ratio:1.05!important}
+ #main-content .buchee-own-pets .buchee-pet-profile-actions{padding:0 9px 10px!important}
+ #main-content .buchee-own-pets .buchee-pet-profile-actions>button{font-size:11px!important}
+}
