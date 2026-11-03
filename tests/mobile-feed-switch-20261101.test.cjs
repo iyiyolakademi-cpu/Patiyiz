@@ -46,17 +46,21 @@ test('Media timeline excludes tweets and questions; text timeline excludes photo
    patiHomeQuestionCard:q=>'<question>'+q.id+'</question>',
    empty:message=>'<empty>'+message+'</empty>'
  });
+ // Buchee starts with written posts and questions, but retains the media switch.
+ const text=state.render(rows);
+ assert.match(text,/<post>tweet<\/post>/);
+ assert.match(text,/<question>q<\/question>/);
+ assert.doesNotMatch(text,/<post>photo<\/post>|<post>reel<\/post>/);
+ state.setMode('media');
  const media=state.render(rows);
  assert.match(media,/<post>photo<\/post>/);
  assert.match(media,/<post>reel<\/post>/);
  assert.doesNotMatch(media,/<post>tweet<\/post>|<question>/);
  state.setMode('text');
- const text=state.render(rows);
- assert.match(text,/<post>tweet<\/post>/);
- assert.match(text,/<question>q<\/question>/);
- assert.doesNotMatch(text,/<post>photo<\/post>|<post>reel<\/post>/);
- assert.match(app,/localStorage\.getItem\('patiyiz-home-feed-mode'\)/);
- assert.match(switchJs,/localStorage\.setItem\(STORAGE_KEY,mode\)/);
+ assert.match(state.render(rows),/<post>tweet<\/post>/);
+ assert.match(app,/let patiHomeContentMode='text';/);
+ assert.match(switchJs,/let activeMode='text';/);
+ assert.doesNotMatch(switchJs,/localStorage\.getItem\(STORAGE_KEY\)/);
 });
 
 test('Native Capacitor staging collects the same mobile JS and final CSS from index',()=>{
@@ -65,4 +69,16 @@ test('Native Capacitor staging collects the same mobile JS and final CSS from in
  assert.match(build,/if\(\/\^\[a-zA-Z0-9\._-\]\+/);
  assert.match(html,/patiyiz-header-feed-menu-20261031\.js\?v=3-mobile-static/);
  assert.match(html,/patiyiz-mobile-feed-switch-20261101\.css\?v=1-mobile-first/);
+});
+
+
+test('Buchee header keeps notifications right-aligned and inbox bulk delete uses trash icon',()=>{
+ const inbox=fs.readFileSync('buchee-dm-bulk-select-20261102.js','utf8');
+ assert.match(html,/<span class="pati-feed-current">Yazılar ve Sorular<\/span>/);
+ assert.match(html,/data-pati-feed-choice="text" aria-checked="true"/);
+ assert.match(html,/The notification action occupies the outermost right grid column/);
+ assert.match(html,/#pati-header-notifications\{[\s\S]*?margin:0 0 0 auto!important/);
+ assert.match(inbox,/trigger\.innerHTML='<svg aria-hidden="true"/);
+ assert.doesNotMatch(inbox,/trigger\.textContent='⋯'/);
+ assert.match(inbox,/data-action|BucheeBulkHideDmThreads/);
 });
