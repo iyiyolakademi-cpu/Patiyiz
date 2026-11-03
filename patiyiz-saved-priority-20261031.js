@@ -1,195 +1,218 @@
-/* Patiyiz: saved content in an Instagram-style 3-column importance list.
- * Reads/writes ONLY the signed-in user's public.post_saves.importance.
- * This module never creates a second save record or changes post visibility.
- */
-(() => {
-  'use strict';
-  let context = null;
-  let filter = 'all';
-  let activeChoice = null;
-  let busy = false;
-  const options = {
-    green: {title: 'Yeşil', explanation: 'Çok önemli değil · Sonra bakabilirim'},
-    orange: {title: 'Turuncu', explanation: 'Orta önemli · Yakında inceleyeceğim'},
-    red: {title: 'Kırmızı', explanation: 'Kesin bak · Öncelikli olarak incele'}
-  };
-  const esc = value => String(value ?? '').replace(/[&<>"']/g,
-    ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-  const ownSaves = () => (context?.data?.saves || []).filter(row =>
-    row.user_id === context?.me?.id && context.saved.has(row.post_id));
-  const savedRow = id => ownSaves().find(row => row.post_id === id);
-  const importance = id => options[savedRow(id)?.importance] ? savedRow(id).importance : 'green';
-
-  function visiblePosts() {
-    if (!context?.me) return [];
-    const savedTimes = new Map(ownSaves().map(row => [row.post_id, row.created_at]));
-    return context.data.posts.filter(post =>
-      context.saved.has(post.id) &&
-      !context.blocked.has(post.author_id) &&
-      (filter === 'all' || importance(post.id) === filter)
-    ).sort((a, b) =>
-      new Date(savedTimes.get(b.id) || b.created_at) -
-      new Date(savedTimes.get(a.id) || a.created_at) ||
-      String(b.id).localeCompare(String(a.id))
-    );
+/* Buchee Kaydedilenler — personal saved library.
+   Reuses existing post_saves, post data and green/orange/red importance values.
+   No personal data is copied into another table. */
+(()=>{
+ 'use strict';
+ let ctx=null;
+ let importanceFilter='all',typeFilter='all',sort='new',layout='grid',query='';
+ let selecting=false,busy=false,choiceId=null,confirming=false;
+ let selected=new Set(),lastFetchKey='';
+ const levels={
+  green:{name:'Yeşil',desc:'Daha sonra incelemek için',color:'#309966'},
+  orange:{name:'Turuncu',desc:'Yakında tekrar bakacağım',color:'#e7a041'},
+  red:{name:'Kırmızı',desc:'Öncelikli ve önemli',color:'#d75b67'}
+ };
+ const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const normalized=x=>String(x??'').toLocaleLowerCase('tr-TR').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+ const rows=()=>((ctx?.data?.saves)||[]).filter(r=>r.user_id===ctx?.me?.id&&ctx.saved.has(r.post_id));
+ const saves=()=>new Map(rows().map(r=>[r.post_id,r]));
+ const importance=id=>levels[saves().get(id)?.importance]?saves().get(id).importance:'green';
+ const kind=post=>{
+  if(post.post_format==='reels'||post.video_url||post.media_videos?.some?.(Boolean))return 'reels';
+  if(post.image_url||post.images?.some?.(Boolean))return 'media';
+  return 'text';
+ };
+ const label=post=>({reels:'Reels',media:'Gönderi',text:'Yazı'})[kind(post)];
+ const userName=post=>{
+  const profile=ctx?.data?.profiles?.find(p=>p.id===post.author_id);
+  return profile?.display_name||profile?.name||profile?.username||'Buchee kullanıcısı';
+ };
+ const dateShort=value=>{try{return new Intl.DateTimeFormat('tr-TR',{day:'numeric',month:'short',year:'numeric'}).format(new Date(value))}catch(e){return ''}};
+ const timeOf=(post,times)=>new Date(times.get(post.id)||post.created_at||0).getTime()||0;
+ function allSavedPosts(){
+  if(!ctx?.me?.id)return[];
+  const saveTimes=new Map(rows().map(x=>[x.post_id,x.created_at]));
+  return ctx.data.posts.filter(post=>ctx.saved.has(post.id)&&!ctx.blocked.has(post.author_id))
+   .sort((a,b)=>(sort==='old'?timeOf(a,saveTimes)-timeOf(b,saveTimes):timeOf(b,saveTimes)-timeOf(a,saveTimes))||String(b.id).localeCompare(String(a.id)));
+ }
+ function visiblePosts(){
+  const q=normalized(query.trim());
+  return allSavedPosts().filter(post=>(importanceFilter==='all'||importance(post.id)===importanceFilter)
+   &&(typeFilter==='all'||kind(post)===typeFilter)
+   &&(!q||normalized([post.body,post.caption,post.title,userName(post)].join(' ')).includes(q)));
+ }
+ function postMedia(post,index){
+  const images=Array.isArray(post.images)?post.images.filter(Boolean):[];
+  const cover=post.video_cover_url||images[0]||post.image_url||'';
+  const video=post.video_url||(Array.isArray(post.media_videos)?post.media_videos.find(Boolean):'');
+  if(cover)return '<img src="'+esc(cover)+'" alt="" loading="'+(index<4?'eager':'lazy')+'" decoding="async">';
+  if(video)return '<div class="buchee-saved-video-placeholder" aria-hidden="true"><span>▶</span></div>';
+  return '<div class="buchee-saved-text-preview">'+esc(String(post.body||post.title||'Kaydedilen yazı').trim().slice(0,160))+'</div>';
+ }
+ function tile(post,index){
+  const id=esc(post.id),level=importance(post.id),checked=selected.has(post.id);
+  const description=String(post.body||post.caption||post.title||'Kaydedilen içerik').trim();
+  const record=saves().get(post.id);
+  return '<article class="buchee-saved-item '+(checked?'is-selected':'')+'" data-kind="'+kind(post)+'" data-importance="'+level+'">'+
+   '<button type="button" class="buchee-saved-item-main" data-saved-action="'+(selecting?'toggle':'open')+'" data-id="'+id+'" aria-label="'+(selecting?'Kaydı seç':'İçeriği aç')+'">'+
+   '<span class="buchee-saved-media">'+postMedia(post,index)+(selecting?'<span class="buchee-saved-check" aria-hidden="true">'+(checked?'✓':'')+'</span>':'')+'</span>'+
+   '<span class="buchee-saved-item-body"><span class="buchee-saved-kind">'+esc(label(post))+'</span><strong>'+esc(description.slice(0,115))+'</strong>'+
+   '<span class="buchee-saved-author">'+esc(userName(post))+'</span><small>'+esc(dateShort(record?.created_at||post.created_at))+'</small></span></button>'+
+   '<button type="button" class="buchee-saved-priority" data-saved-action="priority" data-id="'+id+'" aria-label="Önem derecesi: '+levels[level].name+'. Değiştir" '+(selecting?'disabled':'')+'>'+
+   '<span class="buchee-saved-priority-dot buchee-saved-'+level+'"></span><span>'+levels[level].name+'</span><span aria-hidden="true">⌄</span></button>'+
+   '</article>';
+ }
+ function render(arg){
+  if(arg)ctx=arg;
+  if(!ctx?.me?.id)return;
+  const root=document.getElementById('main-content');if(!root)return;
+  const all=allSavedPosts(),list=visiblePosts(),missing=[...ctx.saved].filter(id=>!ctx.data.posts.some(p=>p.id===id));
+  // Discard selections that are no longer saved.
+  for(const id of selected)if(!ctx.saved.has(id))selected.delete(id);
+  root.innerHTML='<section class="pati-saved-screen buchee-saved-library" aria-label="Kaydedilenler">'+
+   '<header class="buchee-saved-header"><button type="button" class="pati-page-back buchee-saved-back" data-action="pati-page-back" aria-label="Geri">← Geri</button>'+
+   '<h1>Kaydedilenler</h1><button type="button" class="buchee-saved-select-mode" data-saved-action="selection">'+(selecting?'Vazgeç':'Seç')+'</button></header>'+
+   '<div class="buchee-saved-hero"><div><span>BUCHEE KÜTÜPHANEM</span><h2>İçeriklerin, tek yerde.</h2><p>Kaydettiğin gönderileri kolayca bul, önemine göre düzenle.</p></div>'+
+   '<div class="buchee-saved-total"><b>'+ctx.saved.size+'</b><span>kayıt</span></div></div>'+
+   '<div class="buchee-saved-search-row"><label class="buchee-saved-search"><span aria-hidden="true">⌕</span>'+
+   '<input type="search" id="buchee-saved-search" placeholder="Kaydedilenlerde ara" autocomplete="off" value="'+esc(query)+'" aria-label="Kaydedilen içeriklerde ara"></label>'+
+   '<select id="buchee-saved-sort" aria-label="Sıralama"><option value="new" '+(sort==='new'?'selected':'')+'>En yeni</option><option value="old" '+(sort==='old'?'selected':'')+'>En eski</option></select></div>'+
+   '<div class="buchee-saved-section-label"><strong>Önem Listesi</strong><span>Kayıtlarına öncelik ver</span></div>'+
+   '<div class="buchee-saved-priority-filters" role="group" aria-label="Önem derecesi filtreleri">'+
+   [['all','Tümü'],['green','Yeşil'],['orange','Turuncu'],['red','Kırmızı']].map(([level,name])=>
+    '<button type="button" data-saved-action="importance-filter" data-level="'+level+'" class="'+(importanceFilter===level?'is-active':'')+'" aria-pressed="'+(importanceFilter===level)+'">'+(level==='all'?'':'<span class="buchee-saved-priority-dot buchee-saved-'+level+'"></span>')+name+'</button>').join('')+'</div>'+
+   '<div class="buchee-saved-section-label buchee-saved-content-heading"><strong>İçeriklerim</strong><span>'+list.length+' sonuç</span></div>'+
+   '<div class="buchee-saved-toolbar"><div class="buchee-saved-types" role="group" aria-label="İçerik türü">'+
+   [['all','Tümü'],['media','Gönderiler'],['reels','Reels'],['text','Yazılar']].map(([type,name])=>
+    '<button type="button" data-saved-action="type-filter" data-type="'+type+'" class="'+(typeFilter===type?'is-active':'')+'" aria-pressed="'+(typeFilter===type)+'">'+name+'</button>').join('')+
+   '</div><button type="button" class="buchee-saved-layout-btn" data-saved-action="layout" aria-label="'+(layout==='grid'?'Liste görünümüne geç':'Kart görünümüne geç')+'">'+(layout==='grid'?'☷':'▦')+'</button></div>'+
+   (selecting?'<div class="buchee-saved-selectionbar"><span>'+selected.size+' içerik seçildi</span>'+
+    '<button type="button" data-saved-action="select-all">'+(selected.size&&selected.size===list.length?'Seçimi kaldır':'Tümünü seç')+'</button>'+
+    '<button type="button" class="is-destructive" data-saved-action="remove-selected" '+(selected.size?'':'disabled')+'>Listemden kaldır</button></div>':'')+
+   (missing.length?'<div class="buchee-saved-loading" role="status">'+missing.length+' kayıt yükleniyor veya erişilemiyor. <button type="button" data-saved-action="refresh">Yeniden dene</button></div>':'')+
+   (list.length?'<div class="buchee-saved-results is-'+layout+'" role="list">'+list.map(tile).join('')+'</div>':
+    '<div class="buchee-saved-empty"><span aria-hidden="true">▣</span><h2>'+(ctx.saved.size?'Bu filtrede içerik yok':'Henüz kayıtlı içerik yok')+'</h2>'+
+    '<p>'+(ctx.saved.size?'Başka bir filtre veya arama dene.':'Akışta beğendiğin gönderileri kaydederek kendi kütüphaneni oluştur.')+'</p>'+
+    '<button type="button" data-saved-action="'+(ctx.saved.size?'reset':'back')+'">'+(ctx.saved.size?'Filtreleri temizle':'Akışa dön')+'</button></div>')+
+   '</section>';
+  const key=ctx.me.id+'|'+missing.slice().sort().join(',');
+  if(missing.length&&key!==lastFetchKey){lastFetchKey=key;void ctx.fetchMissingSavedPosts();}
+ }
+ function closeOverlay(){
+  document.getElementById('buchee-saved-overlay')?.remove();choiceId=null;confirming=false;
+ }
+ function modalOpen(html,title){
+  closeOverlay();
+  const cover=document.createElement('div');cover.id='buchee-saved-overlay';cover.className='buchee-saved-overlay';
+  cover.innerHTML='<div class="buchee-saved-scrim" data-saved-action="dismiss"></div>'+
+   '<section class="buchee-saved-sheet" role="dialog" aria-modal="true" aria-label="'+esc(title)+'">'+html+'</section>';
+  document.body.appendChild(cover);
+  cover.querySelector('button')?.focus({preventScroll:true});
+ }
+ function openChoice(id){
+  if(!ctx?.me?.id||!ctx.saved.has(id))return;
+  const current=importance(id);
+  choiceId=id;
+  const content='<header><div><span>ÖNEM LİSTESİ</span><h2>Önem derecesini seç</h2></div><button type="button" data-saved-action="dismiss" aria-label="Kapat">×</button></header>'+
+   '<p>Bu içeriğe yeniden ne zaman bakmak istiyorsun?</p>'+
+   Object.entries(levels).map(([key,v])=>'<button type="button" class="buchee-saved-level-option" data-saved-action="assign" data-level="'+key+'" aria-pressed="'+(current===key)+'">'+
+   '<span class="buchee-saved-priority-dot buchee-saved-'+key+'"></span><span><strong>'+v.name+'</strong><small>'+v.desc+'</small></span>'+
+   (current===key?'<b aria-hidden="true">✓</b>':'')+'</button>').join('');
+  modalOpen(content,'Önem derecesi');
+  choiceId=id;
+ }
+ async function saveImportance(level){
+  const id=choiceId,owner=ctx?.me?.id;
+  if(busy||!id||!owner||!levels[level]||!ctx.saved.has(id))return;
+  busy=true;
+  const buttons=[...document.querySelectorAll('.buchee-saved-level-option')];buttons.forEach(b=>b.disabled=true);
+  try{
+   const r=await ctx.sb.from('post_saves').update({importance:level}).eq('user_id',owner).eq('post_id',id).select('post_id,importance').single();
+   if(r.error)throw r.error;
+   if(ctx?.me?.id!==owner)return;
+   if(r.data?.post_id!==id||r.data.importance!==level)throw Error('Değişiklik doğrulanamadı.');
+   const current=ctx.data.saves.find(x=>x.user_id===owner&&x.post_id===id);
+   if(current)current.importance=level;
+   closeOverlay();render();ctx.notify('Önem derecesi '+levels[level].name+' olarak güncellendi.');
+  }catch(e){if(ctx?.me?.id===owner){ctx.notify('Kaydedilemedi: '+String(e?.message||e),true);buttons.forEach(b=>b.disabled=false)}}
+  finally{busy=false}
+ }
+ function askRemove(){
+  if(!selected.size||busy)return;
+  confirming=true;
+  modalOpen('<header><div><span>SEÇİLEN KAYITLAR</span><h2>Listemden kaldır</h2></div><button type="button" data-saved-action="dismiss" aria-label="Kapat">×</button></header>'+
+   '<p><b>'+selected.size+'</b> kaydı listenizden kaldırmak üzeresiniz. Paylaşımların asılları silinmez.</p>'+
+   '<div class="buchee-saved-confirm-actions"><button type="button" data-saved-action="dismiss">Vazgeç</button>'+
+   '<button type="button" class="is-destructive" data-saved-action="confirm-remove">Kayıtlardan kaldır</button></div>','Kayıtlardan kaldır');
+  confirming=true;
+ }
+ async function removeSelected(){
+  if(!confirming||!selected.size||busy||!ctx?.me?.id)return;
+  const uid=ctx.me.id,ids=[...selected].filter(id=>ctx.saved.has(id));if(!ids.length)return;
+  busy=true;
+  document.querySelectorAll('#buchee-saved-overlay button').forEach(b=>b.disabled=true);
+  try{
+   const removed=[];
+   for(let i=0;i<ids.length;i+=80){
+    const batch=ids.slice(i,i+80);
+    const r=await ctx.sb.from('post_saves').delete().eq('user_id',uid).in('post_id',batch).select('post_id');
+    if(r.error)throw r.error;
+    for(const row of r.data||[])removed.push(row.post_id);
+   }
+   if(ctx?.me?.id!==uid)return;
+   if(!removed.length)throw Error('Hiçbir kayıt silinemedi. Yetkilerini kontrol et.');
+   for(const id of removed){ctx.saved.delete(id);selected.delete(id);}
+   const gone=new Set(removed);
+   ctx.data.saves=ctx.data.saves.filter(x=>!(x.user_id===uid&&gone.has(x.post_id)));
+   selecting=false;selected.clear();closeOverlay();
+   ctx.rerender();ctx.notify(removed.length+' kayıt listenden kaldırıldı.');
+  }catch(e){
+   if(ctx?.me?.id===uid){closeOverlay();ctx.notify('Toplu kaldırma tamamlanamadı: '+String(e?.message||e),true);ctx.rerender();}
+  }finally{busy=false}
+ }
+ function handleClick(event){
+  const b=event.target.closest('[data-saved-action]');if(!b)return;
+  const act=b.dataset.savedAction;
+  if(busy&&act!=='dismiss')return;
+  switch(act){
+   case 'open':ctx?.openPost(b.dataset.id);break;
+   case 'priority':openChoice(b.dataset.id);break;
+   case 'assign':void saveImportance(b.dataset.level);break;
+   case 'dismiss':if(!busy)closeOverlay();break;
+   case 'importance-filter':importanceFilter=b.dataset.level;selected.clear();render();break;
+   case 'type-filter':typeFilter=b.dataset.type;selected.clear();render();break;
+   case 'layout':layout=layout==='grid'?'list':'grid';render();break;
+   case 'selection':selecting=!selecting;selected.clear();render();break;
+   case 'toggle':if(selected.has(b.dataset.id))selected.delete(b.dataset.id);else selected.add(b.dataset.id);render();break;
+   case 'select-all':{const shown=visiblePosts().map(x=>x.id);if(selected.size===shown.length)selected.clear();else {selected.clear();shown.forEach(id=>selected.add(id));}render();break;}
+   case 'remove-selected':askRemove();break;
+   case 'confirm-remove':void removeSelected();break;
+   case 'reset':importanceFilter='all';typeFilter='all';query='';render();break;
+   case 'back':ctx?.navigate('home');break;
+   case 'refresh':lastFetchKey='';void ctx?.fetchMissingSavedPosts();break;
   }
-
-  function mediaTile(post, i) {
-    const images = Array.isArray(post.images) ? post.images.filter(Boolean) : [];
-    const cover = post.video_cover_url || images[0] || post.image_url || '';
-    const video = post.video_url ||
-      (Array.isArray(post.media_videos) ? post.media_videos.find(Boolean) : '') || '';
-    const isVideo = !!video || post.post_format === 'reels';
-    const tag = importance(post.id);
-    const fallback = String(post.body || 'Kaydedilen içerik').trim().slice(0, 100);
-    const media = cover
-      ? '<img src="' + esc(cover) + '" alt="" loading="' + (i < 6 ? 'eager' : 'lazy') + '" decoding="async">'
-      : video
-        ? '<video src="' + esc(video) + '" muted playsinline webkit-playsinline preload="metadata" aria-hidden="true"></video>'
-        : '<span class="pati-saved-text-tile">' + esc(fallback) + '</span>';
-    const kind = isVideo ? '<span class="pati-saved-kind" aria-hidden="true">▶</span>' :
-      images.length > 1 ? '<span class="pati-saved-kind" aria-hidden="true">▣</span>' : '';
-    return '<article class="pati-saved-tile" data-importance="' + tag + '">' +
-      '<button type="button" class="pati-saved-tile-open" data-saved-action="open" data-id="' +
-      esc(post.id) + '" aria-label="Kaydedilen gönderiyi aç">' + media + kind + '</button>' +
-      '<button type="button" class="pati-saved-level" data-saved-action="priority" data-id="' +
-      esc(post.id) + '" aria-label="' + options[tag].title +
-      ' önem derecesini değiştir" title="Önem derecesini değiştir"><span></span></button></article>';
-  }
-
-  function render(ctx) {
-    if (ctx) context = ctx;
-    if (!context?.me?.id) return;
-    const root = document.getElementById('main-content');
-    if (!root) return;
-    const items = visiblePosts();
-    const missingCount = [...context.saved].filter(id => !context.data.posts.some(post => post.id === id)).length;
-    const filters = [['all','Tümü'],['green','Yeşil'],['orange','Turuncu'],['red','Kırmızı']];
-    const intro = !context.saved.size ? 'Henüz kaydettiğin bir paylaşım yok.' :
-      filter !== 'all' ? 'Bu önem düzeyinde henüz kayıt yok.' :
-      'Kaydedilmiş paylaşım bulunamadı.';
-    root.innerHTML =
-      '<section class="pati-saved-screen" aria-label="Kaydedilen paylaşımlar">' +
-      '<header class="pati-saved-page-header">' +
-      '<span class="pati-saved-header-space" aria-hidden="true"></span>' +
-      '<h1>Kaydedildi</h1><span aria-hidden="true" class="pati-saved-header-space"></span>' +
-      '</header>' +
-      '<div class="pati-saved-filters" role="group" aria-label="Önem listesi">' +
-      filters.map(([id, title]) =>
-        '<button type="button" class="pati-saved-filter' + (filter === id ? ' active' : '') +
-        '" data-saved-action="filter" data-level="' + id +
-        '" aria-pressed="' + (filter === id) + '">' +
-        (id !== 'all' ? '<i class="pati-saved-color-dot ' + id + '" aria-hidden="true"></i>' : '') +
-        title + '</button>'
-      ).join('') +
-      '</div>' +
-      '<div class="pati-saved-subhead"><h2>Önem listesi</h2><span>' + items.length + ' kayıt</span></div>' +
-      (missingCount ? '<p class="pati-saved-hint" role="status">' + missingCount + ' kayıt henüz yüklenemedi. Erişim durumu kontrol ediliyor.</p>' : '') +
-      (items.length
-        ? '<div class="pati-saved-grid">' + items.map(mediaTile).join('') + '</div>'
-        : '<div class="pati-saved-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg><p>' +
-          intro + '</p><small>' +
-          (!context.saved.size ? 'Akıştan bir gönderiyi kaydederek başlayabilirsin.' :
-          'Tümü sekmesinden kayıtlarının önem rengini değiştirebilirsin.') +
-          '</small></div>') +
-      '<p class="pati-saved-hint">Önem derecesini değiştirmek için görselin köşesindeki renkli noktaya dokun.</p>' +
-      '</section>';
-    context.fetchMissingSavedPosts();
-  }
-
-  function closeChoice() {
-    document.getElementById('pati-saved-choice-overlay')?.remove();
-    activeChoice = null;
-  }
-
-  function openChoice(id) {
-    if (!context?.me?.id || !context.saved.has(id)) return;
-    closeChoice();
-    activeChoice = id;
-    const layer = document.createElement('div');
-    layer.className = 'pati-saved-choice-overlay';
-    layer.id = 'pati-saved-choice-overlay';
-    layer.innerHTML =
-      '<div class="pati-saved-choice-scrim" data-saved-action="dismiss"></div>' +
-      '<section class="pati-saved-choice-panel" role="dialog" aria-modal="true" aria-label="Önem derecesi seç">' +
-      '<header><h2>Ne kadar önemli?</h2><button type="button" data-saved-action="dismiss" aria-label="Kapat">×</button></header>' +
-      '<p>Bu kaydı tekrar incelemek için önem derecesini belirle.</p>' +
-      Object.entries(options).map(([level, item]) =>
-        '<button type="button" class="pati-saved-choice-row" data-saved-action="assign" data-level="' +
-        level + '" aria-pressed="' + (importance(id) === level) + '">' +
-        '<i class="pati-saved-color-dot ' + level + '"></i><span><strong>' + item.title +
-        '</strong><small>' + item.explanation + '</small></span>' +
-        (importance(id) === level ? '<b aria-hidden="true">✓</b>' : '') +
-        '</button>'
-      ).join('') + '</section>';
-    document.body.appendChild(layer);
-    layer.querySelector('.pati-saved-choice-row')?.focus();
-  }
-
-  async function assignImportance(level) {
-    if (!context || !activeChoice || !options[level] || busy) return;
-    const id = activeChoice;
-    const owner = context.me?.id;
-    if (!owner || !context.saved.has(id)) return;
-    busy = true;
-    const buttons = [...document.querySelectorAll('.pati-saved-choice-row')];
-    buttons.forEach(button => button.disabled = true);
-    try {
-      const result = await context.sb.from('post_saves')
-        .update({importance:level})
-        .eq('user_id', owner)
-        .eq('post_id', id)
-        .select('post_id,importance')
-        .single();
-      if (result.error) throw result.error;
-      if (context.me?.id !== owner) return;
-      if (result.data?.post_id !== id || result.data?.importance !== level) {
-        throw new Error('Kaydedilen önem derecesi doğrulanamadı.');
-      }
-      const record = context.data.saves.find(row => row.user_id === owner && row.post_id === id);
-      if (record) record.importance = level;
-      closeChoice();
-      if (document.querySelector('#main-content > .pati-saved-screen')) render();
-      context.notify('Önem derecesi: ' + options[level].title);
-    } catch (err) {
-      if (context.me?.id === owner) {
-        context.notify('Önem derecesi kaydedilemedi: ' + String(err?.message || 'Tekrar dene'), true);
-        buttons.forEach(button => button.disabled = false);
-      }
-    } finally {
-      busy = false;
-    }
-  }
-
-  document.addEventListener('click', event => {
-    const button = event.target.closest('[data-saved-action]');
-    if (!button) return;
-    const action = button.dataset.savedAction;
-    if (action === 'assign') {
-      event.preventDefault();
-      void assignImportance(button.dataset.level);
-    } else if (action === 'dismiss') {
-      if (!busy) closeChoice();
-    } else if (action === 'filter') {
-      if (button.dataset.level === 'all' || options[button.dataset.level]) {
-        filter = button.dataset.level;
-        render();
-      }
-    } else if (action === 'back') {
-      context?.navigate('home');
-    } else if (action === 'open') {
-      context?.openPost(button.dataset.id);
-    } else if (action === 'priority') {
-      openChoice(button.dataset.id);
-    }
-  });
-  document.addEventListener('error', event => {const img=event.target;if(!(img instanceof HTMLImageElement)||!img.closest('.pati-saved-tile-open'))return;const tile=img.closest('.pati-saved-tile-open');if(!tile||tile.dataset.fallbackShown)return;tile.dataset.fallbackShown='true';img.remove();const label=document.createElement('span');label.className='pati-saved-text-tile';label.textContent='Görsel yüklenemedi';tile.prepend(label);},true);
-  document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && activeChoice && !busy) closeChoice();
-  });
-  function choose(id, ctx) {
-    if (ctx) context = ctx;
-    openChoice(id);
-  }
-  window.PatiyizSavedV2 = {render, visiblePosts, choose};
+ }
+ document.addEventListener('click',handleClick);
+ document.addEventListener('input',event=>{
+  if(event.target.id!=='buchee-saved-search')return;
+  const input=event.target;query=input.value;
+  const start=input.selectionStart||0;
+  render();
+  const next=document.getElementById('buchee-saved-search');
+  if(next){next.focus({preventScroll:true});try{next.setSelectionRange(start,start)}catch(e){}}
+ });
+ document.addEventListener('change',event=>{
+  if(event.target.id==='buchee-saved-sort'){sort=event.target.value==='old'?'old':'new';render();}
+ });
+ document.addEventListener('keydown',event=>{
+  if(event.key==='Escape'&&document.getElementById('buchee-saved-overlay')&&!busy){closeOverlay();}
+ });
+ document.addEventListener('error',event=>{
+  const img=event.target;
+  if(!(img instanceof HTMLImageElement)||!img.closest('.buchee-saved-media'))return;
+  const parent=img.parentElement;if(!parent||parent.dataset.bucheeError)return;
+  parent.dataset.bucheeError='1';img.replaceWith(Object.assign(document.createElement('span'),{className:'buchee-saved-image-fallback',textContent:'Görsel yüklenemedi'}));
+ },true);
+ // Keep compatibility with every save button elsewhere in the app.
+ window.PatiyizSavedV2={render,visiblePosts,choose(id,context){if(context)ctx=context;openChoice(id)}};
 })();
