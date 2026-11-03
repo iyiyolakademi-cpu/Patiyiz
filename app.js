@@ -5960,7 +5960,7 @@ function patiProfileTabKeyboard(event){
   target?.focus?.({preventScroll:true});
  });
 }
-document.addEventListener('keydown',patiProfileTabKeyboard);
+if(typeof document!=='undefined')document.addEventListener('keydown',patiProfileTabKeyboard);
 function profilePage(){
  const p=profile(profileId||me.id),own=p.id===me.id,pets=data.pets.filter(x=>x.owner_id===p.id);
  void patiSafetyRefresh();if(!own)patiRecordProfileVisit(p.id);
@@ -5996,7 +5996,8 @@ function profilePage(){
  const videoTabIcon='<svg class="pati-profile-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" aria-hidden="true"><rect x="2.7" y="5" width="18.6" height="14" rx="3.3"/><path d="m10 9 5.1 3-5.1 3Z" fill="currentColor" stroke="none"/></svg>';
  const textTabIcon='<svg class="pati-profile-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 11h13M4 16h15M4 21h9"/></svg>';
  const iconTabs=[['media',gridTabIcon,'Gönderiler','Gönderi'],['reels',ico('reels-tab'),'Reels','Reels'],['videos',videoTabIcon,'Videolar','Video'],['text',textTabIcon,'Tweetler','Tweet'],['reposts',repostTabIcon,'Yeniden paylaşılanlar','Yeniden paylaş']];
- const walletBalance=patiCoinState.ready===true?Math.max(0,Math.floor(Number(patiCoinState.balance)||0)).toLocaleString('tr-TR'):'—';
+ const walletReady=typeof patiCoinState!=='undefined'&&patiCoinState.ready===true;
+ const walletBalance=walletReady?Math.max(0,Math.floor(Number(patiCoinState.balance)||0)).toLocaleString('tr-TR'):'—';
  if(own)void patiLoadProfileViewCounts(posts.map(x=>x.id),p.id);
  const grid=active.map(x=>{
   const cover=x.video_url?(x.video_cover_url||x.image_url):(x.images?.[0]||x.image_url);
@@ -6032,11 +6033,11 @@ function profilePage(){
  patiProfileLinksHTML(p)+mutualMarkup+
  
  '<div class="pati-ig-actions'+(own?' pati-own-profile-actions':'')+'">'+(own?button('Profili düzenle','edit-profile')+(typeof patiCreatorPreviewHTML==='function'?patiCreatorPreviewHTML():''):button(followed.has(p.id)?'Takiptesin':patiIsFollowRequested(p.id)?'İstek gönderildi':followBack?'Sen de takip et':'Takip et','follow','data-id="'+esc(p.id)+'"'+(followBack?' data-follow-back="true"':''))+button('Mesaj gönder','chat','data-id="'+esc(p.id)+'"'))+'</div>'+
- (own?'<div class="buchee-profile-wallet"><button type="button" data-action="paticoin-rewards" aria-label="'+(patiCoinState.ready?'Bakiyen '+walletBalance+' puan. Ödülleri aç':'Puan bakiyesi yükleniyor. Ödülleri aç')+'"><span class="buchee-profile-wallet-label">Bakiyen</span><span class="buchee-profile-wallet-total"><strong data-buchee-wallet-value aria-live="polite">'+walletBalance+'</strong><small>puan</small></span><span class="buchee-profile-wallet-arrow" aria-hidden="true">›</span></button></div>':'')+'<div class="pati-ig-tabs" role="tablist" aria-label="Profil gönderileri">'+iconTabs.map(x=>'<button type="button" role="tab" aria-selected="'+(profilePostsTab===x[0])+'" tabindex="'+(profilePostsTab===x[0]?'0':'-1')+'" class="'+(profilePostsTab===x[0]?'active':'')+'" data-action="profile-posts-tab" data-id="'+x[0]+'" aria-label="'+x[2]+'" title="'+x[2]+'">'+x[1]+'<span class="pati-profile-tab-caption">'+esc(x[3])+'</span></button>').join('')+'</div>'+
+ (own?'<div class="buchee-profile-wallet"><button type="button" data-action="paticoin-rewards" aria-label="'+(walletReady?'Bakiyen '+walletBalance+' puan. Ödülleri aç':'Puan bakiyesi yükleniyor. Ödülleri aç')+'"><span class="buchee-profile-wallet-label">Bakiyen</span><span class="buchee-profile-wallet-total"><strong data-buchee-wallet-value aria-live="polite">'+walletBalance+'</strong><small>puan</small></span><span class="buchee-profile-wallet-arrow" aria-hidden="true">›</span></button></div>':'')+'<div class="pati-ig-tabs" role="tablist" aria-label="Profil gönderileri">'+iconTabs.map(x=>'<button type="button" role="tab" aria-selected="'+(profilePostsTab===x[0])+'" tabindex="'+(profilePostsTab===x[0]?'0':'-1')+'" class="'+(profilePostsTab===x[0]?'active':'')+'" data-action="profile-posts-tab" data-id="'+x[0]+'" aria-label="'+x[2]+'" title="'+x[2]+'">'+x[1]+'<span class="pati-profile-tab-caption">'+esc(x[3])+'</span></button>').join('')+'</div>'+
  profileContent+
  '</div>';
  void syncProfileCounts(p.id);
- if(own)patiProfileWalletRefresh();
+ if(own&&typeof patiProfileWalletRefresh==='function')patiProfileWalletRefresh();
  if(own&&typeof patiCreatorPreviewLoad==='function')void patiCreatorPreviewLoad();
 }
 function formField(name,label,type='text',val='',required=false){return `<div class="pati-field"><label for="f-${name}">${esc(label)}</label><input id="f-${name}" name="${name}" type="${type}" ${required?'required':''} value="${esc(val)}"></div>`}
