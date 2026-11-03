@@ -1,6 +1,6 @@
 {
   "packageId": "com.patiyiz.app",
-  "host": "patiyiz.com",
+  "host": "bucheesocial.com",
   "name": "BucheeSocial",
   "launcherName": "Buchee",
   "display": "standalone",
@@ -13,8 +13,8 @@
   "backgroundColor": "#14021e",
   "enableNotifications": true,
   "startUrl": "/",
-  "iconUrl": "https://patiyiz.com/buchee-app-icon-512.png",
-  "maskableIconUrl": "https://patiyiz.com/buchee-app-icon-512.png",
+  "iconUrl": "https://bucheesocial.com/buchee-app-icon-512.png",
+  "maskableIconUrl": "https://bucheesocial.com/buchee-app-icon-512.png",
   "splashScreenFadeOutDuration": 300,
   "signingKey": {
     "path": "./patiyiz-upload.keystore",
@@ -24,8 +24,8 @@
   "appVersionCode": 1,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
-  "webManifestUrl": "https://patiyiz.com/manifest.webmanifest",
-  "fullScopeUrl": "https://patiyiz.com/",
+  "webManifestUrl": "https://bucheesocial.com/manifest.webmanifest",
+  "fullScopeUrl": "https://bucheesocial.com/",
   "fallbackType": "customtabs",
   "features": {},
   "alphaDependencies": {

@@ -1,52 +1,59 @@
-# Patiyiz.com alan adı geçişi
+# Buchee Social — bucheesocial.com alan adı geçişi (4 Kasım 2026)
 
-Bu dosya **kurulum planıdır**, DNS ve GitHub Pages doğrulaması tamamlanmadan "canlıya alındı" anlamına gelmez.
+Bu belge yeni alan adını mevcut Buchee Social uygulamasına geçirmek için kontrol listesidir. **GitHub kodunun hazırlanması, DNS ve GitHub Pages yapılandırmasının tamamlandığı anlamına gelmez.**
 
 ## Hedef
-- Asıl adres: `https://patiyiz.com/`
-- `https://www.patiyiz.com/` → asıl adrese GitHub Pages tarafından yönlendirilecek
-- Eski Pages adresi: `https://iyiyolakademi-cpu.github.io/Patiyiz/`
-- GitHub repo: `iyiyolakademi-cpu/Patiyiz`
-- Mevcut Supabase projesi korunur, veri taşınmaz
+- Ana web sitesi: https://bucheesocial.com/
+- www.bucheesocial.com → https://bucheesocial.com/ yönlendirmesi
+- Depo: iyiyolakademi-cpu/Patiyiz, mevcut Supabase projesi korunur.
+- Eski patiyiz.com alan adı geçiş sırasında kendi başına yeni adrese yönlenmez. Eski site için 301 yönlendirmesi ayrıca eski alan adının DNS/hosting sağlayıcısında yapılandırılmalıdır.
+- Android paket kimliği `com.patiyiz.app` değiştirilmez: Play Console'daki mevcut uygulama kimliği korunur.
 
-## DNS (alan adının gerçekten yetkili DNS yönetim panelinde)
-Kayıtların sahip olduğu ad ve tür **ayrı ayrı** girilmeli:
+## GitHub Pages (yapılması gereken)
+1. GitHub Pages yayın kaynağının branch mi GitHub Actions mı olduğunu Settings → Pages'ten kontrol edin.
+2. Settings → Pages → Custom domain alanına **bucheesocial.com** yazıp kaydedin. **GitHub Actions ile yayın yapılıyorsa depodaki CNAME dosyası tek başına yeterli değildir.**
+3. GitHub kullanıcı ayarları → Pages'te bucheesocial.com alan adını TXT doğrulamasıyla doğrulayın (güvenlik için önerilir).
+4. DNS kayıtları doğrulandıktan ve sertifika çıkarıldıktan sonra **Enforce HTTPS** seçeneğini etkinleştirin.
 
-| Tür | Ad / Host | Değer | TTL |
-|---|---|---|---|
-| A | @ | 185.199.108.153 | Otomatik veya 3600 |
-| A | @ | 185.199.109.153 | Otomatik veya 3600 |
-| A | @ | 185.199.110.153 | Otomatik veya 3600 |
-| A | @ | 185.199.111.153 | Otomatik veya 3600 |
-| CNAME | www | iyiyolakademi-cpu.github.io | Otomatik veya 3600 |
+## DNS (yalnız bucheesocial.com alan adı yetkili DNS panelinde)
 
-İsteğe bağlı IPv6 için @ AAAA kayıtları:
-`2606:50c0:8000::153`, `2606:50c0:8001::153`,
-`2606:50c0:8002::153`, `2606:50c0:8003::153`.
+| Kayıt | Host | Değer |
+|---|---|---|
+| A | @ | 185.199.108.153 |
+| A | @ | 185.199.109.153 |
+| A | @ | 185.199.110.153 |
+| A | @ | 185.199.111.153 |
+| CNAME | www | iyiyolakademi-cpu.github.io |
 
-Var olan **çakışan** @ A / AAAA ve www CNAME/A kayıtları dikkatle kontrol edilip, yalnız web sitesine ait olanlar değiştirilmelidir. E-posta MX, SPF, DKIM, DMARC veya doğrulama TXT kayıtlarını silmeyin. Wildcard (`*`) kullanmayın.
+TTL: Otomatik ya da 3600. Mevcut web park A/AAAA kayıtlarıyla çakışma olmadığından emin olun. **MX, SPF, DKIM, DMARC, TXT** e-posta/doğrulama kayıtlarını silmeyin. Wildcard (*) tanımlamayın. GitHub Pages DNS yayılımı 24 saate kadar sürebilir.
 
-## Kesintisiz geçiş sırası
-1. Alan adının DNS yetkili panelini belirleyin ve varsa gereksiz park sayfası kayıtlarını kontrol edin.
-2. Domain sahipliğini GitHub Pages hesabı üzerinden doğrulamak güvenlik için önerilir.
-3. DNS değişiminden önce `CNAME` dosyası ve kök `/` PWA düzenlemelerini içeren hazırlık PR'sini `main`e alın. **Bu işlem mevcut github.io Pages adresini yeni alan adına yönlendirebilir.** Bu yüzden DNS hazırlıkları tamamlandıktan hemen sonra yapılmalıdır.
-4. GitHub repo **Settings → Pages → Custom domain** alanında `patiyiz.com` kayıtlı olmalı. Pages kaynağı bir branch ise `main / (root)` ve `CNAME` geçerli. GitHub Actions ile deployment özel olarak yapılıyorsa GitHub Pages ayarı ayrıca yapılmalı; `CNAME` tek başına yetmez.
-5. Yukarıdaki A ve www CNAME kayıtlarını alan adı DNS panelinde kaydedin.
-6. DNS yayılımı ve GitHub Pages sertifikası hazır olunca **Enforce HTTPS** etkinleştirin. Yayılım 24 saate kadar sürebilir; HTTPS hazır olmadan `https://` zorlamayın.
-7. Supabase → Authentication → URL Configuration:
-   - **Site URL:** `https://patiyiz.com/`
-   - **Redirect URLs:** `https://patiyiz.com/**` (veya kullanılan kesin rotalar), `https://www.patiyiz.com/**` (gerekirse) ve geçiş boyunca `https://iyiyolakademi-cpu.github.io/Patiyiz/**`.
-   - Kayıt e-posta doğrulama ve şifre yenileme akışlarını test edin.
-8. `https://patiyiz.com` ve `https://www.patiyiz.com` erişimi, login, medya, hikâye, Reels, bildirim, PWA "Ana Ekrana Ekle" davranışını gerçek telefonda test edin.
-9. Kullanıcılara yeni adresin farklı **origin** olduğunu; oturumu yeniden açmaları, ana ekran kısayolunu tekrar eklemeleri ve bildirim izni vermeleri gerekebileceğini bildirin.
+## Supabase Auth: mutlaka kontrol edin
 
-## GitHub ve Supabase ayarları
-- GitHub Pages: https://github.com/iyiyolakademi-cpu/Patiyiz/settings/pages
-- Supabase URL Configuration: https://supabase.com/dashboard/project/tqnvvrgrsxrvzxbjbsgl/auth/url-configuration
-- Resmî GitHub yönergesi: https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site
-- Resmî Supabase yönergesi: https://supabase.com/docs/guides/auth/redirect-urls
+https://supabase.com/dashboard/project/tqnvvrgrsxrvzxbjbsgl/auth/url-configuration
 
-## Teknik detay
-`manifest.webmanifest` içinde eski GitHub Pages proje yolu `/Patiyiz/` yerine `/` tanımlanır; uygulamadaki medya, CSS, service worker ve JSON dosyaları göreli yollarla çağrıldığından kök alan adında açılabilir. `CNAME`, SEO canonical, robots.txt ve sitemap.xml alan adı kesimiyle eşzamanlı aktifleştirilmelidir.
+- Site URL: **https://bucheesocial.com/**
+- Redirect URLs: üretim için **https://bucheesocial.com/**, ihtiyaç duyulan yönlendirme yolları ve geçici olarak eski adres. Uygulama birden fazla rota kullanıyorsa **https://bucheesocial.com/** yanında ilgili kesin rotaları tanımlayın.
+- Geçiş için gerekirse **https://patiyiz.com/** ile mevcut GitHub Pages test adresini izinli listede tutun.
+- E-posta doğrulaması, giriş, şifre sıfırlama ve oturum geri dönüşünü yeni kök adreste gerçek cihazdan test edin.
+- Supabase projesi, veritabanı, kullanıcılar ve API anahtarları değişmez; hesabın oturum çerezi yeni alan adına otomatik taşınmaz.
 
-**Durum: hazırlık PR'si. Gerçek DNS veya HTTPS doğrulaması yapılmadı.**
+## Android, PWA ve mağaza
+
+- Android TWA manifestinin web hostu ve kaynak URL'leri yeni domaine taşındı. `.well-known/assetlinks.json` yeni domaine de yayımlanmalı ve gerçek Play App Signing SHA-256 doğrulanmalı.
+- Native Capacitor paket kimliği aynı kalır, App Links ve doğrulama/şifre sıfırlama tarayıcı URL'leri yeni domaindir.
+- Mevcut APK/AAB kendiliğinden güncellenmez. Kod değişiminden sonra yeni paket üretip Play Console uyumluluğunu test edin; mevcut Play packageId ve üretim imzasını koruyun.
+- iPhone ana ekrana eklenen eski PWA eski origin'e bağlı kalabilir; yeni siteyi tekrar ana ekrana eklemek gerekebilir.
+- Yeni origin üzerinde service worker, simgeler, bildirimler, kayıt/giriş, Reels, mesajlaşma, medya yükleme ve hesap silme kontrolleri yapılmalı.
+- Eski `patiyiz.com` için ayrı kalıcı 301 yönlendirmesi yapılana kadar bağlantıların kendiliğinden çalışacağı varsayılmamalı.
+
+## Yayına alma sırası
+1. Yeni domaini GitHub kullanıcı hesabında doğrula (TXT).
+2. Pages Custom domain ayarını güncelle; DNS kayıtlarını yeni domain paneline ekle.
+3. Uygulama kodu geçiş PR'sini `main`e birleştir ve Pages dağıtımını doğrula.
+4. HTTPS hazır olduğunda `https://bucheesocial.com/` ve `https://www.bucheesocial.com/` adreslerini kontrol et.
+5. Supabase Site URL/Redirect URLs değerlerini tamamla; gerçek cihazda hesap ve içerik testleri yap.
+6. Eski adrese erişim gerekiyorsa bağımsız 301 yönlendirmeyi yapılandır ve Android yayınını ayrıca güncelle.
+
+GitHub Pages: https://github.com/iyiyolakademi-cpu/Patiyiz/settings/pages
+Resmî GitHub: https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site
+Supabase: https://supabase.com/docs/guides/auth/redirect-urls

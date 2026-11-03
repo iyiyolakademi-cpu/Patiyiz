@@ -14,7 +14,7 @@ const nativeToast=(message)=>document.dispatchEvent(new CustomEvent('patiyiz:nat
 function routeWebUrl(raw){
  try{
   const url=new URL(raw);
-  if(url.protocol!=='https:'||url.hostname!=='patiyiz.com'||url.pathname.replace(/\/$/,'')!=='/open')return false;
+  if(url.protocol!=='https:'||url.hostname!=='bucheesocial.com'||url.pathname.replace(/\/$/,'')!=='/open')return false;
   const screen=url.searchParams.get('screen')||'home';
   if(!validScreens.has(screen))return false;
   queuedScreen=screen;
@@ -71,7 +71,7 @@ async function attachPushListeners(){
   try{await saveToken(result.value)}catch(e){console.warn('BucheeSocial FCM registration:',e);nativeToast('Android bildirim kaydı tamamlanamadı.')}
  });
  await PushNotifications.addListener('registrationError',e=>nativeToast('Bildirim kaydı başarısız: '+String(e.error||'FCM')));
- await PushNotifications.addListener('pushNotificationActionPerformed',()=>routeWebUrl('https://patiyiz.com/open?screen=notifications'));
+ await PushNotifications.addListener('pushNotificationActionPerformed',()=>routeWebUrl('https://bucheesocial.com/open?screen=notifications'));
 }
 async function enablePush(userId,client){
  if(!native)return false;
