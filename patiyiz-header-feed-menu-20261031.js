@@ -1,13 +1,12 @@
 /* Mobile-first Patiyiz feed selector. The mobile trigger and menu live in index.html. */
 (() => {
   'use strict';
-  const STORAGE_KEY='patiyiz-home-feed-mode';
   const choices=[
     {mode:'media',title:'Gönderiler ve Reels',subtitle:'Fotoğraf, video ve Reels',short:'Gönderiler ve Reels',icon:'i-image'},
     {mode:'text',title:'Yazılar ve Sorular',subtitle:'Yazılı paylaşımlar ve soru-cevaplar',short:'Yazılar ve Sorular',icon:'i-message'}
   ];
-  let activeMode='media';
-  try { if(localStorage.getItem(STORAGE_KEY)==='text') activeMode='text'; } catch (_) {}
+  // Opening the app starts in Yazılar ve Sorular; users can switch modes from the header.
+  let activeMode='text';
   const installed=[];
   // Draw the icons directly, rather than depending on an SVG <use> sprite
   // whose inherited stroke can be forced white by older mobile styles.
@@ -101,7 +100,6 @@
       const mode=choice.dataset.patiFeedChoice;
       if(mode!=='text'&&mode!=='media')return;
       activeMode=mode;
-      try{localStorage.setItem(STORAGE_KEY,mode);}catch(_){}
       for(const item of installed){item.sync();item.close();}
       window.dispatchEvent(new CustomEvent('patiyiz:feed-mode',{detail:{mode}}));
       trigger.focus();

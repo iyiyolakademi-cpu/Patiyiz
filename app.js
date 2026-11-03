@@ -2753,7 +2753,7 @@ function patiHomeQuestionCard(q){
  '</div></article>';
 }
 /* Separate social media from tweet-like text and Q&A in the home timeline. */
-let patiHomeContentMode=(()=>{try{return localStorage.getItem('patiyiz-home-feed-mode')==='text'?'text':'media'}catch(_){return 'media'}})();
+let patiHomeContentMode='text';
 const patiHomeIsMediaPost=p=>p.post_format==='reels'||!!(
  p.image_url||p.video_url||
  (Array.isArray(p.images)&&p.images.some(Boolean))||
