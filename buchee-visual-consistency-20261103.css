@@ -1,0 +1,68 @@
+/* Buchee visual consistency pass – Nov 03.
+   Late-scoped overrides only: preserve routes, handlers and content. */
+:root{color-scheme:light}
+#pati-close-picker,
+#pati-close-picker .pati-close-picker-shell,
+#pati-close-picker .pati-close-picker-shell>header,
+#pati-close-picker .pati-close-info,
+#pati-close-picker .pati-close-people,
+#pati-close-picker .buchee-cf-footer{background:#fff!important;color:#22252c!important}
+#pati-close-picker .pati-close-picker-shell>header{border-bottom:1px solid #eceef2!important}
+#pati-close-picker .pati-close-picker-shell>header strong,
+#pati-close-picker .pati-close-info h2,
+#pati-close-picker .buchee-cf-section-title,
+#pati-close-picker .pati-close-person strong{color:#22252c!important}
+#pati-close-picker .pati-close-info p,
+#pati-close-picker .pati-close-person small{color:#68717d!important}
+#pati-close-picker #pati-close-count{background:#f0edf6!important;color:#5f4385!important}
+#pati-close-picker [data-cf-action="cancel"]{background:#f2f3f6!important;color:#22252c!important}
+#pati-close-picker #pati-close-search{background-color:#f5f6f8!important;border:1px solid #e5e7ec!important;color:#22252c!important}
+#pati-close-picker #pati-close-search::placeholder{color:#727985!important}
+#pati-close-picker .pati-close-person{color:#22252c!important;border-bottom:1px solid #f0f1f3!important}
+#pati-close-picker .pati-close-person[aria-pressed="true"]{background:#f6f2fb!important}
+#pati-close-picker .pati-close-person>b{border-color:#aab0bb!important;background:transparent!important;color:transparent!important}
+#pati-close-picker .pati-close-person[aria-pressed="true"]>b{background:#6c3bad!important;border-color:#6c3bad!important;color:#fff!important}
+#pati-close-picker .buchee-cf-footer{border-top:1px solid #eceef2!important}
+#pati-close-picker .buchee-cf-footer .pati-close-confirm{background:#6c3bad!important;color:#fff!important}
+#pati-close-picker .pati-close-error{color:#b42345!important}
+
+/* Share dialog matches the application's light appearance. */
+#modal-root .modal:has(#share-post-form),
+#modal-root .modal:has(#share-post-form)>.modal-header,
+#modal-root #share-post-form,
+#modal-root #share-post-form>.modal-content,
+#modal-root #share-post-form .buchee-share-bottom{background:#fff!important;color:#22252c!important}
+#modal-root .modal:has(#share-post-form) .modal-header h2,
+#modal-root .modal:has(#share-post-form) .close-modal{color:#22252c!important}
+#modal-root .modal:has(#share-post-form)>.modal-header{border-bottom:1px solid #edf0f3!important}
+#modal-root #share-post-form .buchee-share-search,
+#modal-root #share-post-form .buchee-share-focus{background:#f2f3f6!important;color:#525866!important}
+#modal-root #share-post-form #pati-share-search{color:#22252c!important}
+#modal-root #share-post-form #pati-share-search::placeholder{color:#7c828c!important}
+#modal-root #share-post-form .buchee-share-person,
+#modal-root #share-post-form .buchee-share-person-name{color:#252a34!important}
+#modal-root #share-post-form .buchee-share-no-people,
+#modal-root #share-post-form .buchee-share-no-match{color:#686e78!important}
+#modal-root #share-post-form .buchee-share-bottom{border-top:1px solid #eceef2!important}
+#modal-root #share-post-form .buchee-share-quick-action{background:#f5f6f8!important;color:#252a34!important;border-color:#e7e9ef!important}
+#modal-root #share-post-form .buchee-share-quick-action.is-on{background:#f0e9f9!important;border-color:#9c76cd!important}
+#modal-root #share-post-form .buchee-share-send{background:#6c3bad!important;color:#fff!important}
+#modal-root #share-post-form .buchee-share-send:disabled{background:#e7e7ec!important;color:#777d88!important}
+#modal-root #share-post-form .buchee-share-avatar .avatar{background:#e9eaed!important}
+
+/* Compact, uniform stories: avoid oversized own-avatar and misaligned plus. */
+@media(max-width:740px){
+html[data-pati-view="home"] #main-content>.stories-section{padding-top:9px!important;padding-bottom:9px!important;margin-bottom:0!important;background:#fff!important;border-bottom:1px solid #edf0f3!important}
+html[data-pati-view="home"] #main-content .stories-strip{gap:12px!important;padding:3px 12px 5px!important}
+html[data-pati-view="home"] #main-content .stories-strip .story-person{position:relative!important;flex:0 0 76px!important;min-width:76px!important;max-width:76px!important;width:76px!important}
+html[data-pati-view="home"] #main-content .stories-strip .story-own-photo,
+html[data-pati-view="home"] #main-content .stories-strip .story-avatar{width:72px!important;height:72px!important;min-width:72px!important;min-height:72px!important;max-width:72px!important;max-height:72px!important;box-sizing:border-box!important}
+html[data-pati-view="home"] #main-content .stories-strip .story-own-plus{position:absolute!important;top:48px!important;right:0!important;left:auto!important;width:25px!important;height:25px!important;min-width:25px!important;min-height:25px!important;padding:0!important;display:grid!important;place-items:center!important;background:#fff!important;border:2px solid #22252c!important;color:#22252c!important;border-radius:50%!important;font-size:20px!important;line-height:1!important}
+html[data-pati-view="home"] #main-content .stories-strip .story-person small{font-size:11px!important;line-height:15px!important;color:#383d46!important}
+#main-content .pati-ig-profile .pati-ig-tabs button{min-width:0!important;overflow:hidden!important}
+#main-content .pati-ig-profile .pati-ig-tabs .pati-profile-tab-caption{font-size:10px!important;line-height:14px!important;white-space:nowrap!important}
+}
+/* Preserve visible keyboard navigation and sufficient touch targets. */
+#pati-close-picker button:focus-visible,
+#modal-root #share-post-form button:focus-visible,
+#main-content .pati-ig-profile button:focus-visible{outline:2px solid #6c3bad!important;outline-offset:2px!important}
