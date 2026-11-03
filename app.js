@@ -366,6 +366,8 @@ function showApp(){
    if(me?.id!==userId)return;
    const instant=signature();
    await load('feed');redraw(instant);if(typeof patiCollabRefresh==='function')void patiCollabRefresh();
+   /* Open a shared post only after the initial feed data has loaded. */
+   if(me?.id===userId)await patiRouteSharedPostLink();
    if(me?.id!==userId)return;
    const later=signature();
    await load('deferred');redraw(later);if(typeof patiCollabRefresh==='function')void patiCollabRefresh();
@@ -1533,6 +1535,47 @@ function openPost(id){
  if(origin==='home'){patiHomeDetailScroll=window.scrollY||0;render();window.scrollTo(0,0)}
  else navigate('home');
 }
+/* Direct links copied from posts and Reels must work when opened in a new tab,
+   another browser, or after signing in. Existing #post-UUID URLs remain valid. */
+let patiSharedPostLinkBusy=false;
+let patiSharedPostLinkHandled='';
+async function patiRouteSharedPostLink(){
+ const hash=location.hash||'';
+ const match=hash.match(/^#post-([0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})(?:\\?comment=[0-9a-f-]{36})?$/i);
+ if(!match||!me?.id||!sb||patiSharedPostLinkBusy)return;
+ const owner=me.id,id=match[1].toLowerCase();
+ if(patiSharedPostLinkHandled===owner+':'+hash)return;
+ patiSharedPostLinkBusy=true;
+ try{
+  const result=await sb.from('posts').select('*').eq('id',id).maybeSingle();
+  if(result.error)throw result.error;
+  if(me?.id!==owner||location.hash!==hash)return;
+  if(!result.data||blocked.has(result.data.author_id)){
+   notify('Bu paylaşım bulunamadı veya görüntülenemiyor.',true);return;
+  }
+  const hydrated=globalThis.PatiyizPrivateMedia
+   ?await globalThis.PatiyizPrivateMedia.hydrateRows([result.data],owner,sb)
+   :[result.data];
+  if(me?.id!==owner||location.hash!==hash)return;
+  const post=hydrated?.[0];
+  if(!post)throw Error('Paylaşım yüklenemedi.');
+  if(!data.profiles.some(person=>person.id===post.author_id)){
+   const authorResult=await sb.from('profiles').select('*').eq('id',post.author_id).maybeSingle();
+   if(me?.id!==owner||location.hash!==hash)return;
+   if(!authorResult.error&&authorResult.data)data.profiles.push(authorResult.data);
+  }
+  data.posts=[...data.posts.filter(row=>row.id!==id),post];
+  patiSharedPostLinkHandled=owner+':'+hash;
+  history.replaceState(history.state,'',location.pathname+location.search);
+  if(post.post_format==='reels'&&post.video_url)patiOpenFeedReel(id);
+  else openPost(id);
+ }catch(error){
+  console.warn('Paylaşım bağlantısı açılamadı:',error?.message||error);
+  if(me?.id===owner)notify('Paylaşım bağlantısı açılamadı. Tekrar deneyebilirsin.',true);
+ }finally{patiSharedPostLinkBusy=false;}
+}
+window.addEventListener('hashchange',()=>{if(me?.id)void patiRouteSharedPostLink()});
+
 let storyItems=[],storyIndex=0,storyTimer=null,storyLikes=[];
 /* Story rings track unseen ACTIVE story IDs, never story deletion.
    Own previews are local; other users' story receipts are also synced using viewer-only RLS. */
