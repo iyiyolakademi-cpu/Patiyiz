@@ -42,7 +42,7 @@
 #main-content .buchee-edu-clean-home .pati-ref-academy-topic.buchee-edu-category .pati-ref-academy-topic-copy{
  display:flex!important;align-items:flex-start!important;flex-direction:column!important;
  justify-content:center!important;gap:6px!important;
- min-width:0!important;width:100%!important;margin:0!important;padding:0!important;
+ min-width:0!important;width:100%!important;max-width:100%!important;margin:0!important;padding:0!important;
  text-align:left!important;overflow-wrap:anywhere!important;
 }
 #main-content .buchee-edu-clean-home .pati-ref-academy-topic.buchee-edu-category .pati-ref-academy-topic-copy>strong{
