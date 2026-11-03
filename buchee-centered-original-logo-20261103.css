@@ -1,0 +1,94 @@
+/* Mobile home: original purple Buchee mark stays in the top bar, never in stories. */
+@media(max-width:740px){
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header{
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:52px minmax(0,1fr) 52px!important;
+  align-items:center!important;
+  box-sizing:border-box!important;
+  height:calc(56px + env(safe-area-inset-top,0px))!important;
+  min-height:calc(56px + env(safe-area-inset-top,0px))!important;
+  padding:calc(4px + env(safe-area-inset-top,0px)) 10px 4px!important;
+  background:#fff!important;
+  overflow:visible!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger{
+  display:none!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#buchee-header-logo-trigger{
+  display:flex!important;
+  position:absolute!important;
+  top:calc(env(safe-area-inset-top,0px) + 4px)!important;
+  left:50%!important;right:auto!important;bottom:auto!important;
+  transform:translateX(-50%)!important;
+  -webkit-transform:translateX(-50%)!important;
+  align-items:center!important;justify-content:center!important;
+  width:min(49vw,185px)!important;max-width:calc(100vw - 128px)!important;
+  height:46px!important;min-height:46px!important;
+  margin:0!important;padding:0!important;
+  border:0!important;border-radius:0!important;
+  box-shadow:none!important;background:transparent!important;
+  z-index:50!important;visibility:visible!important;opacity:1!important;
+  cursor:pointer!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#buchee-header-logo-trigger img{
+  display:block!important;width:100%!important;height:44px!important;
+  max-width:100%!important;max-height:44px!important;object-fit:contain!important;
+  margin:0!important;padding:0!important;position:static!important;
+  transform:none!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-header-share{
+  position:relative!important;grid-column:1!important;grid-row:1!important;
+  width:44px!important;height:44px!important;padding:0!important;
+  display:grid!important;place-items:center!important;
+  background:transparent!important;border:0!important;
+  box-shadow:none!important;z-index:51!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>.pati-header-actions{
+  position:relative!important;grid-column:3!important;grid-row:1!important;
+  width:44px!important;max-width:44px!important;min-width:44px!important;
+  height:44px!important;justify-self:end!important;margin:0!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  z-index:51!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>.pati-header-actions>#pati-header-notifications{
+  display:grid!important;place-items:center!important;width:44px!important;height:44px!important;
+  min-width:44px!important;min-height:44px!important;
+  padding:7px!important;margin:0!important;background:transparent!important;
+  border:0!important;box-shadow:none!important;
+ }
+ html[data-pati-view="home"] #main-content>.stories-section{
+  position:relative!important;margin-top:0!important;padding-top:9px!important;
+ }
+ html[data-pati-view="home"] #main-content .stories-strip .story-person.story-own{
+  position:relative!important;overflow:visible!important;
+  flex:0 0 76px!important;width:76px!important;min-width:76px!important;max-width:76px!important;
+  padding:0!important;margin:0!important;align-items:center!important;
+ }
+ html[data-pati-view="home"] #main-content .stories-strip .story-own-photo{
+  width:72px!important;height:72px!important;
+  min-width:72px!important;min-height:72px!important;
+  max-width:72px!important;max-height:72px!important;
+  flex:0 0 72px!important;box-sizing:border-box!important;
+  margin:0 auto!important;padding:0!important;overflow:hidden!important;
+  border-radius:50%!important;
+ }
+ html[data-pati-view="home"] #main-content .stories-strip .story-own-plus{
+  position:absolute!important;top:49px!important;right:0!important;
+  left:auto!important;bottom:auto!important;transform:none!important;
+  width:26px!important;height:26px!important;
+  min-width:26px!important;min-height:26px!important;
+  max-width:26px!important;max-height:26px!important;
+  padding:0!important;margin:0!important;
+  box-sizing:border-box!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  border:2px solid #fff!important;border-radius:50%!important;
+  background:#17191d!important;color:#fff!important;
+  font:700 19px/1 system-ui,-apple-system,sans-serif!important;
+  text-align:center!important;z-index:15!important;
+ }
+ html[data-pati-view="home"] #main-content .stories-strip .story-own-plus:focus-visible,
+ html[data-pati-view="home"] #buchee-header-logo-trigger:focus-visible{
+  outline:2px solid #5700c6!important;outline-offset:3px!important;
+ }
+}
