@@ -1541,7 +1541,7 @@ let patiSharedPostLinkBusy=false;
 let patiSharedPostLinkHandled='';
 async function patiRouteSharedPostLink(){
  const hash=location.hash||'';
- const match=hash.match(/^#post-([0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})(?:\\?comment=[0-9a-f-]{36})?$/i);
+ const match=hash.match(/^#post-([0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})(?:\?comment=[0-9a-f-]{36})?$/i);
  if(!match||!me?.id||!sb||patiSharedPostLinkBusy)return;
  const owner=me.id,id=match[1].toLowerCase();
  if(patiSharedPostLinkHandled===owner+':'+hash)return;
