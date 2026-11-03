@@ -1,67 +1,99 @@
-/* Patiyiz Explore: saved shortcut + personalized / random media browsing. */
+/* Buchee phase 2: one Explore toolbar, clear sorting and session-only discovery history. */
 (()=>{'use strict';
 const main=document.getElementById('main-content');if(!main)return;
-const KEY='patiyiz-explore-interest-v1';let history={};try{history=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(_){}
-let mode='for-you', menuOpen=false, scheduled=false, internal=false;
-const icons={
- save:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M5 3.5h14v17l-7-5-7 5V3.5Z"/></svg>',
- dots:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="4" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="20" cy="12" r="1.7"/></svg>'
-};
-function mark(id){if(!id)return;history[id]=Math.min(100,(history[id]||0)+1);try{localStorage.setItem(KEY,JSON.stringify(history))}catch(_){}}
+const opened=new Map();
+const seed=Math.floor(Date.now()/60000);
+let mode='for-you',scheduled=false,arranging=false;
+const searchIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.6" cy="10.6" r="6.7"/><path d="m16 16 5 5"/></svg>';
+const saveIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M5 3.5h14v17l-7-5-7 5V3.5Z"/></svg>';
+const choices=[['for-you','Senin için'],['fresh','Yeni keşifler'],['recent','En yeni'],['views','Çok izlenen'],['likes','Çok beğenilen']];
+function recordOpen(id){
+ if(!id)return;
+ if(opened.has(id)){const count=opened.get(id);opened.delete(id);opened.set(id,Math.min(4,count+1));}
+ else opened.set(id,1);
+ if(opened.size>140)opened.delete(opened.keys().next().value);
+}
+function hash(id){
+ let n=seed|0;for(const c of id)n=(Math.imul(n,31)+c.charCodeAt(0))|0;
+ return (n>>>0)/4294967295;
+}
+function diversify(items){
+ // Avoid back-to-back cards by one author within a nearby rank window.
+ const result=[],pending=items.slice();
+ while(pending.length){
+  const previous=result[result.length-1]?.author;
+  let choice=0;
+  if(previous&&pending[0]?.author===previous){
+   const next=pending.findIndex((item,i)=>i>0&&i<=3&&item.author&&item.author!==previous);
+   if(next>0)choice=next;
+  }
+  result.push(pending.splice(choice,1)[0]);
+ }
+ return result;
+}
 function arrange(section){
  const gallery=section.querySelector('.pati-explore-gallery');if(!gallery)return;
  const tiles=[...gallery.querySelectorAll(':scope > .pati-explore-media[data-id]')];
- if(tiles.length<2)return;
- const ranked=tiles.map((el,i)=>({el,i,id:el.dataset.id||'',n:history[el.dataset.id]||0}));
- if(mode==='for-you')ranked.sort((a,b)=>b.n-a.n||a.i-b.i);
- else {
-  const seed=Math.floor(Date.now()/180000);
-  const hash=id=>{let h=seed;for(const ch of id)h=(Math.imul(h,31)+ch.charCodeAt(0))|0;return (h>>>0)/4294967295};
-  ranked.sort((a,b)=>a.n-b.n||hash(a.id)-hash(b.id));
+ if(tiles.length<2||!['for-you','fresh'].includes(mode))return;
+ const items=tiles.map((el,i)=>({el,id:el.dataset.id||'',author:el.dataset.exploreAuthor||'',following:el.dataset.exploreFollowing==='true',rank:Number(el.dataset.exploreRank??i),opened:opened.get(el.dataset.id)||0}));
+ if(mode==='for-you'){
+  // Respect backend popularity order. Minor follow boost; opened cards move down rather than up.
+  items.sort((a,b)=>(a.rank+(a.opened*12)-(a.following?2:0))-(b.rank+(b.opened*12)-(b.following?2:0))||a.rank-b.rank);
+ }else{
+  // Stable for this session: prefer unseen content without reshuffling during scrolling.
+  items.sort((a,b)=>(a.opened>0?1:0)-(b.opened>0?1:0)||hash(a.id)-hash(b.id)||a.rank-b.rank);
  }
- const changed=ranked.some((row,i)=>row.el!==tiles[i]);
- if(changed){internal=true;
-  for(const row of ranked)gallery.appendChild(row.el);
-  internal=false;
+ const ranked=diversify(items);
+ if(ranked.some((item,i)=>item.el!==tiles[i])){
+  arranging=true;
+  for(const item of ranked)gallery.appendChild(item.el);
+  arranging=false;
  }
 }
 function enhance(){
  scheduled=false;
- const section=main.querySelector('.pati-explore-media-screen');
- if(!section)return;
- const search=section.querySelector('.pati-explore-search-launch');
+ const section=main.querySelector('.pati-explore-media-screen');if(!section)return;
  if(!section.querySelector('.pati-explore-custom-top')){
-  const bar=document.createElement('div');bar.className='pati-explore-custom-top';
-  bar.innerHTML='<button type="button" class="pati-explore-custom-search" aria-label="Ara" data-explore-custom="search">⌕ <span>Ara</span></button><button type="button" class="pati-explore-custom-icon" aria-label="Kaydedilenleri aç" title="Kaydedilenler" data-explore-custom="saved">'+icons.save+'</button><div class="pati-explore-custom-menu-wrap"><button type="button" class="pati-explore-custom-icon" aria-label="Keşfet akışını seç" aria-haspopup="true" aria-expanded="false" data-explore-custom="menu">'+icons.dots+'</button><div class="pati-explore-custom-menu" hidden><button type="button" data-explore-custom="for-you">Senin İçin <small>İlgilendiğin paylaşımlar</small></button><button type="button" data-explore-custom="random">Rastgele <small>Daha önce açmadığın içerikler</small></button></div></div>';
-  section.insertBefore(bar,section.firstChild);
+  const top=document.createElement('div');top.className='pati-explore-custom-top';
+  top.innerHTML='<button type="button" class="pati-explore-custom-search" data-action="pati-search-open" aria-label="Kullanıcı ara">'+searchIcon+'<span>Kullanıcı ara</span></button>'+
+   '<button type="button" class="pati-explore-custom-icon" data-action="saved-posts" aria-label="Kaydedilenleri aç" title="Kaydedilenler">'+saveIcon+'</button>';
+  section.insertBefore(top,section.firstChild);
+  const tabs=document.createElement('div');tabs.className='buchee-explore-switch';
+  tabs.setAttribute('role','group');tabs.setAttribute('aria-label','Keşfet içerik sıralaması');
+  tabs.innerHTML=choices.map(([id,label])=>'<button type="button" data-explore-custom="'+id+'" aria-pressed="false">'+label+'</button>').join('');
+  top.insertAdjacentElement('afterend',tabs);
  }
- if(search)search.hidden=true;
- const bar=section.querySelector('.pati-explore-custom-top');
- const popup=bar?.querySelector('.pati-explore-custom-menu');
- if(popup)popup.hidden=!menuOpen;
- const menuButton=bar?.querySelector('[data-explore-custom="menu"]');if(menuButton)menuButton.setAttribute('aria-expanded',String(menuOpen));
- for(const button of bar?.querySelectorAll('[data-explore-custom="for-you"],[data-explore-custom="random"]')||[])button.classList.toggle('is-selected',button.dataset.exploreCustom===mode);
- const oldSort=section.querySelector('.pati-explore-sort');if(oldSort)oldSort.hidden=true;
+ const search=section.querySelector(':scope > .pati-explore-search-launch');if(search)search.hidden=true;
+ const nativeSort=section.querySelector(':scope > .pati-explore-sort');if(nativeSort)nativeSort.hidden=true;
+ for(const tab of section.querySelectorAll('.buchee-explore-switch [data-explore-custom]')){
+  const active=tab.dataset.exploreCustom===mode;
+  tab.classList.toggle('active',active);tab.setAttribute('aria-pressed',String(active));
+ }
  arrange(section);
 }
-function schedule(){if(!scheduled&&!internal){scheduled=true;requestAnimationFrame(enhance)}}
+function schedule(){
+ if(scheduled||arranging)return;
+ scheduled=true;requestAnimationFrame(enhance);
+}
 document.addEventListener('click',event=>{
- const action=event.target.closest('[data-explore-custom]');if(action){
-  const value=action.dataset.exploreCustom;
+ const tab=event.target.closest?.('.pati-explore-media-screen .buchee-explore-switch [data-explore-custom]');
+ if(tab){
   event.preventDefault();event.stopImmediatePropagation();
-  if(value==='search'){main.querySelector('.pati-explore-search-launch')?.click();return}
-  if(value==='saved'){const target=document.createElement('button');target.type='button';target.hidden=true;target.dataset.action='saved-posts';main.appendChild(target);target.click();target.remove();return}
-  if(value==='menu'){menuOpen=!menuOpen;schedule();return}
-  if(value==='for-you'||value==='random'){mode=value;menuOpen=false;schedule();return}
+  const next=tab.dataset.exploreCustom;
+  if(!choices.some(([id])=>id===next)||next===mode)return;
+  mode=next;
+  const selected=['recent','views','likes'].includes(mode)?mode:'popular';
+  const native=main.querySelector('.pati-explore-media-screen .pati-explore-sort [data-action="explore-sort"][data-id="'+selected+'"]');
+  if(native&&native.getAttribute('aria-pressed')!=='true'){native.click();return}
+  schedule();
+  return;
  }
- const tile=event.target.closest('.pati-explore-media-screen .pati-explore-media[data-id]');
- if(tile)mark(tile.dataset.id);
- if(menuOpen&&!event.target.closest('.pati-explore-custom-menu-wrap')){menuOpen=false;schedule()}
+ const tile=event.target.closest?.('.pati-explore-media-screen .pati-explore-media[data-id]');
+ if(tile)recordOpen(tile.dataset.id);
 },true);
 new MutationObserver(records=>{
- // Ignore reordering within the gallery: re-appending existing tiles is not new data.
- if(internal)return;
- if(records.some(r=>r.addedNodes.length&&!(r.target instanceof Element&&r.target.matches('.pati-explore-gallery'))))schedule();
+ if(arranging)return;
+ if(records.some(r=>[...r.addedNodes].some(n=>n.nodeType===1&&!(r.target instanceof Element&&r.target.matches('.pati-explore-gallery')))))schedule();
 }).observe(main,{childList:true,subtree:true});
 schedule();
 })();
