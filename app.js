@@ -3361,7 +3361,14 @@ function educationResumeId(completed){
  let last='';
  try{last=localStorage.getItem(educationRecentKey())||''}catch(_){}
  const recent=patiyizLessons.find(l=>l.id===last);
- return recent&&!completed.has(last)?last:patiyizLessons.find(l=>!completed.has(l.id))?.id||'';
+ if(recent){
+  if(!completed.has(last))return last;
+  const track=educationTopicLessons(recent.cat);
+  const index=track.findIndex(l=>l.id===last);
+  const remaining=track.slice(index+1).find(l=>!completed.has(l.id))||track.find(l=>!completed.has(l.id));
+  if(remaining)return remaining.id;
+ }
+ return patiyizLessons.find(l=>!completed.has(l.id))?.id||'';
 }
 function educationFold(value){return String(value||'').toLocaleLowerCase('tr-TR').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i').trim()}
 function educationFiltered(completed){
@@ -3453,6 +3460,7 @@ function educationPage(){
   return;
  }
  if(educationCategory==='Tümü'){
+  const resumeLesson=patiyizLessons.find(l=>l.id===educationResumeId(completed));
   const accents=['coral','fuchsia','turquoise','gold','violet','sage'];
   const topicCard=(topic,i)=>{
    const lessons=educationTopicLessons(topic),done=lessons.filter(l=>completed.has(l.id)).length;
@@ -3460,6 +3468,7 @@ function educationPage(){
   };
   main.innerHTML='<section class="pati-edu pati-edu-v2 pati-ref-academy-home pati-edu-path-home">'
    +'<div class="pati-edu-fullscreen-top"><button type="button" data-action="education-exit" aria-label="Eğitimlerden çık">← Geri</button><span>101 Eğitim Serileri</span></div><header class="pati-ref-academy-header"><div><span>101 EĞİTİM SERİLERİ</span><h1>Öğrenmek istediğin seriyi seç</h1><p>10 bağımsız seri. Her seride en az 10 dakikalık, uygulamalı 101 ders bulunuyor.</p></div></header>'
+   +(resumeLesson?'<button type="button" class="buchee-edu-resume-shortcut" data-action="education-continue" data-id="'+esc(resumeLesson.id)+'"><span class="buchee-edu-resume-copy"><small>'+ (completedCount?'KALDIĞIN YERDEN DEVAM ET':'İLK DERSİNE BAŞLA')+'</small><strong>'+esc(resumeLesson.name)+'</strong><span>'+esc(resumeLesson.cat)+' · '+Number(resumeLesson.minutes)+' dk</span></span><span class="buchee-edu-resume-arrow" aria-hidden="true">→</span></button>':'')
    +'<div class="pati-ref-academy-section"><h2>101 Ders Serileri</h2><span>'+topics.length+' ayrı seri</span></div>'
    +'<div class="pati-ref-academy-topics">'+topics.map(topicCard).join('')+'</div>'
    +'<div class="pati-academy-total-progress" role="status"><strong>'+completedCount+' / '+patiyizLessons.length+' ders tamamlandı</strong><div class="pati-edu-progressbar" role="progressbar" aria-label="Akademi tamamlanma oranı" aria-valuenow="'+progress+'" aria-valuemin="0" aria-valuemax="100"><span style="width:'+progress+'%"></span></div><small>Her tamamlanan ders ilerlemene kaydedilir.</small></div>'
