@@ -1,0 +1,173 @@
+/* Buchee: accessible, high-contrast, five-step educational assessment. */
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .pati-edu-quiz.buchee-quiz-pro,
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .pati-edu-quiz.buchee-quiz-done{
+ display:block!important;box-sizing:border-box!important;
+ width:100%!important;max-width:100%!important;min-width:0!important;
+ margin:24px 0 20px!important;padding:24px 19px 20px!important;
+ border:1px solid #e6e6eb!important;border-radius:22px!important;
+ background:#fff!important;box-shadow:0 8px 32px rgba(24,24,37,.045)!important;
+ color:#18191d!important;-webkit-text-fill-color:#18191d!important;
+ opacity:1!important;filter:none!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-quiz-top{
+ display:flex!important;align-items:flex-start!important;justify-content:space-between!important;gap:12px!important;
+ margin:0 0 22px!important;padding:0!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-quiz-eyebrow{
+ display:block!important;margin:0 0 8px!important;color:#716d79!important;
+ letter-spacing:.14em!important;font:750 10px/1.2 system-ui,-apple-system,sans-serif!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-quiz-top h2{
+ margin:0!important;color:#17181b!important;
+ font:800 25px/1.2 system-ui,-apple-system,sans-serif!important;letter-spacing:-.045em!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-quiz-reward{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 auto!important;
+ margin:0!important;padding:9px 12px!important;border-radius:24px!important;
+ background:#f2edf9!important;color:#59357d!important;-webkit-text-fill-color:#59357d!important;
+ font:750 12px/1 system-ui,-apple-system,sans-serif!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-quiz-progress-head{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ margin:0 0 10px!important;gap:10px!important;
+ color:#707179!important;font:650 12px/1.4 system-ui,-apple-system,sans-serif!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-quiz-progress-head .buchee-quiz-counter{
+ font-weight:800!important;color:#212126!important;-webkit-text-fill-color:#212126!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-quiz-progress-track{
+ display:block!important;position:relative!important;overflow:hidden!important;
+ width:100%!important;height:6px!important;min-height:6px!important;
+ margin:0 0 10px!important;padding:0!important;border-radius:30px!important;background:#edeaf1!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-quiz-progress-fill{
+ display:block!important;height:100%!important;border-radius:30px!important;
+ background:#27222f!important;transition:width .24s ease!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-quiz-dots{
+ display:flex!important;align-items:center!important;gap:6px!important;margin:0 0 23px!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-quiz-dot{
+ display:block!important;width:8px!important;height:8px!important;border-radius:50%!important;
+ background:#e6e3e8!important;border:1px solid transparent!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-quiz-dot.is-active{background:#26212e!important;transform:scale(1.15)!important}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-quiz-dot.is-answered:not(.is-active){background:#ab92c0!important}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-edu-question[hidden],
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-quiz-navigation>button[hidden]{
+ display:none!important;visibility:hidden!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .pati-edu-quiz.buchee-quiz-pro .buchee-edu-question{
+ box-sizing:border-box!important;min-width:0!important;width:100%!important;
+ margin:0!important;padding:0!important;border:0!important;
+ border-radius:0!important;background:transparent!important;box-shadow:none!important;
+ opacity:1!important;filter:none!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .pati-edu-quiz.buchee-quiz-pro .buchee-edu-question>legend{
+ float:none!important;display:block!important;width:100%!important;
+ margin:0 0 19px!important;padding:0!important;
+ color:#111216!important;-webkit-text-fill-color:#111216!important;
+ font:750 19px/1.45 system-ui,-apple-system,sans-serif!important;letter-spacing:-.019em!important;
+ text-align:left!important;overflow-wrap:anywhere!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .pati-edu-quiz.buchee-quiz-pro .buchee-edu-options{
+ display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:11px!important;
+ width:100%!important;margin:0!important;padding:0!important;
+ background:transparent!important;opacity:1!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .pati-edu-quiz.buchee-quiz-pro button.buchee-edu-option,
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .pati-edu-quiz.buchee-quiz-pro button.buchee-edu-option:disabled{
+ appearance:none!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;
+ box-sizing:border-box!important;min-height:64px!important;height:auto!important;width:100%!important;
+ margin:0!important;padding:14px!important;gap:13px!important;
+ border:1px solid #e2e3e8!important;border-radius:15px!important;
+ background:#fff!important;background-image:none!important;
+ box-shadow:0 1px 5px rgba(18,19,31,.025)!important;outline:0;
+ color:#17181c!important;-webkit-text-fill-color:#17181c!important;
+ font:560 14px/1.55 system-ui,-apple-system,sans-serif!important;letter-spacing:0!important;
+ text-align:left!important;white-space:normal!important;overflow-wrap:anywhere!important;
+ opacity:1!important;filter:none!important;cursor:pointer!important;touch-action:manipulation!important;
+ transition:border-color .16s,background-color .16s,box-shadow .16s!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .pati-edu-quiz.buchee-quiz-pro button.buchee-edu-option>.edu-v2-answer-marker{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ flex:0 0 35px!important;box-sizing:border-box!important;width:35px!important;height:35px!important;
+ min-width:35px!important;min-height:35px!important;margin:0!important;padding:0!important;
+ border:1px solid #e4e4e9!important;border-radius:11px!important;
+ background:#f5f5f7!important;color:#222229!important;-webkit-text-fill-color:#222229!important;
+ font:800 13px/1 system-ui,-apple-system,sans-serif!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .pati-edu-quiz.buchee-quiz-pro button.buchee-edu-option>.buchee-quiz-answer-copy{
+ flex:1 1 auto!important;min-width:0!important;
+ font:560 14px/1.55 system-ui,-apple-system,sans-serif!important;
+ color:#17181c!important;-webkit-text-fill-color:#17181c!important;
+ opacity:1!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .pati-edu-quiz.buchee-quiz-pro button.buchee-edu-option>.buchee-quiz-choice-check{
+ display:none!important;align-items:center!important;justify-content:center!important;
+ flex:0 0 24px!important;width:24px!important;height:24px!important;
+ border-radius:50%!important;background:#2c2534!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ font-size:13px!important;font-weight:850!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .pati-edu-quiz.buchee-quiz-pro button.buchee-edu-option.selected{
+ border:1.5px solid #5a486d!important;background:#f6f2fa!important;
+ box-shadow:0 0 0 1px #5a486d1b!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .pati-edu-quiz.buchee-quiz-pro button.buchee-edu-option.selected>.edu-v2-answer-marker{
+ background:#342b3d!important;border-color:#342b3d!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .pati-edu-quiz.buchee-quiz-pro button.buchee-edu-option.selected>.buchee-quiz-choice-check{display:inline-flex!important}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-quiz-navigation{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ margin:24px 0 0!important;padding:0!important;gap:10px!important;width:100%!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-quiz-navigation>button{
+ appearance:none!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ box-sizing:border-box!important;flex:1 1 auto!important;min-height:50px!important;height:auto!important;
+ margin:0!important;padding:12px 14px!important;gap:10px!important;
+ border-radius:13px!important;border:1px solid #25252b!important;
+ background:#25252b!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+ font:780 14px/1.3 system-ui,-apple-system,sans-serif!important;
+ white-space:normal!important;text-align:center!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-quiz-navigation>.buchee-quiz-prev{
+ flex:0 0 auto!important;min-width:108px!important;border-color:#e2e3e8!important;
+ background:#fff!important;color:#24252b!important;-webkit-text-fill-color:#24252b!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-quiz-navigation>button:disabled{
+ opacity:1!important;cursor:not-allowed!important;
+ background:#e8e8ec!important;border-color:#e8e8ec!important;
+ color:#777883!important;-webkit-text-fill-color:#777883!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-quiz-navigation>.buchee-quiz-prev:disabled{display:none!important}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-edu-quiz-feedback{
+ display:block!important;box-sizing:border-box!important;
+ margin:14px 0 0!important;padding:0!important;
+ color:#71717a!important;-webkit-text-fill-color:#71717a!important;
+ font:550 12px/1.55 system-ui,-apple-system,sans-serif!important;
+ background:transparent!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-quiz-success-icon{
+ display:grid!important;place-items:center!important;
+ width:48px!important;height:48px!important;margin:0 0 14px!important;border-radius:15px!important;
+ background:#e7f4e9!important;color:#277748!important;-webkit-text-fill-color:#277748!important;
+ font-size:25px!important;font-weight:800!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-quiz-done h2{
+ margin:0 0 8px!important;color:#17181d!important;font:800 21px/1.3 system-ui,-apple-system,sans-serif!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-quiz-done p{
+ color:#656770!important;-webkit-text-fill-color:#656770!important;font:550 13px/1.6 system-ui,-apple-system,sans-serif!important;
+}
+#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-quiz-pro button:focus-visible{
+ outline:3px solid #8a72a1!important;outline-offset:2px!important;
+}
+@media(max-width:430px){
+ #app-root:not(.hidden) #main-content .buchee-edu-clean-detail .pati-edu-quiz.buchee-quiz-pro{padding:21px 15px 18px!important;border-radius:18px!important}
+ #app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-quiz-top h2{font-size:22px!important}
+ #app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-edu-question>legend{font-size:17px!important}
+ #app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-quiz-navigation>.buchee-quiz-prev{min-width:96px!important}
+}
+@media(prefers-reduced-motion:reduce){#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-quiz-progress-fill,#app-root:not(.hidden) #main-content .buchee-edu-clean-detail button.buchee-edu-option{transition:none!important}}
