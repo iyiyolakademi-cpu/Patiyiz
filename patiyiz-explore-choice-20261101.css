@@ -1,99 +1,14 @@
-/* Buchee phase 2 — scoped only to Explore gallery and user search. */
-#main-content .pati-explore-media-screen{background:#fff!important;min-width:0;max-width:100%;overflow-x:clip}
-#main-content .pati-explore-media-screen .pati-explore-custom-top{
- box-sizing:border-box;display:flex;align-items:center;gap:9px;width:100%;padding:10px 12px 8px;
- background:#fff;color:#20232b;position:relative;z-index:5;
-}
-#main-content .pati-explore-media-screen .pati-explore-custom-search{
- flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:10px;text-align:left;
- background:#f1f2f5;color:#616775;border:1px solid #eceef1;border-radius:14px;
- min-height:46px;padding:0 13px;font:600 15px/1.35 system-ui,-apple-system,sans-serif;
- touch-action:manipulation;
-}
-#main-content .pati-explore-custom-search svg{width:21px;height:21px;flex:0 0 21px;stroke-width:2}
-#main-content .pati-explore-media-screen .pati-explore-custom-icon{
- display:grid;place-items:center;flex:0 0 46px;width:46px;min-width:46px;height:46px;min-height:46px;
- padding:9px;border:1px solid #e9eaed;border-radius:14px;background:#fff;color:#252934;
- touch-action:manipulation;
-}
-#main-content .pati-explore-custom-icon svg{width:23px;height:23px}
-#main-content .pati-explore-media-screen .buchee-explore-switch{
- display:flex;align-items:center;gap:8px;box-sizing:border-box;width:100%;
- padding:3px 12px 11px;margin:0;overflow-x:auto;overflow-y:hidden;
- scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
- background:#fff;border-bottom:1px solid #edf0f3;
-}
-#main-content .pati-explore-media-screen .buchee-explore-switch::-webkit-scrollbar{display:none}
-#main-content .pati-explore-media-screen .buchee-explore-switch>button{
- display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;white-space:nowrap;
- min-height:42px;padding:9px 13px;border:1px solid #e9ebef;border-radius:999px;
- background:#fff;color:#626872;font:650 12px/1.2 system-ui,-apple-system,sans-serif;
- touch-action:manipulation;
-}
-#main-content .pati-explore-media-screen .buchee-explore-switch>button.active,
-#main-content .pati-explore-media-screen .buchee-explore-switch>button[aria-pressed="true"]{
- background:#292632;border-color:#292632;color:#fff;
-}
-#main-content .pati-explore-media-screen :is(.pati-explore-custom-search,.pati-explore-custom-icon,.buchee-explore-switch>button,.pati-explore-media):focus-visible,
-#main-content .pati-search-screen :is(.pati-search-user,.pati-search-remove,.pati-search-cancel):focus-visible{
- outline:2px solid #7043a5!important;outline-offset:2px;
-}
-#main-content .pati-explore-media-screen>.pati-explore-search-launch[hidden],
-#main-content .pati-explore-media-screen>.pati-explore-sort[hidden]{display:none!important}
-#main-content .pati-explore-media-screen .pati-explore-gallery{
- display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
- gap:2px!important;box-sizing:border-box;width:100%;max-width:100%;
- padding:0 0 max(80px,env(safe-area-inset-bottom,0px))!important;
-}
-#main-content .pati-explore-media-screen .pati-explore-media{
- position:relative;display:block;min-width:0;width:100%;aspect-ratio:1;
- border:0;border-radius:0!important;overflow:hidden;background:#f0f1f3;touch-action:manipulation;
-}
-#main-content .pati-explore-media-screen .pati-explore-media img{
- display:block;width:100%!important;height:100%!important;object-fit:cover!important;
-}
-#main-content .pati-explore-media-screen .pati-explore-preview-video{
- display:grid;place-items:center;width:100%;height:100%;background:#22242b;color:#fff;font-size:23px;
-}
-#main-content .pati-explore-media-screen .pati-explore-video-icon{
- display:grid;place-items:center;position:absolute;right:7px;top:7px;
- width:24px;height:24px;border-radius:7px;background:#0008;color:#fff;z-index:1;
-}
-#main-content .pati-explore-media-screen .pati-explore-video-icon svg{width:16px;height:16px;stroke:#fff}
-#main-content .pati-explore-media-screen .buchee-explore-empty{
- margin:28px 14px;padding:25px 17px;text-align:center;background:#f8f8fa;border-radius:18px;color:#30333b;
-}
-#main-content .pati-explore-media-screen .buchee-explore-empty strong{display:block;font-size:16px}
-#main-content .pati-explore-media-screen .buchee-explore-empty p{font-size:13px;line-height:1.5;color:#6c717b}
-#main-content .pati-explore-media-screen .buchee-explore-empty button{
- min-height:44px;padding:10px 17px;border:0;border-radius:11px;background:#292632;color:#fff;font-weight:700
-}
-#main-content .pati-search-screen .pati-search-top{gap:8px;padding:12px 12px 10px!important}
-#main-content .pati-search-screen .pati-search-field{
- flex:1 1 auto;min-width:0;min-height:46px;border-radius:14px!important;background:#f1f2f5!important;
-}
-#main-content .pati-search-screen #explore-search{font-size:16px!important;min-height:44px!important}
-#main-content .pati-search-screen .pati-search-results{padding:0 0 80px!important}
-#main-content .pati-search-screen .pati-search-user-row{
- display:flex;align-items:center;gap:0;width:100%;box-sizing:border-box;border-bottom:1px solid #f0f1f3;
-}
-#main-content .pati-search-screen .pati-search-user-row>.pati-search-user{
- flex:1 1 auto;min-width:0;width:auto;min-height:70px!important;padding:8px 8px 8px 14px!important;
- border:0!important;
-}
-#main-content .pati-search-screen .pati-search-user-row>.pati-search-user>.avatar{
- width:50px!important;height:50px!important;min-width:50px!important;flex-basis:50px!important;
-}
-#main-content .pati-search-screen .pati-search-user-row>.pati-search-remove{
- display:grid;place-items:center;flex:0 0 44px;width:44px;min-height:44px;
- margin-right:9px;border:0;border-radius:11px;background:transparent;
- color:#818793;font-size:24px;touch-action:manipulation;
-}
-#main-content .pati-search-screen .pati-search-empty{
- padding:26px 18px!important;text-align:center!important;line-height:1.5;
-}
-@media(max-width:360px){
- #main-content .pati-explore-media-screen .pati-explore-custom-top{gap:7px;padding:8px 8px 6px}
- #main-content .pati-explore-media-screen .buchee-explore-switch{padding:3px 8px 9px;gap:6px}
- #main-content .pati-explore-media-screen .buchee-explore-switch>button{padding:8px 10px;font-size:11px}
-}
+/* Explore mobile-first toolbar matching saved and overflow navigation */
+#main-content .pati-explore-media-screen .pati-explore-custom-top{box-sizing:border-box;display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px 12px;background:#fff;color:#181b20;position:relative;z-index:10}
+#main-content .pati-explore-custom-search{min-width:0;flex:1 1 auto;display:flex;align-items:center;gap:12px;background:#f0f1f3;border:0;border-radius:30px;min-height:47px;padding:0 16px;color:#6d747c;text-align:left;font-size:20px}
+#main-content .pati-explore-custom-search span{font-size:16px}
+#main-content .pati-explore-custom-icon{width:42px;min-width:42px;height:44px;border:0;background:transparent;color:#202329;display:grid;place-items:center;padding:8px;border-radius:10px}
+#main-content .pati-explore-custom-icon svg{width:27px;height:27px}
+#main-content .pati-explore-custom-menu-wrap{position:relative}
+#main-content .pati-explore-custom-menu{position:absolute;right:0;top:calc(100% + 7px);width:min(270px,calc(100vw - 30px));z-index:100;background:#fff;border:1px solid #e0e3e8;border-radius:15px;padding:6px;box-shadow:0 12px 38px #0002}
+#main-content .pati-explore-custom-menu[hidden]{display:none!important}
+#main-content .pati-explore-custom-menu button{display:flex;flex-direction:column;align-items:flex-start;width:100%;padding:11px 12px;border:0;border-radius:10px;background:#fff;text-align:left;font-size:14px;font-weight:750;color:#23252b}
+#main-content .pati-explore-custom-menu button small{font-size:11px;font-weight:500;color:#6b7079;margin-top:3px}
+#main-content .pati-explore-custom-menu button.is-selected{background:#f0f1f4}
+#main-content .pati-explore-media-screen>.pati-explore-search-launch[hidden],#main-content .pati-explore-media-screen>.pati-explore-sort[hidden]{display:none!important}
+@media(max-width:370px){#main-content .pati-explore-media-screen .pati-explore-custom-top{gap:5px;padding:7px}#main-content .pati-explore-custom-icon{width:39px;min-width:39px}}
