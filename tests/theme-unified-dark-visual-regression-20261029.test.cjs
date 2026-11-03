@@ -24,7 +24,7 @@ test('Explore screenshot: search, filters, empty card are all dark with visible 
  assert.match(app,/class="pati-explore-media-screen"/);
  assert.match(app,/class="pati-explore-search-launch"/);
  assert.match(app,/class="pati-explore-sort"/);
- assert.match(app,/empty\('Henüz fotoğraf veya video yok','İlk paylaşımı sen yap!'\)/);
+ assert.match(app,/class="buchee-explore-empty"/);
  has(/html\[data-pati-theme="dark"\] #main-content \.pati-explore-media-screen/);
  has(/html\[data-pati-theme="dark"\] #main-content \.pati-explore-sort button\.active/);
  has(/html\[data-pati-theme="dark"\] #main-content \.pati-explore-sort button\[aria-pressed="true"\]/);

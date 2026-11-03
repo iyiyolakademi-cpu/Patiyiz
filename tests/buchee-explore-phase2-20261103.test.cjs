@@ -19,7 +19,7 @@ test('explore has five clear sort controls without a redundant overflow menu',()
  assert.doesNotMatch(choice,/createElement\('button'\).*saved-posts/);
  assert.match(choice,/native\.click\(\)/);
  assert.match(html,/patiyiz-explore-choice-20261101\.js\?v=20261103-phase2-v1/);
- assert.match(html,/patiyiz-explore-choice-20261101\.css\?v=20261103-phase2-v1/);
+ assert.match(html,/buchee-explore-phase2-20261103\.css\?v=20261103-phase2-v2/);
 });
 test('ranking is stable within the visit and recently opened posts are deprioritized',()=>{
  assert.match(choice,/const opened=new Map\(\)/);
