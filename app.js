@@ -3393,7 +3393,7 @@ function educationCards(list,completed){
   const done=completed.has(l.id),idx=patiyizLessons.findIndex(x=>x.id===l.id)+1;
   return '<button type="button" class="pati-edu-card edu-v2-card" data-action="education-open" data-id="'+esc(l.id)+'" aria-label="'+esc(l.name)+(done?', tamamlandı':'')+'">'
    +'<span class="pati-edu-emoji" aria-hidden="true">'+esc(l.icon)+'</span>'
-   +'<span class="pati-edu-card-body"><small>Ders '+idx+' · '+esc(l.cat)+' · '+Number(l.minutes)+' dk</small><strong>'+esc(l.name)+'</strong><span>'+esc(l.desc)+'</span></span>'
+   +'<span class="pati-edu-card-body"><small>Ders '+idx+' · '+esc(l.cat)+' · '+Number(l.minutes)+' dk · İlk bitirişte +2 puan</small><strong>'+esc(l.name)+'</strong><span>'+esc(l.desc)+'</span></span>'
    +'<b class="pati-edu-status'+(done?' is-complete':'')+'">'+(done?'✓ Tamamlandı':'Derse başla →')+'</b></button>';
  }).join('');
 }
@@ -3431,7 +3431,7 @@ function educationPathCards(topic,done){
  return educationTopicLessons(topic).map((l,i)=>{
   const finished=done.has(l.id),available=educationCanOpen(l.id,done);
   const tag='<span class="pati-edu-path-step">'+(i+1)+'. Ders</span>';
-  const content='<span class="pati-edu-path-no" aria-hidden="true">'+(finished?'✓':available?'▶':'🔒')+'</span><span class="pati-edu-path-copy">'+tag+'<strong>'+esc(l.name)+'</strong><small>'+esc(l.desc)+' · '+Number(l.minutes||0)+' dk</small></span><b class="pati-edu-path-status">'+(finished?'Tamamlandı':available?'Derse başla':'Kilitli')+'</b>';
+  const content='<span class="pati-edu-path-no" aria-hidden="true">'+(finished?'✓':available?'▶':'🔒')+'</span><span class="pati-edu-path-copy">'+tag+'<strong>'+esc(l.name)+'</strong><small>'+esc(l.desc)+' · '+Number(l.minutes||0)+' dk · İlk bitirişte +2 puan</small></span><b class="pati-edu-path-status">'+(finished?'Tamamlandı':available?'Derse başla':'Kilitli')+'</b>';
   return available?'<button type="button" class="pati-edu-path-item '+(finished?'is-done':'is-current')+'" data-action="education-open" data-id="'+esc(l.id)+'" aria-label="'+esc(l.name)+(finished?', tamamlandı':', başlayabilirsin')+'">'+content+'</button>':
    '<div class="pati-edu-path-item is-locked" role="listitem" aria-disabled="true" aria-label="'+esc(l.name)+', önceki ders tamamlanınca açılır">'+content+'</div>';
  }).join('');
