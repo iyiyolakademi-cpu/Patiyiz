@@ -75,6 +75,6 @@ test('Keşfet video kapaksızsa veri tüketmeyen önizleme gösterir ve geri dö
  const src=part('function explorePage(){','function communityPage(){');
  assert.match(src,/pati-explore-preview-video.*role="img"/);
  assert.doesNotMatch(src,/<video class="pati-explore-preview-video"/);
- assert.match(app,/patiExploreReturnTo=view==='explore';selectedPostId=id;navigate\('home'\)/);
- assert.match(app,/case 'post-back':\{[\s\S]*?detail\?\.origin\|\|\(patiExploreReturnTo\?'explore':'home'\)/);
+ assert.match(app,/patiExploreReturnTo=view==='explore';selectedPostId=id;[\s\S]*?else navigate\('home'\)/);
+ assert.match(app,/function closePostDetail\(\)\{[\s\S]*?detail\?\.origin\|\|\(patiExploreReturnTo\?'explore':'home'\)/);
 });

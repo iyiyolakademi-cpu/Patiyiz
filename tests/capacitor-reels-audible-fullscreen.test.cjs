@@ -9,6 +9,8 @@ const build=fs.readFileSync('native-capacitor/scripts/build-web.mjs','utf8');
 const shell=fs.readFileSync('native-capacitor/src/native-shell.js','utf8');
 function mockVideo(id){
  return {id,preload:'none',readyState:0,muted:false,paused:true,playCalls:0,pauseCalls:0,loadCalls:0,dataset:{},
+  hasAttribute(name){return name==='src'&&!!this.src},
+  removeAttribute(name){if(name==='src')delete this.src},
   play(){this.paused=false;this.playCalls++;return Promise.resolve()},
   pause(){this.paused=true;this.pauseCalls++},
   load(){this.loadCalls++}};

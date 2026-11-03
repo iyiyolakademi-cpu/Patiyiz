@@ -3,8 +3,8 @@
   'use strict';
   const STORAGE_KEY='patiyiz-home-feed-mode';
   const choices=[
-    {mode:'media',title:'Gönderiler ve Reels',subtitle:'Fotoğraf, video ve Reels',short:'Gönderiler',icon:'i-image'},
-    {mode:'text',title:'Tweet ve Sorular',subtitle:'Yazılı paylaşımlar ve soru-cevaplar',short:'Tweet ve Sorular',icon:'i-message'}
+    {mode:'media',title:'Gönderiler ve Reels',subtitle:'Fotoğraf, video ve Reels',short:'Gönderiler ve Reels',icon:'i-image'},
+    {mode:'text',title:'Yazılar ve Sorular',subtitle:'Yazılı paylaşımlar ve soru-cevaplar',short:'Yazılar ve Sorular',icon:'i-message'}
   ];
   let activeMode='media';
   try { if(localStorage.getItem(STORAGE_KEY)==='text') activeMode='text'; } catch (_) {}

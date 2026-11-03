@@ -1,6 +1,6 @@
 /* Mobile home: original purple Buchee mark stays in the top bar, never in stories. */
 @media(max-width:740px){
- html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header{
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header:has(>#pati-feed-menu-trigger){
   position:relative!important;
   display:grid!important;
   grid-template-columns:52px minmax(0,1fr) 52px!important;
@@ -12,17 +12,12 @@
   background:#fff!important;
   overflow:visible!important;
  }
- html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger{
-  display:none!important;
- }
- html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#buchee-header-logo-trigger{
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand{
   display:flex!important;
-  position:absolute!important;
-  top:calc(env(safe-area-inset-top,0px) + 4px)!important;
-  left:50%!important;right:auto!important;bottom:auto!important;
-  transform:translateX(-50%)!important;
-  -webkit-transform:translateX(-50%)!important;
-  align-items:center!important;justify-content:center!important;
+  position:relative!important;inset:auto!important;
+  grid-column:2!important;grid-row:1!important;justify-self:center!important;
+  transform:none!important;-webkit-transform:none!important;
+  flex-direction:column!important;gap:0!important;align-items:center!important;justify-content:center!important;
   width:min(49vw,185px)!important;max-width:calc(100vw - 128px)!important;
   height:46px!important;min-height:46px!important;
   margin:0!important;padding:0!important;
@@ -31,12 +26,13 @@
   z-index:50!important;visibility:visible!important;opacity:1!important;
   cursor:pointer!important;
  }
- html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#buchee-header-logo-trigger img{
-  display:block!important;width:100%!important;height:44px!important;
-  max-width:100%!important;max-height:44px!important;object-fit:contain!important;
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand img{
+  display:block!important;width:100%!important;height:30px!important;
+  max-width:100%!important;max-height:30px!important;object-fit:contain!important;
   margin:0!important;padding:0!important;position:static!important;
   transform:none!important;
  }
+ .buchee-mode-label{display:block;color:#51495b;font:600 11px/14px system-ui;white-space:nowrap}
  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-header-share{
   position:relative!important;grid-column:1!important;grid-row:1!important;
   width:44px!important;height:44px!important;padding:0!important;
@@ -87,8 +83,9 @@
   font:700 19px/1 system-ui,-apple-system,sans-serif!important;
   text-align:center!important;z-index:15!important;
  }
+ html[data-pati-view="home"] #main-content .stories-strip .story-own-plus::after{content:"";position:absolute;inset:-9px;border-radius:50%}
  html[data-pati-view="home"] #main-content .stories-strip .story-own-plus:focus-visible,
- html[data-pati-view="home"] #buchee-header-logo-trigger:focus-visible{
+ html[data-pati-view="home"] #pati-feed-menu-trigger:focus-visible{
   outline:2px solid #5700c6!important;outline-offset:3px!important;
  }
 }

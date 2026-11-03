@@ -54,7 +54,7 @@ test('Opening a post retains return source and preserves profile context',()=>{
  assert.match(open,/origin,rows:options,initialId:id/);
  assert.match(open,/profileId,profilePostsTab,returnScroll/);
  assert.match(home,/if\(selectedPostId&&patiDetailState\)\{patiDetailPage\(\);return\}/);
- assert.match(app,/case 'post-back':\{[\s\S]*?detail\?\.origin[\s\S]*?profileId=detail.profileId/);
+ assert.match(app,/function closePostDetail\(\)\{[\s\S]*?detail\?\.origin[\s\S]*?profileId=detail.profileId/);
 });
 test('DM opens a conversation at the last message, even after async fetch',()=>{
  const ctx={view:'messages',personId:'peer-1',requestAnimationFrame:fn=>fn()};

@@ -23,7 +23,7 @@ test('Likes are present in initial and feed data, and are confirmed by the datab
  assert.doesNotMatch(app,/run\(\(\)=>doToggle\('post_likes'/);
 });
 test('A like and unlike persist across reads, including someone else\'s likes',async()=>{
- const code=piece('async function togglePostLike(id){','async function doToggle(');
+ const code=piece('function bucheeUpdateLikeSummary','function postCard')+piece('async function togglePostLike(id){','async function doToggle(');
  let rows=[{user_id:'friend',post_id:'post'}];
  const button={disabled:false,attributes:{},classList:{toggle(){}},setAttribute(k,v){this.attributes[k]=v},removeAttribute(k){delete this.attributes[k]},querySelector(){return {textContent:''}}};
  const ctx={me:{id:'owner'},patiFindSocialPost:()=>({id:'post',author_id:'friend'}),data:{likes:[]},liked:new Set(),pendingPostLikes:new Set(),likesChangeEpoch:0,console,notify(){},friendly:e=>e.message||String(e),
