@@ -211,3 +211,117 @@ html[data-pati-view="messages"] #main-content .buchee-dm-selecting .buchee-dm-ch
  html[data-pati-view="messages"] #main-content>.pati-dm-top .pati-dm-title strong{font-size:17px!important}
  html[data-pati-view="messages"] #main-content>.pati-dm-top .buchee-dm-unread-total{min-width:19px;height:19px;padding:0 4px;font-size:10px}
 }
+
+/* 2026-11-04: Inbox selection geometry — never overlap avatars or story rings. */
+@media (max-width:740px){
+  /* Keep the destructive action bar compact and readable on narrow iPhones. */
+  html[data-pati-view="messages"] #main-content.buchee-dm-selecting>.buchee-dm-bulk-toolbar{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto auto!important;
+    align-items:center!important;
+    justify-content:stretch!important;
+    box-sizing:border-box!important;
+    min-height:58px!important;
+    width:100%!important;
+    margin:0!important;
+    padding:7px 12px!important;
+    gap:7px!important;
+    flex-wrap:nowrap!important;
+    background:#f8f6fa!important;
+    border-bottom:1px solid #eeeaf2!important;
+  }
+  html[data-pati-view="messages"] #main-content.buchee-dm-selecting>.buchee-dm-bulk-toolbar>span{
+    display:block!important;min-width:0!important;flex:none!important;
+    color:#302b38!important;font-size:13px!important;
+    line-height:1.25!important;font-weight:750!important;
+    white-space:nowrap!important;
+  }
+  html[data-pati-view="messages"] #main-content.buchee-dm-selecting>.buchee-dm-bulk-toolbar>button{
+    box-sizing:border-box!important;
+    display:inline-flex!important;align-items:center!important;justify-content:center!important;
+    min-height:42px!important;height:42px!important;
+    width:auto!important;min-width:0!important;max-width:none!important;
+    margin:0!important;padding:7px 10px!important;
+    border-radius:11px!important;
+    border:1px solid #e6e2ea!important;
+    background:#fff!important;color:#28242f!important;
+    box-shadow:none!important;
+    font-size:12px!important;font-weight:750!important;
+    white-space:nowrap!important;
+  }
+  html[data-pati-view="messages"] #main-content.buchee-dm-selecting>.buchee-dm-bulk-toolbar>button.buchee-dm-remove{
+    background:#b82445!important;color:#fff!important;border-color:#b82445!important;
+  }
+  html[data-pati-view="messages"] #main-content.buchee-dm-selecting>.buchee-dm-bulk-toolbar>button.buchee-dm-remove:disabled{
+    background:#eadfe5!important;color:#977b88!important;border-color:#eadfe5!important;
+    opacity:1!important;
+  }
+
+  /* A dedicated left gutter contains the checkbox. No overlay on either
+     an ordinary avatar or the absolutely positioned story-ring avatar. */
+  html[data-pati-view="messages"] #main-content.buchee-dm-selecting .pati-dm-layout.mobile-chat-list .pati-dm-list-row[data-chat-peer]{
+    position:relative!important;
+    display:flex!important;align-items:center!important;
+    box-sizing:border-box!important;
+    min-height:76px!important;width:100%!important;
+    padding:3px 6px 3px 51px!important;
+  }
+  html[data-pati-view="messages"] #main-content.buchee-dm-selecting .pati-dm-layout.mobile-chat-list .pati-dm-list-row[data-chat-peer]>.buchee-dm-checkbox{
+    -webkit-appearance:none!important;appearance:none!important;
+    display:block!important;position:absolute!important;
+    left:11px!important;top:50%!important;right:auto!important;bottom:auto!important;
+    transform:translateY(-50%)!important;
+    box-sizing:border-box!important;
+    width:26px!important;height:26px!important;
+    min-width:26px!important;min-height:26px!important;
+    margin:0!important;padding:0!important;
+    border:2px solid #b5b2be!important;border-radius:8px!important;
+    background:#fff!important;color:#fff!important;
+    box-shadow:0 1px 2px rgba(26,20,38,.05)!important;
+    cursor:pointer!important;z-index:7!important;
+  }
+  html[data-pati-view="messages"] #main-content.buchee-dm-selecting .pati-dm-layout.mobile-chat-list .pati-dm-list-row[data-chat-peer]>.buchee-dm-checkbox:checked{
+    border-color:#6c399c!important;
+    background:#6c399c!important;
+  }
+  html[data-pati-view="messages"] #main-content.buchee-dm-selecting .pati-dm-layout.mobile-chat-list .pati-dm-list-row[data-chat-peer]>.buchee-dm-checkbox:checked::after{
+    content:""!important;display:block!important;
+    position:absolute!important;
+    width:6px!important;height:12px!important;
+    left:8px!important;top:3px!important;
+    border:solid #fff!important;border-width:0 2px 2px 0!important;
+    transform:rotate(45deg)!important;
+  }
+  html[data-pati-view="messages"] #main-content.buchee-dm-selecting .pati-dm-layout.mobile-chat-list .pati-dm-list-row[data-chat-peer]>.buchee-dm-checkbox:focus-visible{
+    outline:3px solid #b491d7!important;outline-offset:3px!important;
+  }
+  html[data-pati-view="messages"] #main-content.buchee-dm-selecting .pati-dm-layout.mobile-chat-list .pati-dm-list-row[data-chat-peer]>.chat-person{
+    flex:1 1 auto!important;min-width:0!important;
+    width:auto!important;max-width:100%!important;
+    padding:7px 4px!important;
+  }
+  html[data-pati-view="messages"] #main-content.buchee-dm-selecting .pati-dm-layout.mobile-chat-list .pati-dm-list-row[data-chat-peer][data-has-story="true"]>.pati-dm-story-trigger{
+    left:57px!important;
+    z-index:4!important;
+  }
+  html[data-pati-view="messages"] #main-content.buchee-dm-selecting .pati-dm-layout.mobile-chat-list .pati-dm-list-row[data-chat-peer][data-has-story="true"]>.chat-person{
+    padding-left:64px!important;
+  }
+  /* Hide the per-row three-dot menu while selection mode owns row taps. */
+  html[data-pati-view="messages"] #main-content.buchee-dm-selecting .pati-dm-layout.mobile-chat-list .pati-dm-list-row[data-chat-peer]>.pati-dm-row-actions{
+    display:none!important;
+  }
+  html[data-pati-view="messages"] #main-content.buchee-dm-selecting .pati-dm-layout.mobile-chat-list .pati-dm-list-row.buchee-dm-row-picked{
+    background:#f7f3fc!important;
+  }
+  html[data-pati-view="messages"] #main-content.buchee-dm-selecting .pati-dm-layout.mobile-chat-list .pati-dm-list-row.buchee-dm-row-picked>.chat-person{
+    background:#f7f3fc!important;
+  }
+  html[data-pati-view="messages"] #main-content.buchee-dm-selecting .pati-dm-top-actions>.buchee-dm-bulk-trigger{
+    background:#f2eaf8!important;color:#693c92!important;
+  }
+  html[data-pati-view="messages"] #main-content.buchee-dm-selecting .pati-dm-layout.mobile-chat-list .pati-group-thread-row{
+    opacity:.55!important;
+    pointer-events:none!important;
+  }
+}
