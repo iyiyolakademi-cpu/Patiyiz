@@ -12,9 +12,9 @@ window.BucheeAcademyGuides={
   const h=editor.headings;
   return [
    {name:h[0],text:[principle+'. '+pick('frame')],task:''},
-   {name:h[1],text:[editor.example+' '+pick('interpret',1)],task:''},
-   {name:h[2],text:[pick('method',2)],task:''},
-   {name:h[3],text:[pick('method',1)],task:pick('review',2)},
+   {name:h[1],text:[pick('interpret',1)],example:editor.example,task:''},
+   {name:h[2],text:[lessonName+' için somut yöntem: '+pick('method',2)],task:''},
+   {name:h[3],text:[lessonName+' dersindeki yaklaşımı şimdi uygulamaya çevir. '+pick('method',1)],task:pick('review',2)},
    {name:h[4],text:[pick('risk',2)],task:''},
    {name:h[5],text:[''+lessonName+' konusunda bir sonraki kararda hangi bilgiyi kullanacağını belirle. '+pick('review')],task:''}
   ];
