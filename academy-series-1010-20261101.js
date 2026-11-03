@@ -43,8 +43,8 @@
     parts.push(...detailed);
     const quiz=[''+topic+' konusunda ilk değerlendirmede hangisi doğru yaklaşımdır?',''+topic+' için yararlı bir örnek nasıl bulunur?',''+topic+' alanında uygulamaya nasıl başlanmalı?',''+topic+' konusundaki hata riski nasıl azaltılır?',''+topic+' mini görevi nasıl tamamlanır?'][stage];
     const correct=['Kavramın temel ilkesini açıklamak','Gerçek bir durum ve etkisini incelemek','Küçük, ölçülebilir bir adım belirlemek','Varsayımları kontrol edip küçük denemek','Bir örnek ve gözlemi kaydetmek'][stage];
-    const opts=[correct,'Kanıt olmadan kesin sonuç çıkarmak','Diğer tüm koşulları göz ardı etmek'];
-    lessons.push({id:'s101-'+group.tag+'-'+String(num).padStart(3,'0'),series:group.title,cat:group.title,icon:group.icon,minutes:12,name,desc:insight,parts,q:quiz,opts,answer:0});
+    const answer=(num-1)%3;const opts=['Kanıt olmadan kesin sonuç çıkarmak','Diğer tüm koşulları göz ardı etmek'];opts.splice(answer,0,correct);
+    lessons.push({id:'s101-'+group.tag+'-'+String(num).padStart(3,'0'),series:group.title,cat:group.title,icon:group.icon,minutes:12,name,desc:insight,parts,q:quiz,opts,answer});
    }
   }
   lessons.push({id:'s101-'+group.tag+'-101',series:group.title,cat:group.title,icon:group.icon,minutes:15,name:'101. Ders — Öğrendiklerini Birleştir',desc:group.title+' boyunca öğrendiğin temel yaklaşımları gerçek bir durum üzerinde birleştir.',parts:[
@@ -53,7 +53,7 @@
  '3. KÜÇÜK PLAN OLUŞTUR (3 dk). Öğrendiğin ilkelerden en az üçünü bu duruma uygula. Bir eylem seç, başlamadan önce başarı ölçütünü belirle, süre ve kaynak ihtiyacını düşün. Gerekirse güvenli ve geri alınabilir bir ilk adımla başla.',
  '4. SONUÇLARI YORUMLA (3 dk). Küçük denemenin beklenen ve beklenmeyen sonuçlarını not et. Neyin işe yaradığını, neyin belirsiz kaldığını ve hangi koşullarda yaklaşımını değiştireceğini açıkla. Sonuç henüz yoksa varsayımını sonuç gibi yazma.',
  '5. SONUÇ ÖZETİ (3 dk). Bir cümlede ne öğrendiğini, bir cümlede neyi uygulayacağını, bir cümlede nasıl kontrol edeceğini yaz. Bir hafta sonra notuna dönerek gelişmeni kıyasla. Hazırsan son mini sınava geç.'
- ],q:'Bu seriyi tamamladıktan sonra en yararlı yaklaşım hangisidir?',opts:['Bilgiyi gerçek bir durumda küçük bir adımla uygulamak','Öğrendiklerini hiç kullanmadan unutmak','Tek örnekten her durum için kesin sonuç çıkarmak'],answer:0});
+ ],q:'Bu seriyi tamamladıktan sonra en yararlı yaklaşım hangisidir?',opts:(()=>{const answer=series.indexOf(group)%3;const options=['Öğrendiklerini hiç kullanmadan unutmak','Tek örnekten her durum için kesin sonuç çıkarmak'];options.splice(answer,0,'Bilgiyi gerçek bir durumda küçük bir adımla uygulamak');return options})(),answer:series.indexOf(group)%3});
  }
  if(series.length!==9||series.some(s=>s.topics.length!==20)||lessons.length!==909||new Set(lessons.map(l=>l.id)).size!==909)throw Error('101 eğitim serileri veri tutarsızlığı');
  window.PATIYIZ_SERIES_CATALOG=[{title:'101 Hayvan',icon:'📚'},...series.map(s=>({title:s.title,icon:s.icon}))];
