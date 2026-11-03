@@ -1,0 +1,79 @@
+/* Buchee iPhone: only feed caption previews and the two-mode shortcut (4 Nov 2026). */
+@media (max-width:740px){
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header{
+  isolation:isolate!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#buchee-feed-shortcut{
+  display:grid!important;place-items:center!important;
+  position:absolute!important;left:calc(50% + 62px)!important;
+  top:calc(env(safe-area-inset-top,0px) + 4px)!important;
+  width:44px!important;height:44px!important;min-width:44px!important;
+  margin:0!important;padding:9px!important;
+  border:0!important;border-radius:11px!important;
+  background:transparent!important;color:#17191d!important;box-shadow:none!important;
+  z-index:90!important;cursor:pointer!important;touch-action:manipulation!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#buchee-feed-shortcut svg{
+  display:block!important;width:26px!important;height:26px!important;fill:none!important;
+  stroke:currentColor!important;stroke-width:2.3!important;
+  stroke-linecap:round!important;stroke-linejoin:round!important;pointer-events:none!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#buchee-feed-shortcut[aria-expanded="true"]{
+  background:#f2edf6!important;color:#29222f!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#buchee-feed-shortcut-menu:not([hidden]){
+  position:absolute!important;
+  top:calc(env(safe-area-inset-top,0px) + 53px)!important;
+  right:12px!important;left:auto!important;
+  z-index:3100!important;display:grid!important;gap:2px!important;
+  width:172px!important;max-width:calc(100vw - 24px)!important;
+  margin:0!important;padding:6px!important;box-sizing:border-box!important;
+  border:1px solid #e9e7ec!important;border-radius:13px!important;
+  background:#fff!important;color:#16171c!important;
+  box-shadow:0 9px 28px rgba(14,10,25,.14)!important;
+ }
+ #app-root>.mobile-header>#buchee-feed-shortcut-menu[hidden]{display:none!important}
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#buchee-feed-shortcut-menu>button{
+  appearance:none!important;display:flex!important;align-items:center!important;
+  justify-content:space-between!important;box-sizing:border-box!important;
+  width:100%!important;min-height:45px!important;padding:9px 12px!important;
+  border:0!important;border-radius:9px!important;background:transparent!important;
+  color:#202027!important;font:650 14px/1.2 system-ui,-apple-system,sans-serif!important;
+  text-align:left!important;cursor:pointer!important;touch-action:manipulation!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#buchee-feed-shortcut-menu>button[aria-checked="true"]{
+  background:#f3eef8!important;color:#5a3086!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#buchee-feed-shortcut-menu>button[aria-checked="true"]::after{
+  content:"✓"!important;font-size:15px!important;font-weight:750!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>:is(#buchee-feed-shortcut,#buchee-feed-shortcut-menu>button):focus-visible{
+  outline:2px solid #7244ac!important;outline-offset:2px!important;
+ }
+}
+#app-root>.mobile-header>#buchee-feed-shortcut,
+#app-root>.mobile-header>#buchee-feed-shortcut-menu{
+ display:none;
+}
+/* Preserve formatted captions and their original text; clamp only long feed posts. */
+html[data-pati-view="home"] #main-content .pati-feed-card .buchee-feed-caption.buchee-caption-collapsed{
+ display:-webkit-box!important;
+ -webkit-box-orient:vertical!important;
+ -webkit-line-clamp:4!important;
+ line-clamp:4!important;
+ max-height:none!important;
+ overflow:hidden!important;
+ overflow-wrap:anywhere!important;
+}
+html[data-pati-view="home"] #main-content .pati-feed-card .buchee-caption-more{
+ appearance:none!important;display:inline-flex!important;align-items:center!important;
+ width:auto!important;min-width:44px!important;min-height:32px!important;
+ margin:0 0 3px!important;padding:3px 0!important;
+ border:0!important;border-radius:0!important;box-shadow:none!important;
+ background:transparent!important;color:#70717b!important;
+ font:700 13px/1.3 system-ui,-apple-system,sans-serif!important;
+ text-align:left!important;cursor:pointer!important;touch-action:manipulation!important;
+}
+html[data-pati-view="home"] #main-content .pati-feed-card .buchee-caption-more:focus-visible{
+ outline:2px solid #7244ac!important;outline-offset:2px!important;
+}
