@@ -3,7 +3,7 @@
 const main=()=>document.getElementById('main-content');
 function sync(){
  const root=main(),top=root?.querySelector(':scope > .pati-dm-top'),list=root?.querySelector('.pati-dm-layout.mobile-chat-list');if(!top||!list){selecting=false;selected.clear();return}
- let trigger=top.querySelector('.buchee-dm-bulk-trigger');if(!trigger){trigger=document.createElement('button');trigger.type='button';trigger.className='buchee-dm-bulk-trigger';trigger.innerHTML='<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m5 4v7m4-7v7"/></svg>';trigger.setAttribute('aria-label','Özel sohbetleri seç ve listemden kaldır');trigger.title='Sohbetleri seç';top.querySelector('.pati-dm-top-actions')?.prepend(trigger)}
+ let trigger=top.querySelector('.buchee-dm-bulk-trigger');if(!trigger){trigger=document.createElement('button');trigger.type='button';trigger.className='buchee-dm-bulk-trigger';trigger.innerHTML='<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m5 4v7m4-7v7"/></svg>';trigger.setAttribute('aria-label','Özel sohbetleri seç ve listemden kaldır');trigger.title='Sohbetleri seç';top.querySelector('.pati-dm-top-actions')?.append(trigger)}
  trigger.disabled=busy;
  root.classList.toggle('buchee-dm-selecting',selecting);
  let toolbar=root.querySelector('.buchee-dm-bulk-toolbar');
