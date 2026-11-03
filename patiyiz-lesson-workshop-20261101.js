@@ -18,6 +18,18 @@
  function topic(lesson){return clean(lesson.name).split(' — ')[0].replace(/^101\. Ders — /,'')}
  function context(lesson){return frames[lesson.cat]||frames['101 Bilim ve Genel Kültür']}
  function sections(lesson){
+  const editorial=window.BucheeAcademyEditorial?.forLesson(lesson);
+  const authored=window.BucheeAcademyGuides?.build(lesson,editorial);
+  if(authored){
+   // Preserve the three original safety-focused teaching notes for animal care.
+   if(lesson.cat==='101 Hayvan'){
+    const source=(lesson.parts||[]).slice(0,3).map(clean);
+    if(source[0])authored[0].text.unshift(source[0]);
+    if(source[1])authored[2].text.unshift(source[1]);
+    if(source[2])authored[4].text.unshift(source[2]);
+   }
+   return authored.map(chapter=>({...chapter,author:editorial}));
+  }
   const raw=(lesson.parts||[]).map(clean).filter(Boolean);
   const voice=window.BucheeAcademyEditorial?.forLesson(lesson);
   const headings=voice?.headings||['Temel bilgi','Konuyu bir örnekle düşün','Nasıl çalışır?','Bir adım uygula','Dikkat edilecek noktalar','Kısa değerlendirme'];
