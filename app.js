@@ -131,7 +131,7 @@ const bucheeAvatarEmpty='<svg class="buchee-avatar-silhouette" viewBox="0 0 100 
 const avatar=(p,s='m')=>`<span class="avatar ${s}${p?.avatar_url?'':' buchee-avatar-empty'}">${p?.avatar_url?`<img src="${esc(p.avatar_url)}" alt="" loading="lazy" decoding="async">`:bucheeAvatarEmpty}</span>`;
 const petIcon=s=>({'Kedi':'🐱','Köpek':'🐶','Kuş':'🦜','Tavşan':'🐰','Balık':'🐠','Kemirgen':'🐹'}[s]||'💜');
 const photo=(url,fallback='💜',priority=false)=>`<div class="pati-photo">${url?`<img src="${esc(url)}" alt="Hayvan fotoğrafı" loading="${priority===true?'eager':'lazy'}" decoding="async" ${priority===true?'fetchpriority="high"':'fetchpriority="low"'}>`:fallback}</div>`;
-// Render the destination immediately behind the splash, preserving the opening signature for a brief, intentional 1.55-second reveal. 
+// Render the destination immediately behind the splash, preserving the opening signature until its complete stroke (1.48 s), plus a short pause. 
 const bucheeSplashStartedAt=Date.now();
 let bucheeSplashDismissed=false;
 const starter=()=>{
@@ -142,7 +142,7 @@ const starter=()=>{
  window.clearTimeout(window.__bucheeLaunchWatchdog);
  const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
  const elapsed=Date.now()-bucheeSplashStartedAt;
- const remaining=reduced?0:Math.max(0,350-elapsed);
+ const remaining=reduced?0:Math.max(0,1650-elapsed);
  window.setTimeout(()=>{
   startup.classList.add('buchee-splash-done');
   window.setTimeout(()=>{
