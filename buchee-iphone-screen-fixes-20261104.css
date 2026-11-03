@@ -166,3 +166,47 @@ html[data-pati-view="profile"] #main-content .pati-ig-profile>.pati-profile-more
   min-width:76px!important;padding:6px 7px!important;font-size:11px!important;
  }
 }
+
+/* 2026-11-04: unified backbar for both single-post and stacked post details. */
+html[data-pati-view="home"] #main-content .buchee-post-backbar{
+ display:flex!important;position:relative!important;
+ align-items:center!important;justify-content:flex-start!important;
+ box-sizing:border-box!important;
+ width:100%!important;min-width:0!important;min-height:56px!important;
+ margin:0!important;padding:6px 12px!important;
+ background:#fff!important;
+ border:0!important;border-bottom:1px solid #eceef1!important;
+ border-radius:0!important;box-shadow:none!important;
+}
+html[data-pati-view="home"] #main-content .buchee-post-backbar>button[data-action="post-back"]{
+ appearance:none!important;
+ display:inline-flex!important;position:relative!important;
+ flex:0 0 auto!important;align-items:center!important;justify-content:flex-start!important;
+ box-sizing:border-box!important;width:auto!important;
+ min-width:82px!important;min-height:44px!important;height:44px!important;
+ margin:0!important;padding:7px 8px!important;gap:8px!important;
+ border:0!important;border-radius:8px!important;
+ background:transparent!important;background-image:none!important;
+ box-shadow:none!important;color:#141519!important;-webkit-text-fill-color:#141519!important;
+ font:700 16px/1.2 system-ui,-apple-system,sans-serif!important;
+ text-align:left!important;white-space:nowrap!important;
+ cursor:pointer!important;touch-action:manipulation!important;
+}
+html[data-pati-view="home"] #main-content .buchee-post-backbar>button[data-action="post-back"]>.icon{
+ display:block!important;flex:0 0 24px!important;
+ width:24px!important;height:24px!important;
+ min-width:24px!important;min-height:24px!important;
+ color:#141519!important;stroke:currentColor!important;fill:none!important;
+ opacity:1!important;visibility:visible!important;
+}
+html[data-pati-view="home"] #main-content .buchee-post-backbar>button[data-action="post-back"]>span{
+ display:inline!important;
+ position:static!important;inset:auto!important;
+ margin:0!important;padding:0!important;max-width:none!important;
+ font:700 16px/1.2 system-ui,-apple-system,sans-serif!important;
+ color:#141519!important;-webkit-text-fill-color:#141519!important;
+ opacity:1!important;visibility:visible!important;
+}
+html[data-pati-view="home"] #main-content .buchee-post-backbar>button[data-action="post-back"]:focus-visible{
+ outline:2px solid #7547a3!important;outline-offset:2px!important;
+}
