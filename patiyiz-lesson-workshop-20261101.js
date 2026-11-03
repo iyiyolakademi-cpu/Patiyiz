@@ -14,7 +14,7 @@
   '101 Kariyer ve İş Hayatı':['yeni bir sorumluluk üstlenen bir çalışanın karar verdiğini düşün','beklentiyi, mevcut beceriyi, iletişimi ve başarı ölçütünü ayır','konuyla ilgili örnek bir iş planı ve geribildirim sorusu hazırla'],
   '101 Hayvan':['bir hayvanın bakımında günlük bir karar alındığını düşün','hayvanın türüne, güvenliğine, rutinine ve gözlemlenebilir belirtilere odaklan','riskli veya tıbbi durumlarda bir veterinerden türüne özel yardım al']
  };
- function clean(value){return String(value||'').replace(/\s+/g,' ').trim()}
+ function clean(value){return String(value||'').replace(/\s*\(\s*\d+\s*dk\s*\)/gi,'').replace(/\b(?:yaklaşık|ortalama)\s+\d+\s*dk\b/gi,'').replace(/\s+/g,' ').trim()}
  function topic(lesson){return clean(lesson.name).split(' — ')[0].replace(/^101\. Ders — /,'')}
  function context(lesson){return frames[lesson.cat]||frames['101 Bilim ve Genel Kültür']}
  function sections(lesson){
@@ -24,7 +24,7 @@
     text:[lead+'. Bu ifade bir başlangıç noktasıdır: '+t+' konusunu gerçekten öğrenmek için kavramın hangi sorunu açıkladığını, hangi koşullarda geçerli olduğunu ve nerede yetersiz kaldığını da anlamak gerekir.',
     (p[0]||lead)+' Bu ilkenin neyi değiştirdiğini düşün. Bir karar vermeden önce elindeki bilgi ile yalnızca tahmin ettiğin şeyleri iki ayrı grupta toplamak, hatalı kesinlikten kaçınmanı sağlar.',
     'Kavramı kendi sözcüklerinle yeniden açıkla. Konuyu hiç bilmeyen birine anlatırken teknik sözcükleri azalt, fakat temel anlamını kaybetme.'],
-    task:'İlk 2 dakikada '+t+' için bir tanım, bir fayda ve bir sınır yaz.'},
+    task:'Önce '+t+' için bir tanım, bir fayda ve bir sınır yaz.'},
    {name:'Günlük hayatta gerçek bir örnek',duration:2,
     text:['Bir senaryo kur: '+f[0]+'. Bu senaryoda '+t+' konusunun ne zaman önemli olacağını belirle; olayın başlangıcını, alınan kararı ve gözlenebilen sonucunu sıralamaya çalış.',
     (p[1]||lead)+' Örnek üzerinde yalnızca iyi sonucu değil, neyin bilinmediğini de yaz. Aynı davranış farklı şartlarda farklı sonuçlar doğurabilir; bağlam bu yüzden önemlidir.',
