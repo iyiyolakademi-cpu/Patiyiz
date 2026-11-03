@@ -24,7 +24,7 @@
   const sources=raw.length>=6?raw.slice(0,6):Array.from({length:6},(_,i)=>raw[i]||clean(lesson.desc));
   return sources.map((part,i)=>({
    name:headings[i]||'Bölüm '+(i+1),
-   text:[part.replace(/^\\d+[.)]\\s+[A-ZÇĞİÖŞÜ\\s]{8,65}\\.\\s*/, '').trim()],
+   text:[part.replace(/^\s*(?:\d{1,2}[.)]\s*)?(?:KAVRAMA DERİNLİK KAT|DURUMU ANALİZ ET|YÖNTEMİ KUR|UYGULAMALI ÇALIŞMA|DEĞERLENDİRME VE PEKİŞTİRME|MİNİ SINAVA HAZIRLIK|TEMEL İLKE|KAVRAMI AÇIKLA|ÖRNEK ÜZERİNDEN DÜŞÜN|UYGULAMA PLANI|SINIRLAR VE HATALAR|ÖZET VE PEKİŞTİRME|TEMEL BİLGİ|GÜNLÜK ÖRNEK VE GÖZLEM|GÜVENLİK VE SINIRLAR|SOMUT KONTROL|ÖZET|UYGULAMA)\s*(?:\.\s*|—\s*)/, '').trim()],
    example:i===1?voice?.example:'',
    task:i===3?(voice?.example?
      ['Bu örnekte en önemli karar hangisi?','Örnekteki durumu değiştirebilecek tek bir ayrıntı belirle.','Kararı verirken hangi bilgiye ihtiyaç var?','Bu koşulları güvenli veya ölçülebilir biçimde nasıl kontrol edersin?'][(Number(lesson.order||1)-1)%4]:
