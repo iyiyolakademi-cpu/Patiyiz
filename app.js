@@ -656,7 +656,7 @@ async function patiInviteRedeem(){
 }
 function patiInviteShare(){
  const code=patiInviteState.code;if(!code)return notify('Davet kodun hazırlanıyor.',true);
- const value='BucheeSocial’a katıl! Davet kodum: '+code+' · https://patiyiz.com/';
+ const value='BucheeSocial’a katıl! Davet kodum: '+code+' · https://bucheesocial.com/';
  if(navigator.share){navigator.share({title:'BucheeSocial davetim',text:value}).catch(()=>{});return}
  navigator.clipboard?.writeText(value).then(()=>notify('Davet mesajı kopyalandı.')).catch(()=>notify('Davet kodun: '+code));
 }

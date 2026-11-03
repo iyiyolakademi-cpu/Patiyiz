@@ -14,16 +14,16 @@ const isOnline=process.argv.includes('--online');
 let app, web;
 try{app=JSON.parse(read('android/twa-manifest.json'));}catch(e){fail('android/twa-manifest.json eksik veya geçersiz: '+e.message)}
 try{web=JSON.parse(read('manifest.webmanifest'));}catch(e){fail('manifest.webmanifest eksik veya geçersiz: '+e.message)}
-const expectedHost='patiyiz.com';
+const expectedHost='bucheesocial.com';
 const packageRegex=/^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*){2,}$/;
 if(app){
  if(!packageRegex.test(app.packageId||''))fail('Android paket kimliği geçersiz.');
  else pass('Paket kimliği: '+app.packageId);
- if(app.host!==expectedHost)fail('Android host patiyiz.com ile aynı olmalı.');
+ if(app.host!==expectedHost)fail('Android host bucheesocial.com ile aynı olmalı.');
  else pass('Android adresi: https://'+app.host+app.startUrl);
- if(app.startUrl!=='/'||app.fullScopeUrl!=='https://patiyiz.com/')fail('TWA kök yolu/scope beklenen değerden farklı.');
- if(app.webManifestUrl!=='https://patiyiz.com/manifest.webmanifest')fail('TWA manifest URL yanlış.');
- if(!/^https:\/\/patiyiz\.com\//.test(app.iconUrl||''))fail('TWA iconUrl farklı origin kullanıyor.');
+ if(app.startUrl!=='/'||app.fullScopeUrl!=='https://bucheesocial.com/')fail('TWA kök yolu/scope beklenen değerden farklı.');
+ if(app.webManifestUrl!=='https://bucheesocial.com/manifest.webmanifest')fail('TWA manifest URL yanlış.');
+ if(!/^https:\/\/bucheesocial\.com\//.test(app.iconUrl||''))fail('TWA iconUrl farklı origin kullanıyor.');
  if(app.enableNotifications!==true)warn('TWA bildirim özelliği kapalı.');
  if(app.appVersionCode!==1||app.appVersion!=='1.0.0')warn('Android sürümü ilk paket sürümüyle eşleşmiyor; Play güncellemelerinde versionCode artmalı.');
  if(!app.signingKey?.alias||!app.signingKey?.path)fail('Signing key yolu/takma adı tanımsız.');
@@ -45,7 +45,7 @@ if(web){
   }catch(e){fail(size+'x'+size+' simgesi geçersiz: '+file+' ('+e.message+')')}
  }
 }
-if(read('CNAME').trim()!==expectedHost)fail('CNAME patiyiz.com olmalı.');
+if(read('CNAME').trim()!==expectedHost)fail('CNAME bucheesocial.com olmalı.');
 else pass('Alan adı konfigürasyonu doğru.');
 for(const page of ['index.html','privacy.html','terms.html','delete-account.html']){
  if(!fs.existsSync(path.join(root,page)))fail(page+' bulunamadı.');else pass(page+' mevcut.');
@@ -65,12 +65,12 @@ if(fs.existsSync(path.join(root,'android','app','build.gradle'))){
  else pass('Üretilen Android projesi API 36 hedefliyor.');
 }else warn('Android Gradle projesi henüz üretilmedi; Bubblewrap veya PWABuilder aşamasında API 36 doğrula.');
 if(isOnline){
- const targets=['https://patiyiz.com/','https://patiyiz.com/manifest.webmanifest','https://patiyiz.com/patiyiz-app-icon-512.png','https://patiyiz.com/privacy.html','https://patiyiz.com/delete-account.html'];
+ const targets=['https://bucheesocial.com/','https://bucheesocial.com/manifest.webmanifest','https://bucheesocial.com/buchee-app-icon-512.png','https://bucheesocial.com/privacy.html','https://bucheesocial.com/delete-account.html'];
  for(const url of targets){
   try{
    const r=await fetch(url,{method:'GET',signal:AbortSignal.timeout(12000),redirect:'follow'});
    if(!r.ok)fail(url+' -> HTTP '+r.status);
-   else if(new URL(r.url).origin!=='https://patiyiz.com')fail(url+' başka origin’e yönlendiriyor: '+r.url);
+   else if(new URL(r.url).origin!=='https://bucheesocial.com')fail(url+' başka origin’e yönlendiriyor: '+r.url);
    else pass('Canlı HTTPS erişilebilir: '+url);
    await r.arrayBuffer();
   }catch(e){fail('Canlı site doğrulanamadı: '+url+' ('+e.message+')')}
