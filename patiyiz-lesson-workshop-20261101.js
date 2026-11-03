@@ -21,7 +21,7 @@
   var p=(lesson.parts||[]).map(clean), t=topic(lesson), lead=clean(lesson.desc), f=context(lesson);
   var chapters=[
    {name:'Konuyu derinlemesine anla',duration:2,
-    text:[lead+'. Bu ifade bir başlangıç noktasıdır: '+t+' konusunu gerçekten öğrenmek için kavramın hangi sorunu açıkladığını, hangi koşullarda geçerli olduğunu ve nerede yetersiz kaldığını da anlamak gerekir.',
+    text:[lead.replace(/[.!?]+$/,'')+'. Bu ifade bir başlangıç noktasıdır: '+t+' konusunu gerçekten öğrenmek için kavramın hangi sorunu açıkladığını, hangi koşullarda geçerli olduğunu ve nerede yetersiz kaldığını da anlamak gerekir.',
     (p[0]||lead)+' Bu ilkenin neyi değiştirdiğini düşün. Bir karar vermeden önce elindeki bilgi ile yalnızca tahmin ettiğin şeyleri iki ayrı grupta toplamak, hatalı kesinlikten kaçınmanı sağlar.',
     'Kavramı kendi sözcüklerinle yeniden açıkla. Konuyu hiç bilmeyen birine anlatırken teknik sözcükleri azalt, fakat temel anlamını kaybetme.'],
     task:'Önce '+t+' için bir tanım, bir fayda ve bir sınır yaz.'},
