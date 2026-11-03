@@ -6,7 +6,7 @@
 #startup .pati-splash-center{position:relative!important;left:auto!important;top:auto!important;transform:none!important;width:min(82vw,435px)!important;max-width:435px!important;display:flex!important;flex-direction:column!important;gap:17px!important;align-items:center!important;justify-content:center!important;z-index:2}
 #startup .pati-splash-icon{display:block!important;content:normal!important;width:100%!important;max-width:435px!important;height:auto!important;max-height:none!important;object-fit:contain!important;aspect-ratio:1226/195!important;animation:bucheeLogoEntrance .52s ease both!important}
 #startup .buchee-opening-signature{display:block;width:min(55vw,220px);height:38px;overflow:visible}
-#startup .buchee-opening-signature path{stroke-dasharray:370;stroke-dashoffset:370;animation:bucheeOpeningStroke 1.05s cubic-bezier(.32,0,.25,1) .18s both}
+#startup .buchee-opening-signature path{stroke-dasharray:370;stroke-dashoffset:370;animation:bucheeOpeningStroke 1.30s cubic-bezier(.32,0,.25,1) .18s both}
 #startup .buchee-opening-caption{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 52px);left:0;right:0;text-align:center;font:600 12px/1.4 system-ui,sans-serif;letter-spacing:.14em;color:#e9cfff}
 @keyframes bucheeLogoEntrance{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
 @keyframes bucheeOpeningStroke{to{stroke-dashoffset:0}}
