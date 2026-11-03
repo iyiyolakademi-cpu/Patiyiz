@@ -1492,7 +1492,7 @@ function patiDetailCandidates(source){
 }
 /* One dedicated Back control for notification links and scrollable post detail. */
 function bucheePostBackBar(){
- return '<div class="buchee-post-backbar"><button type="button" data-action="post-back" aria-label="Geri">'+ico('arrow-left')+'<span>Geri</span></button></div>';
+ return '<div class="buchee-post-backbar"><button type="button" data-action="post-back" aria-label="Geri"><svg class="buchee-post-back-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="#141519" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg><span>Geri</span></button></div>';
 }
 function patiDetailPage(){
  const state=patiDetailState;
@@ -6058,7 +6058,7 @@ function profilePage(){
   const thumbnail=cover?'<img class="'+(x.selfie_mirrored?'pati-selfie-mirrored':'')+'" loading="lazy" decoding="async" src="'+esc(cover)+'" alt="Paylaşım görseli">':x.video_url?'<video class="'+(x.selfie_mirrored?'pati-selfie-mirrored':'')+'" muted playsinline preload="metadata" src="'+esc(x.video_url)+'#t=0.1"></video>':'<span>'+esc(cut(x.body||'Yazılı gönderi',110))+'</span>';
   const mediaIcon=x.video_url?'<span class="pati-profile-play" aria-hidden="true">'+ico('reels-tab')+'</span>':multiPhoto?'<span class="pati-profile-multi" aria-hidden="true">'+ico('grid')+'</span>':'';
   const pinBadge=profilePostsTab==='reposts'?'<span class="pati-profile-reposted" aria-label="Yeniden paylaşıldı">↻</span>':data.pins.some(t=>t.owner_id===p.id&&t.post_id===x.id)?'<span class="pati-profile-pin" aria-label="Sabitlenmiş gönderi">📌</span>':'';
-   const views=own?'<span class="pati-profile-view-count" aria-label="Görüntülenme sayısı">◉ <span data-pati-view-count="'+esc(x.id)+'">'+(patiPostViewCounts.has(x.id)?patiPostViewCounts.get(x.id).toLocaleString('tr-TR'):'—')+'</span></span>':'';
+   const views=own?'<span class="pati-profile-view-count" aria-label="Görüntülenme sayısı"><svg class="pati-eye-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.8"/></svg><span data-pati-view-count="'+esc(x.id)+'">'+(patiPostViewCounts.has(x.id)?patiPostViewCounts.get(x.id).toLocaleString('tr-TR'):'—')+'</span></span>':'';
   return '<button type="button" class="pati-profile-tile '+(!cover&&!x.video_url?'pati-profile-text-tile':'')+'" data-action="profile-open-post" data-id="'+esc(x.id)+'" aria-label="Paylaşımı aç">'+thumbnail+mediaIcon+pinBadge+views+'</button>';
  }).join('');
  const repostFeed=profilePostsTab==='reposts'&&!privateLocked?
