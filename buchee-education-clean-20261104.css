@@ -141,3 +141,48 @@
   padding:15px 13px!important;
  }
 }
+
+/* 2026-11-04: Always-readable black quiz text, including completed lessons. */
+#app-root:not(.hidden) #main-content > section.buchee-edu-clean-detail .pati-edu-quiz.buchee-edu-quiz,
+#app-root:not(.hidden) #main-content > section.buchee-edu-clean-detail .pati-edu-quiz.buchee-edu-quiz .buchee-edu-question,
+#app-root:not(.hidden) #main-content > section.buchee-edu-clean-detail .pati-edu-quiz.buchee-edu-quiz .buchee-edu-options{
+  opacity:1!important;visibility:visible!important;filter:none!important;
+  -webkit-filter:none!important;
+}
+#app-root:not(.hidden) #main-content > section.buchee-edu-clean-detail .pati-edu-quiz.buchee-edu-quiz .buchee-edu-question{
+  color:#16181c!important;-webkit-text-fill-color:#16181c!important;
+  background:#fafafa!important;border:1px solid #e3e4e8!important;
+  border-radius:12px!important;
+}
+#app-root:not(.hidden) #main-content > section.buchee-edu-clean-detail .pati-edu-quiz.buchee-edu-quiz .buchee-edu-question>legend,
+#app-root:not(.hidden) #main-content > section.buchee-edu-clean-detail .pati-edu-quiz.buchee-edu-quiz .buchee-edu-question>legend>b{
+  color:#111318!important;-webkit-text-fill-color:#111318!important;
+  opacity:1!important;visibility:visible!important;text-shadow:none!important;
+}
+#app-root:not(.hidden) #main-content > section.buchee-edu-clean-detail .pati-edu-quiz.buchee-edu-quiz button.buchee-edu-option,
+#app-root:not(.hidden) #main-content > section.buchee-edu-clean-detail .pati-edu-quiz.buchee-edu-quiz button.buchee-edu-option:disabled,
+#app-root:not(.hidden) #main-content > section.buchee-edu-clean-detail .pati-edu-quiz.buchee-edu-quiz button.buchee-edu-option[aria-disabled="true"]{
+  opacity:1!important;visibility:visible!important;filter:none!important;
+  color:#111318!important;-webkit-text-fill-color:#111318!important;
+  background:#fff!important;background-image:none!important;
+  border:1px solid #d8dae0!important;box-shadow:none!important;
+  text-shadow:none!important;
+}
+#app-root:not(.hidden) #main-content > section.buchee-edu-clean-detail .pati-edu-quiz.buchee-edu-quiz button.buchee-edu-option>span,
+#app-root:not(.hidden) #main-content > section.buchee-edu-clean-detail .pati-edu-quiz.buchee-edu-quiz button.buchee-edu-option:disabled>span{
+  opacity:1!important;visibility:visible!important;filter:none!important;
+  color:#111318!important;-webkit-text-fill-color:#111318!important;
+  text-shadow:none!important;
+}
+#app-root:not(.hidden) #main-content > section.buchee-edu-clean-detail .pati-edu-quiz.buchee-edu-quiz button.buchee-edu-option>.edu-v2-answer-marker{
+  background:#eef0f3!important;color:#101216!important;
+  -webkit-text-fill-color:#101216!important;
+  border:1px solid #d7d9df!important;
+  font-weight:800!important;
+}
+#app-root:not(.hidden) #main-content > section.buchee-edu-clean-detail .pati-edu-quiz.buchee-edu-quiz button.buchee-edu-option.selected{
+  background:#f1eafa!important;border-color:#76549f!important;
+}
+#app-root:not(.hidden) #main-content > section.buchee-edu-clean-detail .pati-edu-quiz.buchee-edu-quiz button.buchee-edu-option.selected>.edu-v2-answer-marker{
+  background:#dfd0f3!important;
+}
