@@ -36,7 +36,7 @@ html=replace(html,'<script src="https://cdn.jsdelivr.net/npm/tus-js-client@4.3.1
  '<script src="vendor/tus-compat.js" defer></script>','TUS CDN');
 html=replace(html,'<script src="app.js?', '<script src="native-shell.js" defer></script><script src="app.js?','native entry');
 html=replace(html,'</head>','<link rel="stylesheet" href="native-reels.css">\n</head>','native Reels CSS');
-html=html.replace(/<link rel="canonical" href="https:\/\/patiyiz\.com\/">/,'');
+html=html.replace(/<link rel="canonical" href="https:\/\/bucheesocial\.com\/">/,'');
 // Preserve the cascade order but serve one stylesheet inside Capacitor.
  // Source files remain separate and editable. This removes dozens of runtime CSS requests.
  html=html.replace(/<template id="buchee-core-style-sources">[\s\S]*?<\/template>/,'');
