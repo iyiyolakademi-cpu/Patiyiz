@@ -68,7 +68,7 @@ function patiWatchPostViews(){
 }
 
 const allowed=['home','explore','pets','reels','streaks','rewards','shop','saved-posts','community','knowledge','education','lost','adoption','care','wellness','healthfile','my-pet','messages','notifications','profile','blocked','settings','follows-list'];
-const nav=[['home','Ana sayfa','home'],['explore','Keşfet','compass'],['reels','Reels','up'],['streaks','Seriler','calendar'],['community','Topluluk','users'],['knowledge','Bilgi Merkezi','library'],['education','101 Eğitim Serileri','library'],['lost','Kayıp İlanları','location'],['adoption','Sahiplendirme','heart'],['my-pet','Hayvanım','heart'],['messages','Mesajlar','message'],['notifications','Bildirimler','bell'],['profile','Profilim','user'],['settings','Ayarlar ve Gizlilik','settings']];
+const nav=[['home','Ana sayfa','home'],['explore','Keşfet','compass'],['reels','Reels','up'],['streaks','Seriler','calendar'],['community','Topluluk','users'],['knowledge','Bilgi Merkezi','library'],['education','Eğitim Serileri','library'],['lost','Kayıp İlanları','location'],['adoption','Sahiplendirme','heart'],['my-pet','Hayvanım','heart'],['messages','Mesajlar','message'],['notifications','Bildirimler','bell'],['profile','Profilim','user'],['settings','Ayarlar ve Gizlilik','settings']];
 const cfg=window.PATIYIZ_CONFIG||{};
 const ready=String(cfg.supabaseUrl||'').startsWith('https://')&&!String(cfg.supabaseUrl).includes('BURAYA_')&&!!cfg.supabasePublishableKey&&!String(cfg.supabasePublishableKey).includes('BURAYA_')&&!!window.supabase?.createClient;
 let liveChannel=null,liveReloadTimer=null,liveReconnectTimer=null,liveUserId=null,liveInitialized=false,pushPublicKey='',lastForegroundSync=0;
@@ -598,7 +598,7 @@ function openMobileFeaturesMenu(){
   accountCard+
   '<div class="buchee-menu-quick-grid" aria-label="Hızlı erişim">'+quickHtml+'</div>'+
   section('TOPLULUK',[['community','Soru & Cevap','users'],['pati-close-friends-open','Yakın Arkadaşlar','heart','action']])+
-  section('DİĞER ÖZELLİKLER',[['education','101 Eğitim Serileri','library'],['my-pet','Hayvanım Merkezi','heart'],['pet-add','Yeni hayvan ekle','plus','action']])+
+  section('DİĞER ÖZELLİKLER',[['education','Eğitim Serileri','library'],['my-pet','Hayvanım Merkezi','heart'],['pet-add','Yeni hayvan ekle','plus','action']])+
   section('HESAP VE GÜVENLİK',[['settings','Ayarlar ve gizlilik','settings'],['blocked','Engellenen kişiler','shield'],...(!p?.is_verified?[['verification-request','Mavi tik talep et','check','action']]:[])])+
   (isAdmin?section('YÖNETİM',[['open-admin','Yönetim Paneli','shield','action']]):'')+
   '<button type="button" class="buchee-menu-logout" data-action="logout">'+ico('arrow')+'<span>Çıkış Yap</span></button>'+
@@ -3393,7 +3393,7 @@ function educationCards(list,completed){
   const done=completed.has(l.id),idx=patiyizLessons.findIndex(x=>x.id===l.id)+1;
   return '<button type="button" class="pati-edu-card edu-v2-card" data-action="education-open" data-id="'+esc(l.id)+'" aria-label="'+esc(l.name)+(done?', tamamlandı':'')+'">'
    +'<span class="pati-edu-emoji" aria-hidden="true">'+esc(l.icon)+'</span>'
-   +'<span class="pati-edu-card-body"><small>Ders '+idx+' · '+esc(l.cat)+' · '+Number(l.minutes)+' dk · İlk bitirişte +2 puan</small><strong>'+esc(l.name)+'</strong><span>'+esc(l.desc)+'</span></span>'
+   +'<span class="pati-edu-card-body"><small>Ders '+idx+' · '+esc(educationDisplayTopic(l.cat))+' · +2 puan</small><strong>'+esc(l.name)+'</strong><span>'+esc(l.desc)+'</span></span>'
    +'<b class="pati-edu-status'+(done?' is-complete':'')+'">'+(done?'✓ Tamamlandı':'Derse başla →')+'</b></button>';
  }).join('');
 }
@@ -3427,11 +3427,12 @@ function educationTopicArtwork(topic){
  return files[topic]?'<img src="'+files[topic]+'" alt="'+esc(topic)+' illüstrasyonu" loading="lazy" decoding="async">':
   '<span class="pati-academy-topic-art-icon" aria-hidden="true">'+esc(symbols[topic]||'📚')+'</span>';
 }
+function educationDisplayTopic(topic){return String(topic||'').replace(/^101\s+/,'');}
 function educationPathCards(topic,done){
  return educationTopicLessons(topic).map((l,i)=>{
   const finished=done.has(l.id),available=educationCanOpen(l.id,done);
   const tag='<span class="pati-edu-path-step">'+(i+1)+'. Ders</span>';
-  const content='<span class="pati-edu-path-no" aria-hidden="true">'+(finished?'✓':available?'▶':'🔒')+'</span><span class="pati-edu-path-copy">'+tag+'<strong>'+esc(l.name)+'</strong><small>'+esc(l.desc)+' · '+Number(l.minutes||0)+' dk · İlk bitirişte +2 puan</small></span><b class="pati-edu-path-status">'+(finished?'Tamamlandı':available?'Derse başla':'Kilitli')+'</b>';
+  const content='<span class="pati-edu-path-no" aria-hidden="true">'+(finished?'✓':available?'▶':'🔒')+'</span><span class="pati-edu-path-copy">'+tag+'<strong>'+esc(l.name)+'</strong><small>İlk tamamlamada +2 puan</small></span><b class="pati-edu-path-status">'+(finished?'Tamamlandı':available?'Derse başla':'Kilitli')+'</b>';
   return available?'<button type="button" class="pati-edu-path-item '+(finished?'is-done':'is-current')+'" data-action="education-open" data-id="'+esc(l.id)+'" aria-label="'+esc(l.name)+(finished?', tamamlandı':', başlayabilirsin')+'">'+content+'</button>':
    '<div class="pati-edu-path-item is-locked" role="listitem" aria-disabled="true" aria-label="'+esc(l.name)+', önceki ders tamamlanınca açılır">'+content+'</div>';
  }).join('');
@@ -3451,69 +3452,54 @@ function educationQuizMarkup(l,completed,studyReady){
    '</div></fieldset>').join('')+
   (passed?'<p class="buchee-edu-quiz-feedback is-success" role="status">✓ Ders tamamlandı. Puan yalnızca ilk tamamlamada verilir.</p>':
   '<button type="button" class="buchee-edu-submit" data-action="education-submit" data-id="'+esc(l.id)+'"'+(!studyReady||selections.some(x=>x<0)?' disabled aria-disabled="true"':'')+'>5 cevabı kontrol et</button>'+
-  '<p class="buchee-edu-quiz-feedback" role="status">'+(feedback?esc(feedback):studyReady?'Tüm soruları yanıtladıktan sonra kontrol et.':'Mini sınav 10 dakika aktif çalışmanın ardından açılır.')+'</p>')+
+  '<p class="buchee-edu-quiz-feedback" role="status">'+(feedback?esc(feedback):studyReady?'Tüm soruları yanıtladıktan sonra kontrol et.':'Tüm soruları yanıtladıktan sonra testi kontrol et.')+'</p>')+
   '</div>';
 }
 function educationPage(){
- const completed=educationDone(),completedCount=patiyizLessons.filter(l=>completed.has(l.id)).length;
- const progress=Math.round(completedCount*100/Math.max(1,patiyizLessons.length)),remaining=patiyizLessons.length-completedCount;
+ const completed=educationDone();
  const topics=[...new Set(patiyizLessons.map(l=>l.cat))];
  if(educationLesson){
   const l=patiyizLessons.find(x=>x.id===educationLesson);
   if(!l||!educationCanOpen(l.id,completed)){
-   educationLesson='';
-   if(l)educationCategory=l.cat;
-   educationPage();
-   return;
+   educationLesson='';if(l)educationCategory=l.cat;educationPage();return;
   }
   const track=educationTopicLessons(l.cat),index=track.findIndex(x=>x.id===l.id);
-  const next=track[index+1],prev=track[index-1],done=completed.has(l.id);
-  const studyReady=done||!window.PatiyizLessonWorkshop||window.PatiyizLessonWorkshop.ready(l.id,me?.id);
+  const next=track[index+1],prev=track[index-1];
   const nextReady=next&&educationCanOpen(next.id,completed);
-  main.innerHTML='<section class="pati-edu pati-edu-v2 edu-v2-detail edu-path-detail"><button type="button" class="pati-edu-back" data-action="education-back">← '+esc(l.cat)+' derslerine dön</button>'
-   +'<div class="edu-v2-lesson-meta"><span>Ders '+(index+1)+' / '+track.length+'</span><span>'+esc(l.cat)+' · '+Number(l.minutes)+' dk</span><span class="'+(done?'edu-v2-complete':'')+'">'+(done?'✓ Tamamlandı':'Henüz tamamlanmadı')+'</span></div>'
-   +'<div class="edu-v2-lesson-track" role="progressbar" aria-label="Konu içerisindeki ders sırası" aria-valuemin="0" aria-valuemax="'+track.length+'" aria-valuenow="'+(index+1)+'"><span style="width:'+((index+1)*100/track.length).toFixed(2)+'%"></span></div>'
-   +'<div class="pati-edu-lesson-head"><span aria-hidden="true">'+esc(l.icon)+'</span><div><small>'+esc(l.cat)+' · '+Number(l.minutes)+' dakikalık ders</small><h1>'+esc(l.name)+'</h1><p>'+esc(l.desc)+'</p></div></div>'
-   +'<div class="pati-edu-lesson-body">'
-   +(window.PatiyizLessonWorkshop?window.PatiyizLessonWorkshop.render(l,me?.id,esc):l.parts.map((part,i)=>'<section class="pati-edu-step"><b>'+(i+1)+'</b><p>'+esc(part)+'</p></section>').join(''))
-   +educationQuizMarkup(l,completed,studyReady)
-   +'<div class="pati-edu-next edu-v2-lesson-nav">'+(prev?'<button type="button" class="edu-v2-previous" data-action="education-previous" data-id="'+esc(prev.id)+'">← Önceki ders</button>':'<span></span>')
-   +(next?nextReady?'<button type="button" data-action="education-next" data-id="'+esc(next.id)+'">Sıradaki ders →</button>':'<button type="button" disabled aria-disabled="true" class="pati-edu-next-locked">🔒 Önce bu dersi tamamla</button>':
-   '<button type="button" data-action="education-back">Konu derslerine dön ✓</button>')+'</div>'
-   +'<p class="pati-edu-notice">Bu ders genel eğitim amaçlıdır; gerektiğinde konunun uzmanına danış.</p></div></section>';
-  window.PatiyizLessonWorkshop?.mount(l.id,me?.id);
+  main.innerHTML='<section class="pati-edu pati-edu-v2 edu-v2-detail edu-path-detail buchee-edu-clean-detail">'+
+   '<div class="buchee-edu-minimal-toolbar"><button type="button" class="pati-edu-back" data-action="education-back" aria-label="Ders listesine dön">← Geri</button></div>'+
+   '<div class="pati-edu-lesson-body">'+
+   (window.PatiyizLessonWorkshop?window.PatiyizLessonWorkshop.render(l,me?.id,esc):l.parts.map((part,i)=>'<section class="pati-edu-step"><b>'+(i+1)+'</b><p>'+esc(part)+'</p></section>').join(''))+
+   educationQuizMarkup(l,completed,true)+
+   '<div class="pati-edu-next edu-v2-lesson-nav">'+
+   (prev?'<button type="button" class="edu-v2-previous" data-action="education-previous" data-id="'+esc(prev.id)+'">← Önceki ders</button>':'<span></span>')+
+   (next?nextReady?'<button type="button" data-action="education-next" data-id="'+esc(next.id)+'">Sonraki ders →</button>':
+   '<button type="button" disabled aria-disabled="true" class="pati-edu-next-locked">🔒 Önce bu dersi tamamla</button>':
+   '<button type="button" data-action="education-back">Ders listesine dön ✓</button>')+
+   '</div><p class="pati-edu-notice">Bilgiler eğitim amaçlıdır; gerektiğinde konunun uzmanına danış.</p></div></section>';
   return;
  }
  if(educationCategory==='Tümü'){
-  const resumeLesson=patiyizLessons.find(l=>l.id===educationResumeId(completed));
-  const accents=['coral','fuchsia','turquoise','gold','violet','sage'];
-  const topicCard=(topic,i)=>{
+  const topicCard=topic=>{
    const lessons=educationTopicLessons(topic),done=lessons.filter(l=>completed.has(l.id)).length;
-   return '<button type="button" class="pati-ref-academy-topic pati-ref-topic-'+accents[i%accents.length]+'" data-action="education-filter" data-id="'+esc(topic)+'"><span class="pati-ref-academy-topic-copy"><strong>'+esc(topic)+'</strong><small>'+done+' / '+lessons.length+' ders tamamlandı</small><span class="pati-topic-open">Eğitimleri aç ›</span></span>'+educationTopicArtwork(topic)+'</button>';
+   return '<button type="button" class="pati-ref-academy-topic buchee-edu-category" data-action="education-filter" data-id="'+esc(topic)+'">'+
+    '<span class="pati-ref-academy-topic-copy"><strong>'+esc(educationDisplayTopic(topic))+'</strong><small>'+done+' / '+lessons.length+' ders tamamlandı</small></span></button>';
   };
-  main.innerHTML='<section class="pati-edu pati-edu-v2 pati-ref-academy-home pati-edu-path-home">'
-   +'<div class="pati-edu-fullscreen-top"><button type="button" data-action="education-exit" aria-label="Eğitimlerden çık">← Geri</button><span>101 Eğitim Serileri</span></div><header class="pati-ref-academy-header"><div><span>101 EĞİTİM SERİLERİ</span><h1>Öğrenmek istediğin seriyi seç</h1><p>10 ayrı kategori, her birinde 30 kapsamlı ders ve 5 soruluk mini sınav bulunuyor.</p></div></header>'
-   +(resumeLesson?'<button type="button" class="buchee-edu-resume-shortcut" data-action="education-continue" data-id="'+esc(resumeLesson.id)+'"><span class="buchee-edu-resume-copy"><small>'+ (completedCount?'KALDIĞIN YERDEN DEVAM ET':'İLK DERSİNE BAŞLA')+'</small><strong>'+esc(resumeLesson.name)+'</strong><span>'+esc(resumeLesson.cat)+' · '+Number(resumeLesson.minutes)+' dk</span></span><span class="buchee-edu-resume-arrow" aria-hidden="true">→</span></button>':'')
-   +'<div class="pati-ref-academy-section"><h2>101 Ders Serileri</h2><span>'+topics.length+' ayrı seri</span></div>'
-   +'<div class="pati-ref-academy-topics">'+topics.map(topicCard).join('')+'</div>'
-   +'<div class="pati-academy-total-progress" role="status"><strong>'+completedCount+' / '+patiyizLessons.length+' ders tamamlandı</strong><div class="pati-edu-progressbar" role="progressbar" aria-label="Akademi tamamlanma oranı" aria-valuenow="'+progress+'" aria-valuemin="0" aria-valuemax="100"><span style="width:'+progress+'%"></span></div><small>Her tamamlanan ders ilerlemene kaydedilir.</small></div>'
-   +'<p class="pati-edu-notice">10 bağımsız seri ve toplam '+patiyizLessons.length+' kapsamlı ders. Eğitimler genel bilgi amaçlıdır; uzman görüşünün yerini almaz.</p></section>';
+  main.innerHTML='<section class="pati-edu pati-edu-v2 pati-ref-academy-home pati-edu-path-home buchee-edu-clean-home">'+
+   '<div class="pati-edu-fullscreen-top"><button type="button" data-action="education-exit" aria-label="Eğitimlerden çık">← Geri</button><span>Eğitim Serileri</span></div>'+
+   '<div class="pati-ref-academy-topics">'+topics.map(topicCard).join('')+'</div></section>';
   return;
  }
  const topic=educationTopicLessons(educationCategory);
- if(!topic.length){educationCategory='Tümü';educationPage();return}
+ if(!topic.length){educationCategory='Tümü';educationPage();return;}
  const topicDone=topic.filter(l=>completed.has(l.id)).length;
  const next=educationTopicNext(educationCategory,completed);
- const categoryProgress=Math.round(topicDone*100/topic.length);
- main.innerHTML='<section class="pati-edu pati-edu-v2 pati-ref-academy-list pati-edu-path-list">'
-  +'<div class="pati-ref-topic-toolbar"><button type="button" data-action="pati-academy-home">← Eğitimleri Keşfet</button></div>'
-  +'<div class="pati-edu-path-topic-head"><div class="pati-edu-path-topic-icon">'+educationTopicArtwork(educationCategory)+'</div><div><span>101 EĞİTİM SERİLERİ</span><h1>'+esc(educationCategory)+'</h1><p>30 dersi sırayla tamamla. Her doğru tamamlanan ders ilk seferinde 2 puan kazandırır.</p></div></div>'
-  +'<div class="pati-edu-path-progress"><div><strong>'+topicDone+' / '+topic.length+' ders tamamlandı</strong><small>%'+categoryProgress+' tamamlandı</small></div><div class="pati-edu-progressbar" role="progressbar" aria-label="Bu konunun tamamlanma oranı" aria-valuenow="'+categoryProgress+'" aria-valuemin="0" aria-valuemax="100"><span style="width:'+categoryProgress+'%"></span></div></div>'
-  +(next?'<button type="button" class="pati-edu-path-start" data-action="education-continue" data-id="'+esc(next.id)+'">▶ '+(topicDone?'Kaldığın yerden devam et':'İlk derse başla')+'</button>':'<p class="pati-edu-path-complete">✓ Bu konunun tüm derslerini tamamladın.</p>')
-  +'<div class="edu-v2-results-head"><h2>Dersler ve Konular</h2><span>'+topic.length+' ders</span></div>'
-  +'<div id="pati-edu-result-list" class="pati-edu-path-items" role="list">'+educationPathCards(educationCategory,completed)+'</div>'
-  +'<p class="edu-v2-sync">'+(educationCloudUser===me?.id?'✓ İlerlemen hesabınla eşitlendi.':'İlerlemen cihazında saklanır; bağlantı olduğunda hesabınla eşitlenir.')+'</p>'
-  +'<p class="pati-edu-notice">Dersleri tamamlamak için 5 soruyu doğru yanıtla. Her ders ilk tamamlandığında 2 puan kazanırsın.</p></section>';
+ main.innerHTML='<section class="pati-edu pati-edu-v2 pati-ref-academy-list pati-edu-path-list buchee-edu-clean-list">'+
+  '<div class="pati-ref-topic-toolbar"><button type="button" data-action="pati-academy-home">← Geri</button></div>'+
+  (next?'<button type="button" class="pati-edu-path-start" data-action="education-continue" data-id="'+esc(next.id)+'">'+(topicDone?'Kaldığın yerden devam et':'İlk derse başla')+' →</button>':
+   '<p class="pati-edu-path-complete">✓ Bu kategorinin tüm derslerini tamamladın.</p>')+
+  '<div class="edu-v2-results-head"><h2>Dersler ve Konular</h2><span>'+topic.length+' ders</span></div>'+
+  '<div id="pati-edu-result-list" class="pati-edu-path-items" role="list">'+educationPathCards(educationCategory,completed)+'</div></section>';
 }
 
 /* Private pet wellness and public verified activity ranking */
@@ -8158,9 +8144,7 @@ case 'education-exit':educationLesson='';educationCategory='Tümü';navigate('ho
 case 'education-open':{if(!educationCanOpen(id)){notify('Önce önceki dersi tamamla. 🔒',true);break}educationBackScroll=window.scrollY||0;educationLesson=id;educationCategory=patiyizLessons.find(l=>l.id===id)?.cat||educationCategory;educationRemember(id);render();window.scrollTo(0,0);break;}case 'education-back':educationLesson='';render();requestAnimationFrame(()=>window.scrollTo(0,educationBackScroll));break;case 'education-next':case 'education-previous':{if(!educationCanOpen(id)){notify('Bu ders henüz kilitli. Önce mevcut dersi bitir.',true);break}educationLesson=id;educationCategory=patiyizLessons.find(l=>l.id===id)?.cat||educationCategory;educationRemember(id);window.scrollTo(0,0);render();break;}case 'education-continue':{if(!educationCanOpen(id)){notify('Bu ders henüz kilitli.',true);break}educationBackScroll=window.scrollY||0;educationLesson=id;educationCategory=patiyizLessons.find(l=>l.id===id)?.cat||educationCategory;educationRemember(id);window.scrollTo(0,0);render();break;}case 'education-status':educationStatus=id;render();break;case 'pati-academy-home':educationCategory='Tümü';educationSearch='';educationStatus='Tümü';patiAcademyBrowseAll=false;render();break;case 'pati-academy-search-open':patiAcademyBrowseAll=true;render();document.getElementById('pati-academy-search')?.focus();break;case 'education-filter':if(id!=='Tümü'&&!patiyizLessons.some(l=>l.cat===id))break;educationCategory=id;educationLesson='';educationSearch='';educationStatus='Tümü';render();break;case 'education-clear':educationSearch='';educationUpdateResults();document.getElementById('pati-academy-search')?.focus();break;case 'education-reset':educationSearch='';educationCategory='Tümü';educationStatus='Tümü';render();break;case 'education-answer':{
  const l=patiyizLessons.find(x=>x.id===id);
  if(!l||educationLesson!==id||educationDone().has(id)||educationQuizBusy)break;
- if(window.PatiyizLessonWorkshop&&!window.PatiyizLessonWorkshop.ready(id,me?.id)){
-  notify('Mini sınav için önce 10 dakika aktif çalışma süresini tamamla.',true);break;
- }
+ 
  const idx=Number(target.dataset.question),choice=Number(target.dataset.choice);
  if(!Number.isInteger(idx)||idx<0||idx>=5||![0,1,2].includes(choice))break;
  const selected=Array.isArray(educationAnswer[id])?educationAnswer[id].slice():Array(5).fill(-1);
@@ -8182,9 +8166,7 @@ case 'education-submit':{
  if(!Array.isArray(choices)||choices.length!==5||choices.some(v=>![0,1,2].includes(v))){
   notify('Lütfen beş sorunun tamamını yanıtla.',true);break;
  }
- if(window.PatiyizLessonWorkshop&&!window.PatiyizLessonWorkshop.ready(id,me?.id)){
-  notify('Mini sınav için önce 10 dakika aktif çalışma süresini tamamla.',true);break;
- }
+ 
  educationQuizBusy=true;
  const button=target;button.disabled=true;button.textContent='Kontrol ediliyor…';
  void (async()=>{
