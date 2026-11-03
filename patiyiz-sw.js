@@ -1,5 +1,5 @@
 /* Buchee Social: push notifications and reliable, privacy-conscious PWA updates. */
-const BUCHEE_STATIC_CACHE = 'buchee-static-v20261103-black-serif-wordmark-1';
+const BUCHEE_STATIC_CACHE = 'buchee-static-v20261103-release-phase6-1';
 const BUCHEE_CACHE_PREFIXES = ['buchee-static-v', 'patiyiz-static-v'];
 
 self.addEventListener('push', event => {
@@ -13,7 +13,7 @@ self.addEventListener('push', event => {
   event.waitUntil(self.registration.showNotification(title, {
     body,
     icon: './buchee-social-app-icon.svg?v=20261102-buchee-logo-2',
-    badge: './buchee-social-app-icon.svg?v=20261024-new-p-logo-1',
+    badge: './buchee-social-app-icon.svg?v=20261103-release-phase6-1',
     tag: 'buchee-' + String(payload.id || 'notice'),
     data: {url: payload.id ? './?notification=' + encodeURIComponent(String(payload.id)) : './'},
     renotify: false
@@ -74,9 +74,17 @@ self.addEventListener('fetch', event => {
     }));
     return;
   }
-  if (!/\.(css|js|svg|png|webp|woff2|webmanifest)$/i.test(url.pathname)) return;
+  // Cache application-owned root assets only. Never cache uploaded/private files,
+  // signed URLs or arbitrary nested paths that may happen to end in .png/.webp.
+  const scopePath = new URL(self.registration.scope).pathname;
+  if (!url.pathname.startsWith(scopePath)) return;
+  const asset = url.pathname.slice(scopePath.length);
+  if (!/^[a-zA-Z0-9._-]+\.(?:css|js|svg|png|webp|woff2|webmanifest)$/i.test(asset)) return;
+  if (url.searchParams.has('token') || url.searchParams.has('signature')) return;
 
-  const mustRefresh = /\/(?:app\.js|buchee-pwa-auto-update-20261102\.js|buchee-centered-original-logo-20261103\.(css|js)|buchee-header-(?:purple-wordmark|black-serif)\.svg|buchee-visual-consistency-20261103\.css)$/i.test(url.pathname);
+  // Code and screen styles must be network-first. Stale-while-revalidate caused
+  // installed iPhone PWAs to display a previous screen layout on first open.
+  const mustRefresh = /\.(?:css|js|svg|webmanifest)$/i.test(asset);
   event.respondWith((async () => {
     const cache = await caches.open(BUCHEE_STATIC_CACHE);
     const stored = await cache.match(request);
@@ -95,7 +103,7 @@ self.addEventListener('fetch', event => {
     try {
       return await fetchFresh();
     } catch (error) {
-      if (stored) return stored;
+      if (stored) return stored; // Offline fallback only for previously loaded static assets.
       throw error;
     }
   })());
