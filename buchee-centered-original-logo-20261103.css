@@ -89,3 +89,30 @@
   outline:2px solid #5700c6!important;outline-offset:3px!important;
  }
 }
+
+@media(max-width:740px){
+ html[data-pati-view="home"] #app-root>.mobile-header #pati-feed-menu-trigger.brand .buchee-mode-label{
+  display:inline-flex;align-items:center;gap:3px;line-height:14px
+ }
+ html[data-pati-view="home"] #app-root>.mobile-header #pati-feed-menu-trigger.brand .buchee-mode-label .pati-feed-current{
+  display:inline!important;position:static!important;margin:0!important;padding:0!important;max-width:none!important;
+  font:inherit!important;line-height:inherit!important;transform:none!important
+ }
+ html[data-pati-view="home"] #app-root #main-content article.pati-feed-card>.pati-actionbar.pati-social-actions{
+  display:flex!important;width:100%!important;max-width:none!important;box-sizing:border-box!important
+ }
+ html[data-pati-view="home"] #app-root #main-content article.pati-feed-card>.pati-actionbar.pati-social-actions>button[data-action="save"]{
+  margin-inline-start:auto!important;margin-left:auto!important;order:99!important
+ }
+ html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-ig-actions.pati-own-profile-actions>button[data-action="edit-profile"]{
+  background:#28232e!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+  opacity:1!important;min-height:44px!important;height:44px!important;max-height:none!important;border:0!important
+ }
+ html[data-pati-view="messages"] #main-content>.pati-dm-top>.pati-dm-top-actions{
+  display:flex!important;align-items:center!important;gap:2px!important;width:auto!important;max-width:none!important
+ }
+ html[data-pati-view="messages"] #main-content>.pati-dm-top>.pati-dm-top-actions>button{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  width:44px!important;min-width:44px!important;height:44px!important;color:#29242f!important
+ }
+}
