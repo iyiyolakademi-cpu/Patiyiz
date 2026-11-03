@@ -171,3 +171,12 @@
  #app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-quiz-navigation>.buchee-quiz-prev{min-width:96px!important}
 }
 @media(prefers-reduced-motion:reduce){#app-root:not(.hidden) #main-content .buchee-edu-clean-detail .buchee-quiz-progress-fill,#app-root:not(.hidden) #main-content .buchee-edu-clean-detail button.buchee-edu-option{transition:none!important}}
+
+/* Keep every new question visible after Next / Previous on mobile Safari. */
+#main-content .buchee-edu-clean-detail .buchee-edu-question,
+#main-content .buchee-edu-clean-detail .buchee-edu-question>legend{
+ scroll-margin-top:calc(84px + env(safe-area-inset-top,0px))!important;
+}
+#main-content .buchee-edu-clean-detail .buchee-quiz-navigation>.buchee-quiz-next:not([hidden]){
+ opacity:1!important;pointer-events:auto!important;
+}
