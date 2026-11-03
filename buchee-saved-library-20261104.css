@@ -365,3 +365,27 @@ html[data-pati-theme="dark"] #main-content>.pati-saved-screen.buchee-saved-libra
  #main-content .buchee-saved-library .buchee-saved-results.is-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
  #main-content .buchee-saved-library .buchee-saved-hero{margin-left:20px!important;margin-right:20px!important}
 }
+
+/* Bottom-aligned importance controls leave full text width in list mode. */
+#main-content .buchee-saved-library .buchee-saved-results.is-list .buchee-saved-item-main{
+ flex:0 0 100%!important;width:100%!important;
+}
+#main-content .buchee-saved-library .buchee-saved-results.is-list .buchee-saved-media{
+ flex:0 0 95px!important;width:95px!important;min-width:95px!important;min-height:104px!important;
+}
+#main-content .buchee-saved-library .buchee-saved-results.is-list .buchee-saved-priority{
+ flex:0 0 100%!important;width:100%!important;min-height:37px!important;
+ border-left:0!important;border-top:1px solid var(--bs-line)!important;
+ justify-content:flex-start!important;padding:8px 12px!important;
+}
+#main-content .buchee-saved-library .buchee-saved-results.is-list .buchee-saved-priority>span:last-child{
+ display:inline!important;
+}
+/* The priority sheet lives on document.body and needs its own dot colors. */
+.buchee-saved-overlay .buchee-saved-priority-dot{
+ display:inline-block!important;flex:0 0 13px!important;
+ width:13px!important;height:13px!important;border-radius:50%!important;
+}
+.buchee-saved-overlay .buchee-saved-priority-dot.buchee-saved-green{background:#31a36c!important}
+.buchee-saved-overlay .buchee-saved-priority-dot.buchee-saved-orange{background:#ec9c34!important}
+.buchee-saved-overlay .buchee-saved-priority-dot.buchee-saved-red{background:#de5360!important}
