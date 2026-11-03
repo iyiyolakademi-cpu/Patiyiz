@@ -23,7 +23,7 @@ if(app){
  else pass('Android adresi: https://'+app.host+app.startUrl);
  if(app.startUrl!=='/'||app.fullScopeUrl!=='https://bucheesocial.com/')fail('TWA kök yolu/scope beklenen değerden farklı.');
  if(app.webManifestUrl!=='https://bucheesocial.com/manifest.webmanifest')fail('TWA manifest URL yanlış.');
- if(!/^https:\/\/patiyiz\.com\//.test(app.iconUrl||''))fail('TWA iconUrl farklı origin kullanıyor.');
+ if(!/^https:\/\/bucheesocial\.com\//.test(app.iconUrl||''))fail('TWA iconUrl farklı origin kullanıyor.');
  if(app.enableNotifications!==true)warn('TWA bildirim özelliği kapalı.');
  if(app.appVersionCode!==1||app.appVersion!=='1.0.0')warn('Android sürümü ilk paket sürümüyle eşleşmiyor; Play güncellemelerinde versionCode artmalı.');
  if(!app.signingKey?.alias||!app.signingKey?.path)fail('Signing key yolu/takma adı tanımsız.');
