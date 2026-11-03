@@ -123,17 +123,19 @@ html[data-pati-view="profile"] #main-content .pati-ig-profile>.pati-profile-more
  html[data-pati-view="home"] #main-content .pati-detail-screen>.pati-detail-toolbar>button[data-action="post-back"]{
   display:inline-flex!important;position:relative!important;
   grid-area:back!important;justify-self:start!important;align-self:center!important;
-  align-items:center!important;justify-content:center!important;gap:7px!important;
+  align-items:center!important;justify-content:center!important;gap:0!important;
   box-sizing:border-box!important;min-height:44px!important;height:44px!important;
-  min-width:76px!important;max-width:105px!important;
-  margin:0!important;padding:8px 13px!important;
-  background:#f2f3f6!important;color:#22252d!important;
-  border:1px solid #e7e9ed!important;border-radius:12px!important;
-  font:750 13px/1 system-ui,-apple-system,sans-serif!important;
+  width:44px!important;min-width:44px!important;max-width:44px!important;
+  margin:0!important;padding:0!important;
+  background:transparent!important;color:#22252d!important;
+  border:0!important;border-radius:9px!important;box-shadow:none!important;
+  /* Hide the old "Geri" text while retaining its real action and SVG arrow. */
+  font-size:0!important;line-height:0!important;
   z-index:3!important;cursor:pointer!important;touch-action:manipulation!important;
  }
  html[data-pati-view="home"] #main-content .pati-detail-screen>.pati-detail-toolbar>button[data-action="post-back"] .icon{
-  width:19px!important;height:19px!important;
+  width:25px!important;height:25px!important;min-width:25px!important;
+  color:#22252d!important;stroke:currentColor!important;fill:none!important;
  }
  html[data-pati-view="home"] #main-content .pati-detail-screen>.pati-detail-toolbar>div{
   grid-area:heading!important;display:flex!important;flex-direction:column!important;
