@@ -1,4 +1,4 @@
-name: Buchee - Unblock Stuck Pages Deployment
+name: Buchee - Diagnose and Retry Stuck Pages Deployment
 on:
   push:
     branches: [main]
@@ -12,11 +12,17 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
-      - name: Cancel stale GitHub Pages deployment holding the publishing lock
+      - name: Diagnose stuck deployment and request fresh Pages build
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          echo "Cancelling the timed-out Pages deployment, not the live site"
-          gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/deployments/dbb02cb528380515e1dbb2f21d2b2a011ac78ed8/cancel"
-          echo "Cancel request accepted"
+          DEPLOYMENT="repos/${GITHUB_REPOSITORY}/pages/deployments/dbb02cb528380515e1dbb2f21d2b2a011ac78ed8"
+          echo "Stale Pages deployment status before:"
+          gh api "$DEPLOYMENT" --jq '.status' || true
+          echo "Request cancellation for timed-out deployment"
+          gh api --method POST "$DEPLOYMENT/cancel"
+          echo "Status after cancellation:"
+          gh api "$DEPLOYMENT" --jq '.status' || true
+          echo "Request Pages build of latest main revision"
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/builds"
