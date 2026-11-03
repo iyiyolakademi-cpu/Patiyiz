@@ -34,16 +34,7 @@ const failed=malformed||unexpected.length>0||Boolean(child.signal)||
 console.log('Tests:',summary.tests||'unknown','Passed:',summary.pass||0,
  'Existing unresolved:',historical.length,'New failures:',unexpected.length,
  'Previous failures now passing:',resolved.length);
-if(unexpected.length){
- console.error('NEW REGRESSION FAILURES:');
- unexpected.forEach(name=>console.error('  - '+name));
- // Print only the newly introduced Profile phase assertion for investigation.
- for(const name of unexpected.filter(x=>x==='Style asset is loaded late without modifying shared core CSS or other screens')){
-  const lines=output.split('\n');
-  const i=lines.findIndex(line=>line.startsWith('not ok ')&&line.includes(' - '+name));
-  if(i>=0)console.error('PROFILE TEST DIAGNOSTIC:\n'+lines.slice(i,i+26).join('\n').slice(0,3000));
- }
-}
+if(unexpected.length){console.error('NEW REGRESSION FAILURES:');unexpected.forEach(name=>console.error('  - '+name));}
 if(malformed)console.error('Test output incomplete or inconsistent: failing closed.');
 if(child.status!==0&&fails.length===0)console.error('Unidentified runner crash: '+String(child.stderr).slice(-1500));
 if(historical.length)console.log('::warning::'+historical.length+' historical regression tests still fail; see workflow summary.');

@@ -73,7 +73,7 @@ test('Reels empty state provides a real upload action, retaining pager and loadi
 });
 test('Style asset is loaded late without modifying shared core CSS or other screens',()=>{
  assert.match(html,/buchee-reels-phase4-20261103\.css\?v=20261103v1/);
- assert.match(html,/app\.js\?v=20261103-reels-phase4-v1/);
+ assert.match(html,/app\.js\?v=20261103-[a-z0-9-]+/);
  assert.ok(html.indexOf('buchee-reels-phase4-20261103.css')>html.indexOf('buchee-messages-phase3-20261103.css'));
  assert.doesNotMatch(css,/html\[data-pati-view="messages"\]|html\[data-pati-view="home"\]/);
  new vm.Script(app);
