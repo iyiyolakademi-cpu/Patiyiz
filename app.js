@@ -1548,7 +1548,7 @@ function patiStorySeen(x){
 function patiStoryIsSeen(x){patiStorySeenInit();return !!x&&patiStorySeenState.seen.has(x.id)}
 function patiActiveStoriesOf(author){
  const now=Date.now();
- return data.stories.filter(s=>s.author_id===author&&!s.pati_pet_highlight&&!blocked.has(s.author_id)&&new Date(s.expires_at).getTime()>now);
+ return data.stories.filter(s=>s.author_id===author&&!s.pati_pet_highlight&&!blocked.has(s.author_id)&&(s.author_id===me?.id||followed.has(s.author_id))&&new Date(s.expires_at).getTime()>now);
 }
 function patiHasUnseenStory(author){return patiActiveStoriesOf(author).some(x=>!patiStoryIsSeen(x))}
 async function patiStorySeenSync(){
@@ -1934,7 +1934,7 @@ async function toggleStoryLike(id){
 }
 function storiesStrip(){
  patiStorySeenInit();void patiStorySeenSync();
- const authors=[...new Set(data.stories.filter(x=>!x.pati_pet_highlight&&!blocked.has(x.author_id)&&new Date(x.expires_at).getTime()>Date.now()).map(x=>x.author_id))];
+ const authors=[...new Set(data.stories.filter(x=>!x.pati_pet_highlight&&!blocked.has(x.author_id)&&(x.author_id===me?.id||followed.has(x.author_id))&&new Date(x.expires_at).getTime()>Date.now()).map(x=>x.author_id))];
  const own=authors.includes(me.id);
  const others=authors.filter(id=>id!==me.id).sort((a,b)=>{
   const aNew=patiHasUnseenStory(a),bNew=patiHasUnseenStory(b);
@@ -1951,7 +1951,7 @@ function storiesStrip(){
 function patiBuildLiveStorySequence(selectedAuthor){
  const now=Date.now(),grouped=new Map();
  for(const item of data.stories){
-  if(!item?.author_id||blocked.has(item.author_id)||new Date(item.expires_at).getTime()<=now)continue;
+  if(!item?.author_id||item.pati_pet_highlight||blocked.has(item.author_id)||(item.author_id!==me?.id&&!followed.has(item.author_id))||new Date(item.expires_at).getTime()<=now)continue;
   if(!grouped.has(item.author_id))grouped.set(item.author_id,[]);
   grouped.get(item.author_id).push(item);
  }
@@ -5930,7 +5930,7 @@ function profilePage(){
  patiProfileLinksHTML(p)+mutualMarkup+
  
  '<div class="pati-ig-actions'+(own?' pati-own-profile-actions':'')+'">'+(own?button('Profili düzenle','edit-profile')+(typeof patiCreatorPreviewHTML==='function'?patiCreatorPreviewHTML():''):button(followed.has(p.id)?'Takiptesin':patiIsFollowRequested(p.id)?'İstek gönderildi':followBack?'Sen de takip et':'Takip et','follow','data-id="'+esc(p.id)+'"'+(followBack?' data-follow-back="true"':''))+button('Mesaj gönder','chat','data-id="'+esc(p.id)+'"'))+'</div>'+
- '<div class="pati-ig-tabs" role="tablist" aria-label="Profil gönderileri">'+iconTabs.map(x=>'<button type="button" role="tab" aria-selected="'+(profilePostsTab===x[0])+'" class="'+(profilePostsTab===x[0]?'active':'')+'" data-action="profile-posts-tab" data-id="'+x[0]+'" aria-label="'+x[2]+'" title="'+x[2]+'">'+x[1]+'<span class="pati-profile-tab-caption" aria-hidden="true">'+esc(x[3])+'</span></button>').join('')+'</div>'+
+ (own?'<div class="buchee-profile-wallet"><button type="button" data-action="paticoin-rewards" aria-label="Bakiye ve ödülleri aç"><span>Bakiye</span><span aria-hidden="true">›</span></button></div>':'')+'<div class="pati-ig-tabs" role="tablist" aria-label="Profil gönderileri">'+iconTabs.map(x=>'<button type="button" role="tab" aria-selected="'+(profilePostsTab===x[0])+'" class="'+(profilePostsTab===x[0]?'active':'')+'" data-action="profile-posts-tab" data-id="'+x[0]+'" aria-label="'+x[2]+'" title="'+x[2]+'">'+x[1]+'<span class="pati-profile-tab-caption" aria-hidden="true">'+esc(x[3])+'</span></button>').join('')+'</div>'+
  profileContent+
  '</div>';
  void syncProfileCounts(p.id);
