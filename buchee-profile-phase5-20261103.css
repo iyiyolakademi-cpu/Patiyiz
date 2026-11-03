@@ -229,3 +229,24 @@ html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-profile-tile
  font:700 12px/1.15 system-ui,-apple-system,sans-serif!important;
  letter-spacing:0!important;white-space:nowrap!important;
 }
+
+/* Keep exactly one eye: suppress legacy glyph text and decorative pseudo-icons. */
+html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-profile-tile>.pati-profile-view-count{
+ font-size:0!important;line-height:0!important;
+}
+html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-profile-tile>.pati-profile-view-count::before,
+html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-profile-tile>.pati-profile-view-count::after,
+html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-profile-tile>.pati-profile-view-count>.pati-eye-mark::before,
+html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-profile-tile>.pati-profile-view-count>.pati-eye-mark::after{
+ content:none!important;display:none!important;
+}
+html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-profile-tile>.pati-profile-view-count>svg:not(.pati-eye-mark),
+html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-profile-tile>.pati-profile-view-count>.pati-eye-mark~.pati-eye-mark{
+ display:none!important;
+}
+html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-profile-tile>.pati-profile-view-count>svg.pati-eye-mark:first-of-type{
+ display:block!important;opacity:1!important;visibility:visible!important;
+}
+html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-profile-tile>.pati-profile-view-count>span[data-pati-view-count]{
+ font-size:12px!important;line-height:1.15!important;
+}
