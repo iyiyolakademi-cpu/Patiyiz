@@ -8,12 +8,29 @@ const clean=x=>String(x||'').replace(/\s+/g,' ').trim();
 const firstPart=x=>clean(x.parts?.[0]||x.desc);
 const fill=(l)=>{
  const name=clean(l.name),idea=clean(l.desc||l.parts?.[0]);
+ const raw=(l.parts||[]).map(clean).filter(Boolean);
+ const detailed=/^s101-/.test(l.id)&&raw.length>=9&&Number(l.id.slice(-3))<=101;
+ if(detailed){
+  // These are six long, subject-specific sections written in the source curriculum;
+  // do not replace them with generic filler when consolidating repeated 101 lessons.
+  return raw.slice(3,9);
+ }
+ if(l.cat==='101 Hayvan'&&raw.length>=3){
+  return [
+   'TEMEL BİLGİ — '+raw[0],
+   'GÜNLÜK ÖRNEK VE GÖZLEM — '+raw[1],
+   'GÜVENLİK VE SINIRLAR — '+raw[2],
+   'UYGULAMA PLANI — '+name+' konusunda hayvanın türünü, yaşını ve yaşadığı koşulları not ederek güvenli bir bakım adımı belirle. Bir değişikliği diğerlerinden ayrı izlemeye çalış; gerektiğinde veteriner görüşü al.',
+   'SOMUT KONTROL — Bilgileri yalnızca ezberleme. Temel ilkeyi bir ev ortamı veya günlük bakım durumu üzerinden düşün, normal gözlemle risk işaretlerini birbirinden ayır.',
+   'ÖZET — '+idea+' Hangi koşulda farklı bir yöntem gerekebileceğini ve uzman desteğine ne zaman başvurulacağını kendi sözlerinle yaz.'
+  ];
+ }
  return [
   'TEMEL İLKE — '+idea+' '+name+' ile ilgili bir karar alırken önce bu ilkenin neyi açıkladığını ve hangi sınırlar içinde kullanılabileceğini ayırt et.',
   'KAVRAMI AÇIKLA — '+firstPart(l)+' Bu bilgiyi kendi cümlenle yeniden açıkla; bir terimi bilmekle o terimi yerinde kullanabilmek aynı şey değildir.',
   'ÖRNEK ÜZERİNDEN DÜŞÜN — '+name+' hakkında gerçek bir durum seç. Bu durumun kimleri etkilediğini, başlangıç koşullarını ve hangi gözlemin sonucu değiştireceğini ayrı ayrı not et.',
-  'UYGULAMA — Bugün '+name.toLocaleLowerCase('tr-TR')+' konusunda küçük ve güvenli bir adım dene. Yapılacak işi, ihtiyaç duyulan kaynağı, süresini ve beklenen çıktıyı açıkça yaz. Konunun uzmanlık gerektiren yanlarında kaynak doğrulaması yap.',
-  'SINIRLAR VE HATALAR — '+idea+' Bu ilkenin tersini savunan acele bir varsayım bul, hangi kanıtın onu çürüteceğini düşün. Farklı koşullarda aynı sonucu bekleme; belirsizliği ifade et.',
+  'UYGULAMA — '+idea+' ilkesini kullanarak bugün '+name.toLocaleLowerCase('tr-TR')+' konusunda küçük ve güvenli bir adım belirle. Yapılacak işi, ihtiyaç duyulan kaynağı, süresini ve beklenen çıktıyı açıkça yaz.',
+  'SINIRLAR VE HATALAR — '+name+' alanında bu ilkenin tersini savunan acele bir varsayım bul, hangi kanıtın onu çürüteceğini düşün. Farklı koşullarda aynı sonucu bekleme; belirsizliği ifade et.',
   'ÖZET VE PEKİŞTİRME — '+name+' için bir ana çıkarım, bir örnek, bir sık hata, bir ölçülebilir hedef ve gelecekte tekrar kontrol edeceğin bir soru yaz. Çıktılarını kısa not olarak sakla.'
  ];
 };
@@ -25,9 +42,9 @@ const mkQuestions=(l,pool,seed)=>{
  const questionItems=[
   [''+name+' konusunda hangi ifade temel ilkeyi doğru anlatır?',idea,[take(1).desc,take(2).desc]],
   ['Bu derste öncelikle hangi kavram ele alınıyor?',name,[take(3).name,take(4).name]],
-  [''+name+' için ilk değerlendirme hangi bilgiyle başlamalı?','Konunun mevcut koşulları, ilgili gözlem ve temel ilke birlikte incelenmeli.',['Kanıt aramadan rastgele karar vermek','Tüm insan ve durumlar için tek yöntemi zorunlu saymak']],
-  [''+name+' uygulamasında hangi yaklaşım daha güvenilir?','Küçük, ölçülebilir bir deneme yapıp sonucu kontrol etmek.',['Bir başarısızlığı görmezden gelip aynı adımı tekrarlamak','Beklenen sonucu ölçmeden başarılı ilan etmek']],
-  ['Bu dersten sonra öğrenmeyi nasıl pekiştirirsin?','Ana ilkeyi kendi örneğinle açıklayıp bir sonraki adımı not ederek.',['Konuyu yeni bir durumda hiç sorgulamadan uygulayarak','Kaynak ve sınırlara bakmadan herkese aynı öneriyi vererek']]
+  [''+name+' hakkında doğru uygulama neden bu ilkeyle başlamalı?','Bu alanda '+idea+' İlk adımı bu temel bilgiye ve gerçek koşullara dayandırmak gerekir.',['Yalnızca '+take(5).name+' konusunun gereklerini tekrar etmek.','Konuyla ilgisiz şekilde '+take(6).name+' açıklamasını kullanmak.']],
+  [''+name+' ile ilgili bir örnek seçerken hangi yaklaşım uygundur?','Bu konudaki ilkeyi ('+idea+') gerçek bir senaryonun koşullarıyla karşılaştırmak.',['Bu derste '+take(7).name+' konusunu işlenmiş gibi varsaymak.','Olası sonucu yalnızca '+take(8).name+' alanının kurallarıyla açıklamak.']],
+  [''+name+' dersinden sonra hangi öğrenme çıktısı en anlamlıdır?',''+name+' konusunda '+idea+' ilkesini kendi örneğinde açıklamak ve sınırlarını not etmek.',[''+take(9).name+' ile ilgili farklı bir konunun özetini bu dersin sonucu saymak.',''+take(10).name+' konusunu kendi başına '+name+' yerine koymak.']]
  ];
  return questionItems.map(([q,correct,wrong],i)=>{
   const answer=(seed+i*2)%3,opts=wrong.slice();opts.splice(answer,0,correct);
