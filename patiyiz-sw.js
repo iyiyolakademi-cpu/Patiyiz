@@ -1,5 +1,5 @@
 /* Buchee Social: push notifications and reliable, privacy-conscious PWA updates. */
-const BUCHEE_STATIC_CACHE = 'buchee-static-v20261103-mobile-video-1';
+const BUCHEE_STATIC_CACHE = 'buchee-static-v20261103-black-serif-wordmark-1';
 const BUCHEE_CACHE_PREFIXES = ['buchee-static-v', 'patiyiz-static-v'];
 
 self.addEventListener('push', event => {
@@ -76,7 +76,7 @@ self.addEventListener('fetch', event => {
   }
   if (!/\.(css|js|svg|png|webp|woff2|webmanifest)$/i.test(url.pathname)) return;
 
-  const mustRefresh = /\/(?:app\.js|buchee-pwa-auto-update-20261102\.js|buchee-centered-original-logo-20261103\.(css|js)|buchee-header-purple-wordmark\.svg|buchee-visual-consistency-20261103\.css)$/i.test(url.pathname);
+  const mustRefresh = /\/(?:app\.js|buchee-pwa-auto-update-20261102\.js|buchee-centered-original-logo-20261103\.(css|js)|buchee-header-(?:purple-wordmark|black-serif)\.svg|buchee-visual-consistency-20261103\.css)$/i.test(url.pathname);
   event.respondWith((async () => {
     const cache = await caches.open(BUCHEE_STATIC_CACHE);
     const stored = await cache.match(request);
