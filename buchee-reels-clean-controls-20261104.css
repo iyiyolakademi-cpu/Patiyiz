@@ -1,0 +1,78 @@
+/* Buchee Reels: transparent action controls over the video, 4 Nov 2026.
+   Keep tap targets and video functions unchanged. */
+html[data-pati-view="reels"] #app-root #main-content .pati-reel-item>.pati-reel-rail{
+ background:transparent!important;background-image:none!important;
+ border:0!important;border-radius:0!important;
+ box-shadow:none!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+ filter:none!important;
+}
+html[data-pati-view="reels"] #app-root #main-content .pati-reel-item>.pati-reel-rail::before,
+html[data-pati-view="reels"] #app-root #main-content .pati-reel-item>.pati-reel-rail::after{
+ display:none!important;content:none!important;
+}
+html[data-pati-view="reels"] #app-root #main-content .pati-reel-item>.pati-reel-rail>button.pati-reel-action{
+ appearance:none!important;
+ background:transparent!important;background-image:none!important;
+ border:0!important;border-radius:0!important;
+ box-shadow:none!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+ outline-color:#fff!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ filter:none!important;opacity:1!important;
+ min-width:44px!important;min-height:44px!important;
+ touch-action:manipulation!important;
+}
+html[data-pati-view="reels"] #app-root #main-content .pati-reel-item>.pati-reel-rail>button.pati-reel-action::before,
+html[data-pati-view="reels"] #app-root #main-content .pati-reel-item>.pati-reel-rail>button.pati-reel-action::after{
+ display:none!important;content:none!important;
+}
+html[data-pati-view="reels"] #app-root #main-content .pati-reel-item>.pati-reel-rail>button.pati-reel-action svg{
+ color:#fff!important;stroke:#fff!important;fill:none!important;
+ filter:drop-shadow(0 1px 2px #0009)!important;
+}
+html[data-pati-view="reels"] #app-root #main-content .pati-reel-item>.pati-reel-rail .pati-reel-count,
+html[data-pati-view="reels"] #app-root #main-content .pati-reel-item>.pati-reel-rail .pati-engagement-metric{
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ text-shadow:0 1px 3px #000a!important;
+ background:transparent!important;border:0!important;
+ box-shadow:none!important;
+}
+html[data-pati-view="reels"] #app-root #main-content .pati-reel-item>.pati-reel-rail>button[data-action="save"]{
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ background:transparent!important;border:0!important;
+ box-shadow:none!important;
+}
+html[data-pati-view="reels"] #app-root #main-content .pati-reel-item>.pati-reel-rail>button[data-action="save"] svg{
+ color:#fff!important;stroke:#fff!important;fill:none!important;
+}
+html[data-pati-view="reels"] #app-root #main-content .pati-reel-item>.pati-reel-rail>button[data-action="save"]:is(.active,[aria-pressed="true"]) svg{
+ color:#ffda72!important;stroke:#ffda72!important;fill:#ffda72!important;
+}
+html[data-pati-view="reels"] #app-root #main-content .pati-reel-item>.pati-reel-utility{
+ background:transparent!important;background-image:none!important;
+ border:0!important;border-radius:0!important;box-shadow:none!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+ filter:none!important;
+}
+html[data-pati-view="reels"] #app-root #main-content .pati-reel-item>.pati-reel-utility::before,
+html[data-pati-view="reels"] #app-root #main-content .pati-reel-item>.pati-reel-utility::after{
+ display:none!important;content:none!important;
+}
+html[data-pati-view="reels"] #app-root #main-content .pati-reel-item>.pati-reel-utility [data-action="reel-sound"]{
+ appearance:none!important;background:transparent!important;background-image:none!important;
+ border:0!important;border-radius:0!important;box-shadow:none!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ filter:none!important;opacity:1!important;
+ min-width:44px!important;min-height:44px!important;
+ touch-action:manipulation!important;
+}
+html[data-pati-view="reels"] #app-root #main-content .pati-reel-item>.pati-reel-utility [data-action="reel-sound"] svg{
+ color:#fff!important;stroke:#fff!important;fill:none!important;
+ filter:drop-shadow(0 1px 2px #0009)!important;
+}
+/* Do not remove focus feedback for keyboard or accessibility users. */
+html[data-pati-view="reels"] #app-root #main-content .pati-reel-item :is(.pati-reel-rail>button,.pati-reel-utility [data-action="reel-sound"]):focus-visible{
+ outline:2px solid #fff!important;outline-offset:2px!important;
+}
