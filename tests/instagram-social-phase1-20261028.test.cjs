@@ -42,7 +42,8 @@ test('Following feed includes reposts by followed, non-blocked accounts',()=>{
  const home=between('function homePage(){','let savedPostsLoading=');
  assert.match(home,/const friendReposts=/);
  assert.match(home,/followed.has\(r.user_id\)/);
- assert.match(home,/pati-repost-context/);
+ assert.match(app,/pati-repost-context/);
+ assert.match(home,/patiHomeCombinedFeed\(visiblePosts,true\)/);
  assert.match(home,/\.sort\(\(a,b\)=>/);
 });
 test('DM reaction table only exposes authorized message participants',()=>{
