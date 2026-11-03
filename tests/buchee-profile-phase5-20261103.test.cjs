@@ -10,7 +10,7 @@ const page=app.slice(app.indexOf('function profilePage(){'),app.indexOf('functio
 const wallet=app.slice(app.indexOf('function patiProfileWalletRefresh(){'),app.indexOf('function patiProfileTabKeyboard(',app.indexOf('function patiProfileWalletRefresh(){')));
 const keys=app.slice(app.indexOf('function patiProfileTabKeyboard('),app.indexOf('document.addEventListener(\'keydown\',patiProfileTabKeyboard);')+'document.addEventListener(\'keydown\',patiProfileTabKeyboard);'.length);
 test('own profile shows the real wallet balance, not an invented or hardcoded amount',()=>{
- assert.match(page,/patiCoinState\.ready===true\?/);
+ assert.match(page,/const walletReady=typeof patiCoinState!=='undefined'&&patiCoinState\.ready===true/);
  assert.match(page,/Number\(patiCoinState\.balance\)/);
  assert.match(page,/data-buchee-wallet-value aria-live="polite"/);
  assert.match(page,/data-action="paticoin-rewards"/);
