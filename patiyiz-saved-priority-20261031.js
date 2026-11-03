@@ -148,11 +148,18 @@
  }
  async function removeSelected(){
   if(!confirming||!selected.size||busy||!ctx?.me?.id)return;
-  const uid=ctx.me.id,ids=[...selected].filter(id=>ctx.saved.has(id));if(!ids.length)return;
+  const uid=ctx.me.id,ids=[...selected].filter(id=>ctx.saved.has(id));
+  if(!ids.length)return;
   busy=true;
   document.querySelectorAll('#buchee-saved-overlay button').forEach(b=>b.disabled=true);
+  const removed=[];
+  const reconcile=()=>{
+   if(ctx?.me?.id!==uid)return;
+   const gone=new Set(removed);
+   for(const id of gone){ctx.saved.delete(id);selected.delete(id);}
+   ctx.data.saves=ctx.data.saves.filter(x=>!(x.user_id===uid&&gone.has(x.post_id)));
+  };
   try{
-   const removed=[];
    for(let i=0;i<ids.length;i+=80){
     const batch=ids.slice(i,i+80);
     const r=await ctx.sb.from('post_saves').delete().eq('user_id',uid).in('post_id',batch).select('post_id');
@@ -160,14 +167,16 @@
     for(const row of r.data||[])removed.push(row.post_id);
    }
    if(ctx?.me?.id!==uid)return;
-   if(!removed.length)throw Error('Hiçbir kayıt silinemedi. Yetkilerini kontrol et.');
-   for(const id of removed){ctx.saved.delete(id);selected.delete(id);}
-   const gone=new Set(removed);
-   ctx.data.saves=ctx.data.saves.filter(x=>!(x.user_id===uid&&gone.has(x.post_id)));
-   selecting=false;selected.clear();closeOverlay();
+   if(!removed.length)throw Error('Hiçbir kayıt kaldırılamadı. Yetkilerini kontrol et.');
+   reconcile();selecting=false;selected.clear();closeOverlay();
    ctx.rerender();ctx.notify(removed.length+' kayıt listenden kaldırıldı.');
   }catch(e){
-   if(ctx?.me?.id===uid){closeOverlay();ctx.notify('Toplu kaldırma tamamlanamadı: '+String(e?.message||e),true);ctx.rerender();}
+   if(ctx?.me?.id===uid){
+    if(removed.length)reconcile();
+    closeOverlay();ctx.rerender();
+    ctx.notify((removed.length?removed.length+' kayıt kaldırıldı; kalanlar işlenemedi. ':'')+
+      'İşlem tamamlanamadı: '+String(e?.message||e),true);
+   }
   }finally{busy=false}
  }
  function handleClick(event){
