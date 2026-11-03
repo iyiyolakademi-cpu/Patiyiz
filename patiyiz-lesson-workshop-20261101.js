@@ -65,43 +65,16 @@
  function ready(id,uid){return seconds(id,uid)>=MIN_SECONDS}
  function mmss(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
  function render(lesson,uid,esc){
-  var items=sections(lesson),elapsed=seconds(lesson.id,uid),pct=Math.min(100,Math.floor(elapsed/MIN_SECONDS*100));
-  return '<div class="pati-edu-workshop" data-lesson-id="'+esc(lesson.id)+'" data-owner-id="'+esc(uid||'guest')+'">'+
-   '<div class="pati-edu-workshop-summary"><div><span class="pati-edu-kicker">REHBERLİ ÖĞRENME</span><h2>12 dakikalık kapsamlı ders</h2><p>6 bölüm · Her bölümde anlatım ve kendi uygulaman var. Mini sınav 10 dakika aktif çalışmanın ardından açılır.</p></div><div class="pati-edu-study-clock" aria-label="Aktif çalışma süresi"><strong data-study-clock>'+mmss(elapsed)+'</strong><small>/ en az 10:00</small></div></div>'+
-   '<div class="pati-edu-time-track" role="progressbar" aria-label="Ders çalışma süresi" aria-valuemin="0" aria-valuemax="600" aria-valuenow="'+Math.min(600,elapsed)+'"><span data-study-progress style="width:'+pct+'%"></span></div>'+
+  const items=sections(lesson);
+  return '<div class="pati-edu-workshop buchee-edu-reading" data-lesson-id="'+esc(lesson.id)+'" data-owner-id="'+esc(uid||'guest')+'">'+
    items.map(function(item,i){return '<article class="pati-edu-chapter" id="edu-chapter-'+(i+1)+'">'+
-    '<div class="pati-edu-chapter-line"><span>0'+(i+1)+' / 06</span><span>Yaklaşık '+item.duration+' dk</span></div><h2>'+esc(item.name)+'</h2>'+
-    item.text.map(function(s){return '<p>'+esc(s)+'</p>'}).join('')+
+    '<h2>'+esc(item.name)+'</h2>'+
+    item.text.map(function(part){return '<p>'+esc(part)+'</p>'}).join('')+
     '<div class="pati-edu-practice"><strong>UYGULAMA</strong><p>'+esc(item.task)+'</p></div></article>'}).join('')+
-   '<div class="pati-edu-study-note" data-study-note role="status">'+(ready(lesson.id,uid)?'✓ 10 dakikalık çalışma süresi tamamlandı. Mini sınav açık.':'Ders açıkken ve ekrandayken çalışma süresi kaydedilir. Kaldığın yerden devam edebilirsin.')+'</div></div>';
+   '</div>';
  }
  function stop(){if(activeTimer!==null){clearInterval(activeTimer);activeTimer=null}activeKey=''}
- function mount(id,uid){
-  stop();
-  var root=document.querySelector('.pati-edu-workshop[data-lesson-id="'+id+'"]');
-  if(!root)return;
-  activeKey=key(id,uid);
-  var last=Date.now();
-  function refresh(){
-   var val=seconds(id,uid);
-   var clock=root.querySelector('[data-study-clock]'),bar=root.querySelector('[data-study-progress]'),track=root.querySelector('.pati-edu-time-track'),note=root.querySelector('[data-study-note]');
-   if(clock)clock.textContent=mmss(val);
-   if(bar)bar.style.width=Math.min(100,Math.floor(val/MIN_SECONDS*100))+'%';
-   if(track)track.setAttribute('aria-valuenow',String(Math.min(MIN_SECONDS,val)));
-   if(val>=MIN_SECONDS){
-    if(note)note.textContent='✓ 10 dakikalık çalışma süresi tamamlandı. Mini sınav açık.';
-    root.closest('.edu-path-detail')?.querySelectorAll('.pati-edu-quiz button[data-action="education-answer"]').forEach(function(button){button.disabled=false;button.removeAttribute('aria-disabled')});
-    root.closest('.edu-path-detail')?.querySelector('.pati-edu-quiz')?.classList.remove('is-time-locked');
-   }
-  }
-  refresh();
-  activeTimer=setInterval(function(){
-   if(!root.isConnected||activeKey!==key(id,uid)){stop();return}
-   var now=Date.now(),delta=Math.max(0,Math.min(2,Math.round((now-last)/1000)));last=now;
-   if(document.visibilityState!=='visible'||!root.closest('.edu-path-detail'))return;
-   if(seconds(id,uid)<MIN_SECONDS&&delta)save(id,uid,Math.min(MIN_SECONDS,seconds(id,uid)+delta));
-   refresh();
-  },1000);
- }
- window.PatiyizLessonWorkshop={render:render,ready:ready,mount:mount,sections:sections,seconds:seconds,stop:stop};
+ /* No visible or hidden countdown: the five-question exam measures lesson completion. */
+ function mount(){stop()}
+ window.PatiyizLessonWorkshop={render:render,ready:()=>true,mount:mount,sections:sections,seconds:seconds,stop:stop};
 })();
