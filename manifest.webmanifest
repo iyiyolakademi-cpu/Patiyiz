@@ -1,13 +1,13 @@
 {
-  "name": "BucheeSocial",
+  "name": "Buchee Social",
   "short_name": "Buchee",
   "description": "BucheeSocial: Paylaş, keşfet, bağlan. Gönderiler, Reels, hikâyeler ve mesajlaşma.",
   "id": "./",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#14021e",
-  "theme_color": "#14021e",
+  "background_color": "#17191d",
+  "theme_color": "#17191d",
   "icons": [
     {
       "src": "buchee-app-icon-192.png?v=20261104-concept4",

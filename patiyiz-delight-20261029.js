@@ -1,11 +1,11 @@
-/* BucheeSocial Delight — small, accessible motion layers; no database writes or reward mutations. */
+/* Buchee Delight — small, accessible motion layers; no database writes or reward mutations. */
 (function(){
  'use strict';
- const mascot='buchee-social-app-icon.svg?v=20261029-2';
+ const mascot='buchee-concept4-icon.svg?v=20261104-concept4';
  const reduced=()=>!!window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
  const safeNumber=v=>Math.max(0,Math.min(99999,Number.isFinite(Number(v))?Math.trunc(Number(v)):0));
  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','"':'&quot;'}[c]));
- const mascotImage=(label='BucheeSocial logosu')=>'<img class="pati-delight-mascot" src="'+mascot+'" alt="'+esc(label)+'" decoding="async" width="105" height="105">';
+ const mascotImage=(label='Buchee logosu')=>'<img class="pati-delight-mascot" src="'+mascot+'" alt="'+esc(label)+'" decoding="async" width="105" height="105">';
  /* A user sees the centered, Duolingo-like daily card only once per Istanbul calendar day.
     The backend confirms the actual streak before this presentation runs. */
  const seenInPage=new Set();

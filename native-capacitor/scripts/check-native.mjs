@@ -10,7 +10,7 @@ const build=fs.readFileSync(path.join(root,'scripts','build-web.mjs'),'utf8');
 const shell=fs.readFileSync(path.join(root,'src','native-shell.js'),'utf8');
 function check(ok,message){if(!ok)throw Error(message);console.log('OK '+message)}
 check(config.appId==='com.patiyiz.app','Android Play app ID matches existing Play listing (technical ID retained)');
-check(config.appName==='BucheeSocial','Native recent-apps label is BucheeSocial');
+check(config.appName==='Buchee','Native recent-apps label is Buchee');
 check(config.webDir==='www','Native app uses bundled www assets');
 check(!config.server.url,'No remote website wrapping via server.url');
 check(pkg.dependencies['@capacitor/android'].startsWith('^8.'),'Capacitor Android 8 supports target SDK 36');
@@ -22,4 +22,4 @@ check(shell.includes("App.addListener('backButton'"),'Android back button wired 
 check(shell.includes("App.addListener('appUrlOpen'"),'Android App Links listener configured');
 check(shell.includes('pickPhotoForInput'),'Native camera/photo integration available');
 check(fs.existsSync(path.join(repo,'buchee-word-only-icon.svg')),'Official BucheeSocial logo available');
-console.log('BucheeSocial Capacitor Android source checks passed.');
+console.log('Buchee Capacitor Android source checks passed.');

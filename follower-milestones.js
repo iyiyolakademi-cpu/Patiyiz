@@ -1,4 +1,4 @@
-/* BucheeSocial follower milestones: presentation only. All eligibility and Buchee Puan
+/* Buchee follower milestones: presentation only. All eligibility and Buchee Puan
  * balances are verified server-side; no browser code can award currency. */
 (()=>{
  'use strict';
@@ -14,10 +14,10 @@
  function nextTarget(count){return tiers.find(t=>count<t.need)||null}
  function profileHint(count){
   const c=countOf(count),next=nextTarget(c);
-  if(!next)return '<span class="pati-goal-header"><img class="pati-goal-logo" src="buchee-social-app-icon.svg?v=20261024-new-p-logo-1" alt="" aria-hidden="true"><span><small>TÜM HEDEFLER TAMAMLANDI</small><strong>Elmas Rozet</strong></span><span class="pati-goal-arrow" aria-hidden="true">↗</span></span><span class="pati-goal-subtitle">100.000 takipçi başarısına ulaştın. Tebrikler!</span>';
+  if(!next)return '<span class="pati-goal-header"><img class="pati-goal-logo" src="buchee-concept4-icon.svg?v=20261104-concept4" alt="" aria-hidden="true"><span><small>TÜM HEDEFLER TAMAMLANDI</small><strong>Elmas Rozet</strong></span><span class="pati-goal-arrow" aria-hidden="true">↗</span></span><span class="pati-goal-subtitle">100.000 takipçi başarısına ulaştın. Tebrikler!</span>';
   const previous=tiers.filter(t=>t.need<=c).at(-1)?.need||0;
   const percent=Math.min(100,Math.max(0,(c-previous)/(next.need-previous)*100));
-  return '<span class="pati-goal-header"><img class="pati-goal-logo" src="buchee-social-app-icon.svg?v=20261024-new-p-logo-1" alt="" aria-hidden="true"><span><small>SIRADAKİ HEDEF</small><strong>'+number(next.need)+' takipçi</strong></span><span class="pati-goal-arrow" aria-hidden="true">↗</span></span>'+
+  return '<span class="pati-goal-header"><img class="pati-goal-logo" src="buchee-concept4-icon.svg?v=20261104-concept4" alt="" aria-hidden="true"><span><small>SIRADAKİ HEDEF</small><strong>'+number(next.need)+' takipçi</strong></span><span class="pati-goal-arrow" aria-hidden="true">↗</span></span>'+
    '<span class="pati-goal-subtitle">'+next.title+' rozetine ilerliyorsun</span>'+
    '<span class="pati-goal-stats"><span>'+number(c)+' takipçi</span><strong>%'+Math.floor(percent)+'</strong></span>'+
    '<span class="pati-follower-progress" role="progressbar" aria-label="Sıradaki hedefe ilerleme" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+percent.toFixed(0)+'"><i style="width:'+percent.toFixed(2)+'%"></i></span>'+
@@ -36,7 +36,7 @@
     const cashClaim=cashByTier.get(t.need),cashStatus=cashClaim?.status;
     const cash=Number(t.cash||0);
     const cashInfo=cash?'<div class="pati-follower-cash"><strong>'+number(cash)+' TL nakit ödül</strong><small>'+(cashStatus==='paid'?'✓ Ödendi':cashStatus==='approved'?'Onaylandı · ödeme bekliyor':cashStatus==='pending'?'Başvurun inceleniyor':cashStatus==='rejected'?'Başvuru reddedildi':c>=t.need?'Takipçi doğrulaması ve başvuru sonrası':'Bu hedefe ulaşınca başvurabilirsin')+'</small>'+(hasCount&&c>=t.need&&!cashClaim?'<button type="button" data-action="pati-follower-cash-claim" data-id="'+t.need+'">Nakit ödül için başvur</button>':'')+'</div>':'';
-    return '<article class="pati-follower-tier '+(won?'is-earned':'')+'"><div class="pati-follower-tier-icon" aria-hidden="true">'+t.icon+'</div><div class="pati-follower-tier-copy"><span>'+t.kind+' rozet</span><h3>'+number(t.need)+' takipçi</h3><strong>'+t.title+'</strong></div><span class="pati-follower-coin">'+(won?'✓':'+'+number(t.coins))+' <img class="pati-coin-icon" src="buchee-social-app-icon.svg?v=20261025-brand-1" alt="" aria-hidden="true"></span><div class="pati-follower-track"><i style="width:'+pct.toFixed(2)+'%"></i></div><small>'+status+'</small>'+cashInfo+'</article>';
+    return '<article class="pati-follower-tier '+(won?'is-earned':'')+'"><div class="pati-follower-tier-icon" aria-hidden="true">'+t.icon+'</div><div class="pati-follower-tier-copy"><span>'+t.kind+' rozet</span><h3>'+number(t.need)+' takipçi</h3><strong>'+t.title+'</strong></div><span class="pati-follower-coin">'+(won?'✓':'+'+number(t.coins))+' <img class="pati-coin-icon" src="buchee-concept4-icon.svg?v=20261104-concept4" alt="" aria-hidden="true"></span><div class="pati-follower-track"><i style="width:'+pct.toFixed(2)+'%"></i></div><small>'+status+'</small>'+cashInfo+'</article>';
   }).join('');
   return '<section class="pati-follower-milestones" aria-label="Takipçi başarı ödülleri">'+head+banner+'<div class="pati-follower-grid">'+cards+'</div><p class="pati-follower-terms">Buchee Puan ödülleri sunucuda doğrulanıp bir kez verilir. Nakit ödüller otomatik ödenmez; her hedef için bir kez başvurulur, gerçek takipçiler doğrulanır, uygun başvurular manuel incelenir ve ödeme onaylanır. Sahte takipçilik ödül hakkı oluşturmaz. Rozetler kimlik doğrulaması yerine geçmez.</p></section>';
  }

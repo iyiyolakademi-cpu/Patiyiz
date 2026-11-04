@@ -97,7 +97,7 @@
    const blob=await output;
    if(!blob.size||blob.size>LIMIT)throw fail('Video 50 MB altına indirilemedi. Videoyu 720p MP4 olarak kaydet.');
    progress('Video hazır, güvenli yükleme başlıyor…');
-   return new File([blob],'patiyiz-'+Date.now()+(blob.type==='video/mp4'?'.mp4':'.webm'),{type:blob.type,lastModified:Date.now()});
+   return new File([blob],'buchee-'+Date.now()+(blob.type==='video/mp4'?'.mp4':'.webm'),{type:blob.type,lastModified:Date.now()});
   }finally{close();video.remove()}
  }
  window.PatiyizVideoPrepare={prepare,LIMIT,MAX_SOURCE,MAX_DURATION,chooseMime};

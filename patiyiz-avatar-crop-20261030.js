@@ -164,7 +164,7 @@
      context.drawImage(image,((stageW-w)/2+dx-left)*factor,((stageH-h)/2+dy-top)*factor,w*factor,h*factor);
      const blob=await new Promise(done=>output.toBlob(done,'image/jpeg',0.9));
      if(!blob?.size)throw Error('Kırpılmış fotoğraf oluşturulamadı.');
-     close(new File([blob],'patiyiz-profil-'+Date.now()+'.jpg',{type:'image/jpeg',lastModified:Date.now()}));
+     close(new File([blob],'buchee-profil-'+Date.now()+'.jpg',{type:'image/jpeg',lastModified:Date.now()}));
     }catch(e){
      button.disabled=false;button.textContent='Tamam';
      modal.querySelector('.pati-avatar-crop-help').textContent=e.message||'Kırpma başarısız. Tekrar dene.';

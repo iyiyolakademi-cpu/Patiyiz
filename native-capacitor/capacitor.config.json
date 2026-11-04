@@ -1,6 +1,6 @@
 {
   "appId": "com.patiyiz.app",
-  "appName": "BucheeSocial",
+  "appName": "Buchee",
   "webDir": "www",
   "server": {
     "androidScheme": "https",
@@ -9,19 +9,19 @@
   },
   "android": {
     "allowMixedContent": false,
-    "backgroundColor": "#14021e"
+    "backgroundColor": "#17191d"
   },
   "plugins": {
     "SplashScreen": {
       "launchShowDuration": 800,
       "launchAutoHide": true,
-      "backgroundColor": "#14021e",
+      "backgroundColor": "#17191d",
       "showSpinner": false,
       "launchFadeOutDuration": 200
     },
     "StatusBar": {
       "style": "DARK",
-      "backgroundColor": "#14021e",
+      "backgroundColor": "#17191d",
       "overlaysWebView": false
     },
     "Keyboard": {
