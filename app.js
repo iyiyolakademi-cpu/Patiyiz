@@ -118,25 +118,42 @@ const friendly=e=>{const m=String(e?.message||e||'İşlem başarısız.');if(/Fa
 function bucheeProfileInlineError(message){
  const form=document.getElementById('profile-form');
  if(!form)return false;
+ const input=form.querySelector('input[name="handle"]');
+ const isHandle=/kullanıcı adı|handle|profiles_handle|zaten kullanılıyor|unique/i.test(String(message||''));
  let el=form.querySelector('.buchee-profile-form-error');
  if(!el){
   el=document.createElement('p');el.id='buchee-profile-form-error';
   el.className='buchee-profile-form-error';el.setAttribute('role','alert');el.setAttribute('aria-live','assertive');
-  (form.querySelector('.modal-content')||form).prepend(el);
  }
+ const field=input?.closest('.pati-field');
+ if(isHandle&&field)field.append(el);
+ else (form.querySelector('.modal-content')||form).prepend(el);
  el.hidden=false;el.textContent=String(message||'Profili kaydederken bir sorun oluştu.');
- const input=form.querySelector('input[name="handle"]');
- if(input&&/kullanıcı adı/i.test(el.textContent)){
+ if(input&&isHandle){
   input.setAttribute('aria-invalid','true');
   input.setAttribute('aria-describedby','buchee-profile-form-error');
+  try{input.focus({preventScroll:true})}catch(_){}
  }
- try{el.scrollIntoView?.({block:'center',behavior:'instant'})}catch(_){}
+ try{(isHandle?input:el)?.scrollIntoView?.({block:'center',behavior:'instant'})}catch(_){}
  return true;
 }
+document.addEventListener('input',event=>{
+ const input=event.target;
+ if(!input?.matches?.('#profile-form input[name="handle"]'))return;
+ input.removeAttribute('aria-invalid');input.removeAttribute('aria-describedby');
+ const notice=document.querySelector('#profile-form .buchee-profile-form-error');
+ if(notice)notice.hidden=true;
+});
 const run=async(fn,success)=>{if(busy)return;busy=true;try{await fn();if(success)notify(success)}catch(e){console.error(e);const message=friendly(e);if(!(typeof bucheeProfileInlineError==='function'&&bucheeProfileInlineError(message)))notify(message,true)}finally{busy=false}};
 const patiAvatarCache=new Map();
+const bucheeVisibleHandle=value=>{
+ const handle=String(value||'');
+ return /^patiyiz_[0-9a-f]{12}$/i.test(handle)?'buchee_'+handle.slice(8):handle;
+};
 const profile=id=>{
- const p=data.profiles.find(row=>row.id===id);
+ const original=data.profiles.find(row=>row.id===id);
+ const p=original&&bucheeVisibleHandle(original.handle)!==original.handle?
+  {...original,handle:bucheeVisibleHandle(original.handle)}:original;
  if(p?.avatar_url)patiAvatarCache.set(id,p.avatar_url);
  if(p)return p.avatar_url?p:(patiAvatarCache.has(id)?{...p,avatar_url:patiAvatarCache.get(id)}:p);
  return {id,display_name:'Buchee Social üyesi',handle:'üye',bio:'',city:'',avatar_url:patiAvatarCache.get(id)||''};
@@ -9110,7 +9127,7 @@ case 'wellness-reminder-form':await patiWellnessSaveReminder(form,str);break;cas
  const item=result.data[0];data.care=[item,...data.care.filter(x=>x.id!==item.id)];
  patiyizLoadedTables.add('care_tasks');closeModal(true);if(view==='care'||(view==='my-pet'&&patiMyPetTab==='care'))render();
  notify(editId?'Bakım görevi güncellendi.':'Bakım görevi eklendi.');break;}
-case 'profile-form':{let handle=str('handle').toLowerCase();if(!/^[a-z0-9_]{3,24}$/.test(handle))throw Error('Kullanıcı adı 3–24 karakter, küçük harf, rakam veya alt çizgi olmalı.');let professionalTitle=str('professional_title').replace(/\s+/g,' ').trim();if(professionalTitle.length>60)throw Error('Profil unvanın en fazla 60 karakter olabilir.');let o={display_name:str('display_name'),handle,city:str('city'),professional_title:professionalTitle,bio:str('bio'),profile_links:patiCollectProfileLinks(form)},image=await upload(f.get('photo'));if(image)o.avatar_url=image;await save('profiles',o,me.id);
+case 'profile-form':{let handle=str('handle').trim().toLowerCase();if(!/^[a-z0-9_]{3,24}$/.test(handle))throw Error('Kullanıcı adı 3–24 karakter, küçük harf, rakam veya alt çizgi olmalı.');let professionalTitle=str('professional_title').replace(/\s+/g,' ').trim();if(professionalTitle.length>60)throw Error('Profil unvanın en fazla 60 karakter olabilir.');let o={display_name:str('display_name'),handle,city:str('city'),professional_title:professionalTitle,bio:str('bio'),profile_links:patiCollectProfileLinks(form)},image=await upload(f.get('photo'));if(image)o.avatar_url=image;await save('profiles',o,me.id);
  const audienceGender=str('analytics_gender');
  if(['woman','man','other'].includes(audienceGender)){
   const added=await sb.from('patiyiz_audience_demographics').upsert({user_id:me.id,gender:audienceGender,updated_at:new Date().toISOString()},{onConflict:'user_id'});
