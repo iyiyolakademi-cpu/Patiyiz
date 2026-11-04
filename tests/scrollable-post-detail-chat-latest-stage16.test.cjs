@@ -51,7 +51,7 @@ test('Detail screen renders selected image/video plus every later and earlier po
 test('Opening a post retains return source and preserves profile context',()=>{
  assert.match(open,/origin=view/);
  assert.match(open,/patiDetailCandidates\(origin\)/);
- assert.match(open,/origin,rows:options,initialId:id/);
+ assert.match(open,/origin,rows:\[post\],initialId:id/);
  assert.match(open,/profileId,profilePostsTab,returnScroll/);
  assert.match(home,/if\(selectedPostId&&patiDetailState\)\{patiDetailPage\(\);return\}/);
  assert.match(app,/function closePostDetail\(\)\{[\s\S]*?detail\?\.origin[\s\S]*?profileId=detail.profileId/);
