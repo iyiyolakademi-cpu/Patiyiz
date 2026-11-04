@@ -74,7 +74,8 @@ test('password changes request global session revocation, ordinary logout is loc
 test('account switch and deletion clear media and per-account cached data',()=>{
  assert.match(app,/function resetSessionState\(\)\{\s*globalThis\.PatiyizPrivateMedia\?\.clear\(\);/);
  assert.match(app,/patiAvatarCache\.clear\(\)/);
- assert.match(app,/if\(event==='SIGNED_OUT'\)\{\s*stopLive\(\);resetSessionState\(\);/);
+ assert.match(app,/if\(event==='SIGNED_OUT'\)\{\s*authEventEpoch\+\+;stopLive\(\);resetSessionState\(\);/);
+ assert.match(app,/if\(epoch!==authEventEpoch\|\|me\?\.id===signedUser/);
  assert.match(app,/HESABIMI SIL/);
  assert.match(app,/functions\/v1\/patiyiz-delete-account/);
 });
