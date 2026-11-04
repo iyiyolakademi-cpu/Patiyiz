@@ -6,7 +6,7 @@
  let ctx=null;
  let importanceFilter='all',typeFilter='all',sort='new',layout='grid',query='';
  let selecting=false,busy=false,choiceId=null,confirming=false;
- let selected=new Set(),lastFetchKey='';
+ let selected=new Set(),expanded=new Set(),lastFetchKey='';
  const levels={
   green:{name:'Yeşil',desc:'Daha sonra incelemek için',color:'#309966'},
   orange:{name:'Turuncu',desc:'Yakında tekrar bakacağım',color:'#e7a041'},
@@ -41,25 +41,31 @@
    &&(typeFilter==='all'||kind(post)===typeFilter)
    &&(!q||normalized([post.body,post.caption,post.title,userName(post)].join(' ')).includes(q)));
  }
- function postMedia(post,index){
-  const images=Array.isArray(post.images)?post.images.filter(Boolean):[];
-  const cover=post.video_cover_url||images[0]||post.image_url||'';
-  const video=post.video_url||(Array.isArray(post.media_videos)?post.media_videos.find(Boolean):'');
-  if(cover)return '<img src="'+esc(cover)+'" alt="" loading="'+(index<4?'eager':'lazy')+'" decoding="async">';
-  if(video)return '<div class="buchee-saved-video-placeholder" aria-hidden="true"><span>▶</span></div>';
-  return '<div class="buchee-saved-text-preview">'+esc(String(post.body||post.title||'Kaydedilen yazı').trim().slice(0,160))+'</div>';
+ function postMedia(post,index,id){
+  const images=[...new Set([...(Array.isArray(post.images)?post.images:[]),post.image_url].filter(Boolean))];
+  const videos=[...new Set([post.video_url,...(Array.isArray(post.media_videos)?post.media_videos:[])].filter(Boolean))];
+  const cover=post.video_cover_url||images[0]||'';
+  if(!images.length&&!videos.length)return '';
+  const videoHtml=videos.map((url,i)=>'<video class="buchee-saved-inline-video" controls playsinline preload="none"'+(i===0&&cover?' poster="'+esc(cover)+'"':'')+' src="'+esc(url)+'" aria-label="Kaydedilen video '+(i+1)+'"></video>').join('');
+  const imageHtml=images.length?'<div class="buchee-saved-inline-images">'+images.map((url,i)=>'<button type="button" class="buchee-saved-photo-open" data-saved-action="'+(selecting?'toggle':'open')+'" data-id="'+id+'" aria-label="'+(selecting?'İçeriği seç':'Görseli gönderide aç')+'"><img src="'+esc(url)+'" alt="Kaydedilen görsel '+(i+1)+'" loading="'+(index<2?'eager':'lazy')+'" decoding="async"></button>').join('')+'</div>':'';
+  return '<div class="buchee-saved-post-media">'+videoHtml+imageHtml+'</div>';
  }
  function tile(post,index){
   const id=esc(post.id),level=importance(post.id),checked=selected.has(post.id);
-  const description=String(post.body||post.caption||post.title||'Kaydedilen içerik').trim();
+  const description=String(post.body||post.caption||post.title||'').trim();
   const record=saves().get(post.id);
-  return '<article class="buchee-saved-item '+(checked?'is-selected':'')+'" data-kind="'+kind(post)+'" data-importance="'+level+'">'+
-   '<button type="button" class="buchee-saved-item-main" data-saved-action="'+(selecting?'toggle':'open')+'" data-id="'+id+'" aria-label="'+(selecting?'Kaydı seç':'İçeriği aç')+'">'+
-   '<span class="buchee-saved-media">'+postMedia(post,index)+(selecting?'<span class="buchee-saved-check" aria-hidden="true">'+(checked?'✓':'')+'</span>':'')+'</span>'+
-   '<span class="buchee-saved-item-body"><span class="buchee-saved-kind">'+esc(label(post))+'</span><strong>'+esc(description.slice(0,115))+'</strong>'+
-   '<span class="buchee-saved-author">'+esc(userName(post))+'</span><small>'+esc(dateShort(record?.created_at||post.created_at))+'</small></span></button>'+
+  const expandedPost=expanded.has(post.id);
+  const author=esc(userName(post));
+  return '<article class="buchee-saved-item '+(checked?'is-selected':'')+'" data-kind="'+kind(post)+'" data-importance="'+level+'" role="listitem">'+
+   '<div class="buchee-saved-post-top"><button type="button" class="buchee-saved-post-author" data-saved-action="'+(selecting?'toggle':'open')+'" data-id="'+id+'"><strong>'+author+'</strong><small>'+esc(dateShort(record?.created_at||post.created_at))+'</small></button>'+
+   (selecting?'<button type="button" class="buchee-saved-post-check" data-saved-action="toggle" data-id="'+id+'" aria-pressed="'+checked+'">'+(checked?'✓ Seçildi':'○ Seç')+'</button>':'')+'</div>'+
+   postMedia(post,index,id)+
+   (description?'<div class="buchee-saved-post-copy"><p class="buchee-saved-description'+(expandedPost?'':' is-collapsed')+'" data-id="'+id+'">'+esc(description)+'</p>'+
+    '<button type="button" class="buchee-saved-more" data-saved-action="expand" data-id="'+id+'" aria-expanded="'+expandedPost+'">'+(expandedPost?'Daha az':'Devam')+'</button></div>':'')+
+   '<div class="buchee-saved-post-bottom"><span class="buchee-saved-post-kind">'+esc(label(post))+'</span>'+
+   '<button type="button" class="buchee-saved-open" data-saved-action="'+(selecting?'toggle':'open')+'" data-id="'+id+'">'+(selecting?'Seç':'Gönderiyi aç')+'</button>'+
    '<button type="button" class="buchee-saved-priority" data-saved-action="priority" data-id="'+id+'" aria-label="Önem derecesi: '+levels[level].name+'. Değiştir" '+(selecting?'disabled':'')+'>'+
-   '<span class="buchee-saved-priority-dot buchee-saved-'+level+'"></span><span>'+levels[level].name+'</span><span aria-hidden="true">⌄</span></button>'+
+   '<span class="buchee-saved-priority-dot buchee-saved-'+level+'"></span><span>'+levels[level].name+'</span><span aria-hidden="true">⌄</span></button></div>'+
    '</article>';
  }
  function render(arg){
@@ -72,29 +78,26 @@
   root.innerHTML='<section class="pati-saved-screen buchee-saved-library" aria-label="Kaydedilenler">'+
    '<header class="buchee-saved-header"><button type="button" class="pati-page-back buchee-saved-back" data-action="pati-page-back" aria-label="Geri">← Geri</button>'+
    '<h1>Kaydedilenler</h1><button type="button" class="buchee-saved-select-mode" data-saved-action="selection">'+(selecting?'Vazgeç':'Seç')+'</button></header>'+
-   '<div class="buchee-saved-hero"><div><span>BUCHEE KÜTÜPHANEM</span><h2>İçeriklerin, tek yerde.</h2><p>Kaydettiğin gönderileri kolayca bul, önemine göre düzenle.</p></div>'+
-   '<div class="buchee-saved-total"><b>'+ctx.saved.size+'</b><span>kayıt</span></div></div>'+
    '<div class="buchee-saved-search-row"><label class="buchee-saved-search"><span aria-hidden="true">⌕</span>'+
-   '<input type="search" id="buchee-saved-search" placeholder="Kaydedilenlerde ara" autocomplete="off" value="'+esc(query)+'" aria-label="Kaydedilen içeriklerde ara"></label>'+
-   '<select id="buchee-saved-sort" aria-label="Sıralama"><option value="new" '+(sort==='new'?'selected':'')+'>En yeni</option><option value="old" '+(sort==='old'?'selected':'')+'>En eski</option></select></div>'+
-   '<div class="buchee-saved-section-label"><strong>Önem Listesi</strong><span>Kayıtlarına öncelik ver</span></div>'+
+   '<input type="search" id="buchee-saved-search" placeholder="Kaydedilenlerde ara" autocomplete="off" value="'+esc(query)+'" aria-label="Kaydedilen içeriklerde ara"></label></div>'+
    '<div class="buchee-saved-priority-filters" role="group" aria-label="Önem derecesi filtreleri">'+
    [['all','Tümü'],['green','Yeşil'],['orange','Turuncu'],['red','Kırmızı']].map(([level,name])=>
     '<button type="button" data-saved-action="importance-filter" data-level="'+level+'" class="'+(importanceFilter===level?'is-active':'')+'" aria-pressed="'+(importanceFilter===level)+'">'+(level==='all'?'':'<span class="buchee-saved-priority-dot buchee-saved-'+level+'"></span>')+name+'</button>').join('')+'</div>'+
-   '<div class="buchee-saved-section-label buchee-saved-content-heading"><strong>İçeriklerim</strong><span>'+list.length+' sonuç</span></div>'+
-   '<div class="buchee-saved-toolbar"><div class="buchee-saved-types" role="group" aria-label="İçerik türü">'+
-   [['all','Tümü'],['media','Gönderiler'],['reels','Reels'],['text','Yazılar']].map(([type,name])=>
-    '<button type="button" data-saved-action="type-filter" data-type="'+type+'" class="'+(typeFilter===type?'is-active':'')+'" aria-pressed="'+(typeFilter===type)+'">'+name+'</button>').join('')+
-   '</div><button type="button" class="buchee-saved-layout-btn" data-saved-action="layout" aria-label="'+(layout==='grid'?'Liste görünümüne geç':'Kart görünümüne geç')+'">'+(layout==='grid'?'☷':'▦')+'</button></div>'+
+   '<div class="buchee-saved-list-count">'+list.length+' kaydedilen içerik</div>'+
    (selecting?'<div class="buchee-saved-selectionbar"><span>'+selected.size+' içerik seçildi</span>'+
     '<button type="button" data-saved-action="select-all">'+(selected.size&&selected.size===list.length?'Seçimi kaldır':'Tümünü seç')+'</button>'+
     '<button type="button" class="is-destructive" data-saved-action="remove-selected" '+(selected.size?'':'disabled')+'>Listemden kaldır</button></div>':'')+
    (missing.length?'<div class="buchee-saved-loading" role="status">'+missing.length+' kayıt yükleniyor veya erişilemiyor. <button type="button" data-saved-action="refresh">Yeniden dene</button></div>':'')+
-   (list.length?'<div class="buchee-saved-results is-'+layout+'" role="list">'+list.map(tile).join('')+'</div>':
+   (list.length?'<div class="buchee-saved-results is-list" role="list">'+list.map(tile).join('')+'</div>':
     '<div class="buchee-saved-empty"><span aria-hidden="true">▣</span><h2>'+(ctx.saved.size?'Bu filtrede içerik yok':'Henüz kayıtlı içerik yok')+'</h2>'+
-    '<p>'+(ctx.saved.size?'Başka bir filtre veya arama dene.':'Akışta beğendiğin gönderileri kaydederek kendi kütüphaneni oluştur.')+'</p>'+
+    '<p>'+(ctx.saved.size?'Başka bir önem filtresi veya arama dene.':'Akıştan bir gönderi kaydederek burada görebilirsin.')+'</p>'+
     '<button type="button" data-saved-action="'+(ctx.saved.size?'reset':'back')+'">'+(ctx.saved.size?'Filtreleri temizle':'Akışa dön')+'</button></div>')+
    '</section>';
+  root.querySelectorAll('.buchee-saved-description').forEach(p=>{
+   const btn=p.nextElementSibling;
+   if(btn&&btn.classList.contains('buchee-saved-more'))
+    btn.hidden=(!expanded.has(p.dataset.id)&&p.scrollHeight<=p.clientHeight+2);
+  });
   const key=ctx.me.id+'|'+missing.slice().sort().join(',');
   if(missing.length&&key!==lastFetchKey){lastFetchKey=key;void ctx.fetchMissingSavedPosts();}
  }
@@ -185,6 +188,17 @@
   if(busy&&act!=='dismiss')return;
   switch(act){
    case 'open':ctx?.openPost(b.dataset.id);break;
+   case 'expand':{
+    const id=b.dataset.id;
+    if(expanded.has(id))expanded.delete(id);else expanded.add(id);
+    const p=b.previousElementSibling;
+    if(p?.classList.contains('buchee-saved-description')){
+     p.classList.toggle('is-collapsed',!expanded.has(id));
+     b.textContent=expanded.has(id)?'Daha az':'Devam';
+     b.setAttribute('aria-expanded',String(expanded.has(id)));
+    }
+    break;
+   }
    case 'priority':openChoice(b.dataset.id);break;
    case 'assign':void saveImportance(b.dataset.level);break;
    case 'dismiss':if(!busy)closeOverlay();break;
