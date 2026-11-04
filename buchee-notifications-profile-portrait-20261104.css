@@ -1,0 +1,51 @@
+/* Buchee — 04.11.2026
+   Hide the illustrated empty notifications box (retain a screen-reader status).
+   Match Instagram's portrait 3-column profile previews, without altering
+   the real media or the open-post viewer. */
+#main-content .pati-notifications-simple .buchee-notifications-empty-sr{
+ position:absolute!important;
+ width:1px!important;height:1px!important;
+ padding:0!important;margin:-1px!important;
+ overflow:hidden!important;
+ clip:rect(0,0,0,0)!important;
+ clip-path:inset(50%)!important;
+ white-space:nowrap!important;
+ border:0!important;
+}
+html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-ig-grid{
+ display:grid!important;
+ grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ width:100%!important;max-width:100%!important;
+ margin:0!important;padding:0!important;
+ gap:2px!important;
+ align-items:start!important;
+}
+html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-ig-grid>button.pati-profile-tile{
+ display:block!important;
+ position:relative!important;
+ box-sizing:border-box!important;
+ width:100%!important;max-width:100%!important;
+ height:auto!important;min-height:0!important;max-height:none!important;
+ aspect-ratio:3/4!important;
+ margin:0!important;padding:0!important;
+ border:0!important;border-radius:0!important;
+ overflow:hidden!important;
+ background:#f2f2f4!important;
+}
+html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-ig-grid>button.pati-profile-tile>img,
+html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-ig-grid>button.pati-profile-tile>video{
+ display:block!important;
+ position:absolute!important;inset:0!important;
+ width:100%!important;height:100%!important;
+ min-height:100%!important;max-height:100%!important;
+ margin:0!important;padding:0!important;
+ object-fit:cover!important;object-position:center!important;
+}
+html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-ig-grid>.pati-ig-empty{
+ grid-column:1/-1!important;
+}
+@media(max-width:390px){
+ html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-ig-grid{
+  gap:2px!important;
+ }
+}
