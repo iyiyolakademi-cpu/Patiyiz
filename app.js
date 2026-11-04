@@ -9208,8 +9208,11 @@ document.addEventListener('submit',async e=>{
    if(!data.replies.some(r=>r.id===result.data.id))data.replies.push(result.data);
    const state=patiCommunityReplyPages.get(uid+':'+questionId);
    if(state?.ready&&!state.rows.some(r=>r.id===result.data.id)){state.rows.unshift(result.data);state.offset++}
-   const sources=[question,...patiHomeQuestionsState.rows,...patiCommunityPage.rows];
-   for(const q of sources)if(q.id===questionId&&Number.isFinite(Number(q.reply_count)))q.reply_count=Number(q.reply_count)+1;
+   const sources=[question,...patiHomeQuestionsState.rows,...patiCommunityPage.rows],touched=new Set();
+   for(const q of sources)if(q.id===questionId&&!touched.has(q)){
+    touched.add(q);
+    if(Number.isFinite(Number(q.reply_count)))q.reply_count=Number(q.reply_count)+1;
+   }
    document.querySelectorAll('[data-question-id="'+questionId+'"] .buchee-question-reply-count').forEach(el=>{
     el.textContent=(Number.isFinite(Number(question.reply_count))?question.reply_count:
       data.replies.filter(r=>r.question_id===questionId).length)+' cevap';
@@ -9258,8 +9261,18 @@ case 'post-form':{if(form.dataset.mode==='story'){const result=await createStory
  if(result.error)throw result.error;
  if(me?.id!==author)return;
  if(!data.questions.some(q=>q.id===result.data.id))data.questions.unshift(result.data);
- closeModal(true);view='community';communityCategory='Tümü';render();void patiLoadCommunity(true);
- notify('Sorun Toplulukta yayınlandı.');break}
+ closeModal(true);
+ if(view==='home'){
+  patiHomeContentMode='text';
+  if(patiHomeQuestionsState.owner!==author)patiHomeQuestionsState={owner:author,rows:[],ready:true,loading:false};
+  patiHomeQuestionsState.rows.unshift(result.data);
+  render();window.scrollTo({top:0,behavior:'instant'});
+  notify('Sorun Twitler ve Sorular akışında yayınlandı.');
+ }else{
+  view='community';communityCategory='Tümü';bucheeQuestionSearch='';bucheeQuestionSort='new';
+  render();void patiLoadCommunity(true);notify('Sorun yayınlandı.');
+ }
+ break}
 case 'adoption-form':{
  const editId=form.dataset.edit||'';
  if(editId&&!data.adoption.some(x=>x.id===editId&&x.owner_id===me.id))throw Error('Bu ilanı düzenleme yetkin yok.');
