@@ -1,4 +1,4 @@
-/* BucheeSocial camera-first composer — post, story and Reels share one entry point.
+/* Buchee camera-first composer — post, story and Reels share one entry point.
  * User permission is required for camera and gallery access. Browser photo libraries
  * are opened through their native picker; Android MediaStore thumbnails are permission-gated.
  */
@@ -7,7 +7,7 @@
 let state=null;
 const native=()=>!!window.PatiyizNativeGallery;
 const isVideo=f=>!!f&&(/^video\//.test(f.type||'')||/\.(mp4|mov|webm|m4v)$/i.test(f.name||''));
-const bytesToFile=(str,name='patiyiz-fotograf.jpg')=>{
+const bytesToFile=(str,name='buchee-fotograf.jpg')=>{
  const raw=atob(str),chunks=[];
  for(let i=0;i<raw.length;i+=32768){
   const slice=raw.slice(i,i+32768),arr=new Uint8Array(slice.length);
@@ -232,7 +232,7 @@ async function capture(){
  const cv=document.createElement('canvas');cv.width=w;cv.height=h;
  drawCameraFrame(cv.getContext('2d'),v,w,h,state.facing==='user');
  const blob=await new Promise(resolve=>cv.toBlob(resolve,'image/jpeg',.88));
- if(blob)await accept(new File([blob],'patiyiz-kamera-'+Date.now()+'.jpg',{type:'image/jpeg'}));
+ if(blob)await accept(new File([blob],'buchee-kamera-'+Date.now()+'.jpg',{type:'image/jpeg'}));
 }
 function bestRecorderMime(){
  if(typeof MediaRecorder==='undefined'||typeof MediaRecorder.isTypeSupported!=='function')return '';
@@ -282,7 +282,7 @@ function toggleRecord(){
    current.recorder=null;
    if(blob.size){
     const ext=blob.type==='video/mp4'?'mp4':'webm';
-    void accept(new File([blob],'patiyiz-kamera-'+Date.now()+'.'+ext,{type:blob.type}));
+    void accept(new File([blob],'buchee-kamera-'+Date.now()+'.'+ext,{type:blob.type}));
    }else showMessage('Video kaydedilemedi. Tekrar dene.');
   };
   recorder.start(1000);button.classList.add('recording');
@@ -353,7 +353,7 @@ function open({mode='post',onMedia,onPhotos,onPublish,onCancel,onSwitch,userId}=
  const root=document.createElement('section');
  root.id='patiyiz-camera-screen';root.setAttribute('role','dialog');
  root.setAttribute('aria-modal','true');root.setAttribute('aria-label',title);
- root.innerHTML='<header class="pati-camera-head"><button type="button" data-camera="cancel" aria-label="Geri">×</button><strong>'+title+'</strong><span>patiyiz</span></header>'+
+ root.innerHTML='<header class="pati-camera-head"><button type="button" data-camera="cancel" aria-label="Geri">×</button><strong>'+title+'</strong><span>Buchee</span></header>'+
  '<div class="pati-camera-stage"><span class="pati-camera-focus" hidden aria-hidden="true"></span><div class="pati-camera-viewfinder"><video id="pati-camera-live" autoplay playsinline muted></video><canvas id="pati-camera-framed" width="720" height="'+(mode==='post'?720:1280)+'" hidden></canvas><img id="pati-camera-chosen-image" alt="Seçilen fotoğraf" hidden><video id="pati-camera-chosen-video" playsinline controls preload="metadata" hidden></video><div class="pati-camera-unavailable" id="pati-camera-camera-fallback" hidden><strong>Kamerana erişilemiyor</strong><button type="button" data-camera="retry">Kamerayı yeniden aç</button></div></div></div>'+
  '<div id="pati-camera-alert" class="pati-camera-alert" role="status" hidden></div>'+
  '<section id="pati-camera-gallery-panel" class="pati-camera-gallery-panel" hidden><div class="pati-camera-gallery-title"><strong>Fotoğraflarım</strong><button type="button" data-camera="toggle">⌄ Kapat</button></div><div class="pati-camera-gallery-scroll"><div id="pati-camera-gallery-grid" class="pati-camera-gallery-grid"></div><p id="pati-camera-gallery-state">Fotoğraflar yükleniyor…</p><button id="pati-camera-gallery-fallback" data-camera="fallback" type="button" hidden>Sistem galerisinden seç</button><button type="button" data-camera="video-gallery">Tüm videoları seç</button><button type="button" data-camera="fallback">Telefon galerisi · fotoğraf veya video</button><button type="button" data-camera="more">Daha fazla fotoğraf</button></div></section>'+
