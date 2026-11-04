@@ -9259,7 +9259,7 @@ async function boot(){
   bucheeConnectionRecovery('Giriş sistemi yüklenemedi. İnterneti kontrol edip yeniden dene.');
   return;
  }
- let booting=true,recoveryPending=false;
+ let booting=true,recoveryPending=false,authEventEpoch=0;
  const showRecoveryPassword=()=>{
   if(!recoveryPending)return;
   recoveryPending=false;
@@ -9274,14 +9274,24 @@ async function boot(){
     return;
    }
    if(event==='SIGNED_OUT'){
-    stopLive();resetSessionState();me=null;isAdmin=false;authMode='login';bucheeWelcomeEntered=false;
+    authEventEpoch++;stopLive();resetSessionState();me=null;isAdmin=false;authMode='login';bucheeWelcomeEntered=false;
     if(!booting)showAuth();
     return;
    }
    if(event==='SIGNED_IN'&&session?.user&&(!me||me.id!==session.user.id)&&!booting){
-    stopLive();resetSessionState();me=session.user;
-    const signedUser=me.id;
-    setTimeout(()=>{if(me?.id===signedUser)showApp()},0);
+    const signedUser=session.user.id,epoch=++authEventEpoch;
+    setTimeout(async()=>{
+     if(epoch!==authEventEpoch||me?.id===signedUser&&!appRoot.classList.contains('hidden'))return;
+     if(navigator.onLine===false){bucheeConnectionRecovery('İnternet bağlantın yok. Oturumunu doğrulamak için yeniden dene.');return}
+     try{
+      const {data:verified,error}=await bucheeAuthTimed(sb.auth.getUser());
+      if(epoch!==authEventEpoch||me?.id===signedUser&&!appRoot.classList.contains('hidden'))return;
+      if(error||verified?.user?.id!==signedUser)throw error||Error('Oturum doğrulanamadı.');
+      stopLive();resetSessionState();me=verified.user;showApp();
+     }catch(error){
+      if(epoch===authEventEpoch)bucheeConnectionRecovery('Oturum doğrulanamadı. İnterneti kontrol edip yeniden dene.');
+     }
+    },0);
    }
   });
   const {data:result,error}=await bucheeAuthTimed(sb.auth.getSession());
