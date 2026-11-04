@@ -22,6 +22,8 @@ jobs:
           for js_file in ./*.js; do
             node --check "$js_file"
           done
+      - name: Buchee brand identity regression
+        run: node --test tests/buchee-brand-identity.test.cjs
       - name: Android PWA readiness (offline; no credentials)
         run: node android/check-readiness.mjs && node --check android/generate-assetlinks.mjs
       - name: Verify browser stylesheet bundle
