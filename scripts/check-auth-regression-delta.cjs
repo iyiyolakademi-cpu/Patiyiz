@@ -19,7 +19,7 @@ function runTests(dir){
  const failures=[...output.matchAll(/^not ok \d+ - ([^\r\n]+)\r?$/gm)].map(x=>x[1]);
  if(!Number.isFinite(count)||!Number.isFinite(failCount)||count<600||failCount!==failures.length)
   throw Error('Incomplete tests in '+dir+' tests='+count+' failures='+failCount+' names='+failures.length);
- return {count,failures:new Set(failures),failCount};
+ return {count,failures:new Set(failures),failCount,output};
 }
 try{
  execFileSync('git',['fetch','--no-tags','--depth=1','origin','main'],{cwd:root,stdio:'pipe'});
@@ -33,7 +33,7 @@ try{
  console.log('New failures introduced by PR:',introduced.length);
  console.log('Previously failing cases now passing:',repaired.length);
  if(repaired.length)console.log('Resolved:',repaired.slice(0,15).join(' | '));
- if(introduced.length){introduced.forEach(name=>console.error('::error::NEW PR REGRESSION '+name));process.exitCode=1;}
+ if(introduced.length){introduced.forEach(name=>{console.error('::error::NEW PR REGRESSION '+name);const marker=' - '+name;const at=head.output.indexOf(marker);if(at>=0)console.error('DIAGNOSTIC '+head.output.slice(Math.max(0,at-30),at+1150));});process.exitCode=1;}
 }catch(err){console.error('::error::Differential regression check failed:',err.message);process.exitCode=1;}
 finally{
  if(worktreeAdded)try{execFileSync('git',['worktree','remove','--force',baseline],{cwd:root,stdio:'pipe'});}catch(e){console.warn('Cannot clean worktree:',e.message);}
