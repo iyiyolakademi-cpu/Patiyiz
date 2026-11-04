@@ -2914,6 +2914,7 @@ async function bucheeLoadFeaturedReplies(rows){
   for(const item of result.data||[])if(!blocked.has(item.author_id)){
    bucheeFeaturedReplies.set(item.id,item);
    document.querySelectorAll('[data-question-id="'+item.question_id+'"] .buchee-featured-reply-body').forEach(el=>{el.textContent=cut(item.body||'',180)});
+   if(document.querySelector('#reply-form')?.dataset.question===item.question_id)questionReplies(item.question_id);
   }
  }catch(error){console.warn('En iyi cevap gösterilemedi:',error?.message||error)}
  finally{ids.forEach(id=>bucheeFeaturedReplyBusy.delete(id))}
@@ -7986,26 +7987,35 @@ function editPet(p){
 function questionReplies(id){
  const q=data.questions.find(x=>x.id===id);if(!q||!me)return;
  const state=typeof patiCommunityReplyPages!=='undefined'?patiCommunityReplyPages.get(me.id+':'+id):null;
+ if(q.accepted_reply_id&&!bucheeFeaturedReplies.has(q.accepted_reply_id))void bucheeLoadFeaturedReplies([q]);
  const previous=document.getElementById('reply-form'),same=previous?.dataset.question===id;
  const draft=same?previous.querySelector('[name="body"]')?.value||'':'';
  const scroll=same?previous.querySelector('.comment-list')?.scrollTop||0:0;
  const source=state?.ready?state.rows:data.replies.filter(r=>r.question_id===id);
- const replies=[...source].filter(r=>!blocked.has(r.author_id)).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+ const accepted=bucheeFeaturedReplies.get(q.accepted_reply_id);
+ const rows=[...source];if(accepted&&!rows.some(r=>r.id===accepted.id))rows.unshift(accepted);
+ const replies=[...rows].filter(r=>!blocked.has(r.author_id)).sort((a,b)=>
+  (a.id===q.accepted_reply_id?-1:0)-(b.id===q.accepted_reply_id?-1:0)||
+  new Date(b.created_at||0)-new Date(a.created_at||0));
  const owner=profile(q.author_id);
  const top='<section class="pati-comment-post-summary pati-question-reply-summary">'+
   '<div class="pati-comment-post-user">'+
   '<button type="button" class="pati-comment-profile-avatar" data-action="view-user" data-id="'+esc(q.author_id)+'" aria-label="'+esc(displayName(owner))+' profiline git">'+avatar(owner,'s')+'</button>'+
   '<button type="button" class="pati-comment-profile-name" data-action="view-user" data-id="'+esc(q.author_id)+'">'+displayName(owner)+'</button>'+
-  '</div><h3>'+esc(q.title||'Topluluk sorusu')+'</h3><p class="pati-community-question-description">'+esc(q.body||'')+'</p></section>';
+  '</div><h3>'+esc(q.title||'Topluluk sorusu')+'</h3><p class="pati-community-question-description">'+esc(q.body||'')+'</p>'+
+  (q.accepted_reply_id?'<div class="buchee-best-reply-status">'+ico('check')+' En iyi cevap seçildi</div>':'')+'</section>';
  const entries=replies.map(x=>{
   const person=profile(x.author_id),name=displayName(person),mine=x.author_id===me.id;
-  return '<div class="comment-item pati-sheet-comment pati-question-reply-row" data-reply-id="'+esc(x.id)+'">'+
+  const best=q.accepted_reply_id===x.id,canChoose=q.author_id===me.id;
+  return '<div class="comment-item pati-sheet-comment pati-question-reply-row '+(best?'buchee-best-reply':'')+'" data-reply-id="'+esc(x.id)+'">'+
+   (best?'<div class="buchee-best-reply-badge">'+ico('check')+' En iyi cevap</div>':'')+
    '<div class="pati-sheet-comment-avatar"><button type="button" class="pati-comment-profile-avatar" data-action="view-user" data-id="'+esc(x.author_id)+'" aria-label="'+esc(name)+' profiline git">'+avatar(person,'s')+'</button></div>'+
    '<div class="pati-sheet-comment-main"><div class="pati-sheet-comment-line">'+
    '<button type="button" class="pati-comment-profile-name" data-action="view-user" data-id="'+esc(x.author_id)+'">'+name+'</button>'+
    '<time datetime="'+esc(x.created_at||'')+'">'+patiCommentAge(x.created_at)+'</time></div>'+
    '<p>'+patiMentionsHTML(x.body||'')+'</p>'+
    '<div class="comment-actions"><button type="button" data-action="question-reply-to" data-id="'+esc(x.author_id)+'">Yanıtla</button>'+
+   (canChoose?'<button type="button" class="buchee-mark-best" data-action="question-best-reply" data-id="'+esc(x.id)+'" data-question="'+esc(id)+'">'+(best?'En iyi cevabı kaldır':'En iyi cevap seç')+'</button>':'')+
    (mine?'<button type="button" data-action="question-reply-delete" data-id="'+esc(x.id)+'">Sil</button>':
     '<button type="button" data-action="report" data-kind="reply" data-id="'+esc(x.id)+'">Bildir</button>')+
    '</div></div></div>';
