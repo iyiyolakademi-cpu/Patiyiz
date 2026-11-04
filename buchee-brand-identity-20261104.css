@@ -1,0 +1,84 @@
+/* Buchee brand system | 04.11.2026
+   Scoped visual tokens and stable brand treatments. Never rewrite native
+   identifiers, media content, the feed wordmark or functional controls. */
+:root{
+ --buchee-brand-ink:#17191d;
+ --buchee-brand-paper:#fff;
+ --buchee-brand-surface:#f5f6f8;
+ --buchee-brand-subtext:#626873;
+ --buchee-brand-border:#e5e7eb;
+ --buchee-brand-accent:#5700c6;
+ --buchee-brand-error:#d92d45;
+ --buchee-brand-success:#16834a;
+ --buchee-brand-font:'Plus Jakarta Sans','DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+#app-root:not(.hidden) .sidebar>.brand,
+#app-root:not(.hidden) .sidebar .brand{
+ display:flex;align-items:center;gap:10px;
+}
+#app-root:not(.hidden) .sidebar .brand>.brand-icon{
+ display:grid!important;place-items:center!important;
+ width:40px!important;height:40px!important;flex:0 0 40px!important;
+ margin:0!important;padding:0!important;
+ transform:none!important;
+ border:0!important;border-radius:11px!important;
+ background:transparent!important;box-shadow:none!important;
+}
+#app-root:not(.hidden) .sidebar .brand>.brand-icon>img{
+ display:block!important;width:40px!important;height:40px!important;
+ max-width:40px!important;max-height:40px!important;
+ margin:0!important;border:0!important;border-radius:11px!important;
+ object-fit:contain!important;transform:none!important;
+}
+#app-root:not(.hidden) .sidebar .brand .brand-word{
+ font-family:var(--buchee-brand-font)!important;font-weight:800!important;
+ font-size:25px!important;letter-spacing:-.9px!important;
+ color:var(--buchee-brand-ink)!important;line-height:1.05!important;
+}
+#app-root:not(.hidden) .sidebar .brand .brand-caption{
+ font-family:var(--buchee-brand-font)!important;
+ color:var(--buchee-brand-subtext)!important;
+}
+#app-root:not(.hidden) .sidebar .pati-desktop-coins .pati-coin-icon{
+ display:block!important;width:25px!important;height:25px!important;
+ max-width:25px!important;max-height:25px!important;
+ border-radius:6px!important;object-fit:contain!important;
+}
+#auth-root .auth-brand .brand-icon:has(>img[src*="buchee-concept4"]){
+ display:grid!important;place-items:center!important;
+ padding:0!important;transform:none!important;
+ background:transparent!important;box-shadow:none!important;
+}
+#auth-root .auth-brand .brand-icon>img[src*="buchee-concept4"]{
+ display:block!important;width:100%!important;height:100%!important;
+ max-width:72px!important;max-height:72px!important;
+ border-radius:14px!important;object-fit:contain!important;transform:none!important;
+}
+#app-root:not(.hidden) #main-content .page-intro .hello{
+ color:var(--buchee-brand-subtext)!important;
+ -webkit-text-fill-color:var(--buchee-brand-subtext)!important;
+ font-family:var(--buchee-brand-font)!important;
+ font-size:12px!important;line-height:1.4!important;
+ font-weight:700!important;letter-spacing:.045em!important;
+}
+#app-root:not(.hidden) #main-content .page-intro .page-title{
+ color:var(--buchee-brand-ink)!important;
+ font-family:var(--buchee-brand-font)!important;
+}
+#app-root:not(.hidden) #main-content .page-intro>div>p{
+ color:var(--buchee-brand-subtext)!important;
+ -webkit-text-fill-color:var(--buchee-brand-subtext)!important;
+ font-family:var(--buchee-brand-font)!important;
+}
+#app-root:not(.hidden) #main-content .page-intro :is(button,a):focus-visible,
+#app-root:not(.hidden) .sidebar :is(button,a):focus-visible{
+ outline:2px solid var(--buchee-brand-accent)!important;
+ outline-offset:3px!important;
+}
+@media(max-width:740px){
+ #app-root:not(.hidden) #main-content .page-intro .hello{
+  font-size:12px!important;
+ }
+}
+/* Preserve the requested home wordmark and video/Reels dark UI; neither
+   is restyled by this brand-only layer. */
