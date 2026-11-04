@@ -5410,7 +5410,7 @@ function notificationRows(list){
 function notificationRenderResults(){
  if(view!=='notifications')return;
  const list=notificationMatches(),all=notificationVisible(),target=document.getElementById('notification-v2-results'),count=document.getElementById('notification-v2-result-count');
- if(target)target.innerHTML=list.length?notificationRows(list):!all.length?'<p class="buchee-notifications-empty-sr" role="status">Henüz bildirim yok</p>':'<div class="buchee-notifications-no-matches" role="status"><span>Bu filtrede bildirim yok.</span><button type="button" data-action="notifications-clear">Filtreleri temizle</button></div>';
+ if(target)target.innerHTML=list.length?notificationRows(list):!all.length?'<div class="notification-v2-empty" role="status"><span aria-hidden="true">🔔</span><h3>Henüz bildirim yok</h3><p>Yeni bildirimlerin burada görünecek.</p></div>':'<div class="notification-v2-empty" role="status"><span aria-hidden="true">🔔</span><h3>Bu filtrelerde bildirim bulunamadı</h3><p>Başka bir kategori seçebilir veya filtreleri temizleyebilirsin.</p><button type="button" data-action="notifications-clear">Filtreleri temizle</button></div>';
  if(count)count.textContent=list.length+' / '+all.length+' bildirim';
 }
 async function notificationCheckPush(){
@@ -5448,7 +5448,7 @@ function notificationsPage(){
   +(notificationLoadError?'<p class="notification-v2-error" role="alert">'+esc(notificationLoadError)+'</p>':'')
   +'<div id="notification-v2-results" class="notification-v2-list" aria-label="Bildirimlerin">'+
     (notificationBusy&&!list.length?'<p role="status" class="notification-v2-loading">Bildirimler yükleniyor…</p>':
-      list.length?notificationRows(list):'<p class="buchee-notifications-empty-sr" role="status">Henüz bildirim yok</p>')+
+      list.length?notificationRows(list):'<div class="notification-v2-empty" role="status"><span aria-hidden="true">🔔</span><h3>Henüz bildirim yok</h3><p>Yeni bildirimlerin burada görünecek.</p></div>')+
    '</div>'
    +(pageMore.notifications&&list.length?'<div class="pati-load-more">'+button('Daha eski bildirimler','load-more','data-id="notifications"')+'</div>':'')
   +'</section>';
