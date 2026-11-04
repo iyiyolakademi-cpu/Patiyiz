@@ -2804,7 +2804,7 @@ async function patiLoadHomeQuestions(){
  if(state.ready||state.loading)return;
  state.loading=true;
  try{
-  const result=await sb.from('questions').select('*').order('created_at',{ascending:false}).limit(12);
+  const result=await sb.from('buchee_question_discovery').select('*').order('created_at',{ascending:false}).limit(12);
   if(result.error)throw result.error;
   if(me?.id!==uid||patiyizLoadToken!==token||patiHomeQuestionsState!==state)return;
   state.rows=(result.data||[]).filter(q=>!blocked.has(q.author_id));
@@ -2822,6 +2822,7 @@ async function patiLoadHomeQuestions(){
   const previous=new Map(data.questions.map(q=>[q.id,q]));
   for(const q of state.rows)previous.set(q.id,q);
   data.questions=[...previous.values()];
+  void bucheeLoadFeaturedReplies(state.rows);
   if(view==='home'&&!selectedPostId)render();
  }catch(error){console.warn('Akış soru-cevap yüklenemedi:',error?.message||error)}
  finally{state.loading=false}
@@ -2880,6 +2881,8 @@ async function bucheeLoadQuestionBookmarks(){
 }
 async function bucheeQuestionBookmarkToggle(id){
  if(!me?.id||!sb||!id||bucheeQuestionBookmarkPending.has(id))return;
+ if(!bucheeQuestionBookmarksReady)await bucheeLoadQuestionBookmarks();
+ if(!bucheeQuestionBookmarksReady){notify('Kaydedilen sorulara erişilemiyor. Tekrar dene.',true);return}
  const uid=me.id,already=bucheeQuestionBookmarks.has(id);
  bucheeQuestionBookmarkPending.add(id);
  document.querySelectorAll('[data-action="question-bookmark"][data-id="'+id+'"]').forEach(el=>el.disabled=true);
@@ -3004,6 +3007,7 @@ function patiOpenFeedReel(postId){
  // Render focuses the target first, so the viewer is initialized just once.
 }
 function homePage(){
+ if(!selectedPostId)void bucheeLoadQuestionBookmarks();
  // Preserve the chosen timeline across rerenders and navigation.
  if(!selectedPostId&&patiHomeContentMode==='text'&&typeof patiLoadHomeQuestions==='function')void patiLoadHomeQuestions();
  if(selectedPostId&&patiDetailState){patiDetailPage();return}
