@@ -1,0 +1,35 @@
+/* Buchee — seamless white notification canvas on Safari, installed iPhone PWA
+ * and Android. The previous patch colored only the notification section; the
+ * shorter application/grid canvas could still expose the page's gray background.
+ * This rule paints every ancestor layer, including the document canvas.
+ */
+html[data-pati-view="notifications"],
+html[data-pati-view="notifications"] body,
+html:has(#main-content>.pati-notifications-simple),
+html:has(#main-content>.pati-notifications-simple) body{
+ background:#fff!important;
+ background-color:#fff!important;
+ background-image:none!important;
+}
+html[data-pati-view="notifications"] #app-root:not(.hidden),
+html[data-pati-view="notifications"] #app-root:not(.hidden)>.app-shell,
+html[data-pati-view="notifications"] #app-root:not(.hidden)>.app-shell>#main-content,
+html[data-pati-view="notifications"] #main-content>.pati-notifications-simple,
+html:has(#main-content>.pati-notifications-simple) #app-root:not(.hidden),
+html:has(#main-content>.pati-notifications-simple) #app-root:not(.hidden)>.app-shell,
+html:has(#main-content>.pati-notifications-simple) #app-root:not(.hidden)>.app-shell>#main-content,
+html:has(#main-content>.pati-notifications-simple) #main-content>.pati-notifications-simple{
+ background:#fff!important;
+ background-color:#fff!important;
+ background-image:none!important;
+}
+@media(max-width:740px){
+ html[data-pati-view="notifications"] #app-root:not(.hidden)>.app-shell,
+ html:has(#main-content>.pati-notifications-simple) #app-root:not(.hidden)>.app-shell{
+  min-height:calc(100dvh - 70px - env(safe-area-inset-bottom,0px))!important;
+ }
+ html[data-pati-view="notifications"] #app-root:not(.hidden)>.app-shell>#main-content,
+ html:has(#main-content>.pati-notifications-simple) #app-root:not(.hidden)>.app-shell>#main-content{
+  min-height:calc(100dvh - 160px - env(safe-area-inset-bottom,0px))!important;
+ }
+}
