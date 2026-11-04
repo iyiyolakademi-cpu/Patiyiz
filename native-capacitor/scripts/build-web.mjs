@@ -63,7 +63,7 @@ await writeFile(path.join(out,'admin.html'),admin);
 // then the person returns to the native app and signs in with email/password.
 app=app.replaceAll('redirectTo:location.origin+location.pathname',"redirectTo:'https://patiyiz.com/'");
 app=app.replaceAll('emailRedirectTo:location.origin+location.pathname',"emailRedirectTo:'https://patiyiz.com/'");
-app=replace(app,"function showApp(){starter();","function showApp(){starter();if(window.PatiyizNative?.isNative)window.PatiyizNative.setSession(me?.id,sb);",'native auth session');
+app=replace(app,"function showApp(){","function showApp(){if(window.PatiyizNative?.isNative)window.PatiyizNative.setSession(me?.id,sb);",'native auth session');
 app=replace(app,"authRoot.classList.add('hidden');appRoot.classList.remove('hidden');navigate(view);","authRoot.classList.add('hidden');appRoot.classList.remove('hidden');navigate(window.PatiyizNative?.consumeScreen()||view);",'native initial route');
 app=replace(app,"case 'logout':run(async()=>{globalThis.PatiyizPrivateMedia?.clear();",
  "case 'logout':run(async()=>{globalThis.PatiyizPrivateMedia?.clear();if(window.PatiyizNative?.isNative)await window.PatiyizNative.nativeLogout();",'native safe signout');
