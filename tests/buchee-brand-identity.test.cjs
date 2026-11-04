@@ -41,6 +41,11 @@ test('PWA and Android shell share the same brand neutral while technical IDs are
  const manifest=JSON.parse(read('manifest.webmanifest'));
  const android=JSON.parse(read('android/twa-manifest.json'));
  const native=JSON.parse(read('native-capacitor/capacitor.config.json'));
+ assert.equal(manifest.name,'Buchee Social');
+ assert.equal(manifest.short_name,'Buchee');
+ assert.equal(android.name,'Buchee Social');
+ assert.equal(android.launcherName,'Buchee');
+ assert.equal(native.appName,'Buchee');
  assert.equal(manifest.theme_color,'#17191d');
  assert.equal(manifest.background_color,'#17191d');
  assert(manifest.icons.some(icon=>icon.src.startsWith('buchee-concept4-icon.svg')));
