@@ -9190,7 +9190,7 @@ window.addEventListener('online',()=>{notify('İnternet bağlantısı yeniden ku
 function resetSessionState(){
  globalThis.PatiyizPrivateMedia?.clear();
  if(typeof patiDmPhotoClear==='function')patiDmPhotoClear();
- patiAvatarCache.clear();
+ if(typeof patiAvatarCache!=='undefined')patiAvatarCache.clear();
  if(typeof patiGroupLiveStop==='function')patiGroupLiveStop();
  if(typeof patiGroupInboxStop==='function')patiGroupInboxStop();
  patiActiveGroupId='';patiGroupInboxState={owner:'',rows:[],ready:false,loading:false,error:''};
