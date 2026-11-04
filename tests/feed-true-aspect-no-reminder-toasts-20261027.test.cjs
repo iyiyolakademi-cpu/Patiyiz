@@ -25,7 +25,8 @@ test('Feed calculates each post aspect ratio from media metadata rather than for
  assert.match(helper,/img\.addEventListener\('load',update\)/);
  assert.match(helper,/track\.scrollLeft\/Math\.max\(1,track\.clientWidth\)/);
  assert.match(helper,/--pati-feed-aspect/);
- assert.match(app,/\)\(\);setupFeedMediaRatios\(\);setupFeedVideos\(\);setupReelsViewer\(\)/);
+ assert.match(app,/setupFeedMediaRatios\(\);setupFeedVideos\(\)/);
+ assert.match(app,/patiHomeDomUnchanged/);
 });
 test('Portrait video fills feed width without black bars, square and landscape adapt too',()=>{
  const patch=css.slice(css.lastIndexOf('/* Feed media ratio fix:'));
