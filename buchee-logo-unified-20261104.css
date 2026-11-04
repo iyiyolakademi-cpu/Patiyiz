@@ -131,3 +131,39 @@
     width:min(75vw,285px)!important;
   }
 }
+
+/* 2026-11-04 splash wordmark: large legible white/magenta identity.
+   Preserve the signature animation and bottom caption. */
+#startup:not(.hidden) .pati-splash-center{
+  width:min(91vw,600px)!important;
+  max-width:91vw!important;
+  margin-inline:auto!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:22px!important;
+}
+#startup:not(.hidden) .pati-splash-center .pati-splash-icon{
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  height:auto!important;
+  max-height:none!important;
+  aspect-ratio:1226 / 195!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  margin:0 auto!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  filter:none!important;
+  opacity:1!important;
+}
+#startup:not(.hidden) .pati-splash-center .buchee-opening-signature{
+  display:block!important;
+  width:min(46vw,210px)!important;
+  max-width:60%!important;
+  height:auto!important;
+  margin:0 auto!important;
+}
