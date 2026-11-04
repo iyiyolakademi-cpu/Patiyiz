@@ -3378,6 +3378,7 @@ function bucheeCommunityQuestionCard(q){
   '<div class="pati-actionbar buchee-question-actionbar">'+patiQuestionVoteButtons(q)+
   '<button type="button" data-action="replies" data-id="'+esc(q.id)+'">'+ico('message-circle')+' <span class="buchee-question-reply-count">'+count+' cevap</span></button>'+
   bucheeQuestionBookmarkButton(q)+
+  (q.author_id===me.id?'<button class="buchee-question-edit" data-action="question-edit" data-id="'+esc(q.id)+'" aria-label="Soruyu düzenle">'+ico('edit')+' Düzenle</button>':'')+
   (q.author_id===me.id?'<button class="buchee-question-overflow" data-action="delete-question" data-id="'+esc(q.id)+'" aria-label="Soruyu sil">'+ico('trash')+'</button>':
   '<button class="buchee-question-overflow" data-action="report" data-id="'+esc(q.id)+'" data-kind="question" aria-label="Soruyu bildir">'+ico('flag')+'</button>')+
   '</div>'+bucheeQuestionInlineComposer(q)+'</article>';
@@ -3390,6 +3391,8 @@ function communityPage(){
  const qs=page?.rows||[];
  const options=[['new','En Yeni'],['popular','Popüler'],['unanswered','Cevapsız'],['following','Takip Ettiklerim'],['saved','Kaydedilenler']];
  patiEnsureCommunityBack();
+ const searchWasFocused=document.activeElement?.id==='buchee-question-search';
+ const searchCursor=searchWasFocused?document.activeElement.selectionStart:null;
  main.innerHTML='<div class="buchee-community-back-row"><button type="button" class="buchee-community-top-back" data-action="pati-page-back" aria-label="Önceki ekrana dön"><svg aria-hidden="true" viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg><span>Geri</span></button></div>'+
  '<section class="pati-community-head">'+header('Soru & Cevap','Merak ettiklerini sor, toplulukla birlikte cevapları keşfet.',button('+ Soru sor','question'))+'</section>'+
  '<button type="button" class="pati-community-mobile-ask" data-action="question" aria-label="Yeni soru sor">+ Soru sor</button>'+
@@ -3405,6 +3408,11 @@ function communityPage(){
  (page?.loading||!page?'<p class="pati-note" role="status">Sorular yükleniyor…</p>':
   page?.hasMore||page?.error?'<div class="pati-load-more">'+button(page.error?'Yeniden dene':'Daha fazla soru yükle','community-more')+'</div>':'')+
  (page?.ready&&!qs.length&&!page.loading?empty('Bu filtrede soru bulunamadı','Başka bir kategori veya arama deneyebilirsin.'):'');
+ if(searchWasFocused){
+  const input=document.getElementById('buchee-question-search');
+  input?.focus({preventScroll:true});
+  if(input&&Number.isInteger(searchCursor))input.setSelectionRange(searchCursor,searchCursor);
+ }
  bucheeQuestionBookmarkSync();
  void bucheeLoadFeaturedReplies(qs);
 }
@@ -7863,7 +7871,25 @@ async function patiRateQuestion(questionId,helpful){
   }
  }finally{patiQuestionVotePending.delete(questionId);if(me?.id===uid)patiQuestionVotePaint(questionId);}
 }
-function composeQuestion(){modal('Topluluğa soru sor','<div class="pati-community-form-intro"><strong>Merak ettiğin konuyu paylaş.</strong><p>Bir soru sor; topluluk sana farklı bakış açıları ve yanıtlar sunsun.</p></div>'+formField('title','Soru başlığı (5–150 karakter)','text','',true)+selectField('category','Kategori',PATI_QUESTION_CATEGORIES)+textField('body','Sorunu biraz daha açıkla (en az 5 karakter)','',true,2000)+'<p class="pati-community-form-note">Sorulara Faydalı veya Faydalı değil değerlendirmesi yapılabilir.</p>','question-form');const f=$('#question-form');if(f){f.querySelector('[name="title"]').minLength=5;f.querySelector('[name="title"]').maxLength=150;f.querySelector('[name="body"]').minLength=5;f.querySelector('.modal-footer .primary-btn').textContent='Soruyu paylaş';document.querySelector('#modal-root .modal')?.classList.add('pati-question-fullscreen');document.querySelector('#modal-root .modal-backdrop')?.classList.add('pati-question-backdrop');f.querySelector('[name="title"]')?.focus({preventScroll:true})}}
+function composeQuestion(q=null){
+ if(q&&q.author_id!==me?.id){notify('Yalnızca kendi sorunu düzenleyebilirsin.',true);return}
+ modal(q?'Soruyu düzenle':'Topluluğa soru sor',
+ '<div class="pati-community-form-intro"><strong>Merak ettiğin konuyu paylaş.</strong><p>Bir soru sor; topluluk sana farklı bakış açıları ve yanıtlar sunsun.</p></div>'+
+ formField('title','Soru başlığı (5–150 karakter)','text',q?.title||'',true)+
+ selectField('category','Kategori',PATI_QUESTION_CATEGORIES)+
+ textField('body','Sorunu biraz daha açıkla (en az 5 karakter)',q?.body||'',true,2000)+
+ '<p class="pati-community-form-note">Sorulara Faydalı veya Faydalı değil değerlendirmesi yapılabilir.</p>','question-form');
+ const f=$('#question-form');if(f){
+  f.dataset.edit=q?.id||'';
+  if(q?.category)f.querySelector('[name="category"]').value=q.category;
+  f.querySelector('[name="title"]').minLength=5;f.querySelector('[name="title"]').maxLength=150;
+  f.querySelector('[name="body"]').minLength=5;
+  f.querySelector('.modal-footer .primary-btn').textContent=q?'Değişiklikleri kaydet':'Soruyu paylaş';
+  document.querySelector('#modal-root .modal')?.classList.add('pati-question-fullscreen');
+  document.querySelector('#modal-root .modal-backdrop')?.classList.add('pati-question-backdrop');
+  f.querySelector('[name="title"]')?.focus({preventScroll:true})
+ }
+}
 function composeLost(a){
  if(a&&a.owner_id!==me?.id)return notify('Bu ilanı düzenleme yetkin yok.',true);
  const today=new Date().toLocaleDateString('en-CA');
@@ -8349,6 +8375,11 @@ case 'pati-media-prev':case 'pati-media-next':case 'pati-media-remove':patiCompo
 case 'community-sort':{
  if(!['new','popular','unanswered','following','saved'].includes(id)||bucheeQuestionSort===id)break;
  bucheeQuestionSort=id;render();void patiLoadCommunity(true);break;
+}
+case 'question-edit':{
+ const q=data.questions.find(q=>q.id===id&&q.author_id===me?.id);
+ if(q)composeQuestion(q);else notify('Bu soruyu düzenleyemezsin.',true);
+ break;
 }
 case 'question-bookmark':void bucheeQuestionBookmarkToggle(id);break;
 case 'question-quick-reply':{
@@ -9257,21 +9288,29 @@ case 'pati-filter-form':{
  data.profiles=data.profiles.map(p=>p.id===me.id?r.data:p);
  closeModal(true);render();notify('Yorum filtreleri güncellendi.');break;
 }
-case 'post-form':{if(form.dataset.mode==='story'){const result=await createStoryPublication(form,f,str);data.stories=[result,...data.stories.filter(x=>x.id!==result.id)];closeModal(true);render();notify('Hikâyen 24 saat boyunca görüntülenecek.')}else if(form.dataset.edit){await save('posts',{body:str('body').trim()},form.dataset.edit)}else{const selectedCollab=window.PatiyizCollabPicker?.selectedId(form,false)||'';const result=await createPostPublication(form,f,str);profileCountCache.delete(me.id);let inviteMessage='Paylaşım yayınlandı.';if(selectedCollab){try{await patiCollabInvite(result.id,str('collab_handle'),selectedCollab);inviteMessage='Paylaşım yayınlandı; ortak daveti gönderildi.'}catch(error){console.warn('Ortak gönderi daveti:',error);inviteMessage='Paylaşım yayınlandı fakat ortak daveti gönderilemedi: '+friendly(error)}}closeModal(true);try{await refresh()}catch(error){console.warn('Paylaşım kaydedildi, akış yenilemesi başarısız:',error.message)}notify(inviteMessage,inviteMessage.includes('gönderilemedi'));void patiCollabRefresh();try{localStorage.removeItem(patiDraftKey())}catch{}}break}case 'question-form':{const title=str('title'),body=str('body');if(title.length<5||title.length>150)throw Error('Soru başlığı 5–150 karakter arasında olmalı.');if(body.length<5||body.length>2000)throw Error('Soru açıklaması 5–2000 karakter arasında olmalı.');const author=me.id,cat=str('category');
- const result=await sb.from('questions').insert({author_id:author,title,category:cat,body}).select('*').single();
+case 'post-form':{if(form.dataset.mode==='story'){const result=await createStoryPublication(form,f,str);data.stories=[result,...data.stories.filter(x=>x.id!==result.id)];closeModal(true);render();notify('Hikâyen 24 saat boyunca görüntülenecek.')}else if(form.dataset.edit){await save('posts',{body:str('body').trim()},form.dataset.edit)}else{const selectedCollab=window.PatiyizCollabPicker?.selectedId(form,false)||'';const result=await createPostPublication(form,f,str);profileCountCache.delete(me.id);let inviteMessage='Paylaşım yayınlandı.';if(selectedCollab){try{await patiCollabInvite(result.id,str('collab_handle'),selectedCollab);inviteMessage='Paylaşım yayınlandı; ortak daveti gönderildi.'}catch(error){console.warn('Ortak gönderi daveti:',error);inviteMessage='Paylaşım yayınlandı fakat ortak daveti gönderilemedi: '+friendly(error)}}closeModal(true);try{await refresh()}catch(error){console.warn('Paylaşım kaydedildi, akış yenilemesi başarısız:',error.message)}notify(inviteMessage,inviteMessage.includes('gönderilemedi'));void patiCollabRefresh();try{localStorage.removeItem(patiDraftKey())}catch{}}break}case 'question-form':{const title=str('title'),body=str('body');if(title.length<5||title.length>150)throw Error('Soru başlığı 5–150 karakter arasında olmalı.');if(body.length<5||body.length>2000)throw Error('Soru açıklaması 5–2000 karakter arasında olmalı.');const author=me.id,cat=str('category'),editId=form.dataset.edit||'';
+ if(editId&&!data.questions.some(q=>q.id===editId&&q.author_id===author))throw Error('Bu soruyu düzenleyemezsin.');
+ const result=editId?await sb.from('questions').update({title,category:cat,body}).eq('id',editId).eq('author_id',author).select('*').single():
+  await sb.from('questions').insert({author_id:author,title,category:cat,body}).select('*').single();
  if(result.error)throw result.error;
  if(me?.id!==author)return;
- if(!data.questions.some(q=>q.id===result.data.id))data.questions.unshift(result.data);
+ if(editId){
+  data.questions=data.questions.map(q=>q.id===editId?{...q,...result.data}:q);
+  patiHomeQuestionsState.rows=patiHomeQuestionsState.rows.map(q=>q.id===editId?{...q,...result.data}:q);
+  patiCommunityPage.rows=patiCommunityPage.rows.map(q=>q.id===editId?{...q,...result.data}:q);
+ }else if(!data.questions.some(q=>q.id===result.data.id))data.questions.unshift(result.data);
  closeModal(true);
  if(view==='home'){
   patiHomeContentMode='text';
-  if(patiHomeQuestionsState.owner!==author)patiHomeQuestionsState={owner:author,rows:[],ready:true,loading:false};
-  patiHomeQuestionsState.rows.unshift(result.data);
-  render();window.scrollTo({top:0,behavior:'instant'});
-  notify('Sorun Twitler ve Sorular akışında yayınlandı.');
+  if(!editId){
+   if(patiHomeQuestionsState.owner!==author)patiHomeQuestionsState={owner:author,rows:[],ready:true,loading:false};
+   patiHomeQuestionsState.rows.unshift(result.data);
+  }
+  render();if(!editId)window.scrollTo({top:0,behavior:'instant'});
+  notify(editId?'Sorun güncellendi.':'Sorun Twitler ve Sorular akışında yayınlandı.');
  }else{
-  view='community';communityCategory='Tümü';bucheeQuestionSearch='';bucheeQuestionSort='new';
-  render();void patiLoadCommunity(true);notify('Sorun yayınlandı.');
+  if(!editId){view='community';communityCategory='Tümü';bucheeQuestionSearch='';bucheeQuestionSort='new';}
+  render();void patiLoadCommunity(true);notify(editId?'Sorun güncellendi.':'Sorun yayınlandı.');
  }
  break}
 case 'adoption-form':{
