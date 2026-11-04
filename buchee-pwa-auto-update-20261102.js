@@ -5,7 +5,7 @@
  if(!('serviceWorker' in navigator)||!window.isSecureContext)return;
  let checking=false;let lastReload=0;
  // Keep existing automatic update detection. Do not replace data stored by the app.
- const version='20261103-release-phase6-1';
+ const version='20261104-single-neon-launch';
  async function check(){
   if(checking||!navigator.onLine)return;checking=true;
   try{
@@ -14,23 +14,11 @@
    if(reg.waiting&&navigator.serviceWorker.controller)reg.waiting.postMessage({type:'BUCHEE_SKIP_WAITING'});
   }catch(e){console.warn('BucheeSocial update check:',e)}finally{checking=false}
  }
+ // Do not reload a live iPhone PWA when a new worker activates.
+ // Reloading here restarts the splash and looks like several launch screens.
+ // HTML and app assets are network-first; the next normal launch receives updates.
  navigator.serviceWorker.addEventListener('controllerchange',()=>{
-  if(!navigator.serviceWorker.controller)return;
-  const key='buchee-pwa-controller-refresh';
-  const now=Date.now();
-  try{lastReload=Number(sessionStorage.getItem(key)||0)}catch(_){}
-  if(now-lastReload<30000)return;
-  // A controller switch must never discard unsent messages, media composition,
-  // active dialogs, editing forms or an ongoing camera/story operation.
-  const active=document.activeElement;
-  const typing=!!active?.matches?.('input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),textarea,[contenteditable="true"]');
-  const overlay=!!document.querySelector('#pati-create-sheet:not([hidden]),#story-overlay,#modal-root .modal,#pati-creator-dashboard,#patiyiz-system-media:not([hidden]),.pati-reels-editor');
-  const message=document.querySelector('#message-form input[name="body"],#message-form textarea[name="body"]');
-  const draft=!!String(message?.value||'').trim();
-  if(document.visibilityState==='visible'&&!typing&&!overlay&&!draft){
-   try{sessionStorage.setItem(key,String(now))}catch(_){}
-   window.location.reload();
-  }
+  console.info('Buchee PWA güncellemesi etkin. Yeni sürüm sonraki normal açılışta kullanılacak.');
  });
  window.addEventListener('load',()=>{void check()},{once:true});
  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')void check()});
