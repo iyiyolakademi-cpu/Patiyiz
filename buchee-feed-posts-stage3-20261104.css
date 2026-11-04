@@ -1,0 +1,88 @@
+/* Buchee Social — Aşama 3: only the home feed and its post cards.
+ * Preserves the existing actions, counters, pull-to-refresh, media aspect ratios,
+ * post content, Supabase and share handlers.
+ */
+@media (max-width:740px){
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content,
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-feed-posts{
+  min-width:0!important;max-width:100%!important;box-sizing:border-box!important;
+ }
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-feed-posts>.pati-feed-card{
+  box-sizing:border-box!important;min-width:0!important;max-width:100%!important;
+  width:100%!important;margin-left:0!important;margin-right:0!important;
+  overflow-x:clip!important;
+ }
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-feed-card .pati-feed-card-header{
+  box-sizing:border-box!important;min-width:0!important;max-width:100%!important;
+ }
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-feed-card .pati-feed-text-content,
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-feed-card .pati-post-caption{
+  min-width:0!important;max-width:100%!important;overflow-wrap:anywhere!important;
+ }
+ /* Four equal engagement actions plus a dedicated trailing save slot.
+    Overrides the conflicting old flex row and 5-equal-columns rules. */
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-feed-card .pati-actionbar.pati-social-actions{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr)) 44px!important;
+  grid-template-rows:minmax(48px,auto)!important;
+  align-items:stretch!important;justify-content:stretch!important;
+  gap:0!important;box-sizing:border-box!important;
+  width:100%!important;max-width:100%!important;min-width:0!important;
+  margin:0!important;padding:2px 8px!important;overflow:visible!important;
+ }
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-feed-card .pati-actionbar.pati-social-actions>button{
+  box-sizing:border-box!important;position:relative!important;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  flex:none!important;order:initial!important;float:none!important;inset:auto!important;
+  width:100%!important;max-width:100%!important;min-width:0!important;
+  min-height:44px!important;margin:0!important;padding:5px 2px!important;
+  gap:3px!important;overflow:visible!important;
+  border-left:0!important;touch-action:manipulation!important;
+ }
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-feed-card .pati-actionbar.pati-social-actions>button[data-action="save"]{
+  grid-column:5!important;justify-self:end!important;
+  width:44px!important;min-width:44px!important;max-width:44px!important;
+  margin:0!important;padding:5px!important;
+ }
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-feed-card .pati-actionbar.pati-social-actions>button svg.icon,
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-feed-card .pati-actionbar.pati-social-actions>button .pati-repost-symbol{
+  flex:0 0 auto!important;width:clamp(19px,5vw,23px)!important;
+  height:clamp(19px,5vw,23px)!important;min-width:0!important;
+ }
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-feed-card .pati-actionbar.pati-social-actions>button>span:not(.buchee-repost-check){
+  min-width:0!important;max-width:100%!important;
+  font-size:clamp(10px,2.7vw,12px)!important;
+  line-height:1.2!important;font-variant-numeric:tabular-nums!important;
+  overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+ }
+ /* Show one repost confirmation tick, the inline badge—not a second ::after tick. */
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-feed-card .pati-repost-btn.active:has(.buchee-repost-check)::after{
+  content:none!important;display:none!important;
+ }
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-feed-card .pati-repost-btn .buchee-repost-check{
+  position:absolute!important;top:2px!important;right:3px!important;
+  display:grid!important;place-items:center!important;
+  width:13px!important;height:13px!important;pointer-events:none!important;
+  font-size:9px!important;line-height:1!important;
+ }
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-feed-card .pati-actionbar.pati-social-actions>button:focus-visible,
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .buchee-home-feed-filters>button:focus-visible{
+  outline:2px solid #7444ad!important;outline-offset:2px!important;
+ }
+ /* Preserve correct native proportions; media must never stretch the card horizontally. */
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-feed-card :is(img,video,.pati-video-frame,.pati-carousel,.pati-carousel-track){
+  max-width:100%!important;min-width:0!important;box-sizing:border-box!important;
+ }
+}
+@media (max-width:360px){
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-feed-card .pati-actionbar.pati-social-actions{
+  grid-template-columns:repeat(4,minmax(0,1fr)) 42px!important;
+  padding-inline:4px!important;
+ }
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-feed-card .pati-actionbar.pati-social-actions>button[data-action="save"]{
+  width:42px!important;min-width:42px!important;max-width:42px!important;
+ }
+ html[data-pati-view="home"][data-pati-screen="feed"] #main-content .pati-feed-card .pati-actionbar.pati-social-actions>button{
+  gap:2px!important;padding-inline:1px!important;
+ }
+}

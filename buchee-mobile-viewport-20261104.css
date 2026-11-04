@@ -1,0 +1,112 @@
+/* Buchee Social — Phase 2 mobile viewport compatibility.
+   Targeted layout fixes only. No data, navigation or message logic changes. */
+@media (max-width:740px){
+  html,body{width:100%;max-width:100%;overflow-x:clip}
+  #app-root:not(.hidden),#app-root:not(.hidden)>.app-shell,
+  #app-root:not(.hidden) #main-content{min-width:0;max-width:100%;box-sizing:border-box}
+  #app-root:not(.hidden)>.mobile-header{
+    box-sizing:border-box!important;
+    max-width:100%!important;min-width:0!important;
+    background:#fff!important;opacity:1!important;
+    -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+  }
+  /* One stable three-column grid: create | centered Buchee | notifications. */
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header{
+    grid-template-columns:52px minmax(0,1fr) 52px!important;
+    grid-template-rows:54px!important;
+    column-gap:0!important;row-gap:0!important;
+    width:100%!important;max-width:100%!important;
+    min-height:calc(64px + env(safe-area-inset-top,0px))!important;
+    height:calc(64px + env(safe-area-inset-top,0px))!important;
+    padding:calc(5px + env(safe-area-inset-top,0px))
+      max(8px,env(safe-area-inset-right,0px))
+      5px max(8px,env(safe-area-inset-left,0px))!important;
+  }
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-header-share{
+    grid-column:1!important;grid-row:1!important;
+    justify-self:start!important;align-self:center!important;
+    width:44px!important;height:44px!important;
+    min-width:44px!important;min-height:44px!important;
+    margin:0!important;padding:7px!important;
+  }
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand{
+    grid-column:2!important;grid-row:1!important;
+    justify-self:center!important;align-self:center!important;
+    width:min(100%,195px)!important;max-width:100%!important;
+    min-width:0!important;min-height:46px!important;
+    padding:0 2px!important;overflow:visible!important;
+  }
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger .buchee-header-serif-wordmark{
+    max-width:100%!important;white-space:nowrap!important;
+    font-size:clamp(25px,7vw,33px)!important;
+    line-height:33px!important;overflow:visible!important;
+  }
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>.pati-header-actions{
+    grid-column:3!important;grid-row:1!important;
+    justify-self:end!important;align-self:center!important;
+    display:flex!important;align-items:center!important;justify-content:flex-end!important;
+    width:52px!important;min-width:52px!important;max-width:52px!important;
+    margin:0!important;padding:0!important;gap:0!important;
+  }
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>.pati-header-actions>#pati-header-notifications{
+    flex:0 0 44px!important;display:grid!important;place-items:center!important;
+    min-width:44px!important;width:44px!important;
+    min-height:44px!important;height:44px!important;
+    margin-left:auto!important;padding:7px!important;
+  }
+  #app-root:not(.hidden)>.mobile-bottom{
+    box-sizing:border-box!important;width:100%!important;
+    padding-left:max(8px,env(safe-area-inset-left,0px))!important;
+    padding-right:max(8px,env(safe-area-inset-right,0px))!important;
+    padding-bottom:max(12px,env(safe-area-inset-bottom,0px))!important;
+  }
+  #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn{
+    min-width:0!important;flex:1 1 0!important;
+    min-height:44px!important;max-width:100%!important;
+    touch-action:manipulation;
+  }
+  #app-root:not(.hidden)>.mobile-bottom>.mobile-nav-btn .icon{
+    flex-shrink:0;
+  }
+  #main-content img,#main-content video{max-width:100%}
+  /* Direct-message page has its own header; keep its header and composer usable. */
+  html[data-pati-view="messages"] #main-content .pati-dm-layout.mobile-chat-open{
+    min-width:0!important;max-width:100%!important;
+  }
+  html[data-pati-view="messages"] #main-content .pati-dm-layout.mobile-chat-open .chat-window{
+    box-sizing:border-box!important;min-width:0!important;max-width:100%!important;
+    min-height:0!important;max-height:100%!important;
+  }
+  html[data-pati-view="messages"] #main-content .pati-dm-layout.mobile-chat-open .chat-history{
+    min-height:0!important;overflow-y:auto!important;
+    -webkit-overflow-scrolling:touch;
+  }
+  html[data-pati-view="messages"] #main-content .pati-dm-layout.mobile-chat-open .chat-form{
+    min-width:0!important;max-width:100%!important;box-sizing:border-box!important;
+    flex-shrink:0!important;
+  }
+  html[data-pati-view="messages"] #main-content .pati-dm-layout.mobile-chat-open .chat-form :is(input,textarea){
+    min-width:0!important;font-size:16px!important;
+  }
+  /* Keyboard state should not retain a stale home-indicator gap. */
+  html.pati-keyboard-open[data-pati-view="messages"] #main-content .pati-dm-layout.mobile-chat-open .chat-form{
+    padding-bottom:7px!important;
+  }
+}
+@media (max-width:360px){
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header{
+    grid-template-columns:48px minmax(0,1fr) 48px!important;
+    padding-left:max(5px,env(safe-area-inset-left,0px))!important;
+    padding-right:max(5px,env(safe-area-inset-right,0px))!important;
+  }
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>.pati-header-actions{
+    width:48px!important;min-width:48px!important;max-width:48px!important;
+  }
+  html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger .buchee-header-serif-wordmark{
+    font-size:25px!important;
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  #app-root:not(.hidden)>.mobile-header,
+  #app-root:not(.hidden)>.mobile-bottom{scroll-behavior:auto!important}
+}

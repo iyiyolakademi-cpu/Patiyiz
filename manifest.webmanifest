@@ -1,7 +1,7 @@
 {
-  "name": "BucheeSocial",
+  "name": "Buchee Social",
   "short_name": "Buchee",
-  "description": "BucheeSocial: Paylaş, keşfet, bağlan. Gönderiler, Reels, hikâyeler ve mesajlaşma.",
+  "description": "Buchee Social: Paylaş, keşfet, bağlan. Gönderiler, Reels, hikâyeler ve mesajlaşma.",
   "id": "./",
   "start_url": "./",
   "scope": "./",
