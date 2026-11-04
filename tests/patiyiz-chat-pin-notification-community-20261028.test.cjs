@@ -39,7 +39,9 @@ test('Notification deletion is now a direct, account-scoped row action without l
 });
 test('Question categories include entrepreneurship and general life, legacy animal categories remain discoverable',()=>{
  assert.match(app,/PATI_QUESTION_CATEGORIES=\['Girişimcilik','Hayvanlar','Teknoloji','Eğitim ve Kariyer','Günlük Yaşam','Diğer'\]/);
- assert.match(app,/patiQuestionCategoryGroup\(q\.category\)===communityCategory/);
+ assert.match(app,/patiQuestionCategoryGroup\(q\.category\)/);
+ assert.match(app,/query\.eq\('category',category\)/);
+ assert.match(app,/buchee_question_discovery/);
  assert.match(app,/query\.in\('category',\['Hayvanlar',\.\.\.PATI_LEGACY_PET_QUESTION_CATEGORIES\]\)/);
  assert.match(app,/selectField\('category','Kategori',PATI_QUESTION_CATEGORIES\)/);
 });
