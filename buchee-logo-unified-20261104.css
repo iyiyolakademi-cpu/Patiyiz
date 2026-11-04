@@ -1,0 +1,34 @@
+/* User-approved Buchee icon: full-bleed black canvas with the white chat B.
+   Keep every graphical logo square. Do not alter the app's page background. */
+#startup .pati-splash-icon{
+  display:block!important;
+  width:min(42vw,180px)!important;
+  max-width:180px!important;
+  height:auto!important;
+  aspect-ratio:1/1!important;
+  object-fit:contain!important;
+  border-radius:0!important;
+}
+#auth-root .auth-brand .auth-matching-logo{
+  width:min(44vw,172px)!important;
+  max-width:172px!important;
+  height:auto!important;
+  aspect-ratio:1/1!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  border:0!important;
+}
+#auth-root .auth-brand .auth-matching-logo img,
+#auth-root .buchee-welcome-brand img{
+  width:100%!important;
+  max-width:172px!important;
+  height:auto!important;
+  aspect-ratio:1/1!important;
+  object-fit:contain!important;
+  display:block!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+#auth-root .auth-story-icon img{
+  object-fit:contain!important;
+}
