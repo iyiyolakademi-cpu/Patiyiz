@@ -3034,7 +3034,7 @@ function patiOpenFeedReel(postId){
  // Render focuses the target first, so the viewer is initialized just once.
 }
 function homePage(){
- if(!selectedPostId)void bucheeLoadQuestionBookmarks();
+ if(!selectedPostId&&typeof bucheeLoadQuestionBookmarks==='function')void bucheeLoadQuestionBookmarks();
  // Preserve the chosen timeline across rerenders and navigation.
  if(!selectedPostId&&patiHomeContentMode==='text'&&typeof patiLoadHomeQuestions==='function')void patiLoadHomeQuestions();
  if(selectedPostId&&patiDetailState){patiDetailPage();return}
@@ -3392,6 +3392,7 @@ function communityPage(){
  patiEnsureCommunityBack();
  main.innerHTML='<div class="buchee-community-back-row"><button type="button" class="buchee-community-top-back" data-action="pati-page-back" aria-label="Önceki ekrana dön"><svg aria-hidden="true" viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg><span>Geri</span></button></div>'+
  '<section class="pati-community-head">'+header('Soru & Cevap','Merak ettiklerini sor, toplulukla birlikte cevapları keşfet.',button('+ Soru sor','question'))+'</section>'+
+ '<button type="button" class="pati-community-mobile-ask" data-action="question" aria-label="Yeni soru sor">+ Soru sor</button>'+
  '<div class="buchee-question-discover">'+
  '<label for="buchee-question-search">Sorularda ara</label><div class="buchee-question-search-row">'+ico('search')+
  '<input id="buchee-question-search" type="search" autocomplete="off" maxlength="64" placeholder="Soruların içinde ara..." value="'+esc(bucheeQuestionSearch)+'" aria-label="Soruların içinde ara"></div>'+
