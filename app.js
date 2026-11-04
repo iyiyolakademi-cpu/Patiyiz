@@ -131,9 +131,10 @@ const bucheeAvatarEmpty='<svg class="buchee-avatar-silhouette" viewBox="0 0 100 
 const avatar=(p,s='m')=>`<span class="avatar ${s}${p?.avatar_url?'':' buchee-avatar-empty'}">${p?.avatar_url?`<img src="${esc(p.avatar_url)}" alt="" loading="lazy" decoding="async">`:bucheeAvatarEmpty}</span>`;
 const petIcon=s=>({'Kedi':'🐱','Köpek':'🐶','Kuş':'🦜','Tavşan':'🐰','Balık':'🐠','Kemirgen':'🐹'}[s]||'💜');
 const photo=(url,fallback='💜',priority=false)=>`<div class="pati-photo">${url?`<img src="${esc(url)}" alt="Hayvan fotoğrafı" loading="${priority===true?'eager':'lazy'}" decoding="async" ${priority===true?'fetchpriority="high"':'fetchpriority="low"'}>`:fallback}</div>`;
-// Render the destination immediately behind the splash, preserving the opening signature until its complete stroke (1.48 s), plus a short pause. 
-const bucheeSplashStartedAt=Date.now();
+// Keep Buchee's signature fully visible and only unveil a rendered destination.
+// The native splash and WebView share the same dark canvas; no intermediate white flash.
 let bucheeSplashDismissed=false;
+const bucheeWait=ms=>new Promise(resolve=>setTimeout(resolve,Math.max(0,ms)));
 const starter=()=>{
  const startup=$('#startup');
  if(!startup||bucheeSplashDismissed)return;
@@ -141,15 +142,27 @@ const starter=()=>{
  window.__bucheeLaunchResolved=true;
  window.clearTimeout(window.__bucheeLaunchWatchdog);
  const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
- const elapsed=Date.now()-bucheeSplashStartedAt;
- const remaining=reduced?0:Math.max(0,1650-elapsed);
- window.setTimeout(()=>{
-  startup.classList.add('buchee-splash-done');
-  window.setTimeout(()=>{
+ const elapsed=Date.now()-Number(window.__bucheeLaunchStartedAt||Date.now());
+ const minimum=reduced?0:Math.max(0,1750-elapsed);
+ const signature=startup.querySelector('.buchee-opening-signature path');
+ const animations=!reduced&&signature?.getAnimations?signature.getAnimations():[];
+ const signatureDone=animations.length
+  ?Promise.race([Promise.all(animations.map(a=>a.finished.catch(()=>{}))),bucheeWait(2200)])
+  :Promise.resolve();
+ Promise.all([bucheeWait(minimum),signatureDone])
+  .then(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))))
+  .then(()=>{
+   startup.classList.add('buchee-splash-done');
+   window.setTimeout(()=>{
+    startup.classList.add('hidden');
+    startup.setAttribute('aria-hidden','true');
+   },reduced?0:210);
+  })
+  .catch(error=>{
+   console.warn('Buchee açılış geçişi tamamlanamadı:',error);
    startup.classList.add('hidden');
    startup.setAttribute('aria-hidden','true');
-  },reduced?0:70);
- },remaining);
+  });
 };
 const showSetup=()=>{starter();authRoot.classList.remove('hidden');authRoot.innerHTML=`<div class="auth-card setup-card"><div class="auth-brand"><div class="brand-icon"><img class="patiyiz-chosen-logo" src="buchee-social-app-icon.svg?v=20261102b" alt="BucheeSocial"></div><h1>BucheeSocial</h1></div><h2>Kurulum gerekli</h2><p class="auth-sub">Uygulamanın güvenli kayıt sistemi için önce Supabase projesi oluşturulmalı.</p><p class="small-note">1. Supabase projesi oluşturun.<br>2. supabase_kurulum.sql dosyasını SQL Editor'da çalıştırın.<br>3. <b>config.js</b> dosyasına <b>Project URL</b> ve <b>publishable key</b> girin.<br>4. Dosyaları GitHub Pages'e yükleyin.<br><b>Secret/service_role anahtarını kesinlikle bu dosyaya koymayın.</b></p></div>`};
 let bucheeWelcomeEntered=false;
@@ -375,7 +388,8 @@ function showApp(){
    .finally(()=>{if(me?.id===userId)patiyizDeferredLoading=null});
  }
 }
-const authBusy=async(fn)=>{try{let r=await fn();if(r.error)throw r.error;return r.data}catch(e){notify(friendly(e),true);return null}};
+let authRequestInFlight=false;
+const authBusy=async(fn)=>{if(authRequestInFlight)return null;authRequestInFlight=true;const submit=authRoot.querySelector('#auth-form button[type="submit"]');if(submit)submit.disabled=true;try{let r=await fn();if(r.error)throw r.error;return r.data}catch(e){notify(friendly(e),true);return null}finally{authRequestInFlight=false;if(submit?.isConnected)submit.disabled=false}};
 authRoot.addEventListener('click',e=>{
  if(e.target.closest('[data-auth-sdk-retry]')){location.reload();return}
  const toggle=e.target.closest('[data-auth-toggle-password]');
