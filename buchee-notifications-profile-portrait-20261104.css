@@ -64,3 +64,18 @@ html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-ig-grid>.pat
  background:#f1f1f3!important;color:#22232b!important;
  border:0!important;border-radius:10px!important;font-weight:700!important;
 }
+
+/* 04 Nov: preserve bell, title and explanation; remove ONLY the outside dashed frame. */
+#main-content .pati-notifications-simple .notification-v2-list .notification-v2-empty{
+ border:0!important;
+ outline:0!important;
+ border-radius:0!important;
+ box-shadow:none!important;
+ background:transparent!important;
+}
+#main-content .pati-notifications-simple .notification-v2-list .notification-v2-empty::before,
+#main-content .pati-notifications-simple .notification-v2-list .notification-v2-empty::after{
+ border:0!important;
+ outline:0!important;
+ box-shadow:none!important;
+}
