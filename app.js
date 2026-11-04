@@ -2944,11 +2944,11 @@ function homePage(){
   patiyizLoadedTables.has('posts')?'<div class="pati-load-more">'+button('Daha fazla paylaşım yükle','load-more','data-id="posts"')+'</div>':'')+'</div>';
  // Preserve playing video, photo nodes and caption expansion on unchanged refreshes.
  const identity=selectedPostId?'post:'+selectedPostId:'feed:'+patiHomeContentMode+':'+patiHomeTab;
- patiHomeDomUnchanged=main.dataset.bucheeHomeIdentity===identity&&main.__bucheeHomeMarkup===nextHomeMarkup&&
-  !!main.querySelector(selectedPostId?'.buchee-post-backbar':'.buchee-home-feed-filters');
+ patiHomeDomUnchanged=main.dataset?.bucheeHomeIdentity===identity&&main.__bucheeHomeMarkup===nextHomeMarkup&&
+  !!main.querySelector?.(selectedPostId?'.buchee-post-backbar':'.buchee-home-feed-filters');
  if(!patiHomeDomUnchanged){
   main.innerHTML=nextHomeMarkup;
-  main.dataset.bucheeHomeIdentity=identity;
+  if(main.dataset)main.dataset.bucheeHomeIdentity=identity;
   main.__bucheeHomeMarkup=nextHomeMarkup;
  }
  const shortcut=typeof document!=='undefined'?document.getElementById('pati-header-following-btn'):null;
