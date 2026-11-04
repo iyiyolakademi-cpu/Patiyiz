@@ -9237,13 +9237,81 @@ globalThis.PatiyizPrivateMedia?.onRefresh(async()=>{
  }
  if(me?.id===uid)render();
 });
-async function boot(){if(!ready){showSetup();return}
+function bucheeConnectionRecovery(message){
+ starter();
+ appRoot.classList.add('hidden');
+ authRoot.classList.remove('hidden');
+ authRoot.classList.remove('buchee-welcome-active');
+ authRoot.innerHTML='<div class="auth-card buchee-connection-recovery" role="alert"><div class="auth-brand"><img src="buchee-concept4-icon.svg?v=20261104-concept4" alt="Buchee" width="64" height="64"></div><h2>Bağlantı kurulamadı</h2><p class="auth-sub">'+esc(message)+'</p><button class="primary-btn auth-submit" type="button" data-auth-sdk-retry>Yeniden dene</button></div>';
+}
+function bucheeAuthTimed(promise){
+ return Promise.race([
+  promise,
+  new Promise((_,reject)=>setTimeout(()=>reject(new Error('Buchee kimlik doğrulaması zaman aşımına uğradı.')),9000))
+ ]);
+}
+async function boot(){
+ if(!String(cfg.supabaseUrl||'').startsWith('https://')||!cfg.supabasePublishableKey){
+  showSetup();return;
+ }
  if(typeof window.supabase?.createClient!=='function'){
-  starter();appRoot.classList.add('hidden');authRoot.classList.remove('hidden');
-  authRoot.innerHTML='<div class="auth-card" role="alert"><div class="auth-brand"><img src="buchee-social-app-icon.svg?v=20261102b" alt="BucheeSocial" width="64" height="64"></div><h2>Bağlantı kurulamadı</h2><p class="auth-sub">Güvenli giriş sistemi yüklenemedi. İnternet bağlantını kontrol edip yeniden dene.</p><button class="primary-btn auth-submit" type="button" data-auth-sdk-retry>Yeniden dene</button></div>';
+  bucheeConnectionRecovery('Giriş sistemi yüklenemedi. İnterneti kontrol edip yeniden dene.');
   return;
  }
- try{sb=window.supabase.createClient(cfg.supabaseUrl,cfg.supabasePublishableKey);let {data:result,error}=await sb.auth.getSession();if(error)throw error;me=result.session?.user;if(me){showApp()}else{showAuth()}sb.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){stopLive();resetSessionState();me=null;authMode='login';bucheeWelcomeEntered=false;showAuth()}else if(event==='PASSWORD_RECOVERY'){modal('Yeni şifre belirle',formField('password','Yeni şifre','password','',true),'reset-password-form');}else if(event==='SIGNED_IN'&&session?.user&&(!me||me.id!==session.user.id)){stopLive();resetSessionState();me=session.user;const signedUser=me.id;setTimeout(async()=>{if(me?.id!==signedUser)return;if(me?.id===signedUser)showApp()},0)}})}catch(e){starter();showAuth('Bağlantı kurulamadı. Supabase ayarlarını kontrol et.');notify(friendly(e),true)}}
+ let booting=true,recoveryPending=false;
+ const showRecoveryPassword=()=>{
+  if(!recoveryPending)return;
+  recoveryPending=false;
+  modal('Yeni şifre belirle',formField('password','Yeni şifre','password','',true)+'<p class="buchee-password-hint">En az 8 karakter: harf, rakam ve özel karakter.</p>','reset-password-form');
+ };
+ try{
+  sb=window.supabase.createClient(cfg.supabaseUrl,cfg.supabasePublishableKey);
+  sb.auth.onAuthStateChange((event,session)=>{
+   if(event==='PASSWORD_RECOVERY'){
+    recoveryPending=true;
+    if(!booting)setTimeout(showRecoveryPassword,0);
+    return;
+   }
+   if(event==='SIGNED_OUT'){
+    stopLive();resetSessionState();me=null;isAdmin=false;authMode='login';bucheeWelcomeEntered=false;
+    if(!booting)showAuth();
+    return;
+   }
+   if(event==='SIGNED_IN'&&session?.user&&(!me||me.id!==session.user.id)&&!booting){
+    stopLive();resetSessionState();me=session.user;
+    const signedUser=me.id;
+    setTimeout(()=>{if(me?.id===signedUser)showApp()},0);
+   }
+  });
+  const {data:result,error}=await bucheeAuthTimed(sb.auth.getSession());
+  if(error)throw error;
+  if(result.session?.user){
+   if(navigator.onLine===false)throw Error('Çevrimdışısın. Hesabın cihazda korunuyor; bağlantı gelince yeniden dene.');
+   const {data:verified,error:verifyError}=await bucheeAuthTimed(sb.auth.getUser());
+   if(verifyError){
+    if(/invalid refresh token|user not found|session.*missing|invalid jwt|unauthorized/i.test(String(verifyError.message||''))){
+     await sb.auth.signOut({scope:'local'}).catch(()=>{});
+     booting=false;me=null;showAuth('Oturumun geçerliliği sona erdi. Yeniden giriş yap.');
+     return;
+    }
+    throw verifyError;
+   }
+   if(!verified?.user||verified.user.id!==result.session.user.id)throw Error('Oturum doğrulanamadı. Yeniden dene.');
+   me=verified.user;
+   showApp();
+  }else if(navigator.onLine===false){
+   bucheeConnectionRecovery('Çevrimdışısın. Giriş yapmak için internete bağlanıp yeniden dene.');
+  }else showAuth();
+  booting=false;
+  if(recoveryPending)setTimeout(showRecoveryPassword,0);
+ }catch(error){
+  booting=false;
+  console.warn('Buchee giriş başlangıcı:',friendly(error));
+  bucheeConnectionRecovery(navigator.onLine===false
+   ?'İnternet bağlantın bulunmuyor. Hesabın korunuyor; bağlantı geldikten sonra yeniden dene.'
+   :'Giriş sistemi yanıt vermiyor. İnterneti kontrol edip yeniden dene.');
+ }
+}
 document.addEventListener('submit',async e=>{if(e.target.id!=='reset-password-form')return;e.preventDefault();let password=String(new FormData(e.target).get('password')||'');const issue=bucheePasswordProblem(password);if(issue)return notify(issue,true);await run(async()=>{let r=await sb.auth.updateUser({password});if(r.error)throw r.error;closeModal();const out=await sb.auth.signOut({scope:'global'});if(out.error)throw Error('Şifre değişti ancak eski oturumların kapatılması doğrulanamadı.');},'Şifren değişti. Yeniden giriş yap.')});
 document.addEventListener('click',e=>{
  const h=e.target.closest('[data-health-pet],[data-health-open],[data-health-delete],[data-health-print],[data-health-retry],[data-health-edit],[data-health-cancel],[data-health-filter],[data-health-clear]');
