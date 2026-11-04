@@ -1,4 +1,4 @@
-/* BucheeSocial private digital pet health file.
+/* Buchee private digital pet health file.
  * Authenticated, owner-only documents in a PRIVATE Supabase storage bucket.
  * Never creates public file URLs or permits another user's document IDs. */
 (()=>{
@@ -33,7 +33,7 @@
     if(r.error)throw r.error;
     if(getUser()?.id!==uid)return;
     state.docs=r.data||[];state.loaded=true;
-   }catch(e){console.warn('BucheeSocial sağlık dosyası:',e);state.error='Sağlık kayıtları yüklenemedi. Lütfen yeniden dene.'}
+   }catch(e){console.warn('Buchee sağlık dosyası:',e);state.error='Sağlık kayıtları yüklenemedi. Lütfen yeniden dene.'}
    finally{state.loading=false;changed()}
   }
   function selectPet(id){if(!pets().some(p=>p.id===id))return;state.petId=id;state.printView=false;state.editingId='';state.query='';state.typeFilter='all';changed()}
@@ -82,7 +82,7 @@
     await load(true);
    }catch(e){
     if(uploadedPath){try{const cleanup=await sb.storage.from(bucket).remove([uploadedPath]);if(cleanup.error)console.warn('Sağlık yüklemesi geri alınamadı:',cleanup.error)}catch(err){console.warn('Sağlık yükleme temizleme:',err)}}
-    console.warn('BucheeSocial sağlık kaydı kaydedilemedi:',e);
+    console.warn('Buchee sağlık kaydı kaydedilemedi:',e);
     notify('Sağlık kaydı kaydedilemedi. Dosya ve bağlantı izinlerini kontrol et.',true);
    }finally{state.saving=false;changed()}
   }
@@ -117,7 +117,7 @@
    const safe=val=>esc(String(val??''));
    const print=document.createElement('section');
    print.id='pati-health-print-report';print.className='pati-health-print-report';
-   print.innerHTML='<header><strong>💜 BucheeSocial · Kişisel Sağlık Dosyası</strong><span>'+safe(new Date().toLocaleDateString('tr-TR'))+'</span></header>'+
+   print.innerHTML='<header><strong>💜 Buchee · Kişisel Sağlık Dosyası</strong><span>'+safe(new Date().toLocaleDateString('tr-TR'))+'</span></header>'+
     '<h1>'+safe(pet.name)+'</h1><p>'+safe(pet.species)+' · '+safe(pet.breed||'')+' · '+safe(pet.age||'')+'</p>'+
     '<h2>Sağlık kayıtları ('+list.length+')</h2>'+
     (list.map(d=>'<article><b>'+safe(day(d.document_date))+' · '+safe(d.title)+'</b><p>'+safe(types[d.doc_type]?.[1]||'Kayıt')+' · '+safe(d.notes||'')+'</p></article>').join('')||'<p>Henüz sağlık kaydı eklenmedi.</p>')+
