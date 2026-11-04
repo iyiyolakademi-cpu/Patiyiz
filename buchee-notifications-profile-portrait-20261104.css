@@ -49,3 +49,18 @@ html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-ig-grid>.pat
   gap:2px!important;
  }
 }
+
+#main-content .pati-notifications-simple .buchee-notifications-no-matches{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ flex-wrap:wrap!important;gap:12px!important;
+ width:100%!important;min-height:0!important;
+ margin:8px 0!important;padding:12px!important;
+ border:0!important;border-radius:0!important;box-shadow:none!important;
+ background:transparent!important;color:#777981!important;
+ font:500 13px/1.4 system-ui,-apple-system,sans-serif!important;
+}
+#main-content .pati-notifications-simple .buchee-notifications-no-matches button{
+ appearance:none!important;min-height:38px!important;padding:8px 12px!important;
+ background:#f1f1f3!important;color:#22232b!important;
+ border:0!important;border-radius:10px!important;font-weight:700!important;
+}
