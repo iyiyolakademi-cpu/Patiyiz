@@ -1136,15 +1136,14 @@ function patiGoBack(){
  profileId='';selectedPostId='';patiNavigatingBack=true;navigate(dest);
 }
 function patiEnsureCommunityBack(){
- const old=document.getElementById('buchee-community-back');
- if(view!=='community'){old?.remove();return}
- let btn=old;
- if(!btn){btn=document.createElement('button');btn.id='buchee-community-back';btn.type='button';btn.dataset.action='pati-page-back';btn.textContent='← Geri';btn.setAttribute('aria-label','Soru cevap bölümünden geri dön');document.body.appendChild(btn);}
+ // The community back control now lives in its page header, not on document.body.
+ // Remove any legacy floating instance so that iPhone has exactly one back button.
+ document.getElementById('buchee-community-back')?.remove();
 }
 function patiEnsurePageBack(){
  if(view==='home')return;
  if(view==='messages')return;
- if(view==='profile'||view==='reels')return;
+ if(view==='profile'||view==='reels'||view==='community')return;
  // Reels uses the persistent five-tab bar; no separate back control overlaps the title.
  if(main.querySelector('.pati-page-back,.pati-streaks-back,.pati-detail-toolbar [data-action="post-back"]'))return;
  const btn=document.createElement('button');btn.type='button';btn.className='pati-page-back';btn.dataset.action='pati-page-back';btn.innerHTML='‹ <span>Geri</span>';
@@ -3195,7 +3194,7 @@ function communityPage(){
  const source=page?.ready?page.rows:data.questions;
  const qs=[...source].filter(q=>!blocked.has(q.author_id)&&(communityCategory==='Tümü'||patiQuestionCategoryGroup(q.category)===communityCategory))
   .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)||String(b.id).localeCompare(String(a.id)));
- patiEnsureCommunityBack();main.innerHTML='<section class="pati-community-head">'+header('Soru & Cevap','Bir soruyla yeni fikirler keşfet. Toplulukla konuş, farklı görüşler al.',button('+ Soru sor','question'))+'<p class="pati-community-subhead">Sorular sor, deneyimlerini paylaş, yanıtları birlikte değerlendir.</p></section>'+
+ patiEnsureCommunityBack();main.innerHTML='<div class="buchee-community-back-row"><button type="button" class="buchee-community-top-back" data-action="pati-page-back" aria-label="Önceki ekrana dön"><svg aria-hidden="true" viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg><span>Geri</span></button></div><section class="pati-community-head">'+header('Soru & Cevap','Bir soruyla yeni fikirler keşfet. Toplulukla konuş, farklı görüşler al.',button('+ Soru sor','question'))+'<p class="pati-community-subhead">Sorular sor, deneyimlerini paylaş, yanıtları birlikte değerlendir.</p></section>'+
  '<button type="button" class="pati-community-mobile-ask" data-action="question" aria-label="Topluluğa soru sor">+ Soru sor</button>'+ 
  '<div class="pati-filter-tabs">'+categories.map(cat=>'<button type="button" data-action="community-filter" data-id="'+esc(cat)+'" class="'+(communityCategory===cat?'active':'')+'" aria-pressed="'+(communityCategory===cat)+'">'+esc(cat)+'</button>').join('')+'</div>'+
  '<div class="pati-list">'+qs.map(q=>{
