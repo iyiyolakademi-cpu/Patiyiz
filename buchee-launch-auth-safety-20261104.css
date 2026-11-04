@@ -1,0 +1,52 @@
+/* Buchee: first-run messaging, recoverable offline/login state, password criteria.
+   Fully scoped: no change to app feed/profile geometry. */
+#auth-root .buchee-password-hint{
+ display:block!important;
+ margin:6px 0 11px!important;
+ padding:0 3px!important;
+ color:#626873!important;
+ font:600 12px/1.5 'Plus Jakarta Sans','DM Sans',system-ui,sans-serif!important;
+}
+#auth-root .buchee-content-types{
+ display:flex!important;
+ flex-wrap:wrap!important;
+ gap:7px!important;
+}
+#auth-root .buchee-content-types>span{
+ white-space:nowrap!important;
+ max-width:100%!important;
+}
+#auth-root .buchee-connection-recovery{
+ box-sizing:border-box!important;
+ margin:clamp(38px,12vh,110px) auto!important;
+ max-width:min(94vw,430px)!important;
+ padding:28px 22px!important;
+ text-align:center!important;
+}
+#auth-root .buchee-connection-recovery .auth-brand{
+ display:flex!important;justify-content:center!important;align-items:center!important;
+ margin-bottom:18px!important;
+}
+#auth-root .buchee-connection-recovery .auth-brand img{
+ display:block!important;
+ width:64px!important;height:64px!important;
+ max-width:64px!important;
+ border-radius:15px!important;
+ object-fit:contain!important;
+}
+#auth-root .buchee-connection-recovery h2{
+ color:#17191d!important;
+ font-size:22px!important;
+ margin:8px 0!important;
+}
+#auth-root .buchee-connection-recovery p{
+ color:#626873!important;
+ font-size:14px!important;line-height:1.55!important;
+}
+#auth-root .buchee-connection-recovery [data-auth-sdk-retry]{
+ min-height:46px!important;
+ margin-top:16px!important;
+}
+@media(prefers-reduced-motion:reduce){
+ #startup .buchee-opening-signature path{animation:none!important;stroke-dashoffset:0!important}
+}
