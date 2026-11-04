@@ -1,34 +1,93 @@
-/* User-approved Buchee icon: full-bleed black canvas with the white chat B.
-   Keep every graphical logo square. Do not alter the app's page background. */
+/* Buchee Social — 4 Nov 2026
+   Home screen app icon remains the user-approved black B.
+   Restore the original animated wordmark on splash and auth pages. */
 #startup .pati-splash-icon{
-  display:block!important;
-  width:min(42vw,180px)!important;
-  max-width:180px!important;
-  height:auto!important;
-  aspect-ratio:1/1!important;
-  object-fit:contain!important;
-  border-radius:0!important;
+ display:block!important;
+ width:100%!important;max-width:435px!important;
+ height:auto!important;aspect-ratio:1226 / 195!important;
+ object-fit:contain!important;border-radius:0!important;
 }
 #auth-root .auth-brand .auth-matching-logo{
-  width:min(44vw,172px)!important;
-  max-width:172px!important;
-  height:auto!important;
-  aspect-ratio:1/1!important;
-  background:transparent!important;
-  box-shadow:none!important;
-  border:0!important;
+ display:block!important;
+ width:min(78vw,350px)!important;max-width:350px!important;
+ height:auto!important;aspect-ratio:auto!important;
+ background:transparent!important;border:0!important;
+ padding:0!important;box-shadow:none!important;border-radius:0!important;
 }
-#auth-root .auth-brand .auth-matching-logo img,
+#auth-root .auth-brand .auth-matching-logo img{
+ display:block!important;
+ width:100%!important;max-width:350px!important;
+ height:auto!important;aspect-ratio:1226 / 195!important;
+ object-fit:contain!important;border-radius:0!important;
+ border:0!important;box-shadow:none!important;
+}
 #auth-root .buchee-welcome-brand img{
-  width:100%!important;
-  max-width:172px!important;
-  height:auto!important;
-  aspect-ratio:1/1!important;
-  object-fit:contain!important;
-  display:block!important;
-  border:0!important;
-  box-shadow:none!important;
+ display:block!important;
+ width:min(78vw,335px)!important;max-width:335px!important;
+ height:auto!important;aspect-ratio:1226 / 195!important;
+ object-fit:contain!important;border-radius:0!important;
+ border:0!important;box-shadow:none!important;
 }
 #auth-root .auth-story-icon img{
-  object-fit:contain!important;
+ max-width:100%!important;object-fit:contain!important;
+}
+/* Email confirmation, recovery and validation text must be readable on white. */
+#auth-root .auth-card,
+#auth-root .auth-card .auth-sub,
+#auth-root .auth-card .small-note,
+#auth-root .auth-card .pati-note,
+#auth-root .auth-card .pati-auth-data-notice,
+#auth-root .auth-card .buchee-auth-feedback,
+#auth-root .auth-card .pati-field label{
+ color:#202126!important;-webkit-text-fill-color:#202126!important;
+}
+#auth-root .auth-card .pati-note,
+#auth-root .auth-card .buchee-auth-feedback{
+ display:block!important;
+ margin:10px 0 14px!important;
+ padding:13px 14px!important;
+ color:#202126!important;
+ -webkit-text-fill-color:#202126!important;
+ background:#f6f8fa!important;
+ border:1px solid #d9dee3!important;border-radius:12px!important;
+ font-size:14px!important;line-height:1.5!important;
+ opacity:1!important;visibility:visible!important;
+ overflow-wrap:anywhere!important;
+}
+#auth-root #auth-form input[type="email"],
+#auth-root #auth-form input[name="email"],
+#auth-root #auth-form input[type="text"],
+#auth-root #auth-form input[type="password"]{
+ color:#202126!important;
+ -webkit-text-fill-color:#202126!important;
+ caret-color:#202126!important;
+ background:#fff!important;opacity:1!important;
+}
+#auth-root #auth-form input::placeholder{
+ color:#69707a!important;-webkit-text-fill-color:#69707a!important;opacity:1!important;
+}
+#auth-root #auth-form input:-webkit-autofill{
+ -webkit-text-fill-color:#202126!important;
+ -webkit-box-shadow:0 0 0 1000px #fff inset!important;
+ box-shadow:0 0 0 1000px #fff inset!important;
+}
+#profile-form .buchee-profile-form-error{
+ display:block!important;
+ position:sticky!important;top:0!important;z-index:4!important;
+ padding:13px 15px!important;margin:0 0 14px!important;
+ background:#fff3f4!important;color:#8c1427!important;
+ border:1px solid #e5a4af!important;border-radius:11px!important;
+ font-size:14px!important;line-height:1.5!important;
+ font-weight:650!important;opacity:1!important;
+ -webkit-text-fill-color:#8c1427!important;
+ overflow-wrap:anywhere!important;
+}
+#profile-form .buchee-profile-form-error[hidden]{display:none!important}
+#profile-form input[name="handle"][aria-invalid="true"]{
+ border:2px solid #bd3046!important;background:#fff8f8!important;
+ color:#202126!important;-webkit-text-fill-color:#202126!important;
+}
+@media(max-width:740px){
+ #auth-root .auth-brand .auth-matching-logo{width:min(78vw,320px)!important}
+ #auth-root .auth-brand .auth-matching-logo img{max-width:320px!important}
 }
