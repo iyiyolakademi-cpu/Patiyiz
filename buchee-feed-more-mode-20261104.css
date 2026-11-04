@@ -77,3 +77,23 @@ html[data-pati-view="home"] #main-content .pati-feed-card .buchee-caption-more{
 html[data-pati-view="home"] #main-content .pati-feed-card .buchee-caption-more:focus-visible{
  outline:2px solid #7244ac!important;outline-offset:2px!important;
 }
+
+
+/* Single feed switch: rotating arrow opens the original rich selector. */
+@media(max-width:740px){
+ #app-root>.mobile-header>#buchee-feed-shortcut-menu{display:none!important}
+ html[data-pati-view="home"] #app-root>.mobile-header>#pati-feed-menu-trigger .buchee-mode-label{
+  display:none!important
+ }
+ html[data-pati-view="home"] #app-root>.mobile-header>#pati-feed-menu-trigger:after{
+  display:none!important
+ }
+ html[data-pati-view="home"] #app-root>.mobile-header>#pati-feed-menu-trigger{
+  cursor:default!important
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu:not([hidden]){
+  position:absolute!important;top:calc(env(safe-area-inset-top,0px) + 53px)!important;
+  right:12px!important;left:auto!important;transform:none!important;
+  z-index:3100!important;width:min(290px,calc(100vw - 24px))!important
+ }
+}
