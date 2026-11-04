@@ -401,7 +401,7 @@ function bucheePasswordProblem(password){
  if(/\s/u.test(value))return 'Şifrede boşluk kullanma.';
  return '';
 }
-const authBusy=async(fn)=>{if(authRequestInFlight)return null;authRequestInFlight=true;const submit=authRoot.querySelector('#auth-form button[type="submit"]');if(submit)submit.disabled=true;try{let r=await fn();if(r.error)throw r.error;return r.data}catch(e){notify(friendly(e),true);return null}finally{authRequestInFlight=false;if(submit?.isConnected)submit.disabled=false}};
+const authBusy=async(fn)=>{if(authRequestInFlight)return null;authRequestInFlight=true;const submit=authRoot.querySelector('#auth-form button[type="submit"]');if(submit)submit.disabled=true;try{let r=await bucheeAuthTimed(fn());if(r.error)throw r.error;return r.data}catch(e){notify(friendly(e),true);return null}finally{authRequestInFlight=false;if(submit?.isConnected)submit.disabled=false}};
 authRoot.addEventListener('click',e=>{
  if(e.target.closest('[data-auth-sdk-retry]')){location.reload();return}
  const toggle=e.target.closest('[data-auth-toggle-password]');
