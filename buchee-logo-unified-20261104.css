@@ -91,3 +91,43 @@
  #auth-root .auth-brand .auth-matching-logo{width:min(78vw,320px)!important}
  #auth-root .auth-brand .auth-matching-logo img{max-width:320px!important}
 }
+
+/* 2026-11-04: Center the original wordmark within the viewport on auth screens.
+   Keep the SVG untouched; never stretch or crop the letterforms. */
+#auth-root:not(.buchee-welcome-active) .auth-pane .auth-card > .auth-brand{
+  position:relative!important;
+  left:auto!important;right:auto!important;
+  transform:none!important;
+  display:flex!important;
+  width:100%!important;max-width:100%!important;
+  margin:0 auto 28px!important;
+  padding:0!important;
+  align-items:center!important;justify-content:center!important;
+  text-align:center!important;
+  box-sizing:border-box!important;
+}
+#auth-root:not(.buchee-welcome-active) .auth-pane .auth-card > .auth-brand .auth-matching-logo{
+  display:block!important;
+  flex:0 0 auto!important;
+  width:min(76vw,310px)!important;
+  max-width:calc(100vw - 64px)!important;
+  margin:0 auto!important;
+  padding:0!important;
+  position:relative!important;
+  left:auto!important;right:auto!important;
+  transform:none!important;
+  box-sizing:border-box!important;
+}
+#auth-root:not(.buchee-welcome-active) .auth-pane .auth-card > .auth-brand .auth-matching-logo img{
+  display:block!important;width:100%!important;
+  height:auto!important;max-width:100%!important;
+  margin-inline:auto!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  transform:none!important;
+}
+@media(max-width:380px){
+  #auth-root:not(.buchee-welcome-active) .auth-pane .auth-card > .auth-brand .auth-matching-logo{
+    width:min(75vw,285px)!important;
+  }
+}
