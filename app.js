@@ -8497,7 +8497,46 @@ case 'home-feed-tab':{
 }
 case 'home-following-refresh':void patiFollowingFetch(false);break;
 case 'home-following-more':void patiFollowingFetch(true);break;
-case 'edit-post':compose(data.posts.find(p=>p.id===id));break;case 'delete-post':remove('posts',id);break;case 'delete-question':remove('questions',id);break;case 'delete-lost':remove('lost_reports',id);break;case 'care-del':{const item=data.care.find(x=>x.id===id&&x.owner_id===me.id);if(!item)break;
+case 'edit-post':compose(data.posts.find(p=>p.id===id));break;case 'delete-post':remove('posts',id);break;case 'delete-question':{
+  const owner=me?.id;
+  const question=data.questions.find(q=>q.id===id)||patiCommunityPage.rows.find(q=>q.id===id)||patiHomeQuestionsState.rows.find(q=>q.id===id);
+  if(!owner||!question||question.author_id!==owner){notify('Yalnızca kendi sorunu silebilirsin.',true);break;}
+  if(!confirm('Bu soruyu kalıcı olarak silmek istiyor musun?'))break;
+  if(busy)break;
+  const questionSnapshot=[...data.questions],communitySnapshot=[...patiCommunityPage.rows],homeSnapshot=[...patiHomeQuestionsState.rows];
+  const replySnapshot=[...data.replies],voteSnapshot=[...data.votes];
+  // Hide immediately after confirmation, including cached timeline/community lists.
+  data.questions=data.questions.filter(q=>q.id!==id);
+  patiCommunityPage.rows=patiCommunityPage.rows.filter(q=>q.id!==id);
+  patiHomeQuestionsState.rows=patiHomeQuestionsState.rows.filter(q=>q.id!==id);
+  data.replies=data.replies.filter(reply=>reply.question_id!==id);
+  data.votes=data.votes.filter(vote=>vote.question_id!==id);
+  voted=new Set(data.votes.filter(v=>v.user_id===owner&&v.is_helpful!==false).map(v=>v.question_id));
+  if(patiCommunityPage.ready)patiCommunityPage.offset=Math.max(0,patiCommunityPage.offset-1);
+  const activeReplyForm=document.getElementById('reply-form');
+  if(activeReplyForm?.dataset.question===id)closeModal(true);
+  render();
+  void run(async()=>{
+    try{
+      const result=await sb.from('questions').delete().eq('id',id).eq('author_id',owner).select('id');
+      if(result.error)throw result.error;
+      if(!result.data?.length)throw Error('Soru silinemedi veya silme yetkin yok.');
+    }catch(error){
+      if(me?.id===owner){
+        data.questions=questionSnapshot;
+        patiCommunityPage.rows=communitySnapshot;
+        patiHomeQuestionsState.rows=homeSnapshot;
+        data.replies=replySnapshot;
+        data.votes=voteSnapshot;
+        voted=new Set(data.votes.filter(v=>v.user_id===owner&&v.is_helpful!==false).map(v=>v.question_id));
+        if(patiCommunityPage.ready)patiCommunityPage.offset+=1;
+        render();
+      }
+      throw error;
+    }
+  },'Soru silindi.');
+  break;
+}case 'delete-lost':remove('lost_reports',id);break;case 'care-del':{const item=data.care.find(x=>x.id===id&&x.owner_id===me.id);if(!item)break;
  if(!confirm('Bakım görevini kalıcı olarak silmek istiyor musun?'))break;
  run(async()=>{
   const result=await sb.from('care_tasks').delete().eq('id',id).eq('owner_id',me.id).select('id');
