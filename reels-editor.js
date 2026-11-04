@@ -1,4 +1,4 @@
-/* BucheeSocial Reels Studio — local-only video editor. No third-party upload service. */
+/* Buchee Reels Studio — local-only video editor. No third-party upload service. */
 (function(){
 'use strict';
 const FILTERS={
@@ -248,7 +248,7 @@ async function exportVideo(progress){
   if(!blob.size)throw Error('Düzenlenmiş video oluşturulamadı.');
   if(blob.size>MAX_EXPORT_BYTES)throw Error('Düzenlenen video 48 MB sınırını aştı; süreyi kısalt veya daha az klip kullan.');
   progress?.(100);
-  return new File([blob],'patiyiz-reels-'+Date.now()+(type==='video/mp4'?'.mp4':'.webm'),{type});
+  return new File([blob],'buchee-reels-'+Date.now()+(type==='video/mp4'?'.mp4':'.webm'),{type});
  }catch(e){if(recorder?.state==='recording'){recorder.stop();try{await stopResult}catch(_){}}throw e}
  finally{
   snapshot.clips.forEach(c=>{if(c.video){c.video.pause();c.video.removeAttribute('src');c.video.load()}});
