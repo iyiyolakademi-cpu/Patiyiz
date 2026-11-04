@@ -79,3 +79,16 @@ html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-ig-grid>.pat
  outline:0!important;
  box-shadow:none!important;
 }
+
+
+/* 04 Nov — Make the entire notifications page white all the way to the
+   bottom navigation. This affects background only, not icons, text or layout. */
+html[data-pati-view="notifications"] body,
+html[data-pati-view="notifications"] #app-root:not(.hidden),
+html[data-pati-view="notifications"] #app-root:not(.hidden)>.app-shell,
+html[data-pati-view="notifications"] #app-root:not(.hidden)>.app-shell>#main-content,
+html[data-pati-view="notifications"] #main-content>.pati-notifications-simple{
+ background:#fff!important;
+ background-color:#fff!important;
+ background-image:none!important;
+}
