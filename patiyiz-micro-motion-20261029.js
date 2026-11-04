@@ -1,7 +1,7 @@
-/* BucheeSocial Motion: presentation-only feedback after confirmed app operations. */
+/* Buchee Motion: presentation-only feedback after confirmed app operations. */
 (function(){
  'use strict';
- const coinAsset='buchee-social-app-icon.svg?v=20261025-brand-1';
+ const coinAsset='buchee-concept4-icon.svg?v=20261104-concept4';
  const reduce=()=>!!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
  const pawHTML='<span class="pati-motion-paws" aria-hidden="true"><span>💜</span><span>💜</span><span>💜</span></span>';
  const queue=cb=>window.requestAnimationFrame?requestAnimationFrame(()=>requestAnimationFrame(cb)):setTimeout(cb,30);
@@ -62,6 +62,6 @@
   };
   queue(find);
  }
- /* Opening splash intentionally shows only the existing BucheeSocial logo. */
+ /* Opening splash intentionally shows only the existing Buchee logo. */
  window.PatiyizMotion=Object.freeze({heart,coin,loading,messageSent,petAdded});
 })();
