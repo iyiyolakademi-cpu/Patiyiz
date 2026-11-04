@@ -50,7 +50,8 @@ test('the password policy enforces letters, digits and punctuation',()=>{
  for(const password of ['abc123!','abcdefgh!','12345678!','abc12345','ab 123!!'])assert.notEqual(policy(password),'',password);
 });
 test('new-account policy does not prevent existing accounts from signing in',()=>{
- assert.match(app,/const issue=bucheePasswordProblem\(password\);if\(issue\)return notify\(issue,true\);let res=await authBusy\(\(\)=>sb\.auth\.signUp/);
+ assert.match(app,/const issue=bucheePasswordProblem\(password\);if\(issue\)return notify\(issue,true\)/);
+ assert.match(app,/sb\.auth\.signUp\(\{email,password/);
  assert.match(app,/let res=await authBusy\(\(\)=>sb\.auth\.signInWithPassword\(\{email,password\}\)\)/);
  assert.match(app,/minlength="\$\{isSign\?8:6\}"/);
 });
