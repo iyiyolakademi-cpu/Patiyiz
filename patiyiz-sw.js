@@ -1,5 +1,5 @@
 /* Buchee Social: push notifications and reliable, privacy-conscious PWA updates. */
-const BUCHEE_STATIC_CACHE = 'buchee-static-v20261103-release-phase6-1';
+const BUCHEE_STATIC_CACHE = 'buchee-static-v20261104-concept4-1';
 const BUCHEE_CACHE_PREFIXES = ['buchee-static-v', 'patiyiz-static-v'];
 
 self.addEventListener('push', event => {
@@ -12,8 +12,8 @@ self.addEventListener('push', event => {
   const body = String(payload.body || 'Yeni bir bildirimin var.').slice(0, 220);
   event.waitUntil(self.registration.showNotification(title, {
     body,
-    icon: './buchee-social-app-icon.svg?v=20261102-buchee-logo-2',
-    badge: './buchee-social-app-icon.svg?v=20261103-release-phase6-1',
+    icon: './buchee-app-icon-192.png?v=20261104-concept4',
+    badge: './buchee-app-icon-48.png?v=20261104-concept4',
     tag: 'buchee-' + String(payload.id || 'notice'),
     data: {url: payload.id ? './?notification=' + encodeURIComponent(String(payload.id)) : './'},
     renotify: false
