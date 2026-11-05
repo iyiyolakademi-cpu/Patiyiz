@@ -5,6 +5,7 @@
  'use strict';
  const bucket='patiyiz-private-posts',prefix=bucket+':',seconds=300;
  const cache=new Map();
+ const pending=new Map(); // Coalesce concurrent requests for the same authorized asset.
  let owner='',lastRefresh=0,refreshCallback=null,refreshBusy=false;
  const fields=['image_url','video_url','video_cover_url','images','media_videos','photo_url'];
  const marker=value=>typeof value==='string'&&value.startsWith(prefix);
@@ -18,16 +19,21 @@
   const path=getPath(ref);
   if(!path)return Promise.resolve(marker(ref)?'':ref);
   if(!user||!sb)return Promise.resolve('');
-  if(owner!==user){owner=user;cache.clear();}
+  if(owner!==user){owner=user;cache.clear();pending.clear();}
   const key=user+':'+path,found=cache.get(key);
   if(found&&found.expires>Date.now()+10000)return Promise.resolve(found.url);
-  return sb.storage.from(bucket).createSignedUrl(path,seconds).then(({data,error})=>{
+  if(pending.has(key))return pending.get(key);
+  const request=sb.storage.from(bucket).createSignedUrl(path,seconds).then(({data,error})=>{
+   if(owner!==user)return '';
    if(error||!data?.signedUrl){cache.delete(key);return '';}
    const url=data.signedUrl;
    cache.set(key,{url,expires:Date.now()+seconds*1000});
    if(cache.size>400)cache.delete(cache.keys().next().value);
    return url;
-  }).catch(()=>{cache.delete(key);return ''});
+  }).catch(()=>{if(owner===user)cache.delete(key);return ''})
+   .finally(()=>{if(pending.get(key)===request)pending.delete(key)});
+  pending.set(key,request);
+  return request;
  }
  async function hydrateRows(rows,user,sb){
   if(!Array.isArray(rows)||!rows.length)return rows||[];
@@ -60,13 +66,17 @@
   if(result.error)throw result.error;
   return prefix+path;
  }
- function clear(){cache.clear();owner='';lastRefresh=0;}
+ function clear(){cache.clear();pending.clear();owner='';lastRefresh=0;}
  function onRefresh(cb){refreshCallback=cb;}
  // Refresh expiring links; mobile webviews can stay suspended for a long time.
  async function refreshSignedMedia(force=false){
   if(!refreshCallback||refreshBusy||!cache.size||global.document?.hidden)return;
-  if(!force&&Date.now()-lastRefresh<240000)return;
-  lastRefresh=Date.now();refreshBusy=true;cache.clear();
+  const now=Date.now();
+  // Re-render only if at least one cached authorization is actually near expiry.
+  // Merely returning to the app must not regenerate all tokens and re-download videos.
+  if(![...cache.values()].some(item=>item.expires<=now+10000))return;
+  if(!force&&now-lastRefresh<30000)return;
+  lastRefresh=now;refreshBusy=true;
   try{await refreshCallback()}catch(e){console.warn('Özel medya yenilenemedi.')}finally{refreshBusy=false}
  }
  if(global.document&&global.setInterval)
