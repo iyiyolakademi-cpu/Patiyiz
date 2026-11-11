@@ -540,7 +540,7 @@ function AppContent() {
           onPress={()=>setThreadId(peer)} right={<Text style={s.subtle}>{time(item.created_at)}</Text>}/>;
       }}
       ListEmptyComponent={!loading ? <Empty icon="chatbubbles-outline" title="Mesajların burada" body="Bir profilden Mesaj seçerek sohbet başlat."/> : null}
-    ) }
+    />) }
 
     {tab === 'notifications' && <FlatList data={notifications} keyExtractor={x=>x.id}
       refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}
