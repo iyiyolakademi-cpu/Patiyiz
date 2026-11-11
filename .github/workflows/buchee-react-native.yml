@@ -1,0 +1,40 @@
+name: Buchee Social - Native Expo Preview
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "mobile-native/**"
+      - ".github/workflows/buchee-react-native.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native-bundle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: mobile-native
+    steps:
+      - uses: actions/checkout@v4
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Expo dependencies
+        run: npm install --no-audit --no-fund
+      - name: Static compatibility checks
+        run: npm run check
+      - name: Expo Android bundle
+        run: npx expo export --platform android --output-dir dist/android
+      - name: Expo iOS bundle
+        run: npx expo export --platform ios --output-dir dist/ios
+      - name: Confirm JS bundles
+        run: |
+          test -d dist/android
+          test -d dist/ios
+          find dist/android -type f | head -15
+          find dist/ios -type f | head -15
