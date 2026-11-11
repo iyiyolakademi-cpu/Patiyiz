@@ -33,7 +33,11 @@ jobs:
           SDK_MANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
           test -x "$SDK_MANAGER"
           yes | "$SDK_MANAGER" --licenses >/dev/null || true
-          "$SDK_MANAGER" "platform-tools" "platforms;android-37" "build-tools;37.0.0"
+          "$SDK_MANAGER" "platform-tools" "platforms;android-37.0" "build-tools;37.0.0"
+          # Some Gradle toolchains still resolve API 37 using the unversioned path.
+          if [ -d "$ANDROID_HOME/platforms/android-37.0" ] && [ ! -e "$ANDROID_HOME/platforms/android-37" ]; then
+            ln -s "$ANDROID_HOME/platforms/android-37.0" "$ANDROID_HOME/platforms/android-37"
+          fi
       - name: Install Expo packages
         working-directory: mobile-native
         run: npm install --no-audit --no-fund
