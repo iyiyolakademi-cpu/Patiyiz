@@ -539,7 +539,7 @@ function AppContent() {
         return <PersonLine p={people[peer]} subtitle={compactText(item.body,60)}
           onPress={()=>setThreadId(peer)} right={<Text style={s.subtle}>{time(item.created_at)}</Text>}/>;
       }}
-      ListEmptyComponent={!loading?<Empty icon="chatbubbles-outline" title="Mesajların burada" body="Bir profilden Mesaj seçerek sohbet başlat.":null}/>
+      ListEmptyComponent={!loading ? <Empty icon="chatbubbles-outline" title="Mesajların burada" body="Bir profilden Mesaj seçerek sohbet başlat."/> : null}
     ) }
 
     {tab === 'notifications' && <FlatList data={notifications} keyExtractor={x=>x.id}
@@ -559,7 +559,7 @@ function AppContent() {
         </View>
         {!item.read&&<View style={{height:8,width:8,borderRadius:5,backgroundColor:COLOR.accent}}/>}
       </Pressable>}
-      ListEmptyComponent={!loading?<Empty icon="notifications-outline" title="Bildirim yok" body="Yeni bildirimler burada görünecek.":null}/>
+      ListEmptyComponent={!loading ? <Empty icon="notifications-outline" title="Bildirim yok" body="Yeni bildirimler burada görünecek."/> : null}
     />}
 
     {tab === 'profile' && <ScrollView contentContainerStyle={{paddingBottom:35}}
