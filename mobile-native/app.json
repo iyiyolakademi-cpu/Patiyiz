@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "Buchee Social",
+    "slug": "buchee-social-native",
+    "scheme": "bucheesocial",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "icon": "../buchee-app-icon-512.png",
+    "splash": {
+      "image": "../buchee-app-icon-512.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#14021e"
+    },
+    "android": {
+      "package": "com.patiyiz.app",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "../buchee-app-icon-512.png",
+        "backgroundColor": "#14021e"
+      },
+      "edgeToEdgeEnabled": true,
+      "permissions": []
+    },
+    "ios": {
+      "bundleIdentifier": "com.buchee.social",
+      "supportsTablet": false
+    },
+    "plugins": [
+      "expo-video"
+    ],
+    "extra": {
+      "appMode": "native",
+      "productionSite": "https://bucheesocial.com"
+    }
+  }
+}
