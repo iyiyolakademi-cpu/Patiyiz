@@ -7,24 +7,23 @@
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "icon": "../buchee-app-icon-512.png",
+    "icon": "./assets/icon.png",
     "splash": {
-      "image": "../buchee-app-icon-512.png",
+      "image": "./assets/icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#14021e"
     },
     "android": {
-      "package": "com.patiyiz.app",
+      "package": "com.buchee.social.preview",
       "versionCode": 1,
       "adaptiveIcon": {
-        "foregroundImage": "../buchee-app-icon-512.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#14021e"
       },
-      "edgeToEdgeEnabled": true,
-      "permissions": []
+      "edgeToEdgeEnabled": true
     },
     "ios": {
-      "bundleIdentifier": "com.buchee.social",
+      "bundleIdentifier": "com.buchee.social.preview",
       "supportsTablet": false
     },
     "plugins": [
