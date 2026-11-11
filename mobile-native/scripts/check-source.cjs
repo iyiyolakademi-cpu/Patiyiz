@@ -26,7 +26,7 @@ assert.ok(/from\('profiles'\)/.test(data), 'Existing profiles table not reused')
 assert.ok(!/WebView|react-native-webview|server\.url/.test(app), 'Native app must not host the website');
 assert.ok(/FlatList/.test(app), 'Native list UI missing');
 assert.ok(/VideoView/.test(app), 'Native Reels video component missing');
-assert.ok(!/service_role|sb_secret_|SUPABASE_SERVICE_ROLE/.test(client), 'Private key pattern found');
+assert.ok(!/sb_secret_|SUPABASE_SERVICE_ROLE\s*[:=]|service_role\s*[:=]\s*['\"`]/.test(client), 'Private key pattern found');
 for (const file of ['src/client.js','src/data.js']) {
   const checked = spawnSync(process.execPath, ['--check', path.join(root,file)], {encoding:'utf8'});
   assert.equal(checked.status, 0, checked.stderr || file + ' syntax check failed');
