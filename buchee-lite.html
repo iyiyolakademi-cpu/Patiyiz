@@ -73,7 +73,7 @@ document.addEventListener("click",x=>{const n=x.target.closest("[data-tab]");if(
 const b=x.target.closest("[data-a]");if(!b)return;call(async()=>{let r;const id=b.dataset.id,active=b.dataset.active==="1";switch(b.dataset.a){
 case"refresh":await load();return;
 case"like":r=active?await db.from("post_likes").delete().eq("post_id",id).eq("user_id",u.id):await db.from("post_likes").insert({post_id:id,user_id:u.id});break;
-case"save":r=await db.from("post_saves").upsert({post_id:id,user_id:u.id});break;
+case"save":r=await db.from("post_saves").insert({post_id:id,user_id:u.id});break;
 case"comment":{const body=prompt("Yorumunu yaz");if(!body?.trim())return;r=await db.from("comments").insert({post_id:id,author_id:u.id,body:body.trim().slice(0,750)});break}
 case"follow":r=active?await db.from("follows").delete().eq("followee_id",id).eq("follower_id",u.id):await db.from("follows").insert({followee_id:id,follower_id:u.id});break;
 case"reply":{const body=prompt("Yanıtın");if(!body?.trim())return;r=await db.from("replies").insert({question_id:id,author_id:u.id,body:body.trim().slice(0,1000)});break}}
