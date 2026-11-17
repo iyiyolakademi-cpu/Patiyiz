@@ -7065,7 +7065,7 @@ function postMediaField(mode){
  '<div class="pati-media-edit-entry" id="pati-media-edit-entry" hidden><button type="button" data-action="post-crop-open">🎚 Filtreler ve fotoğraf düzenleme</button><small>Renk filtresi, parlaklık, kontrast ve kırpma</small></div>'+
  '<div class="pati-media-picker-actions"><button type="button" class="pati-media-pick-primary" data-action="pati-media-gallery">▧ Galeriyi aç</button><button type="button" class="pati-media-pick-secondary" data-action="pati-media-camera">◎ '+(reel?'Video çek':'Fotoğraf çek')+'</button>'+(!reel?'<button type="button" class="pati-media-pick-secondary" data-action="pati-media-video">▷ Video seç</button>':'')+'</div>'+
  (!reel?(story?'<div class="pati-reels-editor"><label>Video kapağı (isteğe bağlı) <input type="file" name="cover_photo" accept="image/*" aria-label="Hikâye video kapağı seç"></label></div>':'<div class="pati-reels-editor"><label>Gönderi video kapağı (isteğe bağlı) <input type="file" name="cover_photo" accept="image/*" aria-label="Gönderi video kapağı seç"></label></div>')+'<div class="pati-cover-crop-row"><button type="button" data-action="post-crop-open">Kapak görselini kırp · 9:16 / 4:5</button><small>Video kapağı seçtiğinde düzenleyebilirsin.</small></div>':'')+
- '<p class="pati-media-help">'+(reel?'MP4, WebM veya MOV · 50 MB altı; büyük klipler uygun cihazlarda sıkıştırılır.':story?'Fotoğraf ya da 50 MB altı video · 24 saatlik hikâye.':'JPG, PNG, HEIC ve desteklenen videolar.')+'</p>'+
+ '<p class="pati-media-help">'+(reel?'MP4, WebM veya MOV · 8 MB altı; büyük klipler uygun cihazlarda sıkıştırılır.':story?'Fotoğraf ya da 8 MB altı video · 24 saatlik hikâye.':'JPG, PNG, HEIC ve desteklenen videolar.')+'</p>'+
  '<input type="file" name="photo" accept="image/*,.heic,.heif" '+(!story&&!reel?'multiple':'')+' class="pati-native-input" aria-label="Fotoğraf seç"><input type="file" name="video" accept="video/mp4,video/webm,video/quicktime,.mov"'+(reel?' multiple':!story?' multiple':'')+' class="pati-native-input" aria-label="Video seç"></section>';
 }
 function openComposerMediaPicker(kind){
@@ -7494,8 +7494,8 @@ async function uploadPrivatePublicationMedia(file,kind){
  if(!globalThis.PatiyizPrivateMedia)throw Error('Güvenli medya yükleyici başlatılamadı. Sayfayı yenile.');
  if(!file?.size)return null;
  if(navigator.onLine===false)throw Error('Medya yüklemek için internet bağlantısı gerekli.');
- if(kind==='video'&&file.size>50*1024*1024){
-  if(!window.PatiyizVideoPrepare?.prepare)throw Error('Video çok büyük. 50 MB altında bir dosya seç.');
+ if(kind==='video'&&file.size>8*1024*1024){
+  if(!window.PatiyizVideoPrepare?.prepare)throw Error('Video çok büyük. 8 MB altında bir dosya seç.');
   uploadStatus('Video güvenli yükleme için hazırlanıyor…');
   file=await window.PatiyizVideoPrepare.prepare(file,uploadStatus);
  }
@@ -7507,15 +7507,15 @@ async function uploadPrivatePublicationMedia(file,kind){
 }
 async function uploadVideo(file){
  if(!file||!file.size)return null;
- const max=50*1024*1024;
- // Free storage allows up to 50 MB per object. Try local compression without
+ const max=8*1024*1024;
+ // Buchee caps uploads at 8 MB per video. Try local compression without
  // uploading the original when a supported browser can preserve the sound.
  if(file.size>max){
-  if(typeof window==='undefined'||!window.PatiyizVideoPrepare?.prepare)throw Error('Video 50 MB sınırını aşıyor. 720p MP4 olarak dışa aktarıp tekrar dene.');
+  if(typeof window==='undefined'||!window.PatiyizVideoPrepare?.prepare)throw Error('Video 8 MB sınırını aşıyor. 720p MP4 olarak dışa aktarıp tekrar dene.');
   uploadStatus('Büyük video cihazında sıkıştırılıyor…');
   file=await window.PatiyizVideoPrepare.prepare(file,message=>uploadStatus(message));
  }
- if(file.size>max)throw Error('Video 50 MB altında olmalı. Lütfen videoyu daha düşük çözünürlükte kaydet.');
+ if(file.size>max)throw Error('Video 8 MB altında olmalı. Lütfen videoyu daha düşük çözünürlükte kaydet.');
  if(navigator.onLine===false)throw Error('İnternet bağlantısı yok. Video bağlantı geldiğinde yüklenebilir.');
  const guessed=/\.mov$/i.test(file.name)?'video/quicktime':/\.webm$/i.test(file.name)?'video/webm':/\.mp4$/i.test(file.name)?'video/mp4':'';
  const mime=['video/mp4','video/webm','video/quicktime'].includes(file.type)?file.type:(!file.type||file.type==='application/octet-stream'?guessed:file.type);
