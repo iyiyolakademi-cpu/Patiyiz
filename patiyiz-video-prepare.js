@@ -1,9 +1,9 @@
-/* Private, on-device video preparation. Supabase Free cannot store objects >50MB.
+/* Private, on-device video preparation. Buchee limits videos to 8 MB to reduce data transfer and quota pressure.
  * Where browser codecs permit, reduce video locally and preserve its audio.
  * If unavailable, report the limitation instead of claiming an upload succeeded. */
 (()=>{
  'use strict';
- const LIMIT=50*1024*1024,SAFE=48*1024*1024,MAX_SOURCE=500*1024*1024,MAX_DURATION=600;
+ const LIMIT=8*1024*1024,SAFE=7*1024*1024,MAX_SOURCE=500*1024*1024,MAX_DURATION=90;
  const chooseMime=()=>{
   if(typeof MediaRecorder==='undefined'||typeof MediaRecorder.isTypeSupported!=='function')return '';
   for(const mime of ['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4','video/webm;codecs=vp8,opus','video/webm'])
@@ -37,7 +37,7 @@
    });
    const duration=video.duration;
    if(!Number.isFinite(duration)||duration<=0||duration>MAX_DURATION)
-    throw fail('Otomatik sıkıştırma en fazla 10 dakikalık videoları destekliyor. Daha uzun videoyu kısalt.');
+    throw fail('Bu sürümde en fazla 90 saniyelik videolar destekleniyor. Daha uzun videoyu kısalt.');
    const canvas=document.createElement('canvas');
    const ratio=Math.min(1,720/Math.max(1,video.videoWidth),1280/Math.max(1,video.videoHeight));
    canvas.width=Math.max(2,Math.round(video.videoWidth*ratio/2)*2);
@@ -95,7 +95,7 @@
    progress('Video cihazında sıkıştırılıyor…');
    await video.play().catch(()=>{throw fail('iPhone videoyu otomatik oynatamadı. Galeride 720p MP4 olarak dışa aktar.')});
    const blob=await output;
-   if(!blob.size||blob.size>LIMIT)throw fail('Video 50 MB altına indirilemedi. Videoyu 720p MP4 olarak kaydet.');
+   if(!blob.size||blob.size>LIMIT)throw fail('Video 8 MB altına indirilemedi. Daha kısa ve düşük çözünürlüklü MP4 olarak kaydet.');
    progress('Video hazır, güvenli yükleme başlıyor…');
    return new File([blob],'patiyiz-'+Date.now()+(blob.type==='video/mp4'?'.mp4':'.webm'),{type:blob.type,lastModified:Date.now()});
   }finally{close();video.remove()}
