@@ -1,0 +1,90 @@
+<!doctype html><html lang="tr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Buchee Social • Hafif Sürüm</title><meta name="theme-color" content="#17102a">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#130e20;color:#f3ecff;font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+header{padding:15px 20px;border-bottom:1px solid #403157;background:#1b142a;position:sticky;top:0;z-index:2}
+header b{font-size:20px;color:#c5a8ff}.layout{max-width:960px;margin:20px auto;padding:0 14px;display:grid;grid-template-columns:180px 1fr;gap:18px}
+nav{display:flex;flex-direction:column;gap:7px}nav button{text-align:left}button{border:0;cursor:pointer;border-radius:12px;padding:10px 14px;font:inherit;color:white;background:#36294c}
+button:hover{background:#4c386b}.primary{background:#885be5;font-weight:700}.primary:hover{background:#9e77f0}
+.card{background:#211a31;border:1px solid #423451;padding:19px;border-radius:17px;margin-bottom:14px}
+h1{font-size:22px;margin:0 0 16px}h2{font-size:17px;margin:0 0 9px}
+input,textarea,select{color:#fff;background:#161126;border:1px solid #57446e;border-radius:11px;padding:12px;width:100%;font:inherit}
+input:focus,textarea:focus{outline:2px solid #b58cff}textarea{min-height:94px;resize:vertical}
+form{display:grid;gap:10px}form button{justify-self:start}.muted{color:#bcb0cd}.small{font-size:12px}.tools{display:flex;flex-wrap:wrap;gap:7px}
+.post{white-space:pre-wrap;overflow-wrap:anywhere;margin:14px 0}.meta{color:#bdacce;font-size:13px}
+.login{max-width:420px;margin:60px auto;padding:0 14px}.hide{display:none!important}.notice{padding:12px;margin:12px auto;border:1px solid #9365d1;background:#342149;max-width:960px;border-radius:12px}
+.bubble{padding:12px;background:#3c2855;border-radius:14px;margin-bottom:8px;overflow-wrap:anywhere}.mine{background:#503783;margin-left:15%}
+.row{display:flex;align-items:center;gap:8px;justify-content:space-between}.row>*{min-width:0}
+#logout{float:right}.note{font-size:12px;color:#baaacb;margin-top:10px}
+@media(max-width:700px){.layout{display:block;margin:12px auto;padding-bottom:76px}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;flex-direction:row;justify-content:space-around;background:#1d162df5;border-top:1px solid #534064;padding:8px 4px max(8px,env(safe-area-inset-bottom));z-index:3}
+nav button{padding:9px 7px;font-size:12px;text-align:center}.card{padding:15px;border-radius:15px}.login{margin-top:38px}}
+</style></head><body>
+<header><b>✦ Buchee Social</b><button id="logout" class="hide">Çıkış</button></header>
+<div id="notice" class="notice hide"></div>
+<section id="auth" class="login"><div class="card"><h1>Buchee'ye hoş geldin</h1><p class="muted">Hesabınla giriş yap ya da yeni hesap oluştur.</p>
+<form id="authform"><input id="name" placeholder="Görünen ad (kayıt için)" maxlength="70"><input id="email" type="email" placeholder="E-posta" required autocomplete="email">
+<input id="pass" type="password" placeholder="Şifre (en az 8 karakter)" required minlength="8">
+<button class="primary" id="authbutton">Giriş yap</button></form><button id="mode">Yeni hesap oluştur</button></div></section>
+<div id="layout" class="layout hide"><nav id="nav">
+<button data-tab="feed">Akış</button><button data-tab="questions">Sorular</button><button data-tab="explore">Keşfet</button>
+<button data-tab="messages">Mesajlar</button><button data-tab="profile">Profil</button></nav><main id="main"></main></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.0/dist/umd/supabase.min.js"></script>
+<script>
+"use strict";
+const URL="https://byqfkrjiwefdnhnvjrbq.supabase.co",KEY="sb_publishable_NmrNx9632u62947Hol3DTw_n89-DYP_";
+const e=id=>document.getElementById(id);
+const h=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=t=>new Date(t).toLocaleString("tr-TR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+const box=txt=>'<div class="card muted">'+h(txt)+'</div>';
+let db=null,u=null,register=false,tab="feed",chat="",busy=false;
+function info(s){e("notice").textContent=s;e("notice").classList.remove("hide")}
+function clear(){e("notice").classList.add("hide")}
+function err(x){info(x?.message||String(x))}
+function show(){e("auth").classList.toggle("hide",!!u);e("layout").classList.toggle("hide",!u);e("logout").classList.toggle("hide",!u)}
+async function call(fn){if(busy)return;busy=true;clear();try{await fn()}catch(x){err(x)}finally{busy=false}}
+function title(s){return '<div class="row"><h1>'+h(s)+'</h1><button data-a="refresh">Yenile</button></div>'}
+async function names(ids){if(!ids.length)return {};const q=await db.from("profiles").select("id,display_name,handle").in("id",[...new Set(ids)]);if(q.error)throw q.error;return Object.fromEntries((q.data||[]).map(x=>[x.id,x]))}
+async function feed(){const q=await db.from("posts").select("id,author_id,body,created_at").order("created_at",{ascending:false}).limit(25);if(q.error)throw q.error;
+const ps=q.data||[],n=await names(ps.map(x=>x.author_id));
+const l=ps.length?await db.from("post_likes").select("post_id,user_id").in("post_id",ps.map(x=>x.id)):{data:[]};if(l.error)throw l.error;
+const likes=l.data||[];
+e("main").innerHTML=title("Akış")+'<div class="card"><h2>Bir şeyler paylaş</h2><form id="postform"><textarea id="newpost" maxlength="3000" required placeholder="Ne düşünüyorsun?"></textarea><button class="primary">Paylaş</button></form></div>'+
+(ps.length?ps.map(p=>{const a=n[p.author_id]||{};return '<div class="card"><b>'+h(a.display_name||"Buchee üyesi")+'</b><span class="meta"> @'+h(a.handle||"buchee")+' • '+fmt(p.created_at)+'</span><p class="post">'+h(p.body)+'</p><div class="tools"><button data-a="like" data-id="'+p.id+'" data-active="'+(likes.some(x=>x.post_id===p.id&&x.user_id===u.id)?1:0)+'">♡ '+likes.filter(x=>x.post_id===p.id).length+'</button><button data-a="save" data-id="'+p.id+'">Kaydet</button><button data-a="comment" data-id="'+p.id+'">Yorumla</button></div></div>'}).join(""):box("Henüz paylaşım yok. İlk paylaşımı sen yap!"));}
+async function questions(){const q=await db.from("questions").select("id,title,body,created_at").order("created_at",{ascending:false}).limit(25);if(q.error)throw q.error;
+e("main").innerHTML=title("Sorular")+'<div class="card"><h2>Bir soru sor</h2><form id="qform"><input id="qtitle" minlength="5" maxlength="150" required placeholder="Sorunun başlığı"><textarea id="qbody" maxlength="2000" placeholder="Açıklama"></textarea><button class="primary">Yayınla</button></form></div>'+
+((q.data||[]).length?(q.data||[]).map(x=>'<div class="card"><b>'+h(x.title)+'</b><p class="post">'+h(x.body)+'</p><span class="meta">'+fmt(x.created_at)+'</span><div><button data-a="reply" data-id="'+x.id+'">Yanıtla</button></div></div>').join(""):box("Henüz soru yok."));}
+async function explore(){const q=await db.from("profiles").select("id,display_name,handle,bio").limit(50);if(q.error)throw q.error;
+const f=await db.from("follows").select("followee_id").eq("follower_id",u.id);if(f.error)throw f.error;
+const set=new Set((f.data||[]).map(x=>x.followee_id));
+const a=(q.data||[]).filter(x=>x.id!==u.id);
+e("main").innerHTML=title("Keşfet")+(a.length?a.map(x=>'<div class="card row"><div><b>'+h(x.display_name)+'</b><div class="meta">@'+h(x.handle)+'</div><div class="muted small">'+h(x.bio)+'</div></div><button data-a="follow" data-id="'+x.id+'" data-active="'+(set.has(x.id)?1:0)+'">'+(set.has(x.id)?"Takipten çık":"Takip et")+'</button></div>').join(""):box("Yeni kullanıcılar burada görünecek."));}
+async function messages(){const q=await db.from("profiles").select("id,display_name,handle").limit(100);if(q.error)throw q.error;const people=(q.data||[]).filter(x=>x.id!==u.id);if(!chat&&people.length)chat=people[0].id;
+let msgs=[];if(chat){const m=await db.from("messages").select("sender_id,receiver_id,body,created_at").or("sender_id.eq."+u.id+",receiver_id.eq."+u.id).order("created_at",{ascending:false}).limit(70);if(m.error)throw m.error;msgs=(m.data||[]).filter(x=>x.sender_id===chat||x.receiver_id===chat).reverse()}
+e("main").innerHTML=title("Mesajlar")+'<div class="card"><label>Konuşma</label><select id="chatto">'+people.map(x=>'<option value="'+x.id+'" '+(x.id===chat?"selected":"")+'>'+h(x.display_name)+'</option>').join("")+'</select><p class="note">Mesajlar yalnızca Yenile düğmesine bastığında güncellenir.</p><div>'+msgs.map(x=>'<div class="bubble '+(x.sender_id===u.id?"mine":"")+'">'+h(x.body)+'<div class="small muted">'+fmt(x.created_at)+'</div></div>').join("")+'</div><form id="mform"><input id="mtext" required maxlength="1000" placeholder="Mesaj yaz"><button class="primary" '+(!chat?"disabled":"")+'>Gönder</button></form></div>';}
+async function profile(){const q=await db.from("profiles").select("display_name,handle,bio").eq("id",u.id).maybeSingle();if(q.error)throw q.error;if(!q.data){e("main").innerHTML=box("Profil bulunamadı");return}
+e("main").innerHTML=title("Profilim")+'<div class="card"><form id="pform"><label>Ad</label><input id="pname" minlength="2" maxlength="70" required value="'+h(q.data.display_name)+'"><label>Kullanıcı adı</label><input id="phandle" maxlength="24" pattern="[a-z0-9_]{3,24}" required value="'+h(q.data.handle)+'"><label>Biyografi</label><textarea id="pbio" maxlength="500">'+h(q.data.bio)+'</textarea><button class="primary">Kaydet</button></form></div>';}
+async function load(){if(!u)return;show();e("main").innerHTML=box("Yükleniyor...");try{if(tab==="feed")await feed();if(tab==="questions")await questions();if(tab==="explore")await explore();if(tab==="messages")await messages();if(tab==="profile")await profile();}catch(x){err(x);e("main").innerHTML=box("Yüklenemedi. Lütfen yeniden deneyin.");}}
+e("mode").onclick=()=>{register=!register;e("authbutton").textContent=register?"Hesap oluştur":"Giriş yap";e("mode").textContent=register?"Zaten hesabım var":"Yeni hesap oluştur";};
+e("authform").onsubmit=x=>{x.preventDefault();call(async()=>{const email=e("email").value.trim(),password=e("pass").value;if(register){const q=await db.auth.signUp({email,password,options:{data:{display_name:e("name").value.trim()||"Buchee Üyesi"}}});if(q.error)throw q.error;info("Kayıt alındı. E-posta onayı isteniyorsa gelen kutunu kontrol et.");}else{const q=await db.auth.signInWithPassword({email,password});if(q.error)throw q.error;u=q.data.user;await load()}})};
+e("logout").onclick=()=>call(async()=>{const q=await db.auth.signOut();if(q.error)throw q.error;u=null;show()});
+document.addEventListener("click",x=>{const n=x.target.closest("[data-tab]");if(n){tab=n.dataset.tab;load();return}
+const b=x.target.closest("[data-a]");if(!b)return;call(async()=>{let r;const id=b.dataset.id,active=b.dataset.active==="1";switch(b.dataset.a){
+case"refresh":await load();return;
+case"like":r=active?await db.from("post_likes").delete().eq("post_id",id).eq("user_id",u.id):await db.from("post_likes").insert({post_id:id,user_id:u.id});break;
+case"save":r=await db.from("post_saves").upsert({post_id:id,user_id:u.id});break;
+case"comment":{const body=prompt("Yorumunu yaz");if(!body?.trim())return;r=await db.from("comments").insert({post_id:id,author_id:u.id,body:body.trim().slice(0,750)});break}
+case"follow":r=active?await db.from("follows").delete().eq("followee_id",id).eq("follower_id",u.id):await db.from("follows").insert({followee_id:id,follower_id:u.id});break;
+case"reply":{const body=prompt("Yanıtın");if(!body?.trim())return;r=await db.from("replies").insert({question_id:id,author_id:u.id,body:body.trim().slice(0,1000)});break}}
+if(r?.error)throw r.error;await load();});});
+document.addEventListener("change",x=>{if(x.target.id==="chatto"){chat=x.target.value;load()}});
+document.addEventListener("submit",x=>{const f=x.target.id;if(!["postform","qform","mform","pform"].includes(f))return;x.preventDefault();call(async()=>{let r;
+if(f==="postform")r=await db.from("posts").insert({author_id:u.id,body:e("newpost").value.trim()});
+if(f==="qform")r=await db.from("questions").insert({author_id:u.id,title:e("qtitle").value.trim(),body:e("qbody").value.trim()});
+if(f==="mform")r=await db.from("messages").insert({sender_id:u.id,receiver_id:chat,body:e("mtext").value.trim()});
+if(f==="pform")r=await db.from("profiles").update({display_name:e("pname").value.trim(),handle:e("phandle").value.trim().toLowerCase(),bio:e("pbio").value.trim()}).eq("id",u.id);
+if(r?.error)throw r.error;await load();});});
+(async()=>{try{if(!window.supabase)throw Error("Bağlantı bileşeni yüklenmedi.");db=window.supabase.createClient(URL,KEY);const r=await db.auth.getSession();if(r.error)throw r.error;u=r.data.session?.user||null;show();if(u)await load();
+db.auth.onAuthStateChange((_,s)=>{setTimeout(()=>{const old=u?.id;u=s?.user||null;if(old!==u?.id){show();if(u)load()}},0)})}catch(x){err(x)}})();
+</script></body></html>
