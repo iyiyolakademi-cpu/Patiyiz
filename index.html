@@ -1,7 +1,550 @@
-<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Buchee Social</title><meta name="theme-color" content="#17102a">
-<meta http-equiv="refresh" content="0;url=./buchee-lite.html"><script>location.replace(new URL("./buchee-lite.html",location.href));</script></head>
-<body style="font:16px system-ui;background:#130e20;color:white;padding:24px"><h1>Buchee Social</h1>
-<p>Hafif web sürümüne yönlendiriliyorsunuz.</p>
-<p><a style="color:#c6a9ff" href="./buchee-lite.html">Buchee Social'ı aç</a></p>
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8"><script id="patiyiz-early-error-monitor">(function(){
+ /* Capture only error categories before the main app is ready; never store URLs or messages. */
+ var queue=window.__patiEarlyErrors=window.__patiEarlyErrors||[];
+ function note(kind){if(queue.length<10)queue.push(kind)}
+ window.addEventListener('error',function(event){
+  note((event.target instanceof HTMLImageElement||event.target instanceof HTMLVideoElement)?'asset':'script');
+ },true);
+ window.addEventListener('unhandledrejection',function(){note('promise')});
+})();</script><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#14021e"><style id="buchee-launch-critical">
+html{background:#14021e}
+#startup:not(.hidden){position:fixed!important;inset:0!important;z-index:1000000!important;display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;height:100vh!important;height:100dvh!important;overflow:hidden!important;background:#14021e url("buchee-splash-neon-curves.svg?v=20261102") center/cover no-repeat!important;color:#fff!important;opacity:1;visibility:visible;isolation:isolate}
+#startup .pati-splash-center{position:relative;z-index:2;width:min(82vw,435px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:17px}
+#startup .pati-splash-icon{display:block;width:min(39vw,164px);max-width:164px;height:auto;aspect-ratio:1/1;object-fit:contain;border:0;box-shadow:none}
+#startup .buchee-opening-caption{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 52px);left:0;right:0;text-align:center;color:#e9cfff;font:600 12px/1.4 system-ui,sans-serif;letter-spacing:.14em}
+#startup .buchee-launch-recovery[hidden]{display:none!important}
+#startup .buchee-launch-recovery{position:absolute;z-index:10;inset:0;padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;background:#14021e;color:#fff;font:500 15px/1.5 system-ui,sans-serif}
+#startup .buchee-launch-recovery strong{font-size:21px}
+#startup .buchee-launch-recovery p{max-width:300px;margin:0;color:#ead9f6}
+#startup .buchee-launch-recovery button{min-width:160px;min-height:46px;padding:10px 20px;border:0;border-radius:13px;background:#eee1ff;color:#2d1048;font:800 15px system-ui,sans-serif;cursor:pointer}
+</style><script id="buchee-launch-watchdog">(function(){
+window.__bucheeLaunchStartedAt=Date.now();
+window.__bucheeLaunchResolved=false;
+window.__bucheeLaunchWatchdog=window.setTimeout(function(){
+ if(window.__bucheeLaunchResolved)return;
+ var splash=document.getElementById('startup');
+ var recovery=splash&&splash.querySelector('[data-buchee-launch-recovery]');
+ if(recovery)recovery.hidden=false;
+},10000);
+document.addEventListener('click',function(event){
+ if(event.target.closest&&event.target.closest('[data-buchee-launch-retry]'))window.location.reload();
+});
+})();</script><script>(function(){try{var ua=navigator.userAgent||'';var ios=/iPhone|iPad|iPod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);var standalone=navigator.standalone===true||(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches);if(ios&&standalone)document.documentElement.classList.add('patiyiz-ios-reels')}catch(e){}})();</script><script>document.documentElement.dataset.patiTheme="light";try{localStorage.removeItem("patiyiz_theme")}catch(e){}</script><link rel="manifest" href="manifest.webmanifest?v=20261104-uploaded-v3"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="apple-touch-icon" sizes="180x180" href="buchee-app-icon-180.png?v=20261104-uploaded-v3"><meta name="description" content="Buchee Social: Paylaş, keşfet, bağlan.">
+<title>Buchee Social — Paylaş, keşfet, bağlan</title>
+<link rel="canonical" href="https://bucheesocial.com/">
+<meta property="og:type" content="website"><meta property="og:locale" content="tr_TR">
+<meta property="og:site_name" content="Buchee Social"><meta property="og:title" content="Buchee Social — Paylaş, keşfet, bağlan">
+<meta property="og:description" content="Buchee Social ile gönderi, hikâye ve Reels paylaş, yeni insanları keşfet.">
+<meta property="og:url" content="https://bucheesocial.com/">
+<meta property="og:image" content="https://bucheesocial.com/buchee-app-icon-512.png?v=20261104-uploaded-v3"><meta property="og:image:width" content="512"><meta property="og:image:height" content="512">
+<meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://bucheesocial.com/buchee-app-icon-512.png?v=20261104-uploaded-v3">
+<link rel="preconnect" href="https://tqnvvrgrsxrvzxbjbsgl.supabase.co" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=20261023-paw-design-1&amp;mobile_ui=20261101v4"><link rel="stylesheet" href="patiyiz-inspired.css?v=20261024-release-reliability-1&amp;chat_stable=1&amp;premium=1&amp;health_badges=1&amp;feed_saves_coins=1&amp;chat_stable=1&amp;camera_first=1&amp;reels20261025=1&amp;profile20261025=1&amp;igcomments20261025=1&amp;micro20261025=1&amp;no_studio20261025=1&amp;camera3=20261027&amp;framing=20261027&amp;cameraq=1&amp;fullbleed=1&amp;iphonefix=20261027&amp;camera6=1&amp;systempicker=1&amp;icons=20261027&amp;mediaratio=20261027&amp;selfiemirror=20261027&amp;mobile_ui=20261101v4"><link rel="stylesheet" href="ios-reels.css?v=20261025-ios-reels-1"><link rel="stylesheet" href="follower-milestones.css?v=20261030-cash-tiers-v1"><link rel="stylesheet" href="dm-fullscreen.css?v=20261025-fullscreen-1&amp;dm-tabs-20261029=1"><link rel="icon" type="image/svg+xml" sizes="any" href="buchee-concept4-icon.svg?v=20261104-uploaded-v3"><link rel="icon" type="image/png" sizes="48x48" href="buchee-app-icon-48.png?v=20261104-uploaded-v3"><link rel="shortcut icon" href="buchee-concept4-icon.svg?v=20261104-uploaded-v3">
+<!-- BucheeSocial release refresh: 2026-10-22 / explore and notification navigation -->
+
+<link rel="stylesheet" href="pets-completion.css?v=20261025-2">
+<link rel="stylesheet" href="reels-stage4.css?v=1">
+<link rel="stylesheet" data-views="knowledge" data-href="knowledge-center-v2.css?v=20261025-knowledge-v2">
+<link rel="stylesheet" data-views="education" data-href="education-stage7.css?v=20261025-education-v2">
+
+<link rel="stylesheet" data-views="lost" data-href="lost-stage9.css?v=20261025-lost-v2">
+<link rel="stylesheet" data-views="adoption" data-href="adoption-stage10.css?v=20261025-adoption-v2">
+<link rel="stylesheet" data-views="care my-pet" data-href="care-stage11.css?v=20261025-care-v2">
+<link rel="stylesheet" data-views="wellness my-pet" data-href="wellness-stage12.css?v=20261025-wellness-v2">
+<link rel="stylesheet" data-views="healthfile my-pet" data-href="health-stage13.css?v=20261025-health-v2">
+<link rel="stylesheet" href="buchee-core.css?v=283940695a28b0c6">
+<template id="buchee-core-style-sources">
+<link rel="stylesheet" href="notifications-stage14.css?v=20261025-notifications-v2">
+<link rel="stylesheet" href="stage15-navigation-qa.css?v=20261025-final-qa-v1">
+<link rel="stylesheet" href="instagram-share-clean.css?v=20261025-instagram-share-1">
+<link rel="stylesheet" href="post-detail-twitter-text-stage16.css?v=20261025-detail-v1"><link rel="stylesheet" href="profile-explore-coin-polish.css?v=20261025-storyswipe-v2"><link rel="stylesheet" href="patiyiz-mobile-rewards-shop-20261025.css?v=1"><link rel="stylesheet" href="patiyiz-ux-hayvanim-20261025.css?v=1"><link rel="stylesheet" href="patiyiz-shared-create-studio-20261025.css?v=1">
+<link rel="stylesheet" href="release-ux-polish-20261028.css?v=1">
+<link rel="stylesheet" href="profile-instagram-polish-20261028.css?v=1">
+<link rel="stylesheet" href="menu-color-polish-20261028.css?v=1">
+<link rel="stylesheet" href="section-colors-20261028.css?v=1">
+<link rel="stylesheet" href="hayvanim-hub-20261028.css?v=2">
+<link rel="stylesheet" href="simple-pet-pages-20261028.css?v=1">
+<link rel="stylesheet" href="pet-center-linked-polish-20261028.css?v=1">
+<link rel="stylesheet" href="pet-simple-a-20261028.css?v=1">
+<link rel="stylesheet" href="shop-contrast-refresh-20261028.css?v=1">
+<link rel="stylesheet" href="pet-hub-unified-v3-20261028.css?v=2">
+<link rel="stylesheet" href="pet-reference-redesign-20261028.css?v=1">
+<link rel="stylesheet" href="patiyiz-five-reference-screens-20261028.css?v=2">
+<link rel="stylesheet" href="patiyiz-eight-phones-final-20261028.css?v=2">
+<link rel="stylesheet" href="patiyiz-feature-simplification-20261028.css?v=1">
+<link rel="stylesheet" href="patiyiz-collab-following-20261028.css?v=1">
+<link rel="stylesheet" href="patiyiz-header-notifications-community-pins-20261028.css?v=1">
+<link rel="stylesheet" href="patiyiz-academy-learning-path-20261028.css?v=1">
+<link rel="stylesheet" href="patiyiz-notification-delete-dm-verified-20261028.css?v=1">
+<link rel="stylesheet" href="patiyiz-menu-pet-profile-portrait-20261028.css?v=1">
+<link rel="stylesheet" href="patiyiz-desktop-mobile-parity-chat-delete-20261028.css?v=1">
+<link rel="stylesheet" href="patiyiz-centered-logo-profile-story-dm-images-20261028.css?v=1">
+<link rel="stylesheet" href="patiyiz-profile-chat-photo-polish-20261028.css?v=1">
+<link rel="stylesheet" href="patiyiz-social-private-groups-20261028.css?v=3">
+<link rel="stylesheet" href="patiyiz-social-phase1-20261028.css?v=1">
+<link rel="stylesheet" href="patiyiz-story-community-carousel-20261028.css?v=1&amp;story-activity-20261029=1">
+<link rel="stylesheet" href="patiyiz-instagram-reels-dm-story-ring-20261028.css?v=1">
+<link rel="stylesheet" href="patiyiz-mobile-photo-review-qa-20261028.css?v=1">
+<link rel="stylesheet" href="patiyiz-profile-links-general-20261028.css?v=1">
+<link rel="stylesheet" href="patiyiz-mobile-full-page-editors-20261028.css?v=1">
+<link rel="stylesheet" href="patiyiz-micro-motion-20261029.css?v=2-no-startup-paws">
+<link rel="stylesheet" href="patiyiz-desktop-responsive-story-20261029.css?v=1">
+<link rel="stylesheet" href="patiyiz-delight-20261029.css?v=1">
+<link rel="stylesheet" href="patiyiz-theme-contrast-20261029.css?v=1">
+<link rel="stylesheet" href="patiyiz-streak-popup-20261029.css?v=3-streak-tamam">
+<link rel="stylesheet" href="patiyiz-dark-contrast-audit-20261029.css?v=1">
+
+<link rel="stylesheet" href="patiyiz-story-view-time-20261029.css?v=1">
+<link rel="stylesheet" href="patiyiz-theme-unified-20261029.css?v=2">
+<link rel="stylesheet" href="patiyiz-social-quality-20261029.css?v=1">
+<link rel="stylesheet" href="patiyiz-polish-collab-dm-story-20261029.css?v=3">
+<link rel="stylesheet" href="patiyiz-dm-content-studio-20261029.css?v=1">
+<link rel="stylesheet" href="patiyiz-neutral-chat-profile-20261029.css?v=1">
+<link rel="stylesheet" href="patiyiz-profile-chat-repair-20261029.css?v=1&amp;text_feed=20261029">
+<link rel="stylesheet" href="patiyiz-story-seen-dark-final-20261029.css?v=1">
+<link rel="stylesheet" href="patiyiz-creator-crop-20261029.css?v=1">
+<link rel="stylesheet" href="patiyiz-compose-stability-20261029.css?v=1">
+<link rel="stylesheet" href="patiyiz-settings-private-20261030.css?v=1">
+<link rel="stylesheet" href="patiyiz-direct-reposts-dm-media-20261030.css?v=1">
+<link rel="stylesheet" href="patiyiz-story-media-mentions-20261030.css?v=1">
+
+<link rel="stylesheet" href="patiyiz-mention-mobile-fix-20261030.css?v=1">
+<link rel="stylesheet" href="patiyiz-blue-mentions-dm-20261030.css?v=2">
+<link rel="stylesheet" href="patiyiz-comment-profile-only-20261030.css?v=1">
+<link rel="stylesheet" href="patiyiz-post-likers-fullscreen-20261030.css?v=1">
+<link rel="stylesheet" href="patiyiz-compact-shared-story-20261030.css?v=1">
+<link rel="stylesheet" href="patiyiz-black-outgoing-messages-20261030.css?v=1"><link rel="stylesheet" href="patiyiz-dm-reply-contrast-jump-20261030.css?v=1">
+<link rel="stylesheet" href="patiyiz-weekly-leaders-20261031.css?v=2-top-five"><link rel="stylesheet" href="patiyiz-mobile-auth-redesign-20261030.css?v=3-separate-name-surname">
+<link rel="stylesheet" href="patiyiz-clean-story-dm-shares-20261030.css?v=1">
+<link rel="stylesheet" href="patiyiz-pan-zoom-photos-20261030.css?v=1">
+<link rel="stylesheet" href="patiyiz-crop-insights-mobile-final-20261029.css?v=2-light-creator-header&amp;stability=20261030&amp;ownstory=20261030&story_composer_single_share=20261030&amp;story-audience-white=20261030&amp;avatar_story_crop_fix=20261030&amp;story_bottom_lower=20261030&amp;activity_bottom_left_no_like=20261030">
+<link rel="stylesheet" href="patiyiz-profile-professional-title-20261031.css?v=1">
+<link rel="stylesheet" href="patiyiz-profile-title-picker-20261031.css?v=1">
+<link rel="stylesheet" href="patiyiz-story-text-contrast-20261031.css?v=1">
+<link rel="stylesheet" href="patiyiz-profile-white-story-cta-fix-20261031.css?v=2-fix-cta-transform">
+<link rel="stylesheet" href="patiyiz-story-upload-age-20261031.css?v=1">
+<link rel="stylesheet" href="patiyiz-home-feed-compact-20261031.css?v=4-two-feed-modes&amp;mobile_ui=20261101v4">
+<link rel="stylesheet" href="patiyiz-saved-priority-20261031.css?v=20261102-no-double-back2">
+<link rel="stylesheet" href="patiyiz-quality-six-20261031.css?v=1"><link rel="stylesheet" href="patiyiz-clean-release-20261031.css?v=1"><link rel="stylesheet" href="patiyiz-feed-menu-chat-mobile-20261031.css?v=1">
+<link rel="stylesheet" href="patiyiz-interaction-polish-20261031.css?v=6-responsive-reels-stability&amp;mobile_ui=20261101v4">
+<link rel="stylesheet" href="patiyiz-unified-social-design-20261031.css?v=1&amp;mobile_ui=20261101v4">
+<link rel="stylesheet" href="patiyiz-fullscreen-reels-profile-20261031.css?v=1">
+<link rel="stylesheet" href="patiyiz-colorful-camera-chooser-20261031.css?v=5-icon-header-fix">
+<link rel="stylesheet" href="patiyiz-share-profile-story-polish-20261031.css?v=1">
+<link rel="stylesheet" href="patiyiz-profile-menu-coin-layout-20261031.css?v=1">
+<link rel="stylesheet" href="patiyiz-reels-controls-media-icons-20261031.css?v=2-no-gloss-icons">
+<link rel="stylesheet" href="patiyiz-social-immersive-v2-20261031.css?v=1&amp;mobile_ui=20261101v4">
+<link rel="stylesheet" href="patiyiz-reels-compact-controls-20261031.css?v=1">
+<link rel="stylesheet" href="patiyiz-reels-fast-feed-20261031.css?v=2">
+<link rel="stylesheet" href="patiyiz-balance-light-chat-20261031.css?v=2-paticoin">
+<link rel="stylesheet" href="patiyiz-mobile-feed-switch-20261101.css?v=1-mobile-first"><link rel="stylesheet" href="patiyiz-dm-request-feed-polish-20261101.css?v=2-mobile-icons-compact-actions&amp;mobile_ui=20261101v4"><link rel="stylesheet" href="patiyiz-feed-no-black-bars-20261101.css?v=2-top-media-strip"><link rel="stylesheet" href="patiyiz-streak-mobile-fix-20261101.css?v=1"><link rel="stylesheet" href="patiyiz-dm-longpress-20261101.css?v=3-context-overlay"><link rel="stylesheet" href="patiyiz-101-series-20261101.css?v=20261104-five-quiz-v4"><link rel="stylesheet" href="patiyiz-lesson-workshop-20261101.css?v=1"><link rel="stylesheet" href="patiyiz-photo-filters-right-menu-20261101.css?v=2"><link rel="stylesheet" href="patiyiz-media-store-refresh-20261101.css?v=4"><link rel="stylesheet" href="patiyiz-dm-emoji-picker-20261101.css?v=1"><link rel="stylesheet" href="patiyiz-mobile-three-screens-20261101.css?v=1"><link rel="stylesheet" href="patiyiz-mobile-layout-fixes-20261101.css?v=1"><link rel="stylesheet" href="patiyiz-mobile-icons-actions-insights-20261101.css?v=4-profile-nav"><link rel="stylesheet" href="patiyiz-reels-profile-final-20261101.css?v=3-eye-save-cover"><link rel="stylesheet" href="patiyiz-explore-choice-20261101.css?v=2-fix">
+</template><style id="pati-save-right-final">#main-content .pati-feed-card .pati-actionbar.pati-social-actions{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;justify-content:flex-start!important;width:100%!important}#main-content .pati-feed-card .pati-actionbar.pati-social-actions>button[data-action="save"]{order:999!important;margin-inline-start:auto!important;margin-inline-end:0!important;position:relative!important;inset:auto!important;float:none!important;transform:none!important;flex:0 0 43px!important;min-width:43px!important;max-width:43px!important;border-left:0!important}#main-content .pati-feed-card .pati-actionbar.pati-social-actions>button[data-action="save"] .pati-engagement-metric{display:none!important}</style><style id="pati-search-clear-style">#main-content .pati-search-top{display:flex!important;align-items:center!important;gap:10px!important}#main-content .pati-search-field{flex:1 1 auto;min-width:0}#main-content .pati-search-clear{border:0!important;background:#eef0f3!important;color:#333740!important;border-radius:50%!important;width:30px!important;height:30px!important;flex:0 0 30px!important;font-size:23px!important;line-height:1!important;display:grid!important;place-items:center!important}#main-content .pati-search-results:empty{min-height:55vh}#main-content .pati-feed-card .pati-actionbar.pati-social-actions>button[data-action="save"]{margin-left:auto!important;justify-self:end!important;order:999!important;align-items:center!important;justify-content:center!important}</style><style>.pati-recent-search-title{margin:12px 16px;color:#17191d;font-size:14px}.pati-search-remove{font-size:25px;color:#8b8f98;padding:12px;min-width:44px;text-align:center;position:relative;z-index:2}.pati-search-user{display:flex;align-items:center}</style><link rel="stylesheet" href="patiyiz-daily-reputation-20261101.css?v=3-inline-poll"><link rel="stylesheet" href="patiyiz-pull-refresh-20261101.css?v=1"><link rel="stylesheet" href="patiyiz-following-likes-20261101.css?v=2-dates"><link rel="stylesheet" href="patiyiz-portrait-notification-20261101.css?v=1"><style id="buchee-auth-only-20261102">#auth-root .auth-story{display:none!important}#auth-root .auth-shell{display:flex!important;justify-content:center!important;align-items:center!important;background:#fff!important}#auth-root .auth-pane{width:100%!important;max-width:540px!important;margin-inline:auto!important}#auth-root .auth-brand{display:flex!important;flex-direction:column!important;align-items:center!important;text-align:center!important;gap:8px!important}#auth-root .auth-brand .auth-matching-logo{display:block!important;width:min(78vw,350px)!important;height:auto!important;max-width:100%!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;border-radius:0!important}#auth-root .auth-brand .auth-matching-logo img{display:block!important;width:100%!important;height:auto!important;max-width:100%!important;object-fit:contain!important;background:transparent!important;border-radius:0!important}#auth-root .auth-brand h1{display:none!important}#auth-root .auth-card{background:#fff!important}#auth-root .auth-eyebrow{color:#6410bc!important}@media(max-width:740px){#auth-root .auth-shell{align-items:flex-start!important}#auth-root .auth-pane{max-width:100%!important}#auth-root .auth-brand .auth-matching-logo{width:min(70vw,285px)!important}}/* Refine the existing purple/pink SVG wordmark without swapping its artwork. */#auth-root .auth-pane .auth-brand{width:100%!important;margin-inline:auto!important;align-items:center!important;text-align:center!important}#auth-root .auth-pane .auth-brand .auth-matching-logo{width:min(68vw,300px)!important;max-width:100%!important;margin:0 auto!important;flex:none!important;transform:none!important}#auth-root .auth-pane .auth-brand .auth-matching-logo img{display:block!important;width:100%!important;height:auto!important;margin:0 auto!important;image-rendering:auto!important}@media(max-width:740px){#auth-root .auth-pane .auth-brand .auth-matching-logo{width:min(70vw,285px)!important}}</style></head><body><div id="pati-portrait-required" role="status"><strong>Telefonunu dik konuma getir</strong><span>Buchee Social mobil uygulaması dikey kullanım için tasarlandı.</span></div><div id="startup" role="status" aria-label="Buchee Social açılıyor"><div class="buchee-opening-halo" aria-hidden="true"></div><div class="pati-splash-center"><img class="pati-splash-icon" src="buchee-splash-wordmark-white-pink-20261104.svg?v=20261104-bold-white-pink-v6" alt="Buchee Social" fetchpriority="high" decoding="sync"><svg class="buchee-opening-signature" viewBox="0 0 280 42" fill="none" aria-hidden="true"><path d="M10 30C57 9 77 9 116 24S181 37 218 18S255 12 270 15" stroke="url(#bo-grad)" stroke-width="3.5" stroke-linecap="round"/><defs><linearGradient id="bo-grad" x1="0" y1="0" x2="280" y2="0"><stop stop-color="#a650fb"/><stop offset="1" stop-color="#ff43a8"/></linearGradient></defs></svg></div><span class="buchee-opening-caption">Paylaş. Keşfet. Bağlan.</span><div class="buchee-launch-recovery" data-buchee-launch-recovery hidden role="alert"><strong>Bağlantı beklenenden uzun sürüyor</strong><p>Uygulama açılmazsa internet bağlantını kontrol edip yeniden deneyebilirsin.</p><button type="button" data-buchee-launch-retry>Yeniden dene</button></div></div>
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden" xmlns="http://www.w3.org/2000/svg">
+<symbol id="i-settings" viewBox="0 0 24 24"><path d="M12 2.7v2M12 19.3v2M4.7 4.7l1.4 1.4m11.8 11.8 1.4 1.4M2.7 12h2m14.6 0h2M4.7 19.3l1.4-1.4M17.9 6.1l1.4-1.4"></path><path d="M9 4.5 10 3h4l1 1.5 2 1 1.8-.3 2 3.4-1.2 1.4v4l1.2 1.4-2 3.4-1.8-.3-2 1L14 21h-4l-1-1.5-2-1-1.8.3-2-3.4 1.2-1.4v-4L3.2 8.6l2-3.4L7 5.5z"></path><circle cx="12" cy="12" r="3"></circle></symbol>
+<symbol id="i-paw" viewbox="0 0 24 24"><circle cx="5" cy="8" r="1.4"></circle><circle cx="10" cy="5" r="1.4"></circle><circle cx="16" cy="5.5" r="1.4"></circle><circle cx="20" cy="9" r="1.4"></circle><path d="M11.5 12.3c-2.1 0-2.9 2.1-4.4 3.3-2.5 2-1.1 5.5 1.9 4.5 1.6-.6 2.8-1.7 4.4-1.5 1.7.2 3 1.9 4.6 1.6 3.4-.6 4.5-3.4 2-5.2-1.7-1.2-2.4-2.7-4.5-2.7z"></path></symbol>
+<symbol id="i-home" viewbox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V10z"></path><path d="M9 21v-8h6v8"></path></symbol>
+<symbol id="i-compass" viewbox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="m15 9-2 5-5 2 2-5z"></path></symbol>
+<symbol id="i-users" viewbox="0 0 24 24"><path d="M16 20v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 20v-2a4 4 0 0 0-3-3.87M16 3.15a4 4 0 0 1 0 7.7"></path></symbol>
+<symbol id="i-bell" viewbox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"></path></symbol>
+<symbol id="i-user" viewbox="0 0 24 24"><circle cx="12" cy="7" r="4"></circle><path d="M4 21v-2a8 8 0 0 1 16 0v2"></path></symbol>
+<symbol id="i-plus" viewbox="0 0 24 24"><path d="M12 4v16M4 12h16"></path></symbol>
+<symbol id="i-arrow" viewbox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"></path></symbol>
+<symbol id="i-library" viewbox="0 0 24 24"><path d="M4 4h5v16H4zM10 3h5v17h-5zM15 7l4-1 3 13-4 1z"></path></symbol>
+<symbol id="i-search" viewbox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></symbol>
+<symbol id="i-thumbs-down" viewBox="0 0 24 24"><path d="M17 14V2H8.8a2 2 0 0 0-1.9 1.3l-3.7 10A2 2 0 0 0 5 16h5.4l-1 4.7a1.2 1.2 0 0 0 1.9 1.2L17 17"/><path d="M17 2h4v12h-4"/></symbol>
+<symbol id="i-heart" viewbox="0 0 24 24"><path d="M20.8 4.7a5.5 5.5 0 0 0-7.8 0L12 5.8l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.5a5.5 5.5 0 0 0 0-7.8z"></path></symbol>
+<symbol id="i-comment" viewbox="0 0 24 24"><path d="M20 11.5a8 8 0 0 1-8 8 9 9 0 0 1-4.2-1L3 20l1.5-4.7A8 8 0 1 1 20 11.5z"></path></symbol>
+<symbol id="i-bookmark" viewbox="0 0 24 24"><path d="M5 4h14v17l-7-5-7 5z"></path></symbol>
+<symbol id="i-image" viewbox="0 0 24 24"><rect height="18" rx="3" width="18" x="3" y="3"></rect><circle cx="9" cy="9" r="1.5"></circle><path d="m21 16-5-5L5 21"></path></symbol>
+<symbol id="i-sparkles" viewbox="0 0 24 24"><path d="m12 2 1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6zM19 17l.7 2.3L22 20l-2.3.7L19 23l-.7-2.3L16 20l2.3-.7z"></path></symbol>
+<symbol id="i-close" viewbox="0 0 24 24"><path d="M5 5 19 19M19 5 5 19"></path></symbol>
+<symbol id="i-check" viewbox="0 0 24 24"><path d="m4 12 5 5L20 6"></path></symbol>
+<symbol id="i-message" viewbox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.5 0-2.9-.4-4.1-1.1L3 21l2.1-5.4A8.5 8.5 0 1 1 21 11.5z"></path></symbol>
+<symbol id="i-location" viewbox="0 0 24 24"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 0 1 16 0z"></path><circle cx="12" cy="10" r="2.5"></circle></symbol>
+<symbol id="i-dog" viewbox="0 0 24 24"><path d="M8 9 6 5 2 4v7l3 3v5h4v-3h6v3h4v-6l3-4-3-5-4 4H8z"></path><circle cx="16.5" cy="10" r=".7"></circle></symbol>
+<symbol id="i-camera" viewbox="0 0 24 24"><rect height="15" rx="3" width="18" x="3" y="6"></rect><path d="M8 6 9.5 3h5L16 6"></path><circle cx="12" cy="13.5" r="3.5"></circle></symbol>
+<symbol id="i-send" viewbox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4zM22 2 11 13"></path></symbol>
+<symbol id="i-sort" viewbox="0 0 24 24"><path d="M4 6h16M7 12h10m-7 6h4"></path></symbol>
+<symbol id="i-shield" viewbox="0 0 24 24"><path d="M12 2 20 5v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5z"></path><path d="m9 12 2 2 4-4"></path></symbol>
+<symbol id="i-more" viewbox="0 0 24 24"><circle cx="5" cy="12" r="1"></circle><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle></symbol>
+<symbol id="i-reels-tab" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2"></rect><path d="M3 8V6c0-1 .7-2 1.7-2.2L17.5 2c1-.2 2 .6 2.2 1.6L20 6.5 3 9m4-4 3 3m3-4 3 3m-9 6h10"></path></symbol>
+<symbol id="i-up" viewbox="0 0 24 24"><path d="M12 19V5m-6 6 6-6 6 6"></path></symbol>
+<symbol id="i-clock" viewbox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></symbol>
+<symbol id="i-smile" viewbox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M8 14c1 2 2 3 4 3s3-1 4-3M8.5 9h.1m6.8 0h.1"></path></symbol>
+<symbol id="i-edit" viewbox="0 0 24 24"><path d="M12 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-7M16 4l4 4-9 9-4 1 1-4z"></path></symbol>
+<symbol id="i-info" viewbox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5m0-8h.01"></path></symbol>
+<symbol id="i-alert" viewbox="0 0 24 24"><path d="M12 3 2 20h20L12 3zM12 9v5m0 3h.01"></path></symbol>
+<symbol id="i-calendar" viewbox="0 0 24 24"><rect height="16" rx="2" width="18" x="3" y="5"></rect><path d="M7 3v5m10-5v5M3 10h18M8 15h3"></path></symbol>
+<symbol id="i-inbox" viewbox="0 0 24 24"><path d="M3 5h18v13H3zM3 13h5l2 3h4l2-3h5"></path></symbol>
+<symbol id="i-grid" viewbox="0 0 24 24"><rect height="7" rx="2" width="7" x="3" y="3"></rect><rect height="7" rx="2" width="7" x="14" y="3"></rect><rect height="7" rx="2" width="7" x="3" y="14"></rect><rect height="7" rx="2" width="7" x="14" y="14"></rect></symbol>
+<symbol id="i-trash" viewbox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3m4 0-1 14H6L5 7m5 4v6m4-6v6"></path></symbol>
+<symbol id="i-chat" viewbox="0 0 24 24"><rect height="16" rx="4" width="20" x="2" y="3"></rect><path d="m7 19-1 3 6-3M7 8h10m-10 5h6"></path></symbol>
+<symbol id="i-volume" viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 9a5 5 0 0 1 0 6M18 6a9 9 0 0 1 0 12"/></symbol>
+<symbol id="i-volume-x" viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="m17 9 5 6m0-6-5 6"/></symbol>
+<symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8"/></symbol>
+<symbol id="i-message-circle" viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.5 0-3-.4-4.2-1.1L3 21l1.5-5.2a8.5 8.5 0 1 1 16.5-4.3Z"/></symbol>
+<symbol id="i-post-create" viewBox="0 0 24 24"><rect x="3.1" y="3.1" width="17.8" height="17.8" rx="4"/><circle cx="8.4" cy="8.1" r="1.65"/><path d="m4 17 4.6-4.5 3 2.9 3.7-4 5.2 5.8"/><path d="M17.1 5.7h3.2M18.7 4.1v3.2"/></symbol>
+<symbol id="i-story-create" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.2" stroke-dasharray="2.6 2.4"/><path d="M12 7.6v8.8M7.6 12h8.8" stroke-linecap="round"/></symbol>
+<symbol id="i-reels-create" viewBox="0 0 24 24"><rect x="3" y="8.4" width="18" height="12.1" rx="2.1"/><path d="M3.2 8.2 5.6 3h14.8l-2.5 5.2M8.5 3l-2.4 5.2m8-5.2-2.4 5.2m7.9 0H3"/><path d="m10.2 11.8 5.2 2.6-5.2 2.6z" stroke-linejoin="round"/></symbol>
+<symbol id="i-text-create" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="m8 10 2-3 2 3m-3.4-1h2.8M14 7h3M14 11h3M7 15h10M7 18h7"/></symbol>
+<symbol id="i-gauge" viewBox="0 0 24 24"><path d="M5 18a8.4 8.4 0 1 1 14 0"/><path d="m12 14 3.9-4M7.2 15.7l-.8-.8M12 6.8v1.4M17 9.6l1-1"/><circle cx="12" cy="14.1" r="1"/></symbol></svg>
+
+<section id="auth-root" class="auth-root hidden" aria-label="Hesap girişi"></section>
+<div id="app-root" class="hidden">
+  <header class="mobile-header"><button type="button" id="pati-global-back" class="pati-global-back" data-action="pati-global-back" aria-label="Önceki ekrana dön" hidden><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M19 12H5m7-7-7 7 7 7"/></svg><span>Geri</span></button><button type="button" id="pati-header-share" class="pati-header-share" data-action="pati-create-open" aria-label="Paylaşım oluştur" title="Paylaşım oluştur"><svg class="icon" aria-hidden="true"><use href="#i-plus"></use></svg></button><button type="button" id="pati-feed-menu-trigger" class="brand pati-feed-brand-selector" aria-label="Buchee, akış türünü seç" aria-haspopup="menu" aria-controls="pati-feed-menu" aria-expanded="false"><span class="buchee-header-serif-wordmark" aria-hidden="true">Buchee</span><span class="buchee-mode-label"><span class="pati-feed-current">Yazılar ve Sorular</span><span aria-hidden="true">▾</span></span></button><div class="pati-header-actions"><button type="button" id="pati-header-notifications" class="pati-header-notifications" data-view="notifications" aria-label="Bildirimler" title="Bildirimler"><svg class="icon" aria-hidden="true"><use href="#i-bell"></use></svg></button></div><div id="pati-feed-menu" class="pati-feed-menu pati-feed-category-menu" role="menu" aria-label="Akış türü" hidden><button type="button" role="menuitemradio" data-pati-feed-choice="media" aria-checked="false"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" style="color:#17191d!important;stroke:#17191d!important;fill:none!important"><rect x="3" y="3" width="18" height="18" rx="3" style="stroke:#17191d!important;fill:none!important"></rect><circle cx="9" cy="9" r="1.5" style="stroke:#17191d!important;fill:none!important"></circle><path d="m21 16-5-5L5 21" style="stroke:#17191d!important;fill:none!important"></path></svg><span class="pati-feed-menu-label"><strong>Gönderiler ve Reels</strong><small>Fotoğraf, video ve Reels</small></span><span class="pati-feed-selected" aria-hidden="true">✓</span></button><button type="button" role="menuitemradio" data-pati-feed-choice="text" aria-checked="true"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" style="color:#17191d!important;stroke:#17191d!important;fill:none!important"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.5 0-2.9-.4-4.1-1.1L3 21l2.1-5.4A8.5 8.5 0 1 1 21 11.5z" style="stroke:#17191d!important;fill:none!important"></path></svg><span class="pati-feed-menu-label"><strong>Yazılar ve Sorular</strong><small>Yazılı paylaşımlar ve soru-cevaplar</small></span><span class="pati-feed-selected" aria-hidden="true">✓</span></button></div></header>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Ana menü">
+      <div class="brand"><div class="brand-icon"><img class="patiyiz-chosen-logo" src="buchee-concept4-icon.svg?v=20261104-uploaded-v3" alt="Buchee simgesi"></div><div><div class="brand-word">Buchee Social</div><div class="brand-caption">Paylaş, keşfet, bağlan</div></div></div>
+      <button class="pati-desktop-coins" id="pati-desktop-coins" data-action="paticoin-rewards" type="button" aria-label="Buchee Puan görevlerini aç"><span aria-hidden="true"><img class="pati-coin-icon" src="buchee-concept4-icon.svg?v=20261104-uploaded-v3" alt="" aria-hidden="true"></span><strong>0</strong><small>Buchee Puan</small></button><div class="nav-caption">TOPLULUĞUMUZ</div><nav class="side-nav" id="desktop-nav"></nav>
+      <div class="pati-desktop-actions" aria-label="Hızlı işlemler">
+        <button type="button" class="pati-desktop-action-button primary" data-action="pati-create-open" aria-label="Yeni paylaşım oluştur"><svg class="icon" aria-hidden="true"><use href="#i-plus"></use></svg> Paylaş</button>
+        <button type="button" class="pati-desktop-action-button" data-action="tools" aria-label="Tüm özellikleri aç"><svg class="icon" aria-hidden="true"><use href="#i-grid"></use></svg> Tüm özellikler</button>
+      </div>
+      <div class="pati-desktop-shortcuts" aria-label="Diğer bölümler">
+        <button type="button" data-view="rewards">Buchee Puan</button>
+        <button type="button" data-view="shop">Buchee Mağaza</button>
+        <button type="button" data-view="saved-posts">Kaydettiklerim</button>
+        <button type="button" data-action="pati-close-friends-open">Yakın Arkadaşlar</button>
+      </div>
+      <button type="button" class="nav-create" data-action="compose"><svg class="icon"><use href="#i-plus"></use></svg> Yeni paylaşım</button>
+      <div class="sidebar-bottom"><div class="sidebar-foot">© 2026 Buchee Social · Sosyal topluluk</div></div>
+    </aside>
+    <main class="main" id="main-content" aria-live="polite"></main>
+    <aside class="right-rail" id="right-rail" aria-label="Topluluk önerileri"></aside>
+  </div>
+  <nav class="mobile-bottom" id="mobile-nav" aria-label="Mobil ana menü"></nav>
+  <button class="mobile-fab" type="button" data-action="compose" aria-label="Paylaşım oluştur"><svg class="icon"><use href="#i-plus"></use></svg></button>
+</div>
+<div id="pati-create-sheet" hidden>
+  <button type="button" class="pati-create-mask" data-action="pati-create-close" aria-label="Paylaşım menüsünü kapat"></button>
+  <section class="pati-create-modal" role="dialog" aria-modal="true" aria-label="Oluştur">
+    <div class="pati-create-heading"><strong>Oluştur</strong><button type="button" class="pati-create-dismiss" data-action="pati-create-close" aria-label="Kapat"><svg class="icon" aria-hidden="true"><use href="#i-close"></use></svg></button></div>
+    <div class="pati-create-choices">
+      <button type="button" class="pati-create-choice" data-action="pati-create-post"><span class="pati-choice-icon" aria-hidden="true"><svg class="icon"><use href="#i-post-create"></use></svg></span><span class="pati-choice-copy"><b>Gönderi</b><small>Fotoğraf, video veya yazı paylaş</small></span><svg class="pati-choice-chevron" aria-hidden="true"><use href="#i-arrow"></use></svg></button>
+      <button type="button" class="pati-create-choice" data-action="pati-create-text"><span class="pati-choice-icon" aria-hidden="true"><svg class="icon"><use href="#i-text-create"></use></svg></span><span class="pati-choice-copy"><b>Twit</b><small>Kısa bir Twit paylaş</small></span><svg class="pati-choice-chevron" aria-hidden="true"><use href="#i-arrow"></use></svg></button>
+      <button type="button" class="pati-create-choice" data-action="pati-create-story"><span class="pati-choice-icon" aria-hidden="true"><svg class="icon"><use href="#i-story-create"></use></svg></span><span class="pati-choice-copy"><b>Hikâye</b><small>24 saatlik hikâye paylaş</small></span><svg class="pati-choice-chevron" aria-hidden="true"><use href="#i-arrow"></use></svg></button>
+      <button type="button" class="pati-create-choice" data-action="pati-create-reels"><span class="pati-choice-icon" aria-hidden="true"><svg class="icon"><use href="#i-reels-create"></use></svg></span><span class="pati-choice-copy"><b>Reels</b><small>Videonu paylaş</small></span><svg class="pati-choice-chevron" aria-hidden="true"><use href="#i-arrow"></use></svg></button>
+      <button type="button" class="pati-create-choice" data-action="pati-create-question"><span class="pati-choice-icon" aria-hidden="true"><svg class="icon"><use href="#i-users"></use></svg></span><span class="pati-choice-copy"><b>Soru &amp; Cevap</b><small>Topluluğa soru sor, yanıtlar al</small></span><svg class="pati-choice-chevron" aria-hidden="true"><use href="#i-arrow"></use></svg></button>
+    </div>
+  </section>
+</div>
+<div id="modal-root"></div><div id="toasts" class="toast-stack" role="status" aria-live="polite"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js?v=20261021-2"></script><script src="push-config.js?v=20261021-vapid-2"></script><script src="knowledge.js"></script><script src="reels-editor.js?v=20261029-export-720p-1&amp;reels90=1" defer></script><script src="gallery-picker.js?v=20261024-gallery-safety-1" defer></script><script src="academy-curriculum.js?v=20261024-academy-1" defer></script><script src="academy-101-part1.js?v=20261024-101-1" defer></script><script src="academy-101-part2.js?v=20261024-101-1" defer></script><script src="academy-series-1010-20261101.js?v=20261104-quiz-options-v3" defer></script>
+<script src="buchee-academy-300-20261104.js?v=20261104-topics-v3" defer></script><script src="buchee-education-voices-20261104.js?v=20261104-editors-v1" defer></script><script src="buchee-education-domain-guides-20261104.js?v=20261104-domain-v2" defer></script><script src="patiyiz-lesson-workshop-20261101.js?v=20261104-author-guides-v9" defer></script><script src="health-file.js?v=20261025-health-v2" defer></script><script src="https://cdn.jsdelivr.net/npm/tus-js-client@4.3.1/dist/tus.min.js" defer></script><script src="patiyiz-upload.js?v=20261024-media-resume-1&amp;quota=20261027" defer></script><script src="patiyiz-video-prepare.js?v=20261027-video-2" defer></script><script src="patiyiz-camera-draft.js?v=20261027-camera6" defer></script><script src="patiyiz-system-media.js?v=20261027-native-picker-1&amp;crop_preview=20261029&amp;icons=20261027&amp;selfiemirror=1&amp;portrait_story_20261028=1&amp;story_native_20261028=1&amp;post_camera_album=20261028&amp;story_audience=20261028&amp;carousel_arrows=20261028&amp;photo_review_edit=20261028&amp;links3_captionoptional=20261028&amp;stability=20261030&story_composer_single_share=20261030&amp;remove_previous_selection=20261030&amp;closefriend_picker=20261030" defer></script><script src="patiyiz-camera-flow.js?v=20261025-camera-first&amp;camera3=20261027&amp;framing=1&amp;cameraq=1&amp;fullbleed=1&amp;iphonefix=20261027&amp;camera6=1&amp;links3_captionoptional=20261028" defer></script><script src="follower-milestones.js?v=20261031-paticoin-restored" defer></script><script src="patiyiz-micro-motion-20261029.js?v=4-paticoin" defer></script><script src="patiyiz-delight-20261029.js?v=5-streak-tamam" defer></script>
+<script src="patiyiz-collab-picker-20261029.js?v=3" defer></script><script src="patiyiz-social-quality-20261029.js?v=1" defer></script>
+
+
+<script src="patiyiz-avatar-crop-20261030.js?v=1" defer></script>
+<script src="patiyiz-profile-title-picker-20261031.js?v=1" defer></script>
+<script src="patiyiz-saved-priority-20261031.js?v=20261104-inline-feed-v1" defer></script>
+<script src="patiyiz-private-media-20261031.js?v=20261105-media-cache-perf-v2" defer></script>
+<script src="app.js?v=20261105-quota-error-tr-v2&amp;release=mobile4&amp;video=1" defer></script>
+<script src="patiyiz-header-feed-menu-20261031.js?v=5-text-first&amp;release=mobile4"></script>
+<script src="patiyiz-dm-emoji-picker-20261101.js?v=1" defer></script>
+<style id="pati-critical-mobile-feed-20261101">
+/* Last-resort mobile overrides: higher specificity, last in document. */
+#app-root:not(.hidden)>.mobile-header>#pati-feed-menu>button svg.icon,
+#app-root:not(.hidden)>.mobile-header>#pati-feed-menu>button svg.icon *,
+#pati-feed-desktop-menu>button svg.icon,
+#pati-feed-desktop-menu>button svg.icon * {
+  color:#17191d!important;stroke:#17191d!important;
+  fill:none!important;opacity:1!important;visibility:visible!important;
+}
+#app-root #main-content .pati-feed-card .pati-actionbar.pati-social-actions {
+  display:flex!important;flex-flow:row nowrap!important;
+  align-items:center!important;justify-content:flex-start!important;
+  gap:3px!important;
+  padding:4px 10px!important;margin:0!important;
+  min-height:50px!important;width:100%!important;
+}
+#app-root #main-content .pati-feed-card .pati-actionbar.pati-social-actions>button {
+  flex:0 0 auto!important;
+  align-self:center!important;
+  min-width:38px!important;min-height:44px!important;
+  width:auto!important;margin:0!important;
+  padding:5px 4px!important;gap:4px!important;
+}
+#app-root #main-content .pati-feed-card .pati-actionbar.pati-social-actions>button[data-action="save"] {
+  margin-left:0!important;margin-right:0!important;
+}
+@media(max-width:380px){
+ #app-root #main-content .pati-feed-card .pati-actionbar.pati-social-actions {gap:1px!important;padding-inline:6px!important}
+ #app-root #main-content .pati-feed-card .pati-actionbar.pati-social-actions>button {min-width:35px!important;padding-inline:3px!important}
+}
+/* BucheeSocial 2026-11-01: Instagram-style light create selector. */
+body #pati-create-sheet:not([hidden]){
+  position:fixed!important;inset:0!important;z-index:23000!important;
+  display:flex!important;justify-content:center!important;align-items:center!important;
+  box-sizing:border-box!important;isolation:isolate!important;
+  padding:max(12px,env(safe-area-inset-top,0px)) 14px max(12px,env(safe-area-inset-bottom,0px))!important;
+}
+body #pati-create-sheet .pati-create-mask{
+  position:absolute!important;inset:0!important;
+  width:100%!important;height:100%!important;border:0!important;
+  background:rgba(15,17,23,.48)!important;
+  -webkit-backdrop-filter:blur(5px)!important;backdrop-filter:blur(5px)!important;
+}
+body #pati-create-sheet .pati-create-modal{
+  position:relative!important;z-index:1!important;
+  width:min(100%,460px)!important;max-width:460px!important;
+  max-height:calc(100dvh - 24px)!important;margin:auto!important;
+  padding:18px!important;box-sizing:border-box!important;
+  border:1px solid #e3e4e9!important;border-radius:24px!important;
+  background:#f7f7f8!important;color:#17191d!important;
+  box-shadow:0 18px 60px rgba(0,0,0,.16)!important;
+  overflow-y:auto!important;overscroll-behavior:contain!important;
+  color-scheme:light!important;
+}
+body #pati-create-sheet .pati-create-heading{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  gap:12px!important;margin:0 0 13px!important;
+  padding:0 2px 10px!important;border-bottom:1px solid #e4e5e9!important;
+}
+body #pati-create-sheet .pati-create-heading strong,
+body #pati-create-sheet .pati-create-heading em{
+  font-size:19px!important;color:#17191d!important;
+  font-weight:800!important;font-style:normal!important;letter-spacing:-.025em!important;
+}
+body #pati-create-sheet .pati-create-dismiss{
+  width:44px!important;height:44px!important;flex:0 0 44px!important;
+  display:grid!important;place-items:center!important;
+  border-radius:50%!important;border:0!important;
+  background:#e9eaed!important;color:#17191d!important;
+}
+body #pati-create-sheet .pati-create-dismiss svg.icon{
+  stroke:#17191d!important;color:#17191d!important;
+  width:19px!important;height:19px!important;
+}
+body #pati-create-sheet .pati-create-choices{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:10px!important;max-width:none!important;width:100%!important;margin:0!important;
+}
+body #pati-create-sheet .pati-create-choice{
+  min-width:0!important;width:100%!important;min-height:123px!important;
+  display:flex!important;flex-direction:column!important;align-items:center!important;
+  justify-content:center!important;gap:11px!important;
+  padding:15px 9px!important;border:1px solid #e4e5e9!important;
+  border-radius:16px!important;background:#fff!important;background-image:none!important;
+  color:#17191d!important;text-align:center!important;
+  box-shadow:none!important;transform:none!important;
+}
+body #pati-create-sheet .pati-create-choice:hover{
+  background:#f1f2f4!important;border-color:#cfd1d8!important;
+}
+body #pati-create-sheet .pati-create-choice:active{background:#ebecf0!important;transform:none!important}
+body #pati-create-sheet .pati-create-choice .pati-choice-icon,
+body #pati-create-sheet .pati-create-choice[data-action="pati-create-post"] .pati-choice-icon,
+body #pati-create-sheet .pati-create-choice[data-action="pati-create-text"] .pati-choice-icon,
+body #pati-create-sheet .pati-create-choice[data-action="pati-create-story"] .pati-choice-icon,
+body #pati-create-sheet .pati-create-choice[data-action="pati-create-reels"] .pati-choice-icon,
+body #pati-create-sheet .pati-create-choice[data-action="pati-create-question"] .pati-choice-icon{
+  width:43px!important;height:43px!important;flex:0 0 43px!important;
+  display:grid!important;place-items:center!important;
+  border:0!important;border-radius:12px!important;
+  color:#1b1d22!important;background:#f1f2f4!important;background-image:none!important;
+  box-shadow:none!important;
+}
+body #pati-create-sheet .pati-choice-icon svg.icon{
+  display:block!important;width:26px!important;height:26px!important;
+  stroke:#1b1d22!important;color:#1b1d22!important;
+  fill:none!important;stroke-width:1.8!important;
+}
+body #pati-create-sheet .pati-choice-copy{
+  display:flex!important;flex-direction:column!important;
+  align-items:center!important;min-width:0!important;flex:none!important;gap:3px!important;
+}
+body #pati-create-sheet .pati-choice-copy b{
+  display:block!important;color:#1b1d22!important;
+  font-size:14px!important;font-weight:790!important;line-height:1.2!important;
+}
+body #pati-create-sheet .pati-choice-copy small{display:none!important}
+body #pati-create-sheet .pati-choice-chevron{display:none!important}
+body #pati-create-sheet .pati-create-choice[data-action="pati-create-question"]{
+  grid-column:1 / -1!important;display:flex!important;flex-direction:row!important;
+  justify-content:flex-start!important;align-items:center!important;
+  min-height:68px!important;padding:12px 14px!important;gap:13px!important;
+  text-align:left!important;
+}
+body #pati-create-sheet .pati-create-choice[data-action="pati-create-question"] .pati-choice-copy{
+  flex:1 1 auto!important;align-items:flex-start!important;text-align:left!important;
+}
+body #pati-create-sheet .pati-create-choice[data-action="pati-create-question"] .pati-choice-copy small{
+  display:block!important;color:#7b7e87!important;
+  font-size:11px!important;line-height:1.3!important;
+}
+body #pati-create-sheet .pati-create-choice:focus-visible,
+body #pati-create-sheet .pati-create-dismiss:focus-visible{
+  outline:2px solid #17191d!important;outline-offset:2px!important;
+}
+@media(max-width:740px){
+ body #pati-create-sheet:not([hidden]){
+   align-items:center!important;justify-content:center!important;
+   padding:max(12px,env(safe-area-inset-top,0px)) 14px max(12px,env(safe-area-inset-bottom,0px))!important;
+ }
+ body #pati-create-sheet .pati-create-modal{
+   width:100%!important;max-width:430px!important;border-radius:22px!important;
+   max-height:calc(100dvh - 24px)!important;padding:15px!important;
+ }
+ body #pati-create-sheet .pati-create-choices{gap:9px!important}
+ body #pati-create-sheet .pati-create-choice{min-height:108px!important;padding:12px 7px!important}
+}
+@media(max-height:600px){
+ body #pati-create-sheet .pati-create-modal{padding:11px!important}
+ body #pati-create-sheet .pati-create-heading{margin-bottom:8px!important;padding-bottom:7px!important}
+ body #pati-create-sheet .pati-create-choice{min-height:82px!important;gap:6px!important;padding:7px!important}
+ body #pati-create-sheet .pati-create-choice .pati-choice-icon{width:35px!important;height:35px!important;flex-basis:35px!important}
+ body #pati-create-sheet .pati-create-choices{gap:7px!important}
+ body #pati-create-sheet .pati-create-choice[data-action="pati-create-question"]{min-height:52px!important}
+}
+
+/* iPhone header containment repair – 2026-11-02. Keep +, brand and actions within viewport. */
+@media (max-width:740px){
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header{
+  display:grid!important;grid-template-columns:44px minmax(0,1fr) 88px!important;
+  grid-template-rows:54px!important;align-items:center!important;justify-content:stretch!important;
+  width:100%!important;max-width:100vw!important;min-width:0!important;
+  box-sizing:border-box!important;gap:5px!important;
+  min-height:calc(64px + env(safe-area-inset-top,0px))!important;
+  height:calc(64px + env(safe-area-inset-top,0px))!important;
+  padding:calc(5px + env(safe-area-inset-top,0px)) max(8px,env(safe-area-inset-right,0px))
+          5px max(8px,env(safe-area-inset-left,0px))!important;
+  overflow:visible!important;transform:none!important;left:0!important;right:0!important;
+  background:#fff!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-header-share{
+  grid-column:1!important;grid-row:1!important;position:relative!important;inset:auto!important;
+  transform:none!important;display:flex!important;align-items:center!important;justify-content:center!important;
+  width:44px!important;height:44px!important;min-height:44px!important;
+  margin:0!important;padding:7px!important;visibility:visible!important;opacity:1!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger{
+  grid-column:2!important;grid-row:1!important;position:relative!important;
+  inset:auto!important;left:auto!important;top:auto!important;transform:none!important;
+  min-width:0!important;width:100%!important;max-width:100%!important;
+  height:44px!important;min-height:44px!important;
+  margin:0!important;padding:0!important;display:flex!important;gap:4px!important;
+  align-items:center!important;justify-content:flex-start!important;overflow:hidden!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger .brand-icon{
+  position:relative!important;flex:0 0 26px!important;width:26px!important;
+  min-width:26px!important;height:26px!important;max-height:26px!important;
+  margin:0!important;transform:none!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger .brand-icon img{
+  display:block!important;width:100%!important;height:100%!important;max-width:100%!important;
+  object-fit:contain!important;transform:none!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger .brand-word{
+  font-size:clamp(13px,3.9vw,18px)!important;min-width:0!important;white-space:nowrap!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>.pati-header-actions{
+  grid-column:3!important;grid-row:1!important;position:relative!important;inset:auto!important;
+  transform:none!important;width:88px!important;max-width:88px!important;min-width:88px!important;
+  margin:0!important;padding:0!important;display:flex!important;flex-direction:row!important;
+  gap:2px!important;align-items:center!important;justify-content:flex-end!important;overflow:visible!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>.pati-header-actions>#pati-header-coins,
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>.pati-header-actions>#pati-header-notifications{
+  position:relative!important;inset:auto!important;transform:none!important;
+  flex:0 0 42px!important;width:42px!important;min-width:42px!important;max-width:42px!important;
+  height:44px!important;min-height:44px!important;padding:4px!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  visibility:visible!important;opacity:1!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header #pati-header-coins strong{display:none!important}
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header #pati-header-coins .pati-coin-icon{
+  display:block!important;width:23px!important;height:23px!important;min-width:23px!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu{
+  z-index:3000!important;max-width:calc(100vw - 20px)!important;
+ }
+}
+</style>
+<link rel="stylesheet" href="patiyiz-ios-opaque-inbox-feed-profile-20261102.css?v=3-inbox-dom-fix"><link rel="stylesheet" href="patiyiz-cashout-20261101.css?v=1"><link rel="stylesheet" href="patiyiz-wallet-screens-20261101.css?v=2"><link rel="stylesheet" href="patiyiz-unified-web-mobile-design-20261102.css?v=1"><link rel="stylesheet" href="patiyiz-ios-standalone-chat-viewport-20261102.css?v=1"><link rel="stylesheet" href="patiyiz-four-screen-geometry-20261102.css?v=1">
+<script src="patiyiz-reels-caption-mobile-20261101.js?v=1" defer></script><script src="patiyiz-reels-profile-final-20261101.js?v=3-eye-save-cover" defer></script><script src="patiyiz-explore-choice-20261101.js?v=20261103-phase2-v1" defer></script><script src="patiyiz-daily-reputation-20261101.js?v=20261104-after-third-tweet-v1" defer></script><script src="patiyiz-pull-refresh-20261101.js?v=1" defer></script><script src="patiyiz-cashout-20261101.js?v=3" defer></script><link rel="stylesheet" href="buchee-minimal-auth-feed-20261102.css?v=1"><link rel="stylesheet" href="buchee-auth-benefits-header-fix-20261102.css?v=1"><link rel="stylesheet" href="buchee-feed-header-polish-20261102.css?v=1"><link rel="stylesheet" href="buchee-signature-entry-20261102.css?v=1"><link rel="stylesheet" href="buchee-compact-interface-20261102.css?v=4"><script src="buchee-compact-interface-20261102.js?v=4&amp;video=1" defer></script><link rel="stylesheet" href="buchee-mobile-balance-splash-20261102.css?v=4"><link rel="stylesheet" href="buchee-ios-standalone-sharp-header-20261102.css?v=1"><link rel="stylesheet" href="buchee-mobile-header-offset-20261102.css?v=1"><link rel="stylesheet" href="buchee-centered-mobile-brand-20261102.css?v=1"><link rel="stylesheet" href="buchee-auth-sunset-mobile-20261102.css?v=1"><link rel="stylesheet" href="buchee-auth-welcome-night-20261102.css?v=1"><link rel="stylesheet" href="buchee-auth-exclusive-welcome-20261102.css?v=1"><link rel="stylesheet" href="buchee-auth-light-final-20261102.css?v=1"><link rel="stylesheet" href="buchee-feed-compact-space-20261102.css?v=1"><link rel="stylesheet" href="buchee-remove-feed-gap-20261102.css?v=1"><script defer src="buchee-remove-feed-gap-20261102.js?v=1"></script><link rel="stylesheet" href="buchee-feed-zero-gap-20261102.css?v=1"><script defer src="buchee-feed-zero-gap-20261102.js?v=1"></script><link rel="stylesheet" href="buchee-home-shell-no-gap-20261102.css?v=1"><link rel="stylesheet" href="buchee-mobile-text-feed-saved-20261102.css?v=1"><script defer src="buchee-mobile-text-feed-saved-20261102.js?v=1"></script><link rel="stylesheet" href="buchee-welcome-feature-showcase-20261102.css?v=2"><script defer src="buchee-pwa-auto-update-20261102.js?v=20261104-single-neon-launch-v2"></script><link rel="stylesheet" href="buchee-mobile-menu-redesign-20261102.css?v=1"><link rel="stylesheet" href="buchee-menu-friends-highlights-insights-20261102.css?v=1"><link rel="stylesheet" href="buchee-mobile-ux-refinements-20261102.css?v=1"><link rel="stylesheet" href="buchee-fast-mobile-release-20261102.css?v=1"><link rel="stylesheet" href="buchee-inbox-reels-clean-brand-20261102.css?v=1"><link rel="stylesheet" href="buchee-launch-reels-profile-fix-20261102.css?v=20261104-signature-complete-v3"><link rel="stylesheet" href="buchee-feed-share-ux-20261102.css?v=2"><link rel="stylesheet" href="buchee-mobile-conversation-reels-20261102.css?v=1"><script defer src="buchee-dm-bulk-select-20261102.js?v=20261104-select-avatar-fix&amp;release=mobile4"></script><link rel="stylesheet" href="buchee-feed-instagram-geometry-20261102.css?v=1"><link rel="stylesheet" href="buchee-profile-finish-20261102.css?v=1"><link rel="stylesheet" href="buchee-mobile-controls-fix-20261102.css?v=1"><script defer src="buchee-mobile-controls-fix-20261102.js?v=1"></script><link rel="stylesheet" href="buchee-dm-group-profile-polish-20261102.css?v=1"><script defer src="buchee-dm-group-profile-polish-20261102.js?v=1&amp;video=1"></script><link rel="stylesheet" href="buchee-reel-pause-visibility-20261102.css?v=1"><script defer src="buchee-reel-pause-visibility-20261102.js?v=2"></script><link rel="stylesheet" href="buchee-edit-button-compact-20261102.css?v=1"><script defer src="buchee-edit-button-compact-20261102.js?v=1"></script><script defer src="buchee-visible-image-priority-20261102.js?v=1"></script><link rel="stylesheet" href="buchee-trending-tweets-20261102.css?v=1"><script defer src="buchee-trending-tweets-20261102.js?v=1"></script><link rel="stylesheet" href="buchee-light-profile-final-20261102.css?v=1"><script>document.documentElement.classList.remove("buchee-dark");document.documentElement.dataset.patiTheme="light";try{localStorage.removeItem("buchee_dark_20261102");localStorage.removeItem("patiyiz_theme")}catch(e){}</script><link rel="stylesheet" href="buchee-profile-reference-match-20261102.css?v=1"><link rel="stylesheet" href="buchee-story-dm-replies-20261102.css?v=1"><script defer src="buchee-story-dm-replies-20261102.js?v=1"></script><link rel="stylesheet" href="buchee-header-root-fix-20261103.css?v=1"><link rel="stylesheet" href="buchee-following-profile-header-20261103.css?v=3"><link rel="stylesheet" href="buchee-visual-consistency-20261103.css?v=1&amp;release=mobile4"><link rel="stylesheet" href="buchee-centered-original-logo-20261103.css?v=20261103-cachefix2&amp;release=mobile4&amp;video=1">
+<link rel="stylesheet" href="buchee-home-feed-phase1-20261103.css?v=20261103v1">
+<link rel="stylesheet" href="buchee-explore-phase2-20261103.css?v=20261103-phase2-v2">
+<link rel="stylesheet" href="buchee-messages-phase3-20261103.css?v=20261104-select-avatar-fix">
+<link rel="stylesheet" href="buchee-reels-phase4-20261103.css?v=20261103v1">
+<link rel="stylesheet" href="buchee-profile-phase5-20261103.css?v=20261104-single-eye-v3">
+<link rel="stylesheet" href="buchee-iphone-screen-fixes-20261104.css?v=20261104-compact-eye-back-arrow-v4">
+<style id="buchee-feed-serif-inline-20261103">
+/* Self-contained feed wordmark: no external logo image or stale image cache. */
+@media (max-width:740px){
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header{
+   grid-template-columns:52px minmax(0,1fr) 52px!important;
+   justify-content:stretch!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger.brand{
+   grid-column:2!important;grid-row:1!important;
+   position:relative!important;inset:auto!important;transform:none!important;
+   justify-self:center!important;align-self:center!important;
+   display:flex!important;flex-direction:column!important;align-items:center!important;
+   justify-content:center!important;gap:0!important;
+   width:min(54vw,195px)!important;max-width:calc(100vw - 125px)!important;
+   min-width:0!important;min-height:46px!important;height:46px!important;
+   overflow:visible!important;padding:0 3px!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger .buchee-header-serif-wordmark{
+   display:block!important;flex:none!important;
+   position:static!important;width:auto!important;max-width:100%!important;
+   overflow:visible!important;margin:0!important;padding:0 5px!important;
+   color:#111111!important;-webkit-text-fill-color:#111111!important;
+   font-family:"Didot","Bodoni 72","Times New Roman",Georgia,serif!important;
+   font-weight:500!important;font-size:clamp(26px,7vw,33px)!important;
+   line-height:33px!important;letter-spacing:-.055em!important;
+   text-align:center!important;white-space:nowrap!important;
+   text-shadow:none!important;font-variant-ligatures:none!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-feed-menu-trigger .buchee-mode-label{
+   display:flex!important;justify-content:center!important;align-items:center!important;
+   margin:0!important;padding:0!important;min-height:13px!important;line-height:13px!important;
+   font-size:10px!important;color:#504856!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>#pati-header-share{
+   grid-column:1!important;grid-row:1!important;justify-self:start!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>.pati-header-actions{
+   grid-column:3!important;grid-row:1!important;justify-self:end!important;
+ }
+}
+
+/* The notification action occupies the outermost right grid column, mirroring + on the left. */
+@media(max-width:740px){
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>.pati-header-actions{
+   position:relative!important;inset:auto!important;transform:none!important;
+   grid-column:3!important;grid-row:1!important;justify-self:end!important;
+   display:flex!important;align-items:center!important;justify-content:flex-end!important;
+   width:52px!important;min-width:52px!important;max-width:52px!important;
+   margin:0!important;padding:0!important;gap:0!important;
+ }
+ html[data-pati-view="home"] #app-root:not(.hidden)>.mobile-header>.pati-header-actions>#pati-header-notifications{
+   position:relative!important;inset:auto!important;transform:none!important;
+   display:grid!important;place-items:center!important;
+   flex:0 0 44px!important;width:44px!important;min-width:44px!important;max-width:44px!important;
+   height:44px!important;min-height:44px!important;
+   margin:0 0 0 auto!important;padding:7px!important;
+ }
+}
+</style>
+<link rel="stylesheet" href="buchee-feed-more-mode-20261104.css?v=20261104-single-switch-v2">
+<link rel="stylesheet" href="buchee-reels-clean-controls-20261104.css?v=20261104-reels-clean-v1">
+<link rel="stylesheet" href="buchee-education-clean-20261104.css?v=20261104-quiz-black-editors-v3">
+<link rel="stylesheet" href="buchee-premium-quiz-20261104.css?v=20261104-continue-v2">
+<link rel="stylesheet" href="buchee-pet-center-premium-20261104.css?v=20261104-pet-v1">
+<link rel="stylesheet" href="buchee-saved-library-20261104.css?v=20261104-inline-feed-v1">
+<link rel="stylesheet" href="buchee-notifications-profile-portrait-20261104.css?v=20261104-notifications-white-v4">
+<link rel="stylesheet" href="buchee-community-back-20261104.css?v=20261104-community-back-v1">
+<link rel="stylesheet" href="buchee-notifications-full-white-20261104.css?v=20261104-full-canvas-v1">
+<link rel="stylesheet" href="buchee-launch-auth-safety-20261104.css?v=20261104-startup-auth-v1">
+<link rel="stylesheet" href="buchee-mobile-viewport-20261104.css?v=20261104-mobile-viewport-v1">
+<link rel="stylesheet" href="buchee-feed-posts-stage3-20261104.css?v=20261104-stage3-v1">
+<link rel="stylesheet" href="buchee-logo-unified-20261104.css?v=20261104-splash-bold-v6">
+<link rel="stylesheet" href="buchee-auth-profile-visibility-20261104.css?v=20261104-v1">
+<script defer src="buchee-feed-more-mode-20261104.js?v=20261104-single-switch-v2"></script>
 </body></html>
