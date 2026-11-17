@@ -16,6 +16,13 @@
  async function upload({sb,projectUrl,bucket,key,file,contentType,onProgress}){
   if(!sb||!bucket||!key||!file?.size)throw Error('Yüklenecek dosya bulunamadı.');
   if(navigator.onLine===false)throw Error('İnternet bağlantısı yok. Bağlanınca yeniden dene.');
+  const caps={'patiyiz-media':2*1024*1024,'patiyiz-videos':8*1024*1024,
+   'patiyiz-private-posts':8*1024*1024,'patiyiz-close-stories':8*1024*1024,
+   'patiyiz-private-messages':2*1024*1024,'patiyiz-group-avatars':1024*1024,
+   'buchee-brand-avatars':1024*1024,'patiyiz-voice-comments':1024*1024,
+   'patiyiz-health-private':2*1024*1024,'buchee-capsules':8*1024*1024};
+  const cap=caps[bucket]||8*1024*1024;
+  if(file.size>cap)throw new Error('Dosya bu sürümde en fazla '+Math.floor(cap/1024/1024)+' MB olabilir. Daha küçük bir dosya seç.');
   const mime=contentType||file.type||'application/octet-stream';
   // Large files use resumable transfers only when the pinned TUS library is available.
   if(file.size>CHUNK&&window.tus?.Upload){
@@ -35,7 +42,7 @@
      removeFingerprintOnSuccess:true,
      retryDelays:RETRIES,
      chunkSize:CHUNK,
-     metadata:{bucketName:bucket,objectName:key,contentType:mime,cacheControl:'86400'},
+     metadata:{bucketName:bucket,objectName:key,contentType:mime,cacheControl:'604800'},
      onProgress:(sent,total)=>{if(total>0&&typeof onProgress==='function')onProgress(Math.min(99,Math.floor(sent*100/total)))},
      onError:err=>done(err instanceof Error?err:new Error(String(err))),
      onSuccess:()=>{onProgress?.(100);done(null)}
@@ -45,7 +52,7 @@
    });
   }
   // Small files and older browsers preserve the proven SDK path.
-  const result=await sb.storage.from(bucket).upload(key,file,{contentType:mime,cacheControl:'86400',upsert:false});
+  const result=await sb.storage.from(bucket).upload(key,file,{contentType:mime,cacheControl:'604800',upsert:false});
   if(!result.error)onProgress?.(100);
   return result;
  }
