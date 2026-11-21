@@ -9,21 +9,21 @@ const config=JSON.parse(from('android/twa-manifest.json'));
 const pwa=JSON.parse(from('manifest.webmanifest'));
 
 test('Android TWA matches the production Patiyiz domain and package identity',()=>{
- assert.equal(from('CNAME').trim(),'patiyiz.com');
- assert.equal(config.host,'patiyiz.com');
+ assert.equal(from('CNAME').trim(),'bucheesocial.com');
+ assert.equal(config.host,'bucheesocial.com');
  assert.equal(config.packageId,'com.patiyiz.app');
- assert.equal(config.name,'Patiyiz');
+ assert.equal(config.name,'BucheeSocial');
  assert.equal(config.startUrl,'/');
- assert.equal(config.fullScopeUrl,'https://patiyiz.com/');
- assert.equal(config.webManifestUrl,'https://patiyiz.com/manifest.webmanifest');
- assert.ok(config.iconUrl.startsWith('https://patiyiz.com/'));
- assert.ok(config.maskableIconUrl.startsWith('https://patiyiz.com/'));
+ assert.equal(config.fullScopeUrl,'https://bucheesocial.com/');
+ assert.equal(config.webManifestUrl,'https://bucheesocial.com/manifest.webmanifest');
+ assert.ok(config.iconUrl.startsWith('https://bucheesocial.com/'));
+ assert.ok(config.maskableIconUrl.startsWith('https://bucheesocial.com/'));
  assert.equal(config.enableNotifications,true);
  assert.equal(config.appVersionCode,1);
  assert.ok(!JSON.stringify(config).includes('service_role'));
 });
 test('PWA has HTTPS-compatible standalone launch and two usable PNG icons',()=>{
- assert.equal(pwa.name,'Patiyiz');
+ assert.equal(pwa.name,'Buchee Social');
  assert.equal(pwa.display,'standalone');
  assert.ok(['/','./'].includes(pwa.start_url));
  const icons=pwa.icons.filter(x=>x.type==='image/png');
@@ -39,7 +39,7 @@ test('PWA has HTTPS-compatible standalone launch and two usable PNG icons',()=>{
 test('Offline Android readiness passes and missing DAL is explicitly flagged as pending',()=>{
  const result=spawnSync(process.execPath,['android/check-readiness.mjs'],{cwd:root,encoding:'utf8',timeout:15000});
  assert.equal(result.status,0,result.stdout+'\n'+result.stderr);
- assert.match(result.stdout,/Patiyiz Android hazırlık sonucu/);
+ assert.match(result.stdout,/Buchee Android hazırlık sonucu/);
  assert.match(result.stdout,/Digital Asset Links/);
 });
 test('Digital Asset Links generator rejects missing or counterfeit SHA-256 fingerprints',()=>{
@@ -68,7 +68,7 @@ test('Signing workflow runs only manually and never commits keystores to the rep
 });
 test('Release guide explains Play signing SHA, fingerprint verification and manual device tests',()=>{
  const guide=from('android/README.md');
- for(const item of ['App signing key','SHA-256','API 36','Google Play','APK','AAB','patiyiz.com/.well-known/assetlinks.json','mesaj']){
+ for(const item of ['App signing key','SHA-256','API 36','Google Play','APK','AAB','bucheesocial.com/.well-known/assetlinks.json','mesaj']){
   assert.ok(guide.includes(item),'Missing Android guide topic: '+item);
  }
  const dalPath=path.join(root,'.well-known/assetlinks.json');
