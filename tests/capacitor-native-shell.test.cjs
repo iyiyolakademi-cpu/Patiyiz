@@ -13,7 +13,7 @@ const workflow=read('.github/workflows/capacitor-android.yml');
 
 test('Patiyiz Android uses its own signed-app identity, not remote URL wrapping',()=>{
  assert.equal(cfg.appId,'com.patiyiz.app');
- assert.equal(cfg.appName,'Patiyiz');
+ assert.equal(cfg.appName,'BucheeSocial');
  assert.equal(cfg.webDir,'www');
  assert.equal(cfg.server?.url,undefined);
  assert.equal(cfg.server?.cleartext,false);
@@ -43,7 +43,7 @@ test('Native shell uses Capacitor Android activity title and handles back instea
 });
 test('Native build communicates limitations accurately instead of faking push and billing',()=>{
  assert.match(web,/enablePush\(me\.id,sb\)/);
- assert.match(web,/https:\/\/patiyiz\.com\//);
+ assert.match(web,/https:\/\/bucheesocial\.com\//);
  assert.match(web,/password/);
  assert.ok(pkg.dependencies['@capacitor/push-notifications']);
  assert.match(shell,/firebaseConfigured=__PATIYIZ_FCM_ENABLED__/);

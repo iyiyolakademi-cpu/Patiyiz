@@ -6,8 +6,8 @@
 
 - **Trusted Web Activity (TWA)**: mevcut Patiyiz web uygulamasını Android'de tam ekran açar.
 - Paket kimliği (ilk öneri): **`com.patiyiz.app`**.
-- Asıl web adresi: **`https://patiyiz.com/`**.
-- Uygulama adı: **Patiyiz**; mevcut 192px/512px Patiyiz ikonları.
+- Asıl web adresi: **`https://bucheesocial.com/`**.
+- Uygulama adı: **Buchee Social**; mevcut 192px/512px Patiyiz ikonları.
 - Sürüm: **1.0.0 / versionCode 1**. Play Console'da aynı paket kimliğinde bir uygulama varsa önce paket kimliğini ve sonraki sürüm kodunu mevcut kayda göre güncelleyin.
 - Play Console, 31 Ağustos 2026'dan itibaren yeni uygulama ve güncellemelerde Android **API 36 veya üzeri** istiyor; Bubblewrap'ın ürettiği Gradle projesini derlemeden önce kontrol edin.
 
@@ -18,19 +18,19 @@ node android/check-readiness.mjs
 node android/check-readiness.mjs --online
 ```
 
-İlk komut yerel dosyaları kontrol eder. İkincisi `patiyiz.com` ve zorunlu HTTPS URL'lerini canlı olarak kontrol eder. İnternet veya DNS erişilemiyorsa ikinci komut başarısız olur. **Başarısız çevrimiçi kontrolden sonra APK/AAB hazır demeyin.**
+İlk komut yerel dosyaları kontrol eder. İkincisi `bucheesocial.com` ve zorunlu HTTPS URL'lerini canlı olarak kontrol eder. İnternet veya DNS erişilemiyorsa ikinci komut başarısız olur. **Başarısız çevrimiçi kontrolden sonra APK/AAB hazır demeyin.**
 
-- [ ] `https://patiyiz.com/` telefonda HTTPS ile açılıyor.
-- [ ] `https://patiyiz.com/manifest.webmanifest` yanıt veriyor.
-- [ ] `https://patiyiz.com/patiyiz-app-icon-512.png` doğrudan görüntüleniyor.
+- [ ] `https://bucheesocial.com/` telefonda HTTPS ile açılıyor.
+- [ ] `https://bucheesocial.com/manifest.webmanifest` yanıt veriyor.
+- [ ] `https://bucheesocial.com/buchee-app-icon-512.png` doğrudan görüntüleniyor.
 - [ ] Gizlilik, kullanım koşulları ve hesap silme sayfaları gerçek bilgilerle tamamlanmış.
 - [ ] Android üzerinde login, paylaşımlar, Reels, mesajlaşma, silme, kamera, mikrofon, bildirim ve PatiCoin testleri için iki test hesabı hazırlanmış.
 
 ## 2. En kolay yol: PWABuilder
 
-1. [PWABuilder](https://www.pwabuilder.com/) sayfasını aç, **`https://patiyiz.com/`** yaz.
+1. [PWABuilder](https://www.pwabuilder.com/) sayfasını aç, **`https://bucheesocial.com/`** yaz.
 2. PWA kalite kontrolü yap. Android paketlemeye geç.
-3. **Patiyiz**, ikonlar ve **`com.patiyiz.app`** değerlerini kullan (mevcut Play paket kimliğin farklıysa onu kullan).
+3. **Buchee**, ikonlar ve **`com.patiyiz.app`** değerlerini kullan (mevcut Play paket kimliğin farklıysa onu kullan).
 4. Android sürümünü **API 36+** olacak şekilde doğrula. 2026 API 36 desteklemeyen eski şablonla AAB yayımlama.
 5. İmzalanmış **APK**'yı gerçek Android telefonda test et. **AAB**'yi Play Console iç testine yükle.
 6. PWABuilder'ın ürettiği **imza anahtarı / keystore** dosyasını ve parolalarını güvenli, yedekli yerde sakla; GitHub'a veya sohbete yükleme.
@@ -81,7 +81,7 @@ node android/generate-assetlinks.mjs --fingerprint "AA:BB:...(32 çift)"
 # Test APK ayrı sertifikaysa bir ikinci --fingerprint seçeneği ekle.
 ```
 
-Komut gerçek fingerprint verildiğinde projenin **kökünde** `.well-known/assetlinks.json` üretir. Dosya `main` dalına yayımlanınca mutlaka `https://patiyiz.com/.well-known/assetlinks.json` adresinde yanıt verdiğini kontrol et.
+Komut gerçek fingerprint verildiğinde projenin **kökünde** `.well-known/assetlinks.json` üretir. Dosya `main` dalına yayımlanınca mutlaka `https://bucheesocial.com/.well-known/assetlinks.json` adresinde yanıt verdiğini kontrol et.
 
 - `https://iyiyolakademi-cpu.github.io/Patiyiz/.well-known/assetlinks.json` **yeterli değildir**; alan adı origin'inin kök yolu gerekir.
 - `ANDROID_KEYSTORE_BASE64` ya da parola `assetlinks.json` içine **yazılmaz**.
