@@ -9,7 +9,7 @@ const cfg=fs.readFileSync('config.js','utf8');
 test('passwordless existing accounts receive password reset guidance',()=>{
  assert.match(app,/Henüz şifre belirlemediysen Şifremi unuttum seçeneğiyle şifre oluştur/);
  assert.match(app,/over_email_send_rate_limit/);
- assert.match(app,/resetPasswordForEmail\(email,\{redirectTo:location\.origin\+location\.pathname\}\)/);
+ assert.ok(app.includes("resetPasswordForEmail(email,{redirectTo:'https://bucheesocial.com/'})"));
  assert.match(app,/Hesabına ait bir adres varsa şifre belirleme bağlantısı gönderilir/);
 });
 test('non-message pagination only reloads the requested table',()=>{
@@ -26,3 +26,5 @@ test('preconnect points to the current Buchee Supabase project',()=>{
  assert.ok(id);
  assert.match(html,new RegExp('rel="preconnect" href="https://'+id[1]+'\\.supabase\\.co"'));
 });
+
+test('Buchee uses original Patiyiz Supabase project without changing the public brand',()=>{assert.match(cfg,/tqnvvrgrsxrvzxbjbsgl\.supabase\.co/);assert.match(cfg,/sb_publishable_94x0ozPL38-3HJer2l5tqQ_BrpQZYH-/);});
