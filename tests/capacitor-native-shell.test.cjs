@@ -13,7 +13,7 @@ const workflow=read('.github/workflows/capacitor-android.yml');
 
 test('Patiyiz Android uses its own signed-app identity, not remote URL wrapping',()=>{
  assert.equal(cfg.appId,'com.patiyiz.app');
- assert.equal(cfg.appName,'Patiyiz');
+ assert.equal(cfg.appName,'BucheeSocial');
  assert.equal(cfg.webDir,'www');
  assert.equal(cfg.server?.url,undefined);
  assert.equal(cfg.server?.cleartext,false);
