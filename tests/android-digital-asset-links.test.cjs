@@ -10,9 +10,9 @@ const localApk = 'CA:1E:65:46:4B:BF:33:65:C4:34:FF:04:EB:5A:6F:84:A2:24:E9:74:F9
 test('Patiyiz production Digital Asset Links uses its correct app signing certificate', () => {
   const twa = JSON.parse(fs.readFileSync(path.join(root, 'android/twa-manifest.json'), 'utf8'));
   const links = JSON.parse(fs.readFileSync(path.join(root, '.well-known/assetlinks.json'), 'utf8'));
-  assert.equal(fs.readFileSync(path.join(root,'CNAME'),'utf8').trim(),'patiyiz.com');
+  assert.equal(fs.readFileSync(path.join(root,'CNAME'),'utf8').trim(),'bucheesocial.com');
   assert.equal(twa.packageId,'com.patiyiz.app');
-  assert.equal(twa.host,'patiyiz.com');
+  assert.equal(twa.host,'bucheesocial.com');
   assert.ok(links.some(link =>
     link.relation.includes('delegate_permission/common.handle_all_urls') &&
     link.target.namespace === 'android_app' &&
