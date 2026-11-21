@@ -1,5 +1,5 @@
 /* Buchee Social: push notifications and reliable, privacy-conscious PWA updates. */
-const BUCHEE_STATIC_CACHE = 'buchee-static-v20261122-bandwidth-1';
+const BUCHEE_STATIC_CACHE = 'buchee-static-v20261104-concept4-1';
 const BUCHEE_CACHE_PREFIXES = ['buchee-static-v', 'patiyiz-static-v'];
 
 self.addEventListener('push', event => {
@@ -97,8 +97,7 @@ self.addEventListener('fetch', event => {
     };
 
     if (!mustRefresh && stored) {
-      // Immutable-looking static images/fonts are cache-first to avoid a fresh
-      // transfer on every app launch. Versioned URLs naturally bust the cache.
+      event.waitUntil(fetchFresh().catch(() => {}));
       return stored;
     }
     try {
