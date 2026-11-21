@@ -9,7 +9,7 @@ const cfg=fs.readFileSync('config.js','utf8');
 test('passwordless existing accounts receive password reset guidance',()=>{
  assert.match(app,/Henüz şifre belirlemediysen Şifremi unuttum seçeneğiyle şifre oluştur/);
  assert.match(app,/over_email_send_rate_limit/);
- assert.ok(app.includes("resetPasswordForEmail(email,{redirectTo:'https://bucheesocial.com/'})"));
+ assert.match(app,/resetPasswordForEmail\(email,\{redirectTo:location\.origin\+location\.pathname\}\)/);
  assert.match(app,/Hesabına ait bir adres varsa şifre belirleme bağlantısı gönderilir/);
 });
 test('non-message pagination only reloads the requested table',()=>{
