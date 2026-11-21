@@ -61,7 +61,8 @@ test('duplicate submissions are disabled during authentication',()=>{
  assert.match(app,/finally\{authRequestInFlight=false/);
 });
 test('forgot-password uses an explicit email redirect, recovery has a new-password UI',()=>{
- assert.match(app,/resetPasswordForEmail\(email,\{redirectTo:location\.origin\+location\.pathname\}\)/);
+ assert.match(app,/resetPasswordForEmail\(email,\{redirectTo:bucheeAuthRedirect\(\)\}\)/);
+ assert.match(app,/emailRedirectTo:bucheeAuthRedirect\(\)/);
  assert.match(app,/event==='PASSWORD_RECOVERY'/);
  assert.match(app,/reset-password-form/);
  assert.match(app,/const issue=bucheePasswordProblem\(password\);if\(issue\)return notify\(issue,true\);await run/);
@@ -90,4 +91,16 @@ test('Android build hooks match current app entry point',()=>{
 test('the new safety stylesheet is versioned and loaded',()=>{
  assert.match(html,/buchee-launch-auth-safety-20261104\.css\?v=/);
  assert.match(read('buchee-launch-auth-safety-20261104.css'),/buchee-password-hint/);
+});
+
+test('production callback uses the canonical Buchee domain, localhost stays local',()=>{
+ assert.match(app,/function bucheeAuthRedirect\(\)/);
+ assert.match(app,/location\.hostname/);
+ assert.match(app,/https:\/\/bucheesocial\.com\//);
+});
+test('recovery failures have explicit feedback',()=>{
+ assert.match(app,/over_email_send_rate_limit/);
+ assert.match(app,/otp_expired/);
+ assert.match(app,/recoveryLinkError/);
+ assert.match(app,/authMode='reset';showAuth\('Şifre yenileme bağlantısı/);
 });
