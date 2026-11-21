@@ -43,7 +43,7 @@ test('App uploads posts and ordinary stories only via the protected publication 
  assert.match(app,/publishMediaRecord\('posts'/);
  assert.match(app,/publishMediaRecord\('patiyiz_stories'/);
  assert.match(app,/PatiyizPrivateMedia\.hydrateRows/);
- assert.match(html,/patiyiz-private-media-20261031\.js\?v=1/);
+ assert.match(html,/patiyiz-private-media-20261031\.js\?v=[^"']+/);
 });
 test('Privacy toggle requires authenticated migration and story repost links source instead of duplicating URLs',()=>{
  assert.match(app,/functions\/v1\/patiyiz-secure-account-media/);
