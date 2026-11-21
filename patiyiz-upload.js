@@ -24,10 +24,6 @@
   const cap=caps[bucket]||8*1024*1024;
   if(file.size>cap)throw new Error('Dosya bu sürümde en fazla '+Math.floor(cap/1024/1024)+' MB olabilir. Daha küçük bir dosya seç.');
   const mime=contentType||file.type||'application/octet-stream';
-  // Public uploads use unique, non-overwritten paths: cache them longer.
-  // Private buckets retain the shorter cache lifetime.
-  const publicBuckets=new Set(['patiyiz-media','patiyiz-videos','buchee-brand-avatars','patiyiz-group-avatars','patiyiz-voice-comments']);
-  const cacheSeconds=publicBuckets.has(bucket)?'2592000':'604800';
   // Large files use resumable transfers only when the pinned TUS library is available.
   if(file.size>CHUNK&&window.tus?.Upload){
    const {data,error}=await sb.auth.getSession();
@@ -46,7 +42,7 @@
      removeFingerprintOnSuccess:true,
      retryDelays:RETRIES,
      chunkSize:CHUNK,
-     metadata:{bucketName:bucket,objectName:key,contentType:mime,cacheControl:cacheSeconds},
+     metadata:{bucketName:bucket,objectName:key,contentType:mime,cacheControl:'604800'},
      onProgress:(sent,total)=>{if(total>0&&typeof onProgress==='function')onProgress(Math.min(99,Math.floor(sent*100/total)))},
      onError:err=>done(err instanceof Error?err:new Error(String(err))),
      onSuccess:()=>{onProgress?.(100);done(null)}
@@ -56,7 +52,7 @@
    });
   }
   // Small files and older browsers preserve the proven SDK path.
-  const result=await sb.storage.from(bucket).upload(key,file,{contentType:mime,cacheControl:cacheSeconds,upsert:false});
+  const result=await sb.storage.from(bucket).upload(key,file,{contentType:mime,cacheControl:'604800',upsert:false});
   if(!result.error)onProgress?.(100);
   return result;
  }
