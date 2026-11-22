@@ -1,7 +1,5 @@
-/* Profile has its own menu. Hide the entire redundant home header and its reserved space. */
-#app-root.buchee-profile-original-header>header.mobile-header{display:none!important;height:0!important;min-height:0!important;max-height:0!important;padding:0!important;margin:0!important;border:0!important;overflow:hidden!important}
-#app-root.buchee-profile-original-header>header.mobile-header>*{display:none!important}
-@media(max-width:900px){
- #app-root.buchee-profile-original-header>header.mobile-header{display:none!important}
- #app-root.buchee-profile-original-header #main-content{margin-top:0!important}
-}
+/* The global Buchee / mode selector / inbox header belongs exclusively to Home. */
+#app-root.buchee-not-home>header.mobile-header{display:none!important;height:0!important;min-height:0!important;max-height:0!important;padding:0!important;margin:0!important;border:0!important;overflow:hidden!important;visibility:hidden!important}
+#app-root.buchee-not-home>header.mobile-header>*{display:none!important}
+#app-root.buchee-not-home #main-content{margin-top:0!important}
+@media(max-width:900px){#app-root.buchee-not-home>header.mobile-header{display:none!important}}
