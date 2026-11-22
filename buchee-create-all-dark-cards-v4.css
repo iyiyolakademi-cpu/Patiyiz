@@ -1,0 +1,13 @@
+/* Make all five create-menu cards match the dark Soru & Cevap style. */
+html body #pati-create-sheet .pati-create-choices .pati-create-choice,
+html body #pati-create-sheet .pati-create-choices .pati-create-choice:last-child{
+background:#17181a!important;
+border-color:#17181a!important;
+color:#fff!important;
+box-shadow:0 4px 14px rgba(0,0,0,.10)!important;
+}
+html body #pati-create-sheet .pati-create-choices .pati-create-choice .pati-choice-copy b{color:#fff!important}
+html body #pati-create-sheet .pati-create-choices .pati-create-choice .pati-choice-copy small{color:#c5c7cb!important}
+html body #pati-create-sheet .pati-create-choices .pati-create-choice .pati-choice-icon{background:#2c2e32!important;color:#fff!important;border-color:#2c2e32!important}
+html body #pati-create-sheet .pati-create-choices .pati-create-choice .pati-choice-chevron{color:#fff!important}
+html body #pati-create-sheet .pati-create-choices .pati-create-choice:active{background:#303237!important}
