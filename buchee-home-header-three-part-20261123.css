@@ -61,7 +61,7 @@ html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-he
  display:inline-flex!important;width:19px!important;height:19px!important;flex-shrink:0!important;
 }
 html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>.pati-header-actions{
- top:calc(50% - 5px)!important;transform:translateY(-50%)!important;right:9px!important;
+ top:calc(50% - 13px)!important;transform:translateY(-50%)!important;right:9px!important;
 }
 html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>.pati-header-actions>#pati-header-notifications{
  background:#000!important;color:#fff!important;border-color:#000!important;
