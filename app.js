@@ -1558,11 +1558,16 @@ function bucheeUpdateLikeSummary(id,n){
  document.querySelectorAll('.pati-feed-card[data-post-id="'+id+'"] .buchee-liked-caption').forEach(el=>el.textContent=bucheeLikeLine(id,n));
 }
 
+/* Twit classification survives databases that only allow 'post' and 'reels'. */
+const BUCHEE_TWIT_MARK='\u2063\u2063';
+function bucheeIsTwit(p){return p?.post_format==='text'||String(p?.body||'').startsWith(BUCHEE_TWIT_MARK)}
+function bucheeTwitBody(value){const body=String(value||'');return body.startsWith(BUCHEE_TWIT_MARK)?body.slice(BUCHEE_TWIT_MARK.length):body}
 function postCard(p,priority=false){
  const indexed=typeof patiPostRenderStats!=='undefined'&&patiPostRenderStats;
  const collaborator=typeof patiCollabAccepted==='function'?patiCollabAccepted(p.id):null;
+ const isTwit=bucheeIsTwit(p);
  const own=p.author_id===me.id,commentCount=indexed?(indexed.get(p.id)?.comments||0):data.comments.filter(x=>x.post_id===p.id&&!blocked.has(x.author_id)).length,count=indexed?(indexed.get(p.id)?.likes||0):data.likes.filter(x=>x.post_id===p.id).length,pet=data.pets.find(x=>x.id===p.pet_id);
- const images=(p.images?.length?p.images:[p.image_url]).filter(Boolean),hasMedia=!!(images.length||p.video_url||p.media_videos?.length),isPriority=priority===true,body=String(p.body||'').trim();
+ const images=(p.images?.length?p.images:[p.image_url]).filter(Boolean),hasMedia=!!(images.length||p.video_url||p.media_videos?.length),isPriority=priority===true,body=bucheeTwitBody(p.body).trim();
  const multiVideos=Array.isArray(p.media_videos)?[...new Set(p.media_videos.filter(Boolean))]:[];
  const defaultVideo=p.video_url||multiVideos[0]||'';
  const isFeedReel=p.post_format==='reels'&&!!defaultVideo;
@@ -1578,11 +1583,11 @@ function postCard(p,priority=false){
  const sourcePost=p.source_post_id?data.posts.find(x=>x.id===p.source_post_id):null;
  const sourceCredit=sourcePost?'<button type="button" class="pati-source-credit" data-action="profile-open-post" data-id="'+esc(sourcePost.id)+'">↪ @'+esc(profile(sourcePost.author_id).handle||'patiyiz')+' paylaşımına tepki · Orijinal gönderiyi aç</button>':'';
  const caption=body?'<p class="pati-post-caption buchee-feed-caption">'+(hasMedia?'<strong class="buchee-caption-author">'+esc(profile(p.author_id).handle||profile(p.author_id).display_name||'Buchee Social üyesi')+'</strong> ':'')+formatPatiPostBody(body)+'</p>':'';
- return '<article class="pati-card pati-feed-card '+(isFeedReel?'pati-feed-reel-card ':'')+(hasMedia?'pati-feed-has-media':'pati-feed-text-only')+(p.post_format==='text'?' buchee-twit-with-photo':'')+'" data-post-id="'+esc(p.id)+'"><div class="pati-feed-card-header">'+(collaborator&&typeof patiCollabHeader==='function'?patiCollabHeader(p,collaborator):userRow(p.author_id,''))+'<button type="button" class="pati-post-more" data-action="post-menu" data-id="'+esc(p.id)+'" aria-label="Gönderi seçenekleri">⋯</button></div>'+
+ return '<article class="pati-card pati-feed-card '+(isFeedReel?'pati-feed-reel-card ':'')+(hasMedia?'pati-feed-has-media':'pati-feed-text-only')+(isTwit?' buchee-twit-with-photo':'')+'" data-post-id="'+esc(p.id)+'"><div class="pati-feed-card-header">'+(collaborator&&typeof patiCollabHeader==='function'?patiCollabHeader(p,collaborator):userRow(p.author_id,''))+'<button type="button" class="pati-post-more" data-action="post-menu" data-id="'+esc(p.id)+'" aria-label="Gönderi seçenekleri">⋯</button></div>'+
  sourceCredit+
  (pet?'<p class="pati-feed-pet">'+petIcon(pet.species)+' '+esc(pet.name)+' · '+esc(pet.species)+'</p>':'')+
- (p.post_format==='text'&&hasMedia?'<div class="buchee-twit-inline-text">'+caption+'</div><div class="buchee-twit-inline-media">'+media+'</div>':hasMedia?media:'<div class="pati-feed-text-content">'+(caption||'<p class="pati-post-caption">💜</p>')+'</div>')+
- controls+'<div class="pati-post-details buchee-post-details">'+bucheeLikeSummary(p.id,count)+(hasMedia&&p.post_format!=='text'?caption:'')+'<time class="pati-post-time">'+esc(day(p.created_at))+'</time></div></article>';
+ (isTwit&&hasMedia?'<div class="buchee-twit-inline-text">'+caption+'</div><div class="buchee-twit-inline-media">'+media+'</div>':hasMedia?media:'<div class="pati-feed-text-content">'+(caption||'<p class="pati-post-caption">💜</p>')+'</div>')+
+ controls+'<div class="pati-post-details buchee-post-details">'+bucheeLikeSummary(p.id,count)+(hasMedia&&!isTwit?caption:'')+'<time class="pati-post-time">'+esc(day(p.created_at))+'</time></div></article>';
 }
 function patiDetailCandidates(source){
  if(source==='saved-posts')return window.PatiyizSavedV2?.visiblePosts()||[];
@@ -1591,7 +1596,7 @@ function patiDetailCandidates(source){
   if(profilePostsTab==='reposts')return patiRepostedPosts(author);
    const sorted=(typeof patiCollabPartnerPosts==='function'?patiCollabPartnerPosts(author):data.posts.filter(p=>p.author_id===author)).filter(p=>!blocked.has(p.author_id))
    .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)||String(b.id).localeCompare(String(a.id)));
-  return sorted.filter(p=>profilePostsTab==='reels'?p.post_format==='reels'&&(!!p.video_url||!!p.media_videos?.length):profilePostsTab==='text'?(p.post_format==='text'||!(p.image_url||p.images?.length||p.video_url||p.media_videos?.length)):profilePostsTab==='videos'?p.post_format!=='reels'&&!!(p.video_url||p.media_videos?.length):(!!(p.image_url||p.images?.length||p.video_url||p.media_videos?.length)&&p.post_format!=='reels'));
+  return sorted.filter(p=>profilePostsTab==='reels'?p.post_format==='reels'&&(!!p.video_url||!!p.media_videos?.length):profilePostsTab==='text'?(bucheeIsTwit(p)||!(p.image_url||p.images?.length||p.video_url||p.media_videos?.length)):profilePostsTab==='videos'?p.post_format!=='reels'&&!!(p.video_url||p.media_videos?.length):(!!(p.image_url||p.images?.length||p.video_url||p.media_videos?.length)&&p.post_format!=='reels'&&!bucheeIsTwit(p)));
  }
  if(source==='explore'){
   const remote=patiExploreMedia.owner===me.id&&patiExploreMedia.ready?patiExploreMedia.rows:[];
@@ -2952,7 +2957,7 @@ function patiHomePostWithRepost(post,priority){
  const repost=post._patiRepostActor?'<div class="pati-repost-context">↻ '+esc(profile(post._patiRepostActor).display_name||'Bir kullanıcı')+' yeniden paylaştı</div>':'';
  return repost+postCard(post,priority);
 }
-const patiHomeIsMediaPost=p=>p.post_format!=='text'&&(p.post_format==='reels'||!!(
+const patiHomeIsMediaPost=p=>!bucheeIsTwit(p)&&(p.post_format==='reels'||!!(
  p.image_url||p.video_url||
  (Array.isArray(p.images)&&p.images.some(Boolean))||
  (Array.isArray(p.media_videos)&&p.media_videos.some(Boolean))
@@ -6257,8 +6262,8 @@ function profilePage(){
  const active=privateLocked?[]:profilePostsTab==='reposts'?patiRepostedPosts(p.id):
   profilePostsTab==='reels'?posts.filter(x=>!!(x.video_url||x.media_videos?.length)):
   profilePostsTab==='videos'?posts.filter(x=>x.post_format!=='reels'&&!!(x.video_url||x.media_videos?.length)):
-  profilePostsTab==='text'?posts.filter(x=>!x.image_url&&!x.images?.length&&!x.video_url&&!x.media_videos?.length):
-  posts.filter(x=>x.post_format!=='reels'&&!!(x.image_url||x.images?.length||x.video_url||x.media_videos?.length));
+  profilePostsTab==='text'?posts.filter(x=>bucheeIsTwit(x)||(!x.image_url&&!x.images?.length&&!x.video_url&&!x.media_videos?.length)):
+  posts.filter(x=>x.post_format!=='reels'&&!bucheeIsTwit(x)&&!!(x.image_url||x.images?.length||x.video_url||x.media_videos?.length));
  const gridTabIcon='<svg class="pati-profile-tab-icon pati-profile-grid-icon" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">'+[3,10,17].flatMap(y=>[3,10,17].map(x=>'<rect x="'+x+'" y="'+y+'" width="4.5" height="4.5" rx="1"/>')).join('')+'</svg>';
  const reelsTabIcon='<svg class="pati-profile-tab-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2.5" width="16" height="19" rx="4"/><path d="m10 8 5 4-5 4z"/></svg>';
  const repostTabIcon='<svg class="pati-profile-tab-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10V7.5A3.5 3.5 0 0 1 6.5 4H20"/><path d="m16.5 1 3.5 3-3.5 3"/><path d="M21 14v2.5a3.5 3.5 0 0 1-3.5 3.5H4"/><path d="m7.5 17-3.5 3 3.5 3"/></svg>';
@@ -7657,7 +7662,7 @@ async function publishMediaRecord(table,form,createRecord){
   // Some deployed databases accept only post/reels as post_format.
   // Retry with the existing supported format without uploading images twice.
   if(response.error&&table==='posts'&&form.dataset.mode==='text'&&record.post_format==='text'&&/post_format|check constraint|23514/i.test(String(response.error.message||'')+' '+String(response.error.code||''))){
-   response=await sb.from(table).insert({...record,post_format:'post',id,author_id:owner}).select('*').single();
+   response=await sb.from(table).insert({...record,body:BUCHEE_TWIT_MARK+bucheeTwitBody(record.body),post_format:'post',id,author_id:owner}).select('*').single();
   }
   if(response.error)throw response.error;
   if(!response.data)throw Error('Paylaşım kaydı doğrulanamadı.');
