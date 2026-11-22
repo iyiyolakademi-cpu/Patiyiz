@@ -67,8 +67,8 @@ function patiWatchPostViews(){
  cards.forEach(card=>patiPostViewObserver.observe(card));
 }
 
-const allowed=['home','explore','pets','reels','streaks','rewards','shop','saved-posts','community','knowledge','education','messages','notifications','profile','blocked','settings','follows-list'];
-const nav=[['home','Ana sayfa','home'],['explore','Keşfet','compass'],['reels','Reels','up'],['streaks','Seriler','calendar'],['community','Topluluk','users'],['knowledge','Bilgi Merkezi','library'],['education','Eğitim Serileri','library'],['messages','Mesajlar','message'],['notifications','Bildirimler','bell'],['profile','Profilim','user'],['settings','Ayarlar ve Gizlilik','settings']];
+const allowed=['home','explore','pets','reels','streaks','rewards','shop','saved-posts','community','education','messages','notifications','profile','blocked','settings','follows-list'];
+const nav=[['home','Ana sayfa','home'],['explore','Keşfet','compass'],['reels','Reels','up'],['streaks','Seriler','calendar'],['community','Topluluk','users'],['education','Eğitim Serileri','library'],['messages','Mesajlar','message'],['notifications','Bildirimler','bell'],['profile','Profilim','user'],['settings','Ayarlar ve Gizlilik','settings']];
 const cfg=window.PATIYIZ_CONFIG||{};
 const ready=String(cfg.supabaseUrl||'').startsWith('https://')&&!String(cfg.supabaseUrl).includes('BURAYA_')&&!!cfg.supabasePublishableKey&&!String(cfg.supabasePublishableKey).includes('BURAYA_')&&!!window.supabase?.createClient;
 let liveChannel=null,liveReloadTimer=null,liveReconnectTimer=null,liveUserId=null,liveInitialized=false,pushPublicKey='',lastForegroundSync=0;
@@ -1069,7 +1069,7 @@ let patiNavigatingBack=false;
 let patiSwipeNavDirection=0;
 let patiNavAnimationId=0;
 function navigate(to){
- if(['pets','lost','adoption','care','wellness','healthfile','my-pet'].includes(to))to='home';
+ if(['pets','lost','adoption','care','wellness','healthfile','my-pet','knowledge'].includes(to))to='home';
  if(patiRightMenuDialog)patiCloseRightMenu();
  if(patiDmContextDialog)patiDmCloseContextMenu();
  const hubScreens=typeof patiPetHubScreens==='undefined'?new Set():patiPetHubScreens;
