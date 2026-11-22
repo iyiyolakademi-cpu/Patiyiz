@@ -1,0 +1,16 @@
+/* Buchee: restore classic light profile, keep purple floating mobile dock unchanged. */
+@media(max-width:800px){
+#app-root:has(#main-content .pati-ig-profile){background:#f7f8fa!important;color:#202329!important}
+#app-root:has(#main-content .pati-ig-profile) .main,
+#app-root:has(#main-content .pati-ig-profile) #main-content{background:#fff!important;color:#202329!important}
+#app-root #main-content .pati-ig-profile,
+#app-root #main-content .pati-ig-profile :is(.pati-ig-summary,.pati-ig-info,.pati-ig-about,.pati-ig-stats,.pati-ig-actions,.pati-ig-tabs,.pati-ig-grid){background:#fff!important;color:#202329!important;box-shadow:none!important}
+#app-root #main-content .pati-ig-profile :is(h1,h2,h3,h4,strong,b,.pati-ig-name,.pati-ig-handle){color:#202329!important}
+#app-root #main-content .pati-ig-profile :is(small,.pati-ig-stats small){color:#777d88!important}
+#app-root #main-content .pati-ig-profile .pati-ig-actions button{background:#f0f1f4!important;color:#202329!important;border:1px solid #e1e3e8!important}
+#app-root #main-content .pati-ig-profile .pati-ig-tabs{border-color:#e5e7eb!important}
+#app-root #main-content .pati-ig-profile .pati-ig-tabs button{color:#4c515b!important}
+#app-root #main-content .pati-ig-profile .pati-ig-tabs button[aria-selected="true"]{color:#15181e!important;border-color:#15181e!important}
+#app-root #main-content .pati-ig-profile .pati-profile-tile{background:#f0f1f4!important}
+#app-root #main-content .pati-ig-profile .pati-ig-avatar img{border-color:#e6e7eb!important}
+}
