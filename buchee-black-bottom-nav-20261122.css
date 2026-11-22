@@ -1,0 +1,7 @@
+/* Black floating navigation, while keeping existing five-icon layout and create action. */
+@media(max-width:800px){
+#app-root .mobile-bottom{background:#090909f2!important;border:1px solid #333!important;box-shadow:0 12px 30px #0008!important;backdrop-filter:blur(18px)!important;-webkit-backdrop-filter:blur(18px)!important}
+#app-root .mobile-bottom .mobile-nav-btn{color:#f7f7f7!important}
+#app-root .mobile-bottom .mobile-nav-btn.active{color:#fff!important}
+#app-root .mobile-bottom .buchee-reference-create .pati-mobile-nav-glyph{background:#111!important;border:1px solid #777!important;box-shadow:none!important;color:#fff!important}
+}
