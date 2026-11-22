@@ -10,9 +10,9 @@
   if(!edit||!earn)return;
   var wallet=Array.from(earn.querySelectorAll('button,[role="button"],a')).find(function(el){return /bakiye|cüzdan|kazanç/i.test(el.textContent||'')});
   if(!wallet)return;
-  edit.classList.add('buchee-wallet-shortcut');
-  edit.textContent='Bakiyen';
-  edit.setAttribute('aria-label','Bakiyeni görüntüle');
+  edit.classList.add('buchee-wallet-shortcut');profile.classList.add('buchee-wallet-compact-ready');
+  if(edit.textContent.trim()!=='Bakiyen')edit.textContent='Bakiyen';
+  if(edit.getAttribute('aria-label')!=='Bakiyeni görüntüle')edit.setAttribute('aria-label','Bakiyeni görüntüle');
   if(!edit.dataset.bucheeWalletBound){
    edit.dataset.bucheeWalletBound='1';
    edit.addEventListener('click',function(event){
