@@ -793,10 +793,16 @@ function patiRewardShowPage(){
  const balance=Number(patiCoinState.balance||0).toLocaleString('tr-TR');
  const header='<header class="pati-wallet-subhead"><button type="button" data-action="pati-rewards-section" data-id="home" aria-label="Bakiyeye dön">←</button><strong>';
  if(patiRewardsSection==='home'){
-  root.innerHTML='<header class="pati-wallet-homehead"><small>HESABIM</small><h1>Bakiyem</h1><strong>'+balance+' <small>puan</small></strong><p>Puanlarını ve ödüllerini buradan yönet.</p></header>'+
-  '<div class="pati-wallet-menu">'+
-  [['tasks','Görevlerim','Günlük ve haftalık görevler','check-circle'],['invite','Davet Et Kazan','Davet kodunu paylaş, puan kazan','user-plus'],['milestones','Takipçi hedefleri','Başarılarını görüntüle','users'],['products','Ödül Mağazası','Ürünleri ve stokları gör','gift'],['cashout','Nakite Çevir','Nakit talebi oluştur','wallet'],['history','İşlem geçmişi','Tamamlanan görevleri ve talepleri gör','clock']].map(([id,title,desc,icon])=>'<button type="button" data-action="pati-rewards-section" data-id="'+id+'"><span><strong>'+title+'</strong><small>'+desc+'</small></span><b>›</b></button>').join('')+
-  '</div>';return;
+  const recent=(patiCoinState.transactions||[]).slice(0,3);
+  const tile=(id,title,symbol)=>'<button type="button" class="buchee-wallet-tile" data-action="pati-rewards-section" data-id="'+id+'"><span class="buchee-wallet-tile-icon" aria-hidden="true">'+symbol+'</span><strong>'+title+'</strong></button>';
+  root.innerHTML='<div class="buchee-wallet-dashboard">'+
+   '<header class="buchee-wallet-top"><h1>Bakiye</h1><button type="button" data-action="pati-rewards-section" data-id="history" aria-label="İşlem geçmişi">☷</button></header>'+
+   '<section class="buchee-wallet-balance"><span>Toplam Puan Bakiyesi</span><strong>'+balance+'</strong><small>puan</small><p>Görevlerden ve etkinliklerden kazandığın puanlar.</p><span class="buchee-wallet-symbol" aria-hidden="true">◈</span></section>'+
+   '<div class="buchee-wallet-actions"><button type="button" class="primary" data-action="pati-rewards-section" data-id="cashout">↗ &nbsp; Nakde Çevir</button><button type="button" data-action="pati-rewards-section" data-id="products">♧ &nbsp; Ödül Mağazası</button></div>'+
+   '<div class="buchee-wallet-tiles">'+tile('history','İşlem Geçmişi','▥')+tile('tasks','Görevler','✓')+tile('milestones','Takipçi Hedefleri','♕')+tile('invite','Davet Et Kazan','↗')+'</div>'+
+   '<div class="buchee-wallet-recent-head"><h2>Son İşlemler</h2><button type="button" data-action="pati-rewards-section" data-id="history">Tümünü Gör ›</button></div>'+
+   '<section class="buchee-wallet-recent">'+(recent.length?recent.map(t=>{const n=Number(t.delta||0);const title=t.task_code?.startsWith('cashout_reserve_')?'Nakit talebi için ayrılan':t.task_code?.startsWith('cashout_refund_')?'Nakit talebi iadesi':t.task_code?.replaceAll('_',' ').replace(/:[0-9]{8}$/,'')||'Puan hareketi';return '<div class="buchee-wallet-row"><span class="buchee-wallet-row-icon '+(n<0?'out':'in')+'">'+(n<0?'↓':'↑')+'</span><span class="buchee-wallet-row-copy"><strong>'+esc(title)+'</strong><small>'+day(t.created_at)+'</small></span><b class="'+(n>0?'earned':'')+'">'+(n>0?'+':'')+n.toLocaleString('tr-TR')+' puan</b></div>'}).join(''):'<p class="buchee-wallet-empty">Henüz işlem bulunmuyor.</p>')+'</section>'+
+   '</div>';return;
  }
  const title={tasks:'Görevlerim',invite:'Davet Et Kazan',milestones:'Takipçi hedefleri',history:'İşlem geçmişi'}[patiRewardsSection]||'Bakiyem';
  const filtered=children.filter(el=>{
