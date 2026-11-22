@@ -1,10 +1,10 @@
-/* Mobile Buchee header: brand on left, messages on right. Keep feed-selector functional. */
+/* Definitive Buchee mobile header layout: left brand, right messages, no plus. */
 @media(max-width:900px){
-.mobile-header{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important}
-.mobile-header #pati-feed-menu-trigger{order:0!important;margin-left:0!important;margin-right:auto!important;position:relative!important;left:auto!important;right:auto!important;transform:none!important;flex:0 1 auto!important;text-align:left!important;justify-content:flex-start!important}
-.mobile-header #pati-feed-menu-trigger .buchee-header-serif-wordmark{text-align:left!important}
-.mobile-header .pati-header-actions{order:3!important;margin-left:auto!important;margin-right:0!important;position:relative!important;left:auto!important;right:auto!important;transform:none!important;display:flex!important;align-items:center!important}
-.mobile-header .buchee-header-messages{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-width:44px!important;min-height:44px!important;color:inherit!important}
-.mobile-header #pati-header-share{order:2!important}
-.mobile-header #pati-global-back:not([hidden]){order:-1!important}
+.mobile-header{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:0!important;padding-inline:16px!important}
+.mobile-header #pati-header-share{display:none!important;visibility:hidden!important}
+.mobile-header #pati-feed-menu-trigger{order:1!important;position:static!important;inset:auto!important;transform:none!important;margin:0 auto 0 0!important;padding:0!important;flex:0 1 auto!important;width:auto!important;max-width:calc(100% - 58px)!important;justify-content:flex-start!important;align-items:flex-start!important;text-align:left!important}
+.mobile-header #pati-feed-menu-trigger .buchee-header-serif-wordmark{display:block!important;position:static!important;transform:none!important;text-align:left!important;margin:0!important}
+.mobile-header .pati-header-actions{order:2!important;position:static!important;inset:auto!important;transform:none!important;margin:0 0 0 auto!important;flex:0 0 44px!important;display:flex!important;justify-content:flex-end!important;align-items:center!important}
+.mobile-header #pati-header-notifications{position:static!important;inset:auto!important;transform:none!important;display:inline-flex!important;visibility:visible!important;opacity:1!important;align-items:center!important;justify-content:center!important;width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important}
+.mobile-header #pati-global-back:not([hidden]){order:0!important}
 }
