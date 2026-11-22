@@ -1578,11 +1578,11 @@ function postCard(p,priority=false){
  const sourcePost=p.source_post_id?data.posts.find(x=>x.id===p.source_post_id):null;
  const sourceCredit=sourcePost?'<button type="button" class="pati-source-credit" data-action="profile-open-post" data-id="'+esc(sourcePost.id)+'">↪ @'+esc(profile(sourcePost.author_id).handle||'patiyiz')+' paylaşımına tepki · Orijinal gönderiyi aç</button>':'';
  const caption=body?'<p class="pati-post-caption buchee-feed-caption">'+(hasMedia?'<strong class="buchee-caption-author">'+esc(profile(p.author_id).handle||profile(p.author_id).display_name||'Buchee Social üyesi')+'</strong> ':'')+formatPatiPostBody(body)+'</p>':'';
- return '<article class="pati-card pati-feed-card '+(isFeedReel?'pati-feed-reel-card ':'')+(hasMedia?'pati-feed-has-media':'pati-feed-text-only')+'" data-post-id="'+esc(p.id)+'"><div class="pati-feed-card-header">'+(collaborator&&typeof patiCollabHeader==='function'?patiCollabHeader(p,collaborator):userRow(p.author_id,''))+'<button type="button" class="pati-post-more" data-action="post-menu" data-id="'+esc(p.id)+'" aria-label="Gönderi seçenekleri">⋯</button></div>'+
+ return '<article class="pati-card pati-feed-card '+(isFeedReel?'pati-feed-reel-card ':'')+(hasMedia?'pati-feed-has-media':'pati-feed-text-only')+(p.post_format==='text'?' buchee-twit-with-photo':'')+'" data-post-id="'+esc(p.id)+'"><div class="pati-feed-card-header">'+(collaborator&&typeof patiCollabHeader==='function'?patiCollabHeader(p,collaborator):userRow(p.author_id,''))+'<button type="button" class="pati-post-more" data-action="post-menu" data-id="'+esc(p.id)+'" aria-label="Gönderi seçenekleri">⋯</button></div>'+
  sourceCredit+
  (pet?'<p class="pati-feed-pet">'+petIcon(pet.species)+' '+esc(pet.name)+' · '+esc(pet.species)+'</p>':'')+
- (hasMedia?media:'<div class="pati-feed-text-content">'+(caption||'<p class="pati-post-caption">💜</p>')+'</div>')+
- controls+'<div class="pati-post-details buchee-post-details">'+bucheeLikeSummary(p.id,count)+(hasMedia?caption:'')+'<time class="pati-post-time">'+esc(day(p.created_at))+'</time></div></article>';
+ (p.post_format==='text'&&hasMedia?'<div class="buchee-twit-inline-text">'+caption+'</div><div class="buchee-twit-inline-media">'+media+'</div>':hasMedia?media:'<div class="pati-feed-text-content">'+(caption||'<p class="pati-post-caption">💜</p>')+'</div>')+
+ controls+'<div class="pati-post-details buchee-post-details">'+bucheeLikeSummary(p.id,count)+(hasMedia&&p.post_format!=='text'?caption:'')+'<time class="pati-post-time">'+esc(day(p.created_at))+'</time></div></article>';
 }
 function patiDetailCandidates(source){
  if(source==='saved-posts')return window.PatiyizSavedV2?.visiblePosts()||[];
@@ -1591,7 +1591,7 @@ function patiDetailCandidates(source){
   if(profilePostsTab==='reposts')return patiRepostedPosts(author);
    const sorted=(typeof patiCollabPartnerPosts==='function'?patiCollabPartnerPosts(author):data.posts.filter(p=>p.author_id===author)).filter(p=>!blocked.has(p.author_id))
    .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)||String(b.id).localeCompare(String(a.id)));
-  return sorted.filter(p=>profilePostsTab==='reels'?p.post_format==='reels'&&(!!p.video_url||!!p.media_videos?.length):profilePostsTab==='text'?!(p.image_url||p.images?.length||p.video_url||p.media_videos?.length):profilePostsTab==='videos'?p.post_format!=='reels'&&!!(p.video_url||p.media_videos?.length):(!!(p.image_url||p.images?.length||p.video_url||p.media_videos?.length)&&p.post_format!=='reels'));
+  return sorted.filter(p=>profilePostsTab==='reels'?p.post_format==='reels'&&(!!p.video_url||!!p.media_videos?.length):profilePostsTab==='text'?(p.post_format==='text'||!(p.image_url||p.images?.length||p.video_url||p.media_videos?.length)):profilePostsTab==='videos'?p.post_format!=='reels'&&!!(p.video_url||p.media_videos?.length):(!!(p.image_url||p.images?.length||p.video_url||p.media_videos?.length)&&p.post_format!=='reels'));
  }
  if(source==='explore'){
   const remote=patiExploreMedia.owner===me.id&&patiExploreMedia.ready?patiExploreMedia.rows:[];
@@ -7339,7 +7339,7 @@ function patiCropFilterCSS(state){
 }
 function patiCropSize(ratio,img,rotation=0,quality='export'){
  const side=quality==='preview'?540:1080;
- const sizes={'9:16':[side,Math.round(side*16/9)],'4:5':[side,Math.round(side*5/4)],'1:1':[side,side],'1.91:1':[side,Math.round(side*566/1080)]};
+ const sizes={'9:16':[side,Math.round(side*16/9)],'4:5':[side,Math.round(side*5/4)],'1:1':[side,side],'1.91:1':[side,Math.round(side*566/1080)],'16:9':[side,Math.round(side*9/16)]};
  if(sizes[ratio])return sizes[ratio];
  const rotate=rotation%180!==0,rw=rotate?img.naturalHeight:img.naturalWidth,rh=rotate?img.naturalWidth:img.naturalHeight;
  const max=2048,scale=Math.min(1,max/Math.max(rw,rh));
