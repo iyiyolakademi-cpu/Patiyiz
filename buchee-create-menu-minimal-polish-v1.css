@@ -1,0 +1,25 @@
+/* Buchee create menu — restrained polish based on the existing five-option layout. */
+#pati-create-sheet:not([hidden]){position:fixed!important;inset:0!important;z-index:2147483000!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:calc(18px + env(safe-area-inset-top,0px)) 16px calc(18px + env(safe-area-inset-bottom,0px))!important;box-sizing:border-box!important}
+#pati-create-sheet .pati-create-mask{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;border:0!important;background:rgba(15,17,20,.45)!important;backdrop-filter:blur(9px)!important;-webkit-backdrop-filter:blur(9px)!important}
+#pati-create-sheet .pati-create-modal{position:relative!important;inset:auto!important;transform:none!important;display:block!important;width:min(100%,440px)!important;max-width:440px!important;max-height:min(90dvh,760px)!important;overflow-y:auto!important;background:#fafafa!important;color:#17181a!important;border:1px solid #ffffff!important;border-radius:28px!important;padding:24px!important;box-shadow:0 26px 80px rgba(0,0,0,.19)!important;box-sizing:border-box!important;animation:bucheeCreateIn .22s ease-out both!important}
+#pati-create-sheet .pati-create-heading{display:flex!important;align-items:center!important;justify-content:space-between!important;padding:0 0 17px!important;margin:0 0 17px!important;border-bottom:1px solid #e9eaed!important}
+#pati-create-sheet .pati-create-heading strong{font-size:25px!important;line-height:1.2!important;letter-spacing:-.7px!important;font-weight:800!important;color:#18191b!important}
+#pati-create-sheet .pati-create-dismiss{display:grid!important;place-items:center!important;width:43px!important;height:43px!important;min-width:43px!important;padding:0!important;border:0!important;border-radius:50%!important;background:#eceef0!important;color:#1c1d1f!important;box-shadow:none!important}
+#pati-create-sheet .pati-create-dismiss .icon{width:21px!important;height:21px!important}
+#pati-create-sheet .pati-create-choices{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+#pati-create-sheet .pati-create-choice{display:flex!important;position:relative!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important;gap:12px!important;min-height:144px!important;width:100%!important;margin:0!important;padding:17px 10px!important;border:1px solid #e4e5e8!important;border-radius:22px!important;background:#fff!important;color:#1c1d20!important;box-shadow:0 2px 7px rgba(20,20,20,.018)!important;transition:transform .16s ease,border-color .16s ease,background .16s ease!important}
+#pati-create-sheet .pati-create-choice:active{transform:scale(.975)!important;background:#f4f5f6!important}
+#pati-create-sheet .pati-create-choice:focus-visible,#pati-create-sheet .pati-create-dismiss:focus-visible{outline:3px solid #64676c!important;outline-offset:3px!important}
+#pati-create-sheet .pati-choice-icon{display:grid!important;place-items:center!important;width:54px!important;height:54px!important;min-width:54px!important;margin:0!important;border-radius:17px!important;background:#f1f2f4!important;color:#202124!important}
+#pati-create-sheet .pati-choice-icon .icon{width:27px!important;height:27px!important}
+#pati-create-sheet .pati-choice-copy{display:flex!important;flex-direction:column!important;align-items:center!important;gap:3px!important;width:100%!important}
+#pati-create-sheet .pati-choice-copy b{font-size:17px!important;line-height:1.25!important;font-weight:750!important;letter-spacing:-.35px!important;color:#1c1d20!important}
+#pati-create-sheet .pati-choice-copy small{display:none!important}
+#pati-create-sheet .pati-choice-chevron{display:none!important}
+#pati-create-sheet .pati-create-choice:last-child{grid-column:1/-1!important;min-height:88px!important;flex-direction:row!important;justify-content:flex-start!important;text-align:left!important;padding:13px 16px!important;gap:14px!important}
+#pati-create-sheet .pati-create-choice:last-child .pati-choice-icon{width:52px!important;height:52px!important;min-width:52px!important;border-radius:16px!important}
+#pati-create-sheet .pati-create-choice:last-child .pati-choice-copy{align-items:flex-start!important}
+#pati-create-sheet .pati-create-choice:last-child .pati-choice-copy small{display:block!important;font-size:12px!important;color:#7b7d82!important;line-height:1.4!important}
+@keyframes bucheeCreateIn{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:380px){#pati-create-sheet .pati-create-modal{padding:19px!important;border-radius:24px!important}#pati-create-sheet .pati-create-choices{gap:10px!important}#pati-create-sheet .pati-create-choice{min-height:127px!important}#pati-create-sheet .pati-choice-copy b{font-size:16px!important}}
+@media(prefers-reduced-motion:reduce){#pati-create-sheet .pati-create-modal{animation:none!important}#pati-create-sheet .pati-create-choice{transition:none!important}}
