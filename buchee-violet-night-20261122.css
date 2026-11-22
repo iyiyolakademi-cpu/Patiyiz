@@ -1,0 +1,36 @@
+/* Buchee Social — Turkish violet night design, based on supplied three-screen reference.
+   Pure presentation: existing Supabase content, routing and interactions remain intact. */
+:root{--buchee-night:#180d24;--buchee-panel:#291334;--buchee-panel-2:#371942;--buchee-violet:#bd37f5;--buchee-ink:#f9efff;--buchee-muted:#c6aecf}
+body:has(#app-root:not(.hidden)){background:#130b1c!important;color:var(--buchee-ink)!important}
+#app-root:not(.hidden){background:linear-gradient(145deg,#170b22,#2c1139 60%,#160b20)!important;color:var(--buchee-ink)!important;min-height:100dvh}
+#app-root .sidebar,#app-root .right-rail,#app-root .main,#app-root .mobile-header{background:#24112f!important;color:#f9efff!important;border-color:#4b3057!important}
+#app-root .sidebar,#app-root .right-rail{box-shadow:0 14px 45px #09030e50}
+#app-root .side-nav .nav-link{color:#e6d6ed!important;border-radius:16px!important;transition:background .2s,transform .2s}
+#app-root .side-nav .nav-link:hover{background:#4b245e!important;transform:translateX(2px)}
+#app-root .side-nav .nav-link.active{background:linear-gradient(110deg,#632c7c,#9d29c9)!important;color:#fff!important}
+#app-root .nav-caption,#app-root .sidebar-foot{color:#bfa5cb!important}
+#app-root #main-content{border-radius:22px!important;overflow:clip}
+#app-root #main-content .pati-card,#app-root #main-content .pati-post,#app-root #main-content article,#app-root #right-rail .pati-card{border-color:#57365f!important}
+#app-root #main-content .pati-card,#app-root #right-rail .pati-card{background:#2c1738!important;color:#f8efff!important}
+#app-root #main-content :is(h1,h2,h3,h4),#app-root #right-rail :is(h1,h2,h3){color:#fff!important}
+#app-root #main-content :is(input,textarea,select){background:#371e43!important;color:#fff!important;border-color:#65446e!important}
+#app-root #main-content :is(input,textarea)::placeholder{color:#c2abc9!important}
+#app-root #main-content a{color:#d37aff}
+#app-root #main-content button:focus-visible,#app-root .side-nav button:focus-visible{outline:3px solid #d783ff;outline-offset:2px}
+#app-root .mobile-fab,#app-root .pati-desktop-action-button.primary{background:linear-gradient(140deg,#e045ff,#8e20d8)!important;color:#fff!important;box-shadow:0 6px 24px #b529e766!important;border:0!important}
+#app-root .mobile-bottom{background:#24112ff2!important;border:1px solid #6c3b79!important;box-shadow:0 12px 30px #0007!important;backdrop-filter:blur(18px)}
+#app-root .mobile-bottom button{color:#e8d6ee!important}
+#app-root .mobile-bottom button.active{color:#e65bff!important}
+#app-root .right-rail{border-radius:22px!important}
+#app-root .pati-feed-stories,#app-root .pati-story-list{background:transparent!important}
+#app-root .pati-avatar,#app-root img[class*="avatar"]{border-color:#a62bd4!important}
+@media(max-width:800px){
+ body:has(#app-root:not(.hidden)){background:#180c24!important}
+ #app-root:not(.hidden){background:linear-gradient(155deg,#30133c,#180b24)!important}
+ #app-root .mobile-header{background:#24102ff2!important;border-bottom:1px solid #60346b!important;backdrop-filter:blur(16px)}
+ #app-root #main-content{border-radius:0!important;background:#20102c!important}
+ #app-root .mobile-bottom{position:fixed!important;bottom:max(12px,env(safe-area-inset-bottom))!important;left:50%!important;transform:translateX(-50%)!important;width:min(94vw,440px)!important;border-radius:28px!important;padding:6px 8px!important;z-index:1000}
+ #app-root .mobile-fab{border-radius:50%!important}
+ #app-root #main-content .pati-card{border-radius:20px!important;margin-inline:8px}
+}
+@media(prefers-reduced-motion:reduce){#app-root .side-nav .nav-link{transition:none!important}}
