@@ -1,0 +1,28 @@
+/* Final approved visual matching: full screen black and white */
+html body #pati-close-picker .pati-close-picker-shell.buchee-close-minimal{background:#fff!important;padding:env(safe-area-inset-top,0px) 0 0!important}
+html body #pati-close-picker .buchee-close-minimal header{min-height:78px!important;padding:16px 20px!important;border:0!important}
+html body #pati-close-picker .buchee-close-minimal header strong{font-size:clamp(19px,5vw,24px)!important;font-weight:800!important;text-align:center!important;letter-spacing:-.6px!important}
+html body #pati-close-picker .buchee-close-minimal header button{font-size:29px!important;background:transparent!important}
+html body #pati-close-picker .pati-close-info{padding:12px 18px 0!important}
+html body #pati-close-picker .buchee-cf-black-note{min-height:100px!important;box-sizing:border-box!important;padding:20px 18px!important;border-radius:18px!important;background:#f3f3f3!important;gap:14px!important}
+html body #pati-close-picker .buchee-cf-note-icon{flex:0 0 50px!important;width:50px!important;height:50px!important;border-radius:0!important;border-right:1px solid #c9c9c9!important;background:transparent!important;color:#000!important}
+html body #pati-close-picker .buchee-cf-note-icon svg{width:32px!important;height:32px!important;stroke:#111!important}
+html body #pati-close-picker .buchee-cf-black-note strong{font-size:16px!important;color:#111!important}
+html body #pati-close-picker .buchee-cf-black-note p{font-size:12px!important;color:#333!important;line-height:1.55!important}
+html body #pati-close-picker .buchee-cf-search-wrap{padding:20px 18px 0!important}
+html body #pati-close-picker #pati-close-search{height:55px!important;border-radius:16px!important;background:#f4f4f4!important;font-size:15px!important;padding:0 18px!important}
+html body #pati-close-picker .buchee-cf-list-head{padding:16px 19px 8px!important}
+html body #pati-close-picker .pati-close-people{padding:0 18px 12px!important}
+html body #pati-close-picker .pati-close-person{min-height:78px!important;padding:12px 2px!important;gap:13px!important}
+html body #pati-close-picker .pati-close-person .avatar{width:49px!important;height:49px!important;min-width:49px!important}
+html body #pati-close-picker .pati-close-person strong{font-size:15px!important;font-weight:750!important}
+html body #pati-close-picker .pati-close-person small{font-size:12px!important;color:#777!important}
+html body #pati-close-picker .pati-close-person>b{flex:0 0 25px!important;width:25px!important;height:25px!important;border-radius:6px!important}
+html body #pati-close-picker .buchee-cf-footer{padding:14px 18px calc(19px + env(safe-area-inset-bottom,0px))!important}
+html body #pati-close-picker .pati-close-confirm{min-height:55px!important;font-size:15px!important;background:#000!important;border-radius:15px!important}
+.buchee-blocked-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 16px}
+.buchee-blocked-toolbar strong{font-size:14px;color:#111}
+.buchee-block-add{border:0;border-radius:12px;min-height:43px;padding:10px 15px;background:#000;color:#fff;font-size:12px;font-weight:800;cursor:pointer}
+.buchee-blocked-panel .buchee-blocked-unblock{border:1px solid #111!important;color:#111!important;background:#fff!important}
+.buchee-blocked-v2 .buchee-blocked-person button[data-action=block]:not(.buchee-blocked-unblock){background:#000!important;color:#fff!important}
+@media(max-width:360px){.buchee-blocked-toolbar{gap:8px}.buchee-block-add{padding:8px 10px;font-size:11px}html body #pati-close-picker .buchee-cf-black-note{padding:15px 12px!important}}
