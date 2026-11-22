@@ -587,7 +587,7 @@ const countBadge=n=>n?`<span class="pati-count-badge" aria-label="${n} okunmamı
 function navRender(){
  // Use only the profile feature menu, not a duplicate edge drawer.
  document.getElementById('pati-right-menu-handle')?.remove();
- const fab=$('#app-root>.mobile-fab');if(fab){fab.hidden=true;fab.style.display='none'}const sideCreate=$('.nav-create');if(sideCreate){const action=view==='home'?'compose':'';sideCreate.hidden=!action;sideCreate.style.display=action?'':'none';if(action){sideCreate.dataset.action=action;sideCreate.innerHTML=ico('plus')+(view==='community'?' Soru sor':view==='care'?' Görev ekle':view==='lost'?' İlan oluştur':view==='adoption'?' Sahiplendirme ilanı':' Yeni paylaşım')}}const shareAllowed=view==='home';
+ const fab=$('#app-root>.mobile-fab');if(fab){fab.hidden=true;fab.style.display='none'}const sideCreate=$('.nav-create');if(sideCreate){const action=view==='home'?'compose':'';sideCreate.hidden=!action;sideCreate.style.display=action?'':'none';if(action){sideCreate.dataset.action=action;sideCreate.innerHTML=ico('plus')+(view==='community'?' Soru sor':view==='care'?' Görev ekle':view==='lost'?' İlan oluştur':view==='adoption'?' Sahiplendirme ilanı':' Yeni paylaşım')}}const shareAllowed=!!me;
  if(typeof document!=='undefined'){
   document.querySelectorAll?.('#pati-header-share, .pati-desktop-action-button.primary[data-action="pati-create-open"]')?.forEach(el=>{el.hidden=!shareAllowed;el.style.display=shareAllowed?'':'none';});
   if(document.documentElement?.dataset)document.documentElement.dataset.patiView=view;
@@ -2593,6 +2593,7 @@ function reelsPage(){
 }
 
 function closePatiCreate(){const el=$('#pati-create-sheet');if(el)el.hidden=true;document.body.classList.remove('pati-create-open')}
+document.addEventListener('click',function(event){const btn=event.target.closest?.('#mobile-nav .buchee-reference-create');if(!btn)return;event.preventDefault();event.stopImmediatePropagation();openPatiCreate();},true);
 function openPatiCreate(){const el=$('#pati-create-sheet');if(!el)return;el.hidden=false;document.body.classList.add('pati-create-open');el.querySelector('.pati-create-dismiss')?.focus()}
 
 
