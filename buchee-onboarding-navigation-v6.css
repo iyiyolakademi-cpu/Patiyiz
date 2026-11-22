@@ -1,0 +1,19 @@
+/* Buchee onboarding v6: fixed viewport, real flag, back navigation, polished signup */
+html.buchee-intro-locked,body.buchee-intro-locked{height:100%!important;max-height:100%!important;overflow:hidden!important;overscroll-behavior:none!important;touch-action:none!important}
+#buchee-aurora-intro{position:fixed!important;inset:0!important;height:100dvh!important;max-height:100dvh!important;overflow:hidden!important;overscroll-behavior:none!important;touch-action:pan-x!important}
+#buchee-aurora-intro .buchee-reference-screen{height:100dvh!important;max-height:100dvh!important;overflow:hidden!important;overscroll-behavior:none!important;touch-action:none!important}
+#buchee-aurora-intro .buchee-reference-footer-left{display:flex;align-items:center;gap:17px}
+#buchee-aurora-intro .buchee-reference-back{display:grid;place-items:center;border:1px solid #ffffff6b;background:#ffffff19;color:#fff;border-radius:50%;width:43px;height:43px;font-size:23px;cursor:pointer;backdrop-filter:blur(9px)}
+#buchee-aurora-intro .buchee-reference-back:active{background:#ffffff55}
+#buchee-aurora-intro .buchee-turkish-flag{position:absolute;top:14%;right:8%;z-index:1;width:clamp(135px,38%,220px);transform:rotate(-7deg);filter:drop-shadow(0 14px 22px #0008)}
+#buchee-aurora-intro .buchee-turkish-flag svg{display:block;width:100%;height:auto;border-radius:4px;box-shadow:0 0 0 1px #fff3}
+#buchee-aurora-intro .buchee-reference-2 .buchee-reference-content{position:relative;z-index:2}
+#auth-root .buchee-auth-editorial .auth-card{border-radius:24px!important;border:1px solid #e9e9e9!important;box-shadow:0 20px 80px #00000014!important}
+#auth-root .buchee-auth-editorial .auth-brand{margin-bottom:26px!important}
+#auth-root .buchee-auth-editorial .auth-tabs{border-radius:14px!important;padding:5px!important}
+#auth-root .buchee-auth-editorial .pati-field input:not([type=checkbox]){background:#fff!important;border:1px solid #d9d9d9!important;min-height:52px!important}
+#auth-root .buchee-auth-editorial .pati-field input:not([type=checkbox]):focus{border-color:#111!important;box-shadow:0 0 0 3px #11111114!important}
+#auth-root .buchee-auth-editorial .auth-submit{min-height:56px!important;font-size:15px!important;border-radius:13px!important}
+#auth-root .buchee-auth-editorial .auth-bottom{padding-top:6px!important}
+@media(max-height:670px){#buchee-aurora-intro .buchee-reference-top{padding-top:calc(env(safe-area-inset-top) + 12px)!important}#buchee-aurora-intro .buchee-reference-footer{padding-bottom:calc(env(safe-area-inset-bottom) + 10px)!important}#buchee-aurora-intro .buchee-reference-content h1{font-size:27px!important}#buchee-aurora-intro .buchee-reference-features{margin-top:9px!important}}
+@media(max-width:400px){#buchee-aurora-intro .buchee-turkish-flag{top:13%;width:35%}}
