@@ -1,0 +1,10 @@
+/* Mobile Buchee header: brand on left, messages on right. Keep feed-selector functional. */
+@media(max-width:900px){
+.mobile-header{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important}
+.mobile-header #pati-feed-menu-trigger{order:0!important;margin-left:0!important;margin-right:auto!important;position:relative!important;left:auto!important;right:auto!important;transform:none!important;flex:0 1 auto!important;text-align:left!important;justify-content:flex-start!important}
+.mobile-header #pati-feed-menu-trigger .buchee-header-serif-wordmark{text-align:left!important}
+.mobile-header .pati-header-actions{order:3!important;margin-left:auto!important;margin-right:0!important;position:relative!important;left:auto!important;right:auto!important;transform:none!important;display:flex!important;align-items:center!important}
+.mobile-header .buchee-header-messages{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-width:44px!important;min-height:44px!important;color:inherit!important}
+.mobile-header #pati-header-share{order:2!important}
+.mobile-header #pati-global-back:not([hidden]){order:-1!important}
+}
