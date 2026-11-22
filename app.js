@@ -2593,7 +2593,7 @@ function reelsPage(){
 }
 
 function closePatiCreate(){const el=$('#pati-create-sheet');if(el)el.hidden=true;document.body.classList.remove('pati-create-open')}
-function openPatiCreate(){if(view!=='home')return;const el=$('#pati-create-sheet');if(!el)return;el.hidden=false;document.body.classList.add('pati-create-open');el.querySelector('.pati-create-dismiss')?.focus()}
+function openPatiCreate(){const el=$('#pati-create-sheet');if(!el)return;el.hidden=false;document.body.classList.add('pati-create-open');el.querySelector('.pati-create-dismiss')?.focus()}
 
 
 function bucheeShareFeedback(message,bad=false){
