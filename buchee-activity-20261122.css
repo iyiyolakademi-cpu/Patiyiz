@@ -14,3 +14,12 @@
 #app-root #main-content .buchee-activity .pati-alert-delete{color:#777!important}
 #app-root #main-content .buchee-activity .notification-v2-empty{color:#d0d2d7!important}
 @media(max-width:800px){#app-root:has(.buchee-activity) #main-content{background:#0b0e11!important}#app-root:has(.buchee-activity) .mobile-header{background:#0b0e11!important;color:#fff!important}}
+
+/* Unified activity page surface: no gray/purple seams around the list. */
+:root{--buchee-activity-bg:#090909}
+body:has(#app-root .buchee-activity),html:has(#app-root .buchee-activity){background:var(--buchee-activity-bg)!important}
+#app-root:has(.buchee-activity),#app-root:has(.buchee-activity) .app-layout,#app-root:has(.buchee-activity) .main,#app-root:has(.buchee-activity) #main-content,#app-root:has(.buchee-activity) #right-rail{background:var(--buchee-activity-bg)!important}
+#app-root #main-content .buchee-activity,#app-root #main-content .buchee-activity .pati-notifications-simple-head,#app-root #main-content .buchee-activity-tabs,#app-root #main-content .buchee-activity .pati-alert-row,#app-root:has(.buchee-activity) .mobile-header{background:var(--buchee-activity-bg)!important}
+#app-root #main-content .buchee-activity{border:0!important;border-radius:0!important;box-shadow:none!important;min-height:100dvh!important}
+#app-root:has(.buchee-activity) .mobile-bottom{background:#090909f2!important;border-color:#333!important}
+@media(max-width:800px){#app-root:has(.buchee-activity) #main-content{padding:0!important}#app-root #main-content .buchee-activity{padding:14px 14px 112px!important;box-sizing:border-box!important;width:100%!important}}
