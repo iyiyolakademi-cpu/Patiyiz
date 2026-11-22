@@ -1,0 +1,43 @@
+/* Buchee Signature profile: cinematic cover + clean editorial layout.
+   Scoped only to profile, preserving real user data and black bottom dock. */
+#app-root #main-content .pati-ig-profile{--bc-ink:#17191d;--bc-soft:#f3f4f6;background:#fff!important;color:var(--bc-ink)!important;overflow:hidden;border-radius:20px;position:relative}
+#app-root #main-content .pati-ig-profile .buchee-profile-cover{height:clamp(160px,24vw,230px);background:radial-gradient(ellipse at 72% 20%,#df925d 0%,#956f73 24%,transparent 50%),linear-gradient(160deg,#192330 0%,#343a47 48%,#121922 100%);position:relative;display:flex;align-items:flex-start;justify-content:space-between;padding:24px 26px;color:white;box-sizing:border-box;isolation:isolate}
+#app-root #main-content .pati-ig-profile .buchee-profile-cover:after{content:"";position:absolute;inset:auto 0 0;height:45%;background:linear-gradient(165deg,transparent 28%,#0d1721 29%,#17212a 54%,#111923 55%);opacity:.8;z-index:-1}
+#app-root #main-content .pati-ig-profile .buchee-profile-cover-brand{font-family:Georgia,serif;font-style:italic;font-size:27px;font-weight:bold;letter-spacing:-1px}
+#app-root #main-content .pati-ig-profile .buchee-profile-cover-quote{max-width:42%;font-family:Georgia,serif;font-style:italic;font-size:clamp(12px,1.7vw,19px);align-self:center;text-align:right;text-shadow:0 2px 8px #0007}
+#app-root #main-content .pati-ig-profile .pati-ig-summary{display:grid!important;grid-template-columns:112px minmax(0,1fr)!important;gap:18px!important;align-items:end!important;margin:-50px 20px 0!important;padding:0!important;background:transparent!important;position:relative;z-index:2}
+#app-root #main-content .pati-ig-profile .pati-ig-avatar{width:112px!important;height:112px!important;border-radius:50%!important;border:4px solid #fff!important;background:#f0f0f0!important;box-shadow:0 4px 16px #0002!important;overflow:hidden!important}
+#app-root #main-content .pati-ig-profile .pati-ig-avatar img{width:100%!important;height:100%!important;object-fit:cover!important}
+#app-root #main-content .pati-ig-profile .pati-ig-info{display:contents!important}
+#app-root #main-content .pati-ig-profile .pati-ig-handle-row{grid-column:2!important;grid-row:1!important;align-self:end!important;display:flex!important;flex-wrap:wrap!important;gap:6px!important;padding-bottom:4px!important}
+#app-root #main-content .pati-ig-profile .pati-ig-name{grid-column:1/-1!important;font-size:clamp(21px,3vw,28px)!important;color:#16191e!important;line-height:1.2!important}
+#app-root #main-content .pati-ig-profile .pati-ig-stats{grid-column:1/-1!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important;background:transparent!important;margin:8px 0!important;padding:0!important;border:0!important;box-shadow:none!important}
+#app-root #main-content .pati-ig-profile .pati-ig-stats>span,#app-root #main-content .pati-ig-profile .pati-ig-stats>button{background:#f5f5f7!important;color:#17191d!important;border:1px solid #ededf0!important;border-radius:16px!important;min-width:0!important;padding:13px 4px!important;display:flex!important;flex-direction:column!important;align-items:center!important;gap:4px!important}
+#app-root #main-content .pati-ig-profile .pati-ig-stats b{color:#17191d!important;font-size:19px!important}
+#app-root #main-content .pati-ig-profile .pati-ig-stats small{color:#5e626a!important;font-size:12px!important}
+#app-root #main-content .pati-ig-profile .pati-ig-about{background:#fff!important;color:#202228!important;padding:12px 22px!important;margin:0!important;border:0!important;box-shadow:none!important}
+#app-root #main-content .pati-ig-profile .pati-ig-actions{display:flex!important;gap:10px!important;padding:8px 20px!important}
+#app-root #main-content .pati-ig-profile .pati-ig-actions button{flex:1!important;border-radius:14px!important;min-height:42px!important;background:#f0f1f4!important;color:#16191d!important;border:0!important}
+#app-root #main-content .pati-ig-profile .pati-ig-actions button:first-child{background:#17191d!important;color:white!important}
+#app-root #main-content .pati-ig-profile .pati-ig-tabs{display:flex!important;gap:8px!important;justify-content:space-around!important;padding:12px 12px!important;background:#fff!important;border-bottom:1px solid #eee!important}
+#app-root #main-content .pati-ig-profile .pati-ig-tabs button{background:#f1f2f4!important;color:#41454e!important;border:0!important;border-radius:12px!important;min-height:44px!important;flex:1!important}
+#app-root #main-content .pati-ig-profile .pati-ig-tabs button.active{background:#17191d!important;color:#fff!important}
+#app-root #main-content .pati-ig-profile .pati-ig-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important;padding:6px!important}
+#app-root #main-content .pati-ig-profile .pati-ig-grid>*{min-width:0!important;border-radius:10px!important;overflow:hidden!important}
+#app-root #main-content .pati-ig-profile .pati-ig-grid img{width:100%!important;object-fit:cover!important}
+@media(max-width:800px){
+#app-root:has(.pati-ig-profile),#app-root:has(.pati-ig-profile) .main,#app-root:has(.pati-ig-profile) #main-content{background:#fff!important;color:#17191d!important}
+#app-root #main-content .pati-ig-profile{border-radius:0!important;padding:0 0 110px!important;min-height:100dvh!important}
+#app-root #main-content .pati-ig-profile .pati-profile-topbar,#app-root #main-content .pati-ig-profile .pati-profile-visitor-topbar{background:#fff!important;color:#17191d!important}
+#app-root #main-content .pati-ig-profile .buchee-profile-cover{height:190px!important;padding:20px 16px!important}
+#app-root #main-content .pati-ig-profile .pati-ig-summary{grid-template-columns:94px minmax(0,1fr)!important;gap:12px!important;margin:-44px 16px 0!important}
+#app-root #main-content .pati-ig-profile .pati-ig-avatar{width:94px!important;height:94px!important}
+#app-root #main-content .pati-ig-profile .pati-ig-handle-row{padding-top:40px!important}
+#app-root #main-content .pati-ig-profile .pati-ig-name{font-size:22px!important}
+#app-root #main-content .pati-ig-profile .pati-ig-stats{gap:7px!important}
+#app-root #main-content .pati-ig-profile .pati-ig-stats>span,#app-root #main-content .pati-ig-profile .pati-ig-stats>button{padding:10px 3px!important}
+#app-root #main-content .pati-ig-profile .pati-ig-about{padding:10px 16px!important}
+#app-root #main-content .pati-ig-profile .pati-ig-actions{padding:8px 16px!important}
+#app-root #main-content .pati-ig-profile .pati-ig-grid{gap:4px!important}
+#app-root .mobile-bottom{background:#090909f2!important}
+}
