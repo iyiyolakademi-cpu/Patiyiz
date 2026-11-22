@@ -42,3 +42,28 @@ html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-he
 html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>.pati-header-actions>#pati-header-notifications svg{display:block!important;visibility:visible!important;opacity:1!important;stroke:#fff!important;color:#fff!important;fill:none!important;width:23px!important;height:23px!important}
 html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>#pati-global-back[hidden]{display:none!important}
 }
+
+/* FINAL: original brand and its own feed selector, no second control. */
+@media(max-width:900px){
+html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>#buchee-home-feed-switch{display:none!important}
+html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>#pati-feed-menu-trigger{
+ left:3px!important;right:auto!important;top:50%!important;transform:translateY(-50%)!important;
+ display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;gap:9px!important;
+ width:auto!important;max-width:calc(100% - 70px)!important;padding:0!important;margin:0!important;
+}
+html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>#pati-feed-menu-trigger .buchee-mode-label{
+ display:flex!important;align-items:center!important;justify-content:center!important;gap:3px!important;
+ position:relative!important;inset:auto!important;transform:none!important;max-width:140px!important;
+ padding:0!important;margin:0!important;color:#222!important;font-size:11px!important;font-weight:650!important;
+ line-height:1.2!important;white-space:normal!important;text-align:center!important;
+}
+html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>#pati-feed-menu-trigger .buchee-header-switch-icon{
+ display:inline-flex!important;width:19px!important;height:19px!important;flex-shrink:0!important;
+}
+html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>.pati-header-actions{
+ top:calc(50% - 5px)!important;transform:translateY(-50%)!important;right:9px!important;
+}
+html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>.pati-header-actions>#pati-header-notifications{
+ background:#000!important;color:#fff!important;border-color:#000!important;
+}
+}
