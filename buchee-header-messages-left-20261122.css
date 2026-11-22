@@ -38,3 +38,21 @@
 }
 .mobile-header #pati-global-back:not([hidden]){order:0!important}
 }
+
+/* Reference-matched dark espresso message tile, white bubble, soft floating shadow. */
+@media(max-width:900px){
+.mobile-header #pati-header-notifications.buchee-header-messages{
+ width:46px!important;height:42px!important;min-width:46px!important;min-height:42px!important;
+ padding:0!important;border:0!important;border-radius:15px!important;
+ background:linear-gradient(145deg,#59473b 0%,#30241e 70%,#211b18 100%)!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ box-shadow:0 5px 12px rgba(40,29,22,.24),0 1px 3px rgba(0,0,0,.13)!important;
+ overflow:visible!important;
+}
+.mobile-header #pati-header-notifications.buchee-header-messages svg,
+.mobile-header #pati-header-notifications.buchee-header-messages .icon{
+ width:24px!important;height:24px!important;stroke:#fff!important;
+ stroke-width:2.15!important;fill:none!important;stroke-linecap:round!important;stroke-linejoin:round!important;
+}
+.mobile-header #pati-header-notifications.buchee-header-messages:active{transform:scale(.96)!important}
+}
