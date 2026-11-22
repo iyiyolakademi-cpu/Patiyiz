@@ -67,8 +67,8 @@ function patiWatchPostViews(){
  cards.forEach(card=>patiPostViewObserver.observe(card));
 }
 
-const allowed=['home','explore','pets','reels','streaks','rewards','shop','saved-posts','community','knowledge','education','lost','adoption','care','wellness','healthfile','my-pet','messages','notifications','profile','blocked','settings','follows-list'];
-const nav=[['home','Ana sayfa','home'],['explore','Keşfet','compass'],['reels','Reels','up'],['streaks','Seriler','calendar'],['community','Topluluk','users'],['knowledge','Bilgi Merkezi','library'],['education','Eğitim Serileri','library'],['lost','Kayıp İlanları','location'],['adoption','Sahiplendirme','heart'],['my-pet','Hayvanım','heart'],['messages','Mesajlar','message'],['notifications','Bildirimler','bell'],['profile','Profilim','user'],['settings','Ayarlar ve Gizlilik','settings']];
+const allowed=['home','explore','pets','reels','streaks','rewards','shop','saved-posts','community','knowledge','education','messages','notifications','profile','blocked','settings','follows-list'];
+const nav=[['home','Ana sayfa','home'],['explore','Keşfet','compass'],['reels','Reels','up'],['streaks','Seriler','calendar'],['community','Topluluk','users'],['knowledge','Bilgi Merkezi','library'],['education','Eğitim Serileri','library'],['messages','Mesajlar','message'],['notifications','Bildirimler','bell'],['profile','Profilim','user'],['settings','Ayarlar ve Gizlilik','settings']];
 const cfg=window.PATIYIZ_CONFIG||{};
 const ready=String(cfg.supabaseUrl||'').startsWith('https://')&&!String(cfg.supabaseUrl).includes('BURAYA_')&&!!cfg.supabasePublishableKey&&!String(cfg.supabasePublishableKey).includes('BURAYA_')&&!!window.supabase?.createClient;
 let liveChannel=null,liveReloadTimer=null,liveReconnectTimer=null,liveUserId=null,liveInitialized=false,pushPublicKey='',lastForegroundSync=0;
@@ -959,7 +959,7 @@ async function patiCoinConfirm(){
   navigate('shop');notify('Talebin alındı. Teslimat/bağış onayı bekleniyor.');
  }catch(e){notify(friendly(e),true);btn.disabled=false;btn.textContent='Yeniden dene'}
 }
-function side(){let p=current();rail.innerHTML=`<div class="pati-card"><div class="pati-profile-row">${avatar(p)}<div><strong>${esc(p.display_name)}</strong><small>@${esc(p.handle)}</small></div></div><div class="pati-actionbar">${button('Profilim','my-profile')}</div></div><div class="pati-card" style="margin-top:15px"><h3>Güvenli topluluk</h3><p>Şikâyet veya engelleme özelliğini kötüye kullanım halinde kullan. Acil hayvan sağlığı sorunlarında veteriner hekime başvur.</p></div>`}
+function side(){let p=current();rail.innerHTML=`<div class="pati-card"><div class="pati-profile-row">${avatar(p)}<div><strong>${esc(p.display_name)}</strong><small>@${esc(p.handle)}</small></div></div><div class="pati-actionbar">${button('Profilim','my-profile')}</div></div><div class="pati-card" style="margin-top:15px"><h3>Güvenli topluluk</h3><p>Şikâyet veya engelleme özelliğini kötüye kullanım halinde kullan. Topluluk kurallarına aykırı içerikleri şikâyet edebilir, rahatsız eden hesapları engelleyebilirsin.</p></div>`}
 let patiyizVideoObserver=null;
 let patiyizFeedActiveVideo=null;
 let patiyizFeedSoundEnabled=true; // User can turn sound off from the visible feed control.
@@ -1069,6 +1069,7 @@ let patiNavigatingBack=false;
 let patiSwipeNavDirection=0;
 let patiNavAnimationId=0;
 function navigate(to){
+ if(['pets','lost','adoption','care','wellness','healthfile','my-pet'].includes(to))to='home';
  if(patiRightMenuDialog)patiCloseRightMenu();
  if(patiDmContextDialog)patiDmCloseContextMenu();
  const hubScreens=typeof patiPetHubScreens==='undefined'?new Set():patiPetHubScreens;
