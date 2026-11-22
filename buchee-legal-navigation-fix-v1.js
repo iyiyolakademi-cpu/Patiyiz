@@ -1,0 +1,4 @@
+/* Open legal pages in the same tab so Back returns to the current signup/login state. */
+(()=>{'use strict';const legal=/^(?:\.\/)?(?:privacy|kvkk|terms)\.html(?:[?#].*)?$/i;
+document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('a[href]');if(!a||!legal.test(a.getAttribute('href')||'')||e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();const href=a.getAttribute('href');try{sessionStorage.setItem('buchee_legal_return_auth',document.querySelector('#auth-root:not(.hidden)')?'1':'0')}catch{}window.location.assign(href)},true);
+})();
