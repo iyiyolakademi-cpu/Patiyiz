@@ -1,0 +1,38 @@
+/* Buchee mobile visual overhaul — reference-inspired dark plum, pink glow, glass panels.
+   Scoped to signed-in app; keeps existing feed/story/profile logic and real data. */
+:root{--buchee-bg:#140b1d;--buchee-glass:#32143f;--buchee-edge:#794081;--buchee-accent:#d529ef}
+body:has(#app-root:not(.hidden)),html:has(#app-root:not(.hidden)){background:#13091d!important}
+#app-root:not(.hidden){background:radial-gradient(ellipse at 6% 0%,#512061 0%,transparent 44%),linear-gradient(140deg,#1d0b28,#110a1b)!important;color:#fff!important}
+#app-root :is(.sidebar,.right-rail,.mobile-header){background:linear-gradient(150deg,#351340,#190e26)!important;color:#fff!important;border-color:#6b3977!important}
+#app-root :is(.main,#main-content){background:#1b0e29!important;color:#fff!important}
+#app-root #main-content :is(.pati-feed-card,.pati-card,.pati-ig-profile,.pati-ig-profile-header,.pati-ig-profile-info,.pati-ig-profile-bio,.pati-ig-stats){background:linear-gradient(155deg,#361743,#22102e)!important;color:#fff!important;border-color:#683b77!important;border-radius:24px!important;box-shadow:0 10px 30px #09041144}
+#app-root #main-content .pati-feed-card{overflow:hidden!important;margin-block:12px!important}
+#app-root #main-content :is(.pati-feed-card,.pati-ig-profile) img{object-fit:cover}
+#app-root #main-content :is(.pati-feed-card,.pati-ig-profile) :is(h1,h2,h3,h4,strong,b){color:#fff!important}
+#app-root #main-content :is(.pati-feed-card,.pati-ig-profile) :is(small,time,.muted){color:#cbb3d5!important}
+#app-root #main-content .pati-ig-stats{display:flex!important;justify-content:space-around!important;padding:16px 8px!important;border:1px solid #663975!important}
+#app-root #main-content .pati-ig-tabs{background:#1c1027!important;border-bottom:1px solid #72427f!important}
+#app-root #main-content .pati-ig-tabs button{color:#e9d6ef!important}
+#app-root #main-content .pati-ig-tabs button[aria-selected="true"]{color:#f44cff!important;border-color:#f44cff!important}
+#app-root #main-content .pati-profile-grid{gap:7px!important}
+#app-root #main-content .pati-profile-grid img{border-radius:15px!important}
+#app-root #main-content :is(.pati-story-avatar,.story-avatar,.pati-avatar){border:2px solid #d23cef!important}
+#app-root .mobile-bottom{background:linear-gradient(110deg,#35203eeb,#23152deb)!important;border:1px solid #995aa1!important;border-radius:40px!important;box-shadow:0 10px 32px #0008,0 0 18px #9e2edc22!important;backdrop-filter:blur(22px)}
+#app-root .mobile-bottom button{color:#fff!important}
+#app-root .mobile-bottom button.active{color:#ee54ff!important}
+#app-root .mobile-fab{background:linear-gradient(145deg,#f33eff,#a80bd5)!important;border:0!important;box-shadow:0 5px 20px #d421ff66!important}
+#app-root :is(.nav-link.active,.pati-actionbar button.primary){background:linear-gradient(125deg,#72258f,#c51ce8)!important;color:white!important}
+#app-root #main-content :is(input,textarea,select){background:#32183e!important;color:white!important;border:1px solid #73467d!important}
+#app-root #main-content :is(button,a):focus-visible{outline:2px solid #f08bff!important;outline-offset:3px}
+#story-overlay,#story-overlay :is(.story-viewer,.story-modal){background:#100b1a!important;color:#fff!important}
+#story-overlay :is(button,input){accent-color:#d92df0}
+#app-root .right-rail :is(.pati-card,.card){background:linear-gradient(140deg,#361842,#21102e)!important;color:#fff!important;border:1px solid #70407c!important;border-radius:22px!important}
+@media(max-width:800px){
+#app-root:not(.hidden){background:#170a22!important}
+#app-root .mobile-header{background:linear-gradient(120deg,#32123f,#1c1029)!important}
+#app-root #main-content{background:#1a0b25!important;padding-bottom:94px!important}
+#app-root #main-content .pati-feed-card{border-radius:24px!important;margin:10px 8px 14px!important}
+#app-root .mobile-bottom{bottom:max(12px,env(safe-area-inset-bottom))!important;left:50%!important;transform:translateX(-50%)!important;width:min(94vw,440px)!important;padding:8px!important;z-index:1000!important}
+#app-root .mobile-fab{z-index:1001!important}
+}
+@media(prefers-reduced-motion:reduce){#app-root *{scroll-behavior:auto!important}}
