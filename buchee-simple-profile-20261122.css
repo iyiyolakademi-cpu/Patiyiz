@@ -1,0 +1,14 @@
+/* Buchee simple profile, white canvas, black primary action. */
+#app-root #main-content .pati-ig-profile{background:#fff!important;color:#161616!important}
+#app-root #main-content .pati-ig-profile .pati-profile-topbar{display:flex!important;justify-content:flex-end!important;align-items:center!important;background:#fff!important;border:0!important;padding:10px 16px!important;min-height:48px!important}
+#app-root #main-content .pati-ig-profile .pati-profile-menu-trigger{background:transparent!important;color:#151515!important;border:0!important}
+#app-root #main-content .pati-ig-profile .pati-own-profile-actions [data-action="edit-profile"],#app-root #main-content .pati-ig-profile .pati-own-profile-actions button:first-child{background:#111!important;color:#fff!important;border:1px solid #111!important;border-radius:12px!important;font-weight:700!important}
+#app-root #main-content .pati-ig-profile .buchee-simple-earn{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:12px 16px 16px;background:#fff}
+#app-root #main-content .pati-ig-profile .buchee-earn-card{display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:9px;min-width:0;padding:15px;background:#fff!important;border:1px solid #e2e4e7!important;border-radius:16px!important;color:#18191b!important;box-shadow:none!important;cursor:pointer}
+#app-root #main-content .pati-ig-profile .buchee-earn-card strong{font-size:15px;color:#111!important}
+#app-root #main-content .pati-ig-profile .buchee-earn-card small{font-size:12px;color:#646a72!important;line-height:1.45}
+#app-root #main-content .pati-ig-profile .buchee-earn-card span{font-size:12px;color:#171717!important;font-weight:700;margin-top:auto}
+#app-root #main-content .pati-ig-profile .pati-ig-tabs{background:#fff!important;border-color:#e7e7e7!important}
+#app-root #main-content .pati-ig-profile .pati-ig-tabs button{background:#fff!important;color:#5d6269!important}
+#app-root #main-content .pati-ig-profile .pati-ig-tabs button.active{color:#111!important;border-color:#111!important}
+@media(max-width:390px){#app-root #main-content .pati-ig-profile .buchee-simple-earn{gap:8px;padding-inline:10px}#app-root #main-content .pati-ig-profile .buchee-earn-card{padding:12px 10px}#app-root #main-content .pati-ig-profile .buchee-earn-card strong{font-size:13px}}
