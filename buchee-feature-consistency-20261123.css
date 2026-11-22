@@ -1,0 +1,20 @@
+/* Buchee feature consistency: final scoped monochrome layer. */
+#app-root .pati-ig-profile .buchee-simple-earn{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+#app-root .pati-ig-profile .buchee-earn-card{background:#fff!important;color:#111!important;border:1px solid #ddd!important}
+#app-root .pati-ig-profile .buchee-earn-card:focus-visible,
+#main-content .pati-settings-v2 button:focus-visible{outline:2px solid #111!important;outline-offset:2px!important}
+#pati-close-picker,#pati-close-picker .pati-close-picker-shell,
+.buchee-blocked-v2,.buchee-blocked-panel,.buchee-blocked-hero{background:#fff!important;background-image:none!important;color:#111!important}
+.buchee-blocked-v2 .buchee-blocked-shield{background:#eee!important;color:#111!important;box-shadow:none!important}
+.buchee-blocked-v2 button{accent-color:#111}
+.buchee-blocked-v2 .buchee-blocked-top button{background:#f3f3f3!important;color:#111!important}
+.buchee-blocked-v2 .buchee-blocked-panel{border-color:#e8e8e8!important}
+#main-content .pati-settings-v2 .pati-settings-row{background:#fff!important;color:#111!important}
+@media(max-width:800px){
+ #pati-close-picker{width:100%!important;height:100dvh!important;max-height:100dvh!important}
+ #pati-close-picker .pati-close-picker-shell{max-height:100dvh!important}
+ #pati-close-picker .pati-close-people{min-height:0!important;overflow-y:auto!important}
+ .buchee-blocked-v2{min-height:100dvh!important;padding-bottom:calc(90px + env(safe-area-inset-bottom,0px))!important}
+ #app-root .pati-ig-profile .buchee-simple-earn{gap:9px!important}
+}
+@media(max-width:360px){#app-root .pati-ig-profile .buchee-simple-earn{grid-template-columns:1fr!important}}
