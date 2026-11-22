@@ -1,0 +1,16 @@
+/* Buchee black Instagram-style activity list, scoped to notifications. */
+#app-root #main-content .buchee-activity{background:#0b0e11!important;color:#f8f9fb!important;min-height:calc(100dvh - 80px);padding:14px 14px 110px!important}
+#app-root #main-content .buchee-activity .pati-notifications-simple-head{background:#0b0e11!important;color:white!important;border:0!important}
+#app-root #main-content .buchee-activity h1{color:#fff!important;font-size:24px!important}
+#app-root #main-content .buchee-activity-tabs{display:flex;gap:9px;overflow-x:auto;scrollbar-width:none;padding:14px 0 18px;position:sticky;top:0;background:#0b0e11;z-index:3}
+#app-root #main-content .buchee-activity-tabs button{background:#24292e!important;color:#f3f3f5!important;border:0!important;border-radius:13px!important;white-space:nowrap!important;font-weight:700!important;padding:12px 17px!important;min-height:44px!important}
+#app-root #main-content .buchee-activity-tabs button.active{background:#fff!important;color:#101216!important}
+#app-root #main-content .buchee-activity-day{color:#fff!important;font-size:19px!important;margin:16px 0 8px!important}
+#app-root #main-content .buchee-activity .pati-alert-row{background:#0b0e11!important;color:#fff!important;border:0!important;border-bottom:1px solid #1d2228!important;padding:12px 0!important}
+#app-root #main-content .buchee-activity .pati-alert-entry{background:transparent!important;color:#fff!important;text-align:left!important;min-width:0!important}
+#app-root #main-content .buchee-activity .pati-alert-title{color:#f5f6f7!important;font-weight:500!important;line-height:1.4!important}
+#app-root #main-content .buchee-activity .pati-alert-meta{color:#9399a2!important}
+#app-root #main-content .buchee-activity .pati-alert-avatar{flex-shrink:0!important}
+#app-root #main-content .buchee-activity .pati-alert-delete{color:#777!important}
+#app-root #main-content .buchee-activity .notification-v2-empty{color:#d0d2d7!important}
+@media(max-width:800px){#app-root:has(.buchee-activity) #main-content{background:#0b0e11!important}#app-root:has(.buchee-activity) .mobile-header{background:#0b0e11!important;color:#fff!important}}
