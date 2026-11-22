@@ -1242,6 +1242,7 @@ function patiEnsurePageBack(){
  btn.setAttribute('aria-label','Önceki ekrana dön');main.prepend(btn);
 }
 function render(){try{
+ document.getElementById('app-root')?.classList.toggle('buchee-not-home',view!=='home');
  for(const link of document.querySelectorAll('link[data-views]:not([href])')){
   if(link.dataset.views.split(' ').includes(view))link.href=link.dataset.href;
  }
