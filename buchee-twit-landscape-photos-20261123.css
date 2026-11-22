@@ -1,0 +1,19 @@
+/* Büchee text-post photo attachments: compact landscape, not full-size media/reels. */
+#post-form .buchee-twit-photo-picker{margin:14px 0;padding:14px;border:1px solid #e7e7e7;border-radius:16px;background:#fff;color:#111}
+#post-form .buchee-twit-picker-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:5px;margin-bottom:12px}
+#post-form .buchee-twit-picker-head strong{font-size:14px}
+#post-form .buchee-twit-picker-head small{font-size:11px;color:#666}
+#post-form .buchee-twit-picker-actions{display:flex;gap:8px}
+#post-form .buchee-twit-picker-actions button{flex:1;min-height:42px;background:#f4f4f4;color:#111;border:1px solid #e4e4e4;border-radius:11px;font-weight:650}
+#post-form .buchee-twit-photo-preview{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+#post-form .buchee-twit-photo-preview:empty{display:none}
+#post-form .buchee-twit-photo-tile{position:relative;aspect-ratio:16/9;overflow:hidden;border-radius:11px;background:#f2f2f2}
+#post-form .buchee-twit-photo-tile img{display:block;width:100%;height:100%;object-fit:cover}
+#post-form .buchee-twit-photo-tile button{position:absolute;right:5px;top:5px;width:27px;height:27px;border:0;border-radius:50%;background:#111;color:#fff;font-size:21px;line-height:1}
+#main-content article.buchee-twit-with-photo .buchee-twit-inline-text{padding:12px 16px 8px;font-size:inherit;overflow-wrap:anywhere}
+#main-content article.buchee-twit-with-photo .buchee-twit-inline-media{margin:0 16px 12px;max-width:100%;overflow:hidden;border-radius:12px}
+#main-content article.buchee-twit-with-photo .buchee-twit-inline-media .pati-carousel{width:100%!important;max-width:100%!important;aspect-ratio:16/9!important;max-height:none!important;overflow:hidden!important;background:#f5f5f5!important;border-radius:12px!important}
+#main-content article.buchee-twit-with-photo .buchee-twit-inline-media .pati-carousel-track,
+#main-content article.buchee-twit-with-photo .buchee-twit-inline-media .pati-carousel-slide{height:100%!important;aspect-ratio:16/9!important}
+#main-content article.buchee-twit-with-photo .buchee-twit-inline-media img{width:100%!important;height:100%!important;aspect-ratio:16/9!important;object-fit:cover!important;max-height:none!important;border-radius:12px!important}
+@media(max-width:600px){#main-content article.buchee-twit-with-photo .buchee-twit-inline-text{padding-inline:13px}#main-content article.buchee-twit-with-photo .buchee-twit-inline-media{margin-inline:13px}}
