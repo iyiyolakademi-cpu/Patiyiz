@@ -1,0 +1,15 @@
+/* Wallet refinements: pure black balance and reward store */
+.paticoin-page .buchee-wallet-balance{background:#000!important;background-image:none!important;color:#fff!important}
+.paticoin-page .buchee-wallet-balance:after{display:none!important;content:none!important}
+.paticoin-page .buchee-wallet-balance>strong{color:#fff!important}
+.paticoin-page .buchee-wallet-symbol{display:grid!important;place-items:center!important;font-size:0!important;right:22px!important;color:#fff!important}
+.paticoin-page .buchee-wallet-symbol svg{display:block!important;max-width:20vw!important}
+.paticoin-page .buchee-wallet-balance>small{font-size:11px!important;color:#d0d0d0!important}
+.paticoin-page .buchee-wallet-balance>p{font-size:11px!important;color:#bcbcbc!important}
+.paticoin-page .buchee-wallet-shop{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:22px 21px;margin:0 0 30px;border-radius:24px;background:#f2f2f4;color:#151515;overflow:hidden}
+.paticoin-page .buchee-wallet-shop h2{font-size:22px;margin:0 0 7px;font-weight:800;letter-spacing:-.5px}
+.paticoin-page .buchee-wallet-shop p{font-size:12px;color:#65656b;line-height:1.5;margin:0 0 15px;max-width:240px}
+.paticoin-page .buchee-wallet-shop button{border:0;border-radius:12px;background:#000;color:#fff;font-size:12px;font-weight:750;padding:11px 14px;cursor:pointer}
+.paticoin-page .buchee-wallet-shop>span{font-size:65px;color:#161616;flex-shrink:0}
+.paticoin-page .buchee-wallet-row>b{font-size:11px}
+@media(max-width:370px){.paticoin-page .buchee-wallet-symbol svg{width:48px;height:48px}.paticoin-page .buchee-wallet-balance>strong{font-size:42px!important}.paticoin-page .buchee-wallet-shop>span{font-size:48px}}
