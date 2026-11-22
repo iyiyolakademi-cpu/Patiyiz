@@ -671,7 +671,7 @@ function openMobileFeaturesMenu(){
   accountCard+
   '<div class="buchee-menu-quick-grid" aria-label="Hızlı erişim">'+quickHtml+'</div>'+
   section('TOPLULUK',[['community','Soru & Cevap','users'],['pati-close-friends-open','Yakın Arkadaşlar','heart','action']])+
-  section('DİĞER ÖZELLİKLER',[['education','Eğitim Serileri','library'],['my-pet','Hayvanım Merkezi','heart'],['pet-add','Yeni hayvan ekle','plus','action']])+
+  section('DİĞER ÖZELLİKLER',[['education','Eğitim Serileri','library']])+
   section('HESAP VE GÜVENLİK',[['settings','Ayarlar ve gizlilik','settings'],['blocked','Engellenen kişiler','shield'],...(!p?.is_verified?[['verification-request','Mavi tik talep et','check','action']]:[])])+
   (isAdmin?section('YÖNETİM',[['open-admin','Yönetim Paneli','shield','action']]):'')+
   '<button type="button" class="buchee-menu-logout" data-action="logout">'+ico('arrow')+'<span>Çıkış Yap</span></button>'+
