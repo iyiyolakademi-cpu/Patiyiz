@@ -7653,7 +7653,12 @@ async function publishMediaRecord(table,form,createRecord){
   });
   if(me?.id!==owner)throw Error('Oturum değişti. Paylaşımı tekrar başlat.');
   form.dataset.patiPublishAttempted='yes';
-  const response=await sb.from(table).insert({...record,id,author_id:owner}).select('*').single();
+  let response=await sb.from(table).insert({...record,id,author_id:owner}).select('*').single();
+  // Some deployed databases accept only post/reels as post_format.
+  // Retry with the existing supported format without uploading images twice.
+  if(response.error&&table==='posts'&&form.dataset.mode==='text'&&record.post_format==='text'&&/post_format|check constraint|23514/i.test(String(response.error.message||'')+' '+String(response.error.code||''))){
+   response=await sb.from(table).insert({...record,post_format:'post',id,author_id:owner}).select('*').single();
+  }
   if(response.error)throw response.error;
   if(!response.data)throw Error('Paylaşım kaydı doğrulanamadı.');
   recordMetric('success');const media=globalThis.PatiyizPrivateMedia;
