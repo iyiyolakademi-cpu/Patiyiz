@@ -598,7 +598,6 @@ function bucheeFilmsPage(){
  const search=main.querySelector('#buchee-film-search');
  search?.addEventListener('input',e=>{bucheeFilmQuery=e.target.value;const filtered=catalog.filter(x=>(bucheeFilmCategory==='Tümü'||x.category===bucheeFilmCategory)&&String(x.title+' '+x.year+' '+x.category).toLocaleLowerCase('tr-TR').includes(bucheeFilmQuery.toLocaleLowerCase('tr-TR')));main.querySelector('#buchee-film-results').innerHTML=bucheeFilmCards(filtered);main.querySelector('.buchee-film-result-head span').textContent=filtered.length+' film'});
  main.querySelectorAll('[data-buchee-film-cat]').forEach(btn=>btn.addEventListener('click',()=>{bucheeFilmCategory=btn.dataset.bucheeFilmCat;bucheeFilmsPage()}));
- main.querySelectorAll('[data-buchee-film-open]').forEach(btn=>btn.addEventListener('click',()=>bucheeFilmOpen(btn.dataset.bucheeFilmOpen)));
  main.querySelector('#buchee-film-results')?.addEventListener('click',e=>{const btn=e.target.closest('[data-buchee-film-open]');if(btn)bucheeFilmOpen(btn.dataset.bucheeFilmOpen)});
 }
 function bucheeFilmCards(rows){return rows.length?rows.map((x,i)=>'<button type="button" class="buchee-film-card" data-buchee-film-open="'+esc(x.title)+'"><span class="buchee-film-art" style="--film-hue:'+((x.year*7+i*17)%360)+'"><span class="buchee-film-art-symbol">▶</span><small>'+esc(x.category)+'</small></span><span class="buchee-film-info"><strong>'+esc(x.title)+'</strong><small>'+esc(x.year)+' · '+esc(x.category)+'</small></span></button>').join(''):'<p class="buchee-film-empty">Bu aramaya uygun film bulunamadı.</p>'}
