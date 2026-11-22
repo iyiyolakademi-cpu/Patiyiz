@@ -1,0 +1,21 @@
+/* Buchee settings — clean white reference, presentation-only; existing controls retain behavior. */
+#main-content .pati-settings-v2{width:min(100%,640px)!important;margin:0 auto!important;padding:8px 18px calc(96px + env(safe-area-inset-bottom,0px))!important;display:block!important;background:#fff!important;color:#151515!important}
+#main-content .pati-settings-v2 .pati-settings-section{margin:0!important;padding:0!important;background:#fff!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+#main-content .pati-settings-v2 .pati-settings-section>h2{font-size:13px!important;font-weight:650!important;color:#777!important;margin:22px 0 6px!important;letter-spacing:0!important}
+#main-content .pati-settings-v2 .pati-settings-items{border:0!important;border-radius:0!important;background:#fff!important;box-shadow:none!important;overflow:visible!important}
+#main-content .pati-settings-v2 .pati-settings-row{min-height:69px!important;padding:13px 3px!important;gap:17px!important;border:0!important;border-bottom:1px solid #ededed!important;border-radius:0!important;background:#fff!important;color:#171717!important;box-shadow:none!important;text-align:left!important}
+#main-content .pati-settings-v2 .pati-settings-row:last-child{border-bottom:1px solid #ededed!important}
+#main-content .pati-settings-v2 .pati-settings-icon{width:32px!important;height:32px!important;flex:0 0 32px!important;background:transparent!important;border-radius:0!important;color:#202020!important;font-size:22px!important}
+#main-content .pati-settings-v2 .pati-settings-copy{gap:2px!important}
+#main-content .pati-settings-v2 .pati-settings-copy strong{font-size:16px!important;line-height:1.35!important;font-weight:650!important;letter-spacing:-.015em!important;color:#151515!important}
+#main-content .pati-settings-v2 .pati-settings-copy small{font-size:12px!important;color:#777!important}
+#main-content .pati-settings-v2 .pati-settings-arrow{font-size:23px!important;color:#8e8e93!important}
+#main-content .pati-settings-v2 .pati-settings-row:focus-visible{outline:2px solid #111!important;outline-offset:-3px!important}
+#main-content .pati-settings-v2 .pati-settings-row:active{background:#f7f7f7!important}
+#main-content .pati-settings-v2 .pati-settings-line,#main-content .pati-settings-v2 .pati-settings-choice,#main-content .pati-settings-v2 .pati-settings-requests{background:#fff!important;color:#171717!important;border-color:#ededed!important}
+#main-content .pati-settings-v2 .pati-settings-switch{background:#d1d1d6!important}
+#main-content .pati-settings-v2 .pati-settings-private[aria-checked="true"] .pati-settings-switch{background:#171717!important}
+html[data-pati-theme="dark"] #main-content .pati-settings-v2,html[data-pati-theme="dark"] #main-content .pati-settings-v2 .pati-settings-section,html[data-pati-theme="dark"] #main-content .pati-settings-v2 .pati-settings-items,html[data-pati-theme="dark"] #main-content .pati-settings-v2 .pati-settings-row{background:#181818!important;color:#f7f7f7!important}
+html[data-pati-theme="dark"] #main-content .pati-settings-v2 .pati-settings-copy strong,html[data-pati-theme="dark"] #main-content .pati-settings-v2 .pati-settings-icon{color:#f7f7f7!important}
+html[data-pati-theme="dark"] #main-content .pati-settings-v2 .pati-settings-row{border-color:#343434!important}
+@media(max-width:480px){#main-content .pati-settings-v2{padding-inline:19px!important}#main-content .pati-settings-v2 .pati-settings-copy strong{font-size:15px!important}}
