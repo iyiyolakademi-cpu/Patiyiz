@@ -56,3 +56,25 @@
 }
 .mobile-header #pati-header-notifications.buchee-header-messages:active{transform:scale(.96)!important}
 }
+
+/* Pixel-focused reference: 50×40 espresso tile with white chat outline. */
+.mobile-header .pati-header-actions #pati-header-notifications.buchee-header-messages{
+ box-sizing:border-box!important;appearance:none!important;
+ width:50px!important;height:40px!important;min-width:50px!important;min-height:40px!important;
+ max-width:50px!important;max-height:40px!important;flex:0 0 50px!important;
+ border:0!important;border-radius:15px!important;padding:0!important;
+ background:linear-gradient(150deg,#514034 0%,#332720 56%,#241b17 100%)!important;
+ background-color:#352820!important;color:#fff!important;
+ box-shadow:0 5px 10px rgba(37,25,19,.25),0 1px 3px rgba(37,25,19,.18)!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+}
+.mobile-header .pati-header-actions #pati-header-notifications.buchee-header-messages .buchee-reference-chat-icon{
+ display:block!important;width:25px!important;height:25px!important;
+ min-width:25px!important;min-height:25px!important;
+ stroke:#fff!important;color:#fff!important;fill:none!important;
+ opacity:1!important;transform:none!important;
+}
+@media(max-width:900px){
+.mobile-header .pati-header-actions{width:50px!important;flex-basis:50px!important}
+.mobile-header #pati-feed-menu-trigger{margin-left:0!important;left:auto!important;transform:none!important}
+}
