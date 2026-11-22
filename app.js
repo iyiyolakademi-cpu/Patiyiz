@@ -806,7 +806,7 @@ function patiRewardShowPage(){
    '<section class="buchee-wallet-recent">'+(recent.length?recent.map(t=>{const n=Number(t.delta||0);const title=t.task_code?.startsWith('cashout_reserve_')?'Nakit talebi için ayrılan':t.task_code?.startsWith('cashout_refund_')?'Nakit talebi iadesi':t.task_code?.replaceAll('_',' ').replace(/:[0-9]{8}$/,'')||'Puan hareketi';return '<div class="buchee-wallet-row"><span class="buchee-wallet-row-icon '+(n<0?'out':'in')+'">'+(n<0?'↓':'↑')+'</span><span class="buchee-wallet-row-copy"><strong>'+esc(title)+'</strong><small>'+day(t.created_at)+'</small></span><b class="'+(n>0?'earned':'')+'">'+(n>0?'+':n<0?'−':'')+(Math.abs(n)/10).toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})+' TL karşılığı</b></div>'}).join(''):'<p class="buchee-wallet-empty">Henüz işlem bulunmuyor.</p>')+'</section>'+
    '</div>';return;
  }
- const title={tasks:'Görevlerim',invite:'Davet Et Kazan',milestones:'Takipçi hedefleri',history:'İşlem geçmişi'}[patiRewardsSection]||'Bakiyem';
+ const title={tasks:'Nasıl Kazanırım?',invite:'Davet Et Kazan',milestones:'Seviye ve Avantajlar',history:'İşlem geçmişi'}[patiRewardsSection]||'Bakiyem';
  const filtered=children.filter(el=>{
   if(patiRewardsSection==='invite')return el.classList.contains('paticoin-invite');
   if(patiRewardsSection==='milestones')return el.classList.contains('pati-follower-more');
@@ -816,6 +816,15 @@ function patiRewardShowPage(){
  });
  root.innerHTML=header+title+'</strong></header><section class="pati-wallet-subcontent"></section>';
  const target=root.querySelector('.pati-wallet-subcontent');filtered.forEach(el=>target.appendChild(el));
+ if(patiRewardsSection==='tasks'){
+  target.insertAdjacentHTML('afterbegin','<section class="buchee-subhero"><span class="buchee-subhero-label">KAZANÇ REHBERİ</span><h2>Küçük adımlar, düzenli kazanç.</h2><p>Görevleri tamamla, kontrol et ve kazandığın puanları ödüllerde değerlendir. Puanlar sunucu tarafından doğrulanır.</p><div class="buchee-subhero-steps"><span><b>01</b> Görevi yap</span><span><b>02</b> Kontrol et</span><span><b>03</b> Kazan</span></div></section>');
+  target.insertAdjacentHTML('beforeend','<div class="buchee-subfooter"><strong>Başka nasıl kazanabilirim?</strong><p>Arkadaş davet ederek ve takipçi hedeflerine ulaşarak da ödül kazanabilirsin.</p><div><button type="button" data-action="pati-rewards-section" data-id="invite">Arkadaşını Davet Et ›</button><button type="button" data-action="pati-rewards-section" data-id="milestones">Seviye ve Avantajlar ›</button></div></div>');
+ }
+ if(patiRewardsSection==='milestones'){
+  target.insertAdjacentHTML('afterbegin','<section class="buchee-subhero"><span class="buchee-subhero-label">HEDEFLERİN</span><h2>Topluluğun büyüdükçe yeni hedeflere ulaş.</h2><p>Takipçi hedeflerini ve hak kazandığın ödüllerin durumunu aşağıdan takip edebilirsin. Ödüller otomatik ödeme anlamına gelmez.</p></section>');
+  if(!filtered.length)target.innerHTML+='<p class="buchee-empty-state">Henüz takipçi hedefi bilgisi bulunmuyor.</p>';
+ }
+
  if(patiRewardsSection==='history'){const claims=(patiCoinState.cashoutHistory||[]);target.insertAdjacentHTML('afterbegin','<section class="pati-wallet-ledger"><h2>Nakit talebi geçmişi</h2>'+(claims.length?claims.map(c=>'<div class="pati-wallet-entry"><div><strong>'+Number(c.amount_try).toLocaleString('tr-TR')+' TL talep</strong><small>'+day(c.created_at)+' · '+Number(c.points_requested).toLocaleString('tr-TR')+' puan</small></div><b>'+esc(({pending:'İncelemede',approved:'Onaylandı',paid:'Ödendi',rejected:'Reddedildi'})[c.status]||c.status)+'</b></div>').join(''):'<p>Henüz nakit talebin yok.</p>')+'</section>');const logs=(patiCoinState.transactions||[]).slice(0,75);target.insertAdjacentHTML('afterbegin','<section class="pati-wallet-ledger"><h2>Puan hareketleri</h2>'+(logs.length?logs.map(t=>'<div class="pati-wallet-entry"><div><strong>'+esc(t.task_code?.startsWith('cashout_reserve_')?'Nakit başvurusu için ayrıldı':t.task_code?.startsWith('cashout_refund_')?'Nakit başvurusu iadesi':t.task_code?.replaceAll('_',' ').replace(/:[0-9]{8}$/,'')||'Puan hareketi')+'</strong><small>'+day(t.created_at)+'</small></div><b class="'+(Number(t.delta)>0?'earned':'')+'">'+(Number(t.delta)>0?'+':'')+Number(t.delta).toLocaleString('tr-TR')+' puan</b></div>').join(''):'<p>Henüz puan hareketin yok.</p>')+'</section>')}
  if(!filtered.length)target.innerHTML='<p>Bu alanda henüz kayıt yok.</p>';
 }
@@ -919,10 +928,10 @@ function patiShopPage(){
    '</details>':'')+'</div>';
  }).join('');
  main.innerHTML='<section class="pati-calm-shop" aria-label="Puan mağazası">'+
-  '<header class="pati-calm-header"><span>MAĞAZA</span><h1>İyiliğe dönüştür</h1><p>Puanlarınla kedi ve köpek maması, sokak hayvanlarına mama desteği veya fidan bağışı talep et.</p></header>'+
+  '<header class="pati-calm-header"><span>ÖDÜLLER</span><h1>Ödül Mağazası</h1><p>Puanlarınla mama desteği, evcil hayvan ürünleri veya fidan bağışı talebi oluştur.</p></header>'+
   '<section class="pati-calm-wallet" aria-label="Puan bakiyesi ve ödül hedefi"><div class="pati-calm-wallet-top"><div><small>PUAN BAKİYEN</small><strong>'+balance.toLocaleString('tr-TR')+'</strong></div><button type="button" data-action="paticoin-rewards">Puan kazanma yolları <span aria-hidden="true">›</span></button></div>'+
    '<div class="pati-calm-program-note"><strong>Puanların ne işe yarar?</strong><p>Görevlerle kazandığın puanlarla mama ve bağış talebi oluşturabilirsin. Nakit ödül talebi ayrıca incelemeye tabidir. Her talep stok ve uygunluk kontrolünden geçer.</p></div></section>'+
-  '<section class="pati-calm-products"><div class="pati-calm-section-head"><h2>Mağazadakiler</h2><span>4 seçenek</span></div><div class="pati-calm-grid">'+(cards||'<p class="pati-calm-empty">Ürünler yükleniyor. Yenile butonuyla tekrar dene.</p>')+'</div></section>'+
+  '<section class="pati-calm-products"><div class="pati-calm-section-head"><h2>Ödülleri Keşfet</h2><span>'+items.length+' seçenek</span></div><div class="pati-calm-grid">'+(cards||'<p class="pati-calm-empty">Ürünler yükleniyor. Yenile butonuyla tekrar dene.</p>')+'</div></section>'+
   '<p class="pati-calm-rules"><strong>Nasıl çalışır?</strong> “Puanla Al” bir talep başlatır; doğrudan fiziksel teslimat veya bağış gerçekleşmiş sayılmaz. Stok ve uygunluk sunucu tarafından kontrol edilir. Hesabın en az 7 günlük olması, son 30 günde en az 3 gün aktif olman ve 14 günlük talep sınırı geçerlidir.</p>'+
   '<details class="pati-calm-history"><summary><span>Talep geçmişim</span><span>'+orders.length+' kayıt</span></summary><div class="pati-calm-orders">'+(history||'<p>Henüz bir talebin yok.</p>')+'</div></details>'+
   '<button type="button" class="pati-calm-refresh" data-action="paticoin-refresh">Bakiyeyi ve ürünleri yenile</button></section>';
