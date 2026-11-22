@@ -52,3 +52,18 @@ html body #app-root:not(.hidden) > header.mobile-header > #pati-header-share{dis
 html body #app-root:not(.hidden) > header.mobile-header > #pati-global-back[hidden]{display:none!important}
 html body #app-root:not(.hidden) > header.mobile-header > #pati-feed-menu{grid-column:1 / -1!important}
 }
+
+/* High-contrast fix: make the message tile unmistakably dark on white headers. */
+@media(max-width:900px){
+html body #app-root:not(.hidden) > header.mobile-header .pati-header-actions button#pati-header-notifications,
+html body #app-root:not(.hidden) > header.mobile-header .pati-header-actions button#pati-header-notifications.active{
+background:#352820!important;background-image:linear-gradient(145deg,#514034 0%,#352820 55%,#211a17 100%)!important;
+color:#fff!important;-webkit-text-fill-color:#fff!important;
+border:1px solid #3b2d25!important;border-radius:15px!important;
+box-shadow:0 5px 12px rgba(35,25,18,.28)!important;opacity:1!important;
+}
+html body #app-root:not(.hidden) > header.mobile-header .pati-header-actions button#pati-header-notifications svg,
+html body #app-root:not(.hidden) > header.mobile-header .pati-header-actions button#pati-header-notifications svg path{
+stroke:#fff!important;fill:none!important;opacity:1!important;
+}
+}
