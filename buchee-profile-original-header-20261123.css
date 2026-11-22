@@ -1,0 +1,7 @@
+/* Restore the profile top bar: only home shows Buchee and the inbox tile. */
+@media(max-width:900px){
+#app-root.buchee-profile-original-header>header.mobile-header>#pati-feed-menu-trigger,
+#app-root.buchee-profile-original-header>header.mobile-header>.pati-header-actions{display:none!important}
+#app-root.buchee-profile-original-header>header.mobile-header{display:flex!important;justify-content:flex-end!important;align-items:center!important;background:#fff!important}
+#app-root.buchee-profile-original-header>header.mobile-header>#pati-global-back:not([hidden]){margin-right:auto!important}
+}
