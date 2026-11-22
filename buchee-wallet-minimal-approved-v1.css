@@ -1,0 +1,36 @@
+/* Buchee wallet dashboard — minimal black/white design */
+.paticoin-page:has(.buchee-wallet-dashboard){background:#fff!important;color:#161719!important;max-width:760px!important;margin:0 auto!important;padding:0 14px 90px!important;box-sizing:border-box!important}
+.buchee-wallet-dashboard{width:100%;display:flex;flex-direction:column;gap:0;font-family:inherit;color:#111}
+.buchee-wallet-top{display:flex;align-items:center;justify-content:center;position:relative;padding:19px 0 25px}
+.buchee-wallet-top h1{font-size:27px;letter-spacing:-.7px;font-weight:800;margin:0;color:#141414}
+.buchee-wallet-top button{position:absolute;right:0;top:13px;border:0;border-radius:13px;width:44px;height:44px;background:#f1f1f3;color:#171717;font-size:26px;cursor:pointer}
+.buchee-wallet-balance{position:relative;isolation:isolate;overflow:hidden;min-height:208px;padding:28px 26px;border-radius:25px;background:linear-gradient(140deg,#151515 0%,#252525 65%,#0b0b0b 100%);color:#fff;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;box-sizing:border-box}
+.buchee-wallet-balance:after{content:"";position:absolute;z-index:-1;inset:-40% -20% auto 55%;height:240px;transform:rotate(-36deg);background:#ffffff09;border-radius:80px}
+.buchee-wallet-balance>span:first-child{font-size:15px;font-weight:650;color:#eee}
+.buchee-wallet-balance>strong{font-size:clamp(44px,10vw,68px);font-weight:850;letter-spacing:-2px;line-height:1.15;margin:12px 0 0;color:#fff;font-variant-numeric:tabular-nums}
+.buchee-wallet-balance>small{font-size:13px;color:#dadada;font-weight:700}
+.buchee-wallet-balance>p{font-size:12px;color:#c9c9c9;margin:13px 0 0;line-height:1.5;max-width:76%}
+.buchee-wallet-symbol{position:absolute;right:24px;top:50%;transform:translateY(-50%);font-size:66px;color:#ffffffc9;font-weight:200}
+.buchee-wallet-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:17px}
+.buchee-wallet-actions button{border:0;border-radius:17px;min-height:58px;padding:12px 9px;font-size:14px;font-weight:800;background:#f0f0f2;color:#111;cursor:pointer}
+.buchee-wallet-actions button.primary{background:#171717;color:#fff}
+.buchee-wallet-tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:27px 0 32px}
+.buchee-wallet-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:11px;min-width:0;min-height:111px;padding:14px 5px;border:1px solid #f2f2f3;border-radius:19px;background:#fff;box-shadow:0 7px 22px #0000000b;color:#111;cursor:pointer}
+.buchee-wallet-tile-icon{font-size:27px;line-height:1;font-weight:500}
+.buchee-wallet-tile strong{font-size:11px;line-height:1.3;text-align:center;overflow-wrap:anywhere;font-weight:750;color:#151515}
+.buchee-wallet-recent-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}
+.buchee-wallet-recent-head h2{font-size:23px;letter-spacing:-.5px;margin:0;color:#141414}
+.buchee-wallet-recent-head button{background:transparent;border:0;color:#666;font-size:13px;font-weight:750;white-space:nowrap;cursor:pointer}
+.buchee-wallet-recent{border-radius:24px;background:#fff;box-shadow:0 6px 30px #0000000c;border:1px solid #f1f1f1;padding:8px 17px}
+.buchee-wallet-row{display:flex;align-items:center;gap:12px;padding:17px 0;min-height:67px;border-bottom:1px solid #ececef}
+.buchee-wallet-row:last-child{border-bottom:0}
+.buchee-wallet-row-icon{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;border-radius:50%;font-size:24px;font-weight:800;background:#e3f7ea;color:#149751}
+.buchee-wallet-row-icon.out{background:#ffe8eb;color:#dc3a53}
+.buchee-wallet-row-copy{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+.buchee-wallet-row-copy strong{font-size:12px;color:#1b1b1b;overflow-wrap:anywhere}
+.buchee-wallet-row-copy small{font-size:11px;color:#82828a}
+.buchee-wallet-row>b{font-size:12px;font-weight:750;color:#252525;white-space:nowrap;font-variant-numeric:tabular-nums}
+.buchee-wallet-row>b.earned{color:#0b9850}
+.buchee-wallet-empty{padding:20px 4px;color:#85858a;font-size:13px}
+.buchee-wallet-dashboard button:focus-visible{outline:3px solid #777;outline-offset:2px}
+@media(max-width:360px){.buchee-wallet-balance{padding:23px 20px}.buchee-wallet-symbol{right:16px;font-size:48px}.buchee-wallet-tiles{gap:6px}.buchee-wallet-tile{min-height:102px}.buchee-wallet-tile strong{font-size:10px}.buchee-wallet-actions button{font-size:12px}}
