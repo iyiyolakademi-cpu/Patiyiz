@@ -7286,22 +7286,7 @@ function compose(post,mode='post',autoPick=true){
  const storyAudienceSelect=story?'<div class="pati-field"><label>Kimler görebilir?<select name="story_audience"><option value="everyone">Herkes</option><option value="close_friends">Yakın Arkadaşlar</option></select></label></div>':'';
  const formBody=flow+(!post&&!textOnly?postMediaField(mode):'')+textField('body',textOnly?'Ne düşünüyorsun?':story?'Hikâye açıklaması (isteğe bağlı)':'Açıklama (isteğe bağlı)',post?.body||'',textOnly,story?300:1500)+tagButton+storyAudienceSelect+editor+invite;
  modal(title,formBody,'post-form');
- if(textOnly&&!post){
-  const composer=document.getElementById('post-form');
-  const field=composer?.querySelector('textarea[name="body"]');
-  if(field){
-   const picker=document.createElement('section');picker.className='buchee-twit-photo-picker';
-   picker.innerHTML='<div class="buchee-twit-picker-head"><strong>Fotoğraf ekle</strong><small>En fazla 4 fotoğraf · yatay 16:9</small></div><div class="buchee-twit-picker-actions"><button type="button" data-buchee-photo="gallery">▧ Galeri</button><button type="button" data-buchee-photo="camera">◎ Kamera</button></div><input type="file" name="photo" accept="image/*" multiple hidden><div class="buchee-twit-photo-preview" aria-live="polite"></div>';
-   field.insertAdjacentElement('afterend',picker);
-   const input=picker.querySelector('input[name="photo"]'),preview=picker.querySelector('.buchee-twit-photo-preview');
-   let selected=[],urls=[];
-   function draw(){urls.forEach(URL.revokeObjectURL);urls=[];preview.replaceChildren();selected.forEach((file,index)=>{const url=URL.createObjectURL(file);urls.push(url);const tile=document.createElement('div');tile.className='buchee-twit-photo-tile';const img=document.createElement('img');img.src=url;img.alt='Seçilen fotoğraf '+(index+1);const remove=document.createElement('button');remove.type='button';remove.textContent='×';remove.setAttribute('aria-label','Fotoğrafı kaldır');remove.addEventListener('click',()=>{selected.splice(index,1);sync()});tile.append(img,remove);preview.appendChild(tile)})}
-   function sync(){const dt=new DataTransfer();selected.forEach(file=>dt.items.add(file));input.files=dt.files;draw()}
-   picker.querySelectorAll('[data-buchee-photo]').forEach(btn=>btn.addEventListener('click',()=>{if(btn.dataset.bucheePhoto==='camera'){input.setAttribute('capture','environment');input.multiple=false}else{input.removeAttribute('capture');input.multiple=true}input.click()}));
-   input.addEventListener('change',()=>{const files=Array.from(input.files||[]).filter(f=>f.type.startsWith('image/'));selected=[...selected,...files].slice(0,4);sync()});
-   new MutationObserver((_,observer)=>{if(!composer.isConnected){urls.forEach(URL.revokeObjectURL);observer.disconnect()}}).observe(document.body,{childList:true});
-  }
- }
+ if(textOnly&&!post){window.BucheeTwitPhotos?.mount(document.getElementById('post-form'),patiCropEdits,patiCropDefault,patiCropPaint,notify)}
 
  const f=document.getElementById('post-form');if(!post&&!story)window.PatiyizCollabPicker?.mount(f,{sb,userId:me?.id,blocked,localProfiles:data.profiles,avatar,escape:esc});const captionField=f.querySelector('textarea[name="body"]');if(captionField&&!textOnly)captionField.required=false;f.dataset.edit=post?.id||'';f.dataset.mode=story?'story':reel?'reels':textOnly?'text':'post';
  const submit=f.querySelector('.modal-footer button[type="submit"]');if(submit)submit.textContent=post?'Değişiklikleri kaydet':story?'Hikâyeyi paylaş':reel?'Reels paylaş':textOnly?'Yazıyı paylaş':'Paylaş';
@@ -7709,7 +7694,7 @@ async function patiGenerateVideoCover(file){
  })}finally{video.pause();video.removeAttribute('src');video.load();URL.revokeObjectURL(source)}
 }
 async function createPostPublication(form,f,str){
- const photoFiles=[...(form.querySelector('input[name="photo"]')?.files||[])];
+ const photoFiles=form.dataset.mode==='text'?[...(form._bucheeTextPhotos||[])]:[...(form.querySelector('input[name="photo"]')?.files||[])];
  const videoFiles=[...(form.querySelector('input[name="video"]')?.files||[])].filter(x=>x?.size),videoFile=videoFiles[0],hasVideo=videoFiles.length>0,body=str('body').trim();
  if(form.dataset.mode!=='reels'&&videoFiles.length>4)throw Error('Bir gönderide en fazla 4 video paylaşabilirsin.');
  if(form.dataset.mode==='text'&&!body)throw Error('Yazı paylaşmak için önce bir metin yaz.');
