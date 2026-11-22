@@ -1,0 +1,8 @@
+/* Buchee unified design tokens. Scoped to the app, avoiding media and user content. */
+:root{--buchee-bg:#fff;--buchee-ink:#111;--buchee-muted:#666;--buchee-line:#e8e8e8;--buchee-soft:#f5f5f5;--buchee-action:#111;--buchee-action-text:#fff}
+#app-root .pati-settings-v2,#app-root .pati-ig-profile,#pati-close-picker,.buchee-blocked-v2{color:var(--buchee-ink)!important}
+#app-root .pati-settings-v2 .pati-settings-row,#app-root .pati-ig-profile .pati-ig-tabs button{background:var(--buchee-bg)!important}
+#app-root .pati-settings-v2 .pati-settings-row:focus-visible,#app-root .pati-ig-profile button:focus-visible,#pati-close-picker button:focus-visible{outline:2px solid #111!important;outline-offset:2px!important}
+#pati-close-picker .pati-close-confirm{background:var(--buchee-action)!important;color:var(--buchee-action-text)!important}
+.buchee-blocked-v2,.buchee-blocked-v2 .buchee-blocked-panel{background:#fff!important;background-image:none!important}
+.buchee-blocked-v2 .buchee-blocked-shield{background:#f1f1f1!important;color:#111!important}
