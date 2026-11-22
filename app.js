@@ -826,7 +826,7 @@ function patiRewardShowPage(){
  }
 
  if(patiRewardsSection==='history'){const claims=(patiCoinState.cashoutHistory||[]);target.insertAdjacentHTML('afterbegin','<section class="pati-wallet-ledger"><h2>Nakit talebi geçmişi</h2>'+(claims.length?claims.map(c=>'<div class="pati-wallet-entry"><div><strong>'+Number(c.amount_try).toLocaleString('tr-TR')+' TL talep</strong><small>'+day(c.created_at)+' · '+Number(c.points_requested).toLocaleString('tr-TR')+' puan</small></div><b>'+esc(({pending:'İncelemede',approved:'Onaylandı',paid:'Ödendi',rejected:'Reddedildi'})[c.status]||c.status)+'</b></div>').join(''):'<p>Henüz nakit talebin yok.</p>')+'</section>');const logs=(patiCoinState.transactions||[]).slice(0,75);target.insertAdjacentHTML('afterbegin','<section class="pati-wallet-ledger"><h2>Puan hareketleri</h2>'+(logs.length?logs.map(t=>'<div class="pati-wallet-entry"><div><strong>'+esc(t.task_code?.startsWith('cashout_reserve_')?'Nakit başvurusu için ayrıldı':t.task_code?.startsWith('cashout_refund_')?'Nakit başvurusu iadesi':t.task_code?.replaceAll('_',' ').replace(/:[0-9]{8}$/,'')||'Puan hareketi')+'</strong><small>'+day(t.created_at)+'</small></div><b class="'+(Number(t.delta)>0?'earned':'')+'">'+(Number(t.delta)>0?'+':'')+Number(t.delta).toLocaleString('tr-TR')+' puan</b></div>').join(''):'<p>Henüz puan hareketin yok.</p>')+'</section>')}
- if(!filtered.length)target.innerHTML='<p>Bu alanda henüz kayıt yok.</p>';
+ if(!filtered.length&&patiRewardsSection!=='milestones'&&patiRewardsSection!=='tasks')target.innerHTML='<p>Bu alanda henüz kayıt yok.</p>';
 }
 function patiRewardsPage(){
  const done=new Set(patiCoinState.claims);
