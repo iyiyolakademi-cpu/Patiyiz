@@ -1,0 +1,27 @@
+/* Final black-white enforcement for close friends, including selected states */
+html body #pati-close-picker,html body #pati-close-picker *{accent-color:#000!important}
+html body #pati-close-picker .pati-close-picker-shell,
+html body #pati-close-picker .pati-close-people,
+html body #pati-close-picker .pati-close-person,
+html body #pati-close-picker .pati-close-person[aria-pressed="true"],
+html body #pati-close-picker .pati-close-person[aria-pressed="false"],
+html body #pati-close-picker .pati-close-person:hover,
+html body #pati-close-picker .pati-close-person:focus,
+html body #pati-close-picker .pati-close-person:active{background:#fff!important;background-color:#fff!important;background-image:none!important;color:#111!important;box-shadow:none!important}
+html body #pati-close-picker .pati-close-person{border-bottom:1px solid #eee!important}
+html body #pati-close-picker #pati-close-count{display:inline-flex!important;align-items:center!important;justify-content:center!important;padding:8px 13px!important;border-radius:25px!important;background:#f1f1f1!important;background-image:none!important;color:#111!important;border:0!important;font-size:12px!important}
+html body #pati-close-picker .pati-close-confirm,
+html body #pati-close-picker .pati-close-confirm:hover,
+html body #pati-close-picker .pati-close-confirm:focus,
+html body #pati-close-picker .pati-close-confirm:active{background:#000!important;background-color:#000!important;background-image:none!important;color:#fff!important;-webkit-text-fill-color:#fff!important;box-shadow:none!important}
+html body #pati-close-picker .pati-close-person[aria-pressed="true"]>b{background:#000!important;background-image:none!important;border-color:#000!important;color:#fff!important;-webkit-text-fill-color:#fff!important}
+html body #pati-close-picker .pati-close-person[aria-pressed="false"]>b{background:#fff!important;background-image:none!important;border-color:#000!important;color:transparent!important;-webkit-text-fill-color:transparent!important}
+html body #pati-close-picker .pati-close-person .avatar,
+html body #pati-close-picker .pati-close-person .avatar img{border-radius:50%!important}
+html body #pati-close-picker .buchee-cf-black-note{background:#f3f3f3!important;background-image:none!important}
+html body #pati-close-picker .buchee-cf-search-wrap input{background:#f3f3f3!important;background-image:none!important}
+html body #pati-close-picker .pati-close-person:focus-visible{outline:2px solid #111!important;outline-offset:-2px!important}
+.pati-profile-more-wrap .pati-profile-more-menu{display:flex!important;flex-direction:column!important;gap:0!important;min-width:220px!important;background:#fff!important;border:1px solid #e5e5e5!important;border-radius:18px!important;overflow:hidden!important;padding:6px!important;box-shadow:0 12px 30px #00000013!important}
+.pati-profile-more-wrap .pati-profile-more-menu button{display:block!important;width:100%!important;min-height:49px!important;padding:12px 15px!important;text-align:center!important;background:#fff!important;background-image:none!important;color:#111!important;border:0!important;border-radius:10px!important;font-size:14px!important;font-weight:650!important;box-shadow:none!important}
+.pati-profile-more-wrap .pati-profile-more-menu button+button{border-top:1px solid #f0f0f0!important}
+.pati-profile-more-wrap .pati-profile-more-menu button:hover{background:#f4f4f4!important}
