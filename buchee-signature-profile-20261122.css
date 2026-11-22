@@ -41,3 +41,23 @@
 #app-root #main-content .pati-ig-profile .pati-ig-grid{gap:4px!important}
 #app-root .mobile-bottom{background:#090909f2!important}
 }
+
+/* Complete reference composition: interest pills, highlights, tabs and balanced cards. */
+#app-root #main-content .pati-ig-profile .buchee-profile-topics{display:flex;flex-wrap:wrap;gap:7px;padding:5px 20px 12px;background:white}
+#app-root #main-content .pati-ig-profile .buchee-profile-topics span{background:#f0f1f3;color:#22252a;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:600}
+#app-root #main-content .pati-ig-profile .buchee-profile-highlights{display:flex;gap:14px;overflow-x:auto;padding:16px 20px 12px;scrollbar-width:none;background:white}
+#app-root #main-content .pati-ig-profile .buchee-profile-highlight{background:none;border:0;color:#22252a;display:flex;align-items:center;flex-direction:column;gap:7px;min-width:66px;max-width:80px;padding:0;font-size:12px}
+#app-root #main-content .pati-ig-profile .buchee-highlight-circle{height:62px;width:62px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:2px solid #e0e1e4;padding:3px;background:#fff;overflow:hidden;box-sizing:border-box}
+#app-root #main-content .pati-ig-profile .buchee-highlight-circle img{height:100%;width:100%;object-fit:cover;border-radius:50%}
+#app-root #main-content .pati-ig-profile .buchee-highlight-new{font-size:30px;font-weight:300}
+#app-root #main-content .pati-ig-profile .buchee-profile-highlight small{color:#292b30;font-size:11px;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#app-root #main-content .pati-ig-profile .pati-ig-tabs{overflow-x:auto;scrollbar-width:none;justify-content:flex-start!important}
+#app-root #main-content .pati-ig-profile .pati-ig-tabs button{flex:0 0 auto!important;min-width:82px!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:5px!important;padding:8px 10px!important}
+#app-root #main-content .pati-ig-profile .pati-ig-tabs .pati-profile-tab-caption{display:inline!important;font-size:11px!important;white-space:nowrap!important}
+#app-root #main-content .pati-ig-profile .pati-ig-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+@media(max-width:800px){
+#app-root #main-content .pati-ig-profile .buchee-profile-topics{padding:6px 16px 12px!important}
+#app-root #main-content .pati-ig-profile .buchee-profile-highlights{padding:14px 16px!important}
+#app-root #main-content .pati-ig-profile .pati-ig-tabs{padding:10px 12px!important}
+#app-root #main-content .pati-ig-profile .pati-ig-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
