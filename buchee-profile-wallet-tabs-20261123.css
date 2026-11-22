@@ -4,3 +4,7 @@
 #app-root #main-content .pati-ig-profile .pati-ig-tabs{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:0!important;width:100%!important;max-width:100%!important;margin-inline:0!important;padding-inline:0!important;box-sizing:border-box!important}
 #app-root #main-content .pati-ig-profile .pati-ig-tabs>button:not([hidden]){width:100%!important;min-width:0!important;max-width:none!important;margin:0!important;padding:12px 3px!important;justify-content:center!important;text-align:center!important;white-space:normal!important;box-sizing:border-box!important}
 #app-root #main-content .pati-ig-profile .pati-ig-tabs>button[hidden]{display:none!important}
+
+/* Two equal compact actions, preserving the original edit button. */
+#app-root #main-content .pati-ig-profile .pati-own-profile-actions{display:flex!important;align-items:stretch!important;gap:8px!important;flex-wrap:wrap!important}
+#app-root #main-content .pati-ig-profile .pati-own-profile-actions .buchee-wallet-shortcut{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-height:40px!important;padding:9px 16px!important;background:#111!important;color:#fff!important;border:1px solid #111!important;border-radius:12px!important;font:inherit!important;font-weight:700!important;cursor:pointer!important}
