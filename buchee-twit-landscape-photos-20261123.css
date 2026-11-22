@@ -17,3 +17,18 @@
 #main-content article.buchee-twit-with-photo .buchee-twit-inline-media .pati-carousel-slide{height:100%!important;aspect-ratio:16/9!important}
 #main-content article.buchee-twit-with-photo .buchee-twit-inline-media img{width:100%!important;height:100%!important;aspect-ratio:16/9!important;object-fit:cover!important;max-height:none!important;border-radius:12px!important}
 @media(max-width:600px){#main-content article.buchee-twit-with-photo .buchee-twit-inline-text{padding-inline:13px}#main-content article.buchee-twit-with-photo .buchee-twit-inline-media{margin-inline:13px}}
+
+#post-form .buchee-twit-picker-actions button{display:flex!important;align-items:center!important;justify-content:center!important;gap:8px!important}
+#post-form .buchee-twit-picker-actions button svg{width:19px;height:19px;fill:none;stroke:#111;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#post-form .buchee-twit-photo-tile .buchee-twit-crop-open{left:6px!important;right:auto!important;top:auto!important;bottom:6px!important;width:auto!important;height:auto!important;padding:5px 10px!important;border-radius:8px!important;font-size:12px!important;line-height:1.5!important}
+#post-form .buchee-twit-crop[hidden]{display:none!important}
+#post-form .buchee-twit-crop{margin-top:14px;padding:12px;border:1px solid #dedede;border-radius:14px;background:#fafafa;color:#111}
+#post-form .buchee-twit-crop>strong{display:block;font-size:15px}
+#post-form .buchee-twit-crop>p{font-size:12px;color:#666;margin:5px 0 12px}
+#post-form .buchee-twit-crop canvas{display:block;width:100%;height:auto;aspect-ratio:16/9;border-radius:9px;touch-action:none;cursor:grab;background:#e8e8e8}
+#post-form .buchee-twit-crop canvas:active{cursor:grabbing}
+#post-form .buchee-twit-crop label{display:flex;align-items:center;gap:12px;font-size:12px;margin-top:12px}
+#post-form .buchee-twit-crop label input{flex:1;accent-color:#111}
+#post-form .buchee-twit-crop-actions{display:flex;gap:8px;margin-top:12px}
+#post-form .buchee-twit-crop-actions button{flex:1;padding:10px;border-radius:9px;border:1px solid #111;background:#fff;color:#111}
+#post-form .buchee-twit-crop-actions [data-crop-save]{background:#111;color:#fff}
