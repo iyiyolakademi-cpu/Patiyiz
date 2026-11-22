@@ -23,3 +23,19 @@ body:has(#app-root .buchee-activity),html:has(#app-root .buchee-activity){backgr
 #app-root #main-content .buchee-activity{border:0!important;border-radius:0!important;box-shadow:none!important;min-height:100dvh!important}
 #app-root:has(.buchee-activity) .mobile-bottom{background:#090909f2!important;border-color:#333!important}
 @media(max-width:800px){#app-root:has(.buchee-activity) #main-content{padding:0!important}#app-root #main-content .buchee-activity{padding:14px 14px 112px!important;box-sizing:border-box!important;width:100%!important}}
+
+/* Activity light mode: Instagram-style white canvas, preserve black floating dock. */
+:root{--buchee-activity-bg:#fff}
+html:has(#app-root .buchee-activity),body:has(#app-root .buchee-activity),#app-root:has(.buchee-activity),#app-root:has(.buchee-activity) .app-layout,#app-root:has(.buchee-activity) .main,#app-root:has(.buchee-activity) #main-content,#app-root:has(.buchee-activity) #right-rail{background:#fff!important;color:#15171b!important}
+#app-root #main-content .buchee-activity,#app-root #main-content .buchee-activity .pati-notifications-simple-head,#app-root #main-content .buchee-activity-tabs,#app-root #main-content .buchee-activity .pati-alert-row,#app-root:has(.buchee-activity) .mobile-header{background:#fff!important;color:#15171b!important}
+#app-root #main-content .buchee-activity h1,#app-root #main-content .buchee-activity .buchee-activity-day{color:#15171b!important}
+#app-root #main-content .buchee-activity-tabs button{background:#eef0f3!important;color:#30343b!important}
+#app-root #main-content .buchee-activity-tabs button.active{background:#17191e!important;color:#fff!important}
+#app-root #main-content .buchee-activity .pati-alert-row{border-bottom:1px solid #edf0f2!important}
+#app-root #main-content .buchee-activity .pati-alert-entry,#app-root #main-content .buchee-activity .pati-alert-title{background:#fff!important;color:#1b1d22!important}
+#app-root #main-content .buchee-activity .pati-alert-meta{color:#737985!important}
+#app-root #main-content .buchee-activity .pati-alert-delete{color:#858a94!important}
+#app-root #main-content .buchee-activity .notification-v2-empty{color:#555d69!important}
+#app-root #main-content .buchee-activity .pati-notifications-close{background:#f0f1f4!important;color:#1b1d22!important}
+#app-root:has(.buchee-activity) .mobile-bottom{background:#090909f2!important;color:#fff!important;border-color:#333!important}
+@media(max-width:800px){#app-root:has(.buchee-activity) #main-content{background:#fff!important}#app-root #main-content .buchee-activity{min-height:100dvh!important;padding:14px 14px 112px!important}}
