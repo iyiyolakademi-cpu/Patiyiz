@@ -2952,11 +2952,11 @@ function patiHomePostWithRepost(post,priority){
  const repost=post._patiRepostActor?'<div class="pati-repost-context">↻ '+esc(profile(post._patiRepostActor).display_name||'Bir kullanıcı')+' yeniden paylaştı</div>':'';
  return repost+postCard(post,priority);
 }
-const patiHomeIsMediaPost=p=>p.post_format==='reels'||!!(
+const patiHomeIsMediaPost=p=>p.post_format!=='text'&&(p.post_format==='reels'||!!(
  p.image_url||p.video_url||
  (Array.isArray(p.images)&&p.images.some(Boolean))||
  (Array.isArray(p.media_videos)&&p.media_videos.some(Boolean))
-);
+));
 function patiHomeCombinedFeed(posts,followingOnly=false){
  if(patiHomeContentMode==='media'){
   const mediaPosts=posts.filter(patiHomeIsMediaPost);
@@ -7286,6 +7286,23 @@ function compose(post,mode='post',autoPick=true){
  const storyAudienceSelect=story?'<div class="pati-field"><label>Kimler görebilir?<select name="story_audience"><option value="everyone">Herkes</option><option value="close_friends">Yakın Arkadaşlar</option></select></label></div>':'';
  const formBody=flow+(!post&&!textOnly?postMediaField(mode):'')+textField('body',textOnly?'Ne düşünüyorsun?':story?'Hikâye açıklaması (isteğe bağlı)':'Açıklama (isteğe bağlı)',post?.body||'',textOnly,story?300:1500)+tagButton+storyAudienceSelect+editor+invite;
  modal(title,formBody,'post-form');
+ if(textOnly&&!post){
+  const composer=document.getElementById('post-form');
+  const field=composer?.querySelector('textarea[name="body"]');
+  if(field){
+   const picker=document.createElement('section');picker.className='buchee-twit-photo-picker';
+   picker.innerHTML='<div class="buchee-twit-picker-head"><strong>Fotoğraf ekle</strong><small>En fazla 4 fotoğraf · yatay 16:9</small></div><div class="buchee-twit-picker-actions"><button type="button" data-buchee-photo="gallery">▧ Galeri</button><button type="button" data-buchee-photo="camera">◎ Kamera</button></div><input type="file" name="photo" accept="image/*" multiple hidden><div class="buchee-twit-photo-preview" aria-live="polite"></div>';
+   field.insertAdjacentElement('afterend',picker);
+   const input=picker.querySelector('input[name="photo"]'),preview=picker.querySelector('.buchee-twit-photo-preview');
+   let selected=[],urls=[];
+   function draw(){urls.forEach(URL.revokeObjectURL);urls=[];preview.replaceChildren();selected.forEach((file,index)=>{const url=URL.createObjectURL(file);urls.push(url);const tile=document.createElement('div');tile.className='buchee-twit-photo-tile';const img=document.createElement('img');img.src=url;img.alt='Seçilen fotoğraf '+(index+1);const remove=document.createElement('button');remove.type='button';remove.textContent='×';remove.setAttribute('aria-label','Fotoğrafı kaldır');remove.addEventListener('click',()=>{selected.splice(index,1);sync()});tile.append(img,remove);preview.appendChild(tile)})}
+   function sync(){const dt=new DataTransfer();selected.forEach(file=>dt.items.add(file));input.files=dt.files;draw()}
+   picker.querySelectorAll('[data-buchee-photo]').forEach(btn=>btn.addEventListener('click',()=>{if(btn.dataset.bucheePhoto==='camera'){input.setAttribute('capture','environment');input.multiple=false}else{input.removeAttribute('capture');input.multiple=true}input.click()}));
+   input.addEventListener('change',()=>{const files=Array.from(input.files||[]).filter(f=>f.type.startsWith('image/'));selected=[...selected,...files].slice(0,4);sync()});
+   new MutationObserver((_,observer)=>{if(!composer.isConnected){urls.forEach(URL.revokeObjectURL);observer.disconnect()}}).observe(document.body,{childList:true});
+  }
+ }
+
  const f=document.getElementById('post-form');if(!post&&!story)window.PatiyizCollabPicker?.mount(f,{sb,userId:me?.id,blocked,localProfiles:data.profiles,avatar,escape:esc});const captionField=f.querySelector('textarea[name="body"]');if(captionField&&!textOnly)captionField.required=false;f.dataset.edit=post?.id||'';f.dataset.mode=story?'story':reel?'reels':textOnly?'text':'post';
  const submit=f.querySelector('.modal-footer button[type="submit"]');if(submit)submit.textContent=post?'Değişiklikleri kaydet':story?'Hikâyeyi paylaş':reel?'Reels paylaş':textOnly?'Yazıyı paylaş':'Paylaş';
  if(!post&&!story){const controls=document.createElement('div');controls.className='pati-draft-controls';controls.innerHTML='<button type="button" data-action="pati-draft-save">▤ Açıklama taslağını kaydet</button><button type="button" data-action="pati-draft-load">↺ Taslağı aç</button>';f.querySelector('.modal-content')?.appendChild(controls)}
@@ -7696,15 +7713,16 @@ async function createPostPublication(form,f,str){
  const videoFiles=[...(form.querySelector('input[name="video"]')?.files||[])].filter(x=>x?.size),videoFile=videoFiles[0],hasVideo=videoFiles.length>0,body=str('body').trim();
  if(form.dataset.mode!=='reels'&&videoFiles.length>4)throw Error('Bir gönderide en fazla 4 video paylaşabilirsin.');
  if(form.dataset.mode==='text'&&!body)throw Error('Yazı paylaşmak için önce bir metin yaz.');
+ if(form.dataset.mode==='text'&&photoFiles.length>4)throw Error('Bir yazıya en fazla 4 fotoğraf ekleyebilirsin.');
  if(form.dataset.mode==='reels'&&!hasVideo)throw Error('Reels paylaşmak için önce bir video seç.');
  if(photoFiles.length>10)throw Error('En fazla 10 fotoğraf seçebilirsin.');
  if(photoFiles.length&&hasVideo)throw Error('Bir paylaşımda fotoğraf veya video seçebilirsin.');
  if(!body&&!photoFiles.length&&!hasVideo)throw Error('Paylaşmak için bir fotoğraf, video veya yazı ekle.');
  return publishMediaRecord('posts',form,async send=>{
-  const record={body,species:'Diğer',pet_id:null,images:[],media_videos:[],post_format:form.dataset.mode==='reels'?'reels':'post',selfie_mirrored:hasVideo&&form.dataset.selfieMirror==='true'};
+  const record={body,species:'Diğer',pet_id:null,images:[],media_videos:[],post_format:form.dataset.mode==='reels'?'reels':form.dataset.mode==='text'?'text':'post',selfie_mirrored:hasVideo&&form.dataset.selfieMirror==='true'};
   for(let i=0;i<photoFiles.length;i++){
    uploadStatus('Fotoğraf '+(i+1)+' / '+photoFiles.length+' hazırlanıyor…');
-   const file=await cropPostPhoto(photoFiles[i],patiMediaDefaultRatio(form.dataset.mode||'post'));
+   const file=await cropPostPhoto(photoFiles[i],form.dataset.mode==='text'?'16:9':patiMediaDefaultRatio(form.dataset.mode||'post'));
    const url=await send(file,'image');
    if(url)record.images.push(url);
   }
