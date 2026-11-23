@@ -12,17 +12,11 @@ function setup(){
   if(!b){b=document.createElement('button');b.type='button';b.dataset.action=action;b.setAttribute('role','menuitem');menu.appendChild(b)}
   b.innerHTML='<span class="pati-feed-menu-label"><strong>'+title+'</strong><small>'+description+'</small></span>';
  }
- const current=document.querySelector('.buchee-home-feed-filters [aria-pressed="true"]')?.dataset.id||'all';
  const trigger=document.getElementById('pati-feed-menu-trigger');
- if(trigger){trigger.title='Akışı değiştir: Tümü veya Takip Ettiklerim';trigger.setAttribute('aria-label','Akışı değiştir: Tümü veya Takip Ettiklerim');}
+ if(trigger){trigger.title='Akışı değiştir: İçerikler veya Blog';trigger.setAttribute('aria-label','Akışı değiştir: Tümü veya Takip Ettiklerim');}
  menu.setAttribute('aria-label','Akışı değiştir');
  
 }
-document.addEventListener('click',e=>{
- const blog=e.target.closest?.('#pati-feed-menu [data-action="buchee-blog-directory"]');
- if(blog){e.preventDefault();const menu=document.getElementById('pati-feed-menu');if(menu){menu.hidden=true;menu.style.setProperty('display','none','important')}document.getElementById('pati-feed-menu-trigger')?.setAttribute('aria-expanded','false');return;}
-
-},true);
 function start(){
  setup();
  const header=document.querySelector('#app-root > header.mobile-header');
