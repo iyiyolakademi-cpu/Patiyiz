@@ -1,0 +1,23 @@
+/* Buchee motion layer v1: decorative only; never blocks interaction. */
+@keyframes bmRise{from{opacity:0;transform:translate3d(0,18px,0) scale(.96)}to{opacity:1;transform:translate3d(0,0,0) scale(1)}}
+@keyframes bmSheet{from{opacity:.85;transform:translate3d(0,38px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes bmPop{0%{transform:scale(1)}45%{transform:scale(1.24)}100%{transform:scale(1)}}
+@keyframes bmHeart{0%{opacity:0;transform:translate3d(0,0,0) scale(.65)}20%{opacity:1}100%{opacity:0;transform:translate3d(var(--bm-x),-65px,0) rotate(var(--bm-r)) scale(1.18)}}
+@keyframes bmFill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes bmDot{0%,65%,100%{opacity:.3;transform:translateY(0)}35%{opacity:1;transform:translateY(-4px)}}
+@keyframes bmSuccess{0%{opacity:0;transform:translate(-50%,-42%) scale(.75)}18%,75%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-58%) scale(.96)}}
+.bm-heart-particle{position:fixed;z-index:2147482000;pointer-events:none;color:#ed315a;font-size:19px;line-height:1;animation:bmHeart .66s ease-out both}
+.bm-bounce{animation:bmPop .32s ease-out!important}
+#modal-root .modal-backdrop:not(.pati-full-page-form-backdrop)>.modal{animation:bmSheet .28s cubic-bezier(.2,.8,.2,1) both}
+#modal-root .modal-backdrop.pati-full-page-form-backdrop>.modal{animation:bmRise .25s ease-out both}
+.buchee-share-sheet,.buchee-share-panel,.buchee-poll-panel{animation:bmSheet .28s cubic-bezier(.2,.8,.2,1) both}
+#main-content.bm-page-enter{animation:bmRise .19s ease-out both}
+.buchee-poll-result i,.buchee-poll-result>div>i{transform-origin:left center;animation:bmFill .5s cubic-bezier(.2,.8,.2,1) both}
+.bm-success-toast{position:fixed;left:50%;top:28%;z-index:2147482900;transform:translate(-50%,-50%);padding:13px 18px;border-radius:16px;background:#171717;color:#fff;font-size:14px;font-weight:750;box-shadow:0 10px 34px #0003;pointer-events:none;animation:bmSuccess 1.55s ease-in-out both}
+.bm-message-enter{animation:bmRise .22s ease-out both}
+.bm-notification-enter{animation:bmRise .24s ease-out both}
+.bm-typing-dots{display:inline-flex;gap:4px;align-items:center}
+.bm-typing-dots>i{width:5px;height:5px;border-radius:50%;background:currentColor;animation:bmDot 1.05s ease-in-out infinite}
+.bm-typing-dots>i:nth-child(2){animation-delay:.16s}.bm-typing-dots>i:nth-child(3){animation-delay:.32s}
+@media(max-width:700px){#modal-root .modal-backdrop:not(.pati-full-page-form-backdrop)>.modal{animation:bmSheet .3s cubic-bezier(.2,.8,.2,1) both}}
+@media(prefers-reduced-motion:reduce){.bm-heart-particle,.bm-bounce,#modal-root .modal-backdrop>.modal,.buchee-share-sheet,.buchee-share-panel,.buchee-poll-panel,#main-content.bm-page-enter,.buchee-poll-result i,.buchee-poll-result>div>i,.bm-success-toast,.bm-message-enter,.bm-notification-enter,.bm-typing-dots>i{animation:none!important;transition:none!important}}
