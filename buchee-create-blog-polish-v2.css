@@ -1,0 +1,56 @@
+/* Buchee polish: create choices, danger action, header badge, long-form reader. */
+#pati-create-sheet .pati-create-choices{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ gap:10px!important;align-items:stretch!important;max-height:min(72dvh,660px)!important;
+ overflow-y:auto!important;padding:10px 2px 12px!important;
+}
+#pati-create-sheet .pati-create-choice{
+ display:flex!important;align-items:center!important;gap:10px!important;
+ width:100%!important;min-width:0!important;min-height:96px!important;
+ padding:14px 12px!important;border:1px solid #e5e5e5!important;
+ border-radius:16px!important;background:#fff!important;color:#141414!important;
+ box-shadow:0 2px 8px rgba(0,0,0,.035)!important;text-align:left!important;
+}
+#pati-create-sheet .pati-create-choice:nth-child(5),
+#pati-create-sheet .pati-create-choice:nth-child(6){grid-column:1/-1!important;min-height:72px!important}
+#pati-create-sheet .pati-choice-copy{min-width:0!important;flex:1!important}
+#pati-create-sheet .pati-choice-copy b{display:block!important;font-size:14px!important;line-height:1.35!important;color:#151515!important}
+#pati-create-sheet .pati-choice-copy small{display:block!important;font-size:11px!important;line-height:1.4!important;color:#777!important;white-space:normal!important}
+#pati-create-sheet .pati-choice-icon{flex:0 0 36px!important;width:36px!important;height:36px!important;border-radius:11px!important;background:#111!important;color:#fff!important;display:grid!important;place-items:center!important}
+#pati-create-sheet .pati-choice-icon .icon{width:19px!important;height:19px!important;color:#fff!important;stroke:#fff!important}
+#pati-create-sheet .pati-choice-chevron{display:none!important}
+#pati-create-sheet .pati-create-choice:focus-visible{outline:2px solid #111!important;outline-offset:2px!important}
+.buchee-post-option.is-danger{color:#b91c1c!important;border-color:rgba(185,28,28,.14)!important}
+.buchee-post-option.is-danger .buchee-post-option-icon{background:#b91c1c!important;border-color:#b91c1c!important;color:#fff!important}
+.buchee-post-option.is-danger .buchee-post-option-icon svg{stroke:#fff!important;color:#fff!important;fill:none!important}
+.buchee-post-option.is-danger .buchee-post-option-copy strong{color:#b91c1c!important;font-weight:800!important}
+.buchee-post-option.is-danger .buchee-post-option-copy small{color:#8c3b3b!important}
+#pati-header-notifications{position:relative!important;overflow:visible!important;isolation:isolate!important}
+#pati-header-notifications>.buchee-header-activity-icon{position:relative!important;z-index:1!important}
+#pati-header-notifications>.pati-count-badge{
+ position:absolute!important;top:-8px!important;right:-8px!important;left:auto!important;bottom:auto!important;
+ transform:none!important;z-index:15!important;display:flex!important;align-items:center!important;justify-content:center!important;
+ min-width:21px!important;height:21px!important;padding:0 4px!important;box-sizing:border-box!important;
+ background:#e11d48!important;color:#fff!important;border:2px solid #fff!important;
+ border-radius:999px!important;font:800 11px/1 system-ui,sans-serif!important;
+ box-shadow:0 1px 5px rgba(0,0,0,.3)!important;white-space:nowrap!important;pointer-events:none!important;
+}
+.buchee-blog-reader-backdrop{z-index:99999!important;padding:0!important;background:rgba(10,10,10,.72)!important}
+.buchee-blog-reader{background:#fff!important;color:#161616!important;width:min(100%,980px)!important;max-width:980px!important;display:flex!important;flex-direction:column!important;overflow:hidden!important;border-radius:20px!important;box-shadow:0 25px 100px rgba(0,0,0,.25)!important}
+.buchee-blog-reader-header{height:66px!important;min-height:66px!important;flex:0 0 66px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;padding:0 24px!important;box-sizing:border-box!important;border-bottom:1px solid #ededed!important;background:#fff!important;z-index:5!important}
+.buchee-blog-reader-brand{font-size:18px!important;font-weight:850!important;letter-spacing:-.04em!important;color:#111!important}
+.buchee-blog-reader-brand b{font-weight:450!important;color:#777!important}
+.buchee-blog-close{position:relative!important;inset:auto!important;transform:none!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;flex:0 0 auto!important;min-width:94px!important;height:40px!important;padding:0 12px!important;background:#111!important;border:1px solid #111!important;border-radius:11px!important;color:#fff!important;font-size:14px!important;font-weight:700!important;opacity:1!important;visibility:visible!important;z-index:10!important;cursor:pointer!important}
+.buchee-blog-close span:first-child{font-size:23px!important;line-height:1!important;color:#fff!important}
+.buchee-blog-close-label{color:#fff!important}
+.buchee-blog-article{min-height:0!important;flex:1!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;padding:clamp(22px,5vw,65px)!important}
+.buchee-blog-article-inner{max-width:720px!important;margin:0 auto!important}
+.buchee-blog-kicker{font-size:11px!important;font-weight:850!important;letter-spacing:.14em!important;color:#777!important}
+.buchee-blog-article h1{font-size:clamp(30px,5vw,50px)!important;line-height:1.18!important;letter-spacing:-.035em!important;margin:18px 0 23px!important;overflow-wrap:anywhere!important}
+.buchee-blog-byline{padding:0 0 22px!important;border-bottom:1px solid #e6e6e6!important;color:#656565!important;font-size:13px!important}
+.buchee-blog-article-body{max-width:none!important;margin:34px 0!important;font-size:clamp(17px,2.1vw,20px)!important;line-height:1.92!important;color:#272727!important;overflow-wrap:anywhere!important}
+.buchee-blog-article-body p{margin:0 0 1.5em!important}
+.buchee-blog-end{text-align:center!important;border-top:1px solid #eee!important;padding:30px 0 8px!important;color:#888!important;font-size:12px!important;letter-spacing:.08em!important}
+@media(max-width:740px){.buchee-blog-reader{height:100dvh!important;max-height:100dvh!important;width:100%!important;border-radius:0!important}.buchee-blog-reader-header{height:64px!important;min-height:64px!important;flex-basis:64px!important;padding:0 18px!important;padding-top:env(safe-area-inset-top,0px)!important}.buchee-blog-article{padding:30px 22px calc(35px + env(safe-area-inset-bottom,0px))!important}#pati-create-sheet .pati-create-choice{min-height:100px!important}}
+@media(max-width:370px){#pati-create-sheet .pati-create-choice{padding:10px 8px!important;gap:7px!important}#pati-create-sheet .pati-choice-icon{flex-basis:31px!important;width:31px!important;height:31px!important}#pati-create-sheet .pati-choice-copy b{font-size:12px!important}}
+@media(prefers-reduced-motion:reduce){.buchee-blog-reader *{scroll-behavior:auto!important}}
