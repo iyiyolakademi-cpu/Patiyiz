@@ -116,3 +116,17 @@
   border-radius:13px!important;
  }
 }
+
+/* Poll composer: keep title and close control visible below device safe areas. */
+#buchee-poll-dialog{isolation:isolate;box-sizing:border-box}
+#buchee-poll-dialog .buchee-poll-panel{box-sizing:border-box;min-height:0;overscroll-behavior:contain}
+#buchee-poll-dialog .buchee-poll-panel>header{position:relative!important;top:auto!important;left:auto!important;right:auto!important;flex:0 0 auto!important;min-height:58px;box-sizing:border-box;background:#fff!important;z-index:3!important}
+#buchee-poll-dialog .buchee-poll-panel>header strong{display:block;min-width:0;flex:1;font-weight:800;color:#111}
+#buchee-poll-dialog .buchee-poll-panel>header button{display:grid!important;place-items:center!important;flex:0 0 40px!important;width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;position:relative!important;inset:auto!important;transform:none!important;opacity:1!important;visibility:visible!important;z-index:4!important;line-height:1!important}
+#buchee-poll-dialog .buchee-poll-body{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+@media(max-width:600px){
+ #buchee-poll-dialog{align-items:stretch!important;justify-content:stretch!important}
+ #buchee-poll-dialog .buchee-poll-panel{align-self:stretch!important;width:100%!important;height:100dvh!important;max-height:100dvh!important;margin:0!important;border-radius:0!important;padding:0!important;overflow:hidden!important}
+ #buchee-poll-dialog .buchee-poll-panel>header{padding:calc(12px + env(safe-area-inset-top,0px)) 16px 12px!important;min-height:calc(64px + env(safe-area-inset-top,0px))!important}
+ #buchee-poll-dialog .buchee-poll-body{padding:18px 16px calc(26px + env(safe-area-inset-bottom,0px))!important}
+}
