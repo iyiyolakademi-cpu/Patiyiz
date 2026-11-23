@@ -7733,8 +7733,16 @@ async function publishMediaRecord(table,form,createRecord){
   let response=await sb.from(table).insert({...record,id,author_id:owner}).select('*').single();
   // Some deployed databases accept only post/reels as post_format.
   // Retry with the existing supported format without uploading images twice.
-  if(response.error&&table==='posts'&&form.dataset.mode==='text'&&record.post_format==='text'&&/post_format|check constraint|23514/i.test(String(response.error.message||'')+' '+String(response.error.code||''))){
-   response=await sb.from(table).insert({...record,body:BUCHEE_TWIT_MARK+bucheeTwitBody(record.body),post_format:'post',id,author_id:owner}).select('*').single();
+  if(response.error&&table==='posts'&&['text','blog'].includes(form.dataset.mode)&&record.post_format==='text'&&/post_format|check constraint|23514/i.test(String(response.error.message||'')+' '+String(response.error.code||''))){
+   // Preserve the blog title/body marker; the legacy text fallback is only for Twit.
+   const fallbackBody=form.dataset.mode==='blog'?record.body:BUCHEE_TWIT_MARK+bucheeTwitBody(record.body);
+   response=await sb.from(table).insert({...record,body:fallbackBody,post_format:'post',id,author_id:owner}).select('*').single();
+  }
+  if(response.error&&form.dataset.mode==='blog'){
+   const details=String(response.error.message||'')+' '+String(response.error.code||'');
+   if(/value too long|character varying|22001|length|check constraint|23514/i.test(details))throw Error('Blog yazısı veritabanının izin verdiği uzunluğu aşıyor. Yazıyı biraz kısaltıp yeniden dene.');
+   if(/row.level security|42501|permission denied/i.test(details))throw Error('Blog yayınlama izni doğrulanamadı. Yeniden giriş yapıp tekrar dene.');
+   if(/not.null|23502|column .* does not exist|42703/i.test(details))throw Error('Blog yayınlama altyapısında bir uyumsuzluk var. Lütfen daha sonra yeniden dene.');
   }
   if(response.error)throw response.error;
   if(!response.data)throw Error('Paylaşım kaydı doğrulanamadı.');
