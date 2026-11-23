@@ -1,22 +1,21 @@
-/* Force the original portrait phone viewport to remain visually upright on rotation.
-   iOS Safari cannot reliably lock screen.orientation; counter-rotate the entire UI. */
+/* Single source of truth for mobile landscape and post action colors. */
 @media (orientation:landscape) and (pointer:coarse) and (max-height:650px){
  html{width:100%!important;height:100%!important;overflow:hidden!important;background:#fff!important}
- body{position:fixed!important;top:0!important;left:100dvw!important;width:100dvh!important;min-width:100dvh!important;max-width:100dvh!important;height:100dvw!important;min-height:100dvw!important;max-height:100dvw!important;margin:0!important;transform:rotate(90deg)!important;transform-origin:top left!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important}
- #app-root,#auth-root{width:100%!important;max-width:100%!important;min-height:100%!important}
- #app-root>.app-shell{display:block!important;width:100%!important;max-width:590px!important;grid-template-columns:none!important;margin:0 auto!important;padding:0 0 110px!important}
+ body{position:fixed!important;width:100dvh!important;min-width:100dvh!important;max-width:100dvh!important;height:100dvw!important;min-height:100dvw!important;max-height:100dvw!important;margin:0!important;overflow-x:hidden!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;transform-origin:top left!important}
+ body:not(.buchee-landscape-left){left:100dvw!important;top:0!important;transform:rotate(90deg)!important}
+ body.buchee-landscape-left{left:0!important;top:100dvh!important;transform:rotate(-90deg)!important}
+ #app-root,#auth-root{width:100%!important;max-width:100%!important;min-height:100%!important;margin:0!important}
+ #app-root>.app-shell{display:block!important;grid-template-columns:none!important;width:100%!important;max-width:590px!important;margin:0 auto!important;padding:0 0 calc(110px + env(safe-area-inset-bottom,0px))!important}
  #app-root>.app-shell>.sidebar,#app-root>.app-shell>.right-rail{display:none!important}
- #app-root>.app-shell>.main{width:100%!important;max-width:100%!important;padding:0 13px!important;margin:0!important}
- #app-root>header.mobile-header{display:flex!important;width:100%!important;max-width:590px!important;margin:0 auto!important}
+ #app-root>.app-shell>.main{width:100%!important;max-width:100%!important;min-width:0!important;padding:0 13px!important;margin:0 auto!important}
+ #app-root>header.mobile-header{display:block!important;position:sticky!important;top:0!important;width:100%!important;max-width:590px!important;margin:0 auto!important}
  #app-root>#mobile-nav,#app-root>.mobile-bottom{display:flex!important;position:fixed!important;bottom:0!important;left:0!important;right:0!important;z-index:80!important}
+ #app-root>.mobile-fab{display:grid!important;position:fixed!important;right:17px!important;bottom:calc(86px + env(safe-area-inset-bottom,0px))!important}
  #pati-portrait-required{display:none!important}
 }
-@media (orientation:landscape) and (pointer:coarse) and (max-height:650px){
- #app-root>header.mobile-header{display:block!important}
-}
-.buchee-post-option .buchee-post-option-icon,
-.buchee-post-option:not(.is-danger) .buchee-post-option-icon,
-.buchee-post-option:not(.is-danger) .buchee-post-option-icon::before{background:#f0f0f0!important;background-image:none!important;border-color:#e6e6e6!important;color:#111!important;box-shadow:none!important}
+.buchee-post-option:not(.is-danger) .buchee-post-option-icon{background:#f0f0f0!important;background-image:none!important;border:1px solid #e6e6e6!important;box-shadow:none!important;color:#111!important;-webkit-text-fill-color:#111!important}
 .buchee-post-option:not(.is-danger) .buchee-post-option-icon svg,
-.buchee-post-option:not(.is-danger) .buchee-post-option-icon svg *,
-.buchee-post-option:not(.is-danger) .buchee-post-option-icon .icon{stroke:#111!important;color:#111!important;fill:none!important}
+.buchee-post-option:not(.is-danger) .buchee-post-option-icon svg *{color:#111!important;stroke:#111!important;fill:none!important}
+.buchee-post-option:not(.is-danger) .buchee-post-option-copy strong,
+.buchee-post-option:not(.is-danger) .buchee-post-option-chevron{color:#111!important;-webkit-text-fill-color:#111!important}
+.buchee-post-option:not(.is-danger) .buchee-post-option-copy small{color:#666!important}
