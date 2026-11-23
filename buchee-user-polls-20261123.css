@@ -1,0 +1,28 @@
+/* Buchee user polls — black and white, mobile first */
+.buchee-poll-entry{display:flex;gap:9px;padding:10px 12px;margin:0 0 8px;border-bottom:1px solid #eee;background:#fff}
+.buchee-poll-entry button{flex:1;min-height:42px;border:1px solid #dedede;border-radius:11px;background:#fff;color:#111;font:700 13px inherit;cursor:pointer}
+.buchee-poll-entry button:last-child{background:#111;color:#fff;border-color:#111}
+#buchee-poll-dialog{position:fixed;inset:0;z-index:2147483001;display:flex;align-items:center;justify-content:center}
+.buchee-poll-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.55)}
+.buchee-poll-panel{position:relative;z-index:1;background:#fff;color:#111;width:min(520px,100%);max-height:min(90dvh,850px);border-radius:18px;display:flex;flex-direction:column;overflow:hidden}
+.buchee-poll-panel>header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:15px 17px;border-bottom:1px solid #eaeaea}
+.buchee-poll-panel>header strong{font-size:17px}
+.buchee-poll-panel>header button{background:#f3f3f3;color:#111;border:0;border-radius:9px;font-size:25px;width:36px;height:36px;cursor:pointer}
+.buchee-poll-body{padding:15px 17px 24px;overflow:auto;overscroll-behavior:contain}
+#buchee-poll-form{display:grid;gap:13px}
+#buchee-poll-form label{display:grid;gap:6px;font-size:13px;font-weight:700}
+#buchee-poll-form textarea,#buchee-poll-form input,#buchee-poll-form select{box-sizing:border-box;width:100%;min-height:44px;border:1px solid #ddd;border-radius:10px;background:#fff;color:#111;padding:11px;font:inherit}
+#buchee-poll-form textarea{min-height:80px;resize:vertical}
+.buchee-poll-primary{background:#111;color:#fff;border:0;border-radius:10px;min-height:44px;font-weight:750;cursor:pointer}
+.buchee-poll-status{font-size:13px;color:#555;margin:0}
+.buchee-poll-card{border:1px solid #e8e8e8;border-radius:13px;padding:13px;margin-bottom:12px;display:grid;gap:10px}
+.buchee-poll-card>small{color:#666}
+.buchee-poll-options{display:grid;gap:7px}
+.buchee-poll-options button{min-height:40px;border:1px solid #ddd;border-radius:9px;background:#fff;color:#111;text-align:left;padding:8px 12px;cursor:pointer}
+.buchee-poll-options button:disabled{opacity:.6;cursor:default}
+.buchee-poll-results{border:0;background:transparent;color:#111;text-decoration:underline;text-align:left;cursor:pointer;padding:5px 0}
+.buchee-poll-result-area{display:grid;gap:8px;font-size:12px}
+.buchee-poll-result{display:grid;gap:4px}
+.buchee-poll-result>div{height:7px;border-radius:99px;background:#eee;overflow:hidden}
+.buchee-poll-result i{display:block;background:#111;height:100%;border-radius:99px}
+@media(max-width:600px){.buchee-poll-panel{align-self:flex-end;border-radius:18px 18px 0 0;max-height:92dvh;padding-bottom:env(safe-area-inset-bottom,0px)}}
