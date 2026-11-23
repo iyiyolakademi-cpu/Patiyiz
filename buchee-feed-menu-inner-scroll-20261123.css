@@ -1,0 +1,15 @@
+/* Five-choice stream selector: scroll inside the menu, never the page. */
+@media(max-width:900px){
+ html body #app-root>header.mobile-header>#pati-feed-menu:not([hidden]){
+  display:flex!important;flex-direction:column!important;
+  height:auto!important;max-height:min(410px,calc(100dvh - 155px))!important;
+  overflow-y:auto!important;overflow-x:hidden!important;
+  overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important;
+  touch-action:pan-y!important;scrollbar-width:thin!important;
+  align-content:start!important;justify-content:flex-start!important;
+  padding-bottom:12px!important;
+ }
+ html body #app-root>header.mobile-header>#pati-feed-menu:not([hidden])>button{
+  flex:0 0 auto!important;min-height:66px!important;
+ }
+}
