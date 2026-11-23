@@ -5,7 +5,11 @@ function syncRotation(){
  const screenAngle=Number(screen.orientation?.angle);
  const legacyAngle=Number(window.orientation);
  const angle=Number.isFinite(legacyAngle)&&Math.abs(legacyAngle)===90?legacyAngle:(Number.isFinite(screenAngle)?screenAngle:90);
+ const isPhone=matchMedia('(pointer:coarse)').matches && Math.min(screen.width,screen.height)<=850;
+ const landscape=innerWidth>innerHeight && isPhone;
+ document.documentElement.classList.toggle('buchee-portrait-locked-landscape',landscape);
  document.body?.classList.toggle('buchee-landscape-left',angle===90||angle===-270);
+ document.body?.classList.toggle('buchee-portrait-locked-landscape',landscape);
 }
 let pending=false;function schedule(){if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;unlock();syncRotation()})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{unlock();syncRotation();new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true,characterData:true})},{once:true});else{unlock();syncRotation();new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true,characterData:true})}
