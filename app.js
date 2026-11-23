@@ -2269,20 +2269,35 @@ function patiyizProgressCard(){
 
 // Realtime DM presence: show green only for peers actually present in this session channel.
 let bucheePresenceChannel=null;
+let bucheePresenceOwner='';
 const bucheeOnlinePeers=new Set();
+function bucheeStopPresence(){
+ const ch=bucheePresenceChannel;
+ bucheePresenceChannel=null;bucheePresenceOwner='';bucheeOnlinePeers.clear();
+ if(ch&&sb){try{void sb.removeChannel(ch).catch(e=>console.warn('Presence cleanup:',e))}catch(e){console.warn('Presence cleanup:',e)}}
+ bucheePaintOnlineStatus();
+}
 function bucheeInitPresence(){
- if(!me?.id||!sb||bucheePresenceChannel)return;
+ if(!me?.id||!sb)return;
+ if(bucheePresenceChannel&&bucheePresenceOwner===me.id)return;
+ if(bucheePresenceChannel)bucheeStopPresence();
+ const owner=me.id;
  try{
-  const ch=sb.channel('buchee-online-users',{config:{presence:{key:me.id}}});
+  const ch=sb.channel('buchee-online-users',{config:{presence:{key:owner}}});
+  bucheePresenceChannel=ch;bucheePresenceOwner=owner;
   ch.on('presence',{event:'sync'},()=>{
+   if(bucheePresenceChannel!==ch||bucheePresenceOwner!==owner)return;
    bucheeOnlinePeers.clear();
    const state=ch.presenceState();
-   for(const [id,entries] of Object.entries(state||{}))if(id!==me?.id&&Array.isArray(entries)&&entries.length)bucheeOnlinePeers.add(id);
+   for(const [id,entries] of Object.entries(state||{}))if(id!==owner&&Array.isArray(entries)&&entries.length)bucheeOnlinePeers.add(id);
    bucheePaintOnlineStatus();
   });
-  ch.subscribe(async status=>{if(status==='SUBSCRIBED'&&me?.id){try{await ch.track({user_id:me.id,online_at:new Date().toISOString()})}catch(e){console.warn('Presence track:',e)}}});
-  bucheePresenceChannel=ch;
- }catch(e){console.warn('Presence unavailable:',e)}
+  ch.subscribe(async status=>{
+   if(bucheePresenceChannel!==ch)return;
+   if(status==='SUBSCRIBED'&&me?.id===owner){try{await ch.track({user_id:owner,online_at:new Date().toISOString()})}catch(e){console.warn('Presence track:',e)}}
+   if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){bucheeOnlinePeers.clear();bucheePaintOnlineStatus()}
+  });
+ }catch(e){bucheeStopPresence();console.warn('Presence unavailable:',e)}
 }
 function bucheePaintOnlineStatus(){
  document.querySelectorAll('.chat-window[data-chat-person] .chat-head-avatar').forEach(el=>{
@@ -9729,6 +9744,7 @@ window.addEventListener('online',()=>{notify('İnternet bağlantısı yeniden ku
  }).catch(e=>console.warn('Yenileme başarısız',e));refreshOnReturn()
  }});document.addEventListener('visibilitychange',()=>{if(document.hidden)stopLive();else refreshOnReturn()});window.addEventListener('focus',refreshOnReturn);
 function resetSessionState(){
+ bucheeStopPresence();
  globalThis.PatiyizPrivateMedia?.clear();
  if(typeof patiDmPhotoClear==='function')patiDmPhotoClear();
  if(typeof patiAvatarCache!=='undefined')patiAvatarCache.clear();
