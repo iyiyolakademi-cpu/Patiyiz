@@ -1584,12 +1584,12 @@ function bucheeUpdateLikeSummary(id,n){
 const BUCHEE_TWIT_MARK='\u2063\u2063';
 function bucheeIsTwit(p){return p?.post_format==='text'||String(p?.body||'').startsWith(BUCHEE_TWIT_MARK)}
 function bucheeTwitBody(value){const body=String(value||'');return body.startsWith(BUCHEE_TWIT_MARK)?body.slice(BUCHEE_TWIT_MARK.length):body}
-const BUCHEE_BLOG_MARK='[[BUCHEE_BLOG_V1]]\\n';
+const BUCHEE_BLOG_MARK='[[BUCHEE_BLOG_V1]]\n';
 function bucheeBlogParse(value){
  const raw=String(value||'');
  if(!raw.startsWith(BUCHEE_BLOG_MARK))return null;
  const rest=raw.slice(BUCHEE_BLOG_MARK.length);
- const newline=rest.indexOf('\\n');
+ const newline=rest.indexOf('\n');
  if(newline<0)return null;
  const title=rest.slice(0,newline).trim(),body=rest.slice(newline+1).trim();
  return title&&body?{title,body}:null;
@@ -1611,7 +1611,7 @@ function bucheeBlogRead(postId){
  const blog=post&&bucheeBlogParse(post.body);
  if(!blog||blocked.has(post.author_id))return notify('Blog yazısı bulunamadı.',true);
  const root=document.getElementById('modal-root');
- root.innerHTML='<div class="modal-backdrop buchee-blog-reader-backdrop" data-action="close"><section class="modal buchee-blog-reader" role="dialog" aria-modal="true" aria-label="Blog yazısı"><div class="modal-header"><strong>Blog</strong><button type="button" class="close-modal" data-action="close" aria-label="Blogu kapat">×</button></div><article class="buchee-blog-article"><div class="buchee-blog-kicker">BUCHEE BLOG</div><h1>'+esc(blog.title)+'</h1><div class="buchee-blog-byline">'+esc(profile(post.author_id).display_name||'Buchee üyesi')+' · '+esc(day(post.created_at))+'</div><div class="buchee-blog-article-body">'+blog.body.split(/\\n{2,}/).map(part=>'<p>'+esc(part).replace(/\\n/g,'<br>')+'</p>').join('')+'</div></article></section></div>';
+ root.innerHTML='<div class="modal-backdrop buchee-blog-reader-backdrop" data-action="close"><section class="modal buchee-blog-reader" role="dialog" aria-modal="true" aria-label="Blog yazısı"><div class="modal-header"><strong>Blog</strong><button type="button" class="close-modal" data-action="close" aria-label="Blogu kapat">×</button></div><article class="buchee-blog-article"><div class="buchee-blog-kicker">BUCHEE BLOG</div><h1>'+esc(blog.title)+'</h1><div class="buchee-blog-byline">'+esc(profile(post.author_id).display_name||'Buchee üyesi')+' · '+esc(day(post.created_at))+'</div><div class="buchee-blog-article-body">'+blog.body.split(/\n{2,}/).map(part=>'<p>'+esc(part).replace(/\n/g,'<br>')+'</p>').join('')+'</div></article></section></div>';
  root.querySelector('.buchee-blog-reader .close-modal')?.focus();
 }
 function postCard(p,priority=false){
@@ -7775,7 +7775,7 @@ async function patiGenerateVideoCover(file){
 }
 async function createPostPublication(form,f,str){
  const photoFiles=form.dataset.mode==='text'?[...(form._bucheeTextPhotos||[])]:[...(form.querySelector('input[name="photo"]')?.files||[])];
- const videoFiles=[...(form.querySelector('input[name="video"]')?.files||[])].filter(x=>x?.size),videoFile=videoFiles[0],hasVideo=videoFiles.length>0,body=form.dataset.mode==='blog'?BUCHEE_BLOG_MARK+str('blog_title')+'\\n'+str('body'):str('body').trim();
+ const videoFiles=[...(form.querySelector('input[name="video"]')?.files||[])].filter(x=>x?.size),videoFile=videoFiles[0],hasVideo=videoFiles.length>0,body=form.dataset.mode==='blog'?BUCHEE_BLOG_MARK+str('blog_title')+'\n'+str('body'):str('body').trim();
  if(form.dataset.mode!=='reels'&&videoFiles.length>4)throw Error('Bir gönderide en fazla 4 video paylaşabilirsin.');
  if(form.dataset.mode==='blog'&&(str('blog_title').length<5||str('blog_title').length>140||str('body').length<30||str('body').length>12000))throw Error('Blog başlığı 5–140, yazısı 30–12000 karakter arasında olmalı.');
  if(form.dataset.mode==='text'&&!body)throw Error('Yazı paylaşmak için önce bir metin yaz.');
