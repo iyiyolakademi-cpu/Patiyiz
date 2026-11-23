@@ -24,7 +24,7 @@ function enhance(){
   wave.className='buchee-dm-record-wave';
   wave.setAttribute('aria-hidden','true');
   for(let i=0;i<7;i++)wave.appendChild(document.createElement('i'));
-  recording.insertBefore(wave,recording.querySelector('time')||recording.firstChild);
+  recording.insertBefore(wave,recording.firstChild);
  }
 }
 let queued=false;
