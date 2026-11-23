@@ -17,15 +17,3 @@ html[data-pati-view="profile"] .pati-own-profile-actions button:focus-visible{ou
 @keyframes buchee-loading-pulse{0%,100%{opacity:.45}50%{opacity:1}}
 @media(prefers-reduced-motion:reduce){.pati-creator-dashboard [aria-busy="true"]:empty::after,.pati-creator-dashboard .pati-creator-scroll:empty::after{animation:none}}
 @media(max-width:400px){html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-own-profile-actions>.soft-btn,html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-own-profile-actions>.pati-profile-insights-preview{font-size:12px!important}}
-
-/* Prominent, balanced profile analytics entry */
-.pati-ig-profile .pati-own-profile-actions{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:9px!important;align-items:stretch!important}
-.pati-ig-profile .pati-own-profile-actions>button{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;min-width:0!important;min-height:42px!important;box-sizing:border-box!important;border-radius:11px!important;font-size:13px!important;font-weight:750!important;white-space:nowrap}
-.pati-ig-profile .pati-own-profile-actions>button[data-action="pati-insights"]{background:#111!important;border:1px solid #111!important;color:#fff!important}
-.pati-ig-profile .pati-profile-insights-preview{display:flex!important;align-items:center;justify-content:space-between;gap:12px;width:100%;margin:12px 0 8px;padding:15px 16px;border:1px solid #e6e6e6;border-radius:14px;background:linear-gradient(120deg,#fafafa,#f2f2f2);color:#111;text-align:left;box-sizing:border-box;cursor:pointer}
-.pati-ig-profile .pati-profile-insights-preview>span:first-child{display:grid;gap:4px;min-width:0}
-.pati-ig-profile .pati-profile-insights-preview strong{font-size:15px;font-weight:850;letter-spacing:-.02em}
-.pati-ig-profile .pati-profile-insights-preview small{font-size:11px;color:#777}
-.pati-ig-profile .pati-profile-insights-value{margin-left:auto;font-size:20px;font-weight:850;font-variant-numeric:tabular-nums}
-.pati-ig-profile .pati-profile-insights-arrow{font-size:23px;color:#777}
-@media(max-width:480px){.pati-ig-profile .pati-own-profile-actions{gap:7px!important}.pati-ig-profile .pati-profile-insights-preview{padding:13px 12px;margin:9px 0 6px}}
