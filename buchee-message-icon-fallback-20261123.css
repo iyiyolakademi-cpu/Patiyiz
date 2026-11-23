@@ -1,0 +1,7 @@
+/* Message icon fallback rendered independently of inherited SVG styling. */
+@media(max-width:900px){
+html body #app-root>header.mobile-header>.pati-header-actions>#buchee-header-messages{position:relative!important;background:#111!important;background-color:#111!important;color:#fff!important;overflow:visible!important}
+html body #app-root>header.mobile-header>.pati-header-actions>#buchee-header-messages::after{
+content:""!important;display:block!important;position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;width:28px!important;height:28px!important;z-index:5!important;opacity:1!important;visibility:visible!important;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20.5 11.6c0 4.5-3.7 8.1-8.4 8.1-1.4 0-2.7-.3-3.9-.9L3.6 20l1.5-4.3a7.9 7.9 0 0 1-1.4-4.1c0-4.5 3.7-8.1 8.4-8.1s8.4 3.6 8.4 8.1Z' stroke='white' stroke-width='2.2' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E") center/contain no-repeat!important;pointer-events:none!important;
+}
+}
