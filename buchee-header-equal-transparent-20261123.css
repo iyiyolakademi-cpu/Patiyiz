@@ -1,0 +1,31 @@
+/* Final mobile header override. Equal unboxed actions regardless of older high-specificity styles. */
+@media(max-width:900px){
+ html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>.pati-header-actions{
+  display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-end!important;
+  width:100px!important;min-width:100px!important;max-width:100px!important;gap:6px!important;
+ }
+ html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>.pati-header-actions>button#pati-header-notifications,
+ html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>.pati-header-actions>button#buchee-header-messages,
+ html body #app-root>header.mobile-header>.pati-header-actions>button#pati-header-notifications,
+ html body #app-root>header.mobile-header>.pati-header-actions>button#buchee-header-messages{
+  appearance:none!important;-webkit-appearance:none!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  flex:0 0 44px!important;width:44px!important;min-width:44px!important;max-width:44px!important;
+  height:44px!important;min-height:44px!important;max-height:44px!important;
+  margin:0!important;padding:8px!important;position:static!important;
+  background:transparent!important;background-color:transparent!important;background-image:none!important;
+  border:0!important;border-radius:0!important;box-shadow:none!important;filter:none!important;
+  color:#111!important;-webkit-text-fill-color:#111!important;opacity:1!important;
+ }
+ html body #app-root>header.mobile-header>.pati-header-actions>button#pati-header-notifications{order:1!important}
+ html body #app-root>header.mobile-header>.pati-header-actions>button#buchee-header-messages{order:2!important}
+ html body #app-root>header.mobile-header>.pati-header-actions>button#pati-header-notifications svg,
+ html body #app-root>header.mobile-header>.pati-header-actions>button#buchee-header-messages svg{
+  display:block!important;width:27px!important;height:27px!important;min-width:27px!important;min-height:27px!important;
+  stroke:#111!important;color:#111!important;fill:none!important;filter:none!important;
+ }
+ html body #app-root>header.mobile-header>.pati-header-actions>button#pati-header-notifications svg *,
+ html body #app-root>header.mobile-header>.pati-header-actions>button#buchee-header-messages svg *{
+  stroke:#111!important;color:#111!important;fill:none!important;
+ }
+}
