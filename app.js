@@ -1612,8 +1612,10 @@ function bucheeBlogRead(postId){
  const blog=post&&bucheeBlogParse(post.body);
  if(!blog||blocked.has(post.author_id))return notify('Blog yazısı bulunamadı.',true);
  const root=document.getElementById('modal-root');
- root.innerHTML='<div class="modal-backdrop buchee-blog-reader-backdrop" data-action="close"><section class="modal buchee-blog-reader" role="dialog" aria-modal="true" aria-label="Blog yazısı"><div class="modal-header"><strong>Blog</strong><button type="button" class="close-modal" data-action="close" aria-label="Blogu kapat">×</button></div><article class="buchee-blog-article"><div class="buchee-blog-kicker">BUCHEE BLOG</div><h1>'+esc(blog.title)+'</h1><div class="buchee-blog-byline">'+esc(profile(post.author_id).display_name||'Buchee üyesi')+' · '+esc(day(post.created_at))+'</div><div class="buchee-blog-article-body">'+blog.body.split(/\n{2,}/).map(part=>'<p>'+esc(part).replace(/\n/g,'<br>')+'</p>').join('')+'</div></article></section></div>';
- root.querySelector('.buchee-blog-reader .close-modal')?.focus();
+ const paragraphs=blog.body.split(/\n{2,}/).map(part=>'<p>'+esc(part).replace(/\n/g,'<br>')+'</p>').join('');
+ const minutes=Math.max(1,Math.ceil(blog.body.trim().split(/\s+/).length/200));
+ root.innerHTML='<div class="modal-backdrop buchee-blog-reader-backdrop" data-action="close"><section class="modal buchee-blog-reader" role="dialog" aria-modal="true" aria-label="Blog yazısı"><header class="buchee-blog-reader-header"><span class="buchee-blog-reader-brand">buchee <b>blog</b></span><button type="button" class="close-modal buchee-blog-close" data-action="close" aria-label="Blogu kapat"><span aria-hidden="true">×</span><span class="buchee-blog-close-label">Kapat</span></button></header><article class="buchee-blog-article"><div class="buchee-blog-article-inner"><div class="buchee-blog-kicker">BUCHEE BLOG · '+minutes+' DK OKUMA</div><h1>'+esc(blog.title)+'</h1><div class="buchee-blog-byline">'+esc(profile(post.author_id).display_name||'Buchee üyesi')+' <span aria-hidden="true">·</span> '+esc(day(post.created_at))+'</div><div class="buchee-blog-article-body">'+paragraphs+'</div><footer class="buchee-blog-end">Yazının sonu <span aria-hidden="true">✦</span></footer></div></article></section></div>';
+ root.querySelector('.buchee-blog-close')?.focus();
 }
 function postCard(p,priority=false){
  const indexed=typeof patiPostRenderStats!=='undefined'&&patiPostRenderStats;
@@ -2710,7 +2712,7 @@ function bucheePostMenu(postId){
  };
  const option=(kind,name,subtitle,action,attributes='',disabled=false)=>
   '<button type="button" class="buchee-post-option '+(kind==='trash'?'is-danger':'')+'" data-action="'+action+'" data-id="'+esc(postId)+'" '+attributes+(disabled?' disabled aria-disabled="true"':'')+'>'+
-  '<span class="buchee-post-option-icon" style="background:'+(kind==='trash'?'#fde8e8':'#111')+'!important;background-image:none!important;border-color:'+(kind==='trash'?'#fde8e8':'#111')+'!important;color:#fff!important"><span style="color:#fff!important">'+icons[kind]+'</span></span><span class="buchee-post-option-copy"><strong>'+name+'</strong><small>'+subtitle+'</small></span>'+
+  '<span class="buchee-post-option-icon" style="background:'+(kind==='trash'?'#b91c1c':'#111')+'!important;background-image:none!important;border-color:'+(kind==='trash'?'#b91c1c':'#111')+'!important;color:#fff!important"><span style="color:#fff!important">'+icons[kind]+'</span></span><span class="buchee-post-option-copy"><strong>'+name+'</strong><small>'+subtitle+'</small></span>'+
   '<span class="buchee-post-option-chevron" aria-hidden="true">›</span></button>';
  const items=own?[
   option('edit','Gönderiyi düzenle','Açıklama ve içerik ayrıntıları','edit-post'),
