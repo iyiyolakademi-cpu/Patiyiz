@@ -2,6 +2,7 @@
 (() => {
   'use strict';
   const choices=[
+    {mode:'all',title:'Tümü',subtitle:'Gönderiler, Reels, yazılar ve sorular',short:'Tümü',icon:'i-grid'},
     {mode:'media',title:'Gönderiler ve Reels',subtitle:'Fotoğraf, video ve Reels',short:'Gönderiler ve Reels',icon:'i-image'},
     {mode:'text',title:'Yazılar ve Sorular',subtitle:'Yazılı paylaşımlar ve soru-cevaplar',short:'Yazılar ve Sorular',icon:'i-message'}
   ];
@@ -12,13 +13,14 @@
   // whose inherited stroke can be forced white by older mobile styles.
   const darkStroke='style="stroke:#17191d!important;fill:none!important"';
   const menuGlyphs={
+    all:'<rect x="3" y="3" width="7" height="7" rx="1" '+darkStroke+'></rect><rect x="14" y="3" width="7" height="7" rx="1" '+darkStroke+'></rect><rect x="3" y="14" width="7" height="7" rx="1" '+darkStroke+'></rect><rect x="14" y="14" width="7" height="7" rx="1" '+darkStroke+'></rect>',
     media:'<rect x="3" y="3" width="18" height="18" rx="3" '+darkStroke+'></rect>'+
       '<circle cx="9" cy="9" r="1.5" '+darkStroke+'></circle>'+
       '<path d="m21 16-5-5L5 21" '+darkStroke+'></path>',
     text:'<path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.5 0-2.9-.4-4.1-1.1L3 21l2.1-5.4A8.5 8.5 0 1 1 21 11.5z" '+darkStroke+'></path>'
   };
   function paintMenuIcons(menu){
-    for(const choice of ['media','text']){
+    for(const choice of ['all','media','text']){
       const svg=menu.querySelector('[data-pati-feed-choice="'+choice+'"] svg');
       if(!svg)continue;
       svg.setAttribute('viewBox','0 0 24 24');
@@ -61,7 +63,7 @@
       if(isMobile)trigger.closest('.mobile-header')?.appendChild(menu);
       else document.body.appendChild(menu);
     }
-    if(!menu.querySelector('[data-pati-feed-choice]')){
+    if(!menu.querySelector('[data-pati-feed-choice="all"]')){
       menu.innerHTML=choices.map(choice=>'<button type="button" role="menuitemradio" data-pati-feed-choice="'+choice.mode+
         '" aria-checked="false"><svg class="icon" aria-hidden="true"><use href="#'+choice.icon+
         '"></use></svg><span class="pati-feed-menu-label"><strong>'+choice.title+
@@ -98,7 +100,7 @@
       if(!choice||!menu.contains(choice))return;
       event.preventDefault();event.stopPropagation();
       const mode=choice.dataset.patiFeedChoice;
-      if(mode!=='text'&&mode!=='media')return;
+      if(mode!=='text'&&mode!=='media'&&mode!=='all')return;
       activeMode=mode;
       for(const item of installed){item.sync();item.close();}
       window.dispatchEvent(new CustomEvent('patiyiz:feed-mode',{detail:{mode}}));
@@ -132,7 +134,7 @@
     });
     window.addEventListener('resize',()=>{for(const item of installed)item.close();});
     window.addEventListener('patiyiz:feed-mode-changed',event=>{
-      activeMode=event.detail?.mode==='text'?'text':'media';
+      activeMode=['text','media','all'].includes(event.detail?.mode)?event.detail.mode:'text';
       for(const item of installed)item.sync();
     });
   }
