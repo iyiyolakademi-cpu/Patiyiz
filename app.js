@@ -3122,24 +3122,27 @@ function patiOpenFeedReel(postId){
 }
 let bucheeBlogOnlyView=false;
 /* Two content-based home tabs; these are not follower-visibility filters. */
+/* Home categories: image posts on the left; text, questions and polls on the right. */
+function bucheeHomeHasImage(p){
+ return !!(p?.image_url||(Array.isArray(p?.images)&&p.images.some(Boolean)));
+}
 function bucheeHomeCategoryFeed(posts,tab){
- const isShort=tab==='following';
+ const right=tab==='following';
  const preview=patiHomeQuestionsState.owner===me?.id?patiHomeQuestionsState.rows:[];
- const entries=isShort
+ const eligible=posts.filter(p=>bucheeHomeTimelinePost(p)&&!bucheeBlogParse(p.body));
+ const entries=right
   ? [
-    ...posts.filter(p=>bucheeHomeTimelinePost(p)&&!bucheeBlogParse(p.body)&&bucheeIsTwit(p)).map(item=>({kind:'post',item})),
+    ...eligible.filter(p=>!bucheeHomeHasImage(p)).map(item=>({kind:'post',item})),
+    ...[...new Map([...(data.questions||[]),...preview].filter(q=>q?.id).map(q=>[q.id,q])).values()]
+      .filter(q=>!blocked.has(q.author_id)).map(item=>({kind:'question',item})),
     ...bucheePollFeedEntries(false)
    ]
-  : [
-    ...posts.filter(p=>bucheeHomeTimelinePost(p)&&!bucheeBlogParse(p.body)&&!bucheeIsTwit(p)).map(item=>({kind:'post',item})),
-    ...[...new Map([...(data.questions||[]),...preview].filter(q=>q?.id).map(q=>[q.id,q])).values()]
-      .filter(q=>!blocked.has(q.author_id)).map(item=>({kind:'question',item}))
-   ];
+  : eligible.filter(bucheeHomeHasImage).map(item=>({kind:'post',item}));
  entries.sort((a,b)=>new Date(b.item.created_at)-new Date(a.item.created_at));
  return entries.length?entries.map((entry,i)=>entry.kind==='poll'?bucheeFeedPollMarkup(entry.item):
   entry.kind==='question'?patiHomeQuestionCard(entry.item):patiHomePostWithRepost(entry.item,i<5)).join(''):
-  empty(isShort?'Henüz twit veya anket yok.':'Henüz gönderi veya soru yok.',
-   isShort?'İlk twitini veya anketini paylaşabilirsin.':'İlk gönderini paylaşabilir veya soru sorabilirsin.')+
+  empty(right?'Henüz yazı, soru veya anket yok.':'Henüz resimli gönderi yok.',
+   right?'İlk twitini, sorunu veya anketini paylaşabilirsin.':'İlk fotoğrafını paylaşabilirsin.')+
   patiHomeEmptyActions(false);
 }
 function homePage(){
@@ -3154,7 +3157,7 @@ function homePage(){
   .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)||String(b.id).localeCompare(String(a.id)));
  const following=false; // Content tabs no longer filter by followed accounts.
  const feedFilterBar='<div class="buchee-home-feed-filters" role="group" aria-label="İçerik türü">'+
-  [['all','Gönderiler ve Sorular'],['following','Twit ve Anketler']].map(([mode,label])=>'<button type="button" data-action="home-feed-tab" data-id="'+mode+'" aria-pressed="'+(patiHomeTab===mode)+'" class="'+(patiHomeTab===mode?'active':'')+'">'+label+'</button>').join('')+'</div>';
+  [['all','Resimli Gönderiler'],['following','Twit, Soru ve Anketler']].map(([mode,label])=>'<button type="button" data-action="home-feed-tab" data-id="'+mode+'" aria-pressed="'+(patiHomeTab===mode)+'" class="'+(patiHomeTab===mode?'active':'')+'">'+label+'</button>').join('')+'</div>';
  const feedContents=bucheeHomeCategoryFeed(list,patiHomeTab);
  const blogOnlyPosts=[...data.posts].filter(p=>p?.id&&!blocked.has(p.author_id)&&bucheeBlogParse(p.body)).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
  const blogCategories=['Tümü','Kişisel Gelişim','Felsefe','Kitap','Hayat','Psikoloji'];
