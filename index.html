@@ -11,7 +11,7 @@
 <meta name="theme-color" content="#080808"><style id="buchee-launch-critical">
 html{background:#080808}
 #startup:not(.hidden){position:fixed!important;inset:0!important;z-index:1000000!important;display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;height:100vh!important;height:100dvh!important;overflow:hidden!important;background:#080808!important;color:#fff!important;opacity:1;visibility:visible;isolation:isolate}
-#startup .pati-splash-center{position:relative;z-index:2;width:min(82vw,435px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:17px}
+#startup .buchee-opening-halo{display:none!important}#startup:before,#startup:after{display:none!important}#startup .pati-splash-center{position:relative;z-index:2;width:min(82vw,435px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:17px}
 #startup .pati-splash-icon{display:block;width:min(39vw,164px);max-width:164px;height:auto;aspect-ratio:1/1;object-fit:contain;border:0;box-shadow:none}
 #startup .buchee-opening-caption{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 52px);left:0;right:0;text-align:center;color:#ededed;font:600 12px/1.4 system-ui,sans-serif;letter-spacing:.14em}
 #startup .buchee-launch-recovery[hidden]{display:none!important}
@@ -31,7 +31,7 @@ window.__bucheeLaunchWatchdog=window.setTimeout(function(){
 document.addEventListener('click',function(event){
  if(event.target.closest&&event.target.closest('[data-buchee-launch-retry]'))window.location.reload();
 });
-})();</script><script>(function(){try{var ua=navigator.userAgent||'';var ios=/iPhone|iPad|iPod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);var standalone=navigator.standalone===true||(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches);if(ios&&standalone)document.documentElement.classList.add('patiyiz-ios-reels')}catch(e){}})();</script><script>document.documentElement.dataset.patiTheme="light";try{localStorage.removeItem("patiyiz_theme")}catch(e){}</script><link rel="manifest" href="manifest.webmanifest?v=20261123-portrait-lock-v2"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="apple-touch-icon" sizes="180x180" href="buchee-app-icon-180.png?v=20261104-uploaded-v3"><meta name="description" content="Buchee Social: Paylaş, keşfet, bağlan.">
+})();</script><script>(function(){try{var ua=navigator.userAgent||'';var ios=/iPhone|iPad|iPod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);var standalone=navigator.standalone===true||(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches);if(ios&&standalone)document.documentElement.classList.add('patiyiz-ios-reels')}catch(e){}})();</script><script>document.documentElement.dataset.patiTheme="light";try{localStorage.removeItem("patiyiz_theme")}catch(e){}</script><link rel="manifest" href="manifest.webmanifest?v=20261123-portrait-lock-v2"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><link rel="apple-touch-icon" sizes="180x180" href="buchee-app-icon-180.png?v=20261104-uploaded-v3"><meta name="description" content="Buchee Social: Paylaş, keşfet, bağlan.">
 <title>Buchee Social — Paylaş, keşfet, bağlan</title>
 <link rel="canonical" href="https://bucheesocial.com/">
 <meta property="og:type" content="website"><meta property="og:locale" content="tr_TR">
