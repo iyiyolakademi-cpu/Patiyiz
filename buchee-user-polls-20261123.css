@@ -84,3 +84,35 @@
 .buchee-poll-list-open strong{font-size:14px;color:#111}
 .buchee-poll-list-open small{font-size:12px;color:#777}
 @media(max-width:600px){#buchee-poll-dialog .buchee-poll-panel{width:100%;height:100dvh;max-height:100dvh;border-radius:0}#buchee-poll-dialog .buchee-poll-single{padding:8px 0}}
+
+/* Home timeline alignment: polls occupy the exact same feed column as text posts and Q&A. */
+#main-content .pati-feed-posts>.buchee-feed-poll,
+#main-content .pati-feed-posts>.buchee-poll-card.buchee-feed-poll{
+ display:grid!important;
+ box-sizing:border-box!important;
+ width:100%!important;
+ max-width:100%!important;
+ min-width:0!important;
+ margin:0 0 10px!important;
+ padding:16px!important;
+ align-self:stretch!important;
+ justify-self:stretch!important;
+ grid-column:1 / -1!important;
+}
+#main-content .pati-feed-posts>.buchee-feed-poll .buchee-feed-poll-head,
+#main-content .pati-feed-posts>.buchee-feed-poll .buchee-poll-options,
+#main-content .pati-feed-posts>.buchee-feed-poll .buchee-poll-result-area,
+#main-content .pati-feed-posts>.buchee-feed-poll .buchee-feed-poll-footer{min-width:0;width:100%;box-sizing:border-box}
+#main-content .pati-feed-posts>.buchee-feed-poll .buchee-feed-poll-author{flex:1;min-width:0}
+#main-content .pati-feed-posts>.buchee-feed-poll .buchee-feed-poll-state{flex:none;margin-left:auto}
+#main-content .pati-feed-posts>.buchee-feed-poll .buchee-poll-options button{display:block;width:100%;box-sizing:border-box}
+@media(max-width:700px){
+ #main-content .pati-feed-posts>.buchee-feed-poll,
+ #main-content .pati-feed-posts>.buchee-poll-card.buchee-feed-poll{
+  width:100%!important;
+  max-width:100%!important;
+  margin:0 0 6px!important;
+  padding:14px 13px!important;
+  border-radius:13px!important;
+ }
+}
