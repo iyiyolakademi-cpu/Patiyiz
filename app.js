@@ -2654,7 +2654,7 @@ function bucheePostMenu(postId){
  };
  const option=(kind,name,subtitle,action,attributes='',disabled=false)=>
   '<button type="button" class="buchee-post-option '+(kind==='trash'?'is-danger':'')+'" data-action="'+action+'" data-id="'+esc(postId)+'" '+attributes+(disabled?' disabled aria-disabled="true"':'')+'>'+
-  '<span class="buchee-post-option-icon">'+icons[kind]+'</span><span class="buchee-post-option-copy"><strong>'+name+'</strong><small>'+subtitle+'</small></span>'+
+  '<span class="buchee-post-option-icon" style="background:'+(kind==='trash'?'#fde8e8':'#111')+'!important;background-image:none!important;border-color:'+(kind==='trash'?'#fde8e8':'#111')+'!important;color:#fff!important"><span style="color:#fff!important">'+icons[kind]+'</span></span><span class="buchee-post-option-copy"><strong>'+name+'</strong><small>'+subtitle+'</small></span>'+
   '<span class="buchee-post-option-chevron" aria-hidden="true">›</span></button>';
  const items=own?[
   option('edit','Gönderiyi düzenle','Açıklama ve içerik ayrıntıları','edit-post'),
