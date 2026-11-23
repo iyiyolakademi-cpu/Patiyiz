@@ -136,7 +136,13 @@
    if(r.data?.post_id!==id||r.data.importance!==level)throw Error('Değişiklik doğrulanamadı.');
    const current=ctx.data.saves.find(x=>x.user_id===owner&&x.post_id===id);
    if(current)current.importance=level;
-   closeOverlay();render();ctx.notify('Önem derecesi '+levels[level].name+' olarak güncellendi.');
+   closeOverlay();
+   document.querySelectorAll('[data-action="save"][data-id="'+id+'"]').forEach(button=>{
+    button.dataset.saveImportance=level;
+    button.classList.add('active');
+   });
+   if(document.querySelector('.buchee-saved-library'))render();
+   ctx.notify('Önem derecesi '+levels[level].name+' olarak güncellendi.');
   }catch(e){if(ctx?.me?.id===owner){ctx.notify('Kaydedilemedi: '+String(e?.message||e),true);buttons.forEach(b=>b.disabled=false)}}
   finally{busy=false}
  }
