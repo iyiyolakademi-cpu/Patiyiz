@@ -1,5 +1,5 @@
 /* Buchee Social: push notifications and reliable, privacy-conscious PWA updates. */
-const BUCHEE_STATIC_CACHE = 'buchee-static-v20261104-concept4-1';
+const BUCHEE_STATIC_CACHE = 'buchee-static-v20261124-design-1';
 const BUCHEE_CACHE_PREFIXES = ['buchee-static-v', 'patiyiz-static-v'];
 
 self.addEventListener('push', event => {
