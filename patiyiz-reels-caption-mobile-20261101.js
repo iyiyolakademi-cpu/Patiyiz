@@ -45,12 +45,12 @@
     if (!button) return;
     event.preventDefault();
     event.stopImmediatePropagation();
-    const caption = button.closest('.pati-reel-caption');
-    if (!caption) return;
-    const expanded = caption.classList.toggle('is-expanded');
-    button.textContent = expanded ? 'Daha az göster' : 'Devamını gör';
-    button.setAttribute('aria-expanded', String(expanded));
-    button.setAttribute('aria-label', expanded ? 'Video açıklamasını daralt' : 'Video açıklamasının tamamını göster');
+    const reel=button.closest('.pati-reel-item');
+    const comment=reel?.querySelector('.pati-reel-rail [data-action="comment"]');
+    if(comment){comment.click();return;}
+    const caption=button.closest('.pati-reel-caption');
+    if(caption){caption.classList.toggle('is-expanded');}
+
   }, true);
 
   // A second video starting to play must immediately silence the prior Reel.
