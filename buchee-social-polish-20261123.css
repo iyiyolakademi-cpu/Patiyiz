@@ -1,0 +1,11 @@
+.pati-feed-card{position:relative}.buchee-double-heart{position:absolute;z-index:30;pointer-events:none;transform:translate(-50%,-50%) scale(.25);color:#fff;filter:drop-shadow(0 2px 8px #0007);animation:bucheeDoubleHeart .8s ease-out forwards}.buchee-double-heart svg{display:block;width:94px;height:94px}@keyframes bucheeDoubleHeart{0%{opacity:0;transform:translate(-50%,-50%) scale(.25)}30%{opacity:1;transform:translate(-50%,-50%) scale(1.2)}65%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-65%) scale(1.3)}}@media(prefers-reduced-motion:reduce){.buchee-double-heart{animation:none;opacity:1}}
+/* Reels and Instagram-like monochrome DM presentation. */
+html[data-pati-view="reels"] .pati-reel-info{background:linear-gradient(transparent,#0008);padding:18px 14px 22px!important}
+html[data-pati-view="reels"] .pati-reel-rail .pati-reel-action{min-width:44px!important;min-height:44px!important;touch-action:manipulation}
+html[data-pati-view="messages"] #main-content .pati-dm-list-row{border-bottom:1px solid #f4f4f4!important}
+html[data-pati-view="messages"] #main-content .chat-person-info strong{font-size:15px!important;color:#111!important}
+html[data-pati-view="messages"] #main-content .chat-person-info small{font-size:13px!important;color:#777!important}
+html[data-pati-view="messages"] #main-content .chat-unread{background:#111!important;color:#fff!important}
+html[data-pati-view="messages"] #main-content>.pati-dm-searchbar input{border:0!important;border-radius:13px!important;background:#f2f2f2!important}
+html[data-pati-view="messages"] #main-content .pati-dm-list-row .chat-person{border-radius:12px!important}
+html[data-pati-view="messages"] #main-content .pati-dm-list-row .chat-person:active{background:#f6f6f6!important}
