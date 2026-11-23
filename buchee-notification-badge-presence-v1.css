@@ -1,0 +1,65 @@
+/* Buchee: keep the activity icon readable when an unread count exists.
+   The badge is a separate overlay and never participates in the SVG flex layout. */
+html body #app-root>header.mobile-header .pati-header-actions>button#pati-header-notifications{
+  position:relative!important;
+  overflow:visible!important;
+  isolation:isolate!important;
+}
+html body #app-root>header.mobile-header .pati-header-actions>button#pati-header-notifications>.buchee-header-activity-icon{
+  position:relative!important;
+  z-index:1!important;
+  transform:none!important;
+  flex:0 0 23px!important;
+}
+html body #app-root>header.mobile-header .pati-header-actions>button#pati-header-notifications>.pati-count-badge{
+  position:absolute!important;
+  top:-7px!important;
+  right:-7px!important;
+  bottom:auto!important;
+  left:auto!important;
+  transform:none!important;
+  z-index:30!important;
+  display:grid!important;
+  place-items:center!important;
+  box-sizing:border-box!important;
+  width:auto!important;
+  min-width:19px!important;
+  max-width:34px!important;
+  height:19px!important;
+  min-height:19px!important;
+  padding:0 4px!important;
+  margin:0!important;
+  border:2px solid #fff!important;
+  border-radius:99px!important;
+  background:#e53245!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  font:700 10px/1 system-ui,-apple-system,BlinkMacSystemFont,sans-serif!important;
+  letter-spacing:0!important;
+  white-space:nowrap!important;
+  pointer-events:none!important;
+  box-shadow:none!important;
+}
+html[data-pati-view="profile"] #main-content .pati-ig-avatar.buchee-self-active{
+  position:relative!important;
+  overflow:visible!important;
+}
+html[data-pati-view="profile"] #main-content .pati-ig-avatar.buchee-self-active::after{
+  content:"";
+  position:absolute!important;
+  z-index:20!important;
+  right:3px!important;
+  bottom:3px!important;
+  width:13px!important;
+  height:13px!important;
+  box-sizing:content-box!important;
+  border:3px solid #fff!important;
+  border-radius:50%!important;
+  background:#20b45c!important;
+  pointer-events:none!important;
+}
+@media(max-width:740px){
+ html[data-pati-view="profile"] #main-content .pati-ig-avatar.buchee-self-active::after{
+  width:12px!important;height:12px!important;
+ }
+}
