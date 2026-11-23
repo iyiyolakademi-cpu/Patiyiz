@@ -11,7 +11,8 @@
 #modal-root .modal-backdrop:not(.pati-full-page-form-backdrop)>.modal{animation:bmSheet .28s cubic-bezier(.2,.8,.2,1) both}
 #modal-root .modal-backdrop.pati-full-page-form-backdrop>.modal{animation:bmRise .25s ease-out both}
 .buchee-share-sheet,.buchee-share-panel,.buchee-poll-panel{animation:bmSheet .28s cubic-bezier(.2,.8,.2,1) both}
-#main-content.bm-page-enter{animation:bmRise .19s ease-out both}
+/* Main content must never fade or move during likes, feed updates or modal transitions. */
+#main-content.bm-page-enter{animation:none!important}
 .buchee-poll-result i,.buchee-poll-result>div>i{transform-origin:left center;animation:bmFill .5s cubic-bezier(.2,.8,.2,1) both}
 .bm-success-toast{position:fixed;left:50%;top:28%;z-index:2147482900;transform:translate(-50%,-50%);padding:13px 18px;border-radius:16px;background:#171717;color:#fff;font-size:14px;font-weight:750;box-shadow:0 10px 34px #0003;pointer-events:none;animation:bmSuccess 1.55s ease-in-out both}
 .bm-message-enter{animation:bmRise .22s ease-out both}
