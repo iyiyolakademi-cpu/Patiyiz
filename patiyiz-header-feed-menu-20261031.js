@@ -93,12 +93,7 @@
     }
     trigger.addEventListener('click',event=>{
       event.preventDefault();event.stopPropagation();
-      if(isMobile){
-        const at=choices.findIndex(choice=>choice.mode===activeMode);
-        activeMode=choices[(at+1)%choices.length].mode;
-        for(const item of installed){item.sync();item.close();}
-        window.dispatchEvent(new CustomEvent('patiyiz:feed-mode',{detail:{mode:activeMode}}));
-      }else if(menu.hidden)open();else close();
+      if(menu.hidden)open();else close();
     });
     menu.addEventListener('click',event=>{
       const choice=event.target.closest('[data-pati-feed-choice]');
@@ -109,6 +104,13 @@
       activeMode=mode;
       for(const item of installed){item.sync();item.close();}
       window.dispatchEvent(new CustomEvent('patiyiz:feed-mode',{detail:{mode}}));
+      if(isMobile){
+        document.documentElement.classList.remove('buchee-feed-changing');
+        void document.documentElement.offsetWidth;
+        document.documentElement.classList.add('buchee-feed-changing');
+        clearTimeout(window.__bucheeFeedTransitionTimer);
+        window.__bucheeFeedTransitionTimer=setTimeout(()=>document.documentElement.classList.remove('buchee-feed-changing'),650);
+      }
       trigger.focus();
     });
     menu.addEventListener('keydown',event=>{
