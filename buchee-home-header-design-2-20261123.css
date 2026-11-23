@@ -1,0 +1,58 @@
+/* Buchee home header — Design 2, sole final authority for the home header.
+   Keeps existing feed switch and messaging actions intact. */
+@media (max-width:900px){
+ html body:not(.buchee-not-home) #app-root:not(.buchee-not-home):not(.hidden)>header.mobile-header{
+ display:grid!important;grid-template-columns:minmax(0,1fr) 48px minmax(0,1fr)!important;align-items:center!important;
+ position:sticky!important;top:0!important;left:auto!important;right:auto!important;
+ width:100%!important;max-width:100%!important;height:74px!important;min-height:74px!important;max-height:74px!important;
+ padding:0 16px!important;margin:0!important;gap:0!important;box-sizing:border-box!important;
+ background:#fff!important;border:0!important;border-bottom:1px solid #ededed!important;
+ box-shadow:none!important;overflow:visible!important;z-index:55!important;
+ }
+ html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>.buchee-premium-wordmark{
+ display:block!important;position:static!important;grid-column:1!important;grid-row:1!important;
+ transform:none!important;justify-self:start!important;align-self:center!important;
+ width:auto!important;max-width:100%!important;margin:0!important;padding:0!important;
+ color:#000!important;-webkit-text-fill-color:#000!important;
+ font:900 clamp(25px,7vw,33px)/1 Arial,Helvetica,sans-serif!important;letter-spacing:-1.5px!important;
+ white-space:nowrap!important;text-shadow:none!important;
+ }
+ html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>#pati-feed-menu-trigger{
+ display:flex!important;position:static!important;grid-column:2!important;grid-row:1!important;
+ justify-self:center!important;align-self:center!important;align-items:center!important;justify-content:center!important;
+ left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;transform:none!important;
+ width:46px!important;min-width:46px!important;max-width:46px!important;height:46px!important;min-height:46px!important;
+ margin:0!important;padding:0!important;border:0!important;border-radius:14px!important;
+ background:#f0f0f0!important;background-image:none!important;color:#111!important;
+ -webkit-text-fill-color:#111!important;box-shadow:none!important;overflow:hidden!important;
+ }
+ html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>#pati-feed-menu-trigger .buchee-feed-cycle-svg{
+ display:block!important;width:25px!important;height:25px!important;color:#111!important;stroke:#111!important;fill:none!important;
+ }
+ html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>#pati-feed-menu-trigger .buchee-mode-label,
+ html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>#pati-feed-menu-trigger .buchee-header-switch-icon{display:none!important}
+ html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>.pati-header-actions{
+ display:flex!important;position:static!important;grid-column:3!important;grid-row:1!important;
+ justify-self:end!important;align-self:center!important;align-items:center!important;justify-content:flex-end!important;
+ left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;transform:none!important;
+ width:48px!important;min-width:48px!important;max-width:48px!important;height:48px!important;
+ padding:0!important;margin:0!important;gap:0!important;
+ }
+ html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>.pati-header-actions>#pati-header-notifications{
+ display:flex!important;position:static!important;align-items:center!important;justify-content:center!important;
+ width:48px!important;min-width:48px!important;max-width:48px!important;height:48px!important;min-height:48px!important;
+ padding:0!important;margin:0!important;transform:none!important;
+ border:0!important;border-radius:14px!important;background:#080808!important;background-image:none!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;box-shadow:none!important;
+ }
+ html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>.pati-header-actions>#pati-header-notifications svg,
+ html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>.pati-header-actions>#pati-header-notifications svg *{
+ display:block!important;width:26px!important;height:26px!important;stroke:#fff!important;color:#fff!important;fill:none!important;
+ }
+ html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>#pati-feed-menu{display:none!important}
+}
+@media(max-width:360px){
+ html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header{padding:0 12px!important}
+ html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>.buchee-premium-wordmark{font-size:25px!important}
+}
+html.buchee-portrait-locked-landscape body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header{display:grid!important;grid-template-columns:minmax(0,1fr) 48px minmax(0,1fr)!important}
