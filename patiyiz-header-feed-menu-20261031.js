@@ -96,6 +96,15 @@
       if(menu.hidden)open();else close();
     });
     menu.addEventListener('click',event=>{
+      const section=event.target.closest('[data-action="buchee-blog-directory"],[data-action="buchee-blog-home"]');
+      if(section&&menu.contains(section)){
+        event.preventDefault();event.stopPropagation();close();
+        // App's delegated click handler listens on document. Let the original menu button bubble.
+        const action=section.dataset.action;
+        const main=document.getElementById('main-content');
+        if(main){const proxy=document.createElement('button');proxy.type='button';proxy.dataset.action=action;proxy.hidden=true;main.appendChild(proxy);proxy.click();proxy.remove();}
+        return;
+      }
       const choice=event.target.closest('[data-pati-feed-choice]');
       if(!choice||!menu.contains(choice))return;
       event.preventDefault();event.stopPropagation();
