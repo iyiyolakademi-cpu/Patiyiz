@@ -1087,4 +1087,15 @@ html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-rail{botto
 html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-utility{bottom:45px!important}
 html[data-pati-view="reels"] #app-root:not(.hidden)>#mobile-nav{bottom:var(--buchee-reels-nav-bottom)!important;height:var(--buchee-reels-nav-height)!important}
 }
+</style><style id="buchee-create-slide-smooth-20261124">
+/* Smooth, slightly slower create panel entrance/exit. */
+@keyframes bucheeCreateSlideUp{from{opacity:0;transform:translate3d(0,48px,0) scale(.985)}to{opacity:1;transform:translate3d(0,0,0) scale(1)}}
+@keyframes bucheeCreateSlideDown{from{opacity:1;transform:translate3d(0,0,0) scale(1)}to{opacity:0;transform:translate3d(0,48px,0) scale(.985)}}
+@keyframes bucheeCreateFadeIn{from{opacity:0}to{opacity:1}}
+@keyframes bucheeCreateFadeOut{from{opacity:1}to{opacity:0}}
+body #pati-create-sheet:not([hidden]):not(.buchee-create-closing) .pati-create-modal{animation:bucheeCreateSlideUp 460ms cubic-bezier(.22,1,.36,1) both!important;will-change:transform,opacity}
+body #pati-create-sheet:not([hidden]):not(.buchee-create-closing) .pati-create-mask{animation:bucheeCreateFadeIn 400ms ease-out both!important}
+body #pati-create-sheet.buchee-create-closing:not([hidden]) .pati-create-modal{animation:bucheeCreateSlideDown 420ms cubic-bezier(.4,0,.7,1) both!important;pointer-events:none!important}
+body #pati-create-sheet.buchee-create-closing:not([hidden]) .pati-create-mask{animation:bucheeCreateFadeOut 420ms ease both!important;pointer-events:none!important}
+@media(prefers-reduced-motion:reduce){body #pati-create-sheet .pati-create-modal,body #pati-create-sheet .pati-create-mask{animation:none!important;transition:none!important}}
 </style></body></html>
