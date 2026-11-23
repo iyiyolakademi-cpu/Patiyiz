@@ -14,13 +14,33 @@ document.addEventListener('click',e=>{
  if(/^(save|save-post|toggle-save|pati-save|bookmark|pati-bookmark)$/.test(action))bounce(el);
  if(/^(react|message-react|dm-react|pati-message-react|pati-dm-react)$/.test(action))bounce(el);
 },true);
-let oldView='',lastModal=false;
+
+/* Swipe down only from the header of dedicated bottom sheets. Content scrolling is untouched. */
+let gesture=null;
+document.addEventListener('pointerdown',e=>{
+ if(e.pointerType==='mouse'||e.button!==0)return;
+ const head=e.target.closest?.('.buchee-poll-panel>header,.buchee-share-panel>header,.buchee-share-sheet>header');
+ if(!head||e.target.closest('button,input,textarea,select,a'))return;
+ const panel=head.parentElement;
+ if(!panel||panel.getBoundingClientRect().top<window.innerHeight*.25)return;
+ gesture={id:e.pointerId,y:e.clientY,x:e.clientX,panel};
+},{passive:true});
+document.addEventListener('pointerup',e=>{
+ if(!gesture||gesture.id!==e.pointerId)return;
+ const g=gesture;gesture=null;
+ if(e.clientY-g.y<115||Math.abs(e.clientX-g.x)>90)return;
+ const close=g.panel.querySelector('[data-action="buchee-poll-close"],[data-action="close"],[data-action="buchee-share-close"],.close-modal');
+ if(close)close.click();
+},{passive:true});
+document.addEventListener('pointercancel',()=>{gesture=null},{passive:true});
+
+let oldView='',lastModal=false,lastMainKey='';
 const seen=new WeakSet();
 let lastSuccess=0;
 function update(){
  const main=document.querySelector('#main-content');
- const view=document.body?.dataset?.view||document.querySelector('#app-root')?.dataset?.view||'';
- if(view&&view!==oldView){oldView=view;if(main&&!reduce()){main.classList.remove('bm-page-enter');void main.offsetWidth;main.classList.add('bm-page-enter');later(()=>main.classList.remove('bm-page-enter'),230)}}
+ const view=document.body?.dataset?.view||document.querySelector('#app-root')?.dataset?.view||'';const key=main?.dataset?.bucheeHomeIdentity||'';
+ if((view&&view!==oldView)||(key&&key!==lastMainKey)){oldView=view;lastMainKey=key;if(main&&!reduce()){main.classList.remove('bm-page-enter');void main.offsetWidth;main.classList.add('bm-page-enter');later(()=>main.classList.remove('bm-page-enter'),230)}}
  const modal=document.querySelector('#modal-root .modal');
  if(modal&&!lastModal)seen.add(modal);
  lastModal=!!modal;
