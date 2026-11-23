@@ -6677,6 +6677,14 @@ function profilePage(){
  (own?'<div class="buchee-profile-wallet"><button type="button" data-action="paticoin-rewards" aria-label="'+(walletReady?'Bakiyen '+walletBalance+' puan. Ödülleri aç':'Puan bakiyesi yükleniyor. Ödülleri aç')+'"><span class="buchee-profile-wallet-label">Bakiyen</span><span class="buchee-profile-wallet-total"><strong data-buchee-wallet-value aria-live="polite">'+walletBalance+'</strong><small>puan</small></span><span class="buchee-profile-wallet-arrow" aria-hidden="true">›</span></button></div>':'')+(own?'<section class="buchee-simple-earn" aria-label="Kazanç ve ödüller"><button type="button" class="buchee-earn-card" data-action="buchee-follower-earn"><strong>Takipçi ile kazan</strong><small>Takipçi hedeflerini ve varsa nakit kazanç koşullarını gör.</small><span>Hedefleri gör ›</span></button><button type="button" class="buchee-earn-card" data-action="buchee-points-earn"><strong>Puan ile mama al</strong><small>Günlük görev ve serilerle puan biriktir; mevcut ödülleri incele.</small><span>Puanlarım ve ödüller ›</span></button></section>':'')+'<div class="pati-ig-tabs" role="tablist" aria-label="Profil gönderileri">'+iconTabs.map(x=>'<button type="button" role="tab" aria-selected="'+(profilePostsTab===x[0])+'" tabindex="'+(profilePostsTab===x[0]?'0':'-1')+'" class="'+(profilePostsTab===x[0]?'active':'')+'" data-action="profile-posts-tab" data-id="'+x[0]+'" aria-label="'+x[2]+'" title="'+x[2]+'">'+x[1]+'<span class="pati-profile-tab-caption">'+esc(x[3])+'</span></button>').join('')+'</div>'+
  profileContent+
  '</div>';
+ // Minimal profile: place biography beside the avatar, as in the selected reference.
+ const bucheeProfileRoot=main.querySelector('.pati-ig-profile');
+ const bucheeProfileInfo=bucheeProfileRoot?.querySelector('.pati-ig-info');
+ const bucheeProfileAbout=bucheeProfileRoot?.querySelector('.pati-ig-about');
+ const bucheeProfileStats=bucheeProfileInfo?.querySelector('.pati-ig-stats');
+ if(bucheeProfileInfo&&bucheeProfileAbout&&bucheeProfileStats){
+  bucheeProfileInfo.insertBefore(bucheeProfileAbout,bucheeProfileStats);
+ }
  void syncProfileCounts(p.id);
  if(own&&typeof patiProfileWalletRefresh==='function')patiProfileWalletRefresh();
  if(own&&typeof patiCreatorPreviewLoad==='function')void patiCreatorPreviewLoad();
