@@ -3083,6 +3083,8 @@ function patiOpenFeedReel(postId){
  // Render focuses the target first, so the viewer is initialized just once.
 }
 function homePage(){
+ // The home screen always uses one combined tweet/photo/question timeline.
+ patiHomeContentMode='all';
  void bucheePollHomeMount();
  // Preserve the chosen timeline across rerenders and navigation.
  if(!selectedPostId&&(patiHomeContentMode==='text'||patiHomeContentMode==='all')&&typeof patiLoadHomeQuestions==='function')void patiLoadHomeQuestions();
