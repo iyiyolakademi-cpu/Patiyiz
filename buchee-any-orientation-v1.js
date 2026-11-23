@@ -2,7 +2,9 @@
 (()=>{'use strict';const pattern=/^(?:📱\s*)?(?:lütfen\s+)?(?:telefonu|cihazı|ekranı)\s+(?:dik|dikey)\s+konuma\s+(?:getir(?:in|iniz)?|çevir(?:in|iniz)?|döndür(?:ün|ünüz)?)[.!\s]*$/i;
 function unlock(){document.documentElement.classList.add('buchee-any-orientation');document.body&&document.body.classList.add('buchee-any-orientation');for(const el of document.querySelectorAll('body *')){if(el.children.length>2||el.matches('script,style,textarea,input,button'))continue;const t=(el.textContent||'').trim();if(t.length>110||!pattern.test(t))continue;let node=el;for(let i=0;i<4&&node.parentElement&&node.parentElement!==document.body;i++){const p=node.parentElement;const st=getComputedStyle(p);if(st.position==='fixed'||st.position==='absolute'||p.getAttribute('role')==='dialog'){node=p;break}node=p}if(node!==document.body&&node.id!=='app-root'&&node.id!=='auth-root'){node.style.setProperty('display','none','important');node.setAttribute('aria-hidden','true')}}}
 function syncRotation(){
- const angle=Number(screen.orientation?.angle ?? window.orientation ?? 90);
+ const screenAngle=Number(screen.orientation?.angle);
+ const legacyAngle=Number(window.orientation);
+ const angle=Number.isFinite(legacyAngle)&&Math.abs(legacyAngle)===90?legacyAngle:(Number.isFinite(screenAngle)?screenAngle:90);
  document.body?.classList.toggle('buchee-landscape-left',angle===90||angle===-270);
 }
 let pending=false;function schedule(){if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;unlock();syncRotation()})}
