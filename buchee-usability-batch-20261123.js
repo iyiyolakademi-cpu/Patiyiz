@@ -22,7 +22,7 @@ if(list){
 let bar=list.previousElementSibling;
 if(!bar||!bar.classList.contains('buchee-ux-tools')){bar=document.createElement('div');bar.className='buchee-ux-tools';bar.innerHTML='<button type="button" data-buchee-unread aria-pressed="false">Okunmamışlar</button>';list.before(bar)}
 const button=bar.querySelector('[data-buchee-unread]');button.setAttribute('aria-pressed',String(unreadOnly));
-const rows=[...list.querySelectorAll('.chat-person-row')];for(const row of rows){row.hidden=unreadOnly&&!row.querySelector('.chat-unread')}
+const rows=[...list.querySelectorAll('.pati-dm-list-row')];for(const row of rows){row.hidden=unreadOnly&&!row.querySelector('.chat-unread')}
 }
 const username=document.querySelector('.pati-profile-visitor-username');
 if(username&&!username.parentElement.querySelector('.buchee-copy-handle')){const b=document.createElement('button');b.type='button';b.className='buchee-copy-handle';b.textContent='Kopyala';b.setAttribute('aria-label','Kullanıcı adını kopyala');username.after(b)}
