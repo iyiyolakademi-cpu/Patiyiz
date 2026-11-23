@@ -10,8 +10,7 @@ const buttonAction=(el)=>el?.closest?.('[data-action]')?.dataset?.action||'';
 document.addEventListener('click',e=>{
  const el=e.target.closest?.('[data-action]');if(!el)return;
  const action=buttonAction(el);
- if(action==='like'&&el.getAttribute('aria-pressed')!=='true'){hearts(el);bounce(el)}
- if(/^(save|save-post|toggle-save|pati-save|bookmark|pati-bookmark)$/.test(action))bounce(el);
+ /* Confirmed like and save feedback comes from app.js after server verification. */
  if(/^(react|message-react|dm-react|pati-message-react|pati-dm-react)$/.test(action))bounce(el);
 },true);
 
@@ -34,6 +33,15 @@ document.addEventListener('pointerup',e=>{
 },{passive:true});
 document.addEventListener('pointercancel',()=>{gesture=null},{passive:true});
 
+window.addEventListener('buchee:motion',e=>{
+ const {kind,id}=e.detail||{};
+ if(kind==='published'){success();return}
+ if(kind==='like'||kind==='save'){
+  const buttons=[...document.querySelectorAll('[data-action="'+(kind==='like'?'like':'save')+'"][data-id="'+CSS.escape(String(id||''))+'"]')];
+  if(buttons.length){bounce(buttons[0]);if(kind==='like')hearts(buttons[0])}
+ }
+ if(kind==='poll'){document.querySelectorAll('.buchee-poll-result-area[data-poll="'+CSS.escape(String(id||''))+'"] .buchee-poll-result i').forEach(el=>{el.style.animation='none';void el.offsetWidth;el.style.animation='bmFill .5s cubic-bezier(.2,.8,.2,1) both'})}
+});
 let oldView='',lastModal=false,lastMainKey='';
 const seen=new WeakSet();
 let lastSuccess=0;
