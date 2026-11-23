@@ -3310,7 +3310,17 @@ function bucheeExploreContentSection(){
   ...posts.filter(p=>matches(p,p.body)).map(item=>({kind:patiHomeIsMediaPost(item)?'media':'text',item})),
   ...questions.filter(q=>matches(q,(q.title||'')+' '+(q.body||''))).map(item=>({kind:'question',item})),
   ...polls.filter(p=>matches(p,p.question+' '+(p.options||[]).join(' '))).map(item=>({kind:'poll',item}))
- ].filter(x=>mode==='all'||x.kind===mode).sort((a,b)=>Date.parse(b.item.created_at)-Date.parse(a.item.created_at)).slice(0,90);
+ ].filter(x=>mode==='all'||x.kind===mode).sort((a,b)=>{
+  const sort=window.bucheeExploreChoiceMode||'for-you';
+  const recent=Date.parse(b.item.created_at||0)-Date.parse(a.item.created_at||0);
+  if(sort==='recent')return recent;
+  const likes=x=>Number(x.item.likes_count||x.item.like_count||x.item.likes||0)||0;
+  const views=x=>Number(x.item.views_count||x.item.view_count||x.item.views||0)||0;
+  if(sort==='likes')return likes(b)-likes(a)||recent;
+  if(sort==='views')return views(b)-views(a)||recent;
+  if(sort==='fresh')return recent;
+  return (likes(b)*3+views(b)*0.1+(followed.has(b.item.author_id)?8:0))-(likes(a)*3+views(a)*0.1+(followed.has(a.item.author_id)?8:0))||recent;
+ }).slice(0,90);
  const tabs=[['all','Tümü'],['text','Yazılar'],['question','Sorular'],['poll','Anketler'],['media','Fotoğraf & video']];
  return '<section class="buchee-explore-content"><div class="buchee-explore-content-title"><span class="buchee-explore-eyebrow">BUCHEE / KEŞFET</span><h2>Yeni fikirler, yeni insanlar.</h2><p>Yazıları oku, sorulara katıl, anketlerde fikrini paylaş.</p></div><label class="buchee-explore-content-search">'+ico('search')+'<input type="search" id="buchee-explore-content-query" placeholder="İçeriklerde ara" value="'+esc(bucheeExploreQuery)+'" autocomplete="off" aria-label="İçeriklerde ara"></label><div class="buchee-explore-content-tabs" role="group" aria-label="İçerik türü">'+tabs.map(([key,label])=>'<button type="button" data-action="buchee-explore-content-tab" data-id="'+key+'" aria-pressed="'+(mode===key)+'" class="'+(mode===key?'active':'')+'">'+label+'</button>').join('')+'</div><div class="buchee-explore-content-list buchee-explore-grid" >'+(items.length?items.map(bucheeExploreTile).join(''):'<p class="buchee-explore-content-empty">'+(bucheeExplorePollLoading?'İçerikler yükleniyor…':'Bu filtreye uygun içerik bulunamadı.')+'</p>')+'</div></section>';
 }
