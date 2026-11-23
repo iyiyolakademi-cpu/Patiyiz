@@ -1419,7 +1419,7 @@ async function patiToggleRepost(postId){
  });
  else render();
  if(typeof patiEngagementCounts!=='undefined'&&typeof patiScheduleEngagement==='function'){patiEngagementCounts.delete(postId);patiScheduleEngagement();}
- notify(already?'Yeniden paylaşım kaldırıldı.':'Gönderi yeniden paylaşıldı.');
+ // Repost is reflected immediately by the button; no toast notification.
 }
 async function patiTogglePin(postId){
  const post=patiFindSocialPost(postId);
