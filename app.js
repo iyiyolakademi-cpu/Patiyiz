@@ -2972,6 +2972,12 @@ const patiHomeIsMediaPost=p=>!bucheeIsTwit(p)&&(p.post_format==='reels'||!!(
  (Array.isArray(p.media_videos)&&p.media_videos.some(Boolean))
 ));
 function patiHomeCombinedFeed(posts,followingOnly=false){
+ if(patiHomeContentMode==='all'){
+  const preview=patiHomeQuestionsState.owner===me?.id?patiHomeQuestionsState.rows:[];
+  const questions=[...new Map([...(data.questions||[]),...preview].filter(q=>q?.id).map(q=>[q.id,q])).values()].filter(q=>!blocked.has(q.author_id)&&(!followingOnly||followed.has(q.author_id)));
+  const mixed=[...posts.map(item=>({kind:'post',item})),...questions.map(item=>({kind:'question',item}))].sort((a,b)=>new Date(b.item.created_at)-new Date(a.item.created_at)).slice(0,80);
+  return mixed.length?mixed.map((entry,i)=>entry.kind==='question'?patiHomeQuestionCard(entry.item):patiHomePostWithRepost(entry.item,i<5)).join(''):empty('Henüz paylaşım yok.','İlk paylaşımı sen yapabilirsin.')+patiHomeEmptyActions(followingOnly);
+ }
  if(patiHomeContentMode==='media'){
   const mediaPosts=posts.filter(patiHomeIsMediaPost);
   return mediaPosts.length?mediaPosts.map((p,i)=>patiHomePostWithRepost(p,i<5)).join(''):
@@ -2994,7 +3000,7 @@ function patiHomeCombinedFeed(posts,followingOnly=false){
 }
 window.addEventListener('patiyiz:feed-mode',event=>{
  const next=event?.detail?.mode;
- if(next!=='media'&&next!=='text')return;
+ if(next!=='media'&&next!=='text'&&next!=='all')return;
  // A repeated choice must not redraw the existing timeline.
  if(next===patiHomeContentMode&&view==='home'&&!selectedPostId)return;
  patiHomeContentMode=next;
@@ -3015,7 +3021,7 @@ function patiOpenFeedReel(postId){
 }
 function homePage(){
  // Preserve the chosen timeline across rerenders and navigation.
- if(!selectedPostId&&patiHomeContentMode==='text'&&typeof patiLoadHomeQuestions==='function')void patiLoadHomeQuestions();
+ if(!selectedPostId&&(patiHomeContentMode==='text'||patiHomeContentMode==='all')&&typeof patiLoadHomeQuestions==='function')void patiLoadHomeQuestions();
  if(selectedPostId&&patiDetailState){patiDetailPage();return}
  const list=[...data.posts].filter(p=>!blocked.has(p.author_id)&&
   (typeof patiHomeFeedIds==='undefined'||!patiHomeFeedIds||patiHomeFeedIds.has(p.id)))
