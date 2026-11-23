@@ -3,7 +3,7 @@
 const main=document.getElementById('main-content');if(!main)return;
 const opened=new Map();
 const seed=Math.floor(Date.now()/60000);
-let mode='for-you',scheduled=false,arranging=false;
+let mode=window.bucheeExploreChoiceMode||'for-you',scheduled=false,arranging=false;
 const searchIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.6" cy="10.6" r="6.7"/><path d="m16 16 5 5"/></svg>';
 const saveIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M5 3.5h14v17l-7-5-7 5V3.5Z"/></svg>';
 const choices=[['for-you','Senin için'],['fresh','Yeni keşifler'],['recent','En yeni'],['views','Çok izlenen'],['likes','Çok beğenilen']];
@@ -82,9 +82,19 @@ document.addEventListener('click',event=>{
   const next=tab.dataset.exploreCustom;
   if(!choices.some(([id])=>id===next)||next===mode)return;
   mode=next;
-  const selected=['recent','views','likes'].includes(mode)?mode:'popular';
-  const native=main.querySelector('.pati-explore-media-screen .pati-explore-sort [data-action="explore-sort"][data-id="'+selected+'"]');
-  if(native&&native.getAttribute('aria-pressed')!=='true'){native.click();return}
+  window.bucheeExploreChoiceMode=mode;
+  const content=main.querySelector('.buchee-explore-content');
+  if(content){
+   const items=[...content.querySelectorAll('.buchee-explore-tile')];
+   if(mode==='fresh'){
+    const unseen=items.filter(el=>!opened.has(el.dataset.id));
+    const seen=items.filter(el=>opened.has(el.dataset.id));
+    for(const el of [...unseen,...seen])content.querySelector('.buchee-explore-grid')?.appendChild(el);
+   }else{
+    const native=main.querySelector('.pati-explore-media-screen .pati-explore-sort [data-action="explore-sort"][data-id="'+(['recent','views','likes'].includes(mode)?mode:'popular')+'"]');
+    if(native){native.click();schedule();return}
+   }
+  }
   schedule();
   return;
  }
