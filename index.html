@@ -273,7 +273,7 @@ window.BUCHEE_RELEASE="20261123-blog-content-v4";
 <script src="patiyiz-saved-priority-20261031.js?v=20261104-inline-feed-v1" defer></script>
 <script src="patiyiz-private-media-20261031.js?v=20261105-media-cache-perf-v2" defer></script>
 <script src="buchee-twit-photo-crop-20261123.js?v=1" defer></script>
-<script src="app.js?v=20261124-presence-cleanup-v10" defer></script>
+<script src="app.js?v=20261124-blog-no-feature-v11" defer></script>
 <script src="patiyiz-header-feed-menu-20261031.js?v=20261124-desktop-only-v8"></script>
 <script src="patiyiz-dm-emoji-picker-20261101.js?v=1" defer></script>
 <style id="pati-critical-mobile-feed-20261101">
@@ -961,4 +961,35 @@ html[data-pati-view="reels"] #main-content .pati-reel-caption{background:transpa
 #modal-root .buchee-blog-reader{width:100%!important;max-width:100%!important}
 }
 @media(prefers-reduced-motion:reduce){#main-content .buchee-blog-directory *,#main-content .pati-ig-profile *{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style><style id="buchee-reels-normal-five-nav-20261124">
+/* Reels must retain exactly the same five-button navigation as every other view. */
+@media(max-width:740px){
+html[data-pati-view="reels"] #app-root:not(.hidden)>#mobile-nav,
+body:has(#main-content .pati-reels-viewport) #app-root:not(.hidden)>#mobile-nav{
+display:flex!important;position:fixed!important;inset:auto 0 0 0!important;width:100%!important;height:auto!important;min-height:58px!important;
+padding:8px 8px max(10px,env(safe-area-inset-bottom,0px))!important;
+margin:0!important;gap:0!important;justify-content:space-around!important;align-items:center!important;
+background:#fff!important;background-color:#fff!important;color:#171717!important;border-top:1px solid #e9e9e9!important;
+border-radius:0!important;box-shadow:none!important;backdrop-filter:none!important;
+transform:none!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;z-index:1000!important;
+}
+html[data-pati-view="reels"] #mobile-nav>.mobile-nav-btn,
+body:has(#main-content .pati-reels-viewport) #mobile-nav>.mobile-nav-btn{
+display:flex!important;flex:1 1 20%!important;min-width:0!important;min-height:42px!important;
+align-items:center!important;justify-content:center!important;position:relative!important;
+margin:0!important;padding:5px 2px!important;border:0!important;border-radius:0!important;
+background:transparent!important;box-shadow:none!important;transform:none!important;opacity:1!important;visibility:visible!important;
+color:#707070!important;
+}
+html[data-pati-view="reels"] #mobile-nav>.mobile-nav-btn.active,
+body:has(#main-content .pati-reels-viewport) #mobile-nav>.mobile-nav-btn.active{color:#151515!important}
+html[data-pati-view="reels"] #mobile-nav>.mobile-nav-btn .pati-mobile-nav-glyph,
+body:has(#main-content .pati-reels-viewport) #mobile-nav>.mobile-nav-btn .pati-mobile-nav-glyph{
+display:grid!important;place-items:center!important;background:none!important;border:0!important;border-radius:0!important;
+width:28px!important;height:28px!important;opacity:1!important;transform:none!important;
+}
+html[data-pati-view="reels"] #mobile-nav>.mobile-nav-btn .icon,
+body:has(#main-content .pati-reels-viewport) #mobile-nav>.mobile-nav-btn .icon{width:24px!important;height:24px!important;display:block!important}
+html[data-pati-view="reels"] #main-content .pati-reels-viewport{padding-bottom:calc(64px + env(safe-area-inset-bottom,0px))!important}
+}
 </style></body></html>
