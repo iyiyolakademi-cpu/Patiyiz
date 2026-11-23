@@ -6193,7 +6193,7 @@ async function bucheePollCreate(form){
  finally{bucheePollBusy=false;if(form.isConnected)form.querySelector('button[type=submit]').disabled=false}
 }
 function bucheePollFind(id){
- return [...bucheeFeedPollCache,...bucheeExplorePolls].find(p=>p.id===id)||null;
+ return [...bucheeFeedPollCache,...bucheeExplorePolls,...(window.bucheePollListCache||[])].find(p=>p.id===id)||null;
 }
 async function bucheePollOpen(id){
  if(!me)return;
@@ -6235,8 +6235,9 @@ async function bucheePollList(own=false){
  if(!el.isConnected)return;
  if(error){el.innerHTML='<p role="alert">Anketler yüklenemedi. Lütfen tekrar deneyin.</p>';return}
  if(!data?.length){el.innerHTML='<p>Henüz anket bulunmuyor.</p><button type="button" class="buchee-poll-primary" data-action="buchee-poll-create">Anket oluştur</button>';return}
- el.innerHTML=data.map(p=>'<article class="buchee-poll-card"><strong>'+esc(p.question)+'</strong><small>'+ (new Date(p.ends_at)>new Date()?'Devam ediyor':'Sona erdi')+' · '+new Date(p.created_at).toLocaleDateString('tr-TR')+'</small><div class="buchee-poll-options">'+p.options.map((o,i)=>'<button type="button" data-action="buchee-poll-vote" data-id="'+esc(p.id)+'" data-option="'+i+'" '+(new Date(p.ends_at)<=new Date()?'disabled':'')+'>'+esc(o)+'</button>').join('')+'</div><button type="button" class="buchee-poll-results" data-action="buchee-poll-results" data-id="'+esc(p.id)+'">Sonuçları gör</button><div class="buchee-poll-result-area" data-poll="'+esc(p.id)+'"></div></article>').join('');
- void bucheePollLoadMyVotes(data);if(own)for(const p of data)void bucheePollResults(p.id);
+ window.bucheePollListCache=data;
+ el.innerHTML=data.map(p=>'<article class="buchee-poll-list-row buchee-poll-card" data-poll-id="'+esc(p.id)+'"><button type="button" class="buchee-poll-list-open" data-action="buchee-poll-open" data-id="'+esc(p.id)+'"><strong>'+esc(p.question)+'</strong><small>'+(Date.parse(p.ends_at)>Date.now()?'Devam ediyor':'Sona erdi')+' · '+bucheeDateTime(p.created_at)+'</small></button>'+(p.author_id===me.id?'<div class="buchee-poll-more-wrap"><button type="button" class="buchee-poll-more" data-action="buchee-poll-menu" data-id="'+esc(p.id)+'" aria-label="Anket seçenekleri">⋯</button><div class="buchee-poll-more-menu" hidden><button type="button" data-action="buchee-poll-delete" data-id="'+esc(p.id)+'">Anketi sil</button></div></div>':'')+'</article>').join('');
+ void bucheePollLoadMyVotes(data);
 }
 const bucheePollVoteState=new Map();
 function bucheePollTimeLeft(until){return Math.max(0,Math.ceil((Date.parse(until)-Date.now())/60000))}
