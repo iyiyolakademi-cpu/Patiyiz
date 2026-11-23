@@ -37,6 +37,7 @@
    open=!open;sync();return;
   }
   if(choice){
+   if(choice.hasAttribute('data-buchee-stream'))return;
    event.preventDefault();event.stopImmediatePropagation();
    select(choice.dataset.patiFeedChoice);return;
   }
