@@ -643,7 +643,7 @@ body #pati-create-sheet .pati-create-dismiss:focus-visible{
 <script defer src="buchee-feed-caption-two-lines-20261123.js?v=1"></script>
 
 <!-- Home feed filters intentionally visible below stories; obsolete hide rule removed. -->
-<script defer src="buchee-unified-home-stream-20261123.js?v=20261123-two-options-v4"></script>
+<script defer src="buchee-unified-home-stream-20261123.js?v=20261123-authoritative-v7"></script>
 
 <link rel="stylesheet" href="buchee-feed-menu-inner-scroll-20261123.css?v=1">
 <link rel="stylesheet" href="buchee-feed-menu-centered-entry-20261123.css?v=1">
@@ -863,5 +863,15 @@ html[data-pati-view="reels"] #main-content .pati-reel-info .pati-reel-caption-to
 html[data-pati-view="reels"] #main-content .pati-reel-info .pati-reel-caption{background:transparent!important;background-image:none!important;box-shadow:none!important;backdrop-filter:none!important}
 html[data-pati-view="reels"] #main-content .pati-reel-info .pati-reel-caption-toggle{background:transparent!important;background-image:none!important;box-shadow:none!important;display:block!important;position:static!important;margin:8px 0 0!important;padding:2px 0!important;line-height:20px!important;white-space:nowrap!important}
 html[data-pati-view="reels"] #main-content .pati-reel-info .pati-reel-caption-toggle[hidden]{display:none!important}
+}
+</style><style id="buchee-menu-clickable-v7">
+#app-root>.mobile-header{overflow:visible!important}
+#app-root>.mobile-header #pati-feed-menu-trigger{pointer-events:auto!important;cursor:pointer!important;z-index:1002!important}
+#app-root>.mobile-header #pati-feed-menu:not([hidden]){display:grid!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;z-index:1003!important;position:absolute!important}
+#app-root>.mobile-header #pati-feed-menu[hidden]{display:none!important}
+@media(max-width:740px){
+html[data-pati-view="reels"] #main-content .pati-reel-caption-toggle{display:block!important;position:static!important;clear:both!important;width:max-content!important;max-width:100%!important;margin:9px 0 0!important;padding:0!important;background:transparent!important;box-shadow:none!important;line-height:22px!important}
+html[data-pati-view="reels"] #main-content .pati-reel-caption-toggle[hidden]{display:none!important}
+html[data-pati-view="reels"] #main-content .pati-reel-caption{background:transparent!important;box-shadow:none!important;overflow:visible!important}
 }
 </style></body></html>
