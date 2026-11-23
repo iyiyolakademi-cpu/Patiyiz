@@ -1098,4 +1098,32 @@ body #pati-create-sheet:not([hidden]):not(.buchee-create-closing) .pati-create-m
 body #pati-create-sheet.buchee-create-closing:not([hidden]) .pati-create-modal{animation:bucheeCreateSlideDown 420ms cubic-bezier(.4,0,.7,1) both!important;pointer-events:none!important}
 body #pati-create-sheet.buchee-create-closing:not([hidden]) .pati-create-mask{animation:bucheeCreateFadeOut 420ms ease both!important;pointer-events:none!important}
 @media(prefers-reduced-motion:reduce){body #pati-create-sheet .pati-create-modal,body #pati-create-sheet .pati-create-mask{animation:none!important;transition:none!important}}
+</style><style id="buchee-reels-fullscreen-create-motion-v2">
+/* Match create entrance and exit motion: symmetric vertical slide, no zoom. */
+@keyframes bucheeCreateSlideUpV2{from{opacity:0;transform:translate3d(0,52px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes bucheeCreateSlideDownV2{from{opacity:1;transform:translate3d(0,0,0)}to{opacity:0;transform:translate3d(0,52px,0)}}
+body #pati-create-sheet:not([hidden]):not(.buchee-create-closing) .pati-create-modal{animation:bucheeCreateSlideUpV2 420ms cubic-bezier(.4,0,.7,1) both!important}
+body #pati-create-sheet.buchee-create-closing:not([hidden]) .pati-create-modal{animation:bucheeCreateSlideDownV2 420ms cubic-bezier(.4,0,.7,1) both!important}
+@media(max-width:740px){
+/* Full-height video canvas measured from viewport top to the existing 5-item nav. */
+html[data-pati-view="reels"] #main-content .pati-reels-viewport{
+ position:fixed!important;inset:0 0 var(--buchee-reels-video-bottom,calc(102px + env(safe-area-inset-bottom,0px))) 0!important;
+ top:0!important;bottom:var(--buchee-reels-video-bottom,calc(102px + env(safe-area-inset-bottom,0px)))!important;
+ width:100vw!important;height:auto!important;max-height:none!important;min-height:0!important;
+ margin:0!important;padding:0!important;border:0!important;border-radius:0!important;
+ overflow-y:auto!important;overflow-x:hidden!important;scroll-snap-type:y mandatory!important;z-index:1!important;
+}
+html[data-pati-view="reels"] #main-content .pati-reels-viewport>.pati-reel-item{
+ height:100%!important;min-height:100%!important;max-height:100%!important;
+ height:calc(100dvh - var(--buchee-reels-video-bottom,calc(102px + env(safe-area-inset-bottom,0px))))!important;
+ min-height:calc(100dvh - var(--buchee-reels-video-bottom,calc(102px + env(safe-area-inset-bottom,0px))))!important;
+ max-height:calc(100dvh - var(--buchee-reels-video-bottom,calc(102px + env(safe-area-inset-bottom,0px))))!important;
+ scroll-snap-align:start!important;overflow:hidden!important;
+}
+html[data-pati-view="reels"] #main-content>.pati-reels-head{position:fixed!important;top:0!important;left:0!important;right:0!important;z-index:65!important;pointer-events:none!important}
+html[data-pati-view="reels"] #main-content>.pati-reels-head button{pointer-events:auto!important}
+html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-progress{bottom:4px!important;z-index:90!important}
+html[data-pati-view="reels"] #app-root:not(.hidden)>#mobile-nav{z-index:100!important}
+}
+@media(prefers-reduced-motion:reduce){body #pati-create-sheet .pati-create-modal{animation:none!important}}
 </style></body></html>
