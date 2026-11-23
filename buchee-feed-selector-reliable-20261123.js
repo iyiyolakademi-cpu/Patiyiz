@@ -32,10 +32,13 @@
  document.addEventListener('click',event=>{
   const t=event.target.closest?.('#pati-feed-menu-trigger');
   const choice=event.target.closest?.('#pati-feed-menu [data-pati-feed-choice]');
+  const blog=event.target.closest?.('#pati-feed-menu [data-action="buchee-blog-directory"]');
+  const content=event.target.closest?.('#pati-feed-menu [data-action="buchee-blog-home"]');
   if(t){
    event.preventDefault();event.stopImmediatePropagation();
    open=!open;sync();return;
   }
+  if(blog||content){event.preventDefault();event.stopImmediatePropagation();open=false;sync();document.querySelector('#main-content')?.dispatchEvent(new MouseEvent('click',{bubbles:true}));const action=blog?'buchee-blog-directory':'buchee-blog-home';const proxy=document.createElement('button');proxy.type='button';proxy.dataset.action=action;proxy.hidden=true;document.body.appendChild(proxy);proxy.click();proxy.remove();return;}
   if(choice){
    if(choice.hasAttribute('data-buchee-stream'))return;
    event.preventDefault();event.stopImmediatePropagation();
