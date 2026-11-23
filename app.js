@@ -3033,8 +3033,8 @@ function patiHomeCombinedFeed(posts,followingOnly=false){
  if(patiHomeContentMode==='all'){
   const preview=patiHomeQuestionsState.owner===me?.id?patiHomeQuestionsState.rows:[];
   const questions=[...new Map([...(data.questions||[]),...preview].filter(q=>q?.id).map(q=>[q.id,q])).values()].filter(q=>!blocked.has(q.author_id)&&(!followingOnly||followed.has(q.author_id)));
-  const mixed=[...posts.map(item=>({kind:'post',item})),...questions.map(item=>({kind:'question',item}))].sort((a,b)=>new Date(b.item.created_at)-new Date(a.item.created_at));
-  return mixed.length?mixed.map((entry,i)=>entry.kind==='question'?patiHomeQuestionCard(entry.item):patiHomePostWithRepost(entry.item,i<5)).join(''):empty('Henüz paylaşım yok.','İlk paylaşımı sen yapabilirsin.')+patiHomeEmptyActions(followingOnly);
+  const mixed=[...posts.map(item=>({kind:'post',item})),...questions.map(item=>({kind:'question',item})),...bucheePollFeedEntries(followingOnly)].sort((a,b)=>new Date(b.item.created_at)-new Date(a.item.created_at));
+  return mixed.length?mixed.map((entry,i)=>entry.kind==='poll'?bucheeFeedPollMarkup(entry.item):entry.kind==='question'?patiHomeQuestionCard(entry.item):patiHomePostWithRepost(entry.item,i<5)).join(''):empty('Henüz paylaşım yok.','İlk paylaşımı sen yapabilirsin.')+patiHomeEmptyActions(followingOnly);
  }
  if(patiHomeContentMode==='media'){
   const mediaPosts=posts.filter(patiHomeIsMediaPost);
@@ -3048,9 +3048,10 @@ function patiHomeCombinedFeed(posts,followingOnly=false){
   .filter(q=>!blocked.has(q.author_id)&&(!followingOnly||followed.has(q.author_id)));
  const mixed=[
   ...posts.filter(p=>!patiHomeIsMediaPost(p)).map(item=>({kind:'text',item})),
-  ...questions.map(item=>({kind:'question',item}))
+  ...questions.map(item=>({kind:'question',item})),
+  ...bucheePollFeedEntries(followingOnly)
  ].sort((a,b)=>new Date(b.item.created_at)-new Date(a.item.created_at)).slice(0,50);
- return mixed.length?mixed.map((entry,i)=>entry.kind==='question'
+ return mixed.length?mixed.map((entry,i)=>entry.kind==='poll'?bucheeFeedPollMarkup(entry.item):entry.kind==='question'
   ?patiHomeQuestionCard(entry.item):patiHomePostWithRepost(entry.item,i<5)).join(''):
   empty(patiHomeQuestionsState.loading||!patiyizLoadedTables.has('posts')?'Yazılar ve sorular yükleniyor…':followingOnly?'Takip ettiklerinden henüz yazı veya soru paylaşımı yok.':'Henüz yazı veya soru paylaşımı yok.',
    patiHomeQuestionsState.loading?'':followingOnly?'Yeni hesaplar keşfedebilirsin.':'İlk yazını yazabilir veya topluluğa soru sorabilirsin.')+
@@ -3120,7 +3121,6 @@ function homePage(){
  const shortcut=typeof document!=='undefined'?document.getElementById('pati-header-following-btn'):null;
  if(shortcut){shortcut.textContent=following?'Senin İçin':'Takip Ettiklerim';shortcut.dataset.id=following?'all':'following';shortcut.setAttribute('aria-pressed',String(following));}
  if(typeof patiSyncHomePostCounts==='function')void patiSyncHomePostCounts(selectedPostId?list.filter(p=>p.id===selectedPostId):visiblePosts);
- bucheePollInject();
 }
 
 let savedPostsLoading=false;const savedMissingAttempted=new Set();
@@ -6180,35 +6180,30 @@ async function bucheePollResults(id){
  area.innerHTML='<small>Toplam '+total+' oy</small>'+data.map(row=>{const percent=total?Math.round(Number(row.votes)*100/total):0;return '<div class="buchee-poll-result"><span>'+esc(labels[row.option_index]||'Seçenek')+' · '+percent+'% ('+row.votes+')</span><div><i style="width:'+percent+'%"></i></div></div>'}).join('');
 }
 let bucheeFeedPollCache=[],bucheeFeedPollFetched=0,bucheeFeedPollRequest=null;
+function bucheePollFeedEntries(followingOnly){
+ return bucheeFeedPollCache.filter(p=>!blocked.has(p.author_id)&&(!followingOnly||p.author_id===me?.id||followed.has(p.author_id))).map(item=>({kind:'poll',item}));
+}
 function bucheeFeedPollMarkup(p){
- const ended=Date.parse(p.ends_at)<=Date.now();
- const options=Array.isArray(p.options)?p.options:[];
- return '<article class="buchee-feed-poll buchee-poll-card" data-poll-id="'+esc(p.id)+'"><div class="buchee-feed-poll-head"><span class="buchee-feed-poll-icon" aria-hidden="true">▥</span><span><strong>Anket</strong><small>'+new Date(p.created_at).toLocaleDateString('tr-TR')+'</small></span><small class="buchee-feed-poll-state">'+(ended?'Sona erdi':'Oy kullanabilirsin')+'</small></div><h3>'+esc(p.question)+'</h3><div class="buchee-poll-options">'+options.map((o,i)=>'<button type="button" data-action="buchee-poll-vote" data-id="'+esc(p.id)+'" data-option="'+i+'" '+(ended?'disabled':'')+'>'+esc(o)+'</button>').join('')+'</div><div class="buchee-poll-result-area" data-poll="'+esc(p.id)+'"></div><button type="button" class="buchee-poll-results" data-action="buchee-poll-results" data-id="'+esc(p.id)+'">Sonuçları gör</button></article>';
+ const ended=Date.parse(p.ends_at)<=Date.now(),options=Array.isArray(p.options)?p.options:[];
+ const author=profile(p.author_id),name=author.display_name||author.handle||'Buchee üyesi';
+ const avatar=author.avatar_url?'<img src="'+esc(author.avatar_url)+'" alt="" loading="lazy" referrerpolicy="no-referrer">':'<span>'+esc(name.slice(0,1).toUpperCase())+'</span>';
+ const icon='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8 8h8M8 12h5M8 16h8"/><circle cx="17" cy="12" r="1" fill="currentColor" stroke="none"/></svg>';
+ return '<article class="buchee-feed-poll buchee-poll-card" data-poll-id="'+esc(p.id)+'"><div class="buchee-feed-poll-head"><span class="buchee-feed-poll-avatar">'+avatar+'</span><span class="buchee-feed-poll-author"><strong>'+esc(name)+'</strong><small>'+new Date(p.created_at).toLocaleDateString('tr-TR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})+'</small></span><span class="buchee-feed-poll-state">'+icon+' Anket</span></div><h3>'+esc(p.question)+'</h3><div class="buchee-poll-options">'+options.map((o,i)=>'<button type="button" data-action="buchee-poll-vote" data-id="'+esc(p.id)+'" data-option="'+i+'" '+(ended?'disabled':'')+'>'+esc(o)+'</button>').join('')+'</div><div class="buchee-poll-result-area" data-poll="'+esc(p.id)+'"></div><div class="buchee-feed-poll-footer"><span>'+(ended?'Anket sona erdi':'Oylama devam ediyor')+'</span><button type="button" class="buchee-poll-results" data-action="buchee-poll-results" data-id="'+esc(p.id)+'">Sonuçları gör</button></div></article>';
 }
 async function bucheePollHomeMount(){
- if(view!=='home'||!me||selectedPostId)return;
- if(bucheeFeedPollRequest)return;
- if(Date.now()-bucheeFeedPollFetched<45000){bucheePollInject();return}
+ if(view!=='home'||!me||selectedPostId||bucheeFeedPollRequest)return;
+ if(Date.now()-bucheeFeedPollFetched<45000)return;
  const owner=me.id;
- bucheeFeedPollRequest=sb.from('buchee_polls').select('id,author_id,question,options,ends_at,created_at').order('created_at',{ascending:false}).limit(12);
- try{const {data,error}=await bucheeFeedPollRequest;if(error)throw error;if(me?.id!==owner)return;bucheeFeedPollCache=(data||[]).filter(p=>!blocked.has(p.author_id));bucheeFeedPollFetched=Date.now();bucheePollInject()}
- catch(e){console.warn('Anket akışı yüklenemedi:',e?.message||e)}
+ bucheeFeedPollRequest=sb.from('buchee_polls').select('id,author_id,question,options,ends_at,created_at').order('created_at',{ascending:false}).limit(40);
+ try{
+  const {data:rows,error}=await bucheeFeedPollRequest;if(error)throw error;if(me?.id!==owner)return;
+  const polls=(rows||[]).filter(p=>!blocked.has(p.author_id));
+  const missing=[...new Set(polls.map(p=>p.author_id))].filter(id=>!data.profiles.some(p=>p.id===id));
+  if(missing.length){const {data:authors}=await sb.from('profiles').select('id,display_name,handle,avatar_url').in('id',missing);if(me?.id!==owner)return;for(const author of authors||[])if(!data.profiles.some(p=>p.id===author.id))data.profiles.push(author)}
+  bucheeFeedPollCache=polls;bucheeFeedPollFetched=Date.now();
+  if(view==='home'&&!selectedPostId)render();
+ }catch(e){console.warn('Anket akışı yüklenemedi:',e?.message||e);bucheeFeedPollFetched=Date.now()}
  finally{bucheeFeedPollRequest=null}
-}
-function bucheePollInject(){
- if(view!=='home'||selectedPostId||!me)return;
- const container=document.querySelector('#main-content .pati-feed-posts');if(!container)return;
- container.querySelectorAll('.buchee-feed-poll').forEach(n=>n.remove());
- if(patiHomeContentMode==='media')return;
- const following=typeof patiHomeTab!=='undefined'&&patiHomeTab==='following';
- const polls=bucheeFeedPollCache.filter(p=>!blocked.has(p.author_id)&&(!following||p.author_id===me.id||followed.has(p.author_id)));
- if(!polls.length)return;
- const nodes=Array.from(container.children).filter(n=>!n.classList.contains('buchee-feed-poll'));
- for(const p of polls.slice(0,8)){
-  const newer=nodes.find(n=>{const time=n.querySelector('time[datetime]')?.getAttribute('datetime')||n.dataset.createdAt;return time&&Date.parse(time)<Date.parse(p.created_at)});
-  const el=document.createElement('div');el.innerHTML=bucheeFeedPollMarkup(p);const card=el.firstElementChild;
-  if(newer)container.insertBefore(card,newer);else container.appendChild(card);
- }
 }
 
 document.addEventListener('submit',function(event){if(event.target?.id!=='buchee-poll-form')return;event.preventDefault();void bucheePollCreate(event.target)},true);
