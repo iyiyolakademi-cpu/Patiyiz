@@ -51,3 +51,11 @@
 #main-content .buchee-explore-content-empty{grid-column:1/-1;color:#777;padding:36px 10px;text-align:center}
 @media(min-width:780px){#main-content .buchee-explore-content-list.buchee-explore-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:16px!important}#main-content .buchee-explore-tile{aspect-ratio:4/4.5!important}}
 @media(max-width:370px){#main-content .buchee-explore-content-list.buchee-explore-grid{gap:8px!important}#main-content .buchee-explore-tile{border-radius:13px!important;min-height:185px!important}#main-content .buchee-explore-tile-copy{padding:12px 10px 7px}#main-content .buchee-explore-tile-meta{padding:9px!important}}
+
+/* Explore cards: remove the black plugin-like overlay and use a clean native gallery. */
+#main-content .buchee-explore-tile--media{background:#f4f4f4!important;color:#111!important}
+#main-content .buchee-explore-tile--media .buchee-explore-tile-meta{background:linear-gradient(transparent,rgba(0,0,0,.38))!important;border:0!important;color:#fff!important}
+#main-content .buchee-explore-tile--media:not(:has(img)) .buchee-explore-tile-meta{background:#fff!important;color:#555!important;border-top:1px solid #eee!important}
+#main-content .buchee-explore-tile--media:not(:has(img)) .buchee-explore-tile-meta small{color:#555!important}
+#main-content .buchee-explore-tile--media .buchee-explore-tile-copy{color:#111!important}
+#main-content .buchee-explore-tile{border-radius:5px!important;box-shadow:none!important}
