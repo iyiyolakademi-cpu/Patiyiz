@@ -2465,7 +2465,12 @@ function reelHandleTap(button){
  if(tap.timer)clearTimeout(tap.timer);
  const video=item.querySelector('video');
  patiyizReelsTap={post:id,time:now,timer:null,wasPlaying:!!video&&!video.paused};
- reelTogglePlay(button);
+ // Wait for a possible second tap before pausing the Reel.
+ patiyizReelsTap.timer=setTimeout(()=>{
+  if(patiyizReelsTap.post!==id||patiyizReelsTap.time!==now)return;
+  patiyizReelsTap={post:'',time:0,timer:null};
+  if(button.isConnected)reelTogglePlay(button);
+ },345);
 }
 function patiReelPlayFeedback(button,playing){
  const item=button?.closest?.('.pati-reel-item');
