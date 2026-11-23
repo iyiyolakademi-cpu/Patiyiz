@@ -1,26 +1,8 @@
-/* Single photo/text/question home feed: switch only between all users and followed users. */
-(()=>{
-'use strict';
-function setup(){
- const menu=document.getElementById('pati-feed-menu');if(!menu)return;
- const original=[...menu.querySelectorAll(':scope > button[data-pati-feed-choice]')];
- original.forEach(b=>b.remove());
- // Keep only the two primary destinations in the header selector.
- menu.querySelectorAll('[data-buchee-account-filter]').forEach(b=>b.remove());
- for(const [action,title,description] of [['buchee-blog-home','İçerikler','Gönderiler, anketler ve paylaşımlar'],['buchee-blog-directory','Blog','Yazılar ve uzun okumalar']]){
-  let b=menu.querySelector('[data-action="'+action+'"]');
-  if(!b){b=document.createElement('button');b.type='button';b.dataset.action=action;b.setAttribute('role','menuitem');menu.appendChild(b)}
-  b.innerHTML='<span class="pati-feed-menu-label"><strong>'+title+'</strong><small>'+description+'</small></span>';
- }
- const trigger=document.getElementById('pati-feed-menu-trigger');
- if(trigger){trigger.title='Akışı değiştir: İçerikler veya Blog';trigger.setAttribute('aria-label','Akışı değiştir: Tümü veya Takip Ettiklerim');}
- menu.setAttribute('aria-label','Akışı değiştir');
- 
-}
-function start(){
- setup();
- const header=document.querySelector('#app-root > header.mobile-header');
- if(header)new MutationObserver(()=>{if(document.getElementById('pati-feed-menu'))setup()}).observe(header,{childList:true,subtree:false});
-}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+/* Single authoritative mobile Content / Blog selector. */
+(()=>{'use strict';let open=false;const t=()=>document.getElementById('pati-feed-menu-trigger'),m=()=>document.getElementById('pati-feed-menu');
+function sync(){const menu=m(),trigger=t();if(!menu||!trigger)return;menu.querySelectorAll(':scope > button').forEach(b=>{if(!['buchee-blog-home','buchee-blog-directory'].includes(b.dataset.action))b.remove()});for(const [action,label,desc] of [['buchee-blog-home','İçerikler','Gönderiler, anketler ve paylaşımlar'],['buchee-blog-directory','Blog','Yazılar ve uzun okumalar']]){let b=menu.querySelector('[data-action="'+action+'"]');if(!b){b=document.createElement('button');b.type='button';b.dataset.action=action;menu.appendChild(b)}b.innerHTML='<span class="pati-feed-menu-label"><strong>'+label+'</strong><small>'+desc+'</small></span>';}menu.hidden=!open;menu.style.setProperty('display',open?'grid':'none','important');menu.style.setProperty('visibility',open?'visible':'hidden','important');menu.style.setProperty('opacity',open?'1':'0','important');menu.style.setProperty('pointer-events',open?'auto':'none','important');menu.style.setProperty('z-index','99999','important');trigger.setAttribute('aria-expanded',String(open));trigger.setAttribute('aria-label','İçerikler veya Blog seç');}
+function go(action){open=false;sync();const root=document.getElementById('main-content');if(!root)return;const proxy=document.createElement('button');proxy.type='button';proxy.dataset.action=action;proxy.hidden=true;root.appendChild(proxy);proxy.click();proxy.remove();}
+document.addEventListener('click',e=>{if(e.target.closest?.('#pati-feed-menu-trigger')){e.preventDefault();e.stopImmediatePropagation();open=!open;sync();return;}const b=e.target.closest?.('#pati-feed-menu [data-action]');if(b&&['buchee-blog-home','buchee-blog-directory'].includes(b.dataset.action)){e.preventDefault();e.stopImmediatePropagation();go(b.dataset.action);return;}if(open&&!e.target.closest?.('#pati-feed-menu')){open=false;sync();}},true);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&open){open=false;sync();t()?.focus();}},true);
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sync,{once:true});else sync();
 })();
