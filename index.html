@@ -1062,4 +1062,12 @@ html[data-pati-view="reels"] #main-content .pati-reels-empty{color:#fff!importan
 #main-content .buchee-unified-actions button[data-action="like"].active>svg{fill:#e33147!important;stroke:#e33147!important}
 #main-content .buchee-unified-actions button[data-action="save"].active>svg{fill:currentColor!important}
 @media(max-width:480px){#main-content .buchee-instagram-actions{gap:9px!important;padding:8px 12px!important}#main-content .buchee-unified-actions button>svg{width:28px!important;height:28px!important;min-width:28px!important;min-height:28px!important;max-width:28px!important;max-height:28px!important}}
+</style><style id="buchee-save-priority-repost-20261124">
+/* Bookmark uses the user's selected importance, never the heart's red. */
+#main-content [data-action="save"].active[data-save-importance="green"]>svg,
+#main-content [data-action="save"].active:not([data-save-importance])>svg{color:#309966!important;stroke:#309966!important;fill:#309966!important}
+#main-content [data-action="save"].active[data-save-importance="orange"]>svg{color:#e7a041!important;stroke:#e7a041!important;fill:#e7a041!important}
+#main-content [data-action="save"].active[data-save-importance="red"]>svg{color:#d75b67!important;stroke:#d75b67!important;fill:#d75b67!important}
+#main-content .buchee-unified-actions [data-action="pati-repost"]>svg{stroke-linecap:round!important;stroke-linejoin:round!important}
+#main-content .buchee-unified-actions [data-action="pati-repost"].active>svg{color:inherit!important;stroke:currentColor!important;fill:none!important}
 </style></body></html>
