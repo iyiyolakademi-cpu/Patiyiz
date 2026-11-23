@@ -21,3 +21,10 @@
 .bm-typing-dots>i:nth-child(2){animation-delay:.16s}.bm-typing-dots>i:nth-child(3){animation-delay:.32s}
 @media(max-width:700px){#modal-root .modal-backdrop:not(.pati-full-page-form-backdrop)>.modal{animation:bmSheet .3s cubic-bezier(.2,.8,.2,1) both}}
 @media(prefers-reduced-motion:reduce){.bm-heart-particle,.bm-bounce,#modal-root .modal-backdrop>.modal,.buchee-share-sheet,.buchee-share-panel,.buchee-poll-panel,#main-content.bm-page-enter,.buchee-poll-result i,.buchee-poll-result>div>i,.bm-success-toast,.bm-message-enter,.bm-notification-enter,.bm-typing-dots>i{animation:none!important;transition:none!important}}
+
+/* Existing direct-message typing indicator uses three real dot elements. */
+.pati-dm-typing-indicator:not([hidden]) .pati-dm-dots{display:inline-flex;gap:3px;align-items:center;vertical-align:middle}
+.pati-dm-typing-indicator:not([hidden]) .pati-dm-dots>b{display:block;width:5px;height:5px;border-radius:50%;background:currentColor;animation:bmDot 1.05s ease-in-out infinite}
+.pati-dm-typing-indicator:not([hidden]) .pati-dm-dots>b:nth-child(2){animation-delay:.16s}
+.pati-dm-typing-indicator:not([hidden]) .pati-dm-dots>b:nth-child(3){animation-delay:.32s}
+@media(prefers-reduced-motion:reduce){.pati-dm-typing-indicator .pati-dm-dots>b{animation:none!important}}
