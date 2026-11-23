@@ -899,10 +899,10 @@ function patiShopPage(){
  const balance=Math.max(0,Math.floor(Number(patiCoinState.balance)||0));
  const orders=patiCoinState.orders||[];
  const meta={
-  'kedi-mamasi-250':{emoji:'🐈',tag:'KEDİ MAMASI',subtitle:'Kediler için 250 gram mama'},
-  'kopek-mamasi-250':{emoji:'🐕',tag:'KÖPEK MAMASI',subtitle:'Köpekler için 250 gram mama'},
-  'mama-destek':{emoji:'🤝',tag:'MAMA DESTEĞİ',subtitle:'Sokak hayvanlarına mama desteği'},
-  'fidan-bagisi':{emoji:'🌱',tag:'DOĞA',subtitle:'Bir fidan için bağış talebi'}
+  'kedi-mamasi-250':{emoji:'🐈',tag:'KEDİ MAMASI',subtitle:'Kediler için 250 gram mama',photo:'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=640&h=480&fit=crop&auto=format'},
+  'kopek-mamasi-250':{emoji:'🐕',tag:'KÖPEK MAMASI',subtitle:'Köpekler için 250 gram mama',photo:'https://images.unsplash.com/photo-1552053831-71594a27632d?w=640&h=480&fit=crop&auto=format'},
+  'mama-destek':{emoji:'🤝',tag:'MAMA DESTEĞİ',subtitle:'Sokak hayvanlarına mama desteği',photo:'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=640&h=480&fit=crop&auto=format'},
+  'fidan-bagisi':{emoji:'🌱',tag:'DOĞA',subtitle:'Bir fidan için bağış talebi',photo:'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=640&h=480&fit=crop&auto=format'}
  };
  const cards=items.map(item=>{
   const m=meta[item.id],stock=Math.max(0,Number(item.stock_available)||0);
@@ -910,7 +910,7 @@ function patiShopPage(){
   const enough=balance>=Number(item.coins),ready=stock>0&&!pending;
   const stateText=pending?'Talebin işleniyor':stock===0?'Stok yok':stock<=3?'Son '+stock+' adet':stock+' adet stok';
   const caption=stock===0?'Ürün stok doğrulamasından sonra açılır.':'Teslimat veya destek, onay sonrasında gerçekleşir.';
-  return '<article class="pati-calm-item"><div class="pati-calm-item-art"><span role="img" aria-label="'+esc(m.tag)+'">'+m.emoji+'</span><small>'+m.tag+'</small></div>'+
+  return '<article class="pati-calm-item"><div class="pati-calm-item-art buchee-reward-photo"><img src="'+esc(m.photo)+'" alt="'+esc(m.subtitle)+'" loading="lazy" decoding="async" referrerpolicy="no-referrer"><small>'+m.tag+'</small></div>'+
    '<div class="pati-calm-item-content"><h3>'+esc(item.name)+'</h3><p>'+esc(m.subtitle)+'</p><div class="pati-calm-item-state '+(ready?'is-open':'')+'">'+esc(stateText)+'</div>'+
    '<div class="pati-calm-item-bottom"><span class="pati-calm-cost"><strong>'+Number(item.coins).toLocaleString('tr-TR')+'</strong><small>puan</small></span>'+
    '<button type="button" data-action="'+(enough?'paticoin-buy':'paticoin-rewards')+'" data-id="'+esc(item.id)+'" '+(!ready?'disabled aria-disabled="true"':'')+'>'+
