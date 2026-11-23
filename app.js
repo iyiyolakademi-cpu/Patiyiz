@@ -3325,6 +3325,7 @@ function bucheeExploreContentSection(){
  return '<section class="buchee-explore-content"><div class="buchee-explore-content-title"><span class="buchee-explore-eyebrow">BUCHEE / KEŞFET</span><h2>Yeni fikirler, yeni insanlar.</h2><p>Yazıları oku, sorulara katıl, anketlerde fikrini paylaş.</p></div><label class="buchee-explore-content-search">'+ico('search')+'<input type="search" id="buchee-explore-content-query" placeholder="İçeriklerde ara" value="'+esc(bucheeExploreQuery)+'" autocomplete="off" aria-label="İçeriklerde ara"></label><div class="buchee-explore-content-tabs" role="group" aria-label="İçerik türü">'+tabs.map(([key,label])=>'<button type="button" data-action="buchee-explore-content-tab" data-id="'+key+'" aria-pressed="'+(mode===key)+'" class="'+(mode===key?'active':'')+'">'+label+'</button>').join('')+'</div><div class="buchee-explore-content-list buchee-explore-grid" >'+(items.length?items.map(bucheeExploreTile).join(''):'<p class="buchee-explore-content-empty">'+(bucheeExplorePollLoading?'İçerikler yükleniyor…':'Bu filtreye uygun içerik bulunamadı.')+'</p>')+'</div></section>';
 }
 
+window.bucheeExploreRefresh=()=>{if(view==='explore'&&exploreTab==='media')explorePage()};
 function explorePage(){
  if(exploreTab==='users'){
   const q=String(search||'').trim().toLocaleLowerCase('tr-TR');
