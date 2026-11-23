@@ -1594,16 +1594,17 @@ function bucheeBlogParse(value){
  const title=rest.slice(0,newline).trim(),body=rest.slice(newline+1).trim();
  return title&&body?{title,body}:null;
 }
-function bucheeBlogCompose(){
+function bucheeBlogCompose(existing=null){
  if(!me)return notify('Blog paylaşmak için giriş yap.',true);
  const content='<div class="buchee-blog-editor-intro">Yazını başlık ve içerik olarak oluştur. Yayınlandıktan sonra okuyucular tam ekranda açabilir.</div>'+
  '<div class="pati-field"><label for="buchee-blog-title">Blog başlığı</label><input id="buchee-blog-title" name="blog_title" maxlength="140" minlength="5" required placeholder="Yazının başlığını gir"></div>'+
  '<div class="pati-field"><label for="buchee-blog-body">Blog yazısı</label><textarea id="buchee-blog-body" name="body" minlength="30" maxlength="12000" required rows="14" placeholder="Yazını buraya yaz..."></textarea></div>';
- modal('Yeni blog yazısı',content,'post-form');
+ modal(existing?'Blog yazısını düzenle':'Yeni blog yazısı',content,'post-form');
  const form=document.getElementById('post-form');
- form.dataset.mode='blog';
+ form.dataset.mode='blog';form.dataset.edit=existing?.id||'';
+ if(existing){const blog=bucheeBlogParse(existing.body);if(blog){form.querySelector('[name="blog_title"]').value=blog.title;form.querySelector('[name="body"]').value=blog.body;}}
  const submit=form.querySelector('.modal-footer button[type="submit"]');
- if(submit)submit.textContent='Blogu yayınla';
+ if(submit)submit.textContent=existing?'Değişiklikleri kaydet':'Blogu yayınla';
  form.querySelector('#buchee-blog-title')?.focus();
 }
 function bucheeBlogRead(postId){
@@ -7350,6 +7351,7 @@ function startPatiCameraReels(){
 }
 
 function compose(post,mode='post',autoPick=true){
+ if(post&&bucheeBlogParse(post.body)){bucheeBlogCompose(post);return;}
  postCropX=.5;postCropY=.5;postCropRatio=mode==='story'||mode==='reels'?'9:16':'original';postCropZoom=1;postCropIndex=0;clearPatiMediaUrls();
  const reel=!post&&mode==='reels',story=!post&&mode==='story',textOnly=!post&&mode==='text';
  const title=post?'Paylaşımı düzenle':story?'Yeni hikâye':reel?'Yeni Reels':textOnly?'Yeni yazı':'Yeni gönderi';
@@ -9272,7 +9274,7 @@ case 'pati-filter-form':{
  data.profiles=data.profiles.map(p=>p.id===me.id?r.data:p);
  closeModal(true);render();notify('Yorum filtreleri güncellendi.');break;
 }
-case 'post-form':{if(form.dataset.mode==='story'){const result=await createStoryPublication(form,f,str);data.stories=[result,...data.stories.filter(x=>x.id!==result.id)];closeModal(true);render();notify('Hikâyen 24 saat boyunca görüntülenecek.')}else if(form.dataset.edit){await save('posts',{body:str('body').trim()},form.dataset.edit)}else{const selectedCollab=window.PatiyizCollabPicker?.selectedId(form,false)||'';const result=await createPostPublication(form,f,str);profileCountCache.delete(me.id);let inviteMessage='Paylaşım yayınlandı.';if(selectedCollab){try{await patiCollabInvite(result.id,str('collab_handle'),selectedCollab);inviteMessage='Paylaşım yayınlandı; ortak daveti gönderildi.'}catch(error){console.warn('Ortak gönderi daveti:',error);inviteMessage='Paylaşım yayınlandı fakat ortak daveti gönderilemedi: '+friendly(error)}}closeModal(true);try{await refresh()}catch(error){console.warn('Paylaşım kaydedildi, akış yenilemesi başarısız:',error.message)}window.BucheeShareHearts?.celebrate();notify(inviteMessage,inviteMessage.includes('gönderilemedi'));void patiCollabRefresh();try{localStorage.removeItem(patiDraftKey())}catch{}}break}case 'question-form':{const title=str('title'),body=str('body');if(title.length<5||title.length>150)throw Error('Soru başlığı 5–150 karakter arasında olmalı.');if(body.length<5||body.length>2000)throw Error('Soru açıklaması 5–2000 karakter arasında olmalı.');const author=me.id,cat=str('category');
+case 'post-form':{if(form.dataset.mode==='story'){const result=await createStoryPublication(form,f,str);data.stories=[result,...data.stories.filter(x=>x.id!==result.id)];closeModal(true);render();notify('Hikâyen 24 saat boyunca görüntülenecek.')}else if(form.dataset.edit){const body=form.dataset.mode==='blog'?BUCHEE_BLOG_MARK+str('blog_title')+'\n'+str('body'):str('body').trim();if(form.dataset.mode==='blog'&&(str('blog_title').length<5||str('blog_title').length>140||str('body').length<30||str('body').length>12000))throw Error('Blog başlığı 5–140, yazısı 30–12000 karakter arasında olmalı.');await save('posts',{body},form.dataset.edit)}else{const selectedCollab=window.PatiyizCollabPicker?.selectedId(form,false)||'';const result=await createPostPublication(form,f,str);profileCountCache.delete(me.id);let inviteMessage='Paylaşım yayınlandı.';if(selectedCollab){try{await patiCollabInvite(result.id,str('collab_handle'),selectedCollab);inviteMessage='Paylaşım yayınlandı; ortak daveti gönderildi.'}catch(error){console.warn('Ortak gönderi daveti:',error);inviteMessage='Paylaşım yayınlandı fakat ortak daveti gönderilemedi: '+friendly(error)}}closeModal(true);try{await refresh()}catch(error){console.warn('Paylaşım kaydedildi, akış yenilemesi başarısız:',error.message)}window.BucheeShareHearts?.celebrate();notify(inviteMessage,inviteMessage.includes('gönderilemedi'));void patiCollabRefresh();try{localStorage.removeItem(patiDraftKey())}catch{}}break}case 'question-form':{const title=str('title'),body=str('body');if(title.length<5||title.length>150)throw Error('Soru başlığı 5–150 karakter arasında olmalı.');if(body.length<5||body.length>2000)throw Error('Soru açıklaması 5–2000 karakter arasında olmalı.');const author=me.id,cat=str('category');
  const result=await sb.from('questions').insert({author_id:author,title,category:cat,body}).select('*').single();
  if(result.error)throw result.error;
  if(me?.id!==author)return;
