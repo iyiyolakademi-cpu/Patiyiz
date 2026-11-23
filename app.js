@@ -2981,7 +2981,7 @@ async function patiLoadHomeQuestions(){
   const previous=new Map(data.questions.map(q=>[q.id,q]));
   for(const q of state.rows)previous.set(q.id,q);
   data.questions=[...previous.values()];
-  if(view==='home'&&!selectedPostId)render();
+  if(view==='home'&&!selectedPostId){render();void bucheePollLoadMyVotes(polls)}
  }catch(error){console.warn('Akış soru-cevap yüklenemedi:',error?.message||error)}
  finally{state.loading=false}
 }
@@ -6163,22 +6163,61 @@ async function bucheePollList(own=false){
  if(error){el.innerHTML='<p role="alert">Anketler yüklenemedi. Lütfen tekrar deneyin.</p>';return}
  if(!data?.length){el.innerHTML='<p>Henüz anket bulunmuyor.</p><button type="button" class="buchee-poll-primary" data-action="buchee-poll-create">Anket oluştur</button>';return}
  el.innerHTML=data.map(p=>'<article class="buchee-poll-card"><strong>'+esc(p.question)+'</strong><small>'+ (new Date(p.ends_at)>new Date()?'Devam ediyor':'Sona erdi')+' · '+new Date(p.created_at).toLocaleDateString('tr-TR')+'</small><div class="buchee-poll-options">'+p.options.map((o,i)=>'<button type="button" data-action="buchee-poll-vote" data-id="'+esc(p.id)+'" data-option="'+i+'" '+(new Date(p.ends_at)<=new Date()?'disabled':'')+'>'+esc(o)+'</button>').join('')+'</div><button type="button" class="buchee-poll-results" data-action="buchee-poll-results" data-id="'+esc(p.id)+'">Sonuçları gör</button><div class="buchee-poll-result-area" data-poll="'+esc(p.id)+'"></div></article>').join('');
- if(own)for(const p of data)void bucheePollResults(p.id);
+ void bucheePollLoadMyVotes(data);if(own)for(const p of data)void bucheePollResults(p.id);
+}
+const bucheePollVoteState=new Map();
+function bucheePollTimeLeft(until){return Math.max(0,Math.ceil((Date.parse(until)-Date.now())/60000))}
+function bucheePollPaintVote(id){
+ const state=bucheePollVoteState.get(id);if(!state)return;
+ document.querySelectorAll('.buchee-poll-card').forEach(card=>{
+  if(card.dataset.pollId!==id&&!card.querySelector('.buchee-poll-result-area[data-poll="'+id+'"]'))return;
+  const left=bucheePollTimeLeft(state.editable_until),allowed=left>0;
+  card.querySelectorAll('.buchee-poll-options button').forEach(b=>{
+   const active=Number(b.dataset.option)===Number(state.option_index);
+   b.classList.toggle('is-voted',active);b.setAttribute('aria-pressed',String(active));
+   if(!allowed)b.disabled=true;
+  });
+  let hint=card.querySelector('.buchee-poll-vote-hint');
+  if(!hint){hint=document.createElement('small');hint.className='buchee-poll-vote-hint';card.querySelector('.buchee-poll-options')?.after(hint)}
+  if(hint)hint.textContent=allowed?'Oyun kaydedildi. Değiştirmek için '+left+' dakika süren var.':'Oyun kaydedildi. Değiştirme süresi sona erdi.';
+ });
 }
 async function bucheePollVote(id,option){
  if(bucheePollBusy)return;bucheePollBusy=true;
- try{const {error}=await sb.rpc('buchee_cast_poll_vote',{p_poll:id,p_option:Number(option)});if(error)throw error;notify('Oyun kaydedildi.');await bucheePollResults(id)}
- catch(e){notify('Oy kaydedilemedi: '+friendly(e),true)}finally{bucheePollBusy=false}
+ try{
+  const {data:result,error}=await sb.rpc('buchee_cast_poll_vote',{p_poll:id,p_option:Number(option)});
+  if(error)throw error;
+  if(result?.option_index!==undefined&&result?.editable_until)bucheePollVoteState.set(id,result);
+  bucheePollPaintVote(id);
+  if(result?.status==='closed')notify('Bu anketin süresi sona erdi.');
+  else if(result?.status==='locked')notify('Oyun kayıtlı. 5 dakikalık değiştirme süresi doldu.');
+  else if(result?.status==='created')notify('Oyun kaydedildi. Değiştirmek için 5 dakikan var.');
+  else if(result?.status==='updated')notify('Oyun güncellendi.');
+  await bucheePollResults(id);
+ }catch(e){notify('Oy işlemi tamamlanamadı. Bağlantını kontrol edip yeniden dene.',true)}
+ finally{bucheePollBusy=false}
 }
 async function bucheePollResults(id){
- const area=document.querySelector('.buchee-poll-result-area[data-poll="'+CSS.escape(id)+'"]');if(!area)return;
- area.textContent='Sonuçlar yükleniyor…';
- const {data,error}=await sb.rpc('buchee_poll_results',{p_poll:id});
- if(!area.isConnected)return;
- if(error){area.textContent='Sonuçlar oy verdikten veya anket bittikten sonra görüntülenebilir.';return}
- const card=area.closest('.buchee-poll-card'),labels=[...card.querySelectorAll('.buchee-poll-options button')].map(b=>b.textContent),total=Number(data?.[0]?.total||0);
- area.innerHTML='<small>Toplam '+total+' oy</small>'+data.map(row=>{const percent=total?Math.round(Number(row.votes)*100/total):0;return '<div class="buchee-poll-result"><span>'+esc(labels[row.option_index]||'Seçenek')+' · '+percent+'% ('+row.votes+')</span><div><i style="width:'+percent+'%"></i></div></div>'}).join('');
+ const areas=[...document.querySelectorAll('.buchee-poll-result-area[data-poll="'+id+'"]')];
+ if(!areas.length)return;
+ areas.forEach(a=>a.textContent='Sonuçlar yükleniyor…');
+ const {data:rows,error}=await sb.rpc('buchee_poll_results',{p_poll:id});
+ for(const area of areas){
+  if(!area.isConnected)continue;
+  if(error){area.textContent='Sonuçları görmek için oy kullanabilir veya anketin bitmesini bekleyebilirsin.';continue}
+  const card=area.closest('.buchee-poll-card'),labels=[...card.querySelectorAll('.buchee-poll-options button')].map(b=>b.textContent),total=Number(rows?.[0]?.total||0);
+  area.innerHTML='<small>Toplam '+total+' oy</small>'+(rows||[]).map(row=>{const percent=total?Math.round(Number(row.votes)*100/total):0;return '<div class="buchee-poll-result"><span>'+esc(labels[row.option_index]||'Seçenek')+' · '+percent+'% ('+row.votes+')</span><div><i style="width:'+percent+'%"></i></div></div>'}).join('');
+ }
+ bucheePollPaintVote(id);
 }
+async function bucheePollLoadMyVotes(polls){
+ if(!me?.id||!polls.length)return;
+ const ids=polls.map(p=>p.id),{data:votes,error}=await sb.from('buchee_poll_votes').select('poll_id,option_index,created_at').eq('voter_id',me.id).in('poll_id',ids);
+ if(error)return;
+ for(const v of votes||[])bucheePollVoteState.set(v.poll_id,{option_index:v.option_index,editable_until:new Date(Date.parse(v.created_at)+300000).toISOString()});
+ for(const id of ids)bucheePollPaintVote(id);
+}
+
 let bucheeFeedPollCache=[],bucheeFeedPollFetched=0,bucheeFeedPollRequest=null;
 function bucheePollFeedEntries(followingOnly){
  return bucheeFeedPollCache.filter(p=>!blocked.has(p.author_id)&&(!followingOnly||p.author_id===me?.id||followed.has(p.author_id))).map(item=>({kind:'poll',item}));
