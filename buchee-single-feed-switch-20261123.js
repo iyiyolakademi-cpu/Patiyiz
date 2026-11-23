@@ -10,7 +10,7 @@
    if(main){
      main.setAttribute('aria-haspopup','menu');
      main.setAttribute('aria-controls','pati-feed-menu');
-     main.title='Akış seç: Tümü veya Takip Ettiklerim';
+     main.title='Akış seç: İçerikler veya Blog';
    }
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',cleanup,{once:true});else cleanup();
