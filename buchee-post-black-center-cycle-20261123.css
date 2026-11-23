@@ -1,0 +1,13 @@
+/* Monochrome post actions and compact centered feed-cycle control. */
+.buchee-post-option:not(.is-danger),.buchee-post-option:not(.is-danger) .buchee-post-option-icon,.buchee-post-option:not(.is-danger) .buchee-post-option-icon svg,.buchee-post-option:not(.is-danger) .buchee-post-option-copy strong,.buchee-post-option:not(.is-danger) .buchee-post-option-chevron{color:#111!important;stroke:#111!important;-webkit-text-fill-color:#111!important}
+.buchee-post-option:not(.is-danger) .buchee-post-option-icon{background:#f1f1f1!important;border-color:#e5e5e5!important;box-shadow:none!important}
+.buchee-post-option:not(.is-danger) .buchee-post-option-icon svg{fill:none!important}
+.buchee-post-option:not(.is-danger) .buchee-post-option-copy small{color:#666!important}
+@media(max-width:900px){
+html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>#pati-feed-menu-trigger{
+position:absolute!important;left:50%!important;right:auto!important;top:50%!important;bottom:auto!important;transform:translate(-50%,-50%)!important;display:flex!important;align-items:center!important;justify-content:center!important;justify-self:center!important;width:44px!important;min-width:44px!important;max-width:44px!important;height:44px!important;padding:0!important;margin:0!important;border:1px solid #e8e8e8!important;border-radius:50%!important;background:#fff!important;color:#111!important;box-shadow:none!important;z-index:10!important;overflow:visible!important}
+html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>#pati-feed-menu-trigger .buchee-mode-label{display:none!important}
+html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>#pati-feed-menu-trigger .buchee-header-switch-icon{display:none!important}
+html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>#pati-feed-menu-trigger .buchee-feed-cycle-svg{display:block!important;width:22px!important;height:22px!important;stroke:#111!important;fill:none!important;flex:none!important}
+html body:not(.buchee-not-home) #app-root:not(.buchee-not-home)>header.mobile-header>#pati-feed-menu{display:none!important}
+}
