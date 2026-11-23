@@ -69,3 +69,11 @@ html body #app-root:not(.hidden)>header.mobile-header .pati-header-actions butto
  box-shadow:none!important;
 }
 #app-root main .stories-section + .buchee-home-feed-filters{margin-top:12px!important}
+
+/* Home feed structure: stories and the two tabs are a single consecutive block. */
+#app-root .buchee-home-stories-and-tabs{display:flex!important;flex-direction:column!important;gap:0!important;width:100%!important;background:#fff!important;position:relative!important}
+#app-root .buchee-home-stories-and-tabs>.stories-section{order:0!important;flex:0 0 auto!important;margin-bottom:0!important;padding-bottom:0!important}
+#app-root .buchee-home-stories-and-tabs>.buchee-home-feed-filters{order:1!important;flex:0 0 auto!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:3px!important;width:calc(100% - 24px)!important;min-height:56px!important;margin:6px 12px 10px!important;padding:4px!important;border-radius:999px!important;background:#f1f1f3!important;box-sizing:border-box!important;opacity:1!important;visibility:visible!important}
+#app-root .buchee-home-stories-and-tabs>.buchee-home-feed-filters>button{display:flex!important;justify-content:center!important;align-items:center!important;min-width:0!important;width:100%!important;min-height:48px!important;border:0!important;border-radius:999px!important;background:transparent!important;color:#171717!important;font-weight:600!important;white-space:nowrap!important}
+#app-root .buchee-home-stories-and-tabs>.buchee-home-feed-filters>button[aria-pressed="true"]{background:#1b1b1b!important;color:#fff!important;font-weight:750!important}
+#app-root .buchee-home-stories-and-tabs+.pati-feed-posts{margin-top:0!important}
