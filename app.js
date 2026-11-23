@@ -3109,7 +3109,7 @@ function homePage(){
     : patiHomeCombinedFeed(visiblePosts,true))
   : patiHomeCombinedFeed(list);
  const blogOnlyPosts=[...data.posts].filter(p=>p?.id&&!blocked.has(p.author_id)&&bucheeBlogParse(p.body)).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
- const blogMarkup='<section class="buchee-blog-directory"><div class="buchee-blog-directory-head"><span>BUCHEE / BLOG</span><h1>Blog</h1><p>Düşünceler, hikâyeler ve uzun okumalar.</p></div><div class="buchee-blog-directory-list">'+(blogOnlyPosts.length?blogOnlyPosts.map(p=>{const blog=bucheeBlogParse(p.body),author=profile(p.author_id),minutes=Math.max(1,Math.ceil(blog.body.trim().split(/\\s+/).length/200));return '<button type="button" class="buchee-blog-directory-card" data-action="buchee-blog-read" data-id="'+esc(p.id)+'"><span class="buchee-blog-directory-label">'+minutes+' DK OKUMA · '+esc(day(p.created_at))+'</span><strong>'+esc(blog.title)+'</strong><span class="buchee-blog-directory-excerpt">'+esc(cut(blog.body,155))+'</span><span class="buchee-blog-directory-author">'+avatar(author,'s')+' '+esc(author.display_name||author.handle||'Buchee üyesi')+' <span>Yazıyı oku →</span></span></button>'}).join(''):'<p class="buchee-blog-directory-empty">Henüz blog yazısı paylaşılmamış.</p>')+'</div></section>';
+ const blogMarkup='<section class="buchee-blog-directory"><div class="buchee-blog-directory-head"><span>BUCHEE / BLOG</span><h1>Blog</h1><p>Düşünceler, hikâyeler ve uzun okumalar.</p></div><div class="buchee-blog-directory-list">'+(blogOnlyPosts.length?blogOnlyPosts.map(p=>{const blog=bucheeBlogParse(p.body),author=profile(p.author_id),minutes=Math.max(1,Math.ceil(blog.body.trim().split(/\s+/).length/200));return '<button type="button" class="buchee-blog-directory-card" data-action="buchee-blog-read" data-id="'+esc(p.id)+'"><span class="buchee-blog-directory-label">'+minutes+' DK OKUMA · '+esc(day(p.created_at))+'</span><strong>'+esc(blog.title)+'</strong><span class="buchee-blog-directory-excerpt">'+esc(cut(blog.body,155))+'</span><span class="buchee-blog-directory-author">'+avatar(author,'s')+' '+esc(author.display_name||author.handle||'Buchee üyesi')+' <span>Yazıyı oku →</span></span></button>'}).join(''):'<p class="buchee-blog-directory-empty">Henüz blog yazısı paylaşılmamış.</p>')+'</div></section>';
  const nextHomeMarkup=selectedPostId
   ?bucheePostBackBar()+(data.posts.some(p=>p.id===selectedPostId&&!blocked.has(p.author_id))?postCard(data.posts.find(p=>p.id===selectedPostId)):empty('Paylaşım bulunamadı'))
   :bucheeBlogOnlyView?blogMarkup
@@ -8899,7 +8899,9 @@ case 'collab-accept':run(()=>patiCollabRespond(id,'accepted'),'Ortak gönderi ka
 case 'collab-decline':run(()=>patiCollabRespond(id,'declined'),'Ortak gönderi reddedildi.');break;
 case 'collab-refresh':void patiCollabRefresh();break;
 case 'home-feed-tab':{
- if(!['all','following'].includes(id)||patiHomeTab===id)break;
+ if(!['all','following'].includes(id))break;
+ if(bucheeBlogOnlyView){bucheeBlogOnlyView=false;patiHomeTab=id;render();break;}
+ if(patiHomeTab===id)break;
  patiHomeTab=id;render();window.scrollTo({top:0,behavior:'instant'});break;
 }
 case 'home-following-refresh':void patiFollowingFetch(false);break;
