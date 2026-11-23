@@ -1777,7 +1777,7 @@ function patiStoryLastViewedLabel(value,now=Date.now()){
  const when=new Intl.DateTimeFormat('tr-TR',{day:'numeric',month:'short',year:date.getFullYear()===today.getFullYear()?undefined:'numeric'}).format(date);
  return when+' · '+time;
 }
-function closeStory(resume=true){
+function closeStory(resume=true){bucheeStoryHold=false;bucheeStoryTouch=null;
  patiStopStoryActivityRefresh();
  clearTimeout(storyTimer);storyTimer=null;storyItems=[];
  document.getElementById('story-overlay')?.remove();document.body.classList.remove('story-fullscreen-open');
@@ -2046,6 +2046,13 @@ function patiStoryPublishedTime(story,now=Date.now()){
  const spoken=minutes<1?'Şimdi paylaşıldı':minutes<60?minutes+' dakika önce paylaşıldı':minutes<1440?Math.floor(minutes/60)+' saat önce paylaşıldı':Math.floor(minutes/1440)+' gün önce paylaşıldı';
  return '<time class="pati-story-upload-age" datetime="'+published.toISOString()+'" aria-label="'+esc(spoken)+'" title="'+esc(spoken)+'">'+visible+'</time>';
 }
+let bucheeStoryHold=false,bucheeStoryRemaining=6000,bucheeStoryDeadline=0,bucheeStoryTouch=null;
+function bucheeStorySchedule(ms){clearTimeout(storyTimer);bucheeStoryRemaining=Math.max(100,ms);bucheeStoryDeadline=Date.now()+bucheeStoryRemaining;if(!bucheeStoryHold)storyTimer=setTimeout(()=>stepStory(1),bucheeStoryRemaining)}
+function bucheeStoryPause(){if(bucheeStoryHold)return;bucheeStoryHold=true;bucheeStoryRemaining=Math.max(100,bucheeStoryDeadline-Date.now());clearTimeout(storyTimer);document.querySelectorAll('#story-overlay video').forEach(v=>{if(!v.paused){v.dataset.bucheeHoldPaused='1';v.pause()}});document.getElementById('story-overlay')?.classList.add('buchee-story-paused')}
+function bucheeStoryResume(){if(!bucheeStoryHold)return;bucheeStoryHold=false;document.querySelectorAll('#story-overlay video[data-buchee-hold-paused]').forEach(v=>{delete v.dataset.bucheeHoldPaused;v.play().catch(()=>{})});document.getElementById('story-overlay')?.classList.remove('buchee-story-paused');if(document.getElementById('story-overlay'))bucheeStorySchedule(bucheeStoryRemaining)}
+document.addEventListener('pointerdown',e=>{if(!e.target.closest?.('#story-overlay .story-player')||e.target.closest('button,input,textarea,a,select,.story-viewers-sheet'))return;const x=e.clientX,y=e.clientY;bucheeStoryTouch={x,y,hold:false,timer:setTimeout(()=>{if(!bucheeStoryTouch)return;bucheeStoryTouch.hold=true;bucheeStoryPause()},260)}},{passive:true});
+document.addEventListener('pointermove',e=>{const t=bucheeStoryTouch;if(t&&(Math.abs(e.clientX-t.x)>14||Math.abs(e.clientY-t.y)>14)){clearTimeout(t.timer);if(t.hold)bucheeStoryResume();bucheeStoryTouch=null}},{passive:true});
+for(const eventName of ['pointerup','pointercancel'])document.addEventListener(eventName,()=>{if(!bucheeStoryTouch)return;clearTimeout(bucheeStoryTouch.timer);if(bucheeStoryTouch.hold)bucheeStoryResume();bucheeStoryTouch=null},{passive:true});
 function showStoryFrame(){const root=document.getElementById('story-overlay'),x=storyItems[storyIndex];if(!root||!x)return;clearTimeout(storyTimer);patiPauseStoryBackgroundMedia();const user=profile(x.author_id);const storyGroupItems=storyItems.filter(s=>s.author_id===x.author_id);const storyGroupIndex=storyGroupItems.findIndex(s=>s.id===x.id);if(!x.pati_pet_highlight){patiStorySeen(x);recordStoryView(x);}if(!x.pati_pet_highlight&&x.author_id!==me.id)void syncStoryLike(x.id);root.dataset.audience=x.audience==='close_friends'?'close_friends':'everyone';root.classList.toggle('pati-story-own',x.author_id===me.id);root.classList.toggle('pati-story-has-source',!!x.shared_post_id);root.innerHTML='<div class="story-player"><div class="story-progress">'+storyGroupItems.map((_,i)=>'<span class="story-track"><span class="'+(i===storyGroupIndex?'story-playing':'')+'" style="width:'+(i<storyGroupIndex?'100':'0')+'%"></span></span>').join('')+'</div><div class="story-player-head">'+avatar(user,'s')+'<span class="pati-story-owner-name"><span class="pati-story-owner-top"><strong>'+displayName(user)+'</strong>'+patiStoryPublishedTime(x)+'</span>'+(x.audience==='close_friends'?'<span class="pati-story-close-friends-label">★ Yakın Arkadaşlar</span>':'')+'</span><button data-action="story-close" aria-label="Kapat" class="story-close">×</button></div>'+(x.shared_post_id?patiStorySharedPostCard(x):x.video_url?'<video class="story-big-video'+(x.selfie_mirrored?' pati-selfie-mirrored':'')+'" src="'+esc(x.video_url)+'" poster="'+esc(x.image_url||'')+'"'+(patiyizStorySoundEnabled?'':' muted')+' autoplay playsinline preload="auto" aria-label="Video hikâyesi"></video><button type="button" class="pati-story-sound" data-action="story-sound" aria-label="'+(patiyizStorySoundEnabled?'Hikâye sesini kapat':'Hikâye sesini aç')+'">'+(patiyizStorySoundEnabled?'Ses kapat':'Ses aç')+'</button>':x.image_url?'<img class="story-big-photo" src="'+esc(x.image_url)+'" alt="Hikâye">':'<div class="pati-story-no-photo">Medya dosyası kullanılamıyor.</div>')+(x.caption&&!x.shared_post_id?'<p class="story-caption">'+esc(x.caption)+'</p>':'')+'<button class="story-hit prev" data-action="story-prev" aria-label="Önceki"></button><button class="story-hit next" data-action="story-next" aria-label="Sonraki"></button>'+(x.pati_pet_highlight?'<span class="pati-saved-story-label">Hayvan fotoğrafı</span>':x.author_id===me.id?'<button type="button" class="story-delete" data-action="story-delete" data-id="'+esc(x.id)+'" aria-label="Hikâyeyi sil">'+ico('trash')+' <span>Sil</span></button><button type="button" class="story-viewers-button pati-story-viewer-preview" data-action="story-viewers" aria-label="Hikâye hareketlerini aç"><span class="pati-story-viewer-preview-label">Hareketler</span></button>':'<button class="pati-story-like" data-action="story-like" data-id="'+esc(x.id)+'" aria-label="Hikâyeyi beğen">♡</button>')+'<div id="story-viewers-sheet" class="story-viewers-sheet" hidden></div></div>';
  // Place the story sound control immediately before the X in the actual header.
  // The old absolute 42px top offset floated above and left of the X on iPhone PWAs.
@@ -2075,7 +2082,7 @@ function showStoryFrame(){const root=document.getElementById('story-overlay'),x=
   }
  }
  if(x.shared_post_id)void patiHydrateStorySharedPost(x);
- const upcoming=storyItems[storyIndex+1];if(upcoming?.image_url&&typeof Image==='function'){const preload=new Image();preload.src=upcoming.image_url}storyTimer=setTimeout(()=>stepStory(1),(x.video_url||root.querySelector('.pati-story-share-media-video'))?15000:6000);
+ const upcoming=storyItems[storyIndex+1];if(upcoming?.image_url&&typeof Image==='function'){const preload=new Image();preload.src=upcoming.image_url}bucheeStorySchedule((x.video_url||root.querySelector('.pati-story-share-media-video'))?15000:6000);
  if(x.author_id===me.id&&!x.pati_pet_highlight)void patiStoryPreviewLoad(x.id);
  if(x.video_url||root.querySelector('.pati-story-share-media-video')){
   const video=root.querySelector('.story-big-video');
@@ -2083,7 +2090,7 @@ function showStoryFrame(){const root=document.getElementById('story-overlay'),x=
    if(storyItems[storyIndex]?.id!==x.id)return;
    clearTimeout(storyTimer);
    const duration=Number.isFinite(video.duration)?Math.min(15000,Math.max(5000,video.duration*1000)):15000;
-   storyTimer=setTimeout(()=>stepStory(1),duration);
+   bucheeStorySchedule(duration);
   },{once:true});
   video?.addEventListener('ended',()=>{if(storyItems[storyIndex]?.id===x.id){clearTimeout(storyTimer);stepStory(1)}},{once:true});
   video?.play?.()?.catch?.(error=>{
