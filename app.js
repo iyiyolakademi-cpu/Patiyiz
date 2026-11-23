@@ -4,6 +4,7 @@ const $=s=>document.querySelector(s), main=$('#main-content'), rail=$('#right-ra
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const clock=d=>d?new Date(d).toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'}):'';
 const day=d=>d?new Date(d).toLocaleDateString('tr-TR',{day:'numeric',month:'short',year:'numeric'}):'';
+const bucheeDateTime=d=>d?new Date(d).toLocaleString('tr-TR',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'';
 const cut=(s,n=80)=>String(s||'').length>n?String(s).slice(0,n)+'…':String(s||'');
 const ico=(name)=>{const aliases={'message-circle':'comment','volume-x':'volume-x','volume':'volume','mic':'mic','trash-2':'trash','check-check':'check','message-square':'comment','user-plus':'user','smartphone':'user','heart-handshake':'heart','flag':'alert','pencil':'edit','play-circle':'up'};return `<svg class="icon" aria-hidden="true"><use href="#i-${aliases[name]||name}"></use></svg>`};
 // Identical vertical Reels icon in the bottom navigation; the clapperboard
@@ -1642,7 +1643,7 @@ function postCard(p,priority=false){
  sourceCredit+
  (pet?'<p class="pati-feed-pet">'+petIcon(pet.species)+' '+esc(pet.name)+' · '+esc(pet.species)+'</p>':'')+
  (isTwit&&hasMedia?'<div class="buchee-twit-inline-text">'+caption+'</div><div class="buchee-twit-inline-media">'+media+'</div>':hasMedia?media:'<div class="pati-feed-text-content">'+(caption||'<p class="pati-post-caption">💜</p>')+'</div>')+
- controls+'<div class="pati-post-details buchee-post-details">'+bucheeLikeSummary(p.id,count)+(hasMedia&&!isTwit?caption:'')+'<time class="pati-post-time">'+esc(day(p.created_at))+'</time></div></article>';
+ controls+'<div class="pati-post-details buchee-post-details">'+bucheeLikeSummary(p.id,count)+(hasMedia&&!isTwit?caption:'')+'<time class="pati-post-time">'+esc(bucheeDateTime(p.created_at))+'</time></div></article>';
 }
 function patiDetailCandidates(source){
  if(source==='saved-posts')return window.PatiyizSavedV2?.visiblePosts()||[];
@@ -3008,7 +3009,7 @@ function patiHomeQuestionCard(q){
  const replies=(data.replies||[]).filter(r=>r.question_id===q.id).length;
  return '<article class="pati-card pati-home-question" data-question-id="'+esc(q.id)+'" aria-label="Soru ve cevap paylaşımı">'+
  '<div class="pati-home-question-tag"><span>SORU & CEVAP</span><button type="button" data-view="community">Tüm sorular ›</button></div>'+
- '<div class="pati-row pati-home-question-author">'+userRow(q.author_id,day(q.created_at))+'</div>'+
+ '<div class="pati-row pati-home-question-author">'+userRow(q.author_id,bucheeDateTime(q.created_at))+'</div>'+
  '<h3>'+esc(q.title||'Topluluk sorusu')+'</h3><p>'+esc(cut(q.body||'',280))+'</p>'+
  '<div class="pati-home-question-actions">'+patiQuestionVoteButtons(q)+
  '<button type="button" data-action="replies" data-id="'+esc(q.id)+'" aria-label="Soruya yanıtları aç">'+ico('message-circle')+' <span>'+replies+' yanıt</span></button>'+
