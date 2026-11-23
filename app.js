@@ -2975,7 +2975,7 @@ function patiHomeCombinedFeed(posts,followingOnly=false){
  if(patiHomeContentMode==='all'){
   const preview=patiHomeQuestionsState.owner===me?.id?patiHomeQuestionsState.rows:[];
   const questions=[...new Map([...(data.questions||[]),...preview].filter(q=>q?.id).map(q=>[q.id,q])).values()].filter(q=>!blocked.has(q.author_id)&&(!followingOnly||followed.has(q.author_id)));
-  const mixed=[...posts.map(item=>({kind:'post',item})),...questions.map(item=>({kind:'question',item}))].sort((a,b)=>new Date(b.item.created_at)-new Date(a.item.created_at)).slice(0,80);
+  const mixed=[...posts.map(item=>({kind:'post',item})),...questions.map(item=>({kind:'question',item}))].sort((a,b)=>new Date(b.item.created_at)-new Date(a.item.created_at));
   return mixed.length?mixed.map((entry,i)=>entry.kind==='question'?patiHomeQuestionCard(entry.item):patiHomePostWithRepost(entry.item,i<5)).join(''):empty('Henüz paylaşım yok.','İlk paylaşımı sen yapabilirsin.')+patiHomeEmptyActions(followingOnly);
  }
  if(patiHomeContentMode==='media'){
