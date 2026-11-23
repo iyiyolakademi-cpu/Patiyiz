@@ -51,7 +51,7 @@
     trigger.setAttribute('aria-haspopup','menu');
     trigger.setAttribute('aria-controls',menuId);
     trigger.setAttribute('aria-expanded','false');
-    trigger.title='Akış türünü seç';
+    trigger.title=isMobile?'Akış türünü değiştir':'Akış türünü seç';
     let menu=document.getElementById(menuId);
     if(!menu){
       menu=document.createElement('div');
@@ -93,7 +93,12 @@
     }
     trigger.addEventListener('click',event=>{
       event.preventDefault();event.stopPropagation();
-      if(menu.hidden)open();else close();
+      if(isMobile){
+        const at=choices.findIndex(choice=>choice.mode===activeMode);
+        activeMode=choices[(at+1)%choices.length].mode;
+        for(const item of installed){item.sync();item.close();}
+        window.dispatchEvent(new CustomEvent('patiyiz:feed-mode',{detail:{mode:activeMode}}));
+      }else if(menu.hidden)open();else close();
     });
     menu.addEventListener('click',event=>{
       const choice=event.target.closest('[data-pati-feed-choice]');
