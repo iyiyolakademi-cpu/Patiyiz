@@ -14,29 +14,7 @@
    const trigger=header?.querySelector('#pati-feed-menu-trigger');
    if(trigger)trigger.removeAttribute('tabindex');
  }
- function enhanceCaptions(){
-  if(!home())return;
-  const main=document.getElementById('main-content');
-  if(!main)return;
-  for(const caption of main.querySelectorAll('.pati-feed-card .buchee-feed-caption')){
-   if(caption.dataset.bucheeExcerptReady==='1')continue;
-   caption.dataset.bucheeExcerptReady='1';
-   const card=caption.closest('.pati-feed-card');
-   const postId=card?.dataset.postId||'';
-   if(postId&&expanded.has(postId))continue;
-   caption.classList.add('buchee-caption-collapsed');
-   const chars=(caption.textContent||'').trim().length;
-   if(chars<115 || (caption.scrollHeight<=caption.clientHeight+2 && chars<170)){
-    caption.classList.remove('buchee-caption-collapsed');continue;
-   }
-   const more=document.createElement('button');
-   more.type='button';more.className='buchee-caption-more';
-   more.textContent='Devamı';
-   more.setAttribute('aria-label','Yazının devamını göster');
-   more.setAttribute('aria-expanded','false');
-   caption.insertAdjacentElement('afterend',more);
-  }
- }
+ function enhanceCaptions(){/* Two-line caption controller supersedes legacy four-line preview. */}
  function refresh(){
   scheduled=false;mountShortcut();enhanceCaptions();if(!home())close();
  }
