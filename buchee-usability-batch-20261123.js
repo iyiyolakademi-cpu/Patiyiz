@@ -26,7 +26,7 @@ bar.querySelector('[data-buchee-unread]').setAttribute('aria-pressed',String(unr
 for(const row of list.querySelectorAll('.pati-dm-list-row'))row.hidden=unreadOnly&&!row.querySelector('.chat-unread');
 }
 const setting=document.querySelector('[data-action="buchee-text-scale"] .pati-settings-copy small');
-if(setting){const current=document.documentElement.dataset.bucheeTextScale||'normal';setting.textContent='Şu an: '+(current==='normal'?'Normal':current==='large'?'Büyük':'Çok büyük')}
+if(setting){const current=document.documentElement.dataset.bucheeTextScale||'normal';{const label='Şu an: '+(current==='normal'?'Normal':current==='large'?'Büyük':'Çok büyük');if(setting.textContent!==label)setting.textContent=label}}
 }
 function schedule(){if(scheduled)return;scheduled=true;requestAnimationFrame(enhance)}
 document.addEventListener('click',e=>{
