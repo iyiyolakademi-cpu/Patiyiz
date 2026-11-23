@@ -21,7 +21,7 @@ if(touch.kind==='reel'&&(Math.abs(dx)>12||Math.abs(dy)>12)){clearTimeout(touch.t
 if(touch.kind==='message'){if(Math.abs(dy)>28){touch=null;return}if(dx>65&&!touch.triggered){touch.triggered=true;touch.el.classList.add('buchee-dm-swipe-reply','buchee-dm-swipe-active')}}}
 function end(){if(!touch)return;const state=touch;touch=null;clearTimeout(state.timer);
 if(state.kind==='reel'&&state.triggered&&held===state.video){held=null;state.el.classList.remove('buchee-reel-hold');if(state.wasPlaying&&state.video.isConnected)state.video.play().catch(()=>{})}
-if(state.kind==='message'&&state.triggered){state.el.classList.remove('buchee-dm-swipe-active');const id=state.el.dataset.messageId;const reply=state.el.querySelector('[data-action="dm-reply"]');if(reply)reply.click();else{const action=document.querySelector('.pati-dm-context-menu [data-action="dm-reply"]');if(action)action.click();else state.el.dispatchEvent(new CustomEvent('buchee:swipe-reply',{bubbles:true,detail:{id}}))}}
+if(state.kind==='message'&&state.triggered){state.el.classList.remove('buchee-dm-swipe-active');const id=state.el.dataset.messageId;const reply=state.el.querySelector('[data-action="dm-reply"]');if(reply)reply.click();else{const action=document.querySelector('.pati-dm-context-menu [data-action="dm-reply"]');if(action)action.click();else if(id){const b=document.createElement('button');b.type='button';b.hidden=true;b.dataset.action='dm-reply';b.dataset.id=id;state.el.append(b);b.click();b.remove()}}}
 }
 document.addEventListener('touchstart',start,{passive:true});document.addEventListener('touchmove',move,{passive:true});document.addEventListener('touchend',end,{passive:true});document.addEventListener('touchcancel',end,{passive:true});
 function enhance(){
