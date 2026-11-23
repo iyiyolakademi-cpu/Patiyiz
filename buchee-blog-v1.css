@@ -1,0 +1,27 @@
+/* Buchee Blog: long-form publishing within existing authenticated posts. */
+#pati-create-sheet .pati-create-choices{overflow-y:auto;overscroll-behavior:contain;max-height:min(70dvh,590px)}
+.buchee-blog-editor-intro{font-size:13px;line-height:1.6;color:#62666b;margin-bottom:16px}
+#post-form[data-mode="blog"] .modal-content{display:grid;gap:15px}
+#post-form[data-mode="blog"] .pati-field{display:grid;gap:7px}
+#post-form[data-mode="blog"] .pati-field label{font-weight:700;color:#171717}
+#post-form[data-mode="blog"] input[name="blog_title"],
+#post-form[data-mode="blog"] textarea[name="body"]{
+ width:100%;box-sizing:border-box;border:1px solid #d8dadd;border-radius:12px;
+ background:#fff;color:#151515;padding:13px 14px;font:inherit;
+}
+#post-form[data-mode="blog"] textarea[name="body"]{resize:vertical;min-height:260px;line-height:1.75}
+.buchee-blog-preview{padding:12px 0 8px;display:grid;gap:8px}
+.buchee-blog-type,.buchee-blog-kicker{font-size:10px;font-weight:800;letter-spacing:.13em;color:#717171}
+.buchee-blog-open{display:grid;gap:8px;text-align:left;border:0;background:transparent;color:#161616;padding:0;width:100%;cursor:pointer;font:inherit}
+.buchee-blog-open strong{font-size:clamp(20px,4.4vw,27px);line-height:1.25;letter-spacing:-.025em}
+.buchee-blog-open span{font-size:14px;color:#626262;line-height:1.65;overflow-wrap:anywhere}
+.buchee-blog-open em{font-size:13px;color:#222;font-weight:750;font-style:normal;text-decoration:underline;text-underline-offset:3px}
+.buchee-blog-reader-backdrop{z-index:30000!important;position:fixed!important;inset:0!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:12px!important;background:rgba(0,0,0,.55)!important;box-sizing:border-box!important}
+.buchee-blog-reader{display:flex!important;flex-direction:column!important;box-sizing:border-box!important;width:min(100%,900px)!important;max-width:900px!important;height:min(94dvh,1100px)!important;max-height:94dvh!important;overflow:hidden!important;background:#fff!important;border-radius:18px!important}
+.buchee-blog-reader .modal-header{flex:0 0 auto!important}
+.buchee-blog-article{flex:1;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;padding:clamp(20px,5vw,60px);color:#181818}
+.buchee-blog-article h1{font-size:clamp(27px,5vw,45px);line-height:1.2;letter-spacing:-.035em;margin:12px 0 18px;overflow-wrap:anywhere}
+.buchee-blog-byline{font-size:13px;color:#777;padding-bottom:22px;border-bottom:1px solid #ececec}
+.buchee-blog-article-body{max-width:690px;margin:26px auto 0;font-size:clamp(16px,2.3vw,19px);line-height:1.9;overflow-wrap:anywhere;white-space:normal}
+.buchee-blog-article-body p{margin:0 0 1.4em}
+@media(max-width:740px){.buchee-blog-reader-backdrop{padding:0!important}.buchee-blog-reader{height:100dvh!important;max-height:100dvh!important;border-radius:0!important}}
