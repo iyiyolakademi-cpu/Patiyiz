@@ -1,0 +1,35 @@
+/* Buchee mobile header: Instagram-style heart + messages, no tile backgrounds. */
+@media(max-width:900px){
+ html body #app-root>header.mobile-header>.pati-header-actions{
+  display:flex!important;grid-column:3!important;grid-row:1!important;position:static!important;
+  align-items:center!important;justify-content:flex-end!important;justify-self:end!important;
+  width:96px!important;min-width:96px!important;max-width:96px!important;height:48px!important;
+  gap:8px!important;margin:0!important;padding:0!important;transform:none!important;
+ }
+ html body #app-root>header.mobile-header>.pati-header-actions>#pati-header-notifications,
+ html body #app-root>header.mobile-header>.pati-header-actions>#buchee-header-messages{
+  display:flex!important;position:static!important;flex:0 0 44px!important;
+  align-items:center!important;justify-content:center!important;
+  width:44px!important;min-width:44px!important;max-width:44px!important;height:44px!important;min-height:44px!important;
+  margin:0!important;padding:8px!important;border:0!important;border-radius:0!important;
+  background:transparent!important;background-color:transparent!important;background-image:none!important;
+  color:#111!important;-webkit-text-fill-color:#111!important;box-shadow:none!important;filter:none!important;
+ }
+ html body #app-root>header.mobile-header>.pati-header-actions>#pati-header-notifications svg,
+ html body #app-root>header.mobile-header>.pati-header-actions>#buchee-header-messages svg{
+  width:27px!important;height:27px!important;min-width:27px!important;min-height:27px!important;
+  color:#111!important;stroke:#111!important;fill:none!important;
+ }
+ html body #app-root>header.mobile-header>.pati-header-actions>#pati-header-notifications svg *,
+ html body #app-root>header.mobile-header>.pati-header-actions>#buchee-header-messages svg *{
+  color:#111!important;stroke:#111!important;fill:none!important;
+ }
+ html body #app-root>header.mobile-header>.buchee-premium-wordmark{font-size:clamp(23px,6.2vw,31px)!important}
+ html body #app-root>header.mobile-header>#pati-feed-menu-trigger{width:42px!important;min-width:42px!important;height:42px!important;min-height:42px!important}
+ html body #app-root>header.mobile-header>#pati-feed-menu:not([hidden]){display:grid!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;z-index:300!important}
+ html body #app-root>header.mobile-header>#pati-feed-menu[hidden]{display:none!important}
+}
+@media(max-width:370px){
+ html body #app-root>header.mobile-header{padding:0 10px!important}
+ html body #app-root>header.mobile-header>.pati-header-actions{gap:0!important;width:88px!important;min-width:88px!important;max-width:88px!important}
+}
