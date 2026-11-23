@@ -1,0 +1,37 @@
+/* iPhone-safe fixed, centered five-choice menu and voice recording controls */
+@media(max-width:900px){
+html body #app-root>header.mobile-header>#pati-feed-menu:not([hidden]){
+position:fixed!important;inset:auto!important;top:calc(env(safe-area-inset-top,0px) + 104px)!important;
+left:50vw!important;right:auto!important;bottom:auto!important;
+width:min(440px,calc(100vw - 24px))!important;max-width:calc(100vw - 24px)!important;
+box-sizing:border-box!important;margin:0!important;
+translate:none!important;transform:translateX(-50%)!important;
+animation:none!important;transition:opacity .16s ease!important;
+max-height:min(430px,calc(100dvh - env(safe-area-inset-top,0px) - 135px))!important;
+overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain!important;
+-webkit-overflow-scrolling:touch!important;touch-action:pan-y!important;
+z-index:999999!important;border-radius:20px!important;padding:8px!important;
+}
+html body #app-root>header.mobile-header>#pati-feed-menu:not([hidden])>button{
+box-sizing:border-box!important;width:100%!important;flex:0 0 auto!important;
+min-height:70px!important;margin:0!important;
+}
+html body #app-root>header.mobile-header>#pati-feed-menu:not([hidden])>button .pati-feed-menu-label{
+min-width:0!important;overflow:hidden!important;
+}
+html body #app-root>header.mobile-header>#pati-feed-menu:not([hidden])>button .pati-feed-menu-label strong,
+html body #app-root>header.mobile-header>#pati-feed-menu:not([hidden])>button .pati-feed-menu-label small{
+overflow-wrap:anywhere!important;
+}
+}
+html[data-pati-view="messages"] #main-content .pati-dm-rec-state:not([hidden]){background:#fff!important;border:1px solid #dedede!important;box-shadow:0 4px 18px #0001!important}
+html[data-pati-view="messages"] #main-content .pati-dm-rec-state [data-action="dm-record-stop"]{
+background:#16a34a!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+border:1px solid #15803d!important;border-radius:12px!important;font-weight:750!important;
+box-shadow:none!important;opacity:1!important;
+}
+html[data-pati-view="messages"] #main-content .pati-dm-rec-state [data-action="dm-record-cancel"]{
+background:#dc2626!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+border:1px solid #b91c1c!important;border-radius:12px!important;font-weight:750!important;
+box-shadow:none!important;opacity:1!important;
+}
