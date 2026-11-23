@@ -8347,6 +8347,7 @@ async function remove(table,id){
  if(table==='posts'){
   const old=patiFindSocialPost(id);
   if(!me||!old||old.author_id!==me.id)return notify('Yalnızca kendi gönderini silebilirsin.',true);
+  if(!confirm('Bu gönderiyi kalıcı olarak silmek istediğine emin misin? Bu işlem geri alınamaz.'))return;
   await run(async()=>{
    const owner=me.id;
    const r=await sb.from('posts').delete().eq('id',id).eq('author_id',owner).select('id');
