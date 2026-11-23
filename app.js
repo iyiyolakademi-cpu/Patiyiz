@@ -3030,7 +3030,10 @@ const patiHomeIsMediaPost=p=>!bucheeIsTwit(p)&&(p.post_format==='reels'||!!(
  (Array.isArray(p.images)&&p.images.some(Boolean))||
  (Array.isArray(p.media_videos)&&p.media_videos.some(Boolean))
 ));
+// Home is a text-and-photo timeline; all video formats live in Reels only.
+const bucheeHomeTimelinePost=p=>!p?.video_url&&!(Array.isArray(p?.media_videos)&&p.media_videos.some(Boolean))&&p?.post_format!=='reels';
 function patiHomeCombinedFeed(posts,followingOnly=false){
+ posts=posts.filter(bucheeHomeTimelinePost);
  if(patiHomeContentMode==='all'){
   const preview=patiHomeQuestionsState.owner===me?.id?patiHomeQuestionsState.rows:[];
   const questions=[...new Map([...(data.questions||[]),...preview].filter(q=>q?.id).map(q=>[q.id,q])).values()].filter(q=>!blocked.has(q.author_id)&&(!followingOnly||followed.has(q.author_id)));
@@ -3104,7 +3107,7 @@ function homePage(){
   : patiHomeCombinedFeed(list);
  const nextHomeMarkup=selectedPostId
   ?bucheePostBackBar()+(data.posts.some(p=>p.id===selectedPostId&&!blocked.has(p.author_id))?postCard(data.posts.find(p=>p.id===selectedPostId)):empty('Paylaşım bulunamadı'))
-  :feedFilterBar+(patiHomeContentMode==='media'?storiesStrip():'')+'<div class="pati-feed-posts">'+(patiHomeContentMode==='media'&&typeof patiCollabInvites==='function'?patiCollabInvites():'')+feedContents+((typeof patiHomeLoadError!=='undefined'&&patiHomeLoadError)?'<div class="pati-load-more" role="alert">'+
+  :storiesStrip()+feedFilterBar+'<div class="pati-feed-posts">'+(patiHomeContentMode==='media'&&typeof patiCollabInvites==='function'?patiCollabInvites():'')+feedContents+((typeof patiHomeLoadError!=='undefined'&&patiHomeLoadError)?'<div class="pati-load-more" role="alert">'+
   esc(patiHomeLoadError)+' '+button('Tekrar dene','home-retry')+'</div>':'')
  +(following&&patiFollowingState.error?'<div class="pati-following-error" role="alert">'+esc(patiFollowingState.error)+' '+button('Yeniden dene','home-following-refresh')+'</div>':'')
  +(following&&patiFollowingState.ready&&patiFollowingState.hasMore?'<div class="pati-load-more">'+button('Daha fazla paylaşım yükle','home-following-more')+'</div>':'')
