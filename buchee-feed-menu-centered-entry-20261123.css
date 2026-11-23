@@ -1,0 +1,16 @@
+/* Center the five-option dropdown without horizontal entry drift. */
+@media(max-width:900px){
+ html body #app-root>header.mobile-header>#pati-feed-menu:not([hidden]){
+  left:50%!important;right:auto!important;
+  translate:-50% 0!important;transform:none!important;
+  animation:bucheeMenuVerticalOnly .2s ease-out both!important;
+  transform-origin:top center!important;
+ }
+}
+@keyframes bucheeMenuVerticalOnly{
+ from{opacity:0;transform:translateY(-7px)}
+ to{opacity:1;transform:translateY(0)}
+}
+@media(prefers-reduced-motion:reduce){
+ html body #app-root>header.mobile-header>#pati-feed-menu:not([hidden]){animation:none!important}
+}
