@@ -1263,7 +1263,6 @@ function patiEnsurePageBack(){
  btn.setAttribute('aria-label','Önceki ekrana dön');main.prepend(btn);
 }
 function render(){try{
- document.body.dataset.view=view;
  document.getElementById('app-root')?.classList.toggle('buchee-not-home',view!=='home');
  document.body.classList.toggle('buchee-not-home',view!=='home');
  for(const link of document.querySelectorAll('link[data-views]:not([href])')){
@@ -6284,7 +6283,6 @@ async function bucheePollVote(id,option){
   else if(result?.status==='created')notify('Oyun kaydedildi. Değiştirmek için 5 dakikan var.');
   else if(result?.status==='updated')notify('Oyun güncellendi.');
   await bucheePollResults(id);
-  if(['created','updated'].includes(result?.status))window.dispatchEvent(new CustomEvent('buchee:motion',{detail:{kind:'poll',id}}));
  }catch(e){notify('Oy işlemi tamamlanamadı. Bağlantını kontrol edip yeniden dene.',true)}
  finally{bucheePollBusy=false}
 }
@@ -7958,7 +7956,7 @@ async function publishMediaRecord(table,form,createRecord){
   }
   if(response.error)throw response.error;
   if(!response.data)throw Error('Paylaşım kaydı doğrulanamadı.');
-  recordMetric('success');window.dispatchEvent(new CustomEvent('buchee:motion',{detail:{kind:'published',id}}));const media=globalThis.PatiyizPrivateMedia;
+  recordMetric('success');const media=globalThis.PatiyizPrivateMedia;
   return media?(await media.hydrateRows([response.data],owner,sb))[0]:response.data;
  }catch(error){
   const checked=await checkPublishedRecord(table,id,owner);
@@ -8362,7 +8360,6 @@ async function togglePostLike(id){
   document.querySelectorAll('.pati-feed-card[data-post-id="'+id+'"] .pati-post-like-summary')
    .forEach(el=>{if(el.querySelector('.buchee-liked-caption'))bucheeUpdateLikeSummary(id,count);else el.textContent=count+' beğeni';});
   if(savedLike&&togglePostLike.heartTargets?.has(id))window.PatiyizMotion?.heart(togglePostLike.heartTargets.get(id));
-  if(savedLike)window.dispatchEvent(new CustomEvent('buchee:motion',{detail:{kind:'like',id}}));
  }catch(error){
   console.warn('Beğeni kalıcılık kontrolü:',error);
   buttons.forEach(btn=>{btn.classList.toggle('active',wasLiked);btn.setAttribute('aria-pressed',String(wasLiked));const label=btn.querySelector('.pati-reel-count')||btn.querySelector('span');if(label)label.textContent=String(previousCount)});
@@ -8413,7 +8410,6 @@ async function togglePostSave(id){
   });
   if(typeof patiEngagementCounts!=='undefined'&&typeof patiScheduleEngagement==='function'){patiEngagementCounts.delete(id);patiScheduleEngagement();}
   notify(stored?'Gönderi kaydedildi. Kaydettiklerim bölümünde bulabilirsin.':'Gönderi kayıtlardan kaldırıldı.');
-  if(stored)window.dispatchEvent(new CustomEvent('buchee:motion',{detail:{kind:'save',id}}));
   if(stored && window.PatiyizSavedV2 && view!=='saved-posts'){
    window.PatiyizSavedV2.choose(id,{
     data,me,saved,blocked,sb,navigate,openPost,fetchMissingSavedPosts,notify,rerender:render
