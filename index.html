@@ -633,14 +633,14 @@ body #pati-create-sheet .pati-create-dismiss:focus-visible{
 <script defer src="buchee-single-feed-switch-20261123.js?v=3-account-modes"></script>
 <link rel="stylesheet" href="buchee-activity-reels-nav-20261123.css?v=1">
 
-<script defer src="buchee-feed-selector-reliable-20261123.js?v=1"></script>
+<!-- Legacy three-mode feed selector disabled: replaced by Tümü / Takip Ettiklerim / Blog -->
 
 
 <link rel="stylesheet" href="buchee-feed-caption-two-lines-20261123.css?v=1">
 <script defer src="buchee-feed-caption-two-lines-20261123.js?v=1"></script>
 
 <!-- Home feed filters intentionally visible below stories; obsolete hide rule removed. -->
-<script defer src="buchee-unified-home-stream-20261123.js?v=20261123-blog-menu-v1"></script>
+<script defer src="buchee-unified-home-stream-20261123.js?v=20261123-blog-menu-fixed-v2"></script>
 
 <link rel="stylesheet" href="buchee-feed-menu-inner-scroll-20261123.css?v=1">
 <link rel="stylesheet" href="buchee-feed-menu-centered-entry-20261123.css?v=1">
@@ -650,7 +650,7 @@ body #pati-create-sheet .pati-create-dismiss:focus-visible{
 <link rel="stylesheet" href="buchee-mobile-menu-voice-final-20261123.css?v=1">
 <link rel="stylesheet" href="buchee-message-rebuild-20261123.css?v=1">
 
-<link rel="stylesheet" href="buchee-reels-account-follow-green-20261123.css?v=1">
+<!-- Removed legacy black Reels account overlay CSS -->
 
 
 <link rel="stylesheet" href="buchee-compact-header-followback-20261123.css?v=1">
@@ -692,4 +692,24 @@ max-width:23px!important;max-height:23px!important;flex:0 0 23px!important;strok
 <link rel="stylesheet" href="buchee-user-polls-20261123.css?v=20261123-compose-header-fix">
 <link rel="stylesheet" href="buchee-explore-content-20261123.css?v=20261123-clean-legacy-v1">
 <link rel="stylesheet" href="patiyiz-explore-choice-20261101.css?v=20261123-reels-discovery-v1">
+<style id="buchee-final-layout-override-20261123">
+/* The last-loaded rules win over all legacy home and Reels styles. */
+#main-content .buchee-home-stories-and-tabs .stories-section,
+#main-content .buchee-home-stories-and-tabs .stories-strip{padding-left:0!important;margin-left:0!important}
+#main-content .buchee-home-stories-and-tabs .story-person:first-child{margin-left:0!important}
+#main-content .pati-feed-posts>.pati-feed-card,
+#main-content .pati-feed-posts>.pati-home-question,
+#main-content .pati-feed-posts>.pati-card,
+#main-content .pati-feed-posts>article{border-bottom:1px solid #222!important;border-radius:0!important;box-shadow:none!important}
+html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-info,
+html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-author,
+html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-caption,
+html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-caption-text,
+html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-author span,
+html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-author strong,
+html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-author small{background:transparent!important;background-color:transparent!important;background-image:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:none!important}
+html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-info::before,
+html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-info::after{background:none!important;box-shadow:none!important}
+#main-content .pati-explore-search-launch{min-height:50px!important;width:100%!important;padding:12px 16px!important;border:1px solid #e7e7e7!important;border-radius:14px!important;font-size:15px!important;background:#f7f7f8!important;box-sizing:border-box!important}
+</style>
 </body></html>
