@@ -5,7 +5,7 @@ function setup(){
  const menu=document.getElementById('pati-feed-menu');if(!menu)return;
  const original=[...menu.querySelectorAll(':scope > button[data-pati-feed-choice]')];
  original.forEach(b=>b.remove());
- const choices=[['all','Herkes','Tüm hesapların paylaşımları'],['following','Takip Ettiklerin','Yalnızca takip ettiğin hesaplar']];
+ const choices=[['all','Tümü','Resimli tweetler, yazılar ve sorular'],['following','Takip Ettiklerim','Takip ettiğin hesapların paylaşımları']];
  choices.forEach(([mode,title,description])=>{
   let b=menu.querySelector('[data-buchee-account-filter="'+mode+'"]');
   if(!b){
@@ -16,6 +16,8 @@ function setup(){
   }
   b.querySelector('strong').textContent=title;b.querySelector('small').textContent=description;
  });
+ let blogButton=menu.querySelector('[data-action="buchee-blog-directory"]');
+ if(!blogButton){blogButton=document.createElement('button');blogButton.type='button';blogButton.dataset.action='buchee-blog-directory';blogButton.setAttribute('role','menuitem');blogButton.innerHTML='<span class="pati-feed-menu-label"><strong>Blog</strong><small>Yalnızca blog yazılarını keşfet</small></span>';menu.appendChild(blogButton);}
  const current=document.querySelector('.buchee-home-feed-filters [aria-pressed="true"]')?.dataset.id||'all';
  const trigger=document.getElementById('pati-feed-menu-trigger');
  if(trigger){trigger.title='Akışı değiştir: Tümü veya Takip Ettiklerim';trigger.setAttribute('aria-label','Akışı değiştir: Tümü veya Takip Ettiklerim');}
