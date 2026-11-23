@@ -3178,8 +3178,8 @@ function homePage(){
   main.__bucheeHomeMarkup=nextHomeMarkup;
  }
  const shortcut=typeof document!=='undefined'?document.getElementById('pati-header-following-btn'):null;
- if(shortcut){shortcut.textContent=following?'Senin İçin':'Takip Ettiklerim';shortcut.dataset.id=following?'all':'following';shortcut.setAttribute('aria-pressed',String(following));}
- if(typeof patiSyncHomePostCounts==='function')void patiSyncHomePostCounts(selectedPostId?list.filter(p=>p.id===selectedPostId):visiblePosts);
+ if(shortcut){shortcut.textContent=patiHomeTab==='all'?'Twit ve Anketler':'Gönderiler ve Sorular';shortcut.dataset.id=patiHomeTab==='all'?'following':'all';shortcut.setAttribute('aria-pressed',String(patiHomeTab==='following'));}
+ if(typeof patiSyncHomePostCounts==='function')void patiSyncHomePostCounts(selectedPostId?list.filter(p=>p.id===selectedPostId):list);
 }
 
 let savedPostsLoading=false;const savedMissingAttempted=new Set();
