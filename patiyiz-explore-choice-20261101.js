@@ -92,7 +92,7 @@ document.addEventListener('click',event=>{
     for(const el of [...unseen,...seen])content.querySelector('.buchee-explore-grid')?.appendChild(el);
    }else{
     const native=main.querySelector('.pati-explore-media-screen .pati-explore-sort [data-action="explore-sort"][data-id="'+(['recent','views','likes'].includes(mode)?mode:'popular')+'"]');
-    if(native){native.click();schedule();return}
+    if(native){const already=native.getAttribute('aria-pressed')==='true';if(!already)native.click();else window.bucheeExploreRefresh?.();schedule();return}
    }
   }
   schedule();
