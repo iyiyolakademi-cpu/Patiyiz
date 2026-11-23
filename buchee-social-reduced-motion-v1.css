@@ -1,0 +1,16 @@
+/* Buchee social accessibility: reduce decorative motion without changing
+   message delivery, feed navigation, reel playback or scroll snapping. */
+@media (prefers-reduced-motion: reduce) {
+  html[data-pati-view="home"] #main-content .pati-post-card,
+  html[data-pati-view="reels"] #main-content .pati-reel-item,
+  html[data-pati-view="messages"] #main-content .pati-dm-bubble,
+  html[data-pati-view="profile"] #main-content .pati-profile-post {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html[data-pati-view="reels"] #main-content .pati-reels-viewport,
+  html[data-pati-view="messages"] #main-content .pati-dm-history {
+    scroll-behavior: auto !important;
+  }
+}
