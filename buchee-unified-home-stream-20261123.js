@@ -25,6 +25,8 @@ function setup(){
  menu.querySelectorAll('[data-buchee-account-filter]').forEach(b=>b.setAttribute('aria-checked',String(b.dataset.bucheeAccountFilter===current)));
 }
 document.addEventListener('click',e=>{
+ const blog=e.target.closest?.('#pati-feed-menu [data-action="buchee-blog-directory"]');
+ if(blog){e.preventDefault();const menu=document.getElementById('pati-feed-menu');if(menu){menu.hidden=true;menu.style.setProperty('display','none','important')}document.getElementById('pati-feed-menu-trigger')?.setAttribute('aria-expanded','false');return;}
  const item=e.target.closest?.('#pati-feed-menu [data-buchee-account-filter]');if(!item)return;
  e.preventDefault();e.stopImmediatePropagation();
  const mode=item.dataset.bucheeAccountFilter;
