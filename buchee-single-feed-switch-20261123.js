@@ -5,7 +5,7 @@
  function cleanup(){
    const header=document.querySelector('#app-root > header.mobile-header');
    if(!header)return;
-   header.querySelectorAll('#buchee-home-feed-switch,.buchee-home-feed-switch,.buchee-extra-feed-switch').forEach(el=>el.remove());
+   header.querySelectorAll('#buchee-feed-shortcut,#buchee-home-feed-switch,.buchee-home-feed-switch,.buchee-extra-feed-switch').forEach(el=>el.remove());
    const main=header.querySelector('#pati-feed-menu-trigger');
    if(main){
      main.setAttribute('aria-haspopup','menu');
