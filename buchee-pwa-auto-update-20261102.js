@@ -5,11 +5,11 @@
  if(!('serviceWorker' in navigator)||!window.isSecureContext)return;
  let checking=false;let lastReload=0;
  // Keep existing automatic update detection. Do not replace data stored by the app.
- const version='20261104-single-neon-launch';
+ const version='20261124-design-release';
  async function check(){
   if(checking||!navigator.onLine)return;checking=true;
   try{
-   const reg=await navigator.serviceWorker.register('./patiyiz-sw.js',{scope:'./',updateViaCache:'none'});
+   const reg=await navigator.serviceWorker.register('./patiyiz-sw.js?v='+version,{scope:'./',updateViaCache:'none'});
    await reg.update();
    if(reg.waiting&&navigator.serviceWorker.controller)reg.waiting.postMessage({type:'BUCHEE_SKIP_WAITING'});
   }catch(e){console.warn('BucheeSocial update check:',e)}finally{checking=false}
