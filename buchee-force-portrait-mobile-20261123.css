@@ -1,0 +1,22 @@
+/* Force the original portrait phone viewport to remain visually upright on rotation.
+   iOS Safari cannot reliably lock screen.orientation; counter-rotate the entire UI. */
+@media (orientation:landscape) and (pointer:coarse) and (max-height:650px){
+ html{width:100%!important;height:100%!important;overflow:hidden!important;background:#fff!important}
+ body{position:fixed!important;top:0!important;left:100dvw!important;width:100dvh!important;min-width:100dvh!important;max-width:100dvh!important;height:100dvw!important;min-height:100dvw!important;max-height:100dvw!important;margin:0!important;transform:rotate(90deg)!important;transform-origin:top left!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important}
+ #app-root,#auth-root{width:100%!important;max-width:100%!important;min-height:100%!important}
+ #app-root>.app-shell{display:block!important;width:100%!important;max-width:590px!important;grid-template-columns:none!important;margin:0 auto!important;padding:0 0 110px!important}
+ #app-root>.app-shell>.sidebar,#app-root>.app-shell>.right-rail{display:none!important}
+ #app-root>.app-shell>.main{width:100%!important;max-width:100%!important;padding:0 13px!important;margin:0!important}
+ #app-root>header.mobile-header{display:flex!important;width:100%!important;max-width:590px!important;margin:0 auto!important}
+ #app-root>#mobile-nav,#app-root>.mobile-bottom{display:flex!important;position:fixed!important;bottom:0!important;left:0!important;right:0!important;z-index:80!important}
+ #pati-portrait-required{display:none!important}
+}
+@media (orientation:landscape) and (pointer:coarse) and (max-height:650px){
+ #app-root>header.mobile-header{display:block!important}
+}
+.buchee-post-option .buchee-post-option-icon,
+.buchee-post-option:not(.is-danger) .buchee-post-option-icon,
+.buchee-post-option:not(.is-danger) .buchee-post-option-icon::before{background:#f0f0f0!important;background-image:none!important;border-color:#e6e6e6!important;color:#111!important;box-shadow:none!important}
+.buchee-post-option:not(.is-danger) .buchee-post-option-icon svg,
+.buchee-post-option:not(.is-danger) .buchee-post-option-icon svg *,
+.buchee-post-option:not(.is-danger) .buchee-post-option-icon .icon{stroke:#111!important;color:#111!important;fill:none!important}
