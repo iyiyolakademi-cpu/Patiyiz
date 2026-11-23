@@ -1,0 +1,19 @@
+/* Buchee profile and creator insights visual refinement. Presentation only. */
+html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-ig-summary{padding-bottom:5px!important}
+html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-ig-stats{margin-top:3px!important}
+html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-ig-actions.pati-own-profile-actions{gap:9px!important;padding:6px 12px 8px!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-own-profile-actions>.soft-btn,
+html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-own-profile-actions>.pati-profile-insights-preview{height:44px!important;min-height:44px!important;max-height:44px!important;border-radius:10px!important;font-size:13px!important;font-weight:750!important}
+html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-own-profile-actions>.soft-btn{background:#111!important;border-color:#111!important;color:#fff!important}
+html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-own-profile-actions>.pati-profile-insights-preview{background:#fff!important;border:1px solid #d8d8d8!important;color:#111!important}
+.pati-creator-dashboard .pati-creator-container{padding-bottom:calc(22px + env(safe-area-inset-bottom,0px))!important}
+.pati-creator-dashboard .pati-creator-head{min-height:58px!important;padding-bottom:7px!important}
+.pati-creator-dashboard button:focus-visible,
+html[data-pati-view="profile"] .pati-own-profile-actions button:focus-visible{outline:2px solid #111!important;outline-offset:2px!important}
+.pati-creator-dashboard [aria-busy="true"]:empty,
+.pati-creator-dashboard .pati-creator-scroll:empty{min-height:130px!important;display:grid!important;place-items:center!important}
+.pati-creator-dashboard [aria-busy="true"]:empty::after,
+.pati-creator-dashboard .pati-creator-scroll:empty::after{content:"Yükleniyor…";font-size:13px;color:#666;letter-spacing:.01em;animation:buchee-loading-pulse 1.3s ease-in-out infinite}
+@keyframes buchee-loading-pulse{0%,100%{opacity:.45}50%{opacity:1}}
+@media(prefers-reduced-motion:reduce){.pati-creator-dashboard [aria-busy="true"]:empty::after,.pati-creator-dashboard .pati-creator-scroll:empty::after{animation:none}}
+@media(max-width:400px){html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-own-profile-actions>.soft-btn,html[data-pati-view="profile"] #main-content .pati-ig-profile .pati-own-profile-actions>.pati-profile-insights-preview{font-size:12px!important}}
