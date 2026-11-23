@@ -1,11 +1,10 @@
-/* Keep original three content modes; add two account filters. */
+/* Single photo/text/question home feed: switch only between all users and followed users. */
 (()=>{
 'use strict';
 function setup(){
  const menu=document.getElementById('pati-feed-menu');if(!menu)return;
  const original=[...menu.querySelectorAll(':scope > button[data-pati-feed-choice]')];
- if(original.length!==3)return;
- original.forEach(b=>b.removeAttribute('data-buchee-stream'));
+ original.forEach(b=>b.remove());
  const choices=[['all','Herkes','Tüm hesapların paylaşımları'],['following','Takip Ettiklerin','Yalnızca takip ettiğin hesaplar']];
  choices.forEach(([mode,title,description])=>{
   let b=menu.querySelector('[data-buchee-account-filter="'+mode+'"]');
@@ -18,6 +17,9 @@ function setup(){
   b.querySelector('strong').textContent=title;b.querySelector('small').textContent=description;
  });
  const current=document.querySelector('.buchee-home-feed-filters [aria-pressed="true"]')?.dataset.id||'all';
+ const trigger=document.getElementById('pati-feed-menu-trigger');
+ if(trigger){trigger.title='Akışı değiştir: Tümü veya Takip Ettiklerim';trigger.setAttribute('aria-label','Akışı değiştir: Tümü veya Takip Ettiklerim');}
+ menu.setAttribute('aria-label','Akışı değiştir');
  menu.querySelectorAll('[data-buchee-account-filter]').forEach(b=>b.setAttribute('aria-checked',String(b.dataset.bucheeAccountFilter===current)));
 }
 document.addEventListener('click',e=>{
