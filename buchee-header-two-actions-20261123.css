@@ -33,3 +33,24 @@
  html body #app-root>header.mobile-header{padding:0 10px!important}
  html body #app-root>header.mobile-header>.pati-header-actions{gap:0!important;width:88px!important;min-width:88px!important;max-width:88px!important}
 }
+
+/* Final header correction: left activity heart and right messages, both plain. */
+@media(max-width:900px){
+ #app-root>header.mobile-header>.pati-header-actions{display:flex!important;flex-direction:row!important;gap:6px!important}
+ #app-root>header.mobile-header>.pati-header-actions>#pati-header-notifications{
+  order:1!important;background:transparent!important;background-color:transparent!important;background-image:none!important;
+  border:none!important;box-shadow:none!important;border-radius:0!important;filter:none!important;
+  color:#111!important;-webkit-text-fill-color:#111!important;
+ }
+ #app-root>header.mobile-header>.pati-header-actions>#buchee-header-messages{
+  order:2!important;background:transparent!important;background-color:transparent!important;background-image:none!important;
+  border:none!important;box-shadow:none!important;border-radius:0!important;filter:none!important;
+  color:#111!important;-webkit-text-fill-color:#111!important;
+ }
+ #app-root>header.mobile-header>.pati-header-actions>#pati-header-notifications svg,
+ #app-root>header.mobile-header>.pati-header-actions>#pati-header-notifications svg *,
+ #app-root>header.mobile-header>.pati-header-actions>#buchee-header-messages svg,
+ #app-root>header.mobile-header>.pati-header-actions>#buchee-header-messages svg *{
+  color:#111!important;stroke:#111!important;fill:none!important;
+ }
+}
