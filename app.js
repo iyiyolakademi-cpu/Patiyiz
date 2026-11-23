@@ -3360,10 +3360,19 @@ function explorePage(){
     '<span class="pati-explore-preview-video" role="img" aria-label="Video önizlemesi">▶</span>';
    return '<button type="button" class="pati-explore-media" data-action="explore-open-post" data-id="'+esc(p.id)+'" data-explore-rank="'+i+'" data-explore-author="'+esc(p.author_id||'')+'" data-explore-following="'+(typeof followed!=='undefined'&&followed.has(p.author_id))+'" data-explore-kind="'+(video?'video':'photo')+'" aria-label="'+esc(authorName)+' paylaşımını aç">'+preview+(video?'<span class="pati-explore-video-icon" aria-label="Video">'+ico('reels-tab')+'</span>':'')+'</button>';
   }).join('');
-  main.innerHTML='<section class="pati-explore-media-screen" aria-label="Keşfet gönderileri"><button type="button" class="pati-explore-search-launch" data-action="pati-search-open" aria-label="Kullanıcı ara">'+ico('search')+'<span>Kullanıcı ara</span></button>'+'<div class="pati-explore-sort" role="group" aria-label="Keşfet sıralaması">'+[['popular','Öne çıkanlar'],['views','Çok izlenen'],['likes','Çok beğenilen'],['recent','En yeni']].map(([mode,label])=>'<button type="button" class="'+(selectedSort===mode?'active':'')+'" aria-pressed="'+(selectedSort===mode)+'" data-action="explore-sort" data-id="'+mode+'">'+label+'</button>').join('')+'</div>'+
-   bucheeExploreContentSection()+
-      (page?.error?'<p class="pati-search-empty" role="alert">'+esc(page.error)+'</p>':'')+
-   (page?.loading?'<p class="pati-search-empty" role="status">Yeni paylaşımlar getiriliyor…</p>':page?.hasMore||page?.error?'<div class="pati-explore-load-more">'+button(page.error?'Tekrar dene':'Daha fazla paylaşım yükle','explore-more')+'</div>':'')+'</section>';
+  const reels=media.filter(p=>p.video_url||(Array.isArray(p.media_videos)&&p.media_videos.some(Boolean)));
+  const reelTiles=reels.map((p,i)=>{
+   const cover=p.video_cover_url||p.image_url||(Array.isArray(p.images)?p.images.find(Boolean):'');
+   const metric=patiExploreMetric(p);
+   const views=Number(metric.views)||0;
+   const count=views>=1000000?(views/1000000).toLocaleString('tr-TR',{maximumFractionDigits:1})+' Mn':views>=1000?(views/1000).toLocaleString('tr-TR',{maximumFractionDigits:1})+' B':views.toLocaleString('tr-TR');
+   const preview=cover?'<img src="'+esc(cover)+'" loading="'+(i<6?'eager':'lazy')+'" decoding="async" alt="Reels kapağı">':'<span class="buchee-reels-empty-cover">▶</span>';
+   return '<button type="button" class="buchee-reels-discovery-tile" data-action="explore-open-post" data-id="'+esc(p.id)+'" aria-label="Reels paylaşımını aç">'+preview+'<span class="buchee-reels-view-count">'+ico('play')+' '+count+'</span></button>';
+  }).join('');
+  const recommendations=(data.profiles||[]).filter(p=>p.id&&p.id!==me.id&&!blocked.has(p.id)&&!followed.has(p.id))
+   .sort((a,b)=>Number(b.followers_count||0)-Number(a.followers_count||0)||String(a.id).localeCompare(String(b.id))).slice(0,3);
+  const suggestions=recommendations.map(p=>'<article class="buchee-discover-person"><button type="button" class="buchee-discover-person-link" data-action="view-user" data-id="'+esc(p.id)+'">'+avatar(p,'m')+'<strong>'+esc(p.display_name||p.handle||'Buchee üyesi')+'</strong><small>@'+esc(p.handle||'kullanici')+'</small></button><button type="button" class="buchee-discover-follow" data-action="follow" data-id="'+esc(p.id)+'">Takip Et</button></article>').join('');
+  main.innerHTML='<section class="buchee-reels-discovery" aria-label="Reels keşfet"><h1>Keşfet</h1><button type="button" class="pati-explore-search-launch" data-action="pati-search-open" aria-label="Kullanıcı ara">'+ico('search')+'<span>Kullanıcı ara</span></button><div class="pati-explore-sort" role="group" aria-label="Keşfet sıralaması">'+[['popular','Senin için'],['views','Çok izlenen'],['likes','Çok beğenilen'],['recent','En yeni']].map(([mode,label])=>'<button type="button" class="'+(selectedSort===mode?'active':'')+'" aria-pressed="'+(selectedSort===mode)+'" data-action="explore-sort" data-id="'+mode+'">'+label+'</button>').join('')+'</div><div class="buchee-reels-discovery-grid">'+(reelTiles||'<p class="buchee-reels-discovery-empty">Henüz keşfedilecek Reels bulunamadı.</p>')+'</div>'+(suggestions?'<section class="buchee-discover-people" aria-label="Önerilen kullanıcılar"><h2>Önerilen Kullanıcılar</h2><div class="buchee-discover-people-grid">'+suggestions+'</div></section>':'')+(page?.error?'<p role="alert">'+esc(page.error)+'</p>':'')+(page?.loading?'<p role="status">Yeni Reels içerikleri yükleniyor…</p>':page?.hasMore||page?.error?'<div class="pati-explore-load-more">'+button(page.error?'Tekrar dene':'Daha fazla Reels yükle','explore-more')+'</div>':'')+'</section>';
   if(typeof patiExploreLazyVideos==='function')patiExploreLazyVideos();
   return;
  }
