@@ -48,8 +48,13 @@
     const reel=button.closest('.pati-reel-item');
     const comment=reel?.querySelector('.pati-reel-rail [data-action="comment"]');
     if(comment){comment.click();return;}
-    const caption=button.closest('.pati-reel-caption');
-    if(caption){caption.classList.toggle('is-expanded');}
+    // Keep the Instagram-style comments flow even if the rail was re-rendered.
+    const postId=reel?.dataset.post;
+    if(postId){
+      const proxy=document.createElement('button');
+      proxy.type='button';proxy.dataset.action='comment';proxy.dataset.id=postId;
+      proxy.hidden=true;main.appendChild(proxy);proxy.click();proxy.remove();
+    }
 
   }, true);
 
