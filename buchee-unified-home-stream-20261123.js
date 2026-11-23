@@ -4,5 +4,6 @@ function sync(){const menu=m(),trigger=t();if(!menu||!trigger)return;menu.queryS
 function go(action){open=false;sync();const root=document.getElementById('main-content');if(!root)return;const proxy=document.createElement('button');proxy.type='button';proxy.dataset.action=action;proxy.hidden=true;root.appendChild(proxy);proxy.click();proxy.remove();}
 document.addEventListener('click',e=>{if(e.target.closest?.('#pati-feed-menu-trigger')){e.preventDefault();e.stopImmediatePropagation();open=!open;sync();return;}const b=e.target.closest?.('#pati-feed-menu [data-action]');if(b&&['buchee-blog-home','buchee-blog-directory'].includes(b.dataset.action)){e.preventDefault();e.stopImmediatePropagation();go(b.dataset.action);return;}if(open&&!e.target.closest?.('#pati-feed-menu')){open=false;sync();}},true);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&open){open=false;sync();t()?.focus();}},true);
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sync,{once:true});else sync();
+function init(){sync();const header=document.querySelector('#app-root > .mobile-header');if(header){const observer=new MutationObserver(()=>{if(!m()||!t())return;const menu=m();if(menu.hidden===open)sync();});observer.observe(header,{childList:true,subtree:false});}}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
