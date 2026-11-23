@@ -36,6 +36,9 @@
   function makeMenu(brand,kind){
     if(!brand)return;
     const isMobile=kind==='mobile';
+    // The mobile Content/Blog selector is exclusively managed by buchee-unified-home-stream.
+    // Retain this legacy controller only for the desktop feed selector.
+    if(isMobile)return;
     const triggerId=isMobile?'pati-feed-menu-trigger':'pati-feed-desktop-trigger';
     const menuId=isMobile?'pati-feed-menu':'pati-feed-desktop-menu';
     let trigger=document.getElementById(triggerId);
