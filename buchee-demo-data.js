@@ -176,10 +176,21 @@ function bucheeDemoData(id) {
   ['Reels’te en çok hangisini izliyorsun?',['Gezi','Günlük hayat','Kültür ve sanat']],
   ['Kahve molasında yanında ne olsun?',['Kitap','Müzik','Arkadaş sohbeti']]
  ].map(([question,options],i)=>({id:'demo-poll-'+i,author_id:profiles[16+i].id,question,options,ends_at:ago(-4080),created_at:ago(78+i*131)}));
- return {profiles,posts,stories,questions,replies,messages,comments,follows,likes,saves,notifications,collaborators,viewTotals,polls};
+ const buchee_account_country=[
+  {user_id:id,country_code:'TR',show_country:false},
+  {user_id:'ece',country_code:'TR',show_country:true},
+  {user_id:'mert',country_code:'TR',show_country:false}
+ ];
+ return {profiles,posts,stories,questions,replies,messages,comments,follows,likes,saves,notifications,collaborators,viewTotals,polls,buchee_account_country};
 }
 
 function bucheeDemoRpc(tables,name,args={}) {
+ if(name==='buchee_account_about'){
+  const viewer=tables.profiles[0].id,profile=tables.profiles.find(row=>row.id===args.p_account_id);
+  if(!profile||(profile.is_private&&profile.id!==viewer&&!tables.follows.some(row=>row.follower_id===viewer&&row.followee_id===profile.id)))return bucheeDemoQuery([]);
+  const country=tables.buchee_account_country.find(row=>row.user_id===profile.id&&row.show_country);
+  return bucheeDemoQuery([{joined_month:profile.created_at?profile.created_at.slice(0,7)+'-01':null,country_code:country?.country_code||null}]);
+ }
  const countByPost = records => {
   const counts=new Map();
   for(const row of records)counts.set(row.post_id,(counts.get(row.post_id)||0)+1);
@@ -242,7 +253,10 @@ function bucheeDemoQuery(source, writable=false) {
   single() { single=true; return this; },
   maybeSingle() { return this.single(); },
   insert(input) { return mutate('insert',input); },
-  upsert(input) { return mutate('upsert',input); },
+  upsert(input,options) {
+   mutation={kind:'upsert',input,keys:(options?.onConflict||'user_id,post_id').split(','),ignoreDuplicates:options?.ignoreDuplicates};
+   return this;
+  },
   delete() { return mutate('delete'); },
   update(input) { return mutate('update',input); },
   then(resolve,reject) {
@@ -250,10 +264,12 @@ function bucheeDemoQuery(source, writable=false) {
     if(!writable)return Promise.resolve({data:null,error:{message:'Bu işlem demo modunda kullanılamıyor.'},count:0}).then(resolve,reject);
     const {kind,input}=mutation;
     if(kind==='insert'||kind==='upsert'){
-     rows=[input].flat().map(row=>({id:crypto.randomUUID(),created_at:new Date().toISOString(),...row}));
-     for(const row of rows){
-      const duplicate=kind==='upsert'&&source.find(item=>item.user_id===row.user_id&&item.post_id===row.post_id);
+     const records=[input].flat();
+     rows=records.map(row=>({id:crypto.randomUUID(),created_at:new Date().toISOString(),...row}));
+     for(const [index,row] of rows.entries()){
+      const duplicate=kind==='upsert'&&source.find(item=>mutation.keys.every(key=>item[key]===row[key]));
       if(!duplicate)source.push(row);
+      else if(!mutation.ignoreDuplicates)Object.assign(duplicate,records[index]);
      }
     }else if(kind==='update'){
      rows.forEach(row=>Object.assign(row,input));

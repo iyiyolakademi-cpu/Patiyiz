@@ -274,8 +274,8 @@ window.BUCHEE_RELEASE="20261123-blog-content-v4";
 <script src="patiyiz-saved-priority-20261031.js?v=20261124-priority-color-v2" defer></script>
 <script src="patiyiz-private-media-20261031.js?v=20261105-media-cache-perf-v2" defer></script>
 <script src="buchee-twit-photo-crop-20261123.js?v=1" defer></script>
-<script src="buchee-demo-data.js?v=5" defer></script>
-<script src="app.js?v=20261127-reel-preferences-v1" defer></script>
+<script src="buchee-demo-data.js?v=6" defer></script>
+<script src="app.js?v=20261127-account-about-v1" defer></script>
 <script src="patiyiz-header-feed-menu-20261031.js?v=20261124-desktop-only-v8"></script>
 <script src="patiyiz-dm-emoji-picker-20261101.js?v=1" defer></script>
 <style id="pati-critical-mobile-feed-20261101">
@@ -1246,4 +1246,19 @@ html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-utility>.p
 .buchee-reel-preference-actions button[aria-pressed="true"]{background:#222;color:#fff}
 .buchee-reel-preference-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-top:1px solid #ddd}
 .buchee-reel-preference-row small{display:block;color:#52525a}
+
+.buchee-account-about{display:grid;gap:14px;color:#252333}
+.buchee-account-about p{margin:0}
+.buchee-account-about-identity{display:flex;align-items:center;gap:12px;padding:14px;border-radius:16px;background:#f2efff}
+.buchee-account-about-identity small{display:block;color:#514969;margin-top:3px}
+.buchee-account-about dl{display:grid;margin:0}
+.buchee-account-about dl div{display:grid;gap:4px;padding:12px 0;border-bottom:1px solid #ece9f2}
+.buchee-account-about dt{font-size:13px;color:#514969}
+.buchee-account-about dd{margin:0;font-weight:650}
+.buchee-account-about select{width:100%;min-height:44px;border:1px solid #dcd7e6;border-radius:10px;padding:6px 10px}
+.buchee-account-about-opt-in{display:flex;align-items:flex-start;gap:8px}
+@media(max-width:740px){
+ #modal-root .modal-backdrop:has(#buchee-account-about-form){align-items:flex-end;padding:0}
+ #modal-root .modal:has(#buchee-account-about-form){width:100%;border-radius:22px 22px 0 0;padding-bottom:env(safe-area-inset-bottom,0px)}
+}
 </style></body></html>
