@@ -3405,12 +3405,13 @@ function explorePage(){
   const q=String(search||'').trim().toLocaleLowerCase('tr-TR');
   const remote=typeof patiExploreUsers!=='undefined'&&patiExploreUsers.owner===me.id&&patiExploreUsers.query===String(search).trim().slice(0,50)?patiExploreUsers:null;
   const recentIds=patiRecentSearchIds();
-  const source=q?(remote?.ready?[...remote.rows,...data.profiles]:data.profiles):data.profiles.filter(p=>recentIds.includes(p.id));
-  const users=[...new Map(source.map(p=>[p.id,p])).values()].filter(p=>p.id!==me.id&&!blocked.has(p.id)&&(String(p.handle||'')+' '+String(p.display_name||'')+' '+String(p.city||'')).toLocaleLowerCase('tr-TR').includes(q))
-   .sort((a,b)=>!q?(recentIds.indexOf(a.id)-recentIds.indexOf(b.id)):Number(followed.has(b.id))-Number(followed.has(a.id))||String(a.handle||a.display_name||'').localeCompare(String(b.handle||b.display_name||''),'tr'));
+  const demoDirectory=window.BUCHEE_OFFLINE_DEV;
+  const source=q?(remote?.ready?[...remote.rows,...data.profiles]:data.profiles):demoDirectory?data.profiles:data.profiles.filter(p=>recentIds.includes(p.id));
+  const users=[...new Map(source.map(p=>[p.id,p])).values()].filter(p=>(demoDirectory||p.id!==me.id)&&!blocked.has(p.id)&&(String(p.handle||'')+' '+String(p.display_name||'')+' '+String(p.city||'')).toLocaleLowerCase('tr-TR').includes(q))
+   .sort((a,b)=>!q&&!demoDirectory?(recentIds.indexOf(a.id)-recentIds.indexOf(b.id)):Number(followed.has(b.id))-Number(followed.has(a.id))||String(a.handle||a.display_name||'').localeCompare(String(b.handle||b.display_name||''),'tr'));
   main.innerHTML='<section class="pati-search-screen" aria-label="Kullanıcı ara"><form class="pati-search-top" id="pati-explore-form"><label class="pati-search-field">'+ico('search')+'<input type="search" id="explore-search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Kullanıcı adı veya isim ara" value="'+esc(search)+'" aria-label="Kullanıcı ara" autofocus></label>'+(search?'<button type="button" class="pati-search-clear" data-action="pati-search-clear" aria-label="Aramayı temizle">×</button>':'')+'<button type="button" class="pati-search-cancel" data-action="pati-search-cancel">İptal</button></form>'+
-   '<div class="pati-search-results" aria-live="polite">'+(!q&&users.length?'<h3 class="pati-recent-search-title">Son aramalar</h3>':'')+(remote?.loading?'<p class="pati-search-empty" role="status">Kullanıcılar aranıyor…</p>':'')+
-   (remote?.error?'<p class="pati-search-empty" role="alert">'+esc(remote.error)+'</p>'+button('Tekrar dene','explore-search-retry'):'')+(users.length?users.slice(0,80).map(p=>'<div class="pati-search-user-row"><button type="button" class="pati-search-user" data-action="view-user" data-id="'+esc(p.id)+'">'+avatar(p,'l')+'<span class="pati-search-user-info"><strong>'+esc(p.handle||p.display_name||'Buchee üyesi')+'</strong><small>'+esc(p.display_name||'Buchee üyesi')+(followed.has(p.id)?' · Takiptesin':'')+'</small></span></button>'+(!q?'<button type="button" class="pati-search-remove" data-action="pati-search-forget" data-id="'+esc(p.id)+'" aria-label="Son aramadan kaldır">×</button>':'')+'</div>').join(''):remote?.loading||remote?.error?'':'<p class="pati-search-empty">'+(q?'Bu isimle eşleşen profil yok.':'Henüz arama geçmişin yok. Bir isim yazarak keşfetmeye başla.')+'</p>')+'</div>'+
+   '<div class="pati-search-results" aria-live="polite">'+(!q&&users.length?'<h3 class="pati-recent-search-title">'+(demoDirectory?users.length+' demo profili':'Son aramalar')+'</h3>':'')+(remote?.loading?'<p class="pati-search-empty" role="status">Kullanıcılar aranıyor…</p>':'')+
+   (remote?.error?'<p class="pati-search-empty" role="alert">'+esc(remote.error)+'</p>'+button('Tekrar dene','explore-search-retry'):'')+(users.length?users.slice(0,demoDirectory?100:80).map(p=>'<div class="pati-search-user-row"><button type="button" class="pati-search-user" data-action="view-user" data-id="'+esc(p.id)+'">'+avatar(p,'l')+'<span class="pati-search-user-info"><strong>'+esc(p.handle||p.display_name||'Buchee üyesi')+'</strong><small>'+esc(p.display_name||'Buchee üyesi')+(followed.has(p.id)?' · Takiptesin':'')+'</small></span></button>'+(!q&&!demoDirectory?'<button type="button" class="pati-search-remove" data-action="pati-search-forget" data-id="'+esc(p.id)+'" aria-label="Son aramadan kaldır">×</button>':'')+'</div>').join(''):remote?.loading||remote?.error?'':'<p class="pati-search-empty">'+(q?'Bu isimle eşleşen profil yok.':'Henüz arama geçmişin yok. Bir isim yazarak keşfetmeye başla.')+'</p>')+'</div>'+
    '</section>';
   return;
  }
@@ -9844,13 +9845,20 @@ function bucheeAuthTimed(promise){
 function bucheeStartOfflineDevelopment(){
  const id='buchee-offline-developer';
  const demo=bucheeDemoData(id);
- const tables={...demo,patiyiz_stories:demo.stories,post_likes:demo.likes,post_saves:demo.saves,question_replies:demo.replies};
+ const tables={...demo,patiyiz_stories:demo.stories,post_likes:demo.likes,post_saves:demo.saves,question_replies:demo.replies,
+  patiyiz_post_collaborators:demo.collaborators,patiyiz_post_view_totals:demo.viewTotals,buchee_polls:demo.polls};
+ const writable=new Set(['comments','post_likes','post_saves','follows','messages','notifications']);
+ for(const table of writable)tables[table]=tables[table].map(row=>({...row}));
  const response=()=>Promise.resolve({data:[],error:null,count:0});
  const channel={on(){return this},subscribe(){return this},unsubscribe(){return Promise.resolve('ok')},send(){return Promise.resolve('ok')},track(){return Promise.resolve('ok')},presenceState(){return {}}};
- sb={from:table=>bucheeDemoQuery(tables[table]||[]),rpc:(name,args)=>name==='patiyiz_explore_ranked'?bucheeDemoQuery(demo.posts.filter(p=>p.image_url||p.video_url)).range(args.p_offset,args.p_offset+args.p_limit-1):response(),channel:()=>({...channel}),removeChannel:()=>Promise.resolve(),storage:{from:()=>({upload:()=>response(),download:()=>response(),remove:()=>response(),createSignedUrl:()=>response(),getPublicUrl:()=>({data:{publicUrl:''}})})},auth:{getSession:()=>Promise.resolve({data:{session:null},error:null}),getUser:()=>Promise.resolve({data:{user:null},error:null}),signOut:()=>Promise.resolve({error:null})}};
+ sb={from:table=>bucheeDemoQuery(tables[table]||[],writable.has(table)),rpc:(name,args)=>bucheeDemoRpc(tables,name,args),channel:()=>({...channel}),removeChannel:()=>Promise.resolve(),storage:{from:()=>({upload:()=>response(),download:()=>response(),remove:()=>response(),createSignedUrl:()=>response(),getPublicUrl:()=>({data:{publicUrl:''}})})},auth:{getSession:()=>Promise.resolve({data:{session:null},error:null}),getUser:()=>Promise.resolve({data:{user:null},error:null}),signOut:()=>Promise.resolve({error:null})}};
  const {display_name,handle}=demo.profiles[0];
  me={id,email:'demo@offline.invalid',user_metadata:{display_name,handle}};
  Object.assign(data,demo);
+ patiCollabMerge(demo.collaborators);
+ liked=new Set(demo.likes.filter(like=>like.user_id===id).map(like=>like.post_id));
+ saved=new Set(demo.saves.map(save=>save.post_id));
+ pageMore.posts=false;
  followed=new Set(demo.follows.filter(f=>f.follower_id===id).map(f=>f.followee_id));
  patiHomeContentMode='media';
  patiyizLoadedTables=new Set(['profiles','posts','patiyiz_stories','follows','post_likes','post_saves','user_blocks']);
