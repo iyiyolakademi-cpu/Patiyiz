@@ -55,10 +55,10 @@ function bucheeDemoData(id) {
   ['selin',id,'Bahsettiğim sahafı buldum, haftaya beraber gidelim mi?',154]
  ].map(([sender_id, receiver_id, body, age],i) => ({id:'demo-message-'+i,sender_id,receiver_id,body,created_at:ago(age),read_at:i<2?ago(20):null}));
  const notifications = [
-  ['mert','like','demo-photo-5','Mert Aydın gönderini beğendi.'],
-  ['mert','comment','demo-photo-5','Mert Aydın gönderine yorum yaptı.'],
-  ['irem','follow',null,'İrem Aksoy seni takip etmeye başladı.']
- ].map(([actor_id,kind,post_id,body],i)=>({id:'demo-activity-'+i,owner_id:id,actor_id,kind,post_id,entity_id:post_id,body,read:i===2,created_at:ago(4+i*13)}));
+  ['mert','post_likes','demo-photo-5','Mert Aydın gönderini beğendi.'],
+  ['mert','comments','demo-photo-5','Mert Aydın gönderine yorum yaptı.'],
+  ['irem','follows',null,'İrem Aksoy seni takip etmeye başladı.']
+ ].map(([actor_id,kind,post_id,text],i)=>({id:'demo-activity-'+i,owner_id:id,actor_id,kind,post_id,entity_id:post_id,text,read:i===2,created_at:ago(4+i*13)}));
  const questions = [
   {id:'demo-question-1',author_id:'irem',title:'İstanbul’dan günübirlik yürüyüş rotası?',body:'Arabasız ulaşabileceğim, 2–3 saatlik bir parkur arıyorum. Öneriniz var mı?',category:'Yaşam',created_at:ago(61)},
   {id:'demo-question-2',author_id:'mert',title:'Sokak fotoğrafına başlamak için ne önerirsiniz?',body:'Telefonla çekiyorum. Işığı daha iyi kullanmak için ilk hangi alıştırmayı yapayım?',category:'Kültür',created_at:ago(165)}
