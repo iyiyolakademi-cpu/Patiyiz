@@ -274,8 +274,8 @@ window.BUCHEE_RELEASE="20261123-blog-content-v4";
 <script src="patiyiz-saved-priority-20261031.js?v=20261124-priority-color-v2" defer></script>
 <script src="patiyiz-private-media-20261031.js?v=20261105-media-cache-perf-v2" defer></script>
 <script src="buchee-twit-photo-crop-20261123.js?v=1" defer></script>
-<script src="buchee-demo-data.js?v=4" defer></script>
-<script src="app.js?v=20261127-collab-v1" defer></script>
+<script src="buchee-demo-data.js?v=5" defer></script>
+<script src="app.js?v=20261127-reel-preferences-v1" defer></script>
 <script src="patiyiz-header-feed-menu-20261031.js?v=20261124-desktop-only-v8"></script>
 <script src="patiyiz-dm-emoji-picker-20261101.js?v=1" defer></script>
 <style id="pati-critical-mobile-feed-20261101">
@@ -1234,4 +1234,16 @@ html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-progress i
 .buchee-collab-entry summary{font-weight:700;cursor:pointer;padding:4px 0}
 .buchee-reel-collab{display:flex;align-items:center;flex-wrap:wrap;gap:3px 8px;font-size:12px;color:#fff;text-shadow:0 1px 4px #000;pointer-events:auto}
 .buchee-reel-collab button{border:0;background:transparent;color:inherit;font:inherit;text-decoration:underline;min-height:30px;padding:0 2px}
+
+html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-utility>.pati-reel-tool.buchee-reel-preference-trigger{
+ pointer-events:auto!important;
+ font-size:24px!important;line-height:1!important;color:#fff!important;text-shadow:0 1px 4px #111;
+}
+.buchee-reel-preference-panel{display:grid;gap:12px}
+.buchee-reel-preference-panel p{margin:0}
+.buchee-reel-preference-actions{display:flex;flex-wrap:wrap;gap:8px}
+.buchee-reel-preference-panel button{min-height:42px}
+.buchee-reel-preference-actions button[aria-pressed="true"]{background:#222;color:#fff}
+.buchee-reel-preference-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-top:1px solid #ddd}
+.buchee-reel-preference-row small{display:block;color:#52525a}
 </style></body></html>

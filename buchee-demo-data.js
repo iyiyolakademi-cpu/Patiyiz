@@ -27,8 +27,8 @@ function bucheeDemoData(id) {
   {id:'demo-text-1', author_id:'selin', body:'Bir kitabı yarıda bırakmak için kendinize kaç sayfa veriyorsunuz? Benim sınırım 50.', post_format:'text', created_at:ago(42)},
   {id:'demo-text-2', author_id:'ece', body:'Bir arkadaşım İstanbul’a ilk kez geliyor. Tek bir semt gezdirecek olsanız nereyi seçerdiniz?', post_format:'text', created_at:ago(110)},
   {id:'demo-text-3', author_id:id, body:'Hafta sonu için vapur, sahaf ve kahve. Sıralamayı henüz çözemedim.', post_format:'text', created_at:ago(210)},
-  {id:'demo-reel-1', author_id:'irem', body:'Hafta sonu yürüyüşünden kısa bir kartpostal.', video_url:'demo-media/rota.mp4', video_cover_url:photo('yuruyus'), post_format:'reels', created_at:ago(75)},
-  {id:'demo-reel-2', author_id:'mert', body:'Rüzgârda kır çiçekleri 🌼', video_url:'demo-media/cicek.mp4', post_format:'reels', created_at:ago(120)}
+  {id:'demo-reel-1', author_id:'irem', body:'Hafta sonu yürüyüşünden kısa bir kartpostal.', video_url:'demo-media/rota.mp4', video_cover_url:photo('yuruyus'), post_format:'reels', demo_reel_topic:'gezi', created_at:ago(75)},
+  {id:'demo-reel-2', author_id:'mert', body:'Rüzgârda kır çiçekleri 🌼', video_url:'demo-media/cicek.mp4', post_format:'reels', demo_reel_topic:'gezi', created_at:ago(120)}
  );
  const stories = people.slice(1).map(([author_id, name,, image], i) => ({
   id:'demo-story-'+i, author_id, image_url:photo(image), caption:['Günün ilk kahvesi','Vapurdan bir kare','Bugünün sahaf keşfi','Tarçın mesaiye başladı','Sabah yürüyüşü'][i],
@@ -113,7 +113,7 @@ function bucheeDemoData(id) {
  for(const [i,person] of profiles.slice(6).entries()){
   const media=communityMedia[(i*13)%communityMedia.length];
   posts.push({id:'demo-community-photo-'+i,author_id:person.id,body:captions[i%captions.length],image_url:asset(media),post_format:'image',created_at:ago(21+i*17)});
-  if(i<communityMedia.length)posts.push({id:'demo-community-reel-'+i,author_id:person.id,body:reelCaptions[i%reelCaptions.length],video_url:asset(media,'mp4'),video_cover_url:asset(media),post_format:'reels',created_at:ago(12+i*29)});
+  if(i<communityMedia.length)posts.push({id:'demo-community-reel-'+i,author_id:person.id,body:reelCaptions[i%reelCaptions.length],video_url:asset(media,'mp4'),video_cover_url:asset(media),post_format:'reels',demo_reel_topic:['gezi','fotograf','kultur'][i%3],created_at:ago(12+i*29)});
   if(i<30)posts.push({id:'demo-community-note-'+i,author_id:person.id,body:noteStarts[i%noteStarts.length]+'. '+noteEnds[Math.floor(i/noteStarts.length)],post_format:'text',created_at:ago(46+i*24)});
   if(i<19)stories.push({id:'demo-community-story-'+i,author_id:person.id,image_url:asset(media),caption:captions[(i+4)%captions.length],audience:'public',created_at:ago(15+i*19),expires_at:ago(-1000)});
  }
