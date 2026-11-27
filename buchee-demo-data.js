@@ -163,6 +163,11 @@ function bucheeDemoData(id) {
   questions.push({id:question_id,author_id:profiles[12+i].id,title,body,category:'Yaşam',created_at:ago(34+i*51)});
   replies.push({id:'demo-community-answer-'+i,question_id,author_id:profiles[32+i].id,body:answer,created_at:ago(23+i*51)});
  }
+ // One incoming photo and one incoming Reels invite for the viewer to try.
+ collaborators.push(
+  {post_id:'demo-photo-3',user_id:id,invited_by:'selin',status:'pending',created_at:ago(6)},
+  {post_id:'demo-reel-1',user_id:id,invited_by:'irem',status:'pending',created_at:ago(12)}
+ );
  const polls = [
   ['Hafta sonu hangisini seçerdin?',['Sahil yürüyüşü','Bir kahve molası','Sergi gezisi']],
   ['Fotoğrafları nasıl saklıyorsun?',['Telefon albümü','Bulut arşivi','Baskı alıyorum']],

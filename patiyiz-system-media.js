@@ -195,7 +195,7 @@
   }
   try{input.click()}catch(err){error('Telefonun kamera/galeri seçicisi açılamadı. Cihaz izinlerini kontrol et.')}
  }
- function open({mode='post',userId,onMedia,onMirrorChange,onBeforePublish,onPublish,onCancel,onSwitch,onStoryPhotoCamera}={}){
+ function open({mode='post',userId,onMedia,onMirrorChange,onBeforePublish,onPublish,onCancel,onSwitch,onStoryPhotoCamera,collaboration}={}){
   if(state)return;
   if(!['post','story','reels'].includes(mode))mode='post';
   if(typeof onMedia!=='function'||typeof onPublish!=='function')throw Error('Paylaşım bağlanamadı.');
@@ -228,6 +228,7 @@
    (mode==='story'?'<label class="pati-system-audience" for="pati-system-audience">Kimler görebilir?<select id="pati-system-audience"><option value="everyone">Herkes</option><option value="close_friends">Yakın Arkadaşlar</option></select></label>':'')+
    '<label class="pati-system-caption-label" for="pati-system-caption">Açıklama (isteğe bağlı)</label>'+
    '<textarea id="pati-system-caption" maxlength="'+(mode==='story'?'300':'1500')+'" rows="3" placeholder="İstersen açıklama yazabilirsin…"></textarea>'+
+   (collaboration?.markup?'<details class="buchee-collab-entry"><summary>Ortak ekle</summary>'+collaboration.markup+'</details>':'')+
    '<div class="pati-system-publish-actions">'+
    (mode==='post'?'<button type="button" data-system="add-camera-photo">＋ Fotoğraf çek</button><button type="button" data-system="add-gallery">＋ Galeriden ekle</button>':'')+
    '<button type="button" data-system="rechoose">Başka seç</button><button type="button" id="pati-system-publish" data-system="publish">Paylaş</button></div></section>'+
@@ -239,6 +240,7 @@
    '<input id="pati-system-camera-video" type="file" accept="video/*,.mp4,.mov,.webm,.m4v" capture="environment" hidden>'+
    '<input id="pati-system-gallery" type="file" accept="'+(kind(mode)==='video'?'video/*,.mov,.mp4,.webm,.m4v':'image/*,video/*,.heic,.heif,.mov,.mp4,.webm,.m4v')+'"'+(mode==='post'?' multiple':'')+' hidden>';
   document.body.appendChild(root);
+  collaboration?.mount(root);
   document.body.classList.add('pati-system-media-active');
   state={root,mode,userId,onMedia,onMirrorChange,onBeforePublish,onPublish,onCancel,onSwitch,onStoryPhotoCamera,publishing:false,editing:false,files:[],urls:[],previewVersion:0,previewError:false,previewIndex:0,mirrorSelfie:false,appendMode:false};
   const current=state;
@@ -357,7 +359,7 @@
     const publish=root.querySelector('#pati-system-publish');
     publish.disabled=true;publish.textContent='Paylaşılıyor…';
     clearError();
-    try{await state.onPublish(root.querySelector('#pati-system-caption').value)}
+    try{await state.onPublish(root.querySelector('#pati-system-caption').value,root)}
     catch(err){
      if(state===current){
       error(err?.message||'Paylaşım yüklenemedi. Tekrar dene.');

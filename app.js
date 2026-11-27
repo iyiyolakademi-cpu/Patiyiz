@@ -600,7 +600,7 @@ async function markConversationRead(){
  unread.forEach(x=>{if(confirmed.has(x.id))x.read_at=confirmed.get(x.id)});
  navRender();
 }
-function unreadCounts(){const hidden=new Set(data.messageHidden.filter(x=>x.user_id===me?.id).map(x=>x.message_id));const groupCount=typeof patiGroupInboxState!=='undefined'&&patiGroupInboxState.owner===me?.id?patiGroupInboxState.rows.reduce((sum,g)=>sum+Number(g.unread_count||0),0):0;return {messages:data.messages.filter(x=>x.receiver_id===me?.id&&!x.read_at&&!patiDmSeenIds().has(x.id)&&!blocked.has(x.sender_id)&&!hidden.has(x.id)).length+groupCount,notifications:data.notifications.filter(x=>x.owner_id===me?.id&&!x.read&&!blocked.has(x.actor_id)).length}}
+function unreadCounts(){const hidden=new Set(data.messageHidden.filter(x=>x.user_id===me?.id).map(x=>x.message_id));const groupCount=typeof patiGroupInboxState!=='undefined'&&patiGroupInboxState.owner===me?.id?patiGroupInboxState.rows.reduce((sum,g)=>sum+Number(g.unread_count||0),0):0;return {messages:data.messages.filter(x=>x.receiver_id===me?.id&&!x.read_at&&!patiDmSeenIds().has(x.id)&&!blocked.has(x.sender_id)&&!hidden.has(x.id)).length+groupCount,notifications:data.notifications.filter(x=>x.owner_id===me?.id&&!x.read&&!blocked.has(x.actor_id)).length+patiCollabPendingCount()}}
 function unreadMessageSources(){const hidden=new Set(data.messageHidden.filter(x=>x.user_id===me?.id).map(x=>x.message_id));const messages=data.messages.filter(x=>x.receiver_id===me?.id&&!x.read_at&&!patiDmSeenIds().has(x.id)&&!blocked.has(x.sender_id)&&!hidden.has(x.id));const tally=new Map();for(const m of messages)tally.set(m.sender_id,(tally.get(m.sender_id)||0)+1);return [...tally].sort((a,b)=>b[1]-a[1]).map(([id,count])=>({id,count,name:profile(id).display_name}))}
 const countBadge=n=>n?`<span class="pati-count-badge" aria-label="${n} okunmamış">${n>99?'99+':n}</span>`:'';
 function navRender(){
@@ -2648,7 +2648,10 @@ async function patiLoadMoreReels(reset=false){
   state.offset+=rows.length;state.hasMore=rows.length===PATI_REELS_PAGE;state.ready=true;
   const known=new Set(data.posts.map(p=>p.id));
   for(const p of rows)if(!known.has(p.id)){data.posts.push(p);known.add(p.id)}
-  const missing=[...new Set(rows.map(p=>p.author_id).filter(id=>id&&!data.profiles.some(v=>v.id===id)))];
+  const partners=rows.length?await sb.from('patiyiz_post_collaborators').select('*').in('post_id',rows.map(p=>p.id)).eq('status','accepted'):null;
+  if(me?.id!==uid||patiyizLoadToken!==token||patiReelsFeed!==state)return;
+  if(partners?.data)patiCollabMerge(partners.data);
+  const missing=[...new Set([...rows.map(p=>p.author_id),...(partners?.data||[]).map(row=>row.user_id)])].filter(id=>id&&!data.profiles.some(p=>p.id===id));
   if(missing.length){
    const profiles=await sb.from('profiles').select('*').in('id',missing);
    if(profiles.error)throw profiles.error;
@@ -2686,10 +2689,14 @@ function reelsPage(){
   const absoluteIndex=existingViewport?items.findIndex(row=>row.id===p.id):index;
   const cached=typeof patiPostRenderStats!=='undefined'&&patiPostRenderStats;
   const author=profile(p.author_id),count=cached?(cached.get(p.id)?.likes||0):data.likes.filter(x=>x.post_id===p.id).length,commentCount=cached?(cached.get(p.id)?.comments||0):data.comments.filter(x=>x.post_id===p.id).length,likedPost=liked.has(p.id),savedPost=saved.has(p.id);
+  const coauthors=patiCollabAccepted(p.id).filter(row=>!blocked.has(row.user_id));
+  const credit=coauthors.length?'<div class="buchee-reel-collab"><span>Ortak paylaşım</span>'+coauthors.map(row=>
+   button('@'+esc(profile(row.user_id).handle||'Buchee üyesi'),'view-user','data-id="'+esc(row.user_id)+'"','')
+  ).join('')+'</div>':'';
   return '<article class="pati-reel-item" data-post="'+esc(p.id)+'"><video class="pati-reel-video'+(p.selfie_mirrored?' pati-selfie-mirrored':'')+'" '+((focusReelId?p.id===focusReelId:absoluteIndex===0)?'src="':'data-pati-video-src="')+esc(p.video_url)+'"'+(p.video_cover_url?' poster="'+esc(p.video_cover_url)+'"':'')+' playsinline webkit-playsinline'+(nativeReels?'':' muted')+' loop preload="'+((focusReelId?p.id===focusReelId:absoluteIndex===0)?'auto':absoluteIndex===1?'metadata':'none')+'" aria-label="'+esc(author.display_name)+' videosu"></video>'+
   '<button type="button" class="pati-reel-tap" data-action="reel-play" aria-label="Videoyu oynat veya durdur, çift dokunarak beğen"><span class="pati-reel-heart-burst" aria-hidden="true">'+ico('heart')+'</span></button>'+
   '<div class="pati-reel-info"><div class="pati-reel-author"><button type="button" class="pati-reel-avatar-link" data-action="view-user" data-id="'+esc(author.id)+'" aria-label="'+esc(author.display_name)+' profiline git">'+avatar(author,'s')+'</button><span><strong>'+displayName(author)+'</strong><small>@'+esc(author.handle||'buchee')+'</small></span>'+(p.author_id!==selfId?'<button type="button" class="pati-reel-follow" data-action="follow" data-id="'+esc(author.id)+'" aria-pressed="'+isFollowing(author.id)+'"'+(!isFollowing(author.id)&&followsMe(author.id)?' data-follow-back="true"':'')+'>'+(isFollowing(author.id)?'Takiptesin':followsMe(author.id)?'Sen de takip et':'Takip et')+'</button>':'')+'</div>'+
-  '<div class="pati-reel-caption'+(!(String(p.video_subtitle||p.body||'').trim()||p.source_post_id)?' is-empty':'')+'">'+'<span class="pati-reel-caption-text">'+esc(p.video_subtitle||p.body||'')+'</span>'+(p.source_post_id?'<button type="button" class="pati-reel-source-credit" data-action="profile-open-post" data-id="'+esc(p.source_post_id)+'">↪ Orijinal gönderiyi gör</button>':'')+'</div></div>'+
+  credit+'<div class="pati-reel-caption'+(!(String(p.video_subtitle||p.body||'').trim()||p.source_post_id)?' is-empty':'')+'">'+'<span class="pati-reel-caption-text">'+esc(p.video_subtitle||p.body||'')+'</span>'+(p.source_post_id?'<button type="button" class="pati-reel-source-credit" data-action="profile-open-post" data-id="'+esc(p.source_post_id)+'">↪ Orijinal gönderiyi gör</button>':'')+'</div></div>'+
   '<div class="pati-reel-progress"><input type="range" min="0" max="1000" value="0" step="1" data-action="reel-seek" aria-label="Videoyu ileri veya geri sar" style="--pati-reel-progress:0%"></div>'+ 
   '<div class="pati-reel-rail buchee-unified-actions"><button type="button" class="pati-reel-action '+(likedPost?'active':'')+'" data-action="like" data-id="'+esc(p.id)+'" aria-label="Beğen" aria-pressed="'+likedPost+'">'+bucheeFeedIcons.heart+'<span class="pati-reel-count pati-reel-likers-trigger" data-action="post-likers" data-id="'+esc(p.id)+'" role="button" tabindex="0" aria-label="'+count+' beğeni, beğenenleri gör">'+count+'</span></button>'+
   '<button type="button" class="pati-reel-action" data-action="comment" data-id="'+esc(p.id)+'" aria-label="Yorum yap">'+bucheeFeedIcons.comment+'<span class="pati-reel-count">'+commentCount+'</span></button>'+
@@ -2775,8 +2782,8 @@ function bucheePostMenu(postId){
   option('flag','Gönderiyi bildir','Topluluk kurallarına aykırıysa bildir','report','data-kind="post"'),
   ...(active.some(x=>x.user_id===me.id)?[option('unlink','Ortaklıktan ayrıl','Gönderi profilinden kaldırılır','collab-remove','data-user="'+esc(me.id)+'"')]:[])
  ];
- if(own&&active.length)for(const collaborator of active)items.push(
-   option('unlink','Ortaklığı kaldır','@'+esc(profile(collaborator.user_id).handle||'üye')+' · '+(collaborator.status==='accepted'?'Kabul edildi':'Davet bekliyor'),
+ if(own)for(const collaborator of patiCollabs.rows.filter(row=>row.post_id===postId))items.push(
+   option('unlink',collaborator.status==='accepted'?'Ortaklığı kaldır':collaborator.status==='pending'?'Daveti geri çek':'Reddedilen daveti kaldır','@'+esc(profile(collaborator.user_id).handle||'üye')+' · '+esc(patiCollabStatusText[collaborator.status]),
       'collab-remove','data-user="'+esc(collaborator.user_id)+'"')
  );
  modal('Gönderi seçenekleri','<div class="buchee-post-options"><p class="buchee-post-options-intro">Bu gönderiyle ilgili işlemler</p>'+items.join('')+'</div>','post-actions-form');
@@ -2888,18 +2895,32 @@ async function patiCollabRefresh(){
  if(patiCollabs.loading)return;
  const uid=me.id,ids=data.posts.slice(0,200).map(p=>p.id);
  patiCollabs.loading=true;
+ const previousRows=patiCollabs.rows;
  try{
-  const [visible,incoming]=await Promise.all([
+  const [visible,incoming,outgoing]=await Promise.all([
    ids.length?sb.from('patiyiz_post_collaborators').select('*').in('post_id',ids).limit(250):Promise.resolve({data:[],error:null}),
-   sb.from('patiyiz_post_collaborators').select('*').eq('user_id',uid).limit(150)
+   sb.from('patiyiz_post_collaborators').select('*').eq('user_id',uid).order('created_at',{ascending:false}).limit(150),
+   sb.from('patiyiz_post_collaborators').select('*').eq('invited_by',uid).order('created_at',{ascending:false}).limit(150)
   ]);
   if(visible.error)throw visible.error;
   if(incoming.error)throw incoming.error;
+  if(outgoing.error)throw outgoing.error;
   if(me?.id!==uid)return;
-  const all=[...(visible.data||[]),...(incoming.data||[])];
+  const all=[...(visible.data||[]),...(incoming.data||[]),...(outgoing.data||[])];
+  const unknown=[...new Set(all.flatMap(row=>[row.invited_by,row.user_id]))].filter(id=>!data.profiles.some(p=>p.id===id));
+  if(unknown.length){
+   const profiles=await sb.from('profiles').select('*').in('id',unknown);
+   if(me?.id!==uid)return;
+   for(const p of profiles.data||[])if(!data.profiles.some(known=>known.id===p.id))data.profiles.push(p);
+  }
+  if(previousRows===patiCollabs.rows){
+   const scope=new Set(ids);
+   patiCollabs.rows=previousRows.filter(row=>!scope.has(row.post_id)&&row.user_id!==uid&&row.invited_by!==uid);
+   patiCollabs.profilesLoaded.clear();
+  }
   patiCollabMerge(all);
   await patiCollabHydrate(all);
-  if(me?.id===uid&&['home','profile'].includes(view))render();
+  if(me?.id===uid&&['home','profile','notifications'].includes(view))render();
  }catch(error){console.warn('Ortak gönderi davetleri getirilemedi:',error?.message||error)}
  finally{if(me?.id===uid)patiCollabs.loading=false}
 }
@@ -2920,23 +2941,60 @@ async function patiCollabLoadProfile(uid){
  }catch(error){console.warn('Ortak profil gönderileri getirilemedi:',error?.message||error)}
  finally{patiCollabs.profilesBusy.delete(uid)}
 }
-function patiCollabInvites(){
+const patiCollabStatusText={pending:'Bekliyor',accepted:'Kabul edildi',declined:'Reddedildi'};
+function patiCollabPendingCount(){
+ return patiCollabs.owner===me?.id?patiCollabs.rows.filter(row=>row.user_id===me?.id&&row.status==='pending'&&!blocked.has(row.invited_by)).length:0;
+}
+function patiCollabInbox(){
  patiCollabEnsure();
- const rows=patiCollabs.rows.filter(x=>x.user_id===me?.id&&x.status==='pending').slice(0,12);
+ const rows=patiCollabs.rows.filter(row=>
+  (row.user_id===me?.id&&!blocked.has(row.invited_by))||
+  (row.invited_by===me?.id&&!blocked.has(row.user_id))
+ ).sort((a,b)=>Number(b.status==='pending')-Number(a.status==='pending')||String(b.created_at).localeCompare(String(a.created_at)));
  if(!rows.length)return '';
- return '<section class="pati-collab-requests" aria-label="Ortak gönderi davetleri"><h2>Ortak gönderi davetlerin <span>'+rows.length+'</span></h2>'+
- rows.map(x=>{
-  const post=data.posts.find(p=>p.id===x.post_id),author=profile(x.invited_by);
-  return '<div class="pati-collab-request"><div><b>'+esc(author?.display_name||author?.handle||'Buchee Social üyesi')+'</b><small>Bir gönderiyi birlikte paylaşmak istiyor.'+(post?.body?' · '+esc(cut(post.body,65)):'')+'</small></div>'+
-  '<div><button type="button" data-action="collab-accept" data-id="'+esc(x.post_id)+'">Kabul et</button><button type="button" data-action="collab-decline" data-id="'+esc(x.post_id)+'">Reddet</button></div></div>';
- }).join('')+'<button type="button" class="pati-collab-refresh" data-action="collab-refresh">Davetleri yenile</button></section>';
+ return '<section class="buchee-collab-inbox" aria-label="Ortak gönderi davetleri"><h2>Ortak gönderi davetleri</h2>'+
+ rows.map(row=>{
+  const incoming=row.user_id===me.id,person=profile(incoming?row.invited_by:row.user_id);
+  const post=data.posts.find(item=>item.id===row.post_id);
+  return '<article class="buchee-collab-inbox-row">'+avatar(person,'s')+'<div><strong>'+esc(person.display_name||person.handle||'Buchee üyesi')+'</strong>'+
+   '<small>'+(incoming?'Gelen davet':'Gönderilen davet')+(post?.post_format==='reels'?' · Reels':'')+'</small></div>'+
+   '<span class="buchee-collab-state" data-status="'+esc(row.status)+'">'+esc(patiCollabStatusText[row.status])+'</span>'+
+   (incoming?'<button type="button" data-action="collab-review" data-id="'+esc(row.post_id)+'">İncele</button>':'')+'</article>';
+ }).join('')+'</section>';
+}
+
+async function patiCollabReview(postId){
+ patiCollabEnsure();
+ const owner=me?.id;
+ const invite=patiCollabs.rows.find(row=>row.post_id===postId&&row.user_id===owner&&!blocked.has(row.invited_by));
+ if(!invite)return;
+ const result=await sb.from('posts').select('*').eq('id',postId).maybeSingle();
+ if(result.error)throw result.error;
+ if(me?.id!==owner)return;
+ const [post]=globalThis.PatiyizPrivateMedia&&result.data
+  ?await globalThis.PatiyizPrivateMedia.hydrateRows([result.data],owner,sb) : [result.data];
+ if(me?.id!==owner)return;
+ if(!post||post.author_id!==invite.invited_by||blocked.has(post.author_id))throw Error('Bu paylaşım artık görüntülenemiyor.');
+ const author=profile(invite.invited_by);
+ const image=post.image_url||post.images?.[0]||post.video_cover_url;
+ const media=post.video_url?'<video controls playsinline preload="metadata" src="'+esc(post.video_url)+'"'+(image?' poster="'+esc(image)+'"':'')+'></video>'
+  :image?'<img src="'+esc(image)+'" alt="Gönderinin önizlemesi">':'';
+ const pending=invite.status==='pending';
+ modal('Ortak '+(post.post_format==='reels'?'Reels':'gönderi')+' daveti',
+  '<div class="buchee-collab-preview"><div class="buchee-collab-preview-author">'+avatar(author,'s')+'<strong>'+esc(author.display_name||author.handle||'Buchee üyesi')+'</strong></div>'+
+  media+(post.body?'<p>'+esc(post.body)+'</p>':'')+
+  '<p>'+esc(pending?'Kabul edersen aynı paylaşım profilinde de görünür. Beğeniler ve yorumlar ortak kalır.':patiCollabStatusText[invite.status])+'</p>'+
+  (pending?'<div class="buchee-collab-decisions">'+button('Reddet','collab-decline','data-id="'+esc(postId)+'"')+
+   button('Kabul et','collab-accept','data-id="'+esc(postId)+'"','primary-btn')+'</div>':'')+'</div>',
+  'buchee-collab-preview-form');
+ document.querySelector('#buchee-collab-preview-form .modal-footer')?.remove();
 }
 async function patiCollabInvite(postId,rawHandle,selectedUserId){
  const owner=me?.id,handle=String(rawHandle||'').trim().replace(/^@/,'');
  const target=String(selectedUserId||'').trim();
  if(!owner||!postId)throw Error('Ortak gönderi daveti için giriş yap.');
  if(!handle&&!target)return;
- if(!target||!/^[0-9a-f]{8}-[0-9a-f-]{27,}$/i.test(target))throw Error('Ortak paylaşım için listeden doğru profili seç.');
+ if(!target||(!window.BUCHEE_OFFLINE_DEV&&!/^[0-9a-f]{8}-[0-9a-f-]{27,}$/i.test(target)))throw Error('Ortak paylaşım için listeden doğru profili seç.');
  if(handle.length>40)throw Error('Kullanıcı adı çok uzun.');
  // Never guess the destination from free text: verify the selected account ID on the server.
  const found=await sb.from('profiles').select('id,handle').eq('id',target).maybeSingle();
@@ -2946,11 +3004,22 @@ async function patiCollabInvite(postId,rawHandle,selectedUserId){
  if(blocked.has(found.data.id))throw Error('Bu hesaba ortak daveti gönderemezsin.');
  const existing=await sb.from('patiyiz_post_collaborators').select('user_id,status').eq('post_id',postId).in('status',['pending','accepted']);
  if(existing.error)throw existing.error;
+ if(existing.data?.some(row=>row.user_id===target))throw Error('Bu hesap için zaten bir ortaklık veya bekleyen davet var.');
  if((existing.data||[]).length>=2)throw Error('Bir gönderide sahibi dahil en fazla 3 kişi ortak olabilir.');
  const result=await sb.from('patiyiz_post_collaborators').insert({post_id:postId,user_id:found.data.id,invited_by:owner,status:'pending'}).select('*').single();
  if(result.error)throw result.error;
  if(me?.id!==owner)return;
  patiCollabMerge([result.data]);
+}
+async function patiCollabPublicationMessage(postId,handle,userId){
+ if(!userId)return 'Paylaşım yayınlandı.';
+ try{
+  await patiCollabInvite(postId,handle,userId);
+  return 'Paylaşım yayınlandı. Ortak daveti gönderildi.';
+ }catch(error){
+  console.warn('Ortak gönderi daveti:',error);
+  return 'Paylaşım yayınlandı fakat ortak daveti gönderilemedi. Gönderi seçeneklerinden tekrar deneyebilirsin. '+friendly(error);
+ }
 }
 async function patiCollabRespond(postId,status){
  if(!me||!['accepted','declined'].includes(status))return;
@@ -2962,6 +3031,7 @@ async function patiCollabRespond(postId,status){
  patiCollabMerge(r.data);
  patiCollabs.profilesLoaded.delete(owner);
  if(status==='accepted')await patiCollabHydrate(r.data);
+ if(document.getElementById('buchee-collab-preview-form'))closeModal(true);
  render();
 }
 async function patiCollabRemove(postId,collaboratorId){
@@ -3180,7 +3250,7 @@ function homePage(){
  const nextHomeMarkup=selectedPostId
   ?bucheePostBackBar()+(data.posts.some(p=>p.id===selectedPostId&&!blocked.has(p.author_id))?postCard(data.posts.find(p=>p.id===selectedPostId)):empty('Paylaşım bulunamadı'))
   :bucheeBlogOnlyView?''+blogMarkup
-  :'<div class="buchee-home-stories-and-tabs">'+demoNotice+storiesStrip()+''+feedFilterBar+'</div><div class="pati-feed-posts">'+(patiHomeContentMode==='media'&&typeof patiCollabInvites==='function'?patiCollabInvites():'')+feedContents+((typeof patiHomeLoadError!=='undefined'&&patiHomeLoadError)?'<div class="pati-load-more" role="alert">'+
+  :'<div class="buchee-home-stories-and-tabs">'+demoNotice+storiesStrip()+''+feedFilterBar+'</div><div class="pati-feed-posts">'+feedContents+((typeof patiHomeLoadError!=='undefined'&&patiHomeLoadError)?'<div class="pati-load-more" role="alert">'+
   esc(patiHomeLoadError)+' '+button('Tekrar dene','home-retry')+'</div>':'')
  +(following&&patiFollowingState.error?'<div class="pati-following-error" role="alert">'+esc(patiFollowingState.error)+' '+button('Yeniden dene','home-following-refresh')+'</div>':'')
  +(following&&patiFollowingState.ready&&patiFollowingState.hasMore?'<div class="pati-load-more">'+button('Daha fazla paylaşım yükle','home-following-more')+'</div>':'')
@@ -5794,6 +5864,7 @@ async function notificationCheckPush(){
 }
 async function notificationFetch(){
  if(!me||notificationBusy)return;
+ void patiCollabRefresh();
  const uid=me.id,token=patiyizLoadToken;notificationBusy=true;notificationLoadError='';if(view==='notifications')notificationsPage();
  try{
   const cap=pageLimits.notifications||150;
@@ -5820,13 +5891,14 @@ function bucheeActivityDay(d){
 function notificationsPage(){
  const all=notificationVisible().filter(n=>!['pet_reminder','lost_city'].includes(n.kind));
  const list=all.filter(n=>bucheeActivityTab==='all'||bucheeActivityCategory(n)===bucheeActivityTab);
- const unread=all.filter(n=>!n.read).length;
+ const unread=all.filter(n=>!n.read).length+patiCollabPendingCount();
  const tabs=[['all','Tümü'],['likes','Beğeniler'],['follows','Takip edenler'],['comments','Yorumlar']];
  let previous='';
  const grouped=list.map(n=>{const heading=bucheeActivityDay(n.created_at);const h=heading!==previous?'<h2 class="buchee-activity-day">'+heading+'</h2>':'';previous=heading;return h+notificationRows([n]);}).join('');
  main.innerHTML='<section class="pati-alerts notification-v2 pati-notifications-simple buchee-activity">'
  +'<header class="pati-notifications-simple-head"><h1>Hareketler'+(unread?' <span class="pati-alert-count">'+unread+'</span>':'')+'</h1><button type="button" data-action="pati-notifications-close" class="pati-notifications-close" aria-label="Kapat">×</button></header>'
  +'<nav class="buchee-activity-tabs" aria-label="Bildirim türü">'+tabs.map(([id,label])=>'<button type="button" data-action="buchee-activity-filter" data-id="'+id+'" class="'+(bucheeActivityTab===id?'active':'')+'" aria-pressed="'+(bucheeActivityTab===id?'true':'false')+'">'+label+'</button>').join('')+'</nav>'
+ +(bucheeActivityTab==='all'?patiCollabInbox():'')
  +(notificationLoadError?'<p role="alert">'+esc(notificationLoadError)+'</p>':'')
  +'<div id="notification-v2-results" class="notification-v2-list">'+(notificationBusy&&!list.length?'<p role="status">Bildirimler yükleniyor…</p>':grouped||'<div class="notification-v2-empty" role="status"><h3>Henüz hareket yok</h3><p>Yeni beğeniler, takipçiler ve yorumlar burada görünecek.</p></div>')+'</div>'
  +(pageMore.notifications&&list.length?'<div class="pati-load-more">'+button('Daha eski bildirimler','load-more','data-id="notifications"')+'</div>':'')+'</section>';
@@ -7614,6 +7686,10 @@ function mountPatiyizCamera(mode){
  // Retain the existing authenticated publication transaction, not an editor step.
  mediaFlow.open({
   mode,userId:me.id,
+  collaboration:mode==='story'?null:{
+   markup:window.PatiyizCollabPicker?.makeMarkup('pati-camera-collab'),
+   mount:root=>window.PatiyizCollabPicker?.mount(root,{sb,userId:me.id,blocked,localProfiles:data.profiles,avatar,escape:esc})
+  },
   onSwitch(nextMode){
    // Keep the bottom mode strip functional, not decorative.
    closeModal(true);
@@ -7635,7 +7711,7 @@ function mountPatiyizCamera(mode){
    input.dispatchEvent(new Event('change',{bubbles:true}));
   },
   onCancel(){closeModal(true)},
-  async onPublish(caption){
+  async onPublish(caption,shareScreen){
     form.dataset.storyAudience=document.getElementById('pati-system-audience')?.value||'everyone';
    if(!form.isConnected)throw Error('Paylaşım ekranı kapandı.');
    const body=form.querySelector('textarea[name="body"]');if(body)body.value=caption;
@@ -7647,12 +7723,15 @@ function mountPatiyizCamera(mode){
     mediaFlow?.close();closeModal(true);render();
     notify('Hikâyen 24 saat boyunca görüntülenecek.');
    }else{
+    const selected=window.PatiyizCollabPicker?.selectedId(shareScreen)||'';
+    const handle=shareScreen?.querySelector('[name="collab_handle"]')?.value;
     const result=await createPostPublication(form,f,str);
+    const inviteMessage=await patiCollabPublicationMessage(result.id,handle,selected);
     void window.PatiyizCameraDraft?.clear(me.id);
     profileCountCache.delete(me.id);
     mediaFlow?.close();closeModal(true);
     try{await refresh()}catch(error){console.warn('Paylaşım kaydedildi, akış yenilemesi başarısız:',error.message)}
-    notify('Paylaşım yayınlandı.');
+    notify(inviteMessage,inviteMessage.includes('gönderilemedi'));
     try{localStorage.removeItem(patiDraftKey())}catch(_){}
    }
   }
@@ -7679,7 +7758,8 @@ function compose(post,mode='post',autoPick=true){
  const sizes=story?[['9:16','▯ Dikey'],['1:1','□ Kare'],['1.91:1','▭ Yatay']]:[['original','⬚ Orijinal'],['4:5','▯ Dikey'],['1.91:1','▭ Yatay'],['1:1','□ Kare']];
  const editor=!post&&!textOnly?'<div class="pati-media-controls" hidden><label>Fotoğrafın kadrajını düzenle</label><div class="pati-ratio-options">'+sizes.map(([key,label],i)=>'<button type="button" class="'+(i===0?'active':'')+'" data-action="post-ratio" data-id="'+key+'">'+label+'</button>').join('')+'</div><input type="hidden" name="aspect" value="'+(story?'9:16':'original')+'"><button type="button" class="pati-inline-crop-toggle" data-action="post-crop-open">Fotoğrafı kırp</button><div class="pati-crop-preview" hidden><div class="pati-crop-pages"><button type="button" data-action="post-crop-prev" aria-label="Önceki fotoğraf">‹</button><strong id="pati-crop-index">1 / 1</strong><button type="button" data-action="post-crop-next" aria-label="Sonraki fotoğraf">›</button></div><canvas id="pati-crop-canvas" width="320" height="400" aria-label="Fotoğraf kırpma önizlemesi"></canvas><p>Fotoğrafı sürükleyerek istediğin kadrajı seç.</p><label>Yakınlaştır <input type="range" name="crop_zoom" min="1" max="2.5" value="1" step="0.05"></label></div></div>':textOnly?'':'<p class="small-note">Düzenleme sırasında mevcut medya korunur.</p>';
  const flow=!post&&!textOnly?'<div class="pati-composer-flow" aria-label="Paylaşım adımları"><span><b>1</b> Medya seç</span><i>›</i><span><b>2</b> Düzenle</span><i>›</i><span><b>3</b> Paylaş</span></div>':'';
- const invite=!post&&!story?(window.PatiyizCollabPicker?.makeMarkup('pati-collab-handle')||''):'';
+ const invitePicker=!post&&!story?window.PatiyizCollabPicker?.makeMarkup('pati-collab-handle'):'';
+ const invite=invitePicker?'<details class="buchee-collab-entry"><summary>Ortak ekle</summary>'+invitePicker+'</details>':'';
  const tagButton=!story&&!post?'<button type="button" class="pati-mention-open" data-action="pati-mention-open" data-id="post"><span aria-hidden="true">@</span> Etiketle</button>':'';
  const storyAudienceSelect=story?'<div class="pati-field"><label>Kimler görebilir?<select name="story_audience"><option value="everyone">Herkes</option><option value="close_friends">Yakın Arkadaşlar</option></select></label></div>':'';
  const formBody=flow+(!post&&!textOnly?postMediaField(mode):'')+textField('body',textOnly?'Ne düşünüyorsun?':story?'Hikâye açıklaması (isteğe bağlı)':'Açıklama (isteğe bağlı)',post?.body||'',textOnly,story?300:1500)+tagButton+storyAudienceSelect+editor+invite;
@@ -8967,12 +9047,13 @@ case 'comment-like':run(async()=>{const form=$('#comment-form');const postId=for
   const state=patiPostCommentPages.get(post);
   if(state){state.rows=state.rows.filter(row=>row.id!==id);state.at=0}
   patiHomeCountCache.delete(post);showComments(post);
- },'Yorum silindi');break}case 'replies':questionReplies(id);void patiLoadQuestionReplies(id);break;case 'post-menu':bucheePostMenu(id);break;case 'collab-invite-open':{const p=data.posts.find(x=>x.id===id&&x.author_id===me?.id);if(!p)break;if(patiCollabs.rows.filter(x=>x.post_id===id&&x.status!=='declined').length>=2){notify('En fazla 3 ortak kişi olabilir.',true);break;}closeModal(true);modal('Ortak gönderi daveti','<p class="buchee-collab-limit-hint">Gönderi sahibi dahil en fazla 3 kişi.</p>'+(window.PatiyizCollabPicker?.makeMarkup('collab-handle')||''),'collab-invite-form');const collabForm=document.getElementById('collab-invite-form');collabForm.dataset.post=id;window.PatiyizCollabPicker?.mount(collabForm,{sb,userId:me?.id,blocked,localProfiles:data.profiles,avatar,escape:esc});break;}
+ },'Yorum silindi');break}case 'replies':questionReplies(id);void patiLoadQuestionReplies(id);break;case 'post-menu':bucheePostMenu(id);break;case 'collab-invite-open':{const p=data.posts.find(x=>x.id===id&&x.author_id===me?.id);if(!p)break;if(patiCollabs.rows.filter(x=>x.post_id===id&&x.status!=='declined').length>=2){notify('En fazla 3 ortak kişi olabilir.',true);break;}closeModal(true);modal('Ortak gönderi daveti','<p class="buchee-collab-limit-hint">Gönderi sahibi dahil en fazla 3 kişi.</p>'+(window.PatiyizCollabPicker?.makeMarkup('collab-handle')||''),'collab-invite-form');const collabForm=document.getElementById('collab-invite-form');collabForm.dataset.post=id;collabForm.querySelector('button[type=submit]').textContent='Davet gönder';window.PatiyizCollabPicker?.mount(collabForm,{sb,userId:me?.id,blocked,localProfiles:data.profiles,avatar,escape:esc});break;}
 case 'pati-repost':run(()=>patiToggleRepost(id));break;
 case 'pati-pin':run(()=>patiTogglePin(id));break;
 case 'pati-share-story':if(confirm('Bu gönderi hikâyende 24 saat paylaşılsın mı?'))run(()=>patiSharePostToStory(id));break;
 case 'pati-story-open-post':run(()=>patiOpenSharedStoryPost(id));break;case 'pati-story-share-author':if(id&&!blocked.has(id)){closeStory(false);patiOpenProfileOnly(id)}break;
 case 'collab-remove':run(()=>patiCollabRemove(id,target.dataset.user),'Ortaklık kaldırıldı.');break;
+case 'collab-review':run(()=>patiCollabReview(id));break;
 case 'collab-accept':run(()=>patiCollabRespond(id,'accepted'),'Ortak gönderi kabul edildi.');break;
 case 'collab-decline':run(()=>patiCollabRespond(id,'declined'),'Ortak gönderi reddedildi.');break;
 case 'collab-refresh':void patiCollabRefresh();break;
@@ -9606,7 +9687,7 @@ case 'pati-filter-form':{
  data.profiles=data.profiles.map(p=>p.id===me.id?r.data:p);
  closeModal(true);render();notify('Yorum filtreleri güncellendi.');break;
 }
-case 'post-form':{if(form.dataset.mode==='story'){const result=await createStoryPublication(form,f,str);data.stories=[result,...data.stories.filter(x=>x.id!==result.id)];closeModal(true);render();notify('Hikâyen 24 saat boyunca görüntülenecek.')}else if(form.dataset.edit){const body=form.dataset.mode==='blog'?BUCHEE_BLOG_MARK+str('blog_title')+'\n'+str('body'):str('body').trim();if(form.dataset.mode==='blog'&&(str('blog_title').length<5||str('blog_title').length>140||str('body').length<30||str('body').length>12000))throw Error('Blog başlığı 5–140, yazısı 30–12000 karakter arasında olmalı.');await save('posts',{body},form.dataset.edit)}else{const selectedCollab=window.PatiyizCollabPicker?.selectedId(form,false)||'';const result=await createPostPublication(form,f,str);profileCountCache.delete(me.id);let inviteMessage='Paylaşım yayınlandı.';if(selectedCollab){try{await patiCollabInvite(result.id,str('collab_handle'),selectedCollab);inviteMessage='Paylaşım yayınlandı; ortak daveti gönderildi.'}catch(error){console.warn('Ortak gönderi daveti:',error);inviteMessage='Paylaşım yayınlandı fakat ortak daveti gönderilemedi: '+friendly(error)}}closeModal(true);try{await refresh()}catch(error){console.warn('Paylaşım kaydedildi, akış yenilemesi başarısız:',error.message)}window.BucheeShareHearts?.celebrate();notify(inviteMessage,inviteMessage.includes('gönderilemedi'));void patiCollabRefresh();try{localStorage.removeItem(patiDraftKey())}catch{}}break}case 'question-form':{const title=str('title'),body=str('body');if(title.length<5||title.length>150)throw Error('Soru başlığı 5–150 karakter arasında olmalı.');if(body.length<5||body.length>2000)throw Error('Soru açıklaması 5–2000 karakter arasında olmalı.');const author=me.id,cat=str('category');
+case 'post-form':{if(form.dataset.mode==='story'){const result=await createStoryPublication(form,f,str);data.stories=[result,...data.stories.filter(x=>x.id!==result.id)];closeModal(true);render();notify('Hikâyen 24 saat boyunca görüntülenecek.')}else if(form.dataset.edit){const body=form.dataset.mode==='blog'?BUCHEE_BLOG_MARK+str('blog_title')+'\n'+str('body'):str('body').trim();if(form.dataset.mode==='blog'&&(str('blog_title').length<5||str('blog_title').length>140||str('body').length<30||str('body').length>12000))throw Error('Blog başlığı 5–140, yazısı 30–12000 karakter arasında olmalı.');await save('posts',{body},form.dataset.edit)}else{const selectedCollab=window.PatiyizCollabPicker?.selectedId(form,false)||'';const result=await createPostPublication(form,f,str);profileCountCache.delete(me.id);const inviteMessage=await patiCollabPublicationMessage(result.id,str('collab_handle'),selectedCollab);closeModal(true);try{await refresh()}catch(error){console.warn('Paylaşım kaydedildi, akış yenilemesi başarısız:',error.message)}window.BucheeShareHearts?.celebrate();notify(inviteMessage,inviteMessage.includes('gönderilemedi'));void patiCollabRefresh();try{localStorage.removeItem(patiDraftKey())}catch{}}break}case 'question-form':{const title=str('title'),body=str('body');if(title.length<5||title.length>150)throw Error('Soru başlığı 5–150 karakter arasında olmalı.');if(body.length<5||body.length>2000)throw Error('Soru açıklaması 5–2000 karakter arasında olmalı.');const author=me.id,cat=str('category');
  const result=await sb.from('questions').insert({author_id:author,title,category:cat,body}).select('*').single();
  if(result.error)throw result.error;
  if(me?.id!==author)return;
@@ -9850,7 +9931,7 @@ function bucheeStartOfflineDevelopment(){
  const demo=bucheeDemoData(id);
  const tables={...demo,patiyiz_stories:demo.stories,post_likes:demo.likes,post_saves:demo.saves,question_replies:demo.replies,
   patiyiz_post_collaborators:demo.collaborators,patiyiz_post_view_totals:demo.viewTotals,buchee_polls:demo.polls};
- const writable=new Set(['comments','post_likes','post_saves','follows','messages','notifications']);
+ const writable=new Set(['patiyiz_post_collaborators','comments','post_likes','post_saves','follows','messages','notifications']);
  for(const table of writable)tables[table]=tables[table].map(row=>({...row}));
  const response=()=>Promise.resolve({data:[],error:null,count:0});
  const channel={on(){return this},subscribe(){return this},unsubscribe(){return Promise.resolve('ok')},send(){return Promise.resolve('ok')},track(){return Promise.resolve('ok')},presenceState(){return {}}};
@@ -9858,7 +9939,7 @@ function bucheeStartOfflineDevelopment(){
  const {display_name,handle}=demo.profiles[0];
  me={id,email:'demo@offline.invalid',user_metadata:{display_name,handle}};
  Object.assign(data,demo);
- patiCollabMerge(demo.collaborators);
+ patiCollabMerge(tables.patiyiz_post_collaborators);
  liked=new Set(demo.likes.filter(like=>like.user_id===id).map(like=>like.post_id));
  saved=new Set(demo.saves.map(save=>save.post_id));
  pageMore.posts=false;

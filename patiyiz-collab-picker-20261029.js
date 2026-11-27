@@ -14,7 +14,7 @@
     '<input type="hidden" name="collab_user_id" value="">'+
     '<div class="pati-collab-search-results" id="'+resultsId+'" role="listbox" aria-label="Ortak seçilecek profiller" hidden></div>'+
     '<div class="pati-collab-selected" aria-live="polite" hidden></div>'+
-    '<small id="'+hintId+'" class="pati-collab-hint">Kullanıcı adını yaz, çıkan profiller arasından doğru kişiyi seç. Gönderi sahibi dahil en fazla 3 kişi ortak olabilir. Kabul edilince paylaşım ortak profillerde görünür.</small>'+
+    '<small id="'+hintId+'" class="pati-collab-hint">Bir profil seç. Gönderi önce senin profilinde yayınlanır. Davet kabul edildiğinde ortağının profilinde de görünür.</small>'+
    '</div>';
  }
  function mount(form,options){
@@ -40,7 +40,7 @@
    results.innerHTML=items.map((p,i)=>'<div class="pati-collab-option'+(i===active?' is-highlighted':'')+'">'+
     '<span class="pati-collab-avatar">'+(options.avatar?options.avatar(p,'s'):'<span class="avatar">💜</span>')+'</span>'+
     '<span class="pati-collab-user"><strong>'+escape(p.display_name||p.handle)+'</strong><small>@'+escape(p.handle)+'</small></span>'+
-    '<button type="button" role="option" data-pati-approve-id="'+escape(p.id)+'" aria-selected="'+(i===active?'true':'false')+'" class="pati-collab-approve" aria-label="'+escape(p.handle)+' hesabını ortak olarak onayla">Onayla</button></div>').join('');
+    '<button type="button" role="option" data-pati-approve-id="'+escape(p.id)+'" aria-selected="'+(i===active?'true':'false')+'" class="pati-collab-approve" aria-label="'+escape(p.handle)+' hesabını ortak olarak seç">Seç</button></div>').join('');
    if(!items.length)results.innerHTML='<p class="pati-collab-no-result" role="status">Bu aramaya uygun profil bulunamadı.</p>';
    results.hidden=false;input.setAttribute('aria-expanded','true');
   };

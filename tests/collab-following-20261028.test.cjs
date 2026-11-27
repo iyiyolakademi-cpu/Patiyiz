@@ -35,9 +35,9 @@ test('collaborator form submits only after a real post is created',()=>{
  assert.match(fs.readFileSync('patiyiz-collab-picker-20261029.js','utf8'),/name="collab_handle"/);
  assert.match(app,/case 'collab-invite-form'/);
  assert.match(app,/await createPostPublication\(form,f,str\)/);
- assert.match(app,/await patiCollabInvite\(result\.id,str\('collab_handle'\),selectedCollab\)/);
- assert.match(app,/data-action="collab-accept"/);
- assert.match(app,/data-action="collab-decline"/);
+ assert.match(app,/await patiCollabPublicationMessage\(result\.id,str\('collab_handle'\),selectedCollab\)/);
+ assert.match(app,/button\('Kabul et','collab-accept'/);
+ assert.match(app,/button\('Reddet','collab-decline'/);
  assert.match(app,/patiCollabPartnerPosts\(p\.id\)/);
  assert.match(app,/data-action="collab-invite-open"/);
 });
