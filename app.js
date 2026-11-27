@@ -9843,18 +9843,19 @@ function bucheeAuthTimed(promise){
 }
 function bucheeStartOfflineDevelopment(){
  const id='buchee-offline-developer';
- const now=new Date().toISOString();
- // No remote client is created in this mode. All requests return empty local results.
+ const demo=bucheeDemoData(id);
+ const tables={...demo,patiyiz_stories:demo.stories,post_likes:demo.likes,post_saves:demo.saves,question_replies:demo.replies};
  const response=()=>Promise.resolve({data:[],error:null,count:0});
- const query=()=>{const q={then:(resolve,reject)=>response().then(resolve,reject)};for(const name of ['select','eq','neq','in','is','gt','gte','lt','lte','or','not','order','range','limit','single','maybeSingle','insert','upsert','update','delete','match','contains','textSearch'])q[name]=()=>q;return q};
  const channel={on(){return this},subscribe(){return this},unsubscribe(){return Promise.resolve('ok')},send(){return Promise.resolve('ok')},track(){return Promise.resolve('ok')},presenceState(){return {}}};
- sb={from:()=>query(),rpc:()=>response(),channel:()=>({...channel}),removeChannel:()=>Promise.resolve(),storage:{from:()=>({upload:()=>response(),download:()=>response(),remove:()=>response(),createSignedUrl:()=>response(),getPublicUrl:()=>({data:{publicUrl:''}})})},auth:{getSession:()=>Promise.resolve({data:{session:null},error:null}),getUser:()=>Promise.resolve({data:{user:null},error:null}),signOut:()=>Promise.resolve({error:null})}};
- me={id,email:'demo@offline.invalid',user_metadata:{display_name:'Demo Kullanıcı',handle:'demo'}};
- data.profiles=[{id,display_name:'Demo Kullanıcı',handle:'demo',bio:'Buchee yerel geliştirme modu',avatar_url:'',created_at:now}];
- data.posts=[];data.stories=[];data.questions=[];data.messages=[];data.follows=[];data.likes=[];data.saves=[];
+ sb={from:table=>bucheeDemoQuery(tables[table]||[]),rpc:(name,args)=>name==='patiyiz_explore_ranked'?bucheeDemoQuery(demo.posts.filter(p=>p.image_url||p.video_url)).range(args.p_offset,args.p_offset+args.p_limit-1):response(),channel:()=>({...channel}),removeChannel:()=>Promise.resolve(),storage:{from:()=>({upload:()=>response(),download:()=>response(),remove:()=>response(),createSignedUrl:()=>response(),getPublicUrl:()=>({data:{publicUrl:''}})})},auth:{getSession:()=>Promise.resolve({data:{session:null},error:null}),getUser:()=>Promise.resolve({data:{user:null},error:null}),signOut:()=>Promise.resolve({error:null})}};
+ const {display_name,handle}=demo.profiles[0];
+ me={id,email:'demo@offline.invalid',user_metadata:{display_name,handle}};
+ Object.assign(data,demo);
+ followed=new Set(demo.follows.filter(f=>f.follower_id===id).map(f=>f.followee_id));
+ patiHomeContentMode='media';
  patiyizLoadedTables=new Set(['profiles','posts','patiyiz_stories','follows','post_likes','post_saves','user_blocks']);
  authRoot.classList.add('hidden');appRoot.classList.remove('hidden');
- const badge=document.createElement('div');badge.id='buchee-offline-banner';badge.setAttribute('role','status');badge.style.cssText='position:fixed;top:calc(env(safe-area-inset-top,0px) + 5px);left:50%;transform:translateX(-50%);z-index:99999;background:#111;color:#fff;border:1px solid #555;border-radius:20px;padding:7px 12px;font:600 11px system-ui;box-shadow:0 2px 12px #0002;white-space:nowrap;max-width:95vw';badge.innerHTML='GELİŞTİRME MODU · Veriler kaydedilmez <a href="index.html?offline=0" style="color:#fff;text-decoration:underline;margin-left:8px">Normal giriş</a>';document.body.appendChild(badge);
+ const badge=document.createElement('div');badge.id='buchee-offline-banner';badge.setAttribute('role','status');badge.style.cssText='position:fixed;top:calc(env(safe-area-inset-top,0px) + 5px);left:50%;transform:translateX(-50%);z-index:99999;background:#111;color:#fff;border:1px solid #555;border-radius:20px;padding:7px 12px;font:600 11px system-ui;box-shadow:0 2px 12px #0002;white-space:nowrap;max-width:95vw';badge.innerHTML='DEMO · Kurgusal içerikler <a href="index.html?offline=0" style="color:#fff;text-decoration:underline;margin-left:8px">Normal giriş</a>';document.body.appendChild(badge);
  try{starter();navigate('home')}catch(error){console.error('Buchee çevrimdışı önizleme:',error);try{render()}catch(e){console.error(e)}}
 }
 async function boot(){
