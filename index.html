@@ -274,8 +274,8 @@ window.BUCHEE_RELEASE="20261123-blog-content-v4";
 <script src="patiyiz-saved-priority-20261031.js?v=20261124-priority-color-v2" defer></script>
 <script src="patiyiz-private-media-20261031.js?v=20261105-media-cache-perf-v2" defer></script>
 <script src="buchee-twit-photo-crop-20261123.js?v=1" defer></script>
-<script src="buchee-demo-data.js?v=6" defer></script>
-<script src="app.js?v=20261127-account-about-v1" defer></script>
+<script src="buchee-demo-data.js?v=7" defer></script>
+<script src="app.js?v=20261127-profile-albums-v1" defer></script>
 <script src="patiyiz-header-feed-menu-20261031.js?v=20261124-desktop-only-v8"></script>
 <script src="patiyiz-dm-emoji-picker-20261101.js?v=1" defer></script>
 <style id="pati-critical-mobile-feed-20261101">
@@ -1128,14 +1128,6 @@ html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-progress{b
 html[data-pati-view="reels"] #app-root:not(.hidden)>#mobile-nav{z-index:100!important}
 }
 @media(prefers-reduced-motion:reduce){body #pati-create-sheet .pati-create-modal{animation:none!important}}
-/* Keep the demo notice in the feed's normal document flow. */
-#buchee-offline-banner{
- display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px 10px;
- padding:6px 12px;color:#393942;background:#f4f3fa;font-size:12px;line-height:1.4;
-}
-#buchee-offline-banner a{color:inherit;text-decoration:underline;text-underline-offset:2px}
-body.story-fullscreen-open #buchee-offline-banner{display:none}
-
 /* Shared posts use the same horizontal header as other feed cards. */
 #main-content .pati-feed-card .pati-feed-card-header:has(.buchee-collab-three){
  display:flex!important;align-items:center!important;justify-content:space-between!important;
@@ -1261,4 +1253,46 @@ html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-utility>.p
  #modal-root .modal-backdrop:has(#buchee-account-about-form){align-items:flex-end;padding:0}
  #modal-root .modal:has(#buchee-account-about-form){width:100%;border-radius:22px 22px 0 0;padding-bottom:env(safe-area-inset-bottom,0px)}
 }
+
+.buchee-profile-link-dialog{display:grid;gap:8px}
+#main-content .pati-ig-profile .pati-profile-links{
+ width:auto!important;max-width:none!important;min-width:0!important;margin:6px 12px 12px!important;padding:0!important;
+}
+#main-content .pati-ig-profile .pati-profile-links-list{display:grid!important;gap:6px!important;min-width:0}
+#main-content .pati-ig-profile .pati-profile-links .pati-profile-link,
+.buchee-profile-link-dialog .pati-profile-link{
+ box-sizing:border-box;display:grid!important;grid-template-columns:minmax(0,1fr) 20px!important;width:100%!important;
+ max-width:100%!important;gap:4px 8px!important;padding:10px 12px!important;margin:0!important;text-decoration:none;
+}
+#main-content .pati-ig-profile .pati-profile-links .pati-profile-link-domain,
+.buchee-profile-link-dialog .pati-profile-link-domain{grid-column:1;text-align:left!important;justify-self:start;overflow-wrap:anywhere;color:#555}
+#main-content .pati-ig-profile .pati-profile-links .pati-profile-link-arrow,
+.buchee-profile-link-dialog .pati-profile-link-arrow{grid-column:2;grid-row:1 / span 2;align-self:center;display:block!important}
+.pati-profile-link-arrow svg{display:block;width:20px;height:20px}
+
+.buchee-link-order{display:flex;flex-wrap:wrap;gap:4px;align-items:start}
+.buchee-link-order button{min-width:34px;min-height:36px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#222}
+.buchee-link-order button:disabled{opacity:.35}
+.buchee-profile-albums{margin:14px 0}
+.buchee-profile-albums:empty{display:none}
+.buchee-profile-albums header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:0 10px}
+.buchee-profile-albums h2{font-size:15px;margin:0}
+.buchee-album-strip{display:flex;align-items:flex-start;gap:12px;overflow-x:auto;padding:8px 10px;scrollbar-width:thin}
+.buchee-album-item{display:grid;justify-items:center;flex:0 0 82px;gap:4px}
+.buchee-album-open{display:grid;gap:5px;justify-items:center;align-content:start;width:82px;flex:0 0 82px;padding:2px 0;border:0;background:transparent;color:inherit;text-align:center;font-weight:650;font-size:12px;overflow-wrap:anywhere}
+.buchee-album-cover{width:66px;height:66px;border-radius:50%;display:grid;place-items:center;overflow:hidden;border:2px solid #e4d9f5;background:#f5f0fc;color:#58358a;font-size:26px}
+.buchee-album-cover img,.buchee-album-picker-preview img{width:100%;height:100%;object-fit:cover}
+.buchee-album-item>.soft-btn{min-height:26px;font-size:11px;padding:2px 6px}
+.buchee-album-editor{display:grid;gap:12px}
+.buchee-album-editor p{margin:0;font-size:13px}
+.buchee-album-editor label:has(>select),.buchee-album-editor label:has(>input[name="album_title"]){display:grid;gap:5px;font-weight:650}
+.buchee-album-editor :is(select,input[name="album_title"]){width:100%;min-height:42px;padding:6px 8px;border:1px solid #dcd8e6;border-radius:8px}
+.buchee-album-picker{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:8px}
+.buchee-album-picker>label,.buchee-album-picker>button{display:flex;align-items:center;min-width:0;gap:6px;padding:6px;border:1px solid #e7e1ef;border-radius:8px;background:#fff;color:#262332;text-align:left;font-size:12px;overflow-wrap:anywhere}
+.buchee-album-picker input{width:auto;min-width:auto}
+.buchee-album-picker small{display:block;color:#6b4296}
+.buchee-album-picker-preview{display:grid;place-items:center;overflow:hidden;width:40px;height:48px;flex:0 0 40px;border-radius:6px;background:#f5f0fc}
+.buchee-album-manage{display:flex;flex-wrap:wrap;gap:6px}
+.buchee-album-manage button{border:1px solid #ddd0ea;border-radius:8px;background:#fff;color:#482c69;min-height:36px;padding:5px 8px}
+.avatar.buchee-avatar-empty .buchee-avatar-silhouette{display:block;width:100%;height:100%}
 </style></body></html>

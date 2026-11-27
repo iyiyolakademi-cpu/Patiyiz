@@ -1,6 +1,7 @@
 function bucheeDemoData(id) {
  const ago = minutes => new Date(Date.now() - minutes * 60000).toISOString();
  const photo = name => 'demo-media/' + name + '.jpg';
+ const portrait = number => number?'demo-media/portraits/'+number+'.jpg':'';
  const people = [
   [id, 'Deniz Kaya', 'denizkaya', 'kadikoy', 'İstanbul · Fotoğraf, kitap ve uzun yürüyüşler'],
   ['ece', 'Ece Yılmaz', 'eceyolda', 'kahve', 'Şehirde sakin köşeler arıyorum.'],
@@ -9,8 +10,8 @@ function bucheeDemoData(id) {
   ['arda', 'Arda Koç', 'ardagundelik', 'kedi', 'Ev arkadaşım Tarçın.'],
   ['irem', 'İrem Aksoy', 'iremyuruyor', 'yuruyus', 'Hafta sonu rotaları.']
  ];
- const profiles = people.map(([id, display_name, handle, image, bio]) => ({
-  id, display_name, handle, bio, avatar_url: photo(image), created_at: ago(10080)
+ const profiles = people.map(([id, display_name, handle, , bio],index) => ({
+  id, display_name, handle, bio, avatar_url: portrait([11,5,12,9,0,16][index]), created_at: ago(10080)
  }));
  const entries = [
   ['ece', 'kahve', 'Yağmur dinene kadar oturacaktım. İkinci kahveyi söyledim. ☕', 18],
@@ -70,15 +71,12 @@ function bucheeDemoData(id) {
  const surnames = ['Acar','Akın','Aslan','Çelik','Doğan','Ergin','Güneş','Kurt','Özkan','Yıldız','Yücel'];
  const cities = ['İstanbul','İzmir','Ankara','Eskişehir','Bursa','Antalya','Trabzon','Çanakkale','Muğla','Adana','Samsun'];
  const bios = ['Hafta sonu yollarda.','Işık iyi olunca durup bir kare alırım.','Mahalle kahveleri ve yeni tatlar.','Okuduklarımı burada biriktiriyorum.','Müzik, tasarım ve şehir hayatı.','Dışarı çıkmak için bahane arayanlardan.','Küçük anları kayda alıyorum.','Sergi, atölye ve iyi sohbet.'];
- const palette = ['#69469e','#206775','#a24c47','#364f77','#65472f','#4b6e45','#8f426a','#347086'];
  const slug = text => text.toLocaleLowerCase('tr').replace(/ı/g,'i').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
  const asset = (media,extension='jpg') => 'demo-media/community/'+media+'.'+extension;
  for(let i=0;i<94;i++){
   const first=firstNames[i%firstNames.length],last=surnames[(i+Math.floor(i/firstNames.length)*3)%surnames.length];
   const city=cities[(i*3)%cities.length],bio=bios[i%bios.length];
-  const initials=(first[0]+last[0]).toLocaleUpperCase('tr');
-  const avatar='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"><rect width="96" height="96" fill="'+palette[i%palette.length]+'"/><text x="48" y="61" fill="white" text-anchor="middle" font-family="sans-serif" font-size="30" font-weight="700">'+initials+'</text></svg>';
-  profiles.push({id:'demo-person-'+(i+7),display_name:first+' '+last,handle:slug(first+'.'+last),city,bio,avatar_url:'data:image/svg+xml,'+encodeURIComponent(avatar),created_at:ago(11000+i*53)});
+  profiles.push({id:'demo-person-'+(i+7),display_name:first+' '+last,handle:slug(first+'.'+last),city,bio,avatar_url:portrait(i%5===2?0:1+i%24),created_at:ago(11000+i*53)});
  }
  const captions = [
   'Son birkaç gündür aklımda kalan kare bu.',
@@ -181,12 +179,62 @@ function bucheeDemoData(id) {
   {user_id:'ece',country_code:'TR',show_country:true},
   {user_id:'mert',country_code:'TR',show_country:false}
  ];
- return {profiles,posts,stories,questions,replies,messages,comments,follows,likes,saves,notifications,collaborators,viewTotals,polls,buchee_account_country};
+ profiles[0].profile_links=[
+  {title:'İyi Yol Akademi’yi indir',url:'https://play.google.com/store/apps/details?id=com.iyiyolakademi'},
+  {title:'Buchee Social’i aç',url:'https://bucheesocial.com/'}
+ ];
+ profiles[1].profile_links=[{title:'Şehirde ilham aldığım kareler',url:'https://unsplash.com/t/street-photography'}];
+ const demoArchive=[
+  [id,'demo-academy-intro','kitap','İyi Yol Akademi · Öğrenmeye küçük bir adımla başla.'],
+  [id,'demo-academy-lesson','kahve','Kahve molasında bir ders.'],
+  [id,'demo-deniz-walk','sahil','Hafta sonu sahil yürüyüşü.'],
+  ['ece','demo-ece-vapur','kadikoy','Vapurdan gün batımı.'],
+  ['ece','demo-ece-sea','sahil','Rıhtımda son ışık.'],
+  ['ece','demo-ece-close','kitap','Yakın arkadaşlara özel bir not.']
+ ];
+ for(const [author_id,storyId,image,caption] of demoArchive){
+  stories.push({id:storyId,author_id,image_url:photo(image),caption,created_at:ago(4410),expires_at:ago(2970),
+   audience:storyId==='demo-ece-close'?'close_friends':'everyone'});
+ }
+ const storyAlbums=[
+  {id:'demo-album-academy',owner:id,title:'İyi Yol Akademi',cover:'demo-academy-intro',stories:['demo-academy-intro','demo-academy-lesson']},
+  {id:'demo-album-walk',owner:id,title:'Yürüyüşler',cover:'demo-deniz-walk',stories:['demo-deniz-walk']},
+  {id:'demo-album-ece',owner:'ece',title:'Şehir notları',cover:'demo-ece-close',stories:['demo-ece-vapur','demo-ece-close','demo-ece-sea']}
+ ];
+ return {profiles,posts,stories,questions,replies,messages,comments,follows,likes,saves,notifications,collaborators,viewTotals,polls,buchee_account_country,storyAlbums};
 }
 
 function bucheeDemoRpc(tables,name,args={}) {
+ const viewer=tables.profiles[0].id;
+ if(name==='buchee_story_album_list'){
+  const owner=tables.profiles.find(row=>row.id===args.p_owner);
+  const own=owner?.id===viewer;
+  if(!owner||(!own&&owner.is_private&&!tables.follows.some(row=>row.follower_id===viewer&&row.followee_id===owner.id)))return bucheeDemoQuery([]);
+  return bucheeDemoQuery(tables.storyAlbums.filter(album=>album.owner===owner.id&&(!args.p_album||album.id===args.p_album)).flatMap(album=>{
+   const stories=album.stories.map(id=>tables.patiyiz_stories.find(row=>row.id===id&&row.author_id===owner.id))
+    .filter(story=>story&&(own||story.audience!=='close_friends'));
+   const cover=stories.find(story=>story.id===album.cover)||stories[0]||null;
+   return own||cover?[{id:album.id,title:album.title,cover,stories:args.p_album?stories:[]}]:[];
+  }));
+ }
+ if(name==='buchee_story_album_save'){
+  const album={id:args.p_album||crypto.randomUUID(),owner:viewer,title:args.p_title,cover:args.p_cover,stories:[...args.p_story_ids]};
+  const index=tables.storyAlbums.findIndex(row=>row.id===album.id&&row.owner===viewer);
+  if(index>=0)tables.storyAlbums[index]=album;else tables.storyAlbums.push(album);
+  return Promise.resolve({data:album.id,error:null});
+ }
+ if(name==='buchee_story_album_manage'){
+  const index=tables.storyAlbums.findIndex(row=>row.id===args.p_album&&row.owner===viewer);
+  if(index>=0){
+   const adjacent=index+(args.p_action==='left'?-1:1);
+   if(args.p_action==='delete')tables.storyAlbums.splice(index,1);
+   else if(tables.storyAlbums[adjacent]?.owner===viewer)
+    [tables.storyAlbums[index],tables.storyAlbums[adjacent]]=[tables.storyAlbums[adjacent],tables.storyAlbums[index]];
+  }
+  return Promise.resolve({data:null,error:null});
+ }
  if(name==='buchee_account_about'){
-  const viewer=tables.profiles[0].id,profile=tables.profiles.find(row=>row.id===args.p_account_id);
+  const profile=tables.profiles.find(row=>row.id===args.p_account_id);
   if(!profile||(profile.is_private&&profile.id!==viewer&&!tables.follows.some(row=>row.follower_id===viewer&&row.followee_id===profile.id)))return bucheeDemoQuery([]);
   const country=tables.buchee_account_country.find(row=>row.user_id===profile.id&&row.show_country);
   return bucheeDemoQuery([{joined_month:profile.created_at?profile.created_at.slice(0,7)+'-01':null,country_code:country?.country_code||null}]);
