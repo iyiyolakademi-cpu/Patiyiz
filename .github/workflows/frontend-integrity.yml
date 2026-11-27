@@ -1,0 +1,24 @@
+name: Buchee frontend integrity
+on:
+  pull_request:
+    paths:
+      - "index.html"
+      - "app.js"
+      - "**/*.css"
+      - "**/*.js"
+      - "scripts/check_frontend_integrity.py"
+      - ".github/workflows/frontend-integrity.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Validate HTML structure and local assets
+        run: python3 scripts/check_frontend_integrity.py
