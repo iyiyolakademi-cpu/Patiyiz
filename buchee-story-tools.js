@@ -7,7 +7,7 @@
  const maxStrokes=32,maxPoints=640;
  const layoutKey='buchee_demo_story_layout_v1';
  function layoutFor(story){try{return JSON.parse(localStorage.getItem(layoutKey)||'{}')[JSON.stringify([story.story_text||'',story.story_link_url||'',story.story_link_label||'',story.question_prompt||'',story.poll_question||''])]||{}}catch{return {}}}
- function place(el,p){if(!p)return;Object.assign(el.style,{left:p.x+'%',top:p.y+'%',right:'auto',transform:'translate(-50%,-50%)',width:'max-content',maxWidth:'84%'})}
+ function place(el,p){if(!p)return;if(p.scale)el.style.setProperty('scale',String(p.scale));Object.assign(el.style,{left:p.x+'%',top:p.y+'%',right:'auto',transform:'translate(-50%,-50%)',width:'max-content',maxWidth:'84%'})}
  function draggable(el,stage,p){el.style.pointerEvents='auto';el.style.touchAction='none';el.style.cursor='grab';place(el,p);let id=null;el.addEventListener('pointerdown',e=>{if(e.button!==0)return;e.preventDefault();e.stopPropagation();id=e.pointerId;el.setPointerCapture(id)});el.addEventListener('pointermove',e=>{if(id!==e.pointerId)return;const r=stage.getBoundingClientRect();p.x=Math.max(12,Math.min(88,(e.clientX-r.left)/r.width*100));p.y=Math.max(8,Math.min(92,(e.clientY-r.top)/r.height*100));place(el,p)});for(const type of ['pointerup','pointercancel','lostpointercapture'])el.addEventListener(type,()=>{id=null})}
 
  const getLink=value=>{
@@ -70,6 +70,12 @@
    const hint=document.createElement('small');hint.textContent='Öğeleri ön izlemede sürükleyerek konumlandır.';tools.prepend(hint);
    const controls=document.createElement('div');controls.innerHTML='<label>Yazı boyutu<input type="range" min="12" max="32" value="17" name="demo_size"></label><label>Yazı rengi<input type="color" value="#ffffff" name="demo_color"></label>';
    tools.querySelector('[data-story-fields="text"]').append(controls);
+   for(const key of ['text','link','question','poll']){
+    const label=document.createElement('label');label.textContent='Öğe boyutu';
+    const range=document.createElement('input');range.type='range';range.min='60';range.max='160';range.value='100';range.step='5';
+    range.addEventListener('input',()=>{layout[key].scale=Number(range.value)/100;place(key==='text'?text:previews[key],layout[key])});
+    label.append(range);tools.querySelector('[data-story-fields="'+key+'"]').append(label);
+   }
   }
   const strokes=[];
   let active='',interactive='',ink=colors[0],pointer=null;
