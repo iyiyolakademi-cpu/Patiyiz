@@ -4,7 +4,7 @@
  const demo=new URLSearchParams(location.search).get('demo')==='1';
  const positions=new Map();
  const colors=['#ffffff','#f9cc5d','#ef669c','#8bded2','#17191d'];
- const emojis=['❤️','😍','🐾','😂','👏'];
+ const emojis=demo?['😂','😮','😍','😢','👏','🔥','🎉','💯']:['❤️','😍','🐾','😂','👏'];
  const maxStrokes=32,maxPoints=640;
  const getLink=value=>{
   try{
@@ -166,7 +166,19 @@
    slot.style.cssText='position:static!important;display:flex;align-items:center;flex:0 0 48px;width:48px;height:48px';
    like.style.cssText='position:static!important;inset:auto!important;transform:none!important;margin:0!important;width:48px!important;height:48px!important;flex:none';
    form.elements.reply.style.boxSizing='border-box';
-   const reaction=document.createElement('button');reaction.type='button';reaction.textContent='☺';reaction.setAttribute('aria-label','Tepki');reaction.style.cssText='position:static!important;flex:0 0 40px;width:40px;height:48px;margin:0;color:white;background:transparent;border:0;font-size:24px';reaction.onclick=()=>interact('emoji');form.insertBefore(reaction,form.querySelector('span'));
+   const reaction=document.createElement('button');reaction.type='button';reaction.textContent='☺';reaction.setAttribute('aria-label','Tepki');reaction.style.cssText='position:static!important;flex:0 0 40px;width:40px;height:48px;margin:0;color:white;background:transparent;border:0;font-size:24px';reaction.onclick=()=>form.elements.reply.focus();
+   reaction.hidden=true;reaction.style.display='none';
+   const quick=document.createElement('section');
+   quick.hidden=true;quick.style.cssText='position:absolute;bottom:100%;left:0;right:0;background:#080808b8;color:white;padding:18px 12px 22px;border-radius:16px;z-index:10021;text-align:center';
+   const heading=document.createElement('strong');heading.textContent='Hızlı İfadeler';heading.style.fontSize='22px';quick.append(heading);
+   const grid=document.createElement('div');grid.style.cssText='display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:18px';
+   for(const emoji of emojis){const b=document.createElement('button');b.type='button';b.textContent=emoji;b.style.cssText='background:transparent;border:0;font-size:34px;min-height:48px;cursor:pointer';b.addEventListener('pointerdown',e=>e.preventDefault());b.onclick=()=>{form.elements.reply.value=emoji;quick.hidden=true;form.requestSubmit()};grid.append(b)}
+   quick.append(grid);form.append(quick);
+   form.elements.reply.addEventListener('focus',()=>{quick.hidden=!!form.elements.reply.value.trim()});
+   form.elements.reply.addEventListener('input',()=>{quick.hidden=!!form.elements.reply.value.trim()});
+   form.elements.reply.addEventListener('blur',()=>{quick.hidden=true});
+   form.addEventListener('pointerdown',e=>e.stopPropagation());
+   form.addEventListener('click',e=>e.stopPropagation());
   }
   const input=form.elements.reply,send=form.querySelector('button[type="submit"]');
   input.addEventListener('input',()=>{send.hidden=!input.value.trim()});
