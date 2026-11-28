@@ -106,6 +106,9 @@ test('Paylaşım ızgarası küçük ekranlarda yuvarlak profil resmi ve erişil
 
 test('Mevcut DM ile paylaşım düğmesi profil kişisine gönderimi sürdürür',()=>{
  assert.match(app,/case 'share-post':openPatiShareModal\(id\)/);
- assert.match(app,/case 'send-post-dm'/);
- assert.match(app,/sb\.from\('messages'\)\.insert\(\{sender_id:me\.id,receiver_id:id,body:/);
+ assert.match(app,/case 'send-post-dm':[^\n]+await bucheeSendPostInMessage\(post\.id,id\)/);
+ const send=app.slice(app.indexOf('async function bucheeSendPostInMessage'),app.indexOf('async function patiRouteSharedPostLink'));
+ assert.match(send,/sb\.from\('messages'\)\.insert\(\{\s+sender_id:owner,receiver_id:recipient,body:'📨 Paylaşım: '\+bucheePostShareLink\(postId\)/);
+ assert.match(send,/\.select\('\*'\)\.single\(\)/);
+ assert.match(send,/data\.messages=\[.*message\]/);
 });
