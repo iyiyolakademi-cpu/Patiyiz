@@ -8,7 +8,7 @@
  },true);
  window.addEventListener('unhandledrejection',function(){note('promise')});
 })();</script><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<script id="buchee-local-dev-launch">(function(){try{var p=new URLSearchParams(location.search);if(p.get('offline')==='1'||p.get('demo')==='1'){localStorage.setItem('buchee_offline_dev_v1','1');localStorage.removeItem('buchee_dev_home_v1')}else if(p.get('offline')==='0'||p.get('demo')==='0'){localStorage.removeItem('buchee_offline_dev_v1');localStorage.removeItem('buchee_dev_home_v1')}else if(localStorage.getItem('buchee_dev_home_v1')==='1'){localStorage.setItem('buchee_offline_dev_v1','1');localStorage.removeItem('buchee_dev_home_v1')}window.BUCHEE_OFFLINE_DEV=localStorage.getItem('buchee_offline_dev_v1')==='1';}catch(e){window.BUCHEE_OFFLINE_DEV=false}})();</script><meta name="theme-color" content="#080808"><style id="buchee-launch-critical">
+<script id="buchee-local-dev-launch">(function(){var p=new URLSearchParams(location.search);window.BUCHEE_OFFLINE_DEV=p.get('demo')==='1'||p.get('offline')==='1';try{localStorage.removeItem('buchee_offline_dev_v1');localStorage.removeItem('buchee_dev_home_v1')}catch(e){}})();</script><meta name="theme-color" content="#080808"><style id="buchee-launch-critical">
 html{background:#080808}
 #startup:not(.hidden){position:fixed!important;inset:0!important;z-index:1000000!important;display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;height:100vh!important;height:100dvh!important;overflow:hidden!important;background:#080808!important;color:#fff!important;opacity:1;visibility:visible;isolation:isolate}
 #startup .buchee-opening-halo{display:none!important}#startup:before,#startup:after{display:none!important}#startup .pati-splash-center{position:relative;z-index:2;width:min(82vw,435px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:17px}
@@ -277,7 +277,7 @@ window.BUCHEE_RELEASE="20261123-blog-content-v4";
 <script src="buchee-demo-data.js?v=14-story-tools" defer></script>
 <script src="buchee-demo-config.js?v=1" defer></script>
 <script src="buchee-story-tools.js?v=20261128-gesture-v1" defer></script>
-<script src="app.js?v=20261128-demo-rc1" defer></script>
+<script src="app.js?v=20261128-demo-rc2" defer></script>
 <script src="patiyiz-header-feed-menu-20261031.js?v=20261124-desktop-only-v8"></script>
 <script src="patiyiz-dm-emoji-picker-20261101.js?v=1" defer></script>
 <style id="pati-critical-mobile-feed-20261101">
