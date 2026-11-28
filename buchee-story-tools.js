@@ -1,6 +1,8 @@
 /* Story annotations share the same normalized canvas in the camera and viewer. */
 (()=>{
  'use strict';
+ const demo=new URLSearchParams(location.search).get('demo')==='1';
+ const positions=new Map();
  const colors=['#ffffff','#f9cc5d','#ef669c','#8bded2','#17191d'];
  const emojis=['❤️','😍','🐾','😂','👏'];
  const maxStrokes=32,maxPoints=640;
@@ -148,15 +150,20 @@
    }
    if(story.question_prompt&&(active||own))add('Soru · '+story.question_prompt,'question');
    if(story.poll_question&&(active||own))add('Anket · '+story.poll_question,'poll');
-   if(active&&!own)add('Tepki','emoji');
+   if(active&&!own&&!demo)add('Tepki','emoji');
    if(bar.childElementCount)player.append(bar);
   }
   const like=player.querySelector('.pati-story-like');
   if(!active||own||!like)return;
   const form=document.createElement('form');
   form.className='buchee-story-reply';
-  form.innerHTML='<input type="text" name="reply" maxlength="1000" autocomplete="off" placeholder="Mesaj gönder…" aria-label="Hikâyeye mesaj gönder"><button type="submit" class="buchee-story-send" aria-label="Yanıtı gönder" hidden>Gönder</button><span class="buchee-story-like-slot"></span>';
+  form.innerHTML='<input type="text" name="reply" maxlength="1000" autocomplete="off" placeholder="'+(demo?'Bir şeyler yaz...':'Mesaj gönder…')+'" aria-label="Hikâyeye mesaj gönder"><button type="submit" class="buchee-story-send" aria-label="Yanıtı gönder" hidden>Gönder</button><span class="buchee-story-like-slot"></span>';
   like.replaceWith(form);form.querySelector('span').append(like);
+  if(demo){
+   Object.assign(form.style,{position:'absolute',bottom:'max(12px,env(safe-area-inset-bottom))',left:'12px',right:'12px',display:'flex',alignItems:'center',gap:'8px',zIndex:'10020',width:'auto',transform:'none'});
+   Object.assign(form.elements.reply.style,{flex:'1',minWidth:'0',width:'auto',border:'1px solid #777',borderRadius:'24px',padding:'12px',background:'#111',color:'#fff'});
+   const reaction=document.createElement('button');reaction.type='button';reaction.textContent='☺';reaction.setAttribute('aria-label','Tepki');reaction.style.cssText='color:white;background:transparent;border:0;font-size:24px';reaction.onclick=()=>interact('emoji');form.insertBefore(reaction,form.querySelector('span'));
+  }
   const input=form.elements.reply,send=form.querySelector('button[type="submit"]');
   input.addEventListener('input',()=>{send.hidden=!input.value.trim()});
   input.addEventListener('focus',()=>{pause();root.classList.add('buchee-story-typing')});
