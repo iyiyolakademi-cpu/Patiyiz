@@ -10,8 +10,10 @@ function bucheeDemoData(id) {
   ['arda', 'Arda Koç', 'ardagundelik', 'kedi', 'Ev arkadaşım Tarçın.'],
   ['irem', 'İrem Aksoy', 'iremyuruyor', 'yuruyus', 'Hafta sonu rotaları.']
  ];
+ // These assignments are for fictional demo characters and their generated portraits.
+ const primaryPortraits=[2,1,5,3,0,8];
  const profiles = people.map(([id, display_name, handle, , bio],index) => ({
-  id, display_name, handle, bio, avatar_url: portrait([1,2,3,4,0,5][index]), created_at: ago(10080)
+  id, display_name, handle, bio, avatar_url: portrait(primaryPortraits[index]), created_at: ago(10080)
  }));
  const entries = [
   ['ece', 'kahve', 'Yağmur dinene kadar oturacaktım. İkinci kahveyi söyledim. ☕', 18],
@@ -73,11 +75,17 @@ function bucheeDemoData(id) {
  const bios = ['Hafta sonu yollarda.','Işık iyi olunca durup bir kare alırım.','Mahalle kahveleri ve yeni tatlar.','Okuduklarımı burada biriktiriyorum.','Müzik, tasarım ve şehir hayatı.','Dışarı çıkmak için bahane arayanlardan.','Küçük anları kayda alıyorum.','Sergi, atölye ve iyi sohbet.'];
  const slug = text => text.toLocaleLowerCase('tr').replace(/ı/g,'i').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
  const asset = (media,extension='jpg') => 'demo-media/community/'+media+'.'+extension;
- const communityPortraits = new Map([0,2,4,5,7,9,11,14,18,35,58].map((profileIndex,photoIndex)=>[profileIndex,photoIndex+6]));
- // Spread the remaining portraits through the fixtures without recycling faces.
- for(let slot=0,nextPortrait=17;nextPortrait<=52;slot++){
-  const profileIndex=(slot*17)%94;
-  if(!communityPortraits.has(profileIndex))communityPortraits.set(profileIndex,nextPortrait++);
+ const maleDemoNames=new Set(['Baran','Bora','Cem','Efe','Emir','Kerem','Ozan','Rüzgar','Umut','Yunus']);
+ const malePortraits=[4,7,10,12,14,16,18,20,22,23,25,27,29,31,33,36,38,40,41,43,45,47,49,51];
+ const femalePortraits=[6,9,11,13,15,17,19,21,24,26,28,30,32,34,35,37,39,42,44,46,48,50,52];
+ const communityPortraits=new Map();
+ // Give the accounts shown early in the feed priority, then spread out the rest.
+ const earlyProfiles=[0,2,4,5,7,9,11,14,18,35,58];
+ const profileOrder=new Set([...earlyProfiles,...Array.from({length:94},(_,slot)=>(slot*17)%94)]);
+ for(const index of profileOrder){
+  const first=firstNames[index%firstNames.length];
+  const pool=maleDemoNames.has(first)?malePortraits:femalePortraits;
+  if(pool.length)communityPortraits.set(index,pool.shift());
  }
  for(let i=0;i<94;i++){
   const first=firstNames[i%firstNames.length],last=surnames[(i+Math.floor(i/firstNames.length)*3)%surnames.length];
