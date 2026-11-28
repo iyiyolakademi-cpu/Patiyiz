@@ -274,8 +274,8 @@ window.BUCHEE_RELEASE="20261123-blog-content-v4";
 <script src="patiyiz-saved-priority-20261031.js?v=20261124-priority-color-v2" defer></script>
 <script src="patiyiz-private-media-20261031.js?v=20261105-media-cache-perf-v2" defer></script>
 <script src="buchee-twit-photo-crop-20261123.js?v=1" defer></script>
-<script src="buchee-demo-data.js?v=11" defer></script>
-<script src="app.js?v=20261128-story-actions-v1" defer></script>
+<script src="buchee-demo-data.js?v=12-feed-sources" defer></script>
+<script src="app.js?v=20261128-feed-sources-v1" defer></script>
 <script src="patiyiz-header-feed-menu-20261031.js?v=20261124-desktop-only-v8"></script>
 <script src="patiyiz-dm-emoji-picker-20261101.js?v=1" defer></script>
 <style id="pati-critical-mobile-feed-20261101">
@@ -1420,4 +1420,36 @@ html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-utility>.p
 }
 .buchee-follow-list :is(button,summary):focus-visible{outline:2px solid #7048a3;outline-offset:2px}
 @media(max-width:740px){.buchee-follow-list{border-inline:0;border-radius:0}}
+
+.buchee-feed-sources{
+ order:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;
+ margin:7px 12px 0;border-bottom:1px solid #e9e7ed;
+}
+.buchee-feed-sources>button{
+ min-width:0;min-height:43px;border:0;border-bottom:2px solid transparent;padding:4px 2px;
+ background:transparent;color:#605d66;font-size:clamp(11px,3.35vw,14px);font-weight:650;cursor:pointer;
+}
+.buchee-feed-sources>button[aria-pressed="true"]{color:#51317d;border-bottom-color:#69429f;font-weight:800}
+.buchee-feed-sources>button:focus-visible,.buchee-feed-manage-favorites:focus-visible{outline:2px solid #7048a3;outline-offset:-2px}
+.buchee-feed-favorites-tools{order:2;display:flex;justify-content:flex-end;padding:3px 12px 0}
+.buchee-feed-manage-favorites{
+ min-height:40px;border:0;background:transparent;color:#553682;padding:4px 8px;
+ font-size:13px;font-weight:700;cursor:pointer;
+}
+#app-root #main-content .buchee-home-stories-and-tabs>.buchee-home-feed-filters{order:3!important}
+.buchee-feed-status{margin:0;padding:16px;color:#605d66}
+#buchee-feed-favorites-form .modal-content{display:grid;gap:10px}
+#buchee-feed-favorites-form .modal-content>p{margin:0;color:#59535f}
+.buchee-favorites-search{display:grid;gap:4px;font-weight:650}
+.buchee-favorites-search input{width:100%;min-height:44px}
+.buchee-favorites-people{display:grid;max-height:38vh;overflow:auto;overscroll-behavior:contain}
+.buchee-favorite-person{
+ display:grid;grid-template-columns:40px minmax(0,1fr) 24px;align-items:center;gap:8px;
+ padding:6px 4px;border-bottom:1px solid #efedf1;min-height:48px;cursor:pointer;
+}
+.buchee-favorite-person>strong,.buchee-favorite-person>span{min-width:0}
+.buchee-favorite-person strong,.buchee-favorite-person small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.buchee-favorite-person small{color:#6e6575}
+.buchee-favorite-person input[type="checkbox"]{width:18px;height:18px;margin:0;accent-color:#69429f}
+.buchee-favorites-more[hidden]{display:none!important}
 </style></body></html>

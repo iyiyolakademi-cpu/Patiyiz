@@ -27,6 +27,10 @@ function bucheeDemoData(id) {
   id: 'demo-photo-' + i, author_id, body, image_url: photo(image), post_format: 'image', created_at: ago(age)
  }));
  posts.push(
+  {id:'demo-carousel-1',author_id:'ece',body:'Bir İstanbul sabahı, üç kare.',image_url:photo('kadikoy'),
+   images:[photo('kadikoy'),photo('sahil'),photo('kahve')],post_format:'image',created_at:ago(39)},
+  {id:'demo-video-1',author_id:'mert',body:'Yürüyüşten kısa bir video.',video_url:'demo-media/rota.mp4',
+   video_cover_url:photo('yuruyus'),post_format:'post',created_at:ago(52)},
   {id:'demo-text-1', author_id:'selin', body:'Bir kitabı yarıda bırakmak için kendinize kaç sayfa veriyorsunuz? Benim sınırım 50.', post_format:'text', created_at:ago(42)},
   {id:'demo-text-2', author_id:'ece', body:'Bir arkadaşım İstanbul’a ilk kez geliyor. Tek bir semt gezdirecek olsanız nereyi seçerdiniz?', post_format:'text', created_at:ago(110)},
   {id:'demo-text-3', author_id:id, body:'Hafta sonu için vapur, sahaf ve kahve. Sıralamayı henüz çözemedim.', post_format:'text', created_at:ago(210)},
@@ -215,11 +219,20 @@ function bucheeDemoData(id) {
   {id:'demo-album-walk',owner:id,title:'Yürüyüşler',cover:'demo-deniz-walk',stories:['demo-deniz-walk']},
   {id:'demo-album-ece',owner:'ece',title:'Şehir notları',cover:'demo-ece-close',stories:['demo-ece-vapur','demo-ece-close','demo-ece-sea']}
  ];
- return {profiles,posts,stories,questions,replies,messages,comments,follows,likes,saves,notifications,collaborators,viewTotals,polls,buchee_account_country,storyAlbums};
+ const reposts=[{user_id:id,post_id:'demo-carousel-1',created_at:ago(22)},
+  {user_id:'ece',post_id:'demo-reel-1',created_at:ago(12)}];
+ return {profiles,posts,stories,questions,replies,messages,comments,follows,likes,saves,reposts,notifications,collaborators,viewTotals,polls,buchee_account_country,storyAlbums};
 }
 
 function bucheeDemoRpc(tables,name,args={}) {
  const viewer=tables.profiles[0].id;
+ if(name==='patiyiz_following_feed'){
+  const follows=new Set(tables.follows.filter(row=>row.follower_id===viewer).map(row=>row.followee_id));
+  const shared=new Set(tables.patiyiz_post_collaborators.filter(row=>row.status==='accepted'&&follows.has(row.user_id)).map(row=>row.post_id));
+  const posts=tables.posts.filter(post=>(post.author_id===viewer||follows.has(post.author_id)||shared.has(post.id))&&
+   (!args.p_before||post.created_at<args.p_before||post.created_at===args.p_before&&post.id<args.p_before_id));
+  return bucheeDemoQuery(posts).order('created_at',{ascending:false}).order('id',{ascending:false}).limit(args.p_limit||40);
+ }
  if(name==='buchee_story_album_list'){
   const owner=tables.profiles.find(row=>row.id===args.p_owner);
   const own=owner?.id===viewer;
