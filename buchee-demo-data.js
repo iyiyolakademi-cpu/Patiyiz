@@ -90,7 +90,7 @@ function bucheeDemoData(id) {
  for(let i=0;i<94;i++){
   const first=firstNames[i%firstNames.length],last=surnames[(i+Math.floor(i/firstNames.length)*3)%surnames.length];
   const city=cities[(i*3)%cities.length],bio=bios[i%bios.length];
-  profiles.push({id:'demo-person-'+(i+7),display_name:first+' '+last,handle:slug(first+'.'+last),city,bio,avatar_url:portrait(communityPortraits.get(i)),created_at:ago(11000+i*53)});
+  profiles.push({id:'demo-person-'+(i+7),display_name:first+' '+last,handle:slug(first+'.'+last),city,bio,avatar_url:portrait(first==='Bora'&&last==='Güneş'?2:communityPortraits.get(i)),created_at:ago(11000+i*53)});
  }
  const captions = [
   'Son birkaç gündür aklımda kalan kare bu.',
