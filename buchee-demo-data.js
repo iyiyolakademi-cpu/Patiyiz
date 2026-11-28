@@ -313,7 +313,7 @@ function bucheeDemoQuery(source, writable=false) {
   or(expression) {
    const cursor=expression.match(/^created_at\.lt\.([^,]+),and\(created_at\.eq\.([^,]+),id\.lt\.([^,)]+)\)$/);
    if(cursor)return filter(row=>row.created_at<cursor[1]||(row.created_at===cursor[2]&&row.id<cursor[3]));
-   if (expression.startsWith('sender_id.eq.') || expression.startsWith('receiver_id.eq.')) {
+   if (expression.startsWith('sender_id.eq.') || expression.startsWith('receiver_id.eq.') || expression.startsWith('and(sender_id.eq.')) {
     const matches = [...expression.matchAll(/(sender_id|receiver_id)\.eq\.([^,()]+)/g)];
     return filter(row => matches.length===4
      ? (row[matches[0][1]]===matches[0][2]&&row[matches[1][1]]===matches[1][2]) ||

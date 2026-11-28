@@ -1758,6 +1758,20 @@ function bucheePostShareLink(id){
  url.hash='post-'+id;
  return url.href;
 }
+async function bucheeSendPostInMessage(postId,recipient){
+ const owner=me?.id;
+ if(!owner||!recipient||recipient===owner||blocked.has(recipient))throw Error('Bu hesaba mesaj gönderilemiyor.');
+ const result=await sb.from('messages').insert({
+  sender_id:owner,receiver_id:recipient,body:'📨 Paylaşım: '+bucheePostShareLink(postId)
+ }).select('*').single();
+ if(result.error)throw result.error;
+ if(!result.data)throw Error('Mesaj gönderimi doğrulanamadı.');
+ if(me?.id!==owner)return;
+ const message=result.data;
+ data.messages=[...data.messages.filter(row=>row.id!==message.id),message];
+ const thread=patiDmThreads.get(patiDmThreadKey(recipient));
+ if(thread)thread.rows=[...thread.rows.filter(row=>row.id!==message.id),message];
+}
 async function patiRouteSharedPostLink(){
  const hash=location.hash||'';
  if(hash.startsWith('#question-')){await patiRouteSharedQuestionLink(hash);return}
@@ -5459,7 +5473,8 @@ async function patiDmLoadInbox(reset=false,quiet=false){
  }
 }
 async function patiDmLoadThread(peer,older=false,quiet=false){
- if(!me||!sb||!/^[a-f0-9-]{36}$/i.test(peer||'')||peer===me.id)return;
+ const valid=/^[a-f0-9-]{36}$/i.test(peer||'')||(globalThis.BUCHEE_OFFLINE_DEV&&/^[a-z0-9-]+$/i.test(peer||''));
+ if(!me||!sb||!valid||peer===me.id)return;
  const uid=me.id,loadToken=patiyizLoadToken,key=patiDmThreadKey(peer);
  let state=patiDmThreads.get(key);
  if(!state){state={rows:[],hasMore:true,loading:false,ready:false,error:''};patiDmThreads.set(key,state)}
@@ -9819,11 +9834,12 @@ case 'buchee-share-send':{
  const selected=[...form.querySelectorAll('.buchee-share-person[aria-pressed="true"]')];
  if(!selected.length)break;
  run(async()=>{
-  target.disabled=true;let delivered=0;
+  const owner=me?.id;target.disabled=true;let delivered=0;
   for(const person of selected){
+   if(me?.id!==owner)return;
    const receiver=person.dataset.id;if(!receiver||receiver===me?.id)continue;
-   const result=await sb.from('messages').insert({sender_id:me.id,receiver_id:receiver,body:'📨 Paylaşım: '+bucheePostShareLink(post.id)});
-   if(result.error){target.disabled=false;throw Error(delivered+' kişiye gönderildi. Kalan kişiler için hata: '+result.error.message);}
+   try{await bucheeSendPostInMessage(post.id,receiver)}
+   catch(error){target.disabled=false;throw Error(delivered+' kişiye gönderildi. Kalan kişiler için hata: '+error.message);}
    delivered++;person.classList.remove('is-selected');person.setAttribute('aria-pressed','false');
   }
   if(typeof patiEngagementCounts!=='undefined')patiEngagementCounts.delete(post.id);
@@ -9832,7 +9848,7 @@ case 'buchee-share-send':{
  },null);
  break;
 }
-case 'send-post-dm':{const post=data.posts.find(x=>x.id===target.dataset.post);if(!post||id===me.id)break;run(async()=>{const r=await sb.from('messages').insert({sender_id:me.id,receiver_id:id,body:'📨 Paylaşım: '+bucheePostShareLink(post.id)});if(r.error)throw r.error;if(typeof patiEngagementCounts!=='undefined'&&typeof patiScheduleEngagement==='function'){patiEngagementCounts.delete(post.id);patiScheduleEngagement();}closeModal();},'Paylaşım mesajla gönderildi.');break;}case 'save':void togglePostSave(id);break;case 'follow':run(()=>doToggle('follows',{follower_id:me.id,followee_id:id},followed.has(id)||patiFollowPageState.viewerFollowing.has(id)));break;
+case 'send-post-dm':{const post=data.posts.find(x=>x.id===target.dataset.post);if(!post||id===me.id)break;run(async()=>{await bucheeSendPostInMessage(post.id,id);if(typeof patiEngagementCounts!=='undefined'&&typeof patiScheduleEngagement==='function'){patiEngagementCounts.delete(post.id);patiScheduleEngagement();}closeModal();},'Paylaşım mesajla gönderildi.');break;}case 'save':void togglePostSave(id);break;case 'follow':run(()=>doToggle('follows',{follower_id:me.id,followee_id:id},followed.has(id)||patiFollowPageState.viewerFollowing.has(id)));break;
 case 'pati-follow-accept':run(()=>patiFollowDecision(id,true));break;
 case 'pati-follow-decline':run(()=>patiFollowDecision(id,false));break;
 case 'pati-restrict':run(()=>patiRestrictToggle(id));break;
