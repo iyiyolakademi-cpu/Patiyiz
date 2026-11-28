@@ -1,0 +1,17 @@
+/* Buchee demo design tokens and lightweight interaction layer */
+html[data-buchee-design="demo"]{--bc-ink:#111;--bc-muted:#666;--bc-line:#e5e5e5;--bc-soft:#f5f5f5;--bc-paper:#fff;--bc-radius:12px;--bc-fast:140ms;--bc-ease:cubic-bezier(.2,.7,.3,1)}
+html[data-buchee-design="demo"] :is(.buchee-story-toolbar>button,.buchee-story-hide-entry,.buchee-story-palette>button:not([data-ink]),.buchee-story-dialog>header button){background:var(--bc-soft);color:var(--bc-ink);border-color:var(--bc-line);border-radius:var(--bc-radius)}
+html[data-buchee-design="demo"] .buchee-story-toolbar>button[aria-pressed="true"]{background:#111;color:#fff;border-color:#111}
+html[data-buchee-design="demo"] :is(.buchee-story-dialog,.buchee-story-editor input:not([type="color"]),.buchee-story-editor textarea){border-color:var(--bc-line);color:var(--bc-ink);background:var(--bc-paper)}
+html[data-buchee-design="demo"] :is(.buchee-story-hidden-person,.buchee-favorite-person) input{accent-color:#111}
+html[data-buchee-design="demo"] .buchee-story-palette>[data-ink][aria-pressed="true"]{outline-color:#111}
+html[data-buchee-design="demo"] #story-overlay .buchee-story-widgets :is(button,a){background:#fff;color:#111;border-color:#ddd}
+html[data-buchee-design="demo"] :is(#app-root,#modal-root) button:focus-visible{outline:2px solid #777;outline-offset:3px}
+html[data-buchee-design="demo"] :is(.pati-ig-bio,.pati-search-user-info,.buchee-discover-person){overflow-wrap:anywhere}
+@media(prefers-reduced-motion:no-preference){
+html[data-buchee-design="demo"] :is(.soft-btn,.pati-profile-tile,.pati-explore-media,#mobile-nav button,.buchee-story-toolbar>button){transition:opacity var(--bc-fast) var(--bc-ease),background-color var(--bc-fast) var(--bc-ease)}
+html[data-buchee-design="demo"] :is(.soft-btn,.pati-profile-tile,.pati-explore-media,#mobile-nav button,.buchee-story-toolbar>button):active{opacity:.68}
+html[data-buchee-design="demo"] .bc-page-enter{animation:bc-page-enter 150ms var(--bc-ease) both}
+@keyframes bc-page-enter{from{opacity:.72}to{opacity:1}}
+}
+@media(prefers-reduced-motion:reduce){html[data-buchee-design="demo"] .bc-page-enter{animation:none!important}}
