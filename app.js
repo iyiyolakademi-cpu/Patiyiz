@@ -2295,8 +2295,9 @@ async function bucheeReplyToStory(story,message){
  const excerpt=(verified.data.caption||'Hikâye').slice(0,100);
  let body=('↪ Hikâyene yanıt verdi · '+excerpt+'\n'+message).slice(0,1000);
  if(new URLSearchParams(location.search).get('demo')==='1'){
-  const image=String(story.image_url||'');
-  const meta=JSON.stringify({id:String(story.id),image:/^https:\/\//i.test(image)&&image.length<650?image:'',caption:excerpt});
+  const raw=story.image_url||document.querySelector('#story-overlay .story-big-photo')?.getAttribute('src')||'';
+  let image='';try{const u=new URL(raw,location.href);if(raw&&/^https?:$/.test(u.protocol))image=u.href}catch{}
+  const meta=JSON.stringify({id:String(story.id),image:image.length<800?image:'',caption:excerpt});
   const prefix='[buchee-story]'+meta+'\n';
   if(prefix.length<950)body=prefix+message.slice(0,1000-prefix.length);
  }
@@ -5953,10 +5954,10 @@ function bucheeDemoStoryReplyMarkup(row){
  try{
   const split=body.indexOf('\n');if(split<0)return esc(body);
   const meta=JSON.parse(body.slice('[buchee-story]'.length,split));
-  const story=typeof data!=='undefined'&&Array.isArray(data.stories)?data.stories.find(x=>String(x.id)===meta.id):null;
+  const story=[...(Array.isArray(data.stories)?data.stories:[]),...(typeof storyItems!=='undefined'&&Array.isArray(storyItems)?storyItems:[])].find(x=>String(x.id)===meta.id);
   const image=String(meta.image||story?.image_url||'');
-  const safe=/^https:\/\//i.test(image)||/^\/(?!\/)/.test(image);
-  return '<div style="display:grid;justify-items:start;gap:8px;max-width:240px"><span style="font-size:12px;opacity:.75">'+(row.sender_id===me.id?'Hikâyeye yanıt verdin':'Hikâyene yanıt verdi')+'</span>'+(safe?'<img loading="lazy" decoding="async" referrerpolicy="no-referrer" src="'+esc(image)+'" alt="Yanıtlanan hikâye" style="width:110px;aspect-ratio:9/16;object-fit:cover;border-radius:16px">':'<span style="font-size:12px">Hikâye</span>')+'<span style="white-space:pre-wrap;overflow-wrap:anywhere;background:'+(row.sender_id===me.id?'#111;color:#fff':'#eee;color:#111')+';padding:12px 14px;border-radius:18px">'+esc(body.slice(split+1))+'</span></div>';
+  const safe=/^https?:\/\//i.test(image)||/^\/(?!\/)/.test(image)||/^(?:\.\/)?[\w-]+\/[\w./%-]+$/.test(image);
+  return '<div class="buchee-story-reply-content" style="display:grid;justify-items:start;gap:8px;max-width:240px"><span style="font-size:12px;opacity:.75">'+(row.sender_id===me.id?'Hikâyeye yanıt verdin':'Hikâyene yanıt verdi')+'</span>'+(safe?'<img loading="lazy" decoding="async" referrerpolicy="no-referrer" src="'+esc(image)+'" alt="Yanıtlanan hikâye" style="width:110px;aspect-ratio:9/16;object-fit:cover;border-radius:16px">':'<span style="font-size:12px">Hikâye</span>')+'<span style="white-space:pre-wrap;overflow-wrap:anywhere;background:'+(row.sender_id===me.id?'#111;color:#fff':'#eee;color:#111')+';padding:12px 14px;border-radius:18px">'+esc(body.slice(split+1))+'</span></div>';
  }catch{return esc(body)}
 }
 function patiDmSharedPostId(body){
