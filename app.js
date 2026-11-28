@@ -2301,7 +2301,7 @@ async function bucheeReplyToStory(story,message){
  const excerpt=(verified.data.caption||'Hikâye').slice(0,100);
  let body=('↪ Hikâyene yanıt verdi · '+excerpt+'\n'+message).slice(0,1000);
  if(bucheeDemoEnabled){
-  const raw=story.image_url||document.querySelector('#story-overlay .story-big-photo')?.getAttribute('src')||'';
+  const raw=story.image_url||document.querySelector('#story-overlay .story-big-photo')?.getAttribute('src')||document.querySelector('#story-overlay video')?.poster||'';
   let image='';try{const u=new URL(raw,location.href);if(raw&&/^https?:$/.test(u.protocol))image=u.href}catch{}
   const meta=JSON.stringify({id:String(story.id),image:image.length<800?image:'',caption:excerpt});
   const prefix='[buchee-story]'+meta+'\n';
@@ -5618,7 +5618,7 @@ function patiDmSafeRender(){
  const nextSearch=document.querySelector('#pati-dm-search');
  if(nextSearch){nextSearch.value=filter;if(filter)nextSearch.dispatchEvent(new Event('input'));if(searchFocused)nextSearch.focus({preventScroll:true})}
  const after=document.querySelector('#message-form input[name="body"],#pati-group-message-form input[name="group_body"]');
- if(after){after.value=draft;if(reply)after.form.dataset.reply=reply;
+ if(after){after.value=draft;if(reply){after.form.dataset.reply=reply;if(bucheeDemoEnabled){const box=after.form.querySelector('.pati-dm-reply-compose');const original=patiDmFindMessage(reply);if(box&&original){box.hidden=false;const strong=box.querySelector('strong');if(strong)strong.textContent=cut(original.attachment_type==='image'?'Fotoğraf':original.attachment_type==='audio'?'Sesli mesaj':original.body||'Medya',95);after.placeholder='Yanıtını yaz...'}}}
   if(focus){after.focus({preventScroll:true});after.setSelectionRange(pos,pos)}}
 }
 async function patiDmLoadInbox(reset=false,quiet=false){
@@ -5956,14 +5956,14 @@ function patiDmMentionDetails(body){
 }
 function bucheeDemoStoryReplyMarkup(row){
  const body=String(row.body||'');
- if(new URLSearchParams(location.search).get('demo')!=='1'||!body.startsWith('[buchee-story]'))return esc(body);
+ if(!bucheeDemoEnabled||!body.startsWith('[buchee-story]'))return esc(body);
  try{
   const split=body.indexOf('\n');if(split<0)return esc(body);
   const meta=JSON.parse(body.slice('[buchee-story]'.length,split));
   const story=[...(Array.isArray(data.stories)?data.stories:[]),...(typeof storyItems!=='undefined'&&Array.isArray(storyItems)?storyItems:[])].find(x=>String(x.id)===meta.id);
-  const image=String(meta.image||story?.image_url||'');
+  const image=String(story?.image_url||meta.image||'');
   const safe=/^https?:\/\//i.test(image)||/^\/(?!\/)/.test(image)||/^(?:\.\/)?[\w-]+\/[\w./%-]+$/.test(image);
-  return '<div class="buchee-story-reply-content" style="display:grid;justify-items:start;gap:8px;max-width:240px"><span style="font-size:12px;opacity:.75">'+(row.sender_id===me.id?'Hikâyeye yanıt verdin':'Hikâyene yanıt verdi')+'</span>'+(safe?'<img loading="lazy" decoding="async" referrerpolicy="no-referrer" src="'+esc(image)+'" alt="Yanıtlanan hikâye" style="width:110px;aspect-ratio:9/16;object-fit:cover;border-radius:16px">':'<span style="font-size:12px">Hikâye</span>')+'<span style="white-space:pre-wrap;overflow-wrap:anywhere;background:'+(row.sender_id===me.id?'#111;color:#fff':'#eee;color:#111')+';padding:12px 14px;border-radius:18px">'+esc(body.slice(split+1))+'</span></div>';
+  return '<div class="buchee-story-reply-content" style="display:grid;justify-items:start;gap:8px;max-width:240px"><span style="font-size:12px;opacity:.75">'+(row.sender_id===me.id?'Hikâyeye yanıt verdin':'Hikâyene yanıt verdi')+'</span>'+(safe?'<img loading="lazy" decoding="async" referrerpolicy="no-referrer" src="'+esc(image)+'" alt="Yanıtlanan hikâye" onerror="this.hidden=true;this.nextElementSibling.hidden=false" style="width:110px;aspect-ratio:9/16;object-fit:cover;border-radius:16px"><span hidden style="font-size:12px">Hikâye görseli artık kullanılamıyor</span>':'<span style="font-size:12px">Hikâye görseli kullanılamıyor</span>')+'<span style="white-space:pre-wrap;overflow-wrap:anywhere;background:'+(row.sender_id===me.id?'#111;color:#fff':'#eee;color:#111')+';padding:12px 14px;border-radius:18px">'+esc(body.slice(split+1))+'</span></div>';
  }catch{return esc(body)}
 }
 function patiDmSharedPostId(body){
