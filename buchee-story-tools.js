@@ -5,6 +5,11 @@
  const colors=['#ffffff','#f9cc5d','#ef669c','#8bded2','#17191d'];
  const emojis=demo?['😂','😮','😍','😢','👏','🔥','🎉','💯']:['❤️','😍','🐾','😂','👏'];
  const maxStrokes=32,maxPoints=640;
+ const layoutKey='buchee_demo_story_layout_v1';
+ function layoutFor(story){try{return JSON.parse(localStorage.getItem(layoutKey)||'{}')[JSON.stringify([story.story_text||'',story.story_link_url||'',story.story_link_label||'',story.question_prompt||'',story.poll_question||''])]||{}}catch{return {}}}
+ function place(el,p){if(!p)return;Object.assign(el.style,{left:p.x+'%',top:p.y+'%',right:'auto',transform:'translate(-50%,-50%)',width:'max-content',maxWidth:'84%'})}
+ function draggable(el,stage,p){el.style.pointerEvents='auto';el.style.touchAction='none';el.style.cursor='grab';place(el,p);let id=null;el.addEventListener('pointerdown',e=>{if(e.button!==0)return;e.preventDefault();e.stopPropagation();id=e.pointerId;el.setPointerCapture(id)});el.addEventListener('pointermove',e=>{if(id!==e.pointerId)return;const r=stage.getBoundingClientRect();p.x=Math.max(12,Math.min(88,(e.clientX-r.left)/r.width*100));p.y=Math.max(8,Math.min(92,(e.clientY-r.top)/r.height*100));place(el,p)});for(const type of ['pointerup','pointercancel','lostpointercapture'])el.addEventListener(type,()=>{id=null})}
+
  const getLink=value=>{
   try{
    const url=new URL(value);
@@ -56,6 +61,16 @@
    '<div data-story-fields="poll" hidden><label>Anket sorusu<input name="story_poll" maxlength="120" placeholder="Hangisini seçersin?"></label><label>Birinci seçenek<input name="story_option_a" maxlength="60"></label><label>İkinci seçenek<input name="story_option_b" maxlength="60"></label></div>'+
    '<button class="buchee-story-hide-entry" type="button" data-story-privacy>Hikâyeyi belirli kişilerden gizle</button>';
   panel.prepend(tools);
+  const layout={text:{x:50,y:33},link:{x:50,y:57},question:{x:50,y:65},poll:{x:50,y:72}};
+  const previews={};
+  if(demo){
+   stage.style.position='relative';
+   draggable(text,stage,layout.text);
+   for(const key of ['link','question','poll']){const el=document.createElement('span');el.className='buchee-story-overlay-text';el.hidden=true;stage.append(el);previews[key]=el;draggable(el,stage,layout[key]);}
+   const hint=document.createElement('small');hint.textContent='Öğeleri ön izlemede sürükleyerek konumlandır.';tools.prepend(hint);
+   const controls=document.createElement('div');controls.innerHTML='<label>Yazı boyutu<input type="range" min="12" max="32" value="17" name="demo_size"></label><label>Yazı rengi<input type="color" value="#ffffff" name="demo_color"></label>';
+   tools.querySelector('[data-story-fields="text"]').append(controls);
+  }
   const strokes=[];
   let active='',interactive='',ink=colors[0],pointer=null;
   const field=name=>tools.querySelector('[name="'+name+'"]').value.trim();
@@ -83,6 +98,12 @@
   tools.addEventListener('input',()=>{
    text.textContent=field('story_overlay');
    text.hidden=!text.textContent;
+   if(demo){
+    layout.text.size=Number(field('demo_size'));layout.text.color=field('demo_color');
+    text.style.setProperty('font-size',layout.text.size+'px','important');text.style.color=layout.text.color;
+    const values={link:field('story_link')?(field('story_link_label')||'Bağlantıyı aç'):'',question:field('story_question'),poll:field('story_poll')};
+    for(const key of Object.keys(previews)){previews[key].textContent=values[key];previews[key].hidden=!values[key];}
+   }
   });
   const point=e=>{
    const r=canvas.getBoundingClientRect();
@@ -110,6 +131,7 @@
    const options=[field('story_option_a'),field('story_option_b')];
    if(interactive==='poll'&&(poll||options.some(Boolean))&&(!poll||options.some(o=>!o)||options[0].toLocaleLowerCase('tr')===options[1].toLocaleLowerCase('tr')))
     throw Error('Anket sorusunu ve birbirinden farklı iki seçeneği doldur.');
+   if(demo){try{const key=JSON.stringify([field('story_overlay'),link,link?(field('story_link_label')||'Bağlantıyı aç'):'',question,poll]);const saved=JSON.parse(localStorage.getItem(layoutKey)||'{}');saved[key]=layout;localStorage.setItem(layoutKey,JSON.stringify(Object.fromEntries(Object.entries(saved).slice(-100))))}catch{}}
    return {
     story_text:field('story_overlay')||null,story_link_url:link||null,
     story_link_label:link?(field('story_link_label')||'Bağlantıyı aç'):null,
@@ -133,9 +155,10 @@
  function mountStory(root,story,{active,own,pause,resume,interact,reply}){
   const player=root.querySelector('.story-player');
   if(!player)return;
+  const layout=demo?layoutFor(story):{};
   if(story.story_drawing)paint(canvasFor(player),story.story_drawing);
   if(story.story_text){
-   const text=document.createElement('p');text.className='buchee-story-overlay-text';text.textContent=story.story_text;player.append(text);
+   const text=document.createElement('p');text.className='buchee-story-overlay-text';text.textContent=story.story_text;player.append(text);if(demo&&layout.text){place(text,layout.text);if(layout.text.size)text.style.setProperty('font-size',layout.text.size+'px','important');if(layout.text.color)text.style.color=layout.text.color;}
   }
   const url=getLink(story.story_link_url);
   if(url||story.poll_question||story.question_prompt||active&&!own){
@@ -150,7 +173,7 @@
    if(story.question_prompt&&(active||own))add('Soru · '+story.question_prompt,'question');
    if(story.poll_question&&(active||own))add('Anket · '+story.poll_question,'poll');
    if(active&&!own&&!demo)add('Tepki','emoji');
-   if(bar.childElementCount)player.append(bar);
+   if(bar.childElementCount){player.append(bar);if(demo){for(const el of Array.from(bar.children)){const key=el.tagName==='A'?'link':el.textContent.startsWith('Soru')?'question':'poll';if(layout[key]){player.append(el);el.classList.add('buchee-story-overlay-text');el.style.pointerEvents='auto';place(el,layout[key]);}}}}
   }
   const like=player.querySelector('.pati-story-like');
   if(!active||own||!like)return;
