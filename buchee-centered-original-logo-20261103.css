@@ -69,22 +69,6 @@
   margin:0 auto!important;padding:0!important;overflow:hidden!important;
   border-radius:50%!important;
  }
- html[data-pati-view="home"] #main-content .stories-strip .story-own-plus{
-  position:absolute!important;top:49px!important;right:0!important;
-  left:auto!important;bottom:auto!important;transform:none!important;
-  width:26px!important;height:26px!important;
-  min-width:26px!important;min-height:26px!important;
-  max-width:26px!important;max-height:26px!important;
-  padding:0!important;margin:0!important;
-  box-sizing:border-box!important;
-  display:flex!important;align-items:center!important;justify-content:center!important;
-  border:2px solid #fff!important;border-radius:50%!important;
-  background:#17191d!important;color:#fff!important;
-  font:700 19px/1 system-ui,-apple-system,sans-serif!important;
-  text-align:center!important;z-index:15!important;
- }
- html[data-pati-view="home"] #main-content .stories-strip .story-own-plus::after{content:"";position:absolute;inset:-9px;border-radius:50%}
- html[data-pati-view="home"] #main-content .stories-strip .story-own-plus:focus-visible,
  html[data-pati-view="home"] #pati-feed-menu-trigger:focus-visible{
   outline:2px solid #5700c6!important;outline-offset:3px!important;
  }

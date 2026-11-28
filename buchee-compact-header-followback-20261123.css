@@ -32,9 +32,3 @@ html body #app-root>header.mobile-header>.pati-header-actions>button#buchee-head
 html body #app-root>header.mobile-header>.pati-header-actions>button#buchee-header-messages::after{content:none!important;display:none!important}
 html body #app-root>header.mobile-header>.pati-header-actions>button:active{opacity:.82!important}
 }
-/* Follow-back actions in the follower list, without changing ordinary follow buttons. */
-#main-content .pati-follow-person button.buchee-follow-back-list{
-background:#16834a!important;background-color:#16834a!important;color:#fff!important;
--webkit-text-fill-color:#fff!important;border:1px solid #126d3d!important;
-font-weight:750!important;box-shadow:none!important;opacity:1!important;
-}

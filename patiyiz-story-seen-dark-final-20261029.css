@@ -4,7 +4,7 @@
 
 /* Viewed stories are still available during the full 24h lifecycle. */
 #main-content .stories-strip .story-person.has-unseen-story>.story-avatar,
-#main-content .stories-strip .story-person.story-own>.story-own-photo.has-story{
+#main-content .stories-strip .story-person.story-own .story-own-photo.has-story{
  border:3px solid transparent!important;
  background:linear-gradient(var(--pati-story-interior,#fff),var(--pati-story-interior,#fff)) padding-box,
  linear-gradient(35deg,#ffb831,#ff5a3d,#fa225f,#cc10b4) border-box!important;
@@ -12,7 +12,7 @@
  box-sizing:border-box!important;
 }
 #main-content .stories-strip .story-person.has-viewed-story>.story-avatar,
-#main-content .stories-strip .story-person.story-own>.story-own-photo.has-viewed-story{
+#main-content .stories-strip .story-person.story-own .story-own-photo.has-viewed-story{
  border:2px solid #a6a9af!important;
  background:transparent!important;
  box-sizing:border-box!important;

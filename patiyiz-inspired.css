@@ -19,7 +19,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 #main-content .stories-section{background:#fff;border:1px solid #ececef;border-radius:19px;padding:15px 13px 6px;box-shadow:var(--pati-shadow);margin-bottom:14px}
 #main-content .stories-heading strong{color:#35363a;font-weight:800}
 #main-content .story-own-photo,#main-content .story-avatar{border-color:#242529!important}
-#main-content .story-own-plus{background:var(--pati-pink)!important;color:#fff!important}
 #main-content .pati-profile-row{max-width:100%}
 #main-content .pati-reels-feed{max-width:730px;margin:13px auto}
 #main-content .pati-reels-feed .pati-card{border-radius:21px;overflow:hidden;margin-bottom:16px}

@@ -2244,7 +2244,7 @@ function storiesStrip(){
   return bLast-aLast;
  });
  return '<section class="stories-section"><div class="stories-heading"><strong>Hikâyeler</strong></div><div class="stories-strip">'+
-  '<div class="story-person story-own"><button class="story-own-photo '+(own?(patiHasUnseenStory(me.id)?'has-story':'has-viewed-story'):'')+'" data-action="'+(own?'story-view':'story-create')+'" '+(own?'data-id="'+esc(me.id)+'"':'')+'>'+avatar(current(),'s')+'</button><button class="story-own-plus" data-action="story-create" aria-label="Hikâye ekle">+</button><small>'+(own?'Hikâyem':'Hikâye ekle')+'</small></div>'+
+  '<div class="story-person story-own"><div class="story-own-media"><button class="story-own-photo '+(own?(patiHasUnseenStory(me.id)?'has-story':'has-viewed-story'):'')+'" data-action="'+(own?'story-view':'story-create')+'" '+(own?'data-id="'+esc(me.id)+'"':'')+'>'+avatar(current(),'s')+'</button><button type="button" class="story-own-plus" data-action="story-create" aria-label="Hikâye ekle">'+ico('plus')+'</button></div><small>'+(own?'Hikâyem':'Hikâye ekle')+'</small></div>'+
   others.map(id=>'<button class="story-person '+(patiHasUnseenStory(id)?'has-unseen-story':'has-viewed-story')+'" data-action="story-view" data-id="'+esc(id)+'" aria-label="'+esc(profile(id).display_name||'Kullanıcı')+' hikâyesini izle"><span class="story-avatar">'+avatar(profile(id),'s')+'</span><small>'+esc(profile(id).display_name)+'</small></button>').join('')+
  '</div></section>';
 }
@@ -6122,16 +6122,32 @@ function followListPage(){
  const owner=followListId||me.id,followers=followListMode==='followers';
  const key=me.id+':'+owner+':'+followListMode+':'+patiFollowSortOrder,state=patiFollowPageState;
  const scoped=state.key===key,records=scoped?state.rows:[];
- const orderedRecords=records;
- const ids=[...new Set(orderedRecords.map(f=>followers?f.follower_id:f.followee_id))].filter(id=>!blocked.has(id));
+ const people=new Map(records.map(row=>[followers?row.follower_id:row.followee_id,row]));
+ const ids=[...people.keys()].filter(id=>!blocked.has(id));
  const isFollowing=id=>followed.has(id)||(scoped&&state.viewerFollowing.has(id));
- const title=followers?'Takipçiler':'Takip edilenler';
- main.innerHTML=`<div class="pati-follow-backbar"><button type="button" class="pati-follow-back" data-action="followers-back" aria-label="Profile geri dön">←</button><span>Profile dön</span></div>`+
- '<div class="pati-follow-tabs"><button type="button" data-action="pati-follow-tab" data-id="followers" class="'+(followers?'active':'')+'">Takipçiler</button><button type="button" data-action="pati-follow-tab" data-id="following" class="'+(!followers?'active':'')+'">Takip edilenler</button></div>'+('<div class="pati-follow-sort"><span>Sıralama</span><button type="button" data-action="pati-follow-sort" data-id="newest" class="'+(patiFollowSortOrder==='newest'?'active':'')+'">En yeni</button><button type="button" data-action="pati-follow-sort" data-id="oldest" class="'+(patiFollowSortOrder==='oldest'?'active':'')+'">En eski</button></div>')+
- `<div class="pati-list">${ids.map(id=>`<div class="pati-card pati-follow-person"><div class="pati-follow-person-identity">${userRow(id)}<small class="pati-follow-date">${(()=>{const record=orderedRecords.find(row=>(followers?row.follower_id:row.followee_id)===id);return record?.created_at?new Date(record.created_at).toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'})+' tarihinde '+(followers?'takip etti':'takip edildi'):''})()}</small></div>${id!==me.id?button(isFollowing(id)?'Takiptesin':followers&&owner===me.id?'Sen de takip et':'Takip et','follow',`data-id="${esc(id)}"`):''}</div>`).join('')}`+
+ const own=owner===me.id;
+ const rows=ids.map(id=>{
+  const following=isFollowing(id),requested=patiIsFollowRequested(id);
+  const attrs='data-id="'+esc(id)+'"';
+  const actions=id===me.id?'':own&&!followers&&following?
+   button('Mesaj Gönder','chat',attrs,'buchee-follow-row-button')+
+   '<details class="buchee-follow-row-menu"><summary aria-label="'+esc(profile(id).handle)+' için takip seçenekleri">'+ico('more')+'</summary>'+
+   button('Takibi bırak','follow',attrs)+'</details>':
+   button(following?'Takiptesin':requested?'İstek gönderildi':own&&followers?'Sen de takip et':'Takip et','follow',attrs+
+    ' aria-pressed="'+following+'"','buchee-follow-row-button'+(following||requested?'':' is-follow'));
+  const date=day(people.get(id).created_at);
+  const followDate=date?date+(followers?' tarihinde takip etti':' tarihinde takip edildi'):'';
+  return '<div class="pati-follow-person"><div class="pati-follow-person-identity">'+userRow(id)+
+   (followDate?'<small class="pati-follow-date" title="'+esc(followDate)+'">'+esc(followDate)+'</small>':'')+'</div>'+
+   (actions?'<div class="buchee-follow-row-actions">'+actions+'</div>':'')+'</div>';
+ }).join('');
+ main.innerHTML=`<section class="buchee-follow-list"><header class="pati-follow-backbar"><button type="button" class="pati-follow-back" data-action="followers-back" aria-label="Profile geri dön">←</button><h1>@${esc(profile(owner).handle||'buchee')}</h1></header>`+
+ '<div class="pati-follow-tabs"><button type="button" data-action="pati-follow-tab" data-id="followers" class="'+(followers?'active':'')+'" aria-pressed="'+followers+'">Takipçiler</button><button type="button" data-action="pati-follow-tab" data-id="following" class="'+(!followers?'active':'')+'" aria-pressed="'+(!followers)+'">Takip edilenler</button></div>'+
+ '<div class="pati-follow-sort"><span>Sıralama</span><button type="button" data-action="pati-follow-sort" data-id="newest" class="'+(patiFollowSortOrder==='newest'?'active':'')+'">En yeni</button><button type="button" data-action="pati-follow-sort" data-id="oldest" class="'+(patiFollowSortOrder==='oldest'?'active':'')+'">En eski</button></div>'+
+ '<div class="pati-list">'+rows+
  (!ids.length&&scoped&&!state.loading&&!state.error?empty('Bu listede henüz kimse yok.'):'')+
  (scoped&&state.error?'<p class="pati-note" role="alert">'+esc(state.error)+'</p>':'')+
- `<div class="pati-load-more">${!scoped||state.loading?'<p role="status">Takip listesi yükleniyor…</p>':state.hasMore||state.error?button(state.error?'Yeniden dene':'Daha fazla kullanıcı yükle','follow-load-more'):' '}</div></div>`;
+ `<div class="pati-load-more">${!scoped||state.loading?'<p role="status">Takip listesi yükleniyor…</p>':state.hasMore||state.error?button(state.error?'Yeniden dene':'Daha fazla kullanıcı yükle','follow-load-more'):''}</div></div></section>`;
 }
 
 /* 2026-10-29: social safety, private follows, creator statistics and visit tracking.
@@ -6169,10 +6185,15 @@ async function patiSocialFollow(id){
  if(r.error)throw r.error;
  if(me?.id!==owner)return;
  if(r.data==='following')followed.add(id);else followed.delete(id);
+ if(patiFollowPageState.key.startsWith(owner+':')){
+  if(r.data==='following')patiFollowPageState.viewerFollowing.add(id);
+  else patiFollowPageState.viewerFollowing.delete(id);
+ }
  await patiSafetyRefresh(true);
  try{await load('feed')}catch(e){console.warn('Takip akışı yenilenemedi:',e.message)}
  if(me?.id!==owner)return;
  profileCountCache.delete(id);profileCountCache.delete(owner);render();
+ if(view==='follows-list')void patiLoadFollowPage(true);
  notify(({following:'Takip ediliyor.',unfollowed:'Takipten çıkıldı.',requested:'Takip isteği gönderildi.',cancelled:'Takip isteği iptal edildi.'})[r.data]||'Takip tercihi güncellendi.');
 }
 async function patiFollowDecision(id,accept){
@@ -6834,11 +6855,20 @@ async function bucheeLoadProfileAlbums(owner,host){
    albums.map(album=>button(esc(album.title),'buchee-album-edit','data-id="'+esc(album.id)+'" aria-label="'+esc(album.title)+' albümünü düzenle"')).join('')+'</div></details>':'')+'</div>':'';
  host.innerHTML='<header><h2>Öne çıkanlar</h2>'+actions+'</header>'+
   '<div class="buchee-album-strip" style="display:flex;overflow-x:auto;gap:10px">'+albums.map(album=>
-   '<button type="button" class="buchee-album-open" '+cardStyle+' data-action="buchee-album-open" data-id="'+esc(album.id)+'" data-owner="'+esc(owner)+'">'+
+   '<button type="button" class="buchee-album-open" '+cardStyle+' data-action="'+(own?'buchee-album-options':'buchee-album-open')+'" data-id="'+esc(album.id)+'" data-owner="'+esc(owner)+'"'+(own?' aria-haspopup="dialog"':'')+'>'+
    '<span class="buchee-album-cover" '+coverStyle+'>'+bucheeAlbumCover(coversByAlbum.get(album.id))+'</span>'+
    '<span class="buchee-album-name" title="'+esc(album.title)+'">'+esc(album.title)+'</span></button>'
   ).join('')+
-  (own?'<button type="button" class="buchee-album-open buchee-album-add" '+cardStyle+' data-action="buchee-album-edit" aria-label="Yeni albüm"><span class="buchee-album-cover" '+coverStyle+' aria-hidden="true">+</span><span class="buchee-album-name">Yeni</span></button>':'')+'</div>';
+  (own?'<button type="button" class="buchee-album-open buchee-album-add" '+cardStyle+' data-action="buchee-album-edit" aria-label="Yeni albüm"><span class="buchee-album-cover" '+coverStyle+' aria-hidden="true">'+ico('plus')+'</span><span class="buchee-album-name">Yeni</span></button>':'')+'</div>';
+}
+function bucheeStoryAlbumOptions(tile){
+ if(tile.dataset.owner!==me?.id)return;
+ const id=esc(tile.dataset.id),owner=esc(me.id);
+ const title=tile.querySelector('.buchee-album-name')?.textContent||'Hikâye albümü';
+ modal(title,'<div class="buchee-album-option-actions">'+
+  button('Hikâyeleri izle','buchee-album-open','data-id="'+id+'" data-owner="'+owner+'"')+
+  button('Düzenle','buchee-album-edit','data-id="'+id+'"','primary-btn')+'</div>','buchee-story-album-options');
+ document.querySelector('#buchee-story-album-options .modal-footer')?.remove();
 }
 async function bucheeOpenStoryAlbum(owner,albumId){
  const viewer=me?.id;
@@ -6873,50 +6903,57 @@ async function bucheeEditStoryAlbum(albumId,archiveOnly=false){
  if(me?.id!==owner||view!=='profile'||(profileId||owner)!==owner)return;
  const album=result?.data?.[0];
  if(albumId&&!album)throw Error('Albüm bulunamadı.');
- const rows=new Map();
+ const rows=new Map(),archiveIds=new Set();
  const chosen=new Set((album?.stories||[]).map(story=>story.id));
  const existing=await bucheeAlbumMedia(album?.stories||[],owner);
  if(me?.id!==owner||view!=='profile'||(profileId||owner)!==owner)return;
  for(const story of existing)rows.set(story.id,story);
- let cover=album?.cover?.id||'',offset=0,loading=false;
+ let cover=album?.cover?.id||'',offset=0,loading=false,saving=false;
  let tab=album?'selected':'archive',choosingCover=false;
- modal(archiveOnly?'Hikâye arşivi':album?'Albümü düzenle':'Yeni hikâye albümü',
+ modal(archiveOnly?'Hikâye arşivi':album?'Öne çıkanı düzenle':'Yeni hikâye albümü',
   '<div class="buchee-album-editor'+(archiveOnly?'':' buchee-album-visual-editor')+'">'+(archiveOnly?'':(
    '<div class="buchee-album-editor-main"><div class="buchee-album-cover-editor"><div data-album-cover-preview></div>'+
    '<button type="button" data-album-cover-open>Kapağı düzenle</button></div>'+
    '<label>Albüm adı<input name="album_title" maxlength="40" required value="'+esc(album?.title||'')+'" placeholder="Albüm adı"></label>'+
    '<div class="buchee-album-editor-tabs" aria-label="Hikâye seçimi">'+
-   '<button type="button" data-album-tab="selected">Seçilenler</button><button type="button" data-album-tab="archive">Arşiv</button></div></div>'+
+   '<button type="button" data-album-tab="selected">Seçilenler</button><button type="button" data-album-tab="archive">Hikâyeler</button></div></div>'+
    '<div class="buchee-album-cover-toolbar" hidden><strong>Kapak seç</strong><button type="button" data-album-cover-back>Seçime dön</button></div>'))+
   '<div class="buchee-album-picker" aria-label="Hikâyeler"></div><p class="buchee-album-editor-status" role="status"></p>'+
   '<button type="button" class="soft-btn buchee-album-load" hidden>Daha fazla hikâye yükle</button>'+
   (album?'<details class="buchee-album-manage-menu"><summary>Albüm seçenekleri</summary><div class="buchee-album-manage"><button type="button" data-album-manage="left">Öne taşı</button><button type="button" data-album-manage="right">Sona doğru taşı</button><button type="button" data-album-manage="delete">Albümü kaldır</button></div></details>':'')+'</div>',
   'buchee-story-album-form');
  const form=document.getElementById('buchee-story-album-form');
- if(archiveOnly)form.querySelector('.modal-footer')?.remove();
+ const footer=form.querySelector('.modal-footer'),submit=footer.querySelector('[type="submit"]');
+ if(!archiveOnly){
+  const dialog=form.closest('.modal'),header=dialog.querySelector('.modal-header');
+  dialog.classList.add('buchee-album-editor-dialog');
+  submit.textContent='Bitti';
+  submit.setAttribute('form',form.id);
+  header.replaceChildren(footer.querySelector('[data-action="close"]'),header.querySelector('h2'),submit);
+ }
+ footer.remove();
  const picker=form.querySelector('.buchee-album-picker'),status=form.querySelector('.buchee-album-editor-status');
  const more=form.querySelector('.buchee-album-load'),coverButton=form.querySelector('[data-album-cover-open]');
- const submit=form.querySelector('[type="submit"]');
- if(submit)submit.textContent='Bitti';
  let hasMore=false,loadError=false;
  const label=story=>story.caption||day(story.created_at)||'Hikâye';
  const draw=()=>{
   if(!chosen.has(cover))cover=chosen.values().next().value||'';
   const selectionOnly=!archiveOnly&&(choosingCover||tab==='selected');
-  const visible=selectionOnly?[...chosen].map(id=>rows.get(id)).filter(Boolean):[...rows.values()];
+  const visible=Array.from(selectionOnly?chosen:archiveIds,id=>rows.get(id)).filter(Boolean);
   if(!archiveOnly){
    form.querySelector('.buchee-album-editor-main').hidden=choosingCover;
    form.querySelector('.buchee-album-cover-toolbar').hidden=!choosingCover;
    form.querySelector('[data-album-cover-preview]').innerHTML=bucheeAlbumCover(rows.get(cover));
    form.querySelectorAll('[data-album-tab]').forEach(btn=>btn.setAttribute('aria-pressed',String(btn.dataset.albumTab===tab)));
    coverButton.disabled=!chosen.size;
-   submit.disabled=!chosen.size||choosingCover;
+   submit.disabled=saving||!chosen.size||choosingCover;
   }
   picker.innerHTML=visible.map(story=>{
    const name=esc(label(story)),id=esc(story.id),selected=chosen.has(story.id);
    const info='<span class="buchee-album-picker-preview">'+bucheeAlbumCover(story)+'</span>'+
     '<span class="buchee-album-tile-date">'+esc(day(story.created_at))+'</span>'+
-    (story.audience==='close_friends'?'<span class="buchee-album-close-friends" aria-label="Yakın Arkadaşlar">★</span>':'');
+    (story.audience==='close_friends'?'<span class="buchee-album-close-friends" aria-label="Yakın Arkadaşlar">★</span>':'')+
+    (story.video_url?'<span class="buchee-album-tile-video" aria-label="Video">▶</span>':'');
    if(archiveOnly)return '<button type="button" class="buchee-album-story-tile" data-archive-story="'+id+'" aria-label="'+name+'">'+info+'</button>';
    if(choosingCover)return '<button type="button" class="buchee-album-story-tile" data-album-cover-pick="'+id+'" aria-label="'+name+'" aria-pressed="'+(story.id===cover)+'">'+info+'<span class="buchee-album-tile-check" aria-hidden="true">✓</span></button>';
    return '<label class="buchee-album-story-tile"><input type="checkbox" aria-label="'+name+'" value="'+id+'"'+(selected?' checked':'')+'>'+info+'<span class="buchee-album-tile-check" aria-hidden="true">✓</span></label>';
@@ -6931,7 +6968,7 @@ async function bucheeEditStoryAlbum(albumId,archiveOnly=false){
   try{
    const page=await bucheeStoryArchivePage(owner,offset);
    if(!form.isConnected||me?.id!==owner)return;
-   for(const story of page)rows.set(story.id,story);
+   for(const story of page){rows.set(story.id,story);archiveIds.add(story.id)}
    offset+=page.length;hasMore=page.length===40;loadError=false;
   }catch{loadError=true}
   finally{loading=false;more.disabled=false;if(form.isConnected)draw()}
@@ -6942,7 +6979,8 @@ async function bucheeEditStoryAlbum(albumId,archiveOnly=false){
   if(target.checked&&chosen.size>=30){target.checked=false;notify('En fazla 30 hikâye seçebilirsin.',true);return}
   if(target.checked)chosen.add(target.value);else chosen.delete(target.value);
   const value=target.value;draw();
-  [...picker.querySelectorAll('input')].find(input=>input.value===value)?.focus({preventScroll:true});
+  const inputs=[...picker.querySelectorAll('input')];
+  (inputs.find(input=>input.value===value)||inputs[0]||form.querySelector('[data-album-tab="archive"]'))?.focus({preventScroll:true});
  });
  const refresh=()=>{
   const host=document.querySelector('.buchee-profile-albums');
@@ -6975,15 +7013,15 @@ async function bucheeEditStoryAlbum(albumId,archiveOnly=false){
  });
  form.addEventListener('submit',event=>{
   event.preventDefault();event.stopPropagation();
-  if(!submit||choosingCover||!chosen.size||!chosen.has(cover))return;
+  if(archiveOnly||submit.disabled||choosingCover||!chosen.size||!chosen.has(cover))return;
   void run(async()=>{
-   submit.disabled=true;
+   saving=true;submit.disabled=true;
    try{
     const response=await sb.rpc('buchee_story_album_save',{p_album:album?.id||null,p_title:form.elements.album_title.value.trim(),p_story_ids:[...chosen],p_cover:cover});
     if(response.error)throw response.error;
     if(me?.id!==owner||!form.isConnected)return;
     closeModal(true);refresh();notify('Hikâye albümü kaydedildi.');
-   }finally{if(form.isConnected)submit.disabled=false}
+   }finally{saving=false;if(form.isConnected)submit.disabled=!chosen.size||choosingCover}
   });
  });
  draw();void load();
@@ -9636,7 +9674,8 @@ case 'notifications-delete-all':if(confirm('Tüm bildirimlerin kalıcı olarak s
 case 'blocked-list':navigate('blocked');break;case 'follow-load-more':void patiLoadFollowPage();break;case 'pati-follow-tab':if(['followers','following'].includes(id)){followListMode=id;patiFollowPageState.key='';followListPage();void patiLoadFollowPage(true)}break;case 'pati-follow-sort':if(['newest','oldest'].includes(id)){patiFollowSortOrder=id;patiFollowPageState.key='';followListPage();void patiLoadFollowPage(true)}break;case 'followers-list':followReturnList=false;followListId=id;followListMode=target.dataset.mode==='following'?'following':'followers';navigate('follows-list');break;case 'followers-back':profileId=followListId;followReturnList=false;navigate('profile');break;case 'return-follow-list':followReturnList=false;navigate('follows-list');break;case 'delete-account-open':modal('Hesabımı kalıcı olarak sil',`<div class="pati-delete-warning"><strong>⚠️ Bu işlem geri alınamaz.</strong><p>Profilin, gönderilerin, hikâyelerin, mesajların, sesli yorumların ve yüklediğin dosyalar silinir. Başka kullanıcıların seninle yazışmalarındaki mesajlar da etkilenebilir. Yönetici hesapları buradan silinemez.</p></div><div class="pati-field"><label>Mevcut şifren</label><input type="password" name="delete_password" autocomplete="current-password" required></div><div class="pati-field"><label>Onaylamak için HESABIMI SIL yaz</label><input name="delete_confirm" autocomplete="off" required placeholder="HESABIMI SIL"></div>`,'delete-account-form');break;case 'settings-password':modal('Şifremi değiştir',formField('new_password','Yeni şifre (en az 8 karakter)','password','',true),'settings-password-form');break;case 'push-disable':run(async()=>{await disablePhonePush();if(view==='notifications')void notificationCheckPush()},'Bu cihazda telefon bildirimleri kapatıldı.');break;case 'block':{const isBlocked=blocked.has(id);const question=isBlocked?'Bu kişinin engelini kaldırmak istiyor musun?':'Bu kullanıcıyı engellemek istiyor musun?';if(confirm(question))run(async()=>{await doToggle('user_blocks',{blocker_id:me.id,blocked_id:id},isBlocked);if($('#blocked-form'))closeModal();notify(isBlocked?'Engel kaldırıldı.':'Kullanıcı engellendi.');if(view==='blocked')blockedPage();},null);break}
 case 'report':closeStory();modal('İçeriği bildir',textField('reason','Şikâyet nedeni (en az 5 karakter)','',true,500),'report-form');$('#report-form').dataset.kind=target.dataset.kind;$('#report-form').dataset.record=id;break;
 case 'buchee-profile-links-open':bucheeProfileLinksDialog(id);break;
-case 'buchee-album-open':run(()=>bucheeOpenStoryAlbum(target.dataset.owner,id));break;
+case 'buchee-album-options':bucheeStoryAlbumOptions(target);break;
+case 'buchee-album-open':if(target.closest('#buchee-story-album-options'))closeModal(true);run(()=>bucheeOpenStoryAlbum(target.dataset.owner,id));break;
 case 'buchee-album-edit':run(()=>bucheeEditStoryAlbum(id));break;
 case 'buchee-story-archive':run(()=>bucheeEditStoryAlbum('',true));break;
 case 'buchee-albums-refresh':{
