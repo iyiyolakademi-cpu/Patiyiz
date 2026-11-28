@@ -6760,7 +6760,7 @@ async function bucheeAlbumMedia(rows,viewer){
  }));
 }
 function bucheeAlbumCover(story){
- return story?.image_url?'<img src="'+esc(story.image_url)+'" alt="" loading="lazy" decoding="async">':'<span aria-hidden="true">'+(story?.video_url?'▶':'◇')+'</span>';
+ return story?.image_url?'<img src="'+esc(story.image_url)+'" alt="" width="64" height="64" style="display:block;width:100%;height:100%;object-fit:cover" loading="lazy" decoding="async">':'<span aria-hidden="true">'+(story?.video_url?'▶':'◇')+'</span>';
 }
 async function bucheeLoadProfileAlbums(owner,host){
  const viewer=me?.id;
@@ -6777,12 +6777,18 @@ async function bucheeLoadProfileAlbums(owner,host){
  if(me?.id!==viewer||!host.isConnected)return;
  const coversByAlbum=new Map(withCovers.map((album,i)=>[album.id,covers[i]]));
  if(!own&&!albums.length){host.innerHTML='';return}
- host.innerHTML='<header><h2>Hikâye albümleri</h2>'+(own?button('Arşiv','buchee-story-archive'):'')+'</header>'+
-  '<div class="buchee-album-strip">'+albums.map(album=>'<div class="buchee-album-item">'+
-   '<button type="button" class="buchee-album-open" data-action="buchee-album-open" data-id="'+esc(album.id)+'" data-owner="'+esc(owner)+'">'+
-   '<span class="buchee-album-cover">'+bucheeAlbumCover(coversByAlbum.get(album.id))+'</span><span>'+esc(album.title)+'</span></button>'+
-   (own?button('Düzenle','buchee-album-edit','data-id="'+esc(album.id)+'" aria-label="'+esc(album.title)+' albümünü düzenle"'):'')+'</div>').join('')+
-   (own?'<button type="button" class="buchee-album-open buchee-album-add" data-action="buchee-album-edit"><span class="buchee-album-cover" aria-hidden="true">+</span><span>Yeni albüm</span></button>':'')+'</div>';
+ const coverStyle='style="display:grid;place-items:center;width:64px;height:64px;overflow:hidden;border-radius:50%"';
+ const cardStyle='style="display:grid;justify-items:center;flex:0 0 80px;width:80px;min-width:80px;padding:2px;border:0;background:transparent"';
+ const actions=own?'<div class="buchee-album-actions">'+button('Arşiv','buchee-story-archive')+
+  (albums.length?'<details class="buchee-album-settings"><summary>Yönet</summary><div class="buchee-album-settings-list">'+
+   albums.map(album=>button(esc(album.title),'buchee-album-edit','data-id="'+esc(album.id)+'" aria-label="'+esc(album.title)+' albümünü düzenle"')).join('')+'</div></details>':'')+'</div>':'';
+ host.innerHTML='<header><h2>Öne çıkanlar</h2>'+actions+'</header>'+
+  '<div class="buchee-album-strip" style="display:flex;overflow-x:auto;gap:10px">'+albums.map(album=>
+   '<button type="button" class="buchee-album-open" '+cardStyle+' data-action="buchee-album-open" data-id="'+esc(album.id)+'" data-owner="'+esc(owner)+'">'+
+   '<span class="buchee-album-cover" '+coverStyle+'>'+bucheeAlbumCover(coversByAlbum.get(album.id))+'</span>'+
+   '<span class="buchee-album-name" title="'+esc(album.title)+'">'+esc(album.title)+'</span></button>'
+  ).join('')+
+  (own?'<button type="button" class="buchee-album-open buchee-album-add" '+cardStyle+' data-action="buchee-album-edit" aria-label="Yeni albüm"><span class="buchee-album-cover" '+coverStyle+' aria-hidden="true">+</span><span class="buchee-album-name">Yeni</span></button>':'')+'</div>';
 }
 async function bucheeOpenStoryAlbum(owner,albumId){
  const viewer=me?.id;
@@ -6811,6 +6817,7 @@ async function bucheeStoryArchivePage(owner,offset){
 }
 async function bucheeEditStoryAlbum(albumId,archiveOnly=false){
  const owner=me?.id;if(!owner)return;
+ document.querySelector('.buchee-album-settings[open]')?.removeAttribute('open');
  const result=albumId?await sb.rpc('buchee_story_album_list',{p_owner:owner,p_album:albumId}):null;
  if(result?.error)throw result.error;
  if(me?.id!==owner||view!=='profile'||(profileId||owner)!==owner)return;

@@ -1,7 +1,7 @@
 function bucheeDemoData(id) {
  const ago = minutes => new Date(Date.now() - minutes * 60000).toISOString();
  const photo = name => 'demo-media/' + name + '.jpg';
- const portrait = number => number?'demo-media/portraits/'+number+'.jpg':'';
+ const portrait = number => number?'demo-media/portraits/tr-'+String(number).padStart(2,'0')+'.jpg':'';
  const people = [
   [id, 'Deniz Kaya', 'denizkaya', 'kadikoy', 'İstanbul · Fotoğraf, kitap ve uzun yürüyüşler'],
   ['ece', 'Ece Yılmaz', 'eceyolda', 'kahve', 'Şehirde sakin köşeler arıyorum.'],
@@ -11,7 +11,7 @@ function bucheeDemoData(id) {
   ['irem', 'İrem Aksoy', 'iremyuruyor', 'yuruyus', 'Hafta sonu rotaları.']
  ];
  const profiles = people.map(([id, display_name, handle, , bio],index) => ({
-  id, display_name, handle, bio, avatar_url: portrait([11,5,12,9,0,16][index]), created_at: ago(10080)
+  id, display_name, handle, bio, avatar_url: portrait([1,2,3,4,0,5][index]), created_at: ago(10080)
  }));
  const entries = [
   ['ece', 'kahve', 'Yağmur dinene kadar oturacaktım. İkinci kahveyi söyledim. ☕', 18],
@@ -73,10 +73,16 @@ function bucheeDemoData(id) {
  const bios = ['Hafta sonu yollarda.','Işık iyi olunca durup bir kare alırım.','Mahalle kahveleri ve yeni tatlar.','Okuduklarımı burada biriktiriyorum.','Müzik, tasarım ve şehir hayatı.','Dışarı çıkmak için bahane arayanlardan.','Küçük anları kayda alıyorum.','Sergi, atölye ve iyi sohbet.'];
  const slug = text => text.toLocaleLowerCase('tr').replace(/ı/g,'i').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
  const asset = (media,extension='jpg') => 'demo-media/community/'+media+'.'+extension;
+ const communityPortraits = new Map([0,2,4,5,7,9,11,14,18,35,58].map((profileIndex,photoIndex)=>[profileIndex,photoIndex+6]));
+ // Spread the remaining portraits through the fixtures without recycling faces.
+ for(let slot=0,nextPortrait=17;nextPortrait<=52;slot++){
+  const profileIndex=(slot*17)%94;
+  if(!communityPortraits.has(profileIndex))communityPortraits.set(profileIndex,nextPortrait++);
+ }
  for(let i=0;i<94;i++){
   const first=firstNames[i%firstNames.length],last=surnames[(i+Math.floor(i/firstNames.length)*3)%surnames.length];
   const city=cities[(i*3)%cities.length],bio=bios[i%bios.length];
-  profiles.push({id:'demo-person-'+(i+7),display_name:first+' '+last,handle:slug(first+'.'+last),city,bio,avatar_url:portrait(i%5===2?0:1+i%24),created_at:ago(11000+i*53)});
+  profiles.push({id:'demo-person-'+(i+7),display_name:first+' '+last,handle:slug(first+'.'+last),city,bio,avatar_url:portrait(communityPortraits.get(i)),created_at:ago(11000+i*53)});
  }
  const captions = [
   'Son birkaç gündür aklımda kalan kare bu.',
