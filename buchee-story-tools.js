@@ -1,7 +1,7 @@
 /* Story annotations share the same normalized canvas in the camera and viewer. */
 (()=>{
  'use strict';
- const demo=new URLSearchParams(location.search).get('demo')==='1';
+ const demo=window.BucheeDemoConfig?.enabled??(new URLSearchParams(location.search).get('demo')==='1');
  const colors=['#ffffff','#f9cc5d','#ef669c','#8bded2','#17191d'];
  const emojis=demo?['😂','😮','😍','😢','👏','🔥','🎉','💯']:['❤️','😍','🐾','😂','👏'];
  const maxStrokes=32,maxPoints=640;
