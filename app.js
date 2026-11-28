@@ -1011,6 +1011,7 @@ function patiFeedSoundButton(video){
 }
 // Size feed videos and photos to their own original width-to-height ratios.
 function setupFeedMediaRatios(){
+ const demoPerf=new URLSearchParams(location.search).get('demo')==='1';
  const set=(frame,w,h)=>{if(frame&&Number.isFinite(w)&&Number.isFinite(h)&&w>0&&h>0){
    const aspect=w/h;
    const reel=!!frame.closest('.pati-feed-reel-card');
@@ -1021,6 +1022,8 @@ function setupFeedMediaRatios(){
   }};
  document.querySelectorAll('#main-content .pati-feed-card .pati-video-frame').forEach(frame=>{
   const v=frame.querySelector('video');if(!v)return;
+  if(demoPerf&&v.dataset.bucheeRatioBound==='1')return;
+  if(demoPerf)v.dataset.bucheeRatioBound='1';
   const update=()=>set(frame,v.videoWidth,v.videoHeight);
   v.addEventListener('loadedmetadata',update);
   if(v.readyState>=1)update();
@@ -1029,6 +1032,8 @@ function setupFeedMediaRatios(){
   const track=carousel.querySelector('.pati-carousel-track');
   const pictures=[...carousel.querySelectorAll('.pati-carousel-slide img')];
   if(!track||!pictures.length)return;
+  if(demoPerf&&track.dataset.bucheeRatioBound==='1')return;
+  if(demoPerf)track.dataset.bucheeRatioBound='1';
   const update=()=>{
    const index=Math.max(0,Math.min(pictures.length-1,Math.round(track.scrollLeft/Math.max(1,track.clientWidth))));
    const img=pictures[index];
@@ -2415,7 +2420,7 @@ function showStoryFrame(){const root=document.getElementById('story-overlay'),x=
   active:activeStory,own:x.author_id===me.id,pause:bucheeStoryPause,resume:bucheeStoryResume,
   interact:kind=>bucheeStoryInteraction(x,kind),reply:message=>bucheeReplyToStory(x,message)
  });
- const upcoming=storyItems[storyIndex+1];if(upcoming?.image_url&&typeof Image==='function'){const preload=new Image();preload.src=upcoming.image_url}bucheeStorySchedule((x.video_url||root.querySelector('.pati-story-share-media-video'))?15000:6000);
+ const upcoming=storyItems[storyIndex+1];if(upcoming?.image_url&&typeof Image==='function'&&(!(new URLSearchParams(location.search).get('demo')==='1')||(!document.hidden&&!navigator.connection?.saveData))){const preload=new Image();preload.src=upcoming.image_url}bucheeStorySchedule((x.video_url||root.querySelector('.pati-story-share-media-video'))?15000:6000);
  if(x.author_id===me.id&&!x.pati_pet_highlight)void patiStoryPreviewLoad(x.id);
  if(x.video_url||root.querySelector('.pati-story-share-media-video')){
   const video=root.querySelector('.story-big-video');
@@ -2612,7 +2617,7 @@ function setupReelsViewer(){
  // Non-active slides cannot fetch MOV metadata.
  const attach=video=>{const url=video?.dataset?.patiVideoSrc;if(url&&!video.getAttribute?.('src')){video.src=url;return true}return false};
  const network=typeof navigator!=='undefined'?navigator.connection||navigator.mozConnection||navigator.webkitConnection:null;
- const lowData=!!network?.saveData||/^(slow-2g|2g)$/.test(String(network?.effectiveType||''));
+ const lowData=(new URLSearchParams(location.search).get('demo')==='1'&&!!network&&/^(3g|slow-2g|2g)$/.test(String(network.effectiveType||'')))||!!network?.saveData||/^(slow-2g|2g)$/.test(String(network?.effectiveType||''));
  let lastPreparedIndex=-1;
  const prepareNext=video=>{
   const position=videos.indexOf(video);
@@ -8154,7 +8159,7 @@ function patiGroupLiveStart(groupId){
  patiGroupLiveTimer=setInterval(()=>{
   const current=document.getElementById('pati-group-message-form');
   if(!current||view!=='messages'||patiActiveGroupId!==groupId||current.querySelector('[name="group_id"]')?.value!==groupId){patiGroupLiveStop();return}
-  void patiGroupRefreshActive(groupId);
+  if(!(new URLSearchParams(location.search).get('demo')==='1')||!document.hidden)void patiGroupRefreshActive(groupId);
  },6500);
 }
 
