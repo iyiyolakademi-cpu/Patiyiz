@@ -1518,4 +1518,9 @@ html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-utility>.p
 .buchee-story-results>div{display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid #ede8f1;padding:8px 0}
 .buchee-story-answer{padding:8px 0;border-bottom:1px solid #ede8f1;overflow-wrap:anywhere}
 .buchee-story-answer p{margin:4px 0}
-</style></body></html>
+</style><style id="buchee-demo-desktop-dm-style">
+#buchee-demo-desktop-dm{display:none}
+@media(min-width:1000px){#buchee-demo-desktop-dm:not([hidden]){position:fixed;right:28px;bottom:24px;z-index:900;display:flex;align-items:center;gap:12px;padding:15px 24px;border:1px solid #dedee0;border-radius:999px;background:#fff;color:#111;box-shadow:0 5px 24px #0002;font:700 16px system-ui;cursor:pointer}#buchee-demo-desktop-dm:hover{background:#f3f3f3}#buchee-demo-desktop-dm svg{width:24px;height:24px}}
+</style><script id="buchee-demo-desktop-dm-script">
+document.addEventListener('DOMContentLoaded',()=>{if(new URLSearchParams(location.search).get('demo')!=='1')return;const b=document.createElement('button');b.id='buchee-demo-desktop-dm';b.type='button';b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M22 2 9 15M22 2l-7 20-6-7-7-6z"/></svg><span>Mesajlar</span>';document.body.append(b);b.onclick=()=>document.getElementById('buchee-header-messages')?.click();const sync=()=>{const app=document.getElementById('app-root');const header=document.getElementById('buchee-header-messages');b.hidden=!app||app.classList.contains('hidden')||!header||!!document.querySelector('#story-overlay:not(.hidden):not([hidden]) .story-player')};sync();new MutationObserver(sync).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','hidden']});});
+</script></body></html>
