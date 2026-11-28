@@ -162,7 +162,11 @@
   if(demo){
    Object.assign(form.style,{position:'absolute',bottom:'max(12px,env(safe-area-inset-bottom))',left:'12px',right:'12px',display:'flex',alignItems:'center',gap:'8px',zIndex:'10020',width:'auto',transform:'none'});
    Object.assign(form.elements.reply.style,{flex:'1',minWidth:'0',width:'auto',border:'1px solid #777',borderRadius:'24px',padding:'12px',background:'#111',color:'#fff'});
-   const reaction=document.createElement('button');reaction.type='button';reaction.textContent='☺';reaction.setAttribute('aria-label','Tepki');reaction.style.cssText='color:white;background:transparent;border:0;font-size:24px';reaction.onclick=()=>interact('emoji');form.insertBefore(reaction,form.querySelector('span'));
+   const slot=form.querySelector('span');
+   slot.style.cssText='position:static!important;display:flex;align-items:center;flex:0 0 48px;width:48px;height:48px';
+   like.style.cssText='position:static!important;inset:auto!important;transform:none!important;margin:0!important;width:48px!important;height:48px!important;flex:none';
+   form.elements.reply.style.boxSizing='border-box';
+   const reaction=document.createElement('button');reaction.type='button';reaction.textContent='☺';reaction.setAttribute('aria-label','Tepki');reaction.style.cssText='position:static!important;flex:0 0 40px;width:40px;height:48px;margin:0;color:white;background:transparent;border:0;font-size:24px';reaction.onclick=()=>interact('emoji');form.insertBefore(reaction,form.querySelector('span'));
   }
   const input=form.elements.reply,send=form.querySelector('button[type="submit"]');
   input.addEventListener('input',()=>{send.hidden=!input.value.trim()});
