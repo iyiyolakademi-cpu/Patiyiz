@@ -11,7 +11,7 @@ function bucheeDemoData(id) {
   ['irem', 'İrem Aksoy', 'iremyuruyor', 'yuruyus', 'Hafta sonu rotaları.']
  ];
  // These assignments are for fictional demo characters and their generated portraits.
- const primaryPortraits=[2,1,5,3,0,8];
+ const primaryPortraits=[47,1,5,3,0,8];
  const profiles = people.map(([id, display_name, handle, , bio],index) => ({
   id, display_name, handle, bio, avatar_url: portrait(primaryPortraits[index]), created_at: ago(10080)
  }));
