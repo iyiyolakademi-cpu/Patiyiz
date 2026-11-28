@@ -10558,8 +10558,9 @@ if(window.visualViewport){
   document.documentElement.style.setProperty('--pati-keyboard-inset',gap>100?gap+'px':'0px');
   document.documentElement.classList.toggle('pati-keyboard-open',gap>100);
  };
- window.visualViewport.addEventListener('resize',updateViewport);
- window.visualViewport.addEventListener('scroll',updateViewport);
+ let viewportFrame=0;const queueViewport=()=>{if(!bucheeDemoEnabled){updateViewport();return}if(viewportFrame)return;viewportFrame=requestAnimationFrame(()=>{viewportFrame=0;updateViewport()})};
+ window.visualViewport.addEventListener('resize',queueViewport,{passive:true});
+ window.visualViewport.addEventListener('scroll',queueViewport,{passive:true});
  document.addEventListener('focusin',updateViewport);
  document.addEventListener('focusout',()=>setTimeout(updateViewport,0));
  updateViewport();
@@ -10756,15 +10757,16 @@ case 'message-form':{patiDmTypingInput('');if(!personId||personId===me.id)return
  break}
 }});if(form.isConnected){if(primary){primary.disabled=false;primary.textContent=primary.dataset.originalText||'Kaydet'}if(status)status.hidden=true}});
 function patiResizeChatViewport(){
- const h=window.visualViewport?.height||window.innerHeight;
+ const h=(bucheeDemoEnabled&&window.visualViewport?.scale>1.05?window.innerHeight:window.visualViewport?.height)||window.innerHeight;
  if(Number.isFinite(h)&&h>0)document.documentElement.style.setProperty('--pati-dm-visual-height',Math.round(h)+'px');
  const top=window.visualViewport?.offsetTop||0;
  document.documentElement.style.setProperty('--pati-dm-visual-top',Math.max(0,Math.round(top))+'px');
 }
 patiResizeChatViewport();
-window.visualViewport?.addEventListener('resize',patiResizeChatViewport);
-window.visualViewport?.addEventListener('scroll',patiResizeChatViewport);
-window.addEventListener('resize',patiResizeChatViewport);
+let bucheeChatViewportFrame=0;const bucheeQueueChatViewport=()=>{if(!bucheeDemoEnabled){patiResizeChatViewport();return}if(bucheeChatViewportFrame)return;bucheeChatViewportFrame=requestAnimationFrame(()=>{bucheeChatViewportFrame=0;patiResizeChatViewport()})};
+window.visualViewport?.addEventListener('resize',bucheeQueueChatViewport,{passive:true});
+window.visualViewport?.addEventListener('scroll',bucheeQueueChatViewport,{passive:true});
+window.addEventListener('resize',bucheeQueueChatViewport,{passive:true});
 // Multi-photo counter follows both finger swipes and arrow buttons.
 function patiUpdateCarouselCounter(track){
  const box=track?.closest?.('.pati-carousel'),label=box?.querySelector('.pati-carousel-count');
