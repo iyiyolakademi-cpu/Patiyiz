@@ -38,12 +38,12 @@ test('Question creation is full-screen mobile and secondary screens have back co
  assert.match(css,/#modal-root \.pati-question-fullscreen/);
  assert.match(css,/#main-content \.pati-page-back/);
 });
-test('Positive, negative and undo question ratings are mutually exclusive and persisted',async()=>{
+test('Question likes replace legacy negative ratings and toggle off',async()=>{
  const start=app.indexOf('async function patiRateQuestion('),end=app.indexOf('function composeQuestion(){',start);
  assert.ok(start>=0&&end>start);
- const rows=[];
+ const rows=[{question_id:'q1',user_id:'viewer',is_helpful:false}];
  const ctx={
-  me:{id:'viewer'},view:'home',data:{questions:[{id:'q1'}],votes:[]},
+  me:{id:'viewer'},view:'home',data:{questions:[{id:'q1'}],votes:rows.slice()},
   voted:new Set(),Set,
   notify(){},
   sb:{from(table){
@@ -57,11 +57,8 @@ test('Positive, negative and undo question ratings are mutually exclusive and pe
   }}
  };
  const rate=vm.runInNewContext('const patiQuestionVotePending=new Set();function patiQuestionVotePaint(){};\n'+app.slice(start,end)+'\npatiRateQuestion',ctx);
- await rate('q1',true);
+ await rate('q1');
  assert.equal(rows.length,1);assert.equal(rows[0].is_helpful,true);
- await rate('q1',false);
- assert.equal(rows.length,1);assert.equal(rows[0].is_helpful,false);
- assert.equal(ctx.data.votes.length,1);
- await rate('q1',false);
+ await rate('q1');
  assert.equal(rows.length,0);assert.equal(ctx.data.votes.length,0);
 });

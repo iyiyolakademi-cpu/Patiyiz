@@ -1729,6 +1729,7 @@ let patiSharedPostLinkBusy=false;
 let patiSharedPostLinkHandled='';
 async function patiRouteSharedPostLink(){
  const hash=location.hash||'';
+ if(hash.startsWith('#question-')){await patiRouteSharedQuestionLink(hash);return}
  const match=hash.match(/^#post-([0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})(?:\?comment=[0-9a-f-]{36})?$/i);
  if(!match||!me?.id||!sb||patiSharedPostLinkBusy)return;
  const owner=me.id,id=match[1].toLowerCase();
@@ -1761,6 +1762,46 @@ async function patiRouteSharedPostLink(){
   console.warn('Paylaşım bağlantısı açılamadı:',error?.message||error);
   if(me?.id===owner)notify('Paylaşım bağlantısı açılamadı. Tekrar deneyebilirsin.',true);
  }finally{patiSharedPostLinkBusy=false;}
+}
+async function patiRouteSharedQuestionLink(hash){
+ const match=hash.match(window.BUCHEE_OFFLINE_DEV?/^#question-([a-z0-9-]+)$/:/^#question-([0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})$/i);
+ if(!match||!me?.id||!sb||patiSharedPostLinkBusy)return;
+ const owner=me.id,id=match[1].toLowerCase();
+ patiSharedPostLinkBusy=true;
+ try{
+  const result=await sb.from('questions').select('*').eq('id',id).maybeSingle();
+  if(result.error)throw result.error;
+  if(me?.id!==owner||location.hash!==hash)return;
+  const q=result.data;
+  if(!q||blocked.has(q.author_id)){notify('Soru bulunamadı veya görüntülenemiyor.',true);return}
+  if(!data.profiles.some(person=>person.id===q.author_id)){
+   const author=await sb.from('profiles').select('*').eq('id',q.author_id).maybeSingle();
+   if(me?.id!==owner||location.hash!==hash)return;
+   if(!author.error&&author.data)data.profiles.push(author.data);
+  }
+  data.questions=[...data.questions.filter(item=>item.id!==id),q];
+  history.replaceState(history.state,'',location.pathname+location.search);
+  questionReplies(id);void patiLoadQuestionReplies(id);
+ }catch(error){
+  if(me?.id===owner&&location.hash===hash)notify('Soru bağlantısı açılamadı: '+friendly(error),true);
+ }finally{patiSharedPostLinkBusy=false;if(me?.id===owner&&location.hash&&location.hash!==hash)void patiRouteSharedPostLink()}
+}
+function patiOpenQuestionShare(id){
+ const q=data.questions.find(item=>item.id===id);
+ if(!q||blocked.has(q.author_id))return;
+ const url=new URL(location.pathname,location.origin);
+ if(window.BUCHEE_OFFLINE_DEV)url.searchParams.set('demo','1');
+ url.hash='question-'+id;
+ modal('Soruyu paylaş','<label for="buchee-question-share-url">Paylaşım bağlantısı</label>'+
+  '<input id="buchee-question-share-url" type="text" readonly value="'+esc(url.href)+'">'+
+  button('Bağlantıyı kopyala','question-copy-link')+(navigator.share?button('Başka uygulamada paylaş','question-share-system','data-id="'+esc(q.id)+'"'):''),'buchee-question-share-form');
+ document.querySelector('#buchee-question-share-form .modal-footer')?.remove();
+}
+async function patiCopyQuestionLink(){
+ const field=document.getElementById('buchee-question-share-url');
+ if(!field)return;
+ try{await navigator.clipboard.writeText(field.value);notify('Bağlantı kopyalandı.')}
+ catch{field.focus();field.select();notify('Bağlantıyı seçtim. Kopyalayabilirsin.')}
 }
 window.addEventListener('hashchange',()=>{if(me?.id)void patiRouteSharedPostLink()});
 
@@ -3173,33 +3214,40 @@ async function patiLoadHomeQuestions(){
  finally{state.loading=false}
 }
 const patiQuestionVotePending=new Set();
-function patiQuestionVoteCounts(id){
- const votes=(data.votes||[]).filter(v=>v.question_id===id),mine=votes.find(v=>v.user_id===me?.id);
- const positive=votes.filter(v=>v.is_helpful!==false).length,negative=votes.filter(v=>v.is_helpful===false).length;
- return {positive,negative,leader:positive>negative?'positive':negative>positive?'negative':'tie',mine:mine?(mine.is_helpful!==false?'positive':'negative'):'none'};
+function patiQuestionLikeCount(id){
+ const likes=(data.votes||[]).filter(row=>row.question_id===id&&row.is_helpful!==false);
+ return {count:likes.length,active:likes.some(row=>row.user_id===me?.id)};
 }
-function patiQuestionVoteButtons(q){
- const vote=patiQuestionVoteCounts(q.id),id=esc(q.id);
- return '<button type="button" data-action="vote" data-id="'+id+'" class="pati-question-vote-up '+(vote.mine==='positive'?'active ':'')+(vote.leader==='positive'?'pati-vote-leading':'')+'" aria-label="Faydalı" aria-pressed="'+(vote.mine==='positive')+'">'+ico('heart')+' <span data-vote-count="positive">'+vote.positive+'</span> Faydalı</button>'+
- '<button type="button" data-action="vote-negative" data-id="'+id+'" class="pati-question-vote-down '+(vote.mine==='negative'?'active ':'')+(vote.leader==='negative'?'pati-vote-leading':'')+'" aria-label="Faydasız" aria-pressed="'+(vote.mine==='negative')+'">'+ico('thumbs-down')+' <span data-vote-count="negative">'+vote.negative+'</span> Faydasız</button>';
+function patiQuestionReplyCount(id){
+ const page=patiCommunityReplyPages.get(me?.id+':'+id);
+ const replies=page?.ready?page.rows:data.replies.filter(row=>row.question_id===id);
+ return replies.filter(row=>!blocked.has(row.author_id)).length+(page?.ready&&page.hasMore?'+':'');
+}
+function patiQuestionActions(q){
+ const like=patiQuestionLikeCount(q.id),id=esc(q.id);
+ return '<div class="pati-actionbar pati-social-actions buchee-unified-actions buchee-question-actions">'+
+  '<button type="button" data-action="question-like" data-id="'+id+'" aria-label="Beğen" aria-pressed="'+like.active+'" class="'+(like.active?'active':'')+'">'+bucheeFeedIcons.heart+'<span data-question-like-count>'+like.count+'</span></button>'+
+  '<button type="button" data-action="replies" data-id="'+id+'" aria-label="Yorum yap">'+bucheeFeedIcons.comment+'<span data-question-reply-count>'+patiQuestionReplyCount(q.id)+'</span></button>'+
+  '<button type="button" data-action="question-share" data-id="'+id+'" aria-label="Paylaş">'+bucheeFeedIcons.send+'</button></div>';
 }
 function patiQuestionVotePaint(id){
- const vote=patiQuestionVoteCounts(id);
- document.querySelectorAll('[data-question-id="'+id+'"] button[data-action="vote"],[data-question-id="'+id+'"] button[data-action="vote-negative"]').forEach(btn=>{
-  const kind=btn.dataset.action==='vote'?'positive':'negative',active=vote.mine===kind;
-  btn.classList.toggle('active',active);btn.classList.toggle('pati-vote-leading',vote.leader===kind);btn.setAttribute('aria-pressed',String(active));btn.disabled=patiQuestionVotePending.has(id);
-  const n=btn.querySelector('[data-vote-count]');if(n)n.textContent=String(vote[kind]);
+ const like=patiQuestionLikeCount(id);
+ document.querySelectorAll('[data-question-id]').forEach(card=>{
+  if(card.dataset.questionId!==id)return;
+  const btn=card.querySelector('button[data-action="question-like"]');
+  if(!btn)return;
+  btn.classList.toggle('active',like.active);btn.setAttribute('aria-pressed',String(like.active));
+  btn.disabled=patiQuestionVotePending.has(id);
+  btn.querySelector('[data-question-like-count]').textContent=like.count;
+  const replies=card.querySelector('[data-question-reply-count]');
+  if(replies)replies.textContent=patiQuestionReplyCount(id);
  });
 }
 function patiHomeQuestionCard(q){
- const replies=(data.replies||[]).filter(r=>r.question_id===q.id).length;
  return '<article class="pati-card pati-home-question" data-question-id="'+esc(q.id)+'" aria-label="Soru ve cevap paylaşımı">'+
- '<div class="pati-home-question-tag"><span>SORU & CEVAP</span><button type="button" data-view="community">Tüm sorular ›</button></div>'+
- '<div class="pati-row pati-home-question-author">'+userRow(q.author_id,bucheeDateTime(q.created_at))+'</div>'+
- '<h3>'+esc(q.title||'Topluluk sorusu')+'</h3><p>'+esc(cut(q.body||'',280))+'</p>'+
- '<div class="pati-home-question-actions">'+patiQuestionVoteButtons(q)+
- '<button type="button" data-action="replies" data-id="'+esc(q.id)+'" aria-label="Soruya yanıtları aç">'+ico('message-circle')+' <span>'+replies+' yanıt</span></button>'+
- '</div></article>';
+  '<div class="pati-row pati-home-question-author">'+userRow(q.author_id)+'</div>'+
+  '<div class="buchee-question-text"><h3>'+esc(q.title||'Topluluk sorusu')+'</h3><p>'+esc(cut(q.body||'',280))+'</p></div>'+
+  patiQuestionActions(q)+'<time class="pati-post-time">'+esc(bucheeDateTime(q.created_at))+'</time></article>';
 }
 /* Separate social media from tweet-like text and Q&A in the home timeline. */
 let patiHomeContentMode='text';
@@ -3305,7 +3353,7 @@ function homePage(){
   .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)||String(b.id).localeCompare(String(a.id)));
  const following=false; // Content tabs no longer filter by followed accounts.
  const feedFilterBar='<div class="buchee-home-feed-filters" role="group" aria-label="İçerik türü">'+
-  [['all','Resimli Gönderiler'],['following','Twit, Soru ve Anketler']].map(([mode,label])=>'<button type="button" data-action="home-feed-tab" data-id="'+mode+'" aria-pressed="'+(patiHomeTab===mode)+'" class="'+(patiHomeTab===mode?'active':'')+'">'+label+'</button>').join('')+'</div>';
+  [['all','Gönderiler'],['following','Twit, Soru ve Anketler']].map(([mode,label])=>'<button type="button" data-action="home-feed-tab" data-id="'+mode+'" aria-pressed="'+(patiHomeTab===mode)+'" class="'+(patiHomeTab===mode?'active':'')+'">'+label+'</button>').join('')+'</div>';
  const feedContents=bucheeHomeCategoryFeed(list,patiHomeTab);
  const blogOnlyPosts=[...data.posts].filter(p=>p?.id&&!blocked.has(p.author_id)&&bucheeBlogParse(p.body)).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
  const blogCategories=['Tümü','Kişisel Gelişim','Felsefe','Kitap','Hayat','Psikoloji'];
@@ -3673,7 +3721,10 @@ async function patiLoadQuestionReplies(questionId,more=false){
   if(me?.id===uid&&patiCommunityReplyPages.get(key)===state){state.error='Cevaplar yüklenemedi. Tekrar dene.';console.warn('Topluluk cevapları:',error?.message||error)}
  }finally{
   state.loading=false;
-  if(me?.id===uid&&patiCommunityReplyPages.get(key)===state&&document.querySelector('#reply-form')?.dataset.question===questionId)questionReplies(questionId);
+  if(me?.id===uid&&patiCommunityReplyPages.get(key)===state){
+   patiQuestionVotePaint(questionId);
+   if(document.querySelector('#reply-form')?.dataset.question===questionId)questionReplies(questionId);
+  }
  }
 }
 const PATI_QUESTION_CATEGORIES=['Girişimcilik','Hayvanlar','Teknoloji','Eğitim ve Kariyer','Günlük Yaşam','Diğer'];
@@ -3692,10 +3743,9 @@ function communityPage(){
  '<button type="button" class="pati-community-mobile-ask" data-action="question" aria-label="Topluluğa soru sor">+ Soru sor</button>'+ 
  '<div class="pati-filter-tabs">'+categories.map(cat=>'<button type="button" data-action="community-filter" data-id="'+esc(cat)+'" class="'+(communityCategory===cat?'active':'')+'" aria-pressed="'+(communityCategory===cat)+'">'+esc(cat)+'</button>').join('')+'</div>'+
  '<div class="pati-list">'+qs.map(q=>{
-  const rs=patiCommunityReplyPages.get(me.id+':'+q.id);
-  const replyCount=rs?.ready?rs.rows.length+(rs.hasMore?'+':''):data.replies.filter(r=>r.question_id===q.id).length;
-  return '<article class="pati-card pati-community-card" data-question-id="'+esc(q.id)+'"><div class="pati-row between">'+userRow(q.author_id,day(q.created_at))+'<span class="pati-pill">'+esc(q.category)+'</span></div><h3 style="margin-top:13px">'+esc(q.title)+'</h3><p>'+esc(q.body)+'</p><div class="pati-actionbar">'+patiQuestionVoteButtons(q)+'<button data-action="replies" data-id="'+q.id+'">💬 '+replyCount+' cevap</button>'+
-  (q.author_id===me.id?'<button class="danger" data-action="delete-question" data-id="'+q.id+'">Sil</button>':'<button data-action="report" data-id="'+q.id+'" data-kind="question">Bildir</button>')+'</div></article>'
+  return '<article class="pati-card pati-community-card" data-question-id="'+esc(q.id)+'"><div class="pati-row between">'+userRow(q.author_id,day(q.created_at))+'<span class="pati-pill">'+esc(q.category)+'</span></div><h3 style="margin-top:13px">'+esc(q.title)+'</h3><p>'+esc(q.body)+'</p>'+
+   patiQuestionActions(q)+'<div class="pati-actionbar">'+
+   (q.author_id===me.id?'<button class="danger" data-action="delete-question" data-id="'+esc(q.id)+'">Sil</button>':'<button data-action="report" data-id="'+esc(q.id)+'" data-kind="question">Bildir</button>')+'</div></article>';
  }).join('')+'</div>'+
  (page?.error?'<p class="pati-note" role="alert">'+esc(page.error)+'</p>':'')+
  (page?.loading?'<p class="pati-note" role="status">Sorular yükleniyor…</p>':page?.hasMore||page?.error?'<div class="pati-load-more">'+button(page.error?'Yeniden dene':'Daha fazla soru yükle','community-more')+'</div>':'')+
@@ -6829,61 +6879,86 @@ async function bucheeEditStoryAlbum(albumId,archiveOnly=false){
  if(me?.id!==owner||view!=='profile'||(profileId||owner)!==owner)return;
  for(const story of existing)rows.set(story.id,story);
  let cover=album?.cover?.id||'',offset=0,loading=false;
+ let tab=album?'selected':'archive',choosingCover=false;
  modal(archiveOnly?'Hikâye arşivi':album?'Albümü düzenle':'Yeni hikâye albümü',
-  '<div class="buchee-album-editor">'+(archiveOnly?'':('<label>Albüm adı<input name="album_title" maxlength="40" required value="'+esc(album?.title||'')+'"></label>'+
-  '<label>Albüm kapağı<select name="album_cover" required></select></label>'+
-  '<p>Albümde görünecek hikâyeleri seç. Her hikâyenin izleyici kitlesi korunur.</p>'))+
+  '<div class="buchee-album-editor'+(archiveOnly?'':' buchee-album-visual-editor')+'">'+(archiveOnly?'':(
+   '<div class="buchee-album-editor-main"><div class="buchee-album-cover-editor"><div data-album-cover-preview></div>'+
+   '<button type="button" data-album-cover-open>Kapağı düzenle</button></div>'+
+   '<label>Albüm adı<input name="album_title" maxlength="40" required value="'+esc(album?.title||'')+'" placeholder="Albüm adı"></label>'+
+   '<div class="buchee-album-editor-tabs" aria-label="Hikâye seçimi">'+
+   '<button type="button" data-album-tab="selected">Seçilenler</button><button type="button" data-album-tab="archive">Arşiv</button></div></div>'+
+   '<div class="buchee-album-cover-toolbar" hidden><strong>Kapak seç</strong><button type="button" data-album-cover-back>Seçime dön</button></div>'))+
   '<div class="buchee-album-picker" aria-label="Hikâyeler"></div><p class="buchee-album-editor-status" role="status"></p>'+
-  '<button type="button" class="soft-btn buchee-album-load">Daha fazla hikâye yükle</button>'+
-  (album?'<div class="buchee-album-manage"><button type="button" data-album-manage="left">Öne taşı</button><button type="button" data-album-manage="right">Sona doğru taşı</button><button type="button" data-album-manage="delete">Albümü kaldır</button></div>':'')+'</div>',
+  '<button type="button" class="soft-btn buchee-album-load" hidden>Daha fazla hikâye yükle</button>'+
+  (album?'<details class="buchee-album-manage-menu"><summary>Albüm seçenekleri</summary><div class="buchee-album-manage"><button type="button" data-album-manage="left">Öne taşı</button><button type="button" data-album-manage="right">Sona doğru taşı</button><button type="button" data-album-manage="delete">Albümü kaldır</button></div></details>':'')+'</div>',
   'buchee-story-album-form');
  const form=document.getElementById('buchee-story-album-form');
  if(archiveOnly)form.querySelector('.modal-footer')?.remove();
  const picker=form.querySelector('.buchee-album-picker'),status=form.querySelector('.buchee-album-editor-status');
- const more=form.querySelector('.buchee-album-load'),select=form.querySelector('[name="album_cover"]');
+ const more=form.querySelector('.buchee-album-load'),coverButton=form.querySelector('[data-album-cover-open]');
  const submit=form.querySelector('[type="submit"]');
+ if(submit)submit.textContent='Bitti';
+ let hasMore=false,loadError=false;
  const label=story=>story.caption||day(story.created_at)||'Hikâye';
- const updateCover=()=>{
-  if(!select)return;
-  if(!chosen.has(cover))cover=chosen.values().next().value||'';
-  select.innerHTML='<option value="">Kapak seç</option>'+[...chosen].map(id=>'<option value="'+esc(id)+'"'+(id===cover?' selected':'')+'>'+esc(cut(label(rows.get(id)),60))+'</option>').join('');
-  status.textContent=chosen.size+' / 30 hikâye seçildi';
-  submit.disabled=!chosen.size;
- };
  const draw=()=>{
-  picker.innerHTML=[...rows.values()].map(story=>{
-   const info='<span class="buchee-album-picker-preview">'+bucheeAlbumCover(story)+'</span><span>'+esc(cut(label(story),70))+
-    (story.audience==='close_friends'?'<small>Yakın Arkadaşlar</small>':'')+'</span>';
-   return archiveOnly?'<button type="button" data-archive-story="'+esc(story.id)+'">'+info+'</button>':
-    '<label><input type="checkbox" value="'+esc(story.id)+'"'+(chosen.has(story.id)?' checked':'')+'>'+info+'</label>';
-  }).join('')||'<p>Arşivinde henüz hikâye yok.</p>';
-  updateCover();
+  if(!chosen.has(cover))cover=chosen.values().next().value||'';
+  const selectionOnly=!archiveOnly&&(choosingCover||tab==='selected');
+  const visible=selectionOnly?[...chosen].map(id=>rows.get(id)).filter(Boolean):[...rows.values()];
+  if(!archiveOnly){
+   form.querySelector('.buchee-album-editor-main').hidden=choosingCover;
+   form.querySelector('.buchee-album-cover-toolbar').hidden=!choosingCover;
+   form.querySelector('[data-album-cover-preview]').innerHTML=bucheeAlbumCover(rows.get(cover));
+   form.querySelectorAll('[data-album-tab]').forEach(btn=>btn.setAttribute('aria-pressed',String(btn.dataset.albumTab===tab)));
+   coverButton.disabled=!chosen.size;
+   submit.disabled=!chosen.size||choosingCover;
+  }
+  picker.innerHTML=visible.map(story=>{
+   const name=esc(label(story)),id=esc(story.id),selected=chosen.has(story.id);
+   const info='<span class="buchee-album-picker-preview">'+bucheeAlbumCover(story)+'</span>'+
+    '<span class="buchee-album-tile-date">'+esc(day(story.created_at))+'</span>'+
+    (story.audience==='close_friends'?'<span class="buchee-album-close-friends" aria-label="Yakın Arkadaşlar">★</span>':'');
+   if(archiveOnly)return '<button type="button" class="buchee-album-story-tile" data-archive-story="'+id+'" aria-label="'+name+'">'+info+'</button>';
+   if(choosingCover)return '<button type="button" class="buchee-album-story-tile" data-album-cover-pick="'+id+'" aria-label="'+name+'" aria-pressed="'+(story.id===cover)+'">'+info+'<span class="buchee-album-tile-check" aria-hidden="true">✓</span></button>';
+   return '<label class="buchee-album-story-tile"><input type="checkbox" aria-label="'+name+'" value="'+id+'"'+(selected?' checked':'')+'>'+info+'<span class="buchee-album-tile-check" aria-hidden="true">✓</span></label>';
+  }).join('')||'<p class="buchee-album-empty">'+(loading?'Hikâyeler yükleniyor…':selectionOnly?'Henüz hikâye seçilmedi. Arşivden hikâye ekle.':'Arşivinde henüz hikâye yok.')+'</p>';
+  more.hidden=selectionOnly||(!hasMore&&!loadError);
+  more.textContent=loadError?'Tekrar dene':'Daha fazla hikâye yükle';
+  status.textContent=loadError?'Arşiv yüklenemedi.':archiveOnly?'':choosingCover?'Seçilen hikâyelerden birini kapak yap.':chosen.size+' / 30 hikâye seçildi';
  };
  const load=async()=>{
   if(loading)return;
-  loading=true;more.disabled=true;
+  loading=true;more.disabled=true;draw();
   try{
    const page=await bucheeStoryArchivePage(owner,offset);
    if(!form.isConnected||me?.id!==owner)return;
    for(const story of page)rows.set(story.id,story);
-   offset+=page.length;more.hidden=page.length<40;
-   draw();
-  }catch{if(form.isConnected)status.textContent='Arşiv yüklenemedi. Tekrar deneyebilirsin.'}
-  finally{loading=false;more.disabled=false}
+   offset+=page.length;hasMore=page.length===40;loadError=false;
+  }catch{loadError=true}
+  finally{loading=false;more.disabled=false;if(form.isConnected)draw()}
  };
  form.addEventListener('change',event=>{
   const target=event.target;
-  if(target===select){cover=select.value;return}
   if(!target.matches('.buchee-album-picker input'))return;
   if(target.checked&&chosen.size>=30){target.checked=false;notify('En fazla 30 hikâye seçebilirsin.',true);return}
   if(target.checked)chosen.add(target.value);else chosen.delete(target.value);
-  updateCover();
+  const value=target.value;draw();
+  [...picker.querySelectorAll('input')].find(input=>input.value===value)?.focus({preventScroll:true});
  });
  const refresh=()=>{
   const host=document.querySelector('.buchee-profile-albums');
   if(host?.dataset.owner===owner)void bucheeLoadProfileAlbums(owner,host);
  };
  form.addEventListener('click',event=>{
+  const selectedTab=event.target.closest('[data-album-tab]');
+  if(selectedTab){tab=selectedTab.dataset.albumTab;draw();return}
+  if(event.target.closest('[data-album-cover-open]')){
+   choosingCover=true;draw();picker.querySelector('[data-album-cover-pick][aria-pressed="true"]')?.focus();return;
+  }
+  const coverChoice=event.target.closest('[data-album-cover-pick]');
+  if(coverChoice&&chosen.has(coverChoice.dataset.albumCoverPick)){
+   cover=coverChoice.dataset.albumCoverPick;choosingCover=false;draw();coverButton.focus();return;
+  }
+  if(event.target.closest('[data-album-cover-back]')){choosingCover=false;draw();coverButton.focus();return}
   const archiveId=event.target.closest('[data-archive-story]')?.dataset.archiveStory;
   if(archiveId&&rows.has(archiveId)){closeModal(true);bucheePlayAlbumStories([rows.get(archiveId)]);return}
   if(event.target===more){void load();return}
@@ -6900,7 +6975,7 @@ async function bucheeEditStoryAlbum(albumId,archiveOnly=false){
  });
  form.addEventListener('submit',event=>{
   event.preventDefault();event.stopPropagation();
-  if(!submit||!chosen.size||!chosen.has(cover))return;
+  if(!submit||choosingCover||!chosen.size||!chosen.has(cover))return;
   void run(async()=>{
    submit.disabled=true;
    try{
@@ -8530,15 +8605,15 @@ async function createStoryPublication(form,f,str){
    poll_question:null,poll_options:null,question_prompt:null};
  });
 }
-async function patiRateQuestion(questionId,helpful){
+async function patiRateQuestion(questionId){
  if(!me?.id||!data.questions.some(q=>q.id===questionId))throw Error('Soru bulunamadı.');
  if(patiQuestionVotePending.has(questionId))return;
  const uid=me.id,existing=data.votes.find(x=>x.question_id===questionId&&x.user_id===uid);
- const same=!!existing&&(existing.is_helpful!==false)===helpful;
+ const same=!!existing&&existing.is_helpful!==false;
  const snapshot=existing?{...existing}:null;
  patiQuestionVotePending.add(questionId);
  data.votes=data.votes.filter(x=>!(x.question_id===questionId&&x.user_id===uid));
- if(!same)data.votes.push({question_id:questionId,user_id:uid,is_helpful:helpful});
+ if(!same)data.votes.push({question_id:questionId,user_id:uid,is_helpful:true});
  voted=new Set(data.votes.filter(x=>x.user_id===uid&&x.is_helpful!==false).map(x=>x.question_id));
  patiQuestionVotePaint(questionId);
  try{
@@ -8547,7 +8622,7 @@ async function patiRateQuestion(questionId,helpful){
    if(removed.error)throw removed.error;
   }
   if(!same){
-   const inserted=await sb.from('question_votes').insert({question_id:questionId,user_id:uid,is_helpful:helpful}).select('*').single();
+   const inserted=await sb.from('question_votes').insert({question_id:questionId,user_id:uid,is_helpful:true}).select('*').single();
    if(inserted.error)throw inserted.error;
    if(me?.id===uid){
     data.votes=data.votes.map(x=>x.question_id===questionId&&x.user_id===uid?inserted.data:x);
@@ -8565,11 +8640,11 @@ async function patiRateQuestion(questionId,helpful){
     if(snapshot)data.votes.push(snapshot);
    }
    voted=new Set(data.votes.filter(x=>x.user_id===uid&&x.is_helpful!==false).map(x=>x.question_id));
-   notify('Değerlendirme kaydedilemedi: '+friendly(error),true);
+   notify('Beğeni kaydedilemedi: '+friendly(error),true);
   }
  }finally{patiQuestionVotePending.delete(questionId);if(me?.id===uid)patiQuestionVotePaint(questionId);}
 }
-function composeQuestion(){modal('Topluluğa soru sor','<div class="pati-community-form-intro"><strong>Merak ettiğin konuyu paylaş.</strong><p>Bir soru sor; topluluk sana farklı bakış açıları ve yanıtlar sunsun.</p></div>'+formField('title','Soru başlığı (5–150 karakter)','text','',true)+selectField('category','Kategori',PATI_QUESTION_CATEGORIES)+textField('body','Sorunu biraz daha açıkla (en az 5 karakter)','',true,2000)+'<p class="pati-community-form-note">Sorulara Faydalı veya Faydalı değil değerlendirmesi yapılabilir.</p>','question-form');const f=$('#question-form');if(f){f.querySelector('[name="title"]').minLength=5;f.querySelector('[name="title"]').maxLength=150;f.querySelector('[name="body"]').minLength=5;f.querySelector('.modal-footer .primary-btn').textContent='Soruyu paylaş';document.querySelector('#modal-root .modal')?.classList.add('pati-question-fullscreen');document.querySelector('#modal-root .modal-backdrop')?.classList.add('pati-question-backdrop');f.querySelector('[name="title"]')?.focus({preventScroll:true})}}
+function composeQuestion(){modal('Topluluğa soru sor','<div class="pati-community-form-intro"><strong>Merak ettiğin konuyu paylaş.</strong><p>Bir soru sor; topluluk sana farklı bakış açıları ve yanıtlar sunsun.</p></div>'+formField('title','Soru başlığı (5–150 karakter)','text','',true)+selectField('category','Kategori',PATI_QUESTION_CATEGORIES)+textField('body','Sorunu biraz daha açıkla (en az 5 karakter)','',true,2000)+'','question-form');const f=$('#question-form');if(f){f.querySelector('[name="title"]').minLength=5;f.querySelector('[name="title"]').maxLength=150;f.querySelector('[name="body"]').minLength=5;f.querySelector('.modal-footer .primary-btn').textContent='Soruyu paylaş';document.querySelector('#modal-root .modal')?.classList.add('pati-question-fullscreen');document.querySelector('#modal-root .modal-backdrop')?.classList.add('pati-question-backdrop');f.querySelector('[name="title"]')?.focus({preventScroll:true})}}
 function composeLost(a){
  if(a&&a.owner_id!==me?.id)return notify('Bu ilanı düzenleme yetkin yok.',true);
  const today=new Date().toLocaleDateString('en-CA');
@@ -9511,7 +9586,7 @@ case 'pati-settings-notifications':navigate('notifications');break;case 'pati-pr
  patiSafetyState.loaded=false;render();
 },'Hesap gizliliği güncellendi.');break;
 case 'pati-dm-policy':patiSetDmPolicy(id);break;
-case 'pati-comment-filter':modal('Yorum filtresi','<p>Virgülle ayırdığın kelimeleri içeren yeni yorumlar sunucu tarafından reddedilir.</p>'+textField('words','Filtre kelimeleri',(current().blocked_words||[]).join(', '),false,600),'pati-filter-form');break;case 'vote':void patiRateQuestion(id,true).catch(e=>notify(friendly(e),true));break;case 'vote-negative':void patiRateQuestion(id,false).catch(e=>notify(friendly(e),true));break;case 'kb-save':run(()=>doToggle('kb_bookmarks',{article_id:id,user_id:me.id},favorites.has(id)));break;
+case 'pati-comment-filter':modal('Yorum filtresi','<p>Virgülle ayırdığın kelimeleri içeren yeni yorumlar sunucu tarafından reddedilir.</p>'+textField('words','Filtre kelimeleri',(current().blocked_words||[]).join(', '),false,600),'pati-filter-form');break;case 'question-share':patiOpenQuestionShare(id);break;case 'question-copy-link':void patiCopyQuestionLink();break;case 'question-share-system':{const field=document.getElementById('buchee-question-share-url'),q=data.questions.find(row=>row.id===id);if(field&&q&&navigator.share)void navigator.share({title:q.title,url:field.value}).catch(error=>{if(error.name!=='AbortError')notify('Paylaşım açılamadı. Bağlantıyı kopyalayabilirsin.',true)});break;}case 'question-like':void patiRateQuestion(id).catch(e=>notify(friendly(e),true));break;case 'kb-save':run(()=>doToggle('kb_bookmarks',{article_id:id,user_id:me.id},favorites.has(id)));break;
 case 'toggle-found':{const a=data.lost.find(x=>x.id===id&&x.owner_id===me.id);if(!a)break;const found=!a.found;
  if(!confirm(found?'Evcil dostun bulundu mu? İlan bulundu olarak işaretlenecek.':'İlanı yeniden kayıp olarak yayınlamak istiyor musun?'))break;
  run(async()=>{const r=await sb.from('lost_reports').update({found}).eq('id',id).eq('owner_id',me.id).select('*');
@@ -10114,6 +10189,7 @@ case 'reply-form':{
  const state=patiCommunityReplyPages.get(uid+':'+questionId);
  if(state?.ready&&!state.rows.some(r=>r.id===result.data.id))state.rows.push(result.data);
  const editor=form.querySelector('textarea[name="body"]');if(editor)editor.value='';
+ patiQuestionVotePaint(questionId);
  questionReplies(questionId);
  const list=document.querySelector('#reply-form .comment-list');if(list)list.scrollTop=list.scrollHeight;
  notify('Cevap yayınlandı.');break}
@@ -10271,9 +10347,9 @@ function bucheeAuthTimed(promise){
 function bucheeStartOfflineDevelopment(){
  const id='buchee-offline-developer';
  const demo=bucheeDemoData(id);
- const tables={...demo,patiyiz_stories:demo.stories,post_likes:demo.likes,post_saves:demo.saves,question_replies:demo.replies,
+ const tables={...demo,question_votes:[],patiyiz_stories:demo.stories,post_likes:demo.likes,post_saves:demo.saves,question_replies:demo.replies,
   patiyiz_post_collaborators:demo.collaborators,patiyiz_post_view_totals:demo.viewTotals,buchee_polls:demo.polls};
- const writable=new Set(['profiles','patiyiz_stories','buchee_account_country','patiyiz_post_collaborators','comments','post_likes','post_saves','follows','messages','notifications']);
+ const writable=new Set(['question_votes','replies','profiles','patiyiz_stories','buchee_account_country','patiyiz_post_collaborators','comments','post_likes','post_saves','follows','messages','notifications']);
  for(const table of writable)tables[table]=tables[table].map(row=>({...row}));
  const response=()=>Promise.resolve({data:[],error:null,count:0});
  const channel={on(){return this},subscribe(){return this},unsubscribe(){return Promise.resolve('ok')},send(){return Promise.resolve('ok')},track(){return Promise.resolve('ok')},presenceState(){return {}}};
@@ -10289,7 +10365,7 @@ function bucheeStartOfflineDevelopment(){
  patiHomeContentMode='media';
  patiyizLoadedTables=new Set(['profiles','posts','patiyiz_stories','follows','post_likes','post_saves','user_blocks']);
  authRoot.classList.add('hidden');appRoot.classList.remove('hidden');
- try{starter();navigate('home')}catch(error){console.error('Buchee çevrimdışı önizleme:',error);try{render()}catch(e){console.error(e)}}
+ try{starter();navigate('home');void patiRouteSharedPostLink()}catch(error){console.error('Buchee çevrimdışı önizleme:',error);try{render()}catch(e){console.error(e)}}
 }
 async function boot(){
  if(window.BUCHEE_OFFLINE_DEV){bucheeStartOfflineDevelopment();return}

@@ -18,7 +18,7 @@ test('Topluluk: kategori filtresi 82 soruyu 40+40+2 yükler',async()=>{
 test('Topluluk: her sorunun eski cevapları sadece o sorudan sayfalanır',async()=>{
  const all=Array.from({length:67},(_,i)=>({id:'r'+i,question_id:'q1',author_id:'u',created_at:'2026-10-25T10:00:00Z'}));let calls=[];
  const ctx={me:{id:'viewer'},patiyizLoadToken:1,view:'home',patiCommunityReplyPages:new Map(),data:{replies:[]},Map,Set,Promise,console,PATI_COMMUNITY_REPLY_PAGE:60,
- document:{querySelector(){return null}},
+ document:{querySelector(){return null}},patiQuestionVotePaint(){},
  sb:{from(t){calls.push(t);return{select(){return this},eq(k,v){calls.push([k,v]);return this},order(){return this},range(a,b){calls.push([a,b]);return Promise.resolve({data:all.slice(a,b+1),error:null})}}}}};
  const fn=vm.runInNewContext(part('async function patiLoadQuestionReplies(','function communityPage(){')+'\npatiLoadQuestionReplies',ctx);
  await fn('q1');await fn('q1',true);
@@ -34,12 +34,13 @@ test('Topluluk: yükleme hatası kayıtları silmez ve tekrar denenebilir',async
  const fn=vm.runInNewContext(part('async function patiLoadCommunity(','async function patiLoadQuestionReplies(')+'\npatiLoadCommunity',ctx);
  await fn();assert.equal(initial.rows.length,1);assert.equal(initial.offset,1);assert.equal(initial.hasMore,true);assert.match(initial.error,/Tekrar/);
 });
-test('Topluluk: soru, kategori, oy, cevap ve bildir eylemleri korunur',()=>{
+test('Topluluk: soru, kategori, beğeni, yorum, paylaşım ve bildir eylemleri',()=>{
  const page=part('function communityPage(){','const knowledge=');
- for(const k of ["data-action=\"replies\"","data-action=\"report\"","community-filter","community-more","patiQuestionVoteButtons(q)"])assert.ok(page.includes(k),k);
- assert.match(s,/function patiQuestionVoteButtons\(q\)/);
- assert.match(s,/data-action="vote"/);
- assert.match(s,/data-action="vote-negative"/);
+ for(const k of ["data-action=\"report\"","community-filter","community-more","patiQuestionActions(q)"])assert.ok(page.includes(k),k);
+ assert.match(s,/function patiQuestionActions\(q\)/);
+ assert.match(s,/data-action="question-like"/);
+ assert.match(s,/data-action="question-share"/);
+ assert.doesNotMatch(s,/data-action="vote-negative"/);
  const replies=part('function questionReplies(id){','/* Never display');
  assert.match(replies,/community-replies-more/);
  assert.match(replies,/const previous=(?:\$\('#reply-form'\)|document\.getElementById\('reply-form'\))/);

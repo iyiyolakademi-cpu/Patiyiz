@@ -38,12 +38,11 @@ test('Reply actions use the question reply record and support safe post-send sta
  assert.match(app,/const editor=form\.querySelector\('textarea\[name="body"\]'\);if\(editor\)editor\.value='';/);
 });
 
-test('Question majority colors never confuse a minority personal selection',()=>{
- assert.match(app,/leader:positive>negative\?'positive':negative>positive\?'negative':'tie'/);
- assert.match(app,/btn\.classList\.toggle\('pati-vote-leading',vote\.leader===kind\)/);
- assert.match(css,/button\[data-action="vote"\]\.active:not\(\.pati-vote-leading\)/);
- assert.match(css,/button\[data-action="vote-negative"\]\.active:not\(\.pati-vote-leading\)/);
- assert.match(css,/\.active:not\(\.pati-vote-leading\)::after/);
+test('Question like state reflects the viewer and ignores legacy negative ratings',()=>{
+ assert.match(app,/row\.question_id===id&&row\.is_helpful!==false/);
+ assert.match(app,/active:likes\.some\(row=>row\.user_id===me\?\.id\)/);
+ assert.match(app,/btn\.setAttribute\('aria-pressed',String\(like\.active\)\)/);
+ assert.doesNotMatch(app,/data-action="vote-negative"/);
 });
 
 test('Dark/light comment surfaces, messaging and stats are independently themed',()=>{

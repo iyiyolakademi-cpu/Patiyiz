@@ -275,7 +275,7 @@ window.BUCHEE_RELEASE="20261123-blog-content-v4";
 <script src="patiyiz-private-media-20261031.js?v=20261105-media-cache-perf-v2" defer></script>
 <script src="buchee-twit-photo-crop-20261123.js?v=1" defer></script>
 <script src="buchee-demo-data.js?v=11" defer></script>
-<script src="app.js?v=20261127-highlight-rail-v2" defer></script>
+<script src="app.js?v=20261128-question-timeline-v1" defer></script>
 <script src="patiyiz-header-feed-menu-20261031.js?v=20261124-desktop-only-v8"></script>
 <script src="patiyiz-dm-emoji-picker-20261101.js?v=1" defer></script>
 <style id="pati-critical-mobile-feed-20261101">
@@ -726,7 +726,6 @@ html[data-pati-view="reels"] #main-content .pati-reel-item .pati-reel-info::afte
 #main-content .buchee-home-section-switch button{border:0;border-bottom:2px solid transparent;background:transparent;padding:12px;color:#777;font-size:14px;font-weight:750}
 #main-content .buchee-home-section-switch button.active{color:#111;border-bottom-color:#111}
 #main-content .pati-feed-posts>.pati-card,#main-content .pati-feed-posts>article{border:0!important;border-bottom:1px solid #222!important;border-radius:0!important;margin:0!important;box-shadow:none!important;padding-top:12px!important;padding-bottom:12px!important}
-#main-content .pati-feed-posts>.pati-home-question{border-left:3px solid #222!important;padding-left:12px!important}
 #main-content .buchee-blog-directory{background:#fff;padding:0 16px 90px}
 #main-content .buchee-blog-directory-head{padding:30px 4px 26px;border-bottom:1px solid #ddd}
 #main-content .buchee-blog-directory-head>span{font-size:11px;letter-spacing:2px;color:#666;font-weight:750}
@@ -1310,4 +1309,51 @@ html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-utility>.p
   padding-inline-start:74px!important;
  }
 }
+
+#main-content .pati-feed-posts>.pati-home-question{
+ border:0!important;border-bottom:1px solid #dfe1e5!important;
+ padding:16px clamp(12px,2.2vw,24px)!important;margin:0!important;
+ background:#fff;box-sizing:border-box;
+}
+#main-content .pati-home-question .pati-home-question-author{margin:0 0 14px}
+#main-content .pati-home-question .pati-profile-row{display:flex;align-items:center;gap:12px}
+#main-content .pati-home-question .buchee-question-text :is(h3,p){margin:0 0 6px;font-size:clamp(15px,1.15vw,18px);color:#151518}
+#main-content .pati-home-question .pati-post-time{display:block;margin-top:6px;color:#6b7280}
+#main-content [data-question-id] .buchee-question-actions{display:flex;align-items:center;justify-content:flex-start;gap:10px;margin:8px 0 0}
+#main-content [data-question-id] .buchee-question-actions>button{
+ display:inline-flex!important;align-items:center!important;gap:5px!important;min-width:42px!important;min-height:42px!important;
+ border:0!important;border-radius:8px!important;padding:4px 2px!important;background:transparent!important;color:#202126!important;
+}
+#main-content [data-question-id] .buchee-question-actions>button svg{width:25px!important;height:25px!important}
+#main-content [data-question-id] .buchee-question-actions>button[aria-pressed="true"]{color:#e32657!important}
+#main-content [data-question-id] .buchee-question-actions>button[aria-pressed="true"] svg{fill:currentColor!important}
+#buchee-question-share-form .modal-content{display:grid;gap:10px}
+#buchee-question-share-url{min-width:0;width:100%;box-sizing:border-box}
+
+.buchee-album-visual-editor [hidden]{display:none!important}
+.buchee-album-editor-main{display:grid;gap:12px}
+.buchee-album-cover-editor{display:grid;justify-items:center;gap:6px}
+.buchee-album-cover-editor>[data-album-cover-preview]{width:76px;height:76px;display:grid;place-items:center;overflow:hidden;border-radius:50%;background:#f1eafa;border:2px solid #e5d9ef;color:#674889;font-size:25px}
+.buchee-album-cover-editor button,.buchee-album-cover-toolbar button{min-height:36px;border:0;background:transparent;color:#59378a;font-weight:700;cursor:pointer}
+.buchee-album-cover-toolbar{display:flex;justify-content:space-between;align-items:center}
+.buchee-album-editor-tabs{display:flex;gap:8px;border-bottom:1px solid #e9e4ee}
+.buchee-album-editor-tabs button{flex:1;min-height:42px;border:0;border-bottom:2px solid transparent;background:transparent;color:#53505b;font-weight:650}
+.buchee-album-editor-tabs button[aria-pressed="true"]{border-color:#69479c;color:#4f2f78}
+#buchee-story-album-form .buchee-album-picker{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+#buchee-story-album-form .buchee-album-story-tile{
+ position:relative;display:block!important;width:100%;min-width:0;aspect-ratio:9/14;overflow:hidden;
+ margin:0;padding:0;border:2px solid transparent;border-radius:10px;background:#eee9f5;cursor:pointer;
+}
+.buchee-album-story-tile>.buchee-album-picker-preview{width:100%;height:100%;border-radius:0}
+.buchee-album-story-tile>input{position:absolute;inset:0;width:100%!important;height:100%!important;margin:0;opacity:0;cursor:pointer}
+#buchee-story-album-form .buchee-album-story-tile:has(input:checked),
+#buchee-story-album-form .buchee-album-story-tile[aria-pressed="true"]{border-color:#7048a3}
+.buchee-album-story-tile:focus-visible,.buchee-album-story-tile:has(input:focus-visible){outline:2px solid #7048a3;outline-offset:2px}
+.buchee-album-tile-check,.buchee-album-close-friends,.buchee-album-tile-date{position:absolute;pointer-events:none}
+.buchee-album-tile-check{display:none;right:5px;top:5px;width:20px;height:20px;border-radius:50%;background:#7048a3;color:#fff;text-align:center;line-height:20px;font-weight:700}
+.buchee-album-story-tile:has(input:checked) .buchee-album-tile-check,.buchee-album-story-tile[aria-pressed="true"] .buchee-album-tile-check{display:block}
+.buchee-album-close-friends{left:5px;top:5px;padding:2px 5px;border-radius:6px;background:#21563d;color:#fff}
+.buchee-album-tile-date{left:4px;bottom:4px;padding:3px 4px;border-radius:5px;background:#18131ac9;color:#fff;font-size:10px}
+.buchee-album-manage-menu>summary{padding:7px 0;cursor:pointer;color:#59426e;font-weight:650;font-size:13px}
+.buchee-album-empty{grid-column:1/-1;color:#5e5865;padding:6px 0}
 </style></body></html>
