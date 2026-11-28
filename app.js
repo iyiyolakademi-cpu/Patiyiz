@@ -1070,7 +1070,11 @@ function setupFeedVideos(){
   });
  };
  const choose=()=>{
-  if(!permitted()){patiyizFeedActiveVideo?.pause();return}
+  if(!permitted()){
+   // Reduced motion disables autoplay. A video started explicitly can keep playing.
+   if(document.hidden||document.getElementById?.('story-overlay'))patiyizFeedActiveVideo?.pause();
+   return;
+  }
   let selected=null,ratio=.34;
   for(const [video,visible] of ratios)if(visible>ratio&&!video.dataset.userPaused){selected=video;ratio=visible}
   if(!selected){patiyizFeedActiveVideo?.pause();patiyizFeedActiveVideo=null;return}
