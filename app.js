@@ -3406,7 +3406,7 @@ async function patiLoadHomeQuestions(){
   const previous=new Map(data.questions.map(q=>[q.id,q]));
   for(const q of state.rows)previous.set(q.id,q);
   data.questions=[...previous.values()];
-  if(view==='home'&&!selectedPostId){render();void bucheePollLoadMyVotes(polls)}
+  if(view==='home'&&!selectedPostId)render();
  }catch(error){console.warn('Akış soru-cevap yüklenemedi:',error?.message||error)}
  finally{state.loading=false}
 }
@@ -6870,6 +6870,7 @@ async function bucheePollHomeMount(){
   if(missing.length){const {data:authors}=await sb.from('profiles').select('id,display_name,handle,avatar_url').in('id',missing);if(me?.id!==owner)return;for(const author of authors||[])if(!data.profiles.some(p=>p.id===author.id))data.profiles.push(author)}
   bucheeFeedPollCache=polls;bucheeFeedPollFetched=Date.now();
   if(view==='home'&&!selectedPostId)render();
+  await bucheePollLoadMyVotes(polls);
  }catch(e){console.warn('Anket akışı yüklenemedi:',e?.message||e);bucheeFeedPollFetched=Date.now()}
  finally{bucheeFeedPollRequest=null}
 }
@@ -9427,7 +9428,7 @@ async function save(table,record,id){if(table==='posts')profileCountCache.delete
 function processClick(e){const video=e.target.closest('.pati-post-video');if(video&&!e.target.closest('button')){
  const reelCard=video.closest('.pati-feed-reel-card');
  if(reelCard?.dataset?.postId){patiOpenFeedReel(reelCard.dataset.postId);return;}
- if(video.paused){delete video.dataset.userPaused;document.querySelectorAll('#main-content .pati-post-video').forEach(other=>{if(other!==video)other.pause()});patiyizFeedActiveVideo=video;video.play().catch(()=>{});}else{video.dataset.userPaused='1';video.pause();}return;}let target=e.target.closest('[data-view],[data-action]');if(!target)return;let v=target.dataset.view;if(v){patiInsightsClose();closePatiCreate();profileId='';selectedPostId='';if(v==='messages')mobileChatOpen=false;closeModal();navigate(v);return}let act=target.dataset.action,id=target.dataset.id;switch(act){
+ if(video.paused){delete video.dataset.userPaused;if(!video.getAttribute('src')&&video.dataset.patiVideoSrc)video.src=video.dataset.patiVideoSrc;document.querySelectorAll('#main-content .pati-post-video').forEach(other=>{if(other!==video)other.pause()});patiyizFeedActiveVideo=video;video.play().catch(()=>{});}else{video.dataset.userPaused='1';video.pause();}return;}let target=e.target.closest('[data-view],[data-action]');if(!target)return;let v=target.dataset.view;if(v){patiInsightsClose();closePatiCreate();profileId='';selectedPostId='';if(v==='messages')mobileChatOpen=false;closeModal();navigate(v);return}let act=target.dataset.action,id=target.dataset.id;switch(act){
 case 'dm-receipts-toggle':run(async()=>{
  const button=target;button.disabled=true;
  try{
