@@ -7495,8 +7495,9 @@ function profilePage(){
  void patiSafetyRefresh();if(!own)patiRecordProfileVisit(p.id);
  const privateLocked=!own&&p.is_private&&!followed.has(p.id);
  if(profilePostsTab==='reposts')void patiEnsureRepostSources(p.id);
+ const pinMap=bucheeDemoEnabled?new Map(data.pins.filter(x=>x.owner_id===p.id).map(x=>[x.post_id,x])):null;
  const posts=[...(typeof patiCollabPartnerPosts==='function'?patiCollabPartnerPosts(p.id):data.posts.filter(x=>x.author_id===p.id))].sort((a,b)=>{
- const ap=data.pins.find(x=>x.owner_id===p.id&&x.post_id===a.id),bp=data.pins.find(x=>x.owner_id===p.id&&x.post_id===b.id);
+ const ap=pinMap?pinMap.get(a.id):data.pins.find(x=>x.owner_id===p.id&&x.post_id===a.id),bp=pinMap?pinMap.get(b.id):data.pins.find(x=>x.owner_id===p.id&&x.post_id===b.id);
  if(!!ap!==!!bp)return ap?-1:1;
  if(ap&&bp)return new Date(ap.created_at)-new Date(bp.created_at);
  return new Date(b.created_at)-new Date(a.created_at);
@@ -7518,7 +7519,7 @@ function profilePage(){
   profilePostsTab==='reels'?posts.filter(x=>!!(x.video_url||x.media_videos?.length)):
   profilePostsTab==='videos'?posts.filter(x=>x.post_format!=='reels'&&!!(x.video_url||x.media_videos?.length)):
   profilePostsTab==='text'?posts.filter(x=>bucheeIsTwit(x)||(!x.image_url&&!x.images?.length&&!x.video_url&&!x.media_videos?.length)):
-  posts.filter(x=>x.post_format!=='reels'&&!bucheeIsTwit(x)&&!!(x.image_url||x.images?.length||x.video_url||x.media_videos?.length));
+  posts.filter(x=>x.post_format!=='reels'&&(!bucheeDemoEnabled||bucheeHomeTimelinePost(x))&&!bucheeIsTwit(x)&&!!(x.image_url||x.images?.length||x.video_url||x.media_videos?.length));
  const gridTabIcon='<svg class="pati-profile-tab-icon pati-profile-grid-icon" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">'+[3,10,17].flatMap(y=>[3,10,17].map(x=>'<rect x="'+x+'" y="'+y+'" width="4.5" height="4.5" rx="1"/>')).join('')+'</svg>';
  const reelsTabIcon='<svg class="pati-profile-tab-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2.5" width="16" height="19" rx="4"/><path d="m10 8 5 4-5 4z"/></svg>';
  const repostTabIcon='<svg class="pati-profile-tab-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10V7.5A3.5 3.5 0 0 1 6.5 4H20"/><path d="m16.5 1 3.5 3-3.5 3"/><path d="M21 14v2.5a3.5 3.5 0 0 1-3.5 3.5H4"/><path d="m7.5 17-3.5 3 3.5 3"/></svg>';
@@ -7528,10 +7529,10 @@ function profilePage(){
  const walletReady=typeof patiCoinState!=='undefined'&&patiCoinState.ready===true;
  const walletBalance=walletReady?Math.max(0,Math.floor(Number(patiCoinState.balance)||0)).toLocaleString('tr-TR'):'—';
  if(own)void patiLoadProfileViewCounts(posts.map(x=>x.id),p.id);
- const grid=active.map(x=>{
+ const grid=(bucheeDemoEnabled&&['text','reposts'].includes(profilePostsTab)?[]:active).map(x=>{
   const cover=x.video_url?(x.video_cover_url||x.image_url):(x.images?.[0]||x.image_url);
   const multiPhoto=!x.video_url&&Array.isArray(x.images)&&x.images.filter(Boolean).length>1;
-  const thumbnail=cover?'<img class="'+(x.selfie_mirrored?'pati-selfie-mirrored':'')+'" loading="lazy" decoding="async" src="'+esc(cover)+'" alt="Paylaşım görseli">':x.video_url?'<video class="'+(x.selfie_mirrored?'pati-selfie-mirrored':'')+'" muted playsinline preload="metadata" src="'+esc(x.video_url)+'#t=0.1"></video>':'<span>'+esc(cut(x.body||'Yazılı gönderi',110))+'</span>';
+  const thumbnail=cover?'<img class="'+(x.selfie_mirrored?'pati-selfie-mirrored':'')+'" loading="lazy" decoding="async" src="'+esc(cover)+'" alt="Paylaşım görseli">':x.video_url&&bucheeDemoEnabled?'<span class="buchee-demo-profile-video-placeholder" aria-label="Video">▶</span>':x.video_url?'<video class="'+(x.selfie_mirrored?'pati-selfie-mirrored':'')+'" muted playsinline preload="metadata" src="'+esc(x.video_url)+'#t=0.1"></video>':'<span>'+esc(cut(x.body||'Yazılı gönderi',110))+'</span>';
   const mediaIcon=x.video_url?'<span class="pati-profile-play" aria-hidden="true">'+ico('reels-tab')+'</span>':multiPhoto?'<span class="pati-profile-multi" aria-hidden="true">'+ico('grid')+'</span>':'';
   const pinBadge=profilePostsTab==='reposts'?'<span class="pati-profile-reposted" aria-label="Yeniden paylaşıldı">↻</span>':data.pins.some(t=>t.owner_id===p.id&&t.post_id===x.id)?'<span class="pati-profile-pin" aria-label="Sabitlenmiş gönderi">📌</span>':'';
    const views=own?'<span class="pati-profile-view-count" aria-label="Görüntülenme sayısı"><svg class="pati-eye-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.8"/></svg><span data-pati-view-count="'+esc(x.id)+'">'+(patiPostViewCounts.has(x.id)?patiPostViewCounts.get(x.id).toLocaleString('tr-TR'):'—')+'</span></span>':'';
@@ -7570,6 +7571,7 @@ function profilePage(){
  '</div>';
  // Minimal profile: place biography beside the avatar, as in the selected reference.
  const bucheeProfileRoot=main.querySelector('.pati-ig-profile');
+ if(bucheeDemoEnabled&&bucheeProfileRoot){bucheeProfileRoot.classList.add('buchee-demo-profile');const actions=bucheeProfileRoot.querySelector('.pati-ig-actions');if(own&&actions){const wallet=document.createElement('button');wallet.type='button';wallet.className='soft-btn';wallet.dataset.action='paticoin-rewards';wallet.textContent='Bakiyen';actions.append(wallet);const settings=bucheeProfileRoot.querySelector('.pati-profile-menu-trigger');if(settings){settings.setAttribute('aria-label','Ayarlar ve profil menüsü');settings.title='Ayarlar ve profil menüsü'}}}
  if(!privateLocked&&!blocked.has(p.id)){
   const section=document.createElement('section');
   section.className='buchee-profile-albums';section.dataset.owner=p.id;
