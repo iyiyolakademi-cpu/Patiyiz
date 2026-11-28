@@ -7,8 +7,17 @@
  const maxStrokes=32,maxPoints=640;
  const layoutKey='buchee_demo_story_layout_v1';
  function layoutFor(story){try{return JSON.parse(localStorage.getItem(layoutKey)||'{}')[JSON.stringify([story.story_text||'',story.story_link_url||'',story.story_link_label||'',story.question_prompt||'',story.poll_question||''])]||{}}catch{return {}}}
- function place(el,p){if(!p)return;if(p.scale)el.style.setProperty('scale',String(p.scale));Object.assign(el.style,{left:p.x+'%',top:p.y+'%',right:'auto',transform:'translate(-50%,-50%)',width:'max-content',maxWidth:'84%'})}
- function draggable(el,stage,p){el.style.pointerEvents='auto';el.style.touchAction='none';el.style.cursor='grab';place(el,p);let id=null;el.addEventListener('pointerdown',e=>{if(e.button!==0)return;e.preventDefault();e.stopPropagation();id=e.pointerId;el.setPointerCapture(id)});el.addEventListener('pointermove',e=>{if(id!==e.pointerId)return;const r=stage.getBoundingClientRect();p.x=Math.max(12,Math.min(88,(e.clientX-r.left)/r.width*100));p.y=Math.max(8,Math.min(92,(e.clientY-r.top)/r.height*100));place(el,p)});for(const type of ['pointerup','pointercancel','lostpointercapture'])el.addEventListener(type,()=>{id=null})}
+ function place(el,p){if(!p)return;if(p.scale)el.style.setProperty('scale',String(p.scale));Object.assign(el.style,{left:p.x+'%',top:p.y+'%',right:'auto',transform:'translate(-50%,-50%) rotate('+(Number(p.rotation)||0)+'deg)',width:'max-content',maxWidth:'84%'})}
+ function draggable(el,stage,p){
+ el.style.pointerEvents='auto';el.style.touchAction='none';el.style.cursor='grab';place(el,p);
+ const points=new Map();let start=null,frame=0;
+ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+ const reset=()=>{const q=[...points.values()];start=q.length?{x:p.x,y:p.y,scale:p.scale||1,rotation:p.rotation||0,cx:q.reduce((n,v)=>n+v.x,0)/q.length,cy:q.reduce((n,v)=>n+v.y,0)/q.length,d:q.length===2?Math.hypot(q[1].x-q[0].x,q[1].y-q[0].y):0,angle:q.length===2?Math.atan2(q[1].y-q[0].y,q[1].x-q[0].x):0}:null};
+ el.addEventListener('pointerdown',e=>{if(e.button!==0||points.size>=2)return;e.preventDefault();e.stopPropagation();points.set(e.pointerId,{x:e.clientX,y:e.clientY});el.setPointerCapture(e.pointerId);reset()});
+ el.addEventListener('pointermove',e=>{if(!points.has(e.pointerId)||!start)return;points.set(e.pointerId,{x:e.clientX,y:e.clientY});const q=[...points.values()],r=stage.getBoundingClientRect();if(!r.width||!r.height)return;const cx=q.reduce((n,v)=>n+v.x,0)/q.length,cy=q.reduce((n,v)=>n+v.y,0)/q.length;p.x=clamp(start.x+(cx-start.cx)/r.width*100,12,88);p.y=clamp(start.y+(cy-start.cy)/r.height*100,8,92);if(q.length===2&&start.d>0){p.scale=clamp(start.scale*Math.hypot(q[1].x-q[0].x,q[1].y-q[0].y)/start.d,.6,1.6);p.rotation=start.rotation+(Math.atan2(q[1].y-q[0].y,q[1].x-q[0].x)-start.angle)*180/Math.PI}if(!frame)frame=requestAnimationFrame(()=>{frame=0;place(el,p)})});
+ for(const type of ['pointerup','pointercancel','lostpointercapture'])el.addEventListener(type,e=>{if(points.delete(e.pointerId))reset()});
+ }
+
 
  const getLink=value=>{
   try{
@@ -70,6 +79,10 @@
    const hint=document.createElement('small');hint.textContent='Öğeleri ön izlemede sürükleyerek konumlandır.';tools.prepend(hint);
    const controls=document.createElement('div');controls.innerHTML='<label>Yazı boyutu<input type="range" min="12" max="32" value="17" name="demo_size"></label><label>Yazı rengi<input type="color" value="#ffffff" name="demo_color"></label>';
    tools.querySelector('[data-story-fields="text"]').append(controls);
+   const font=document.createElement('select');font.name='demo_font';for(const [value,label] of [['system-ui','Modern'],['Georgia','Klasik'],['monospace','Daktilo']]){const o=document.createElement('option');o.value=value;o.textContent=label;font.append(o)}controls.append(font);
+   const draft=document.createElement('button');draft.type='button';draft.textContent='Metin taslağını kaydet';controls.append(draft);
+   draft.onclick=()=>{try{localStorage.setItem('buchee_story_text_draft',tools.querySelector('[name="story_overlay"]').value);draft.textContent='Taslak kaydedildi'}catch{draft.textContent='Taslak kaydedilemedi'}};
+   const restore=document.createElement('button');restore.type='button';restore.textContent='Taslağı getir';controls.append(restore);restore.onclick=()=>{try{const v=localStorage.getItem('buchee_story_text_draft');if(v!==null){const t=tools.querySelector('[name="story_overlay"]');t.value=v;t.dispatchEvent(new Event('input',{bubbles:true}))}}catch{}};
    for(const key of ['text','link','question','poll']){
     const label=document.createElement('label');label.textContent='Öğe boyutu';
     const range=document.createElement('input');range.type='range';range.min='60';range.max='160';range.value='100';range.step='5';
@@ -106,7 +119,7 @@
    text.hidden=!text.textContent;
    if(demo){
     layout.text.size=Number(field('demo_size'));layout.text.color=field('demo_color');
-    text.style.setProperty('font-size',layout.text.size+'px','important');text.style.color=layout.text.color;
+    text.style.setProperty('font-size',layout.text.size+'px','important');text.style.color=layout.text.color;layout.text.font=field('demo_font');text.style.fontFamily=layout.text.font;
     const values={link:field('story_link')?(field('story_link_label')||'Bağlantıyı aç'):'',question:field('story_question'),poll:field('story_poll')};
     for(const key of Object.keys(previews)){previews[key].textContent=values[key];previews[key].hidden=!values[key];}
    }
@@ -164,7 +177,7 @@
   const layout=demo?layoutFor(story):{};
   if(story.story_drawing)paint(canvasFor(player),story.story_drawing);
   if(story.story_text){
-   const text=document.createElement('p');text.className='buchee-story-overlay-text';text.textContent=story.story_text;player.append(text);if(demo&&layout.text){place(text,layout.text);if(layout.text.size)text.style.setProperty('font-size',layout.text.size+'px','important');if(layout.text.color)text.style.color=layout.text.color;}
+   const text=document.createElement('p');text.className='buchee-story-overlay-text';text.textContent=story.story_text;player.append(text);if(demo&&layout.text){place(text,layout.text);if(layout.text.size)text.style.setProperty('font-size',layout.text.size+'px','important');if(layout.text.color)text.style.color=layout.text.color;if(['system-ui','Georgia','monospace'].includes(layout.text.font))text.style.fontFamily=layout.text.font;}
   }
   const url=getLink(story.story_link_url);
   if(url||story.poll_question||story.question_prompt||active&&!own){
