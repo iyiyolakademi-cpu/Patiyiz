@@ -3707,7 +3707,7 @@ function bucheeHomeCategoryFeed(posts,tab){
  const acceptsAuthor=id=>!blocked.has(id)&&(recommended||
   (bucheeHomeFeedSource==='following'?(id===me.id||followed.has(id)):bucheeFavoriteFeed.authors.has(id)));
  const preview=patiHomeQuestionsState.owner===me?.id?patiHomeQuestionsState.rows:[];
- const eligible=posts.filter(p=>!blocked.has(p.author_id)&&!bucheeBlogParse(p.body));
+ const eligible=posts.filter(p=>!blocked.has(p.author_id)&&!bucheeBlogParse(p.body)&&(!bucheeDemoEnabled||bucheeHomeTimelinePost(p)));
  const entries=right
   ? [
     ...eligible.filter(p=>!patiHomeIsMediaPost(p)).map(item=>({kind:'post',item})),
@@ -3756,7 +3756,7 @@ function homePage(){
     !scoped.loading&&(!scoped.ready||favorites&&!scoped.key))bucheeRefreshScopedFeed();
   });
  }
- const options=[['recommended','Önerilenler'],['following','Takip Edilenler'],['favorites','Favoriler']];
+ const options=[['recommended',bucheeDemoEnabled?'Tümü':'Önerilenler'],['following',bucheeDemoEnabled?'Takip Ettiklerim':'Takip Edilenler'],['favorites','Favoriler']];
  const sourceBar='<div class="buchee-feed-sources" role="group" aria-label="Akış seçimi">'+options.map(([id,label])=>
   '<button type="button" data-action="home-feed-source" data-id="'+id+'" aria-pressed="'+(bucheeHomeFeedSource===id)+'">'+label+'</button>').join('')+'</div>';
  const manageFavorites=favorites?'<div class="buchee-feed-favorites-tools">'+
@@ -3766,7 +3766,7 @@ function homePage(){
  const feedContents=bucheeHomeCategoryFeed(scoped?scoped.rows:list,patiHomeTab);
  const blogOnlyPosts=[...data.posts].filter(p=>p?.id&&!blocked.has(p.author_id)&&bucheeBlogParse(p.body)).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
  const blogCategories=['Tümü','Kişisel Gelişim','Felsefe','Kitap','Hayat','Psikoloji'];
- const blogMarkup='<section class="buchee-blog-directory"><div class="buchee-blog-directory-head"><div class="buchee-blog-title-line"><div><h1>Son Yazılar</h1></div><button type="button" class="buchee-blog-write" data-action="pati-create-blog">+ Yazı yaz</button></div></div><div class="buchee-blog-directory-list">'+(blogOnlyPosts.length?blogOnlyPosts.map(p=>{const b=bucheeBlogParse(p.body),a=profile(p.author_id),likes=data.likes.filter(x=>x.post_id===p.id).length;return '<article class="buchee-blog-directory-card"><button type="button" class="buchee-blog-read-card" data-action="buchee-blog-read" data-id="'+esc(p.id)+'"><strong>'+esc(b.title)+'</strong><span class="buchee-blog-directory-excerpt">'+esc(cut(b.body,150))+'</span><span class="buchee-blog-read-more">Oku →</span></button><div class="buchee-blog-directory-author">'+avatar(a,'s')+' '+esc(a.display_name||a.handle||'Buchee üyesi')+'</div><div class="buchee-blog-actions buchee-unified-actions"><button type="button" data-action="like" data-id="'+esc(p.id)+'" aria-pressed="'+liked.has(p.id)+'">'+bucheeFeedIcons.heart+' '+likes+'</button><button type="button" data-action="comment" data-id="'+esc(p.id)+'" aria-label="Yorum yap">'+bucheeFeedIcons.comment+' '+(p.comment_count||0)+'</button></div></article>'}).join(''):'<p class="buchee-blog-directory-empty">Henüz blog yazısı yok.</p>')+'</div></section>';
+ const blogMarkup=bucheeDemoEnabled&&!bucheeBlogOnlyView?'':'<section class="buchee-blog-directory"><div class="buchee-blog-directory-head"><div class="buchee-blog-title-line"><div><h1>Son Yazılar</h1></div><button type="button" class="buchee-blog-write" data-action="pati-create-blog">+ Yazı yaz</button></div></div><div class="buchee-blog-directory-list">'+(blogOnlyPosts.length?blogOnlyPosts.map(p=>{const b=bucheeBlogParse(p.body),a=profile(p.author_id),likes=data.likes.filter(x=>x.post_id===p.id).length;return '<article class="buchee-blog-directory-card"><button type="button" class="buchee-blog-read-card" data-action="buchee-blog-read" data-id="'+esc(p.id)+'"><strong>'+esc(b.title)+'</strong><span class="buchee-blog-directory-excerpt">'+esc(cut(b.body,150))+'</span><span class="buchee-blog-read-more">Oku →</span></button><div class="buchee-blog-directory-author">'+avatar(a,'s')+' '+esc(a.display_name||a.handle||'Buchee üyesi')+'</div><div class="buchee-blog-actions buchee-unified-actions"><button type="button" data-action="like" data-id="'+esc(p.id)+'" aria-pressed="'+liked.has(p.id)+'">'+bucheeFeedIcons.heart+' '+likes+'</button><button type="button" data-action="comment" data-id="'+esc(p.id)+'" aria-label="Yorum yap">'+bucheeFeedIcons.comment+' '+(p.comment_count||0)+'</button></div></article>'}).join(''):'<p class="buchee-blog-directory-empty">Henüz blog yazısı yok.</p>')+'</div></section>';
  const nextHomeMarkup=selectedPostId
   ?bucheePostBackBar()+(data.posts.some(p=>p.id===selectedPostId&&!blocked.has(p.author_id))?postCard(data.posts.find(p=>p.id===selectedPostId)):empty('Paylaşım bulunamadı'))
   :bucheeBlogOnlyView?''+blogMarkup
@@ -3782,7 +3782,10 @@ function homePage(){
   !!main.querySelector?.(selectedPostId?'.buchee-post-backbar':'.buchee-home-feed-filters');
  if(!patiHomeDomUnchanged){
   const focused=document.activeElement?.matches('[data-action="home-feed-source"]')?document.activeElement.dataset.id:'';
+  const anchor=bucheeDemoEnabled&&!selectedPostId&&!bucheeBlogOnlyView&&main.dataset.bucheeHomeIdentity===identity?[...main.querySelectorAll('article[data-post-id],article[data-post]')].find(el=>el.getBoundingClientRect().bottom>80):null;
+  const anchorId=anchor?.dataset.postId||anchor?.dataset.post,anchorTop=anchor?.getBoundingClientRect().top;
   main.innerHTML=nextHomeMarkup;
+  if(bucheeDemoEnabled&&!selectedPostId&&!bucheeBlogOnlyView){const images=main.querySelectorAll('.pati-feed-posts img');images.forEach((img,i)=>{if(i>=5){img.loading='lazy';img.decoding='async'}});if(anchorId){const next=[...main.querySelectorAll('article[data-post-id],article[data-post]')].find(el=>(el.dataset.postId||el.dataset.post)===anchorId);if(next&&Number.isFinite(anchorTop)){const delta=next.getBoundingClientRect().top-anchorTop;if(Math.abs(delta)>1)window.scrollBy(0,delta)}}}
   if(main.dataset)main.dataset.bucheeHomeIdentity=identity;
   main.__bucheeHomeMarkup=nextHomeMarkup;
   if(focused)main.querySelector('[data-action="home-feed-source"][aria-pressed="true"]')?.focus({preventScroll:true});
