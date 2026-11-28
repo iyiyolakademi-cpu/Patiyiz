@@ -2018,9 +2018,10 @@ async function showStoryViewers(options={}){
  const active=()=>generation===patiStoryActivityGeneration&&sheet.isConnected&&!sheet.hidden&&me?.id===owner&&storyItems[storyIndex]?.id===x.id;
  patiStoryActivityPending=true;
  try{
-  const [vr,lr]=await Promise.all([
+  const [vr,lr,er]=await Promise.all([
    sb.from('patiyiz_story_views').select('viewer_id,last_viewed_at').eq('story_id',x.id).order('last_viewed_at',{ascending:false}),
-   sb.from('patiyiz_story_likes').select('user_id').eq('story_id',x.id)
+   sb.from('patiyiz_story_likes').select('user_id').eq('story_id',x.id),
+   sb.from('patiyiz_story_responses').select('user_id,response').eq('story_id',x.id).eq('kind','emoji')
   ]);
   if(!active())return;
   if(vr.error){
@@ -2029,9 +2030,11 @@ async function showStoryViewers(options={}){
    return;
   }
   if(lr.error)console.warn('Hikâye beğenileri yüklenemedi:',lr.error.message);
+  if(er.error)console.warn('Hikâye tepkileri yüklenemedi:',er.error.message);
   const viewers=vr.data||[],liked=new Set((lr.data||[]).map(v=>v.user_id));
+  const reactions=new Map((er.data||[]).map(v=>[v.user_id,v.response]));
   patiStoryPreviewCache.set(x.id,{total:viewers.length,people:viewers.slice(0,3).map(v=>({id:v.viewer_id}))});
-  const signature=JSON.stringify([viewers.map(v=>[v.viewer_id,v.last_viewed_at]),[...liked].sort()]);
+  const signature=JSON.stringify([viewers.map(v=>[v.viewer_id,v.last_viewed_at]),[...liked].sort(),[...reactions].sort()]);
   if(silent&&sheet.dataset.patiStorySignature===signature)return;
   const missing=[...new Set(viewers.map(v=>v.viewer_id).filter(id=>id&&!data.profiles.some(p=>p.id===id)))];
   if(missing.length){
@@ -2049,12 +2052,12 @@ async function showStoryViewers(options={}){
   const focusId=silent&&sheet.contains(document.activeElement)?document.activeElement?.getAttribute('data-id'):null;
   const focusAction=silent&&focusId?document.activeElement?.getAttribute('data-action'):null;
   const rows=viewers.map(v=>{
-   const p=profile(v.viewer_id),isLiked=liked.has(v.viewer_id),name=displayName(p);
+   const p=profile(v.viewer_id),isLiked=liked.has(v.viewer_id),name=displayName(p),reaction=reactions.get(v.viewer_id);
    const lastSeen=patiStoryLastViewedLabel(v.last_viewed_at);
    return '<div class="pati-story-activity-person">'+
     '<button type="button" class="story-view-user" data-action="story-viewer-profile" data-id="'+esc(v.viewer_id)+'" aria-label="'+esc(p.display_name||'Buchee Social üyesi')+' profilini aç">'+
     '<span class="pati-story-activity-avatar">'+avatar(p,'s')+(isLiked?'<span class="pati-story-view-like" title="Hikâyeni beğendi" aria-label="Beğendi">♥</span>':'')+'</span>'+
-    '<span class="pati-story-view-person"><strong>'+name+'</strong><small>@'+esc(p.handle||'buchee')+'</small><small class="pati-story-view-last">Son görülme: <time datetime="'+esc(v.last_viewed_at||'')+'">'+esc(lastSeen)+'</time></small></span></button>'+
+    '<span class="pati-story-view-person"><strong>'+name+(reaction?' <span aria-label="Tepki '+esc(reaction)+'">'+esc(reaction)+'</span>':'')+'</strong><small>@'+esc(p.handle||'buchee')+'</small><small class="pati-story-view-last">Son görülme: <time datetime="'+esc(v.last_viewed_at||'')+'">'+esc(lastSeen)+'</time></small></span></button>'+
     (v.viewer_id!==owner&&!blocked.has(v.viewer_id)?'<button type="button" class="pati-story-activity-message" data-action="story-viewer-chat" data-id="'+esc(v.viewer_id)+'" aria-label="'+esc(p.display_name||'Kullanıcı')+' kişisine mesaj gönder">'+ico('send')+'</button>':'')+
     '</div>';
   }).join('');
@@ -2211,6 +2214,167 @@ function bucheeStoryResume(){if(!bucheeStoryHold)return;bucheeStoryHold=false;do
 document.addEventListener('pointerdown',e=>{if(!e.target.closest?.('#story-overlay .story-player')||e.target.closest('button,input,textarea,a,select,.story-viewers-sheet'))return;const x=e.clientX,y=e.clientY;bucheeStoryTouch={x,y,hold:false,timer:setTimeout(()=>{if(!bucheeStoryTouch)return;bucheeStoryTouch.hold=true;bucheeStoryPause()},260)}},{passive:true});
 document.addEventListener('pointermove',e=>{const t=bucheeStoryTouch;if(t&&(Math.abs(e.clientX-t.x)>14||Math.abs(e.clientY-t.y)>14)){clearTimeout(t.timer);if(t.hold)bucheeStoryResume();bucheeStoryTouch=null}},{passive:true});
 for(const eventName of ['pointerup','pointercancel'])document.addEventListener(eventName,()=>{if(!bucheeStoryTouch)return;clearTimeout(bucheeStoryTouch.timer);if(bucheeStoryTouch.hold)bucheeStoryResume();bucheeStoryTouch=null},{passive:true});
+const bucheeStoryHideLimit=250;
+async function bucheeStoryPrivacy(){
+ const owner=me?.id,tools=globalThis.BucheeStoryTools;
+ if(!owner||!tools)return;
+ const panel=tools.dialog('Hikâyeyi belirli kişilerden gizle');
+ panel.insertAdjacentHTML('beforeend','<p>Seçtiğin kişiler aktif hikâyelerini ve öne çıkanlarını göremez.</p><label>Hesap ara<input type="search" autocomplete="off" placeholder="Ad veya kullanıcı adı"></label><div class="buchee-story-privacy-list"></div><p role="status" class="buchee-story-status" aria-live="polite">Ayarlar yükleniyor…</p><button type="button" class="primary-btn buchee-story-save" disabled>Kaydet</button>');
+ const search=panel.querySelector('input'),list=panel.querySelector('.buchee-story-privacy-list');
+ const status=panel.querySelector('[role="status"]'),save=panel.querySelector('.buchee-story-save');
+ const candidates=new Map(data.profiles.filter(p=>p.id!==owner).map(p=>[p.id,p]));
+ let chosen=new Set(),timer=null,request=0,ready=false;
+ const active=()=>panel.isConnected&&me?.id===owner;
+ const draw=()=>{
+  if(!active()||!ready)return;
+  const term=search.value.trim().toLocaleLowerCase('tr-TR');
+  const matches=[...candidates.values()].filter(p=>p.id!==owner&&(!blocked.has(p.id)||chosen.has(p.id))&&
+   (String(p.display_name||'')+' @'+String(p.handle||'')).toLocaleLowerCase('tr-TR').includes(term));
+  matches.sort((a,b)=>Number(chosen.has(b.id))-Number(chosen.has(a.id))||String(a.display_name||a.handle||'').localeCompare(String(b.display_name||b.handle||''),'tr'));
+  list.innerHTML=matches.slice(0,60).map(p=>'<label class="buchee-story-hidden-person">'+avatar(p,'s')+
+   '<span><strong>'+esc(p.display_name||p.handle)+'</strong><small>@'+esc(p.handle||'')+'</small></span><input type="checkbox" value="'+esc(p.id)+'"'+(chosen.has(p.id)?' checked':'')+'></label>').join('');
+  status.textContent=matches.length?chosen.size+' kişi seçildi.':term?'Eşleşen hesap bulunamadı.':'Seçilebilecek hesap bulunamadı.';
+ };
+ try{
+  const prefs=await sb.from('buchee_story_privacy').select('hidden_viewers').eq('owner_id',owner).maybeSingle();
+  if(prefs.error)throw prefs.error;
+  if(!active())return;
+  chosen=new Set(prefs.data?.hidden_viewers||[]);
+  const missing=[...chosen].filter(id=>!candidates.has(id));
+  if(missing.length){
+   const results=await sb.from('profiles').select('id,display_name,handle,avatar_url').in('id',missing);
+   if(!active())return;
+   for(const person of results.data||[])candidates.set(person.id,person);
+  }
+  ready=true;save.disabled=false;draw();
+ }catch(error){if(active())status.textContent='Gizlilik ayarı yüklenemedi. Tekrar açıp dene.';return}
+ search.addEventListener('input',()=>{
+  draw();clearTimeout(timer);
+  const term=search.value.trim().replace(/^@/,'').replace(/[%_\\]/g,'');
+  const token=++request;
+  if(term.length<2)return;
+  timer=setTimeout(async()=>{
+   try{
+    const query='%'+term+'%';
+    const results=await Promise.all(['handle','display_name'].map(column=>sb.from('profiles')
+     .select('id,display_name,handle,avatar_url').ilike(column,query).limit(25)));
+    if(!active()||request!==token)return;
+    for(const result of results)for(const p of result.data||[])candidates.set(p.id,p);
+    draw();
+   }catch(error){console.warn('Hikâye gizlilik araması:',error?.message||error)}
+  },250);
+ });
+ panel.addEventListener('close',()=>clearTimeout(timer),{once:true});
+ list.addEventListener('change',event=>{
+  const input=event.target;
+  if(!input.matches('input[type="checkbox"]')||!candidates.has(input.value))return;
+  if(input.checked&&chosen.size>=bucheeStoryHideLimit){input.checked=false;status.textContent='En fazla '+bucheeStoryHideLimit+' kişi seçebilirsin.';return;}
+  if(input.checked)chosen.add(input.value);else chosen.delete(input.value);
+  status.textContent=chosen.size+' kişi seçildi.';
+ });
+ save.addEventListener('click',async()=>{
+  if(!active()||save.disabled)return;
+  save.disabled=true;
+  for(const input of list.querySelectorAll('input'))input.disabled=true;
+  try{
+   const result=await sb.from('buchee_story_privacy').upsert({owner_id:owner,hidden_viewers:[...chosen]},
+    {onConflict:'owner_id'}).select('owner_id').single();
+   if(result.error||result.data?.owner_id!==owner)throw result.error||Error('Ayar kaydedilemedi.');
+   if(active()){panel.close();notify('Hikâye gizliliği kaydedildi.');}
+  }catch(error){
+   if(active()){save.disabled=false;for(const input of list.querySelectorAll('input'))input.disabled=false;status.textContent='Ayar kaydedilemedi. Tekrar dene.';}
+  }
+ });
+}
+async function bucheeReplyToStory(story,message){
+ const viewer=me?.id;
+ if(!viewer||story.author_id===viewer||blocked.has(story.author_id))throw Error('Bu hikâyeye yanıt gönderilemiyor.');
+ const verified=await sb.from('patiyiz_stories').select('id,author_id,caption,expires_at')
+  .eq('id',story.id).gt('expires_at',new Date().toISOString()).maybeSingle();
+ if(verified.error||!verified.data||viewer!==me?.id)throw Error('Hikâye artık görüntülenemiyor.');
+ const excerpt=(verified.data.caption||'Hikâye').slice(0,100);
+ const body=('↪ Hikâyene yanıt verdi · '+excerpt+'\n'+message).slice(0,1000);
+ const result=await sb.from('messages').insert({sender_id:viewer,receiver_id:story.author_id,body}).select('*').single();
+ if(result.error||!result.data)throw Error('Mesaj gönderilemedi. Mesaj izinlerini kontrol et.');
+ if(viewer===me?.id){
+  data.messages.push(result.data);
+  const thread=patiDmThreads.get(patiDmThreadKey(story.author_id));
+  if(thread)thread.rows.push(result.data);
+ }
+}
+function bucheeStoryInteraction(story,kind){
+ const viewer=me?.id,own=story.author_id===viewer,tools=globalThis.BucheeStoryTools;
+ if(!viewer||!tools||!own&&!(Date.parse(story.expires_at)>Date.now()))return;
+ bucheeStoryPause();
+ const panel=tools.dialog(kind==='poll'?'Hikâye anketi':kind==='question'?'Soru kutusu':'Hikâyeye tepki ver');
+ const body=document.createElement('div');body.className='buchee-story-interaction';panel.append(body);
+ const active=()=>panel.isConnected&&viewer===me?.id&&storyItems[storyIndex]?.id===story.id;
+ panel.addEventListener('close',()=>{if(storyItems[storyIndex]?.id===story.id)bucheeStoryResume()},{once:true});
+ const title=kind==='poll'?story.poll_question:kind==='question'?story.question_prompt:'Bir tepki seç';
+ const options=kind==='poll'?(story.poll_options||[]):tools.emojis;
+ const load=async()=>{
+  body.innerHTML='<p role="status">Yükleniyor…</p>';
+  try{
+   let query=sb.from('patiyiz_story_responses').select('user_id,response,option_index').eq('story_id',story.id).eq('kind',kind);
+   if(!own)query=query.eq('user_id',viewer);
+   const result=await query;
+   if(!active())return;
+   if(result.error)throw result.error;
+   const rows=result.data||[];
+   let content='';
+   if(own&&kind==='poll'){
+    const counts=options.map((_,index)=>rows.filter(row=>row.option_index===index).length);
+    content='<p>'+rows.length+' oy</p><div class="buchee-story-results">'+options.map((label,i)=>
+     '<div><span>'+esc(label)+'</span><strong>'+counts[i]+' oy · %'+(rows.length?Math.round(100*counts[i]/rows.length):0)+'</strong></div>').join('')+'</div>';
+   }else if(own){
+    await bucheeLoadFeedAuthors(rows.map(row=>({author_id:row.user_id})),viewer);
+    if(!active())return;
+    content=rows.map(row=>'<div class="buchee-story-answer"><strong>'+esc(profile(row.user_id).display_name||'Buchee üyesi')+'</strong><p>'+esc(row.response)+'</p></div>').join('')||'<p>Henüz yanıt yok.</p>';
+   }else if(rows.length){
+    const selection=kind==='poll'?options[rows[0].option_index]:rows[0].response;
+    content='<p role="status">'+(kind==='poll'?'Oyun kaydedildi.':kind==='question'?'Yanıtın kaydedildi.':'Tepkin gönderildi.')+'</p><p class="buchee-story-preview-answer">'+esc(selection)+'</p>';
+   }else if(kind==='question'){
+    content='<form class="buchee-story-answer-form"><label>Yanıtın<textarea name="answer" required rows="3" maxlength="220"></textarea></label><button class="primary-btn" type="submit">Yanıtı gönder</button></form>';
+   }else{
+    content='<div class="buchee-story-answer-options">'+options.map((label,index)=>
+     '<button class="soft-btn" type="button" data-story-response="'+index+'">'+esc(label)+'</button>').join('')+'</div>';
+   }
+   body.innerHTML='<h3>'+esc(title)+'</h3>'+content+'<p class="buchee-story-status" role="status" aria-live="polite"></p>';
+  }catch(error){
+   if(active())body.innerHTML='<p role="status">Hikâye yanıtları yüklenemedi.</p><button type="button" class="soft-btn" data-story-retry>Tekrar dene</button>';
+  }
+ };
+ let sending=false;
+ const submit=async fields=>{
+  if(sending||own||!active()||!(Date.parse(story.expires_at)>Date.now()))return;
+  sending=true;
+  for(const button of body.querySelectorAll('button'))button.disabled=true;
+  try{
+   const result=await sb.from('patiyiz_story_responses').insert({story_id:story.id,user_id:viewer,kind,...fields});
+   if(result.error&&result.error.code!=='23505')throw result.error;
+   if(active())await load();
+  }catch(error){
+   if(active()){
+    const label=body.querySelector('.buchee-story-status');
+    if(label)label.textContent='Yanıt gönderilemedi. Tekrar dene.';
+    for(const button of body.querySelectorAll('button'))button.disabled=false;
+   }
+  }finally{sending=false}
+ };
+ body.addEventListener('click',event=>{
+  const button=event.target.closest('button');
+  if(button?.hasAttribute('data-story-retry')){void load();return}
+  const index=Number(button?.dataset.storyResponse);
+  if(!Number.isInteger(index)||!options[index])return;
+  void submit(kind==='poll'?{option_index:index}:{response:options[index]});
+ });
+ body.addEventListener('submit',event=>{
+  event.preventDefault();event.stopPropagation();
+  const value=event.target.elements.answer?.value.trim();
+  if(value)void submit({response:value.slice(0,220)});
+ });
+ void load();
+}
 function showStoryFrame(){const root=document.getElementById('story-overlay'),x=storyItems[storyIndex];if(!root||!x)return;clearTimeout(storyTimer);patiPauseStoryBackgroundMedia();const user=profile(x.author_id);const storyGroupItems=storyItems.filter(s=>s.author_id===x.author_id);const storyGroupIndex=storyGroupItems.findIndex(s=>s.id===x.id);const activeStory=Date.parse(x.expires_at)>Date.now();if(!x.pati_pet_highlight&&activeStory){patiStorySeen(x);recordStoryView(x);if(x.author_id!==me.id)void syncStoryLike(x.id);}root.dataset.audience=x.audience==='close_friends'?'close_friends':'everyone';root.classList.toggle('pati-story-own',x.author_id===me.id);root.classList.toggle('pati-story-has-source',!!x.shared_post_id);root.innerHTML='<div class="story-player"><div class="story-progress">'+storyGroupItems.map((_,i)=>'<span class="story-track"><span class="'+(i===storyGroupIndex?'story-playing':'')+'" style="width:'+(i<storyGroupIndex?'100':'0')+'%"></span></span>').join('')+'</div><div class="story-player-head">'+avatar(user,'s')+'<span class="pati-story-owner-name"><span class="pati-story-owner-top"><strong>'+displayName(user)+'</strong>'+patiStoryPublishedTime(x)+'</span>'+(x.audience==='close_friends'?'<span class="pati-story-close-friends-label">★ Yakın Arkadaşlar</span>':'')+'</span><button data-action="story-close" aria-label="Kapat" class="story-close">×</button></div>'+(x.shared_post_id?patiStorySharedPostCard(x):x.video_url?'<video class="story-big-video'+(x.selfie_mirrored?' pati-selfie-mirrored':'')+'" src="'+esc(x.video_url)+'" poster="'+esc(x.image_url||'')+'"'+(patiyizStorySoundEnabled?'':' muted')+' autoplay playsinline preload="auto" aria-label="Video hikâyesi"></video><button type="button" class="pati-story-sound" data-action="story-sound" aria-label="'+(patiyizStorySoundEnabled?'Hikâye sesini kapat':'Hikâye sesini aç')+'">'+(patiyizStorySoundEnabled?'Ses kapat':'Ses aç')+'</button>':x.image_url?'<img class="story-big-photo" src="'+esc(x.image_url)+'" alt="Hikâye">':'<div class="pati-story-no-photo">Medya dosyası kullanılamıyor.</div>')+(x.caption&&!x.shared_post_id?'<p class="story-caption">'+esc(x.caption)+'</p>':'')+'<button class="story-hit prev" data-action="story-prev" aria-label="Önceki"></button><button class="story-hit next" data-action="story-next" aria-label="Sonraki"></button>'+(x.pati_pet_highlight?'<span class="pati-saved-story-label">Hayvan fotoğrafı</span>':x.author_id===me.id?'<button type="button" class="story-delete" data-action="story-delete" data-id="'+esc(x.id)+'" aria-label="Hikâyeyi sil">'+ico('trash')+' <span>Sil</span></button><button type="button" class="story-viewers-button pati-story-viewer-preview" data-action="story-viewers" aria-label="Hikâye hareketlerini aç"><span class="pati-story-viewer-preview-label">Hareketler</span></button>':activeStory?'<button class="pati-story-like" data-action="story-like" data-id="'+esc(x.id)+'" aria-label="Hikâyeyi beğen">♡</button>':'')+'<div id="story-viewers-sheet" class="story-viewers-sheet" hidden></div></div>';
  // Place the story sound control immediately before the X in the actual header.
  // The old absolute 42px top offset floated above and left of the X on iPhone PWAs.
@@ -2240,6 +2404,10 @@ function showStoryFrame(){const root=document.getElementById('story-overlay'),x=
   }
  }
  if(x.shared_post_id)void patiHydrateStorySharedPost(x);
+ if(!x.pati_pet_highlight)globalThis.BucheeStoryTools?.mountStory(root,x,{
+  active:activeStory,own:x.author_id===me.id,pause:bucheeStoryPause,resume:bucheeStoryResume,
+  interact:kind=>bucheeStoryInteraction(x,kind),reply:message=>bucheeReplyToStory(x,message)
+ });
  const upcoming=storyItems[storyIndex+1];if(upcoming?.image_url&&typeof Image==='function'){const preload=new Image();preload.src=upcoming.image_url}bucheeStorySchedule((x.video_url||root.querySelector('.pati-story-share-media-video'))?15000:6000);
  if(x.author_id===me.id&&!x.pati_pet_highlight)void patiStoryPreviewLoad(x.id);
  if(x.video_url||root.querySelector('.pati-story-share-media-video')){
@@ -2323,7 +2491,7 @@ function openStory(id){
  closeStory(false);storyItems=sequence.items;storyIndex=sequence.index;
  const layer=document.createElement('div');layer.id='story-overlay';layer.className='story-fullscreen';layer.setAttribute('role','dialog');layer.setAttribute('aria-modal','true');
  document.body.appendChild(layer);document.body.classList.add('story-fullscreen-open');showStoryFrame();
- if(storyItems.some(x=>x.audience==='close_friends'&&(!x.patiSignedAt||Date.now()-x.patiSignedAt>240000)))
+ if(storyItems.some(x=>x.audience==='close_friends'&&x.private_image_path&&(!x.patiSignedAt||Date.now()-x.patiSignedAt>240000)))
   void patiHydrateCloseStories().then(()=>{if(document.getElementById('story-overlay'))showStoryFrame()}).catch(e=>console.warn('Özel hikâye yenilenemedi:',e));
 }
 function openPetHighlight(id){
@@ -6889,7 +7057,7 @@ function settingsPage(){
 
  const privateRow='<button type="button" class="pati-settings-row pati-settings-private" data-action="pati-private-toggle" role="switch" aria-checked="'+privateOn+'"><span class="pati-settings-icon">🔒</span><span class="pati-settings-copy"><strong>Gizli hesap</strong><small>Yeni takipçilerin için onay iste</small></span><span class="pati-settings-switch"></span></button>';
  const dm='<div class="pati-settings-choice"><strong>Kimler mesaj gönderebilir?</strong><div class="pati-safety-buttons">'+[['everyone','Herkes'],['following','Takip ettiklerim'],['none','Hiç kimse']].map(([id,label])=>'<button type="button" data-action="pati-dm-policy" data-id="'+id+'" aria-pressed="'+(policy===id)+'" class="'+(policy===id?'active':'')+'">'+label+'</button>').join('')+'</div></div>';
- const privacy=privateRow+link('Yakın Arkadaşlar','Hikâyelerini kimlerin göreceğini seç','pati-close-friends-open','★')+dm+link('Yorum kelime filtreleri','İstemediğin kelimeleri engelle','pati-comment-filter','⊘')+link('Engellenenler','Engellediğin hesapları yönet','blocked-list','🚫');
+ const privacy=privateRow+link('Yakın Arkadaşlar','Hikâyelerini kimlerin göreceğini seç','pati-close-friends-open','★')+link('Hikâyeyi gizle','Göremeyecek kişileri seç','buchee-story-privacy','⊘')+dm+link('Yorum kelime filtreleri','İstemediğin kelimeleri engelle','pati-comment-filter','⊘')+link('Engellenenler','Engellediğin hesapları yönet','blocked-list','🚫');
  const security=link('Şifremi değiştir','Şifreni güvenle güncelle','settings-password','<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.2"/></svg>')+'<button type="button" class="pati-settings-row" data-action="dm-receipts-toggle" role="switch" aria-checked="'+patiDmReadReceiptsEnabled()+'"><span class="pati-settings-icon">✓</span><span class="pati-settings-copy"><strong>Görüldü bilgisi</strong><small>'+(patiDmReadReceiptsEnabled()?'Açık':'Kapalı')+'</small></span><span class="pati-settings-arrow">›</span></button>'+'<button type="button" class="pati-settings-row" data-view="notifications"><span class="pati-settings-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></span><span class="pati-settings-copy"><strong>Bildirim Merkezi</strong><small>Bildirim ve cihaz ayarları</small></span><span class="pati-settings-arrow">›</span></button>';
  main.innerHTML=header('Ayarlar ve Gizlilik','Hesabını ve gizliliğini yönet.')+'<div class="pati-settings-list pati-settings-v2">'+section('Gizlilik',privacy)+section('Takip istekleri','<div class="pati-settings-requests">'+patiFollowRequestsMarkup()+'</div>')+section('Hesap ve güvenlik',security)+section('İstatistikler',link('İstatistiklerim','Görüntülenmeler, etkileşimler ve takipçi analizleri','pati-insights','<svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V11M10 19V5M16 19v-8M22 19V8"/></svg>'))+section('Hesap hakkında',link('Bu hesap hakkında','Profilinde görünen hesap bilgileri','buchee-account-about','ⓘ')+link('Ülke görünürlüğü','Ülkeni seç ve paylaşım tercihini yönet','buchee-account-country-edit','◎'))+section('Öneriler',link('Reels tercihleri','Daha fazla veya daha az görmek istediklerini yönet','buchee-reel-preference-open','≡'))+section('İçeriklerim',link('Anketlerim','Geçmiş anketler ve sonuçları','buchee-poll-own','▥'))+section('Görünüm',link('Yazı boyutu','Normal, büyük veya çok büyük yazı','buchee-text-scale','Aa'))+section('Diğer','<div class="pati-settings-links"><a href="privacy.html" target="_blank" rel="noopener">Gizlilik Politikası</a><a href="kvkk.html" target="_blank" rel="noopener">KVKK Aydınlatma</a><a href="terms.html" target="_blank" rel="noopener">Kullanım Şartları</a></div>'+link('Çıkış yap','','logout','↪')+(!isAdmin?link('Hesabımı kalıcı olarak sil','','delete-account-open','!'):'')+(isAdmin?link('Yönetim Paneli','','open-admin','▣'):''))+'<p class="pati-settings-warning">Önceden herkese açık paylaşılmış medya bağlantıları geri alınamayabilir.</p></div>';
 }
@@ -7767,7 +7935,7 @@ async function patiHydrateCloseStories(){
   story.patiSignedAt=Date.now();
  }));
 }
-async function patiCreateCloseFriendStory(form,f,str){
+async function patiCreateCloseFriendStory(form,f,str,tools={}){
  if(!me)throw Error('Önce giriş yap.');
  const owner=me.id,photo=form.querySelector('input[name="photo"]')?.files?.[0];
  const video=form.querySelector('input[name="video"]')?.files?.[0];
@@ -7794,7 +7962,7 @@ async function patiCreateCloseFriendStory(form,f,str){
    author_id:owner,image_url:'',video_url:null,private_image_path:imagePath,
    private_video_path:videoPath,audience:'close_friends',
    caption:str('body').slice(0,300),is_highlight:false,
-   selfie_mirrored:!!videoPath&&form.dataset.selfieMirror==='true'
+   selfie_mirrored:!!videoPath&&form.dataset.selfieMirror==='true',...tools
   }).select('*').single();
   if(result.error)throw result.error;
   if(me?.id!==owner)return result.data;
@@ -8309,6 +8477,7 @@ function mountPatiyizCamera(mode){
   },
   onMirrorChange(enabled){form.dataset.selfieMirror=enabled?'true':'false'},
   async onBeforePublish(audience){return mode==='story'&&audience==='close_friends'?await patiCloseFriendsPicker():true;},
+  storyTools:mode==='story'?{mount:root=>globalThis.BucheeStoryTools?.mount(root,bucheeStoryPrivacy)}:null,
   onMedia(files,type){
    const photo=form.querySelector('input[name="photo"]');
    const video=form.querySelector('input[name="video"]');
@@ -8321,13 +8490,13 @@ function mountPatiyizCamera(mode){
    input.dispatchEvent(new Event('change',{bubbles:true}));
   },
   onCancel(){closeModal(true)},
-  async onPublish(caption,shareScreen){
+  async onPublish(caption,shareScreen,storyTools){
     form.dataset.storyAudience=document.getElementById('pati-system-audience')?.value||'everyone';
    if(!form.isConnected)throw Error('Paylaşım ekranı kapandı.');
    const body=form.querySelector('textarea[name="body"]');if(body)body.value=caption;
    const f=new FormData(form),str=k=>String(f.get(k)||'').trim();
    if(mode==='story'){
-    const result=await createStoryPublication(form,f,str);
+    const result=await createStoryPublication(form,f,str,storyTools);
     void window.PatiyizCameraDraft?.clear(me.id);
     data.stories=[result,...data.stories.filter(x=>x.id!==result.id)];
     mediaFlow?.close();closeModal(true);render();
@@ -8851,9 +9020,9 @@ async function patiFallbackStoryPoster(){
  if(!blob)throw Error('Video kapağı hazırlanamadı.');
  return new File([blob],'patiyiz-story-cover.jpg',{type:'image/jpeg'});
 }
-async function createStoryPublication(form,f,str){
+async function createStoryPublication(form,f,str,tools={}){
  const audience=form.dataset.storyAudience||str('story_audience')||'everyone';
- if(audience==='close_friends')return patiCreateCloseFriendStory(form,f,str);
+ if(audience==='close_friends'&&!window.BUCHEE_OFFLINE_DEV)return patiCreateCloseFriendStory(form,f,str,tools);
  const shared=form?.dataset?.mode==='story';
  const files=[...(form.querySelector('input[name="photo"]')?.files||[])];
  const video=form.querySelector('input[name="video"]')?.files?.[0];
@@ -8862,6 +9031,17 @@ async function createStoryPublication(form,f,str){
  if(shared&&files.length>1)throw Error('Hikâyeye yalnızca bir fotoğraf veya video ekleyebilirsin.');
  if(!photo?.size&&!video?.size)throw Error('Hikâye için fotoğraf veya video seç.');
  if(photo?.size&&video?.size)throw Error('Hikâyeye tek bir fotoğraf veya video ekleyebilirsin.');
+ if(window.BUCHEE_OFFLINE_DEV){
+  const media=URL.createObjectURL(photo||video);
+  const now=Date.now();
+  const result=await sb.from('patiyiz_stories').insert({
+   author_id:me.id,audience,image_url:photo?media:'',video_url:video?media:null,
+   caption:str('body').slice(0,300),created_at:new Date(now).toISOString(),
+   expires_at:new Date(now+86400000).toISOString(),is_highlight:false,...tools
+  }).select('*').single();
+  if(result.error){URL.revokeObjectURL(media);throw result.error;}
+  return result.data;
+ }
  return publishMediaRecord('patiyiz_stories',form,async send=>{
   let image_url=null,video_url=null;
   if(photo?.size){
@@ -8879,7 +9059,7 @@ async function createStoryPublication(form,f,str){
   if(!image_url)throw Error('Hikâye kapağı yüklenemedi.');
   uploadStatus('Hikâye kaydediliyor…');
   return {image_url,video_url,selfie_mirrored:!!video_url&&form.dataset.selfieMirror==='true',caption:shared?str('body').slice(0,300):str('caption'),is_highlight:false,
-   poll_question:null,poll_options:null,question_prompt:null};
+   poll_question:null,poll_options:null,question_prompt:null,...tools};
  });
 }
 async function patiRateQuestion(questionId){
@@ -9588,7 +9768,7 @@ case 'adoption-gallery':document.querySelector('#adoption-form input[name="photo
 case 'adoption-camera':document.querySelector('#adoption-form input[name="photo_camera"]')?.click();break;
 case 'adoption-share':{const x=data.adoption.find(a=>a.id===id);if(!x)break;const url=new URL(location.href);url.searchParams.set('adoption',x.id);url.searchParams.delete('notification');url.hash='';const text='Buchee Social · '+(x.adopted?'Sahiplendirildi':'Yuva arıyor')+': '+x.name+' ('+x.species+') · '+x.city+(x.district?' / '+x.district:'');if(navigator.share)navigator.share({title:'Buchee Social sahiplendirme ilanı',text,url:url.href}).catch(()=>{});else if(navigator.clipboard?.writeText)navigator.clipboard.writeText(text+'\n'+url.href).then(()=>notify('İlan bağlantısı kopyalandı.'),()=>notify('Bağlantı kopyalanamadı.',true));else notify('Bu cihazda paylaşım kullanılamıyor.',true);break;}case 'dm-new':{const people=data.profiles.filter(x=>x.id!==me.id&&!blocked.has(x.id)).sort((a,b)=>String(a.display_name||'').localeCompare(String(b.display_name||''),'tr')).slice(0,80);modal('Yeni sohbet',people.length?'<p class="pati-dm-new-hint">Mesaj göndermek istediğin kişiyi seç.</p><div class="pati-dm-new-list">'+people.map(p=>'<button type="button" class="pati-dm-new-person" data-action="chat" data-id="'+esc(p.id)+'">'+avatar(p,'s')+'<span><strong>'+esc(p.display_name||'Buchee Social üyesi')+'</strong><small>@'+esc(p.handle||'buchee')+'</small></span>'+ico('message')+'</button>').join('')+'</div>':'<p>Henüz konuşabileceğin bir kullanıcı görünmüyor. Keşfet bölümünden kullanıcıları bulabilirsin.</p>','dm-new-form');break}case 'dm-inbox-more':void patiDmLoadInbox(false);break;
 case 'dm-delete-thread':run(()=>patiDmDeleteConversation(id));break;
-case 'pati-close-friends-open':void patiCloseFriendsPicker().catch(e=>notify(friendly(e),true)).finally(()=>{if(patiMenuReturnFromPicker){patiMenuReturnFromPicker=false;openMobileFeaturesMenu()}});break;
+case 'buchee-story-privacy':void bucheeStoryPrivacy();break;case 'pati-close-friends-open':void patiCloseFriendsPicker().catch(e=>notify(friendly(e),true)).finally(()=>{if(patiMenuReturnFromPicker){patiMenuReturnFromPicker=false;openMobileFeaturesMenu()}});break;
 case 'pati-close-friend-toggle':run(()=>patiCloseFriendToggle(id));break;
 case 'pati-group-list':void patiGroupList().catch(e=>notify(friendly(e),true));break;
 case 'pati-group-create-open':patiGroupCreateDialog();break;
@@ -10651,9 +10831,10 @@ function bucheeAuthTimed(promise){
 function bucheeStartOfflineDevelopment(){
  const id='buchee-offline-developer';
  const demo=bucheeDemoData(id);
- const tables={...demo,question_votes:[],patiyiz_stories:demo.stories,post_likes:demo.likes,post_saves:demo.saves,patiyiz_reposts:demo.reposts,question_replies:demo.replies,
+ const tables={...demo,question_votes:[],patiyiz_stories:demo.stories,buchee_story_privacy:[],
+  patiyiz_story_views:demo.storyViews,patiyiz_story_likes:demo.storyLikes,patiyiz_story_responses:demo.storyResponses,patiyiz_close_friends:demo.closeFriends,post_likes:demo.likes,post_saves:demo.saves,patiyiz_reposts:demo.reposts,question_replies:demo.replies,
   patiyiz_post_collaborators:demo.collaborators,patiyiz_post_view_totals:demo.viewTotals,buchee_polls:demo.polls};
- const writable=new Set(['question_votes','replies','profiles','patiyiz_stories','buchee_account_country','patiyiz_post_collaborators','comments','post_likes','post_saves','patiyiz_reposts','follows','messages','notifications']);
+ const writable=new Set(['question_votes','replies','profiles','patiyiz_stories','patiyiz_story_likes','patiyiz_story_responses','patiyiz_close_friends','buchee_story_privacy','buchee_account_country','patiyiz_post_collaborators','comments','post_likes','post_saves','patiyiz_reposts','follows','messages','notifications']);
  for(const table of writable)tables[table]=tables[table].map(row=>({...row}));
  const response=()=>Promise.resolve({data:[],error:null,count:0});
  const channel={on(){return this},subscribe(){return this},unsubscribe(){return Promise.resolve('ok')},send(){return Promise.resolve('ok')},track(){return Promise.resolve('ok')},presenceState(){return {}}};

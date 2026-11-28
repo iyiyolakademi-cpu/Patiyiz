@@ -1,0 +1,180 @@
+/* Story annotations share the same normalized canvas in the camera and viewer. */
+(()=>{
+ 'use strict';
+ const colors=['#ffffff','#f9cc5d','#ef669c','#8bded2','#17191d'];
+ const emojis=['❤️','😍','🐾','😂','👏'];
+ const maxStrokes=32,maxPoints=640;
+ const getLink=value=>{
+  try{
+   const url=new URL(value);
+   return /^https?:$/.test(url.protocol)&&!url.username&&!url.password&&url.href.length<=1000?url.href:'';
+  }catch{return ''}
+ };
+ function canvasFor(parent){
+  const c=document.createElement('canvas');
+  c.className='buchee-story-ink';c.width=360;c.height=640;
+  parent.append(c);return c;
+ }
+ function paint(canvas,strokes){
+  const ctx=canvas.getContext('2d');
+  if(!ctx)return;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  if(!Array.isArray(strokes))return;
+  ctx.lineWidth=5;ctx.lineCap='round';ctx.lineJoin='round';
+  let remaining=maxPoints;
+  for(const entry of strokes.slice(0,maxStrokes)){
+   if(!colors.includes(entry?.color)||!Array.isArray(entry.points))continue;
+   const points=entry.points.slice(0,remaining).filter(p=>Array.isArray(p)&&
+    p.length===2&&p.every(value=>typeof value==='number'&&value>=0&&value<=1));
+   remaining-=points.length;
+   if(!points.length)continue;
+   const [x,y]=points[0];
+   ctx.strokeStyle=ctx.fillStyle=entry.color;ctx.beginPath();
+   if(points.length===1){ctx.arc(x*360,y*640,2.5,0,2*Math.PI);ctx.fill();continue}
+   ctx.moveTo(x*360,y*640);
+   for(const [px,py] of points.slice(1))ctx.lineTo(px*360,py*640);
+   ctx.stroke();
+  }
+ }
+ function mount(root,privacy){
+  const stage=root.querySelector('.pati-system-preview-wrap');
+  const panel=root.querySelector('.pati-system-edit-panel');
+  const canvas=canvasFor(stage),text=document.createElement('span');
+  text.className='buchee-story-overlay-text';text.hidden=true;stage.append(text);
+  const tools=document.createElement('section');
+  tools.className='buchee-story-editor';tools.setAttribute('aria-label','Hikâye araçları');
+  tools.innerHTML='<div class="buchee-story-toolbar" role="group" aria-label="Hikâyeye ekle">'+
+   [['text','Metin'],['draw','Çizim'],['link','Bağlantı'],['question','Soru'],['poll','Anket']].map(([key,label])=>
+    '<button type="button" data-story-tool="'+key+'" aria-pressed="false">'+label+'</button>').join('')+
+   '</div><div data-story-fields="text" hidden><label>Hikâye metni<textarea name="story_overlay" maxlength="160" rows="2" placeholder="Bir şey yaz…"></textarea></label></div>'+
+   '<div data-story-fields="draw" hidden><div class="buchee-story-palette" role="group" aria-label="Çizim rengi">'+colors.map((color,index)=>
+    '<button type="button" data-ink="'+color+'" style="--ink:'+color+'" aria-label="'+['Beyaz','Sarı','Pembe','Turkuaz','Siyah'][index]+'" aria-pressed="'+(index===0)+'"></button>').join('')+
+   '<button type="button" data-story-undo>Geri al</button><button type="button" data-story-clear>Temizle</button></div><small>Çizmek için fotoğrafın veya videonun üzerine dokun.</small></div>'+
+   '<div data-story-fields="link" hidden><label>Bağlantı adresi<input type="url" name="story_link" maxlength="1000" placeholder="https://"></label><label>Düğme metni<input name="story_link_label" maxlength="36" placeholder="Bağlantıyı aç"></label></div>'+
+   '<div data-story-fields="question" hidden><label>Soru kutusu<input name="story_question" maxlength="120" placeholder="Bana bir soru sor…"></label></div>'+
+   '<div data-story-fields="poll" hidden><label>Anket sorusu<input name="story_poll" maxlength="120" placeholder="Hangisini seçersin?"></label><label>Birinci seçenek<input name="story_option_a" maxlength="60"></label><label>İkinci seçenek<input name="story_option_b" maxlength="60"></label></div>'+
+   '<button class="buchee-story-hide-entry" type="button" data-story-privacy>Hikâyeyi belirli kişilerden gizle</button>';
+  panel.prepend(tools);
+  const strokes=[];
+  let active='',interactive='',ink=colors[0],pointer=null;
+  const field=name=>tools.querySelector('[name="'+name+'"]').value.trim();
+  function setTool(next){
+   active=active===next?'':next;
+   for(const box of tools.querySelectorAll('[data-story-fields]'))box.hidden=box.dataset.storyFields!==active;
+   for(const button of tools.querySelectorAll('[data-story-tool]'))button.setAttribute('aria-pressed',String(button.dataset.storyTool===active));
+   canvas.classList.toggle('is-drawing',active==='draw');
+   if(active==='poll'||active==='question')interactive=active;
+   if(active!=='draw')tools.querySelector('[data-story-fields]:not([hidden]) :is(input,textarea)')?.focus({preventScroll:true});
+  }
+  tools.addEventListener('click',event=>{
+   const button=event.target.closest('button');
+   if(!button)return;
+   if(button.dataset.storyTool){setTool(button.dataset.storyTool);return}
+   if(button.dataset.ink){
+    ink=button.dataset.ink;
+    tools.querySelectorAll('[data-ink]').forEach(c=>c.setAttribute('aria-pressed',String(c===button)));
+   }
+   if(button.hasAttribute('data-story-undo'))strokes.pop();
+   if(button.hasAttribute('data-story-clear'))strokes.length=0;
+   if(button.hasAttribute('data-story-privacy'))void privacy();
+   paint(canvas,strokes);
+  });
+  tools.addEventListener('input',()=>{
+   text.textContent=field('story_overlay');
+   text.hidden=!text.textContent;
+  });
+  const point=e=>{
+   const r=canvas.getBoundingClientRect();
+   const norm=(value,start,size)=>Math.round(Math.max(0,Math.min(1,(value-start)/Math.max(1,size)))*1000)/1000;
+   return [norm(e.clientX,r.left,r.width),norm(e.clientY,r.top,r.height)];
+  };
+  canvas.addEventListener('pointerdown',event=>{
+   if(active!=='draw'||event.button!==0||pointer!==null||strokes.length>=maxStrokes||
+    strokes.reduce((n,s)=>n+s.points.length,0)>=maxPoints)return;
+   pointer=event.pointerId;canvas.setPointerCapture(pointer);
+   strokes.push({color:ink,points:[point(event)]});
+   paint(canvas,strokes);
+  });
+  canvas.addEventListener('pointermove',event=>{
+   if(pointer!==event.pointerId||strokes.reduce((n,s)=>n+s.points.length,0)>=maxPoints)return;
+   strokes.at(-1)?.points.push(point(event));paint(canvas,strokes);
+  });
+  const end=event=>{if(pointer===event.pointerId)pointer=null};
+  for(const event of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(event,end);
+  return ()=>{
+   const raw=field('story_link'),link=getLink(raw);
+   if(raw&&!link)throw Error('Bağlantı için geçerli bir http:// veya https:// adresi gir.');
+   const question=interactive==='question'?field('story_question'):'';
+   const poll=interactive==='poll'?field('story_poll'):'';
+   const options=[field('story_option_a'),field('story_option_b')];
+   if(interactive==='poll'&&(poll||options.some(Boolean))&&(!poll||options.some(o=>!o)||options[0].toLocaleLowerCase('tr')===options[1].toLocaleLowerCase('tr')))
+    throw Error('Anket sorusunu ve birbirinden farklı iki seçeneği doldur.');
+   return {
+    story_text:field('story_overlay')||null,story_link_url:link||null,
+    story_link_label:link?(field('story_link_label')||'Bağlantıyı aç'):null,
+    story_drawing:strokes.length?strokes:null,question_prompt:question||null,
+    poll_question:poll||null,poll_options:poll?options:null
+   };
+  };
+ }
+ function dialog(title){
+  const view=document.createElement('dialog');
+  view.className='buchee-story-dialog';
+  view.setAttribute('aria-label',title);
+  const head=document.createElement('header'),heading=document.createElement('h2'),close=document.createElement('button');
+  heading.textContent=title;close.type='button';close.textContent='Kapat';
+  close.addEventListener('click',()=>view.close());
+  head.append(heading,close);view.append(head);
+  view.addEventListener('keydown',event=>{if(event.key==='Escape')event.stopPropagation()});
+  view.addEventListener('close',()=>view.remove(),{once:true});
+  document.body.append(view);view.showModal();return view;
+ }
+ function mountStory(root,story,{active,own,pause,resume,interact,reply}){
+  const player=root.querySelector('.story-player');
+  if(!player)return;
+  if(story.story_drawing)paint(canvasFor(player),story.story_drawing);
+  if(story.story_text){
+   const text=document.createElement('p');text.className='buchee-story-overlay-text';text.textContent=story.story_text;player.append(text);
+  }
+  const url=getLink(story.story_link_url);
+  if(url||story.poll_question||story.question_prompt||active&&!own){
+   const bar=document.createElement('div');bar.className='buchee-story-widgets';
+   const add=(title,kind)=>{
+    const b=document.createElement('button');b.type='button';b.textContent=title;
+    b.addEventListener('click',()=>interact(kind));bar.append(b);
+   };
+   if(url){
+    const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener noreferrer';a.textContent=story.story_link_label||'Bağlantıyı aç';bar.append(a);
+   }
+   if(story.question_prompt&&(active||own))add('Soru · '+story.question_prompt,'question');
+   if(story.poll_question&&(active||own))add('Anket · '+story.poll_question,'poll');
+   if(active&&!own)add('Tepki','emoji');
+   if(bar.childElementCount)player.append(bar);
+  }
+  const like=player.querySelector('.pati-story-like');
+  if(!active||own||!like)return;
+  const form=document.createElement('form');
+  form.className='buchee-story-reply';
+  form.innerHTML='<input type="text" name="reply" maxlength="1000" autocomplete="off" placeholder="Mesaj gönder…" aria-label="Hikâyeye mesaj gönder"><button type="submit" class="buchee-story-send" aria-label="Yanıtı gönder" hidden>Gönder</button><span class="buchee-story-like-slot"></span>';
+  like.replaceWith(form);form.querySelector('span').append(like);
+  const input=form.elements.reply,send=form.querySelector('button[type="submit"]');
+  input.addEventListener('input',()=>{send.hidden=!input.value.trim()});
+  input.addEventListener('focus',()=>{pause();root.classList.add('buchee-story-typing')});
+  input.addEventListener('blur',()=>{root.classList.remove('buchee-story-typing');if(!send.disabled)resume()});
+  form.addEventListener('submit',async event=>{
+   event.preventDefault();event.stopPropagation();
+   const value=input.value.trim();
+   if(!value||send.disabled)return;
+   send.disabled=true;pause();
+   const feedback=document.createElement('small');
+   feedback.className='buchee-story-reply-success';feedback.setAttribute('role','status');
+   try{await reply(value);input.value='';send.hidden=true;input.blur();feedback.textContent='Hikâyeye yanıt gönderildi.'}
+   catch(error){feedback.textContent=error.message||'Mesaj gönderilemedi.'}
+   finally{
+    send.disabled=false;
+    if(form.isConnected){form.querySelector('small')?.remove();form.append(feedback);setTimeout(()=>{feedback.remove();if(form.isConnected&&document.activeElement!==input)resume()},2200)}
+   }
+  });
+ }
+ window.BucheeStoryTools={mount,mountStory,dialog,emojis};
+})();

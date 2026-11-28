@@ -39,8 +39,22 @@ function bucheeDemoData(id) {
  );
  const stories = people.slice(1).map(([author_id, name,, image], i) => ({
   id:'demo-story-'+i, author_id, image_url:photo(image), caption:['Günün ilk kahvesi','Vapurdan bir kare','Bugünün sahaf keşfi','Tarçın mesaiye başladı','Sabah yürüyüşü'][i],
-  audience:'public', created_at:ago(24+i*13), expires_at:ago(-1200)
+  audience:'everyone', created_at:ago(24+i*13), expires_at:ago(-1416+i*13)
  }));
+ const firstStory=stories[0];
+ Object.assign(firstStory,{story_text:'Kahve molası ☕',poll_question:'Kahveni nasıl içersin?',
+  poll_options:['Sade','Sütlü'],story_link_url:'https://bucheesocial.com/',story_link_label:'Buchee’ye göz at'});
+ Object.assign(stories[1],{question_prompt:'İstanbul’da en sevdiğin yer neresi?'});
+ Object.assign(stories[2],{audience:'close_friends',story_text:'Yakın arkadaşlara kitap önerisi'});
+ stories.push({id:'demo-story-deniz',author_id:id,image_url:photo('sahil'),caption:'Sahilden selam',
+  audience:'everyone',created_at:ago(88),expires_at:ago(-1352),question_prompt:'Hafta sonu nereye gidelim?'});
+ const storyViews=['ece','mert','selin'].map((viewer_id,i)=>({story_id:'demo-story-deniz',viewer_id,last_viewed_at:ago(65+i)}));
+ const storyLikes=[{story_id:'demo-story-deniz',user_id:'ece'}];
+ const storyResponses=[
+  {story_id:'demo-story-deniz',user_id:'ece',kind:'question',response:'Sahaflara uğrayalım!'},
+  {story_id:'demo-story-deniz',user_id:'ece',kind:'emoji',response:'👏'}
+ ];
+ const closeFriends=['ece','selin'].map(friend_id=>({owner_id:id,friend_id}));
  const comments = [
   ['demo-photo-0','selin','Cam kenarındaki masayı kapmışsın yine. ☕'],
   ['demo-photo-0','mert','Yağmurda buranın havası ayrı güzel.'],
@@ -221,11 +235,18 @@ function bucheeDemoData(id) {
  ];
  const reposts=[{user_id:id,post_id:'demo-carousel-1',created_at:ago(22)},
   {user_id:'ece',post_id:'demo-reel-1',created_at:ago(12)}];
- return {profiles,posts,stories,questions,replies,messages,comments,follows,likes,saves,reposts,notifications,collaborators,viewTotals,polls,buchee_account_country,storyAlbums};
+ return {profiles,posts,stories,questions,replies,messages,comments,follows,likes,saves,reposts,notifications,collaborators,viewTotals,polls,buchee_account_country,storyAlbums,storyViews,storyLikes,storyResponses,closeFriends};
 }
 
 function bucheeDemoRpc(tables,name,args={}) {
  const viewer=tables.profiles[0].id;
+ if(name==='patiyiz_record_story_view'){
+  const story=tables.patiyiz_stories.find(row=>row.id===args.p_story_id);
+  if(story&&story.author_id!==viewer&&!tables.patiyiz_story_views.some(v=>v.story_id===story.id&&v.viewer_id===viewer)){
+   tables.patiyiz_story_views.push({story_id:story.id,viewer_id:viewer,last_viewed_at:new Date().toISOString()});
+  }
+  return bucheeDemoQuery([]);
+ }
  if(name==='patiyiz_following_feed'){
   const follows=new Set(tables.follows.filter(row=>row.follower_id===viewer).map(row=>row.followee_id));
   const shared=new Set(tables.patiyiz_post_collaborators.filter(row=>row.status==='accepted'&&follows.has(row.user_id)).map(row=>row.post_id));

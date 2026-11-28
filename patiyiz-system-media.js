@@ -195,7 +195,7 @@
   }
   try{input.click()}catch(err){error('Telefonun kamera/galeri seçicisi açılamadı. Cihaz izinlerini kontrol et.')}
  }
- function open({mode='post',userId,onMedia,onMirrorChange,onBeforePublish,onPublish,onCancel,onSwitch,onStoryPhotoCamera,collaboration}={}){
+ function open({mode='post',userId,onMedia,onMirrorChange,onBeforePublish,onPublish,onCancel,onSwitch,onStoryPhotoCamera,collaboration,storyTools}={}){
   if(state)return;
   if(!['post','story','reels'].includes(mode))mode='post';
   if(typeof onMedia!=='function'||typeof onPublish!=='function')throw Error('Paylaşım bağlanamadı.');
@@ -241,6 +241,7 @@
    '<input id="pati-system-gallery" type="file" accept="'+(kind(mode)==='video'?'video/*,.mov,.mp4,.webm,.m4v':'image/*,video/*,.heic,.heif,.mov,.mp4,.webm,.m4v')+'"'+(mode==='post'?' multiple':'')+' hidden>';
   document.body.appendChild(root);
   collaboration?.mount(root);
+  const readStoryTools=storyTools?.mount(root);
   document.body.classList.add('pati-system-media-active');
   state={root,mode,userId,onMedia,onMirrorChange,onBeforePublish,onPublish,onCancel,onSwitch,onStoryPhotoCamera,publishing:false,editing:false,files:[],urls:[],previewVersion:0,previewError:false,previewIndex:0,mirrorSelfie:false,appendMode:false};
   const current=state;
@@ -359,7 +360,7 @@
     const publish=root.querySelector('#pati-system-publish');
     publish.disabled=true;publish.textContent='Paylaşılıyor…';
     clearError();
-    try{await state.onPublish(root.querySelector('#pati-system-caption').value,root)}
+    try{await state.onPublish(root.querySelector('#pati-system-caption').value,root,readStoryTools?.())}
     catch(err){
      if(state===current){
       error(err?.message||'Paylaşım yüklenemedi. Tekrar dene.');
