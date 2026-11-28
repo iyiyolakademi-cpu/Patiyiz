@@ -2630,17 +2630,18 @@ function setupReelsViewer(){
   // Prevent background video downloads competing with images, DMs and the active Reel.
   for(let i=0;i<videos.length;i++){
    const other=videos[i];if(other===video||other===next)continue;
-   if(Math.abs(i-position)>1&&other.paused){other.preload='none';if(other.hasAttribute('src')&&other.dataset.patiVideoSrc){other.removeAttribute('src');other.load()}}
+   if((Math.abs(i-position)>1||(bucheeDemoEnabled&&lowData))&&other.paused){other.preload='none';if(other.hasAttribute('src')&&other.dataset.patiVideoSrc){other.removeAttribute('src');other.load()}}
   }
  };
  const loadNearEnd=()=>{
   const state=typeof patiReelsFeed!=='undefined'?patiReelsFeed:null;
   if(typeof view==='undefined'||view!=='reels'||!state?.ready||state.loading||!state.hasMore||state.error||!viewport?.clientHeight)return;
   const idx=Math.max(0,Math.min(videos.length-1,Math.round(viewport.scrollTop/viewport.clientHeight)));
+  if(bucheeDemoEnabled&&document.hidden)return;
   if(idx+6>=videos.length)void patiLoadMoreReels();
  };
  const playVideo=video=>{
-  if(document.getElementById?.('story-overlay')){video?.pause();return}
+  if(document.getElementById?.('story-overlay')||(bucheeDemoEnabled&&document.hidden)){video?.pause();return}
   if(!video)return;
   prepareNext(video);
   if(activeVideo!==video){activeVideo?.pause();activeVideo=video}
@@ -2735,6 +2736,7 @@ function setupReelsViewer(){
   v.dataset.patiReelsBound='1';
   // The poster remains visible while the active video loads or buffers.
   const item=v.closest?.('.pati-reel-item');
+  if(bucheeDemoEnabled&&item){const tap=item.querySelector('.pati-reel-tap');let hold=null,start=null,held=false,resume=false;const cancel=()=>{clearTimeout(hold);hold=null;if(held){held=false;delete v.dataset.manualPause;if(resume&&v.isConnected&&!document.hidden&&isSelectedReel())v.play().catch(()=>{})}start=null};tap?.addEventListener('pointerdown',e=>{if(e.button!==0)return;start={x:e.clientX,y:e.clientY};hold=setTimeout(()=>{held=true;resume=!v.paused;if(resume){v.dataset.manualPause='1';v.pause()}},320)});tap?.addEventListener('pointermove',e=>{if(start&&Math.hypot(e.clientX-start.x,e.clientY-start.y)>12)cancel()});for(const event of ['pointerup','pointercancel','pointerleave'])tap?.addEventListener(event,()=>{if(held)tap.dataset.bucheeHeldUntil=String(Date.now()+500);cancel()});const caption=item.querySelector('.pati-reel-caption-text');if(caption&&caption.textContent.length>100){const more=document.createElement('button');more.type='button';more.className='buchee-demo-caption-more';more.textContent='devam';more.setAttribute('aria-expanded','false');caption.classList.add('buchee-demo-caption-clamp');caption.after(more);more.onclick=e=>{e.stopPropagation();const expanded=more.getAttribute('aria-expanded')==='true';more.setAttribute('aria-expanded',String(!expanded));caption.classList.toggle('buchee-demo-caption-clamp',expanded);more.textContent=expanded?'devam':'daha az'}}}
   if(item&&typeof item.querySelector==='function'&&typeof item.insertAdjacentHTML==='function'&&!item.querySelector('.pati-reel-buffering')){
    item.insertAdjacentHTML('beforeend','<div class="pati-reel-buffering" role="status" aria-live="polite" hidden><span class="pati-reel-spinner" aria-hidden="true"></span><span class="pati-reel-loading-label">Video yükleniyor…</span><progress value="0" max="100" aria-label="Video yükleme ilerlemesi"></progress></div>');
   }
@@ -2821,6 +2823,7 @@ function setupReelsViewer(){
  }
 }
 function reelHandleTap(button){
+ if(bucheeDemoEnabled&&Number(button.dataset.bucheeHeldUntil||0)>Date.now())return;
  const item=button.closest('.pati-reel-item'),id=item?.dataset?.post;
  if(!id)return reelTogglePlay(button);
  const now=Date.now(),tap=patiyizReelsTap;
