@@ -276,7 +276,7 @@ window.BUCHEE_RELEASE="20261123-blog-content-v4";
 <script src="buchee-twit-photo-crop-20261123.js?v=1" defer></script>
 <script src="buchee-demo-data.js?v=14-story-tools" defer></script>
 <script src="buchee-story-tools.js?v=20261128-sticker-scale-v5" defer></script>
-<script src="app.js?v=20261128-story-reply-preview-v1" defer></script>
+<script src="app.js?v=20261128-story-reply-preview-v2" defer></script>
 <script src="patiyiz-header-feed-menu-20261031.js?v=20261124-desktop-only-v8"></script>
 <script src="patiyiz-dm-emoji-picker-20261101.js?v=1" defer></script>
 <style id="pati-critical-mobile-feed-20261101">
@@ -1523,4 +1523,4 @@ html[data-pati-view="reels"] #main-content .pati-reel-item>.pati-reel-utility>.p
 @media(min-width:1000px){#buchee-demo-desktop-dm:not([hidden]){position:fixed;right:28px;bottom:24px;z-index:900;display:flex;align-items:center;gap:12px;padding:15px 24px;border:1px solid #dedee0;border-radius:999px;background:#fff;color:#111;box-shadow:0 5px 24px #0002;font:700 16px system-ui;cursor:pointer}#buchee-demo-desktop-dm:hover{background:#f3f3f3}#buchee-demo-desktop-dm svg{width:24px;height:24px}}
 </style><script id="buchee-demo-desktop-dm-script">
 document.addEventListener('DOMContentLoaded',()=>{if(new URLSearchParams(location.search).get('demo')!=='1'||!matchMedia('(min-width:1000px)').matches)return;const b=document.createElement('button');b.id='buchee-demo-desktop-dm';b.type='button';b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M22 2 9 15M22 2l-7 20-6-7-7-6z"/></svg><span>Mesajlar</span>';document.body.append(b);b.onclick=()=>document.getElementById('buchee-header-messages')?.click();const sync=()=>{const app=document.getElementById('app-root');const header=document.getElementById('buchee-header-messages');const hidden=!app||app.classList.contains('hidden')||!header||!!document.querySelector('#story-overlay:not(.hidden):not([hidden]) .story-player');if(b.hidden!==hidden)b.hidden=hidden};sync();document.addEventListener('click',()=>requestAnimationFrame(sync),{passive:true});window.addEventListener('hashchange',sync);});
-</script></body></html>
+</script><style>.bubble-chat.buchee-story-reply-bubble{background:transparent!important;color:inherit!important;box-shadow:none!important;border:0!important;padding:0!important}.buchee-story-reply-bubble.mine{align-self:flex-end}.buchee-story-reply-bubble.mine>small{text-align:right}</style></body></html>
